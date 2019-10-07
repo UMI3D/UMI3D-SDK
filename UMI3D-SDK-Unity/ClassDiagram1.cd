@@ -1,0 +1,2140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="sandbox" Collapsed="true">
+    <Position X="136.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\sandbox.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChangeColorOnHoverModel" Collapsed="true">
+    <Position X="142" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgCAAAAAAAAAAAEABABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\TestBackEnd\Script\ChangeColorOnHoverModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChangeColorOnHoverPrimitive" Collapsed="true">
+    <Position X="143.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgCAAAAAAAAAAAEABABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\TestBackEnd\Script\ChangeColorOnHoverPrimitive.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Rotate" Collapsed="true">
+    <Position X="135" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\TestBackEnd\Script\Rotate.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Spawner" Collapsed="true">
+    <Position X="140.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIABAAAEAAAIAAAAAABAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\TestBackEnd\Script\Spawner.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StepMotion" Collapsed="true">
+    <Position X="142" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAEAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\TestBackEnd\Script\StepMotion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestMaterials" Collapsed="true">
+    <Position X="143.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAASAAAAAAAAAAAAEAAAAAAAAAAAAAAIBAAAA=</HashCode>
+      <FileName>Assets\EXCLUDED\TestBackEnd\Script\TestMaterials.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AcceptAllCertificates" Collapsed="true">
+    <Position X="133.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\AcceptAllCertificates.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Billboard" Collapsed="true">
+    <Position X="140.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\Billboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HoveredDto">
+    <Position X="90" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAIAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\request\HoveredDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="JSONTemplates" Collapsed="true">
+    <Position X="138.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAADAACAEAAAABAEAQAAEAEECANAAAABBAAAAIAAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\JSONObject\JSONTemplates.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VolumetricLineSettings" Collapsed="true">
+    <Position X="133.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\VolumetricLines\Scripts\VolumetricLineSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UMI3DLauncher" Collapsed="true">
+    <Position X="140.25" Y="7.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="UMI3DLauncher.StartData" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\Launcher\UMI3DLauncher.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAoAAAACAgAAQAAAAAAIAAAAACAgAAAAAAAAAAIAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Launcher\UMI3DLauncher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UserPOV" Collapsed="true">
+    <Position X="128" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgQAAgAAAKAAAgCAAAAAAAAAAAAIAAAAIAAAAAAAgAA=</HashCode>
+      <FileName>Assets\UMI3D SDK ToolKit\UserPOV\UserPOV.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractMenu" Collapsed="true">
+    <Position X="128" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CCAAAAAAAAQAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\AbstractMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractNavigation" Collapsed="true">
+    <Position X="129.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAACIAAAAAAAAAEEIAAAAAAAAAAAAAwBAAgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\AbstractNavigation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractPlayer" Collapsed="true">
+    <Position X="131.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQABCBAAAQAAAAAUAAgAgCAAgEAAAAAIgEEAAEgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\AbstractPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractScene">
+    <Position X="29.5" Y="42.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>CAgBgCBCACQAOABIIEAAzgAAQSAEoAEAAAgAAQEACAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\AbstractScene.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DBrowser" Collapsed="true">
+    <Position X="135" Y="7.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="umi3d.cdk.UMI3DBrowser.StringEvent" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\Core\UMI3DBrowser.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gYABAIAAACRAQiAgiAAhAIgAAABAACIBAABIJQEAQEQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\UMI3DBrowser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DHttpClient" Collapsed="true">
+    <Position X="138.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAQAiAAAAAAAAABAgIAIAAQAgAAgAAQBBAAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\UMI3DHttpClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DWebSocketClient" Collapsed="true">
+    <Position X="133.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAFAIAAAAAAQAAACEAAAAAAIAAAAAAAAQASBACAgEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\UMI3DWebSocketClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractDTOLoader&lt;DTO, A&gt;">
+    <Position X="40.5" Y="21.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\AbstractDTOLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractObjectDTOLoader&lt;DTO&gt;">
+    <Position X="35" Y="24.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAgAAAAAAAAAAAAEAAAAAAAAAQAAQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\AbstractObjectDTOLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AudioSourceDtoLoader">
+    <Position X="30.5" Y="27" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAACAAAAAAAAAAAAAgAYAAAAAAAAARAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\AudioSourceDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.GenericObject3DDtoLoader">
+    <Position X="34" Y="27" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\GenericObject3DDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.LightDtoLoader">
+    <Position X="37.75" Y="27" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAgAAAAAAAACAAAAAAAAAEAAIAgAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\LightDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.LineDtoLoader">
+    <Position X="40.75" Y="27" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAQAAAAAABAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\LineDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.MaterialDtoLoader">
+    <Position X="50.25" Y="24.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\MaterialDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.ModelDtoLoader">
+    <Position X="43.75" Y="27" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\ModelDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.PrimitiveDtoLoader">
+    <Position X="47" Y="27" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\PrimitiveDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.ResourceDtoLoader">
+    <Position X="54" Y="24.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\ResourceDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.VideoDtoLoader">
+    <Position X="57.5" Y="24.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAACAAAAAAAAAAAAAgAYAAAAAAAAARAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\DTOLoarders\VideoDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.HDResourceCache" Collapsed="true">
+    <Position X="142" Y="2.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="umi3d.cdk.HDResourceCache.ModelCache" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\Loaders\HDResourceCache.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BACAJoAAAAQACAAAAQAAAQAAAgBAAQAAAAMACABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\HDResourceCache.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.HDScene">
+    <Position X="29.75" Y="50.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAQAAAAAAAAAAAQAAABAAAIAAAAAAQAABAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\HDScene.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.MeshMaterial" Collapsed="true">
+    <Position X="129.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JAAEAkAABQAABQcAAAABhAEAAAAAAACCBAEEIKhAgAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\MeshMaterial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.Resource" Collapsed="true">
+    <Position X="131.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAgAAQAAAAAEACCAAQAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\Resource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UICanvasDtoLoader">
+    <Position X="23.25" Y="29.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\UI\UICanvasDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UIImageDtoLoader">
+    <Position X="25.75" Y="29.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\UI\UIImageDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UIRectDtoLoader">
+    <Position X="25.25" Y="27" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\UI\UIRectDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UITextDtoLoader">
+    <Position X="28.25" Y="29.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\UI\UITextDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.Video" Collapsed="true">
+    <Position X="129.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAgEAAIQwACDAMQQCEAAAAYEAAQAAAAoIBAAUAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Loaders\Video.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.audio.AudioConference" Collapsed="true">
+    <Position X="136.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQxBBgAgAKAAACAACACAQAAAAAZAAAACAAAAEAQIIFA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\Core\AudioConference.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.Examples.CustomObjImporter">
+    <Position X="36.5" Y="42.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAACAIAAAAAAAAAAAAAgAAACAACQABAAAIAEI=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Examples\Scripts\CustomObjImporter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.Examples.ModelImportInfo" Collapsed="true">
+    <Position X="133.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAgABAAAEAAAAAAAQIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Examples\Scripts\ModelImportInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.Examples.ObjImporterTest">
+    <Position X="36.5" Y="39" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAACAAAAQAAAAAAAAAAgAAAAAAAAAAAQSAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Examples\Scripts\ObjImporterTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.Examples.EditorLikeCameraController" Collapsed="true">
+    <Position X="129.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Examples\Scripts\Util\EditorLikeCameraController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.DataSet" Collapsed="true">
+    <Position X="145.5" Y="1.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="AsImpL.DataSet.FaceIndices" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\DataSet.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Class Name="AsImpL.DataSet.ObjectData" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\DataSet.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="AsImpL.DataSet.FaceGroupData" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\DataSet.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>gQBQCAAAAAAAEAAAAGgAECAABBggEKCAAAAAAQABAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\DataSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.MaterialData" Collapsed="true">
+    <Position X="128" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gQCBEAAAJAAAAhAAAAABAAAAAIAgAAAASAAAAAhAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\MaterialData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.ModelUtil" Collapsed="true">
+    <Position X="135" Y="5.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="AsImpL.ModelUtil.MtlBlendMode" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\ModelUtil.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAABAAQAgABAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\ModelUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.ObjectBuilder" Collapsed="true">
+    <Position X="138.5" Y="5.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="AsImpL.ObjectBuilder.ProgressInfo" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\ObjectBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="AsImpL.ObjectBuilder.BuildStatus" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\ObjectBuilder.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAgAABAIAABMEAgAQIAAEaAASAAIAAAAAAAAAAAS4=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Dataset\ObjectBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.EditorUtil" Collapsed="true">
+    <Position X="131.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAARAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\EditorUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.ImportOptions" Collapsed="true">
+    <Position X="135" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAQAIiAAABRQAAAAAACAAAAAAAABAAAAABAEAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\ImportOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.Loader">
+    <Position X="39.75" Y="41.5" Width="2" />
+    <NestedTypes>
+      <Struct Name="AsImpL.Loader.BuildStats" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\Loader.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="AsImpL.Loader.Stats" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\Loader.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CgAEgAICAAUAAGQAQAAIwBSJqCAAgEBAAEAIAIAAAAY=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\Loader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.LoaderObj">
+    <Position X="39.5" Y="50.75" Width="2.5" />
+    <NestedTypes>
+      <Class Name="AsImpL.LoaderObj.BumpParamDef" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\LoaderObj.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>DAAAAAAEAAAAAAAAAAAAkAAIAgAQAAAAwEAEAABAACQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\LoaderObj.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.TextureLoader" Collapsed="true">
+    <Position X="145.5" Y="6.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="AsImpL.TextureLoader.TgaHeader" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\TextureLoader.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAACBABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\Loaders\TextureLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.FileLoadingProgress" Collapsed="true">
+    <Position X="140.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAIAEgAAAAAACA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\LoadingProgress.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.LoadingProgress" Collapsed="true">
+    <Position X="142" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\LoadingProgress.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.ObjectImporter">
+    <Position X="36.5" Y="30.5" Width="2" />
+    <NestedTypes>
+      <Enum Name="AsImpL.ObjectImporter.ImportPhase" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\ObjectImporter.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABQAgBDcAAgIIAAAAgEIAoAAEAgAAAAEEEAAQABASAw=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\ObjectImporter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AsImpL.ObjectImporterUI" Collapsed="true">
+    <Position X="140.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQACAACAAAAAAAAAAAAAAAAAAAAAEAIAAQAAAAACFA=</HashCode>
+      <FileName>Assets\UMI3D SDK\client dev kit\dependencies\AsImpL\Scripts\ObjectImporterUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractEntityDto">
+    <Position X="56.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\AbstractEntityDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DtoUtility" Collapsed="true">
+    <Position X="128" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAQAIAAAAACBAAAAAAAgAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\DtoUtility.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AddInteractionsDto">
+    <Position X="95.75" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\AddInteractionsDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EnterDto">
+    <Position X="98.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\EnterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LoadDto">
+    <Position X="102.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\LoadDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.NavigateDto">
+    <Position X="107.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\NavigateDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RemoveInteractionsDto">
+    <Position X="112" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\RemoveInteractionsDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RemoveObjectDto">
+    <Position X="81.25" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\RemoveObjectDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.TeleportDto">
+    <Position X="119.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\TeleportDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UpdateDto">
+    <Position X="6.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAABAAAAAAAEIAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\UpdateDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UpdateInteractionDto">
+    <Position X="11.5" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\UpdateInteractionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UpdateObjectDto">
+    <Position X="16.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\UpdateObjectDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractInteractionDto">
+    <Position X="65.25" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\AbstractInteractionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ActionDto">
+    <Position X="59.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\ActionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DirectInputDto">
+    <Position X="61.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\DirectInputDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.HoverDto">
+    <Position X="63.75" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\HoverDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InputDto">
+    <Position X="76.25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAABAAAEQAEAgAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\InputDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InteractionListDto">
+    <Position X="66.25" Y="7.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\InteractionListDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ManipulationDto">
+    <Position X="68.75" Y="7.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DofGroupDto">
+    <Position X="100.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DofGroupOptionDto">
+    <Position X="105" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.PickDto">
+    <Position X="71.5" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\PickDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.MaterialDto">
+    <Position X="114.75" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>IAAAAEAABQAAAQUAAAABBAAAAAAAAACAAAAEAKgAQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\MaterialDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.MediaDto">
+    <Position X="117.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAgAAAAAQAAAABgAAACAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\media\MediaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.WebsocketConnectionDto">
+    <Position X="122" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAKAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\media\WebsocketConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractObject3DDto">
+    <Position X="40.75" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAIAgAAICAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\AbstractObject3DDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AudioSourceDto">
+    <Position X="29.25" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEhAIAIwCAgAASEDAAAAAAIAAAAIQAAAAJAAAAAEAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\AudioSourceDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AvatarDto">
+    <Position X="54.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\AvatarDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.BoneDto">
+    <Position X="32" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\BoneDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GenericObject3DDto">
+    <Position X="34.75" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\GenericObject3DDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LightDto">
+    <Position X="37.25" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAKAAAAAAAIAAIATAAAAAAAQABgAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\LightDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LineDto">
+    <Position X="39.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAgAAAAAAAAEAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\LineDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ModelDto">
+    <Position X="42" Y="8" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAACAAAAAAAAIAAAACABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\ModelDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.PrimitiveDto">
+    <Position X="44.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACIBAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\PrimitiveDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UICanvasDto">
+    <Position X="47" Y="12" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\UICanvasDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UIImageDto">
+    <Position X="49.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABABAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\UIImageDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UIRectDto">
+    <Position X="49.5" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQABAAAAAAAAACAAAAAAMAAAAAAAAIgAABAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\UIRectDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UITextDto">
+    <Position X="52" Y="12" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAECCAIAAAAgAAAMAACIEAAACAgEAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\UITextDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.VideoDto">
+    <Position X="109.75" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAIQAAAAAAAACAAAAAYAAAACAAAAABAAACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\VideoDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InteractionRequestDto">
+    <Position X="78.5" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\request\InteractionRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LoadchildrenRequestDto">
+    <Position X="83.75" Y="5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\request\LoadchildrenRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ManipulationParametersDto">
+    <Position X="124.75" Y="3" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\request\ManipulationParametersDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.NavigationRequestDto">
+    <Position X="8.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABBAAAAAAAAQAAAAAAAAAAAAAIIAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\request\NavigationRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ResourceDto">
+    <Position X="14" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAAAAEACCAAQAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\ResourceDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ScenarioDto">
+    <Position X="56.75" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAEAAAAAAAARAKAAAAAAACQAAAAAAQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\ScenarioDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DDto">
+    <Position X="66" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="umi3d.common.UMI3DDto.CustomProperty" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\common\Dto\Umi3DDto.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Umi3DDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.JSONObject" Collapsed="true">
+    <Position X="136.75" Y="4.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="umi3d.common.JSONObject.Type" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\common\Dto\Utils\JSONObject\JSONObject.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Delegate Name="umi3d.common.JSONObject.AddJSONConents" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\common\Dto\Utils\JSONObject\JSONObject.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="umi3d.common.JSONObject.FieldNotFound" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\common\Dto\Utils\JSONObject\JSONObject.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="umi3d.common.JSONObject.GetFieldResponse" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\common\Dto\Utils\JSONObject\JSONObject.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>iBIwAggMyIQIYAAMCACAACUogggBQWgaEYQAAABEUBA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\JSONObject\JSONObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableColor">
+    <Position X="18.75" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAEAAAAIAAAAAAAAAAAAAAAKAEAAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableColor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableQuaternion">
+    <Position X="22" Y="3" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAEAAAAAAAAAAAAAAAAAAAAAAAI4AE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableQuaternion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableVector2">
+    <Position X="25.75" Y="3" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAEAAAAAAAAAAAAAgAAAAAAAAAAYAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableVector2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableVector3">
+    <Position X="86.5" Y="3" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAEAAAAAAAAAAAABAAAAAAAAAAAYAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableVector3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableVector4">
+    <Position X="92.25" Y="3" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAEAAAAAAAAAACAAAAAAAAAAAAIYAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableVector4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DofType">
+    <Position X="3.5" Y="10" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIACAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\DofType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GenericEnumString">
+    <Position X="4.5" Y="6.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAEgAAAAAAAAAAAAIAAAAAgAAAAAiA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\GenericEnumString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InputType">
+    <Position X="6.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAgAAAAAAACAAAAAAAAAgAAAIAASAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\InputType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DMainThreadDispatcher" Collapsed="true">
+    <Position X="142" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARFAAAAAAAAAAAAAIgAAAAAAAAAAAAAQAAABAEAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\UMI3DMainThreadDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DispatchedMediaDto">
+    <Position X="73.75" Y="5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK ToolKit\common\Network discovery\DispatchedMediaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.Physics" Collapsed="true">
+    <Position X="143.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAQAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Physics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MainThreadDispatcher.UnityMainThreadDispatcher" Collapsed="true">
+    <Position X="138.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AARFAAAAAAAAAAAAAIAAAAAAAAAAAAAAQAAABAEAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\UnityMainThreadDispatcher-master\UnityMainThreadDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VolumetricLines.Utils.TransformExtensionMethods" Collapsed="true">
+    <Position X="128" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\VolumetricLines\Scripts\Utils\TransformExtensionMethods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VolumetricLines.VolumetricLineBehavior" Collapsed="true">
+    <Position X="131.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUUNBgABgCAAQAAAAAkAEAAgAEAAEAAAAQAABEAAYAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\VolumetricLines\Scripts\VolumetricLineBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VolumetricLines.VolumetricLineStripBehavior" Collapsed="true">
+    <Position X="135" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQUNBAABgCAAQAAAAAkAAAAgAEAAEAAAAQAABEgQIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\VolumetricLines\Scripts\VolumetricLineStripBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VolumetricLines.VolumetricLineVertexData" Collapsed="true">
+    <Position X="136.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAIAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\VolumetricLines\Scripts\VolumetricLineVertexData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VolumetricLines.VolumetricMultiLineBehavior" Collapsed="true">
+    <Position X="138.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQANAAAEgCAAQAAAAAkCAAAgAEAAEAACAQAAAEgQIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\VolumetricLines\Scripts\VolumetricMultiLineBehavior.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.AndroidHelper" Collapsed="true">
+    <Position X="135" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEABYBQCBwgAEAAAAAAAQRCDAAI0BCAAAACCAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\native\AndroidHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.UnityHelper" Collapsed="true">
+    <Position X="136.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\native\UnityHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.UnityVideoCapturer" Collapsed="true">
+    <Position X="143.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBAAAAAAACAgABHAgCAJAAAAAAAAAAgIIAgAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\native\UnityVideoCapturer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.UnityVideoCapturerFactory" Collapsed="true">
+    <Position X="145.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAACAAAAAAACAAAAAAAAEAABAEQAAIAAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\native\UnityVideoCapturer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.UnityCallFactory" Collapsed="true">
+    <Position X="135" Y="8.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="Byn.Awrtc.Unity.UnityCallFactory.InitState" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnityCallFactory.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Class Name="Byn.Awrtc.Unity.UnityCallFactory.InitCallbacks" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnityCallFactory.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Enum Name="Byn.Awrtc.Unity.UnityCallFactory.InitStatusUpdate" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnityCallFactory.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="Byn.Awrtc.Unity.UnityCallFactory.LogLevel" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnityCallFactory.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EBXRQIIIICQAAIAAIAFUAABCbAQDVkCaQAGCQlBAAFM=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnityCallFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.UnityMediaHelper" Collapsed="true">
+    <Position X="140.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAgAAQAAAAAAIAAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnityMediaHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Byn.Awrtc.Unity.UnitySingleton&lt;T&gt;" Collapsed="true">
+    <Position X="142" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAgAAAABIAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\WebRTCVideoChat\scripts\UnitySingleton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.CloseEventArgs" Collapsed="true">
+    <Position X="131.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAgQABAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\CloseEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.ErrorEventArgs" Collapsed="true">
+    <Position X="136.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAEABAIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\ErrorEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Ext" Collapsed="true">
+    <Position X="138.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>qHCiUIgoYRMEAQBEKcCaQlXAyiKYgUI5RAoaRACYJkg=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Ext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.HttpBase">
+    <Position X="31.5" Y="31.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAEAAKAAAAIAAAAAgCAAAoAAAAAACACAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\HttpBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.HttpRequest">
+    <Position X="29.5" Y="36.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>BAAgAAAAAAABAAAEAIJCAAApgCAEBAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\HttpRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.HttpResponse">
+    <Position X="32.5" Y="36.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAQIEAAAAQAAoAAAAAACAIAGoQAAhAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\HttpResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.LogData" Collapsed="true">
+    <Position X="143.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAABAAEBAAAAQAAAAAAAAABEAAAIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\LogData.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Logger" Collapsed="true">
+    <Position X="145.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SAAAAAAAAAAAAYAAAAAIAQAACBAEABEBAAAABEAEEAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Logger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.MessageEventArgs" Collapsed="true">
+    <Position X="131.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAkCAAgIBAAAAAIAAAAAAAAAAAAAIBAQAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\MessageEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.PayloadData" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="142" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQBAAABgAAABIEAAIgAAJAAAAIAAAEBACUAABgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\PayloadData.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.WebSocket" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="142" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>Iazs8yWWIHTS7FxakPGCnLJJ9Wxtj0Ixnv6JBi7D4TQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\WebSocket.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.WebSocketException" Collapsed="true">
+    <Position X="143.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\WebSocketException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.WebSocketFrame" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="145.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EJwCASoEAAgEABKkGQMIACBggyA1cJA0QALAACNEgAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\WebSocketFrame.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.AuthenticationBase">
+    <Position X="29.25" Y="14.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEACAAACAMgAAAAAAEAABAAAAAAIAAAAQgCBA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\AuthenticationBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.AuthenticationChallenge">
+    <Position X="26.75" Y="19.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAgAAAACAAAAAAAAAAAgAAAAIABAAAAAAgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\AuthenticationChallenge.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.AuthenticationResponse">
+    <Position X="30.5" Y="19.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAACAQhAACACAQACAAABAAAAgAACCQgAAAAgwAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\AuthenticationResponse.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.Chunk" Collapsed="true">
+    <Position X="145.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAIAAAAAAgAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\Chunk.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.ChunkedRequestStream">
+    <Position X="39.75" Y="37.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>QAABAAAAAAAEBACQAAAAAAAgAAAAAAAAAAkAAACAQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\ChunkedRequestStream.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.ChunkStream" Collapsed="true">
+    <Position X="128" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AKAACAAACAAADAAAACEASCAgDUAABAAAAQAiAFEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\ChunkStream.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.ClientSslConfiguration" Collapsed="true">
+    <Position X="129.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABBAAAAAAAAAAAAgAABACIECACAgAAAAAAAACIAACQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\ClientSslConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.Cookie" Collapsed="true">
+    <Position X="133.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MhAAIICEEAACIAoGhAEAAYQCCkIACJABIhAiAAAAACg=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\Cookie.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.CookieCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="135" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIgCAAIAACAABAQCAAQEAQhIAAAAAAAQBAAAAIAIBI=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\CookieCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.CookieException" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="136.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\CookieException.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.EndPointListener" Collapsed="true">
+    <Position X="133.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBACAAAiAAAAIAEACBACwAAACUAgDAACAAAAVACBKgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\EndPointListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.EndPointManager" Collapsed="true">
+    <Position X="135" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAEBAAABAAAAAAAgAAIAAEAAAEAAAAAgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\EndPointManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpBasicIdentity" Collapsed="true">
+    <Position X="143.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpBasicIdentity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpConnection" Collapsed="true">
+    <Position X="145.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SAgAAAAgAABiBgGQAFAAACAVBABICkqgQIEgwQigMBA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpConnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpDigestIdentity" Collapsed="true">
+    <Position X="128" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQBEAAAIAAgAAAAAAABAAAAACAAAAAQAiBA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpDigestIdentity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpHeaderInfo" Collapsed="true">
+    <Position X="129.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAUAAAAAAAQAAAIQEAAABQAAAEAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpHeaderInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListener" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="131.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FIQAIBgQACFkIiQwIgAgABqAIugIQEoAJKCJiFCBJBA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListener.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerAsyncResult" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="133.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAgAIAAgAABEIAAAAAGBEAAAAAABKUAiAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerAsyncResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerContext" Collapsed="true">
+    <Position X="135" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQABAAAAAABCACEEQAAAAAIAIAABoICIAAgAAAAAFAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerException" Collapsed="true">
+    <Position X="136.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerPrefix" Collapsed="true">
+    <Position X="138.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAACAAoEgAAAAgAACAAACICAQAAABAAAIAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerPrefix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerPrefixCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="140.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAACCABAQAAAABAQAAAAAAAAEAAAAAABQIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerPrefixCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerRequest" Collapsed="true">
+    <Position X="142" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgIADJTAAQQLQAEgIFApAJxijRABgoAGQVbABAAGCA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpListenerResponse" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="143.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAgAAhAIAAQWLCAgAAAAEBAACYRBAhjAIKQbEQCACCg=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpListenerResponse.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpStreamAsyncResult" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="129.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAgEIgAAAAAAIAIAAAGAUAAAAAABAQAgDAAAAA6AA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpStreamAsyncResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpUtility" Collapsed="true">
+    <Position X="131.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CISAAEAIAQAICIQMEAkAAGgAAggAiwAEBAAABQAAAAY=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpUtility.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.HttpVersion" Collapsed="true">
+    <Position X="133.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpVersion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.NetworkCredential" Collapsed="true">
+    <Position X="136.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAIAAAAAAAAAAAQAAAAAAAgAAAAACAQIBAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\NetworkCredential.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.QueryStringCollection" Collapsed="true">
+    <Position X="128" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\QueryStringCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.ReadBufferState" Collapsed="true">
+    <Position X="129.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAUAAAgACAAAAAAIAAAAAQAAAAAAAAAAACAAAAgwAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\ReadBufferState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.RequestStream">
+    <Position X="39.5" Y="30.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAUQAAwOAACAABgAAAAIAAAAACAAAGIQDA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\RequestStream.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.ResponseStream" Collapsed="true">
+    <Position X="133.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAIiAUQCAwGAQAAABgAoAAAEAAAQgQAAGMUDE=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\ResponseStream.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.ServerSslConfiguration" Collapsed="true">
+    <Position X="138.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAgAAIAAAAAAAAAAAACAACAAIAAEAAAgAACAQAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\ServerSslConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.WebHeaderCollection" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="140.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACIAIAAAIAAIjTBECIAADDQoBAKwQjECAIAEBARiAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\WebHeaderCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="WebSocketSharp.Net.WebSockets.HttpListenerWebSocketContext">
+    <Position X="0.5" Y="28" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AgEBAQAAIBAABQEEAAACAABhCAgICACAEAAAAAiAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\WebSockets\HttpListenerWebSocketContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.WebSockets.TcpListenerWebSocketContext">
+    <Position X="3.75" Y="28" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgEBAQAAIBQAAQEEQCACAAJhKCgICIKAEAQAAAiAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\WebSockets\TcpListenerWebSocketContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Net.WebSockets.WebSocketContext">
+    <Position X="2.25" Y="22.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgEBAQAAIBAAAQEAAAACAABhCAAACAAAEAAAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\WebSockets\WebSocketContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.HttpRequestEventArgs" Collapsed="true">
+    <Position X="145.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAACAAQAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\HttpRequestEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.HttpServer" Collapsed="true">
+    <Position X="128" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAZgQBAgACAqMAgQIAAgiAEKOggMCAICpgQUhMEAIhA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\HttpServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.WebSocketBehavior">
+    <Position X="18.75" Y="23.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AABAAIECoiCBhQAQAWBAhABIIAgAAACgBAKABAACgIA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\WebSocketBehavior.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="WebSocketSharp.Server.WebSocketServer" Collapsed="true">
+    <Position X="128" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>GAQyAEAgACAiMEgwIgAgCQAKGkwoCAKCpgIRgEEFIBA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\WebSocketServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.WebSocketServiceHost">
+    <Position X="7.75" Y="27.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAACAiAFIAACAAAAAAEAgAAAAgIAAABCAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\WebSocketServiceHost.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.WebSocketServiceHost&lt;TBehavior&gt;">
+    <Position X="7.5" Y="32.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAABAAAAABAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\WebSocketServiceHost`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.WebSocketServiceManager" Collapsed="true">
+    <Position X="129.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CCICAIABACChBUEACQACTAQAEAAAAAAAIAAEBCBAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\WebSocketServiceManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WebSocketSharp.Server.WebSocketSessionManager" Collapsed="true">
+    <Position X="131.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAJCAYABQCChgQAACCJCTAxAcAIgQAAgIIBABAAACAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\WebSocketSessionManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.AbstractInteraction&lt;DTO&gt;">
+    <Position X="14" Y="37.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAACAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\AbstractInteraction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVEAction">
+    <Position X="26.25" Y="40.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AACAgAAAQAAAAAAAAAAAAAAAAAAAABAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\CVEAction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVEInput" Collapsed="true">
+    <Position X="138.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAQBAACAAAEAAEAAAAAABAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\CVEInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.GenericInteraction">
+    <Position X="13.75" Y="31.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AASDgAQCACAgCAEAEAAAAAAAAAoAFDAAAAAAAAEAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\GenericInteraction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.Hover">
+    <Position X="1.75" Y="40.25" Width="2" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.Hover.HoveredListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Hover.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAiAAAQAAgABAAIAAAAAAQAAAAACAEBAAAAQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Hover.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.InteractionList">
+    <Position X="4.5" Y="40.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAQAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\InteractionList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.Manipulation">
+    <Position X="7.75" Y="40.25" Width="2.5" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.Manipulation.ManipulationListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Manipulation.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="umi3d.edk.Manipulation.DofGroup" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Manipulation.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="umi3d.edk.Manipulation.DofGroupOption" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Manipulation.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAQAAAAAAAEAAAAAABAAAAAAAABAAEACAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Manipulation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.Pick">
+    <Position X="11" Y="40.25" Width="2" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.Pick.PickListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Pick.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAAAgAAAQAAgAAAAIAAAAAAAAAAAACAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\Pick.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DirectCheckboxInput">
+    <Position X="13.75" Y="42.75" Width="1.75" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.DirectCheckboxInput.CheckboxListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectCheckboxInput.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABgAACAAAAAAABAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectCheckboxInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DirectDecimalInput">
+    <Position X="16.25" Y="42.75" Width="1.75" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.DirectDecimalInput.OnChangeListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectDecimalInput.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABkAACAAAQAAABAAAAAAAAAAAAABAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectDecimalInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DirectInput">
+    <Position X="18.5" Y="40.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAABAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DirectIntInput">
+    <Position X="18.75" Y="42.75" Width="1.75" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.DirectIntInput.OnChangeListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectIntInput.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABkAACAAAQAAABAAAAAAAAAAAAABAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectIntInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DirectSelectInput">
+    <Position X="21.25" Y="42.75" Width="1.75" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.DirectSelectInput.OnChangeListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectSelectInput.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABgAACAAAAAAABAAAAAAAAAAAAAJAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectSelectInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DirectTextInput">
+    <Position X="23.75" Y="42.75" Width="1.75" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.DirectTextInput.OnChangeListener" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectTextInput.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAABgAACAAAAAAABAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Interactions\UI\DirectTextInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.AbstractObject3D&lt;DTO&gt;">
+    <Position X="12.5" Y="13.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAACAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\AbstractObject3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVEAudioSource">
+    <Position X="15" Y="16.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>JEUhAoAI6iAiCASFHgAAABAIAAAQMQAApApQAQCIUCg=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVEAudioSource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVELight">
+    <Position X="18" Y="16.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAwAIYCAAAAUAECAEMIAACCIgKAGABQAQAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVELight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVELine">
+    <Position X="20.75" Y="16.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAABAACAQAAACAAAUAAAAAAACAAAIACABABQAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVELine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVEMaterial" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="140.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAHAQVQAANSUAEDEx9AAgEAAAIAGBBQCIAOgAQEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVEMaterial.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.CVEModel">
+    <Position X="23.25" Y="16.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>QEAAAABASAAAAAAAEIAAgEAAAAAAAAAIBAAQCABAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVEModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVEPrimitive">
+    <Position X="1.5" Y="16.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>wEQAAgAASCAAAAAAEAAAgAAAAAIAAAAIBAAQCABAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVEPrimitive.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.CVEResource" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="142" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAUAAAIAIAGAACwAAAAgAAEEICBAAQAEAAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVEResource.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.CVEVideo" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="143.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQhGBCIUAAGoAAIECABQCAYAgAQAAIApAAQAECIQEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\CVEVideo.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.EmptyObject3D">
+    <Position X="4.25" Y="16.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\EmptyObject3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.GenericObject3D">
+    <Position X="12.25" Y="6.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAQDAAQMACAACAIAEAEAAAAAAARAVAAAAgAQAAAABEE=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\GenericObject3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UICanvas">
+    <Position X="7.5" Y="23" Width="2" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAASAAgAAAAEAAAAAAEAAIBAAAABAAQAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\UI\UICanvas.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UIImage">
+    <Position X="10.25" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAEAAAAAAAABABAACABAAQoAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\UI\UIImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UIRect">
+    <Position X="10" Y="16.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>BEQEAAQARAAAAAAAEACAAAQAAMAAAiAABAKwBABAAIQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\UI\UIRect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UIText">
+    <Position X="12.5" Y="23" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAQAAAAgEKGCIAIgggAAAcAACIHAQQCAgEAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\Objects\UI\UIText.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.PrimitiveTypeConverter" Collapsed="true">
+    <Position X="145.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.LightTypeConverter" Collapsed="true">
+    <Position X="140.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DAsyncProperty&lt;T&gt;" Collapsed="true">
+    <Position X="131.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAgKAAAAAAAAAAAAAACEAgAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\UMI3DAsyncProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.WebSocketCVEConnection">
+    <Position X="18.5" Y="32.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAEAAIAAAAAABABAAAAAAAAAAAAAQAKAAAJAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Networking\WebSocketCVEConnection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.edk.WebSocketUMI3DServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="133.25" Y="10.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="umi3d.edk.WebSocketUMI3DServer.RootAttribute" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Networking\WebSocketUMI3DServer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="umi3d.edk.WebSocketUMI3DServer.Get" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Networking\WebSocketUMI3DServer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="umi3d.edk.WebSocketUMI3DServer.Post" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Networking\WebSocketUMI3DServer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="umi3d.edk.WebSocketUMI3DServer.RootMap" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Networking\WebSocketUMI3DServer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIAAAJAIAQIAAQACgAAAAAIAIAAARogAJAA2QIAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Networking\WebSocketUMI3DServer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.AvailabilityFilter" Collapsed="true">
+    <Position X="138.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\AvailabilityFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.AvatarFilter">
+    <Position X="0.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\AvatarFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DAvatar" Collapsed="true">
+    <Position X="133.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQoEAACAAAAAIIBEEAIAAAAAQCAABAABABAAQAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\UMI3DAvatar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DUser" Collapsed="true">
+    <Position X="145.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAIAAAgAAQQAACEABAEgEIAAAAEABBAARBAAAgQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\UMI3DUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DUserEvent" Collapsed="true">
+    <Position X="128" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\UMI3DUserEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DUserInteractionEvent" Collapsed="true">
+    <Position X="129.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\UMI3DUserInteractionEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DUserManager" Collapsed="true">
+    <Position X="131.5" Y="8.5" Width="1.5" />
+    <NestedTypes>
+      <Struct Name="umi3d.edk.UMI3DUserManager.BonePrefab" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\UMI3DUserManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>IABQAACEACCQAABAAAAAAAAAAAAEABAAgACQAIAAAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\UMI3DUserManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.VisibilityFilter">
+    <Position X="0.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Scenarisation\VisibilityFilter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3D" Collapsed="true">
+    <Position X="129.75" Y="7.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="umi3d.edk.UMI3D.Protocol" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Assets\UMI3D SDK\environment dev kit\UMI3D.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QIQAYAiAAQAAgAFAwAAAAIAAAADAQAAgaAAAAggAAEI=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\UMI3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DScene" Collapsed="true">
+    <Position X="143.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QIQAIAQAAASAIAQBEAEABAAQCgBBUAEABQgwAEgAEEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\UMI3DScene.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DDispatcherClient" Collapsed="true">
+    <Position X="136.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAAAAAQAAAQAAAAAAgCAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK ToolKit\environment dev kit\Network discovery\UMI3DDispatcherClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UserGraphNode">
+    <Position X="2" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\UMI3D SDK ToolKit\UMI3D User state graph\UserGraphNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UserState">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAWAAEABACAAAAAAAACAQABQAAAIAAAEAAAACAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK ToolKit\UMI3D User state graph\UserState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UserStateNavigationEvent">
+    <Position X="2.75" Y="2.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAIAAAAAQAAABAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK ToolKit\UMI3D User state graph\UserStateNavigationEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="WebSocketSharp.Server.IWebSocketSession" Collapsed="true">
+    <Position X="133.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAgAAAAAAAAABAIAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\IWebSocketSession.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.edk.IHasAsyncProperties" Collapsed="true">
+    <Position X="128" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Models\IHasAsyncProperties.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.edk.IUMI3DRealtimeConnection" Collapsed="true">
+    <Position X="129.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Networking\IUMI3DRealtimeConnection.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.edk.IUMI3DServer" Collapsed="true">
+    <Position X="131.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAIAAJAACQAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\environment dev kit\Networking\IUMI3DServer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="umi3d.common.DofGroupEnum" Collapsed="true">
+    <Position X="140.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAACAAAMAIAAAAEMAIAAAgCIAAAAAAAAAAgAAYAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\interactions\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.AvatarDisplayMode" Collapsed="true">
+    <Position X="129.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAIgAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\AvatarDisplayModes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.BoneType" Collapsed="true">
+    <Position X="131.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQJAAIAQAAAAAAABAgAAAAAQAAAECQAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\BoneTypes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ColliderType" Collapsed="true">
+    <Position X="136.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAQAAAAAAAIAAAAAAQAAACEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ColliderType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.EnvironmentType" Collapsed="true">
+    <Position X="142" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\EnvironmentType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.LightTypes" Collapsed="true">
+    <Position X="136.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\LightTypes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.MeshPrimitive" Collapsed="true">
+    <Position X="143.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAIAQAAAAAAAAAAAAAAAYAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\MeshPrimitive.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.NavigationType" Collapsed="true">
+    <Position X="145.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\NavigationType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ShaderType" Collapsed="true">
+    <Position X="133.25" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ShaderType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ShadowType" Collapsed="true">
+    <Position X="135" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ShadowType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.ByteOrder" Collapsed="true">
+    <Position X="133.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\ByteOrder.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.CloseStatusCode" Collapsed="true">
+    <Position X="135" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAIAAAEAAAAAABAIAAAEAIAAAAAAAAIIAAoGA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\CloseStatusCode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.CompressionMethod" Collapsed="true">
+    <Position X="138.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\CompressionMethod.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Fin" Collapsed="true">
+    <Position X="143.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Fin.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.LogLevel" Collapsed="true">
+    <Position X="140.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAYAAAAAAAAAAAAAAABEAAAAAAEAEAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\LogLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Mask" Collapsed="true">
+    <Position X="142" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Mask.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Opcode" Collapsed="true">
+    <Position X="128" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAAEAAABAAAAAQAAAAAAAACACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Opcode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Rsv" Collapsed="true">
+    <Position X="129.75" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Rsv.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.WebSocketState" Collapsed="true">
+    <Position X="136.75" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAACAAAAAAAABAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\WebSocketState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.AuthenticationSchemes" Collapsed="true">
+    <Position X="128" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAAAAGAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\AuthenticationSchemes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.HttpHeaderType" Collapsed="true">
+    <Position X="145.5" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAABAABAAAAAAAAAAAACAAAAgAAAAAAAAAQBAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpHeaderType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.HttpRequestHeader" Collapsed="true">
+    <Position X="128" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ApEAITAAAAAQqAkIIoAjBBACEAAACFIFNASUICAAAKA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpRequestHeader.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.HttpResponseHeader" Collapsed="true">
+    <Position X="129.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AhEAJAACAAAQIAkAEsIiQBBCAAAAAFIBIEQQIgAAACA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpResponseHeader.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.HttpStatusCode" Collapsed="true">
+    <Position X="131.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>KGEKSAAICBAEAgAwACEABABAgJkAAQQFADQlAEAGAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\HttpStatusCode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.InputChunkState" Collapsed="true">
+    <Position X="133.25" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAABAAAAAAAAAAACAAAAAAAAABAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\InputChunkState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.InputState" Collapsed="true">
+    <Position X="135" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\InputState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Net.LineState" Collapsed="true">
+    <Position X="138.5" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAAAAAAACAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Net\LineState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="WebSocketSharp.Server.ServerState" Collapsed="true">
+    <Position X="131.5" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAACAAAAEAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\dependencies\websocket-sharp-master\websocket-sharp\Server\ServerState.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
