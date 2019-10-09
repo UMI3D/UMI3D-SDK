@@ -36,7 +36,7 @@ sysinfo.txt
 *.unitypackage
 
 /UMI3D-sdk/Assets/EXCLUDED
-/UMI3D-sdk/Public
+/UMI3D-sdk/Public/EXCLUDED
 /UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Scripts.meta
 /UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Scripts/SilkkeConnect.meta
 /UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Scripts/SilkkeConnect/Singletons.meta
