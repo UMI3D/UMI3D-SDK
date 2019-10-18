@@ -480,17 +480,17 @@ MonoBehaviour:
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30140, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
       PublicKeyToken=null
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30140, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
       PublicKeyToken=null
   onHover:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30140,
+    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30772,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &6135923545459904254
 MonoBehaviour:
@@ -587,17 +587,17 @@ MonoBehaviour:
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30140, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
       PublicKeyToken=null
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30140, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
       PublicKeyToken=null
   onHover:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30140,
+    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30772,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &5652752583062016500
 MonoBehaviour:

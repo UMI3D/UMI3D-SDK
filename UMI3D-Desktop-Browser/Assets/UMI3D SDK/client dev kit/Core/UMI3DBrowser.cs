@@ -178,6 +178,23 @@ namespace umi3d.cdk
                     Instance.navigation = value;
             }
         }
+
+        [SerializeField]
+        private UMI3DBrowserAvatar avatar;
+
+        public static UMI3DBrowserAvatar Avatar
+        {
+            get
+            {
+                return Exist ? Instance.avatar : null;
+            }
+            set
+            {
+                if (Exist)
+                    Instance.avatar = value;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -280,8 +297,6 @@ namespace umi3d.cdk
             if (Instance.scene != null)
                 Instance.scene.ResetModule();
         }
-
-
 
         /// <summary>
         /// Enter in an environment.

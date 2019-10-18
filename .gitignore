@@ -37,15 +37,6 @@ sysinfo.txt
 
 /UMI3D-sdk/Assets/EXCLUDED
 /UMI3D-sdk/Public/EXCLUDED
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Scripts.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Scripts/SilkkeConnect.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Scripts/SilkkeConnect/Singletons.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Plugins/Boomlagoon.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Plugins/Boomlagoon/JSON.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Plugins/Boomlagoon/JSON/TestScene.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Demo.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Demo/Shader.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/SilkkeFiguration/Demo/Scripts.meta
 /UMI3D-sdk/Assets/UMI3D SDK/dependencies/AsImpL/Scripts.meta
 /UMI3D-sdk/Assets/UMI3D SDK/dependencies/AsImpL/Examples/Scripts.meta
 /UMI3D-sdk/Assets/UMI3D SDK/common/Dto/ressources buffers.meta

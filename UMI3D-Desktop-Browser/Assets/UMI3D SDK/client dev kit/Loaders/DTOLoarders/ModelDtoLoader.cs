@@ -88,7 +88,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="renderers"></param>
         /// <returns></returns>
-        private Bounds ComputeBoundingBox(IEnumerable<MeshRenderer> renderers)
+        protected Bounds ComputeBoundingBox(IEnumerable<MeshRenderer> renderers)
         {
             bool first = false;
             Vector3 globalMin = Vector3.zero;

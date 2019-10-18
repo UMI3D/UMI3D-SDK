@@ -323,7 +323,7 @@ MonoBehaviour:
   onPicked:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Pick+PickListener, Assembly-CSharp, Version=1.0.2.30140,
+    m_TypeName: umi3d.edk.Pick+PickListener, Assembly-CSharp, Version=1.0.2.30772,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &5413017328340551592
 GameObject:

@@ -18,16 +18,26 @@ namespace umi3d.common
     public enum BoneType
     {
         None,
-        Base,
-        Capsule,
-        Chest,
-        Cylinder,
+        Ankle,
+        Cursor,
+        Elbow,
         Finger,
+        Forearm,
         Foot,
+        Hand_Left,
+        Hand_Right,
         Head,
+        Hip,
         Joint_Foot,
-        Sphere,
-        LHand,
-        RHand
+        Knee,
+        Leg,
+        Neck,
+        Pelvis,
+        Shoulder,
+        Thigh,
+        Toe,
+        Torso,
+        Upper_Arm,
+        Wrist
     }
 }

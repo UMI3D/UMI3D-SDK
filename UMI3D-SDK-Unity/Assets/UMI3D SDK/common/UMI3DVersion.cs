@@ -9,7 +9,7 @@ namespace umi3d
         public readonly static string major = "0";
         public readonly static string minor = "9";
         public readonly static string status = "b";
-        public readonly static string date = "191014";
+        public readonly static string date = "191018";
 
     }
 }

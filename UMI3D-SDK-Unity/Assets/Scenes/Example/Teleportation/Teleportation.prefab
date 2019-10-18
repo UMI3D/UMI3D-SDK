@@ -321,17 +321,17 @@ MonoBehaviour:
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30140, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
       PublicKeyToken=null
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30140, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
       PublicKeyToken=null
   onHover:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30140,
+    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30772,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &3366123693980573849
 GameObject:
@@ -421,7 +421,7 @@ MonoBehaviour:
   onPicked:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Pick+PickListener, Assembly-CSharp, Version=1.0.2.30140,
+    m_TypeName: umi3d.edk.Pick+PickListener, Assembly-CSharp, Version=1.0.2.30772,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &4792026315718012823
 GameObject:
