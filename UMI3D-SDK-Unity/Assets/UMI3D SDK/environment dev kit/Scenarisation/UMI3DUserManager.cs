@@ -73,7 +73,12 @@ namespace umi3d.edk
         [Tooltip("To be completed to associate a type of bone with a GameObject to instantiate.")]
         public BonePrefab[] BonesPrefabs;
 
-        private Dictionary<BoneType, GameObject> prefabsDictionnary = new Dictionary<BoneType, GameObject>();
+        private Dictionary<BoneType, GameObject> prefabsDictionary = new Dictionary<BoneType, GameObject>();
+
+        /// <summary>
+        /// Contain the BoneTypes not to use for self-representation. Set in the inspector.
+        /// </summary>
+        public List<BoneType> BonesToFilter;
 
         void Start()
         {
@@ -94,7 +99,7 @@ namespace umi3d.edk
         private void pairsToDictionnary()
         {
             if (BonesPrefabs != null && BonesPrefabs.Length != 0)
-                prefabsDictionnary = BonesPrefabs.ToDictionary(x => x.BoneType, x => x.Prefab);
+                prefabsDictionary = BonesPrefabs.ToDictionary(x => x.BoneType, x => x.Prefab);
         }
 
         /// <summary>
@@ -115,38 +120,9 @@ namespace umi3d.edk
             var user = Get(userId);
             if (user != null)
                 user.SetConnection(connection);
-            /*
-            GameObject userObj = new GameObject();
-            GameObject avatar = new GameObject();
-            GameObject viewpoint = new GameObject("viewpoint");
-            GameObject Anchor = new GameObject("Anchor");
 
-            viewpoint.transform.SetParent(avatar.transform);
-            Anchor.transform.SetParent(avatar.transform);
-            
-            avatar.AddComponent<EmptyObject3D>();
-            avatar.AddComponent<AvatarFilter>();
-            
-            UMI3DAvatar avt = this.setAvatar(avatar, viewpoint, Anchor);
-
-            UMI3DUser user = userObj.AddComponent<UMI3DUser>();
-            user.avatar = avatar.GetComponent<UMI3DAvatar>();
-
-            if (avt != null)
-                avt.user = user;
-
-            user.Create(connection);
-            UsersMap.Add(connection.GetId(), user);
-            userObj.name = "user " + connection.GetId();
-            avatar.name = "avatar_user " + connection.GetId();
-            user.avatar.Anchor.name = "Anchor_user " + connection.GetId();
-
-            UMI3D.OnUserCreate.Invoke(user);
-            */
             yield return null;
         }
-
-
 
         /// <summary>
         /// Called on a user login.
@@ -159,10 +135,9 @@ namespace umi3d.edk
             GameObject Anchor = new GameObject("Anchor");
 
             viewpoint.transform.SetParent(avatar.transform);
-            Anchor.transform.SetParent(avatar.transform);
+            Anchor.transform.SetParent(avatar.transform);           
 
             avatar.AddComponent<EmptyObject3D>();
-            avatar.AddComponent<AvatarFilter>();
 
             UMI3DAvatar avt = this.setAvatar(avatar, viewpoint, Anchor);
 
@@ -202,7 +177,8 @@ namespace umi3d.edk
             UMI3DAvatar avt = avatar.AddComponent<UMI3DAvatar>();
             avt.viewpoint = viewpoint;
             avt.Anchor = anchor;
-            avt.listOfPrefabs = this.prefabsDictionnary;
+            avt.listOfPrefabs = this.prefabsDictionary;
+            avt.BonesToFilter = this.BonesToFilter;
             avt.defaultAvatar = this.DefaultAvatar;
             avt.DisplayMode = this.AvatarDisplay;
             return avt;

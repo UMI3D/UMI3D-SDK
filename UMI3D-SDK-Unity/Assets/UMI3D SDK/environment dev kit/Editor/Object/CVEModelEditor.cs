@@ -21,7 +21,7 @@ using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(CVEModel))]
+    [CustomEditor(typeof(CVEModel),true)]
     [CanEditMultipleObjects]
     public class CVEModelEditor : GenericObject3DEditor
     {

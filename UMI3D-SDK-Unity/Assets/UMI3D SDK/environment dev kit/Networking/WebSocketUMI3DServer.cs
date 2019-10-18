@@ -40,10 +40,11 @@ namespace umi3d.edk
 
         public string socketPath = "/socket";
 
+        public bool UseRandomPort;
         public int port;
 
         public string resourcesPath = "/../Public/";
-        
+
         public string GetEnvironmentUrl()
         {
             return "http://" + ip + ":" + port;
@@ -86,8 +87,10 @@ namespace umi3d.edk
         public void Init()
         {
             ip = GetLocalIPAddress();
-            port = FreeTcpPort();
-
+            if (UseRandomPort)
+                port = FreeTcpPort();
+            else
+                port = FreeTcpPort(port);
             httpsv = new HttpServer(port);
             // Set the document root path.
             httpsv.RootPath = Application.dataPath + resourcesPath;
@@ -301,8 +304,8 @@ namespace umi3d.edk
                 {
                     jsonString = inputStream.ReadToEnd();
                     var request = DtoUtility.Deserialize(jsonString);
-                    if(request != null)
-                        UnityMainThreadDispatcher.Instance().Enqueue(()=>usr.onMessage(request));
+                    if (request != null)
+                        UnityMainThreadDispatcher.Instance().Enqueue(() => usr.onMessage(request));
                 }
             }
         }
@@ -434,7 +437,7 @@ namespace umi3d.edk
             var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
             foreach (var ip in host.AddressList)
             {
-                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork && !ip.ToString().EndsWith(".1"))
                 {
                     return ip.ToString();
                 }
@@ -448,16 +451,24 @@ namespace umi3d.edk
                 httpsv.Stop();
         }
 
-        static int FreeTcpPort()
+        static int FreeTcpPort(int port = 0)
         {
-            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
-            l.Start();
-            int port = ((IPEndPoint)l.LocalEndpoint).Port;
-            l.Stop();
-            return port;
+            try
+            {
+                TcpListener l = new TcpListener(IPAddress.Loopback, port);
+                l.Start();
+                port = ((IPEndPoint)l.LocalEndpoint).Port;
+                l.Stop();
+                return port;
+            }
+            catch (Exception)
+            {
+                TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+                l.Start();
+                port = ((IPEndPoint)l.LocalEndpoint).Port;
+                l.Stop();
+                return port;
+            }
         }
-
-
-
     }
 }

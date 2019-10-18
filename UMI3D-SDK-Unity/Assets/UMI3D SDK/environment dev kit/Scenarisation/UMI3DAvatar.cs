@@ -30,6 +30,11 @@ namespace umi3d.edk
         public Dictionary<BoneType, GameObject> listOfPrefabs;
 
         /// <summary>
+        /// Contain the BoneTypes not to use for self-representation.
+        /// </summary>
+        public List<BoneType> BonesToFilter;
+
+        /// <summary>
         /// The user represented by the avatar.
         /// </summary>
         public UMI3DUser user;
@@ -58,7 +63,8 @@ namespace umi3d.edk
 
         private void Start()
         {
-            Anchor.AddComponent<EmptyObject3D>();
+            CVEAvatar cveavt = Anchor.AddComponent<CVEAvatar>();
+            cveavt.UserId = user.UserId;
         }
 
         /// <summary>
@@ -164,6 +170,54 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Return a list containing Id and BoneType pairs for each visible avatar parts.
+        /// </summary>
+        public BonePairDictionary setUserMapping()
+        {
+            BonePairDictionary BoneDictionary = new BonePairDictionary();
+
+            List<UMI3DBoneType> Children = new List<UMI3DBoneType>();
+            Anchor.transform.GetComponentsInChildren<UMI3DBoneType>(Children);
+
+            foreach (UMI3DBoneType child in Children)
+            {
+                if (child.transform.childCount == 1)
+                {
+                    if (child.GetComponent<UMI3DBoneType>() != null && child.GetComponent<UMI3DBoneType>().BoneType != BoneType.None && !BonesToFilter.Contains(child.GetComponent<UMI3DBoneType>().BoneType) && (child.GetComponentInChildren<CVEModel>() != null || child.GetComponentInChildren<CVEPrimitive>() != null))
+                    {
+                        BoneObjectPair pair = new BoneObjectPair();
+                        pair.boneType = child.GetComponent<UMI3DBoneType>().BoneType;
+                        if (child.GetComponentInChildren<CVEModel>() != null)
+                            pair.objectId = child.GetComponentInChildren<CVEModel>().Id;
+                        else
+                            pair.objectId = child.GetComponentInChildren<CVEPrimitive>().Id;
+                        BoneDictionary.TryAdd(pair);
+                    }
+                }
+                else
+                {
+                    if (child.transform.childCount != 0)
+                    {
+                        for (int i = 0; i < child.transform.childCount; i++)
+                        {
+                            if (child.GetComponent<UMI3DBoneType>() != null && child.GetComponent<UMI3DBoneType>().BoneType != BoneType.None && !BonesToFilter.Contains(child.GetComponent<UMI3DBoneType>().BoneType) && (child.transform.GetChild(i).GetComponentInChildren<CVEModel>() != null || child.transform.GetChild(i).GetComponentInChildren<CVEPrimitive>() != null))
+                            {
+                                BoneObjectPair pair = new BoneObjectPair();
+                                pair.boneType = child.GetComponent<UMI3DBoneType>().BoneType;
+                                if (child.transform.GetChild(i).GetComponentInChildren<CVEModel>() != null)
+                                    pair.objectId = child.transform.GetChild(i).GetComponentInChildren<CVEModel>().Id;
+                                else
+                                    pair.objectId = child.transform.GetChild(i).GetComponentInChildren<CVEPrimitive>().Id;
+                                BoneDictionary.Add(pair);
+                            }
+                        }
+                    }
+                }
+            }
+            return BoneDictionary;
+        }
+
+        /// <summary>
         /// Update the first n bones in the children hierarchy with a list of BoneDto.
         /// </summary>
         private void updateBones(List<BoneDto> bonesList, int n)
@@ -172,7 +226,7 @@ namespace umi3d.edk
             {
                 if (!checkExistingBone(Anchor.transform.GetChild(i), bonesList[i]))
                 {
-                    if (Anchor.transform.GetChild(i).tag == bonesList[i].type.ToString())
+                    if (Anchor.transform.GetChild(i).GetComponent<UMI3DBoneType>().BoneType == bonesList[i].type)
                     {
                         updateBone(Anchor.transform.GetChild(i).gameObject, bonesList[i]);
                     }
@@ -181,8 +235,24 @@ namespace umi3d.edk
                         GameObject NewBone = instanciateBone(bonesList[i]);
                         DestroyImmediate(Anchor.transform.GetChild(i).gameObject);
                         NewBone.transform.SetSiblingIndex(i);
-                    }
+                        filterBones(NewBone);
+                    }                    
                 }
+            }
+        }
+
+        /// <summary>
+        /// Define if an avatar part is visible or not for self representation.
+        /// </summary>
+        private void filterBones(GameObject bone)
+        {
+            if (BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && bone.GetComponent<AvatarFilter>() == null)
+            {
+                bone.AddComponent<AvatarFilter>();
+            } 
+            else if (!BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && bone.GetComponent<AvatarFilter>() != null)
+            {
+                Destroy(bone.GetComponent<AvatarFilter>());
             }
         }
 
@@ -215,7 +285,7 @@ namespace umi3d.edk
         /// </summary>
         private bool checkExistingBone(Transform existingBone, BoneDto savedBone)
         {
-            return existingBone.tag == savedBone.type.ToString()
+            return existingBone.GetComponent<UMI3DBoneType>().BoneType == savedBone.type
                 && existingBone.localPosition == savedBone.Position
                 && existingBone.localRotation == savedBone.Rotation
                 && existingBone.localScale == savedBone.Scale;
@@ -233,8 +303,18 @@ namespace umi3d.edk
                 if (listOfPrefabs.TryGetValue(bone.type, out Prefab))
                 {
                     Go = Instantiate(Prefab, Anchor.transform);
-                    updateBone(Go, bone);
+                    foreach (CVEAvatarPart item in Go.GetComponentsInChildren<CVEAvatarPart>())
+                    {
+                        item.UserId = user.UserId;
+                    }
                 }
+                else
+                {
+                    Go = new GameObject(bone.type.ToString());
+                    Go.transform.parent = Anchor.transform;
+                }
+                Go.AddComponent<UMI3DBoneType>().BoneType = bone.type;
+                updateBone(Go, bone);
             }
             return Go;
         }
@@ -244,10 +324,10 @@ namespace umi3d.edk
         /// </summary>
         private void updateBone(GameObject go, BoneDto bone)
         {
-            go.tag = bone.type.ToString();
             go.transform.localPosition = bone.Position;
             go.transform.localRotation = bone.Rotation;
             go.transform.localScale = bone.Scale;
+            filterBones(go);
         }
     }
 }

@@ -159,7 +159,6 @@ namespace umi3d.edk
             }
             catch (Exception e)
             {
-                Debug.Log(e);
                 return;
             }
         }

@@ -1,19 +1,4 @@
-﻿/*
-Copyright 2019 Gfi Informatique
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-using System;
+﻿using System;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -21,59 +6,89 @@ using System.Collections.Generic;
 
 namespace umi3d.cdk
 {
+
     /// <summary>
     /// Loads 3D Models from Dto.
     /// </summary>
-    public class ModelDtoLoader : AbstractObjectDTOLoader<ModelDto>
+    public class AvatarPartDtoLoader : AbstractObjectDTOLoader<AvatarPartDto>
     {
-
         /// <summary>
         /// Load 3DModel from Dto.
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="callback"></param>
-        public override void LoadDTO(ModelDto dto, Action<GameObject> callback)
+        public override void LoadDTO(AvatarPartDto dto, Action<GameObject> callback)
         {
             try
-            {                
-                Resource resource = new Resource();
-                resource.Set(dto.objResource);
+            {
+                AvatarMapping am = UMI3DBrowser.Scene.GetObject(dto.Pid).transform.parent.GetComponent<AvatarMapping>();
+                am.bonePairDictionary.TryGetTypeKey(dto.Id, out BoneType PartType);
 
-                GameObject obj = new GameObject();
-                HDResourceCache.Download(resource, obj.transform, ( GameObject model) => {
 
-                    var renderers = model.GetComponentsInChildren<MeshRenderer>(true);
-                    foreach (var r in renderers)
-                    {
-                        var matdef = r.gameObject.AddComponent<MeshMaterial>();
-                        matdef.dtoid = dto.Id;
-                        matdef.previousMaterial = r.sharedMaterial;
 
-                        MaterialDtoLoader materialDTOLoader = GetComponentInParent<MaterialDtoLoader>();
+                if (!UMI3DBrowser
+                    .
+                    Avatar
+                    .
+                    BonesToFilter
+                    .
+                    Contains
+                    (PartType)
+                    )
+                {
+                    Resource resource = new Resource();
+                    resource.Set(dto.objResource);
 
-                        materialDTOLoader.LoadDTO(dto.material, (MeshMaterial meshMaterial) =>
+                    GameObject obj = new GameObject();
+                    HDResourceCache.Download(resource, obj.transform, (GameObject model) => {
+
+                        var renderers = model.GetComponentsInChildren<MeshRenderer>(true);
+                        foreach (var r in renderers)
                         {
-                            matdef.Set(meshMaterial);
-                        });
+                            var matdef = r.gameObject.AddComponent<MeshMaterial>();
+                            matdef.dtoid = dto.Id;
+                            matdef.previousMaterial = r.sharedMaterial;
 
-                        matdef.LoadMaterial();
+                            MaterialDtoLoader materialDTOLoader = GetComponentInParent<MaterialDtoLoader>();
 
-                        if (dto.video != null)
-                        {
-                            var videoDef = r.gameObject.AddComponent<Video>();
-                            VideoDtoLoader videoDtoLoader = GetComponentInParent<VideoDtoLoader>();
-                            videoDtoLoader.LoadDTO(dto.video, (Video video) => {
-                                videoDef.Set(video);
-                                videoDef.LoadVideo(r.GetComponent<MeshRenderer>());
+                            materialDTOLoader.LoadDTO(dto.material, (MeshMaterial meshMaterial) =>
+                            {
+                                matdef.Set(meshMaterial);
                             });
+
+                            matdef.LoadMaterial();
+
+                            if (dto.video != null)
+                            {
+                                var videoDef = r.gameObject.AddComponent<Video>();
+                                VideoDtoLoader videoDtoLoader = GetComponentInParent<VideoDtoLoader>();
+                                videoDtoLoader.LoadDTO(dto.video, (Video video) => {
+                                    videoDef.Set(video);
+                                    videoDef.LoadVideo(r.GetComponent<MeshRenderer>());
+                                });
+                            }
                         }
-                    }
 
-                    obj.SetActive(true);
-                    callback(obj);
-                    InitObjectFromDto(obj, dto);
-                });
+                        obj.SetActive(true);
+                        callback(obj);
+                        UpdateFromDTO(obj, null, dto);
 
+                        foreach (UMI3DBoneType Item in UMI3DBrowser.Avatar.transform.GetComponentsInChildren<UMI3DBoneType>())
+                        {
+                            if (PartType != BoneType.None && Item.BoneType == PartType && Item.transform.Find(dto.Name) == null)
+                            {
+                                obj.name = dto.Name;
+                                obj.transform.parent = Item.transform;
+                                UpdateTransform(obj, null, dto);
+                                break;
+                            }
+                        }
+                    });
+                }
+                else
+                {
+                    callback(null);
+                }
 
             }
             catch (Exception e)
@@ -82,6 +97,15 @@ namespace umi3d.cdk
             }
         }
 
+        protected override void UpdateTransform(GameObject go, AvatarPartDto olddto, AvatarPartDto newdto)
+        {
+            if (AbstractScene.IsImmersiveDevice || newdto.TrackerDto == null)
+                go.transform.localPosition = newdto.Position;
+            Transform parent = go.transform.parent;
+            go.transform.localScale = new Vector3(newdto.Scale.X, newdto.Scale.Y, newdto.Scale.Z);
+            if (!newdto.Billboard)
+                go.transform.localRotation = newdto.Rotation;
+        }
 
         /// <summary>
         /// Compute the bouding box around a collection of MeshRenderers.
@@ -135,15 +159,8 @@ namespace umi3d.cdk
             return new Bounds((globalMin + globalMax) / 2f, globalMax - globalMin);
         }
 
-        /// <summary>
-        /// Update model from dto.
-        /// </summary>
-        /// <param name="go">Model to update</param>
-        /// <param name="olddto">Old dto</param>
-        /// <param name="newdto">New dto to update to</param>
-        public override void UpdateFromDTO(GameObject go, ModelDto olddto, ModelDto newdto)
+        public override void UpdateFromDTO(GameObject go, AvatarPartDto olddto, AvatarPartDto newdto)
         {
-            base.UpdateFromDTO(go, olddto, newdto);
             try
             {
                 IEnumerable<MeshMaterial> mats = go.GetComponentsInChildren<MeshMaterial>(true).Where(mat => mat.dtoid == newdto.Id);
@@ -385,7 +402,7 @@ namespace umi3d.cdk
                             break;
                     }
                 }
-                
+
 
             }
             catch (Exception e)
@@ -394,6 +411,5 @@ namespace umi3d.cdk
                 return;
             }
         }
-
     }
 }

@@ -36,7 +36,7 @@ namespace umi3d.cdk
         /// Objects stored in the scene dtos.
         /// </summary>
         private Dictionary<string, AbstractObject3DDto> dtos;
-
+        
         /// <summary>
         /// Avatars in the scene.
         /// </summary>
@@ -47,6 +47,7 @@ namespace umi3d.cdk
         protected LightDtoLoader lightDtoLoader;
         protected LineDtoLoader lineDtoLoader;
         protected ModelDtoLoader modelDtoLoader;
+        protected AvatarPartDtoLoader avatarPartDtoLoader;
         protected PrimitiveDtoLoader primitiveDtoLoader;
         protected MaterialDtoLoader materialDtoLoader;
         protected VideoDtoLoader videoDtoLoader;
@@ -56,6 +57,7 @@ namespace umi3d.cdk
         protected UITextDtoLoader uiTextDtoLoader;
         protected UIImageDtoLoader uiImageDtoLoader;
         protected CubeMapDtoLoader cubeMabDtoLoader;
+        protected AvatarMappingDtoLoader userMappingDtoLoader;
 
         /// <summary>
         /// Is this device a full 3D media displayer (sush as Computer or Virtual reality headset).
@@ -97,6 +99,7 @@ namespace umi3d.cdk
             lightDtoLoader = GetOrAddComponent<LightDtoLoader>();
             lineDtoLoader = GetOrAddComponent<LineDtoLoader>();
             modelDtoLoader = GetOrAddComponent<ModelDtoLoader>();
+            avatarPartDtoLoader = GetOrAddComponent<AvatarPartDtoLoader>();
             primitiveDtoLoader = GetOrAddComponent<PrimitiveDtoLoader>();
             materialDtoLoader = GetOrAddComponent<MaterialDtoLoader>();
             videoDtoLoader = GetOrAddComponent<VideoDtoLoader>();
@@ -106,6 +109,7 @@ namespace umi3d.cdk
             uiTextDtoLoader = GetOrAddComponent<UITextDtoLoader>();
             uiImageDtoLoader = GetOrAddComponent<UIImageDtoLoader>();
             cubeMabDtoLoader = GetOrAddComponent<CubeMapDtoLoader>();
+            userMappingDtoLoader = GetOrAddComponent<AvatarMappingDtoLoader>();
         }
 
         protected A GetOrAddComponent<A>() where A : Component
@@ -249,6 +253,11 @@ namespace umi3d.cdk
                 CacheDto(def.Id, def);
                 Load(def, (GameObject result) =>
                 {
+                    if (result == null)
+                    {
+                        finished = true;
+                        return;
+                    }
                     if (objects.ContainsKey(def.Id))
                     {
                         Destroy(result);
@@ -283,6 +292,9 @@ namespace umi3d.cdk
             if (def == null)
                 return;
 
+            else if (def is AvatarPartDto && (def as AvatarPartDto).UserId == UMI3DBrowser.UserId)
+                avatarPartDtoLoader.LoadDTO(def as AvatarPartDto, callback);          
+
             else if (def is ModelDto)
                 modelDtoLoader.LoadDTO(def as ModelDto, callback);
 
@@ -312,6 +324,9 @@ namespace umi3d.cdk
 
             else if (def is GenericObject3DDto)
                 genericObject3DDtoLoader.LoadDTO(def as GenericObject3DDto, callback);
+
+            else if (def is AvatarMappingDto)
+                userMappingDtoLoader.LoadDTO(def as AvatarMappingDto, callback);
 
             else
                 Debug.LogError("Unsupported ObjectType: " + def.GetType());
@@ -358,6 +373,9 @@ namespace umi3d.cdk
             if (olddto is GenericObject3DDto && newdto is GenericObject3DDto)
                 genericObject3DDtoLoader.UpdateFromDTO(go, olddto as GenericObject3DDto, newdto as GenericObject3DDto);
 
+            else if (olddto is AvatarPartDto && newdto is AvatarPartDto && (newdto as AvatarPartDto).UserId == UMI3DBrowser.UserId)
+                avatarPartDtoLoader.UpdateFromDTO(go, olddto as AvatarPartDto, newdto as AvatarPartDto);
+
             else if (olddto is ModelDto && newdto is ModelDto)
                 modelDtoLoader.UpdateFromDTO(go, olddto as ModelDto, newdto as ModelDto);
 
@@ -385,6 +403,8 @@ namespace umi3d.cdk
             else if (olddto is UIRectDto && newdto is UIRectDto)
                 uiRectDtoLoader.UpdateFromDTO(go, olddto as UIRectDto, newdto as UIRectDto);
 
+            else if (olddto is AvatarMappingDto && newdto is AvatarMappingDto)
+                userMappingDtoLoader.UpdateFromDTO(go, olddto as AvatarMappingDto, newdto as AvatarMappingDto);
 
             CacheDto(newdto.Id, newdto);
         }
@@ -408,8 +428,8 @@ namespace umi3d.cdk
         /// <param name="id">Object to remove id</param>
         public void RemoveObject(string id)
         {
-            GameObject obj = id == null ? null : GetObject(id);
-            RemoveObject(obj);
+                GameObject obj = id == null ? null : GetObject(id);
+                RemoveObject(obj);
         }
 
         /// <summary>

@@ -168,7 +168,7 @@ namespace umi3d.edk
         /// <summary>
         /// Syncronise AsyncProperties and set RendererSettings
         /// </summary>
-        void SyncProperties()
+        public void SyncProperties()
         {
             if (inited)
             {

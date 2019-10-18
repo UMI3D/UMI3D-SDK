@@ -27,7 +27,7 @@ namespace umi3d.edk
         /// </summary>
         public override bool Accept(UMI3DUser user)
         {
-            return user.UserId != this.GetComponent<UMI3DAvatar>().user.UserId;
+            return user.UserId != this.transform.parent.parent.GetComponent<UMI3DAvatar>().user.UserId;
         }
     }
 }

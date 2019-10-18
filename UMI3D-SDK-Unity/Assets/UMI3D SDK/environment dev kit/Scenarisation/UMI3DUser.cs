@@ -157,7 +157,7 @@ namespace umi3d.edk
             if (e is InteractionRequestDto)
                 Interact(e as InteractionRequestDto);
             else if (e is NavigationRequestDto && avatar != null)
-                avatar.UpdateAvatar(e as NavigationRequestDto);
+                avatar.UpdateAvatar(e as NavigationRequestDto);          
         }
 
         #endregion
