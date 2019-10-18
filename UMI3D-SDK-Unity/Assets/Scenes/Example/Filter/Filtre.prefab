@@ -158,17 +158,17 @@ MonoBehaviour:
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.32353, Culture=neutral,
       PublicKeyToken=null
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.32353, Culture=neutral,
       PublicKeyToken=null
   onHover:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30772,
+    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.32353,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &3891282609090428873
 GameObject:
@@ -784,17 +784,17 @@ MonoBehaviour:
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.32353, Culture=neutral,
       PublicKeyToken=null
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.30772, Culture=neutral,
+    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.32353, Culture=neutral,
       PublicKeyToken=null
   onHover:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.30772,
+    m_TypeName: umi3d.edk.Hover+HoveredListener, Assembly-CSharp, Version=1.0.2.32353,
       Culture=neutral, PublicKeyToken=null
 --- !u!1 &7314504278550308122
 GameObject:

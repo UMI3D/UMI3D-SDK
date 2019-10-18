@@ -80,7 +80,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
---- !u!114 &4144379668277530248
+--- !u!114 &2897516029569886832
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -89,7 +89,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 5400695900294408341}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea3a3089b6313dd4b9eeb6ea9cb0da17, type: 3}
+  m_Script: {fileID: 11500000, guid: fc16920249ae38b4db203adc749c4ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
@@ -109,7 +109,8 @@ MonoBehaviour:
   overrideModelMaterial: 0
   Renderers: []
   material: {fileID: 0}
---- !u!114 &2583715162316067159
+  UserId: 
+--- !u!114 &5059796632597654689
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -118,7 +119,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9200094709607887265}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea3a3089b6313dd4b9eeb6ea9cb0da17, type: 3}
+  m_Script: {fileID: 11500000, guid: fc16920249ae38b4db203adc749c4ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
@@ -138,6 +139,7 @@ MonoBehaviour:
   overrideModelMaterial: 0
   Renderers: []
   material: {fileID: 0}
+  UserId: 
 --- !u!1001 &5400695900294442551
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -145,6 +147,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8028334020789818090}
     m_Modifications:
+    - target: {fileID: 100002, guid: 1f13d8161b2d98f4a9fdd915796cfa48, type: 3}
+      propertyPath: m_Name
+      value: torso
+      objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: 1f13d8161b2d98f4a9fdd915796cfa48, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0
@@ -200,10 +206,6 @@ PrefabInstance:
     - target: {fileID: 400002, guid: 1f13d8161b2d98f4a9fdd915796cfa48, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.24
-      objectReference: {fileID: 0}
-    - target: {fileID: 100002, guid: 1f13d8161b2d98f4a9fdd915796cfa48, type: 3}
-      propertyPath: m_Name
-      value: torso
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f13d8161b2d98f4a9fdd915796cfa48, type: 3}

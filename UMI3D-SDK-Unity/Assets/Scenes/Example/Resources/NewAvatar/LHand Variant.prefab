@@ -47,7 +47,7 @@ MonoBehaviour:
   preview: {fileID: 0}
   billboard: 0
   immersiveOnly: 0
---- !u!114 &6919490417227704353
+--- !u!114 &6200810599470627486
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6582214488387373601}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea3a3089b6313dd4b9eeb6ea9cb0da17, type: 3}
+  m_Script: {fileID: 11500000, guid: fc16920249ae38b4db203adc749c4ccc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
@@ -76,6 +76,7 @@ MonoBehaviour:
   overrideModelMaterial: 0
   Renderers: []
   material: {fileID: 0}
+  UserId: 
 --- !u!1001 &6582214488387472515
 PrefabInstance:
   m_ObjectHideFlags: 0
