@@ -37,7 +37,7 @@ namespace umi3d.example
             //the property handler of a genericObject is call when at least one property has been changed and the object need to send this changed.
             //the second parameter is the default value of the property for all the users.
             //the last one state if the property has the same value for all the user. 
-            visible = new UMI3DAsyncProperty<bool>(GetComponent<GenericObject3D>().PropertiesHandler, Invert, false);
+            visible = new UMI3DAsyncProperty<bool>(GetComponent<GenericObject3D>().PropertiesHandler, Invert, true);
             //the onHoverEnter/Exit event is sent when a user start/end hovering the Hover target.
             Hover.onHoverEnter.AddListener(onHoverEnter);
             Hover.onHoverExit.AddListener(onHoverExit);

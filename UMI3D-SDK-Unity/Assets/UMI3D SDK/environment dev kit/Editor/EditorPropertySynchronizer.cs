@@ -19,7 +19,8 @@ using UnityEditor;
 using UnityEngine;
 using umi3d.edk;
 
-namespace umi3d.edk.editor {
+namespace umi3d.edk.editor
+{
 
     [InitializeOnLoad]
     public class EditorPropertySynchronizer
@@ -34,7 +35,7 @@ namespace umi3d.edk.editor {
 
         static void CheckSynchronize()
         {
-            if(umi3D == null)
+            if (umi3D == null)
             {
                 umi3D = GameObject.FindObjectOfType<UMI3D>();
             }
@@ -42,10 +43,9 @@ namespace umi3d.edk.editor {
             {
                 umi3DScene = GameObject.FindObjectOfType<UMI3DScene>();
             }
-            umi3DScene.SyncProperties();
+            if (umi3DScene != null)
+                umi3DScene.SyncProperties();
         }
-
-
     }
 }
 #endif
