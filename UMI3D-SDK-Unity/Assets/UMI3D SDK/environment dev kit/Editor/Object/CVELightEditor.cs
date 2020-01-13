@@ -34,6 +34,7 @@ namespace umi3d.edk.editor
         SerializedProperty range;
         SerializedProperty spotAngle;
         SerializedProperty shadowsType;
+        SerializedProperty shadowsIntensity;
         SerializedProperty shadowsBiais;
         SerializedProperty shadowsNormalBiais;
         SerializedProperty shadowsNearPlane;
@@ -111,6 +112,7 @@ namespace umi3d.edk.editor
             spotAngle = serializedObject.FindProperty("spotAngle");
             shadowsType = serializedObject.FindProperty("shadowsType");
             shadowsBiais = serializedObject.FindProperty("shadowsBiais");
+            shadowsIntensity = serializedObject.FindProperty("shadowsIntensity");
             shadowsNormalBiais = serializedObject.FindProperty("shadowsNormalBiais");
             shadowsNearPlane = serializedObject.FindProperty("shadowsNearPlane");
             preview = serializedObject.FindProperty("preview");
@@ -146,6 +148,7 @@ namespace umi3d.edk.editor
             if (shadowsType.enumValueIndex != (int)ShadowType.None)
             {
                 EditorGUI.indentLevel++;
+                EditorGUILayout.Slider(shadowsIntensity, 0, 1f);
                 EditorGUILayout.Slider(shadowsBiais, 0, 2f);
                 EditorGUILayout.Slider(shadowsNormalBiais, 0, 3f);
                 EditorGUILayout.Slider(shadowsNearPlane, 0, 10f);

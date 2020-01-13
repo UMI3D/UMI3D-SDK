@@ -14,10 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using umi3d.common;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-
 
 namespace umi3d.edk
 {
@@ -45,7 +41,15 @@ namespace umi3d.edk
             var dto = CreateDto();
             dto.Id = Id;
             dto.Name = currentInteractionName;
-            dto.Icon = Icon.ToDto();
+            dto.ToolId = currentTool == null ? null : currentTool.Id;
+            dto.ToolboxId = 
+                (currentTool != null)
+                    && (currentTool is CVETool)
+                    && (currentTool as CVETool).currentToolbox == null 
+                ? (currentTool as CVETool).currentToolbox.Id
+                : null;
+            dto.Icon2D = Icon2D.ToDto();
+            dto.Icon3D = Icon3D.ToDto();
             return dto;
         }
 

@@ -13,14 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
-using Unity.Collections;
 using UnityEngine;
-using UnityEngine.Jobs;
 
 namespace umi3d.edk
 {
@@ -57,6 +51,7 @@ namespace umi3d.edk
             dto.Scale = objectScale.GetValue(user);
             dto.Rotation = objectRotation.GetValue(user);
             dto.TrackerDto = ARTracker?.ToDto(user);
+            dto.Interactable = (isInteractable)? GetInteractableDto(user) : null;
             return dto;
         }
 

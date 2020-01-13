@@ -14,19 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using umi3d.common;
 using UnityEngine.Events;
 
 
 namespace umi3d.edk
 {
     /// <summary>
-    /// Event raising a CVEUser instance.
+    /// Event raising an UMI3DUser instance.
     /// </summary>
     [Serializable]
-    public class UMI3DUserEvent : UnityEvent<UMI3DUser>
-    {
-    }
+    public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
+
+    /// <summary>
+    /// Event rising an UMI3DUser and an avatar bone.
+    /// </summary>
+    [Serializable]
+    public class UMI3DUserBoneEvent : UnityEvent<UMI3DUser, BoneDto> { }
 }

@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/Project/Scenes/Connection.unity
     guid: 9c3928e5afa2918438f1334531652a9b
   - enabled: 1
+    path: Assets/Project/Scenes/Environments.unity
+    guid: 864c0c323fa447044b095e1ce719ade9
+  - enabled: 1
     path: Assets/Project/Scenes/Main.unity
     guid: 3913a73baccbe8e4e8225bdc8c31fdff
   m_configObjects: {}

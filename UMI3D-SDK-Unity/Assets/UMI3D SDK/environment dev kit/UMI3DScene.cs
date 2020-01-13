@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,35 +23,7 @@ namespace umi3d.edk
 {
     public class UMI3DScene : MonoBehaviour
     {
-        /// <summary>
-        /// Number of objects stored.
-        /// </summary>
-        private int OBJ_SEQ = 0;
 
-        /// <summary>
-        /// Number of interactions stored.
-        /// </summary>
-        private int INT_SEQ = 0;
-
-        /// <summary>
-        /// Contains the objects stored in the scene.
-        /// </summary>
-        Dictionary<string, GenericObject3D> objectsDictionary = new Dictionary<string, GenericObject3D>();
-
-        /// <summary>
-        /// Access to the objects stored in the scene.
-        /// </summary>
-        public GenericObject3D[] Objects { get{ return objectsDictionary.Values.ToArray(); } }
-
-        /// <summary>
-        /// Contains the interactions stored in the scene.
-        /// </summary>
-        Dictionary<string, GenericInteraction> interactionsDictionary = new Dictionary<string, GenericInteraction>();
-
-        /// <summary>
-        /// Access to the interactions stored in the scene.
-        /// </summary>
-        public GenericInteraction[] Interactions { get { return interactionsDictionary.Values.ToArray(); } }
 
         /// <summary>
         /// Scene's name.
@@ -68,7 +39,158 @@ namespace umi3d.edk
         /// Scene's navigation default method.
         /// </summary>
         public NavigationType _navigation = NavigationType.Walk;
+        
+        #region Dictionaries
 
+        /// <summary>
+        /// Contains the objects stored in the scene.
+        /// </summary>
+        DictionaryGenerator<GenericObject3D> objectsDictionary = new DictionaryGenerator<GenericObject3D>("object3d_");
+        /// <summary>
+        /// Contains the interactions stored in the scene.
+        /// </summary>
+        DictionaryGenerator<GenericInteraction> interactionsDictionary = new DictionaryGenerator<GenericInteraction>("interaction_");
+        /// <summary>
+        /// Contains the tools stored in the scene.
+        /// </summary>
+        DictionaryGenerator<CVETool> toolsDictionary = new DictionaryGenerator<CVETool>("tool_");
+        /// <summary>
+        /// Contains the interactables stored in the scene.
+        /// </summary>
+        DictionaryGenerator<CVEInteractable> interactablesDictionary = new DictionaryGenerator<CVEInteractable>("interactable_");
+        /// <summary>
+        /// Contains the toolboxes stored in the scene.
+        /// </summary>
+        DictionaryGenerator<CVEToolbox> toolboxesDictionary = new DictionaryGenerator<CVEToolbox>("toolbox_");
+
+        /// <summary>
+        /// Access to the objects stored in the scene.
+        /// </summary>
+        public GenericObject3D[] Objects { get { return objectsDictionary.Values.ToArray(); } }
+        /// <summary>
+        /// Access to the interactions stored in the scene.
+        /// </summary>
+        public GenericInteraction[] Interactions { get { return interactionsDictionary.Values.ToArray(); } }
+        /// <summary>
+        /// Access to the tools stored in the scene.
+        /// </summary>
+        public CVETool[] Tools { get { return toolsDictionary.Values.ToArray(); } }
+        /// <summary>
+        /// Access to the toolboxes stored in the scene.
+        /// </summary>
+        public CVEToolbox[] Toolboxes { get { return toolboxesDictionary.Values.ToArray(); } }
+
+        /// <summary>
+        /// Get scene object by id.
+        /// </summary>
+        /// <param name="id">Object to get id</param>
+        public GenericObject3D GetObject(string id) { return objectsDictionary[id]; }
+        /// <summary>
+        /// Get scene interaction by id.
+        /// </summary>
+        /// <param name="id">Object to get id</param>
+        public GenericInteraction GetInteraction(string id) { return interactionsDictionary[id]; }
+        /// <summary>
+        /// Get scene tool by id.
+        /// </summary>
+        /// <param name="id">Object to get id</param>
+        public CVETool GetTool(string id) { return toolsDictionary[id]; }
+        /// <summary>
+        /// Get scene toolbox by id.
+        /// </summary>
+        /// <param name="id">Object to get id</param>
+        public CVEToolbox GetToolbox(string id) { return toolboxesDictionary[id]; }
+
+        /// <summary>
+        /// Register an object to the scene, and return it's id. 
+        /// Supported Types: GenericObject3D, GenericInteraction, Tool, Toolbox
+        /// </summary>
+        /// <param name="obj">Object to register</param>
+        /// <returns>Registered object's id.</returns>
+        public string Register(object obj)
+        {
+            if (obj is GenericObject3D)
+                return objectsDictionary.Register(obj as GenericObject3D);
+            else if (obj is GenericInteraction)
+                return interactionsDictionary.Register(obj as GenericInteraction);
+            else if (obj is CVETool)
+                return toolsDictionary.Register(obj as CVETool);
+            else if (obj is CVEInteractable)
+                return interactablesDictionary.Register(obj as CVEInteractable);
+            else if (obj is CVEToolbox)
+                return toolboxesDictionary.Register(obj as CVEToolbox);
+            else
+                throw new System.ArgumentException("Unsupported type [" + obj.GetType() + "]", "obj");
+        }
+        
+        /// <summary>
+        /// Remove an object from the scene. 
+        /// Supported Types: GenericObject3D, GenericInteraction, Tool, Toolbox
+        /// </summary>
+        /// <param name="obj">Object to remove</param>
+        public void Remove(object obj)
+        {
+            if (obj is GenericObject3D)
+                objectsDictionary.Remove((obj as GenericObject3D).Id);
+            else if (obj is GenericInteraction)
+                interactionsDictionary.Remove((obj as GenericInteraction).Id);
+            else if (obj is CVETool)
+                toolsDictionary.Remove((obj as CVETool).Id);
+            else if (obj is CVEInteractable)
+                interactablesDictionary.Remove((obj as CVEInteractable).Id);
+            else if (obj is CVEToolbox)
+                toolboxesDictionary.Remove((obj as CVEToolbox).Id);
+            else
+                throw new System.ArgumentException("Unsupported type [" + obj.GetType() + "]", "obj");
+        }
+
+
+        public class DictionaryGenerator<A>
+        {
+            private int seq = 0;
+
+            private string prefix;
+
+            /// <summary>
+            /// Contains the  stored objects.
+            /// </summary>
+            Dictionary<string, A> objects = new Dictionary<string, A>();
+
+            public Dictionary<string, A>.ValueCollection Values { get { return objects.Values; } }
+
+            public DictionaryGenerator(string prefix)
+            {
+                this.prefix = prefix;
+            }
+
+            public A this[string key]
+            {
+                get
+                {
+                    if (key == null || key.Length == 0)
+                        return default;
+                    else if (objects.ContainsKey(key))
+                        return objects[key];
+                    else return default;
+                }
+            }
+
+            public string Register(A obj)
+            {
+                var key = prefix + seq;
+                seq++;
+                objects.Add(key, obj);
+                return key;
+            }
+
+            public void Remove(string key)
+            {
+                objects.Remove(key);
+            }
+
+        }
+        
+        #endregion
 
         #region AsyncProperties
         /// <summary>
@@ -204,7 +326,6 @@ namespace umi3d.edk
         /// </summary>
         private void BroadcastUpdates()
         {
-            Debug.Log("send");
             foreach (UMI3DUser user in UMI3D.UserManager.GetUsers())
                 PropertiesHandler.BroadcastUpdates(user);
         }
@@ -232,6 +353,15 @@ namespace umi3d.edk
         };
 
         /// <summary>
+        /// Scene's preview icon 3D.
+        /// </summary>
+        [SerializeField]
+        protected CVEResource icon3D = new CVEResource()
+        {
+            IsLocalFile = true
+        };
+
+        /// <summary>
         /// Scene's preview icon.
         /// </summary>
         [SerializeField]
@@ -252,7 +382,14 @@ namespace umi3d.edk
             res.NavigationType = _navigation;
             res.Connection = UMI3D.Server.ToDto();
             res.Icon = icon.ToDto();
+            res.Icon3D = icon3D.ToDto();
             res.Skybox = skybox.ToDto();
+
+            res.VersionMajor = UMI3DVersion.major;
+            res.VersionMinor = UMI3DVersion.minor;
+            res.VersionStatus = UMI3DVersion.status;
+            res.VersionDate = UMI3DVersion.date;
+
             return res;
         }
 
@@ -272,34 +409,6 @@ namespace umi3d.edk
             return res;
         }
 
-
-        /// <summary>
-        /// Get scene object by id.
-        /// </summary>
-        /// <param name="id">Object to get id</param>
-        public GenericObject3D GetObject(string id)
-        {
-            if (id == null || id.Length == 0)
-                return null;
-            else if (objectsDictionary.ContainsKey(id))
-                return objectsDictionary[id];
-            else return null;
-        }
-
-        
-
-        /// <summary>
-        /// Get scene interaction by id.
-        /// </summary>
-        /// <param name="id">Object to get id</param>
-        public GenericInteraction GetInteraction(string id)
-        {
-            if (id == null || id.Length == 0)
-                return null;
-            else if (interactionsDictionary.ContainsKey(id))
-                return interactionsDictionary[id];
-            else return null;
-        }
 
         /// <summary>
         /// Get a list of children of a given object for a given user.
@@ -331,51 +440,8 @@ namespace umi3d.edk
             return res;
         }
 
-        /// <summary>
-        /// Register an object to the scene, and return it's id.
-        /// </summary>
-        /// <param name="obj">Object to register</param>
-        /// <returns>Registered object's id.</returns>
-        public string Register(GenericObject3D obj)
-        {
-            var key = "object3d_" + OBJ_SEQ;
-            OBJ_SEQ++;
-            objectsDictionary.Add(key, obj);
-            return key;
-        }
 
-        /// <summary>
-        /// Register an interaction to the scene, and return it's id.
-        /// </summary>
-        /// <param name="interaction">Interaction to register</param>
-        /// <returns>Registered object's id.</returns>
-        public string Register(GenericInteraction interaction)
-        {
-            var key = "interaction_" + INT_SEQ;
-            INT_SEQ++;
-            interactionsDictionary.Add(key, interaction);
-            return key;
-        }
 
-        /// <summary>
-        /// Register an object to the scene, and return it's id.
-        /// </summary>
-        /// <param name="obj">Object to register</param>
-        /// <returns>Registered object's id.</returns>
-        public void Remove(GenericObject3D obj)
-        {
-            objectsDictionary.Remove(obj.Id);
-        }
-
-        /// <summary>
-        /// Register an interaction to the scene, and return it's id.
-        /// </summary>
-        /// <param name="interaction">Interaction to register</param>
-        /// <returns>Registered object's id.</returns>
-        public void Remove(GenericInteraction interaction)
-        {
-            interactionsDictionary.Remove(interaction.Id);
-        }
 
 
 

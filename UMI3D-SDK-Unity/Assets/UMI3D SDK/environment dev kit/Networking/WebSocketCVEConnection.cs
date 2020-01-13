@@ -15,13 +15,8 @@ limitations under the License.
 */
 using MainThreadDispatcher;
 using System;
-using System.Collections;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using umi3d.common;
-using Unity.Collections;
-using Unity.Jobs;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -98,7 +93,6 @@ namespace umi3d.edk {
                     UnityMainThreadDispatcher.Instance().Enqueue(UMI3D.UserManager.OnRealtimeConnectionClose(_id));
                     return;
                 }
-                
             }
         }
 

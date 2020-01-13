@@ -23,21 +23,48 @@ using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(umi3d.edk.GenericObject3D))]
+    [CustomEditor(typeof(umi3d.edk.GenericObject3D),true)]
     [CanEditMultipleObjects]
     public class GenericObject3DEditor : Editor
     {
         SerializedProperty billboard;
         SerializedProperty ImmerseiveOnly;
+        SerializedProperty interactable;
+        SerializedProperty onHoverEnter;
+        SerializedProperty onHoverExit;
+        SerializedProperty onHovered;
+        SerializedProperty trackHoverPosition;
 
         protected virtual void OnEnable()
         {
             billboard = serializedObject.FindProperty("billboard");
             ImmerseiveOnly = serializedObject.FindProperty("immersiveOnly");
+
+            interactable = serializedObject.FindProperty("interactable");
+
+            onHoverEnter = serializedObject.FindProperty("onHoverEnter");
+            onHovered = serializedObject.FindProperty("onHovered");
+            onHoverExit = serializedObject.FindProperty("onHoverExit");
+            trackHoverPosition = serializedObject.FindProperty("trackHoverPosition");
         }
 
         public override void OnInspectorGUI()
         {
+            EditorGUILayout.PropertyField(interactable);
+
+            if (interactable.objectReferenceValue != null)
+            {
+                EditorGUILayout.PropertyField(trackHoverPosition);
+
+                EditorGUILayout.PropertyField(onHoverEnter);
+                EditorGUILayout.PropertyField(onHoverExit);
+                if (trackHoverPosition.boolValue)
+                    EditorGUILayout.PropertyField(onHovered);
+
+                EditorGUILayout.Space();
+            }
+
+
             EditorGUILayout.PropertyField(billboard);
             EditorGUILayout.PropertyField(ImmerseiveOnly);
             serializedObject.ApplyModifiedProperties();

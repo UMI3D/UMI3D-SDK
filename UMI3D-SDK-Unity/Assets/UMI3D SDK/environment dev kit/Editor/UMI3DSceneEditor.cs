@@ -38,6 +38,7 @@ namespace umi3d.edk.editor
         SerializedProperty GroundColor;
         SerializedProperty AmbientIntensity;
         SerializedProperty Icon;
+        SerializedProperty Icon3D;
         SerializedProperty Skybox;
 
 
@@ -54,6 +55,7 @@ namespace umi3d.edk.editor
             GroundColor = serializedObject.FindProperty("GroundColor");
             AmbientIntensity = serializedObject.FindProperty("AmbientIntensity");
             Icon = serializedObject.FindProperty("icon");
+            Icon3D = serializedObject.FindProperty("icon3D");
             Skybox = serializedObject.FindProperty("skybox");
         }
 
@@ -84,6 +86,7 @@ namespace umi3d.edk.editor
             }
 
             EditorGUILayout.PropertyField(Icon);
+            EditorGUILayout.PropertyField(Icon3D);
             EditorGUILayout.PropertyField(Skybox);
 
             if (EditorGUI.EndChangeCheck())
@@ -92,6 +95,7 @@ namespace umi3d.edk.editor
                 serializedObject.ApplyModifiedProperties();
             }
         }
+
     }
 }
 #endif

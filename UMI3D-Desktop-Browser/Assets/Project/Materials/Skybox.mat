@@ -59,4 +59,4 @@ Material:
     - _MirrorOnBack: 0
     - _Rotation: 0
     m_Colors:
-    - _Tint: {r: 0.52, g: 0.52, b: 0.52, a: 0.5}
+    - _Tint: {r: 0.52, g: 0.52, b: 0.52, a: 1}

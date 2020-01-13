@@ -14,11 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using umi3d.common;
-using UnityEngine.Events;
 
 namespace umi3d.edk
 {
@@ -27,7 +25,15 @@ namespace umi3d.edk
         /// <summary>
         /// Contain the GameObjects associated with the BoneTypes.
         /// </summary>
+        /// <see cref="instanciatedBones"/>
         public Dictionary<BoneType, GameObject> listOfPrefabs;
+
+        /// <summary>
+        /// Collection of instantiated bones for each bonetype (if any).
+        /// </summary>
+        /// <see cref="listOfPrefabs"/>
+        public Dictionary<BoneType, GameObject> instanciatedBones = new Dictionary<BoneType, GameObject>();
+
 
         /// <summary>
         /// Contain the BoneTypes not to use for self-representation.
@@ -116,7 +122,6 @@ namespace umi3d.edk
             transform.localRotation = navigation.TrackingZoneRotation;
             transform.SetParent(parent);
 
-            var user_parent = viewpoint.transform.parent;
             viewpoint.transform.SetParent(transform);
 
             AvatarDto avatar = navigation.Avatar;
@@ -127,7 +132,6 @@ namespace umi3d.edk
 
             viewpoint.transform.position = position;
             viewpoint.transform.localRotation = navigation.CameraRotation;
-            //viewpoint.transform.SetParent(user_parent);
 
             Anchor.transform.position = viewpoint.transform.position;
             Anchor.transform.rotation = viewpoint.transform.rotation;
@@ -233,6 +237,16 @@ namespace umi3d.edk
                     else
                     {
                         GameObject NewBone = instanciateBone(bonesList[i]);
+
+                        BoneType boneTypeToRemove;
+                        if (Enum.TryParse(Anchor.transform.GetChild(i).gameObject.tag, out boneTypeToRemove))
+                        {
+                            instanciatedBones.Remove(boneTypeToRemove);
+                        }
+                        else
+                        {
+                            throw new System.Exception("Internal Error : Unknown bone type !");
+                        }
                         DestroyImmediate(Anchor.transform.GetChild(i).gameObject);
                         NewBone.transform.SetSiblingIndex(i);
                         filterBones(NewBone);
@@ -246,11 +260,11 @@ namespace umi3d.edk
         /// </summary>
         private void filterBones(GameObject bone)
         {
-            if (BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && bone.GetComponent<AvatarFilter>() == null)
+            if (BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && (bone.GetComponent<AvatarFilter>() == null))
             {
                 bone.AddComponent<AvatarFilter>();
             } 
-            else if (!BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && bone.GetComponent<AvatarFilter>() != null)
+            else if (!BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && (bone.GetComponent<AvatarFilter>() != null))
             {
                 Destroy(bone.GetComponent<AvatarFilter>());
             }
@@ -276,6 +290,15 @@ namespace umi3d.edk
             Anchor.transform.GetComponentsInChildren<Transform>(Children);
             for (int i = index; i < Children.Count; i++)
             {
+                BoneType boneTypeToRemove;
+                if (Enum.TryParse(Children[i].gameObject.tag, out boneTypeToRemove))
+                {
+                    instanciatedBones.Remove(boneTypeToRemove);
+                }
+                else
+                {
+                    throw new System.Exception("Internal Error : Unknown bone type !");
+                }
                 Destroy(Children[i].gameObject);
             }
         }
@@ -313,7 +336,9 @@ namespace umi3d.edk
                     Go = new GameObject(bone.type.ToString());
                     Go.transform.parent = Anchor.transform;
                 }
-                Go.AddComponent<UMI3DBoneType>().BoneType = bone.type;
+                Go.AddComponent<UMI3DBoneType>().BoneType = bone.type; 
+                instanciatedBones.Remove(bone.type);
+                instanciatedBones.Add(bone.type, Go);
                 updateBone(Go, bone);
             }
             return Go;

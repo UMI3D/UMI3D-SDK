@@ -13,12 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 using UnityEngine;
-using UnityEngine.Events;
 
 
 namespace umi3d.edk
@@ -62,9 +59,29 @@ namespace umi3d.edk
         public List<RemoveObjectDto> ObjectsToRemove = new List<RemoveObjectDto>();
 
         /// <summary>
+        /// List of toolboxes to load on the next frame for the user.
+        /// </summary>
+        public List<ToolboxDto> ToolboxesToLoad = new List<ToolboxDto>();
+
+        /// <summary>
+        /// List of Tools to load on the next frame for the user.
+        /// </summary>
+        public List<ToolDto> ToolsToLoad = new List<ToolDto>();
+
+        /// <summary>
         /// List of interactions to load on the next frame for the user.
         /// </summary>
         public List<AbstractInteractionDto> InteractionsToLoad = new List<AbstractInteractionDto>();
+
+        /// <summary>
+        /// List of interactions to remove on the next frame for the user.
+        /// </summary>
+        public List<string> ToolboxesIdsToRemove = new List<string>();
+
+        /// <summary>
+        /// List of interactions to remove on the next frame for the user.
+        /// </summary>
+        public List<string> ToolsIdsToRemove = new List<string>();
 
         /// <summary>
         /// List of interactions to remove on the next frame for the user.
@@ -157,7 +174,41 @@ namespace umi3d.edk
             if (e is InteractionRequestDto)
                 Interact(e as InteractionRequestDto);
             else if (e is NavigationRequestDto && avatar != null)
-                avatar.UpdateAvatar(e as NavigationRequestDto);          
+                avatar.UpdateAvatar(e as NavigationRequestDto);
+            else if (e is HoveredDto)
+            {
+                HoveredDto hover = e as HoveredDto;
+                GenericObject3D obj = UMI3D.Scene.GetObject(hover.abstractObject3DId);
+
+                if ((obj != null) && obj.isInteractable)
+                {
+                    if (hover.State)
+                    {
+                        if (!obj.hoverState)
+                        {
+                            obj.onHoverEnter.Invoke(this);
+                            obj.hoverState = true;
+                        }
+
+                        if (obj.GetInteractableDto(this).trackHoverPosition)
+                        {
+                            if ((hover.Position != null) && (hover.Normal != null))
+                                obj.onHovered.Invoke(this, hover.Position, hover.Normal);
+                        }
+                    }
+                    else
+                    {
+                        if (obj.hoverState)
+                        {
+                            obj.onHoverExit.Invoke(this);
+                            obj.hoverState = false;
+                        }
+                    }
+                }
+
+
+            }
+            
         }
 
         #endregion
@@ -199,7 +250,7 @@ namespace umi3d.edk
         {
             if (request.Id == null)
                 return;
-            var interaction = UMI3D.Scene.GetInteraction(request.Id);
+            GenericInteraction interaction = UMI3D.Scene.GetInteraction(request.Id);
             if (interaction != null)
                 interaction.OnUserInteraction(this, (JSONObject)request.Arguments);
         }
@@ -272,17 +323,49 @@ namespace umi3d.edk
         /// <param name="res">The UpdateDto to be completed.</param>
         private void updateInteractionsAvailability(UpdateDto res)
         {
-            foreach (GenericInteraction interaction in UMI3D.Scene.Interactions)
-                interaction.UpdateAvailabilityForUser(this);
+            foreach (CVEToolbox toolbox in UMI3D.Scene.Toolboxes)
+            {
+                if (toolbox.UpdateAvailabilityForUser(this))
+                {
+                    foreach (CVETool tool in toolbox.tools)
+                    {
+                        if(tool.UpdateAvailabilityForUser(this))
+                        {
+                            foreach (GenericInteraction interaction in tool.Interactions)
+                            {
+                                interaction.UpdateAvailabilityForUser(this);
+                            }
+                        }
+                    }
+                }
+            }
 
-            res.AddInteractions.Entities.AddRange(InteractionsToLoad);
-            res.RemoveInteractions.Ids.AddRange(InteractionsIdsToRemove);
+            res.AddedToolboxes.AddRange(ToolboxesToLoad);
+            res.AddedTools.AddRange(ToolsToLoad);
+            res.AddedInteractions.AddRange(InteractionsToLoad);
+            res.RemovedInteractions.AddRange(ToolboxesIdsToRemove);
+            res.RemovedInteractions.AddRange(ToolsIdsToRemove);
+            res.RemovedInteractions.AddRange(InteractionsIdsToRemove);
 
+            ToolboxesToLoad.Clear();
+            ToolsToLoad.Clear();
             InteractionsToLoad.Clear();
+            ToolboxesIdsToRemove.Clear();
+            ToolsIdsToRemove.Clear();
             InteractionsIdsToRemove.Clear();
 
-            foreach (GenericInteraction interaction in UMI3D.Scene.Interactions)
-                interaction.UpdateAvailabilityLastFrame(this);
+            foreach (CVEToolbox toolbox in UMI3D.Scene.Toolboxes)
+            {
+                toolbox.UpdateAvailabilityLastFrame(this);
+                foreach (CVETool tool in toolbox.tools)
+                {
+                    tool.UpdateAvailabilityLastFrame(this);
+                    foreach (GenericInteraction interaction in tool.Interactions)
+                    {
+                        interaction.UpdateAvailabilityLastFrame(this);
+                    }
+                }
+            }
         }
 
         #endregion

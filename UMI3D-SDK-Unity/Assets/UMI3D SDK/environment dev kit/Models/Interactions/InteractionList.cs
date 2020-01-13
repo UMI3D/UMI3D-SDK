@@ -13,9 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.common;
 using UnityEngine;
 
 
@@ -24,13 +22,14 @@ namespace umi3d.edk
     /// <summary>
     /// List of interaction.
     /// </summary>
-    public class InteractionList : AbstractInteraction<InteractionListDto>
+    public class InteractionList : MonoBehaviour //AbstractInteraction<InteractionListDto>
     {
         /// <summary>
         /// Interaction list.
         /// </summary>
         public List<GenericInteraction> list = new List<GenericInteraction>();
 
+        /*
         /// <summary>
         /// Create an empty dto.
         /// </summary>
@@ -58,7 +57,7 @@ namespace umi3d.edk
                 if(i.AvailableAsChildFor(user))
                     dto.Interactions.Add(i.ConvertToDto(user));
             return dto;
-        }
+        }*/
 
     }
 }

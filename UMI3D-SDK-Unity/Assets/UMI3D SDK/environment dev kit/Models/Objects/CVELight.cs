@@ -14,11 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 namespace umi3d.edk
 {
@@ -33,6 +30,8 @@ namespace umi3d.edk
         [RangeAttribute(0, (float)Math.PI)]
         public float spotAngle = 0.2f;
         public ShadowType shadowsType = 0;
+        [RangeAttribute(0, 1f)]
+        public float shadowsIntensity = 0.8f;
         [RangeAttribute(0, 2f)]
         public float shadowsBiais = 0.495f;
         [RangeAttribute(0, 3f)]
@@ -47,6 +46,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> lightRange;
         public UMI3DAsyncProperty<float> lightSpotAngle;
         public UMI3DAsyncProperty<ShadowType> lightShadowType;
+        public UMI3DAsyncProperty<float> lightShadowIntensity;
         public UMI3DAsyncProperty<float> lightShadowBiais;
         public UMI3DAsyncProperty<float> lightShadowNormalBiais;
         public UMI3DAsyncProperty<float> lightShadowNearPlane;
@@ -79,6 +79,9 @@ namespace umi3d.edk
             lightShadowBiais = new UMI3DAsyncProperty<float>(PropertiesHandler, shadowsBiais);
             lightShadowBiais.OnValueChanged += (float value) => shadowsBiais = value;
 
+            lightShadowIntensity = new UMI3DAsyncProperty<float>(PropertiesHandler, shadowsIntensity);
+            lightShadowIntensity.OnValueChanged += (float value) => shadowsIntensity = value;
+
             lightShadowNormalBiais = new UMI3DAsyncProperty<float>(PropertiesHandler, shadowsNormalBiais);
             lightShadowNormalBiais.OnValueChanged += (float value) => shadowsNormalBiais = value;
 
@@ -99,6 +102,7 @@ namespace umi3d.edk
                 lightSpotAngle.SetValue(spotAngle);
                 lightShadowType.SetValue(shadowsType);
                 lightShadowBiais.SetValue(shadowsBiais);
+                lightShadowIntensity.SetValue(shadowsIntensity);
                 lightShadowNormalBiais.SetValue(shadowsNormalBiais);
                 lightShadowNearPlane.SetValue(shadowsNearPlane);
             }
@@ -140,6 +144,7 @@ namespace umi3d.edk
                 light.range = range;
                 light.spotAngle = 360f * 0.5f * spotAngle / (float)Math.PI;
                 light.shadowBias = shadowsBiais;
+                light.shadowStrength = shadowsIntensity;
                 light.shadowNormalBias = shadowsNormalBiais;
                 light.shadowNearPlane = shadowsNearPlane;
                 light.shadows = shadowsType.Convert();
@@ -157,6 +162,7 @@ namespace umi3d.edk
             dto.SpotAngle = lightSpotAngle.GetValue(user);
             dto.ShadowsType = lightShadowType.GetValue(user);
             dto.ShadowsBiais = lightShadowBiais.GetValue(user);
+            dto.ShadowsIntensity = lightShadowIntensity.GetValue(user);
             dto.ShadowsNormalBiais = lightShadowNormalBiais.GetValue(user);
             dto.ShadowsNearPlane = lightShadowNearPlane.GetValue(user);
             return dto;

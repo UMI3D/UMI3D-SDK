@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
@@ -26,6 +25,7 @@ namespace umi3d.edk
     /// </summary>
     public class Manipulation : AbstractInteraction<ManipulationDto>
     {
+        [System.Serializable]
         public class ManipulationListener : UnityEvent<UMI3DUser,Vector3,Quaternion> { }
         
         /// <summary>

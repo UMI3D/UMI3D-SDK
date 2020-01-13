@@ -35,9 +35,9 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
-/UMI3D-sdk/Assets/EXCLUDED
-/UMI3D-sdk/Public/EXCLUDED
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/AsImpL/Scripts.meta
-/UMI3D-sdk/Assets/UMI3D SDK/dependencies/AsImpL/Examples/Scripts.meta
-/UMI3D-sdk/Assets/UMI3D SDK/common/Dto/ressources buffers.meta
+/UMI3D-SDK/Assets/EXCLUDED
+/UMI3D-SDK/Public/EXCLUDED
+/UMI3D-SDK/Assets/UMI3D SDK/dependencies/AsImpL/Scripts.meta
+/UMI3D-SDK/Assets/UMI3D SDK/dependencies/AsImpL/Examples/Scripts.meta
+/UMI3D-SDK/Assets/UMI3D SDK/common/Dto/ressources buffers.meta
 /UMI3D-Desktop-Browser/start.xml

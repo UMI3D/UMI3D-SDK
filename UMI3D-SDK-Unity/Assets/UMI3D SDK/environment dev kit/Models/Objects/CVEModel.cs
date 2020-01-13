@@ -15,7 +15,6 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
-using System.IO;
 using umi3d.common;
 using UnityEngine;
 
@@ -38,6 +37,7 @@ namespace umi3d.edk
         public bool convex = false;
 
         public CVEResource objResource = new CVEResource();
+
         public bool overrideModelMaterial = false;
 
         [Serializable]

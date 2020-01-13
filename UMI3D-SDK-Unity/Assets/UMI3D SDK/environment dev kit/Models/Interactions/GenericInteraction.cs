@@ -35,9 +35,14 @@ namespace umi3d.edk
         [HideInInspector] public bool IsSubInteraction = false;
         
         /// <summary>
-        /// The interaction's icon. 
+        /// The interaction's 2D icon. 
         /// </summary>
-        public CVEResource Icon = new CVEResource();
+        public CVEResource Icon2D = new CVEResource();
+
+        /// <summary>
+        /// The interaction's 3D icon. 
+        /// </summary>
+        public CVEResource Icon3D = new CVEResource();
 
         /// <summary>
         /// The interaction's name. 
@@ -82,7 +87,20 @@ namespace umi3d.edk
         /// <summary>
         /// Indicates the availability state of a user for the last frame check of visibility.
         /// </summary>
-        public Dictionary<UMI3DUser, bool> AvailableLastFrame = new Dictionary<UMI3DUser, bool>();
+        protected Dictionary<UMI3DUser, bool> availableLastFrame = new Dictionary<UMI3DUser, bool>();
+
+        internal AbstractCVETool currentTool = null;
+        [SerializeField] internal AbstractCVETool tool = null;
+
+        public void SetTool(AbstractCVETool tool)
+        {
+            if (currentTool == tool)
+                return;
+            if (currentTool != null)
+                currentTool.RemoveInteraction(this);
+            if (tool != null)
+                tool.AddInteraction(this);
+        }
 
         #endregion
 
@@ -108,6 +126,7 @@ namespace umi3d.edk
             PropertiesHandler.DelegateBroadcastUpdate += BroadcastUpdates;
             PropertiesHandler.DelegatebroadcastUpdateForUser += BroadcastUpdates;
             inited = true;
+            SetTool(tool);
         }
 
         #endregion
@@ -126,12 +145,20 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Unity MonoBehaviour OnValidate method.
+        /// </summary>
+        protected virtual void OnValidate()
+        {
+            SetTool(tool);
+        }
+
+        /// <summary>
         /// automatically check if the object has been updated in the editor
         /// </summary>
         protected virtual void checkForUpdates()
         {
             if (currentInteractionName != InteractionName
-                || currentIcon != Icon.GetUrl()) PropertiesHandler.NotifyUpdate();
+                || currentIcon != Icon2D.GetUrl()) PropertiesHandler.NotifyUpdate();
         }
 
         /// <summary>
@@ -141,7 +168,7 @@ namespace umi3d.edk
         {
             if (inited)
             {
-                currentIcon = Icon.GetUrl();
+                currentIcon = Icon2D.GetUrl();
                 currentInteractionName = InteractionName;
             }
         }
@@ -183,7 +210,7 @@ namespace umi3d.edk
                 UMI3D.Scene.Remove(this);
 
             foreach (UMI3DUser user in UMI3D.UserManager.GetUsers())
-                if (AvailableLastFrame.ContainsKey(user) && AvailableLastFrame[user])
+                if (availableLastFrame.ContainsKey(user) && availableLastFrame[user])
                     user.InteractionsIdsToRemove.Add(Id);
         }
 
@@ -226,15 +253,15 @@ namespace umi3d.edk
 
         public void UpdateAvailabilityLastFrame(UMI3DUser user)
         {
-            if (AvailableLastFrame.ContainsKey(user))
-                AvailableLastFrame[user] = AvailableFor(user);
+            if (availableLastFrame.ContainsKey(user))
+                availableLastFrame[user] = AvailableFor(user);
             else
-                AvailableLastFrame.Add(user, AvailableFor(user));
+                availableLastFrame.Add(user, AvailableFor(user));
         }
 
         public void UpdateAvailabilityForUser(UMI3DUser user)
         {
-            bool wasAvailable = (AvailableLastFrame.ContainsKey(user)) ? AvailableLastFrame[user] : false;
+            bool wasAvailable = (availableLastFrame.ContainsKey(user)) ? availableLastFrame[user] : false;
             bool available = AvailableFor(user);
 
             if (wasAvailable && !available && !IsSubInteraction)

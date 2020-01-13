@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
+using UnityEngine.Events;
 
 namespace umi3d.edk
 {
@@ -134,6 +135,52 @@ namespace umi3d.edk
 
 
         protected ARTracker ARTracker { get { return GetComponent<ARTracker>(); } }
+
+        #region Interactable
+        /// <summary>
+        /// Class for event rising on hover when <see cref="trackHoverPosition"/> is enabled. 
+        /// The first argument is the hovering user
+        /// The second argument is the hovered position of the object in the object's local frame, 
+        /// the third argument is the normal to the object's surface at the hovered position in the object's local frame.
+        /// </summary>
+        [Serializable]
+        public class HoverEvent : UnityEvent<UMI3DUser, Vector3, Vector3> { }
+
+
+        public InteractableDto GetInteractableDto(UMI3DUser user)
+        {
+            if (!isInteractable) return null;
+
+            InteractableDto dto = interactable.ConvertToDto(user) as InteractableDto;
+            dto.objectId = this.Id;
+            dto.trackHoverPosition = trackHoverPosition;
+            
+            return dto;
+        }
+
+        [SerializeField]
+        protected CVEInteractable interactable;
+        [SerializeField]
+        protected bool trackHoverPosition;
+
+
+        public bool isInteractable { get { return interactable != null; } }
+
+        [SerializeField]
+        public UMI3DUserEvent onHoverEnter = new UMI3DUserEvent();
+
+        [SerializeField]
+        public HoverEvent onHovered = new HoverEvent();
+
+        [SerializeField]
+        public UMI3DUserEvent onHoverExit = new UMI3DUserEvent();
+
+        /// <summary>
+        /// Current hover state.
+        /// </summary>
+        [HideInInspector]
+        public bool hoverState = false;
+        #endregion
 
         #endregion
 
