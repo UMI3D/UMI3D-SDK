@@ -28,12 +28,6 @@ namespace umi3d.cdk
     /// <see cref="InteractionMappingReason"/>
     public class SwitchController : InteractionMappingReason { }
 
-    /// <summary>
-    /// Motivation behind a tool selection/release.
-    /// the tool has been selected/released automaticaly after a hover
-    /// </summary>
-    /// <see cref="InteractionMappingReason"/>
-    public class AutoProjectOnHover : InteractionMappingReason { }
 
     /// <summary>
     /// Motivation behind a tool selection/release.
@@ -57,13 +51,25 @@ namespace umi3d.cdk
     /// <see cref="RequestedByUser"/>
     public class RequestedFromMenu : RequestedByUser { }
 
+
     /// <summary>
     /// Motivation behind a tool selection/release.
     /// the tool has been selected/released as requested by the User with a Selector.
     /// </summary>
     /// <see cref="InteractionMappingReason"/>
     /// <see cref="RequestedByUser"/>
-    public class RequestedUsingSelector : RequestedByUser { }
+    public class RequestedUsingSelector : RequestedByUser
+    {
+        public AbstractController controller;
+    }
+
+    /// <summary>
+    /// Motivation behind a tool selection/release.
+    /// the tool has been selected/released automaticaly after a hover
+    /// </summary>
+    /// <see cref="InteractionMappingReason"/>
+    public class AutoProjectOnHover : RequestedUsingSelector { }
+
 
     /// <summary>
     /// Motivation behind a tool selection/release.

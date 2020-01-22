@@ -29,12 +29,18 @@ namespace umi3d
             get { return instance != null; }
         }
 
+        static bool applicationIsQuitting = false;
+
         /// <summary>
         /// static rteference to the only instance of <typeparamref name="T"/>
         /// </summary>
         public static T Instance
         {
             get {
+                if (applicationIsQuitting)
+                {
+                    return null;
+                }
                 if (instance == null)
                 {
                     instance = FindObjectOfType<T>();
@@ -66,7 +72,7 @@ namespace umi3d
         {
             if (instance != null && instance != this)
             {
-                if(instance.gameObject.name == this.gameObject.name)
+                if (instance.gameObject.name == this.gameObject.name)
                     Debug.LogWarning("There is already a Singleton<" + typeof(T) + "> , instance on " + this.gameObject.name + " will be exterminated. This could occur after reloaded a scene with a PersistentSingleton in it");
                 else
                     Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + this.gameObject.name + " will be exterminated.");
@@ -81,10 +87,13 @@ namespace umi3d
 
         protected virtual void OnDestroy()
         {
-            if(instance == this)
+            if (instance == this)
                 instance = null;
         }
 
-
+        void OnApplicationQuit()
+        {
+            applicationIsQuitting = true;
+        }
     }
 }

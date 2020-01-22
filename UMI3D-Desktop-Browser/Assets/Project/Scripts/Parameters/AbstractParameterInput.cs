@@ -88,7 +88,7 @@ namespace BrowserDesktop.Parameters
             currentInteraction = null;
             menuItem.UnSubscribe(callback);
             if (CircleMenu.Exist)
-                CircleMenu.Instance.MenuDisplayManager.menu.Remove(menuItem);
+                CircleMenu.Instance.MenuDisplayManager?.menu?.Remove(menuItem);
         }
 
         public override bool IsCompatibleWith(AbstractInteractionDto interaction)

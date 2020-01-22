@@ -19,22 +19,24 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class AvatarMappingDtoLoader : AbstractObjectDTOLoader<AvatarMappingDto>
+    public class AvatarMappingDtoLoader
     {
         /// <summary>
-        /// Create an AvatarMapping from an AvatarMappingDto and raise a given callback.
+        /// Create an AvatarMapping from an AvatarMappingDto.
         /// </summary>
         /// <param name="dto">AvatarMappingDto to load</param>
-        /// <param name="callback">Callback to raise (the argument is the ARTrackerObject GameObject)</param>
-        public override void LoadDTO(AvatarMappingDto dto, Action<GameObject> callback)
+        public void LoadAvatarMapping(AvatarMappingDto avatarMappingDto)
         {
             try
             {
-                GameObject obj = new GameObject();
-                AvatarMapping am = obj.AddComponent<AvatarMapping>();
-                am.SetMapping(dto.userId, dto.bonePairDictionary);
-                callback(obj);
-                UpdateFromDTO(obj, null, dto);
+                GameObject avatarObj = UMI3DBrowserAvatar.Instance.gameObject;
+                AvatarMapping avatarMapping = avatarObj.GetComponent<AvatarMapping>();
+                if (!avatarMapping)
+                {
+                    avatarMapping = avatarObj.AddComponent<AvatarMapping>();
+                }
+                avatarMapping.SetMapping(avatarMappingDto.userId, avatarMappingDto.bonePairDictionary);
+                UpdateFromDTO(avatarObj, avatarMappingDto);
             }
             catch (Exception e)
             {
@@ -46,11 +48,9 @@ namespace umi3d.cdk
         /// Update a AvatarMapping from dto.
         /// </summary>
         /// <param name="go">AvatarMapping gameObject to update</param>
-        /// <param name="olddto">Previous dto describing the AvatarMapping</param>
         /// <param name="newdto">Dto to update the AvatarMapping to</param>
-        public override void UpdateFromDTO(GameObject go, AvatarMappingDto olddto, AvatarMappingDto newdto)
+        public void UpdateFromDTO(GameObject go, AvatarMappingDto newdto)
         {
-            base.UpdateFromDTO(go, olddto, newdto);
             go.GetComponent<AvatarMapping>().SetMapping(newdto.userId, newdto.bonePairDictionary);
         }
     }

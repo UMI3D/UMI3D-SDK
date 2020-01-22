@@ -184,24 +184,24 @@ namespace umi3d.edk
                 {
                     if (hover.State)
                     {
-                        if (!obj.hoverState)
+                        if (!obj.hoveringBones.Contains(this.UserId + hover.boneId))
                         {
-                            obj.onHoverEnter.Invoke(this);
-                            obj.hoverState = true;
+                            obj.onHoverEnter.Invoke(this, hover.boneId);
+                            obj.hoveringBones.Add(this.UserId + hover.boneId);
                         }
 
                         if (obj.GetInteractableDto(this).trackHoverPosition)
                         {
                             if ((hover.Position != null) && (hover.Normal != null))
-                                obj.onHovered.Invoke(this, hover.Position, hover.Normal);
+                                obj.onHovered.Invoke(this, hover.boneId, hover.Position, hover.Normal);
                         }
                     }
                     else
                     {
-                        if (obj.hoverState)
+                        if (obj.hoveringBones.Contains(this.UserId + hover.boneId))
                         {
-                            obj.onHoverExit.Invoke(this);
-                            obj.hoverState = false;
+                            obj.onHoverExit.Invoke(this, hover.boneId);
+                            obj.hoveringBones.Remove(this.UserId + hover.boneId);
                         }
                     }
                 }

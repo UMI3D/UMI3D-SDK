@@ -32,6 +32,8 @@ namespace umi3d
             get { return instance != null; }
         }
 
+        static bool applicationIsQuitting = false;
+
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>.
         /// This will instanciate an instance if null.
@@ -39,6 +41,8 @@ namespace umi3d
         public static T Instance
         {
             get {
+                if (applicationIsQuitting)
+                    return null;
                 if (instance == null)
                 {
                     instance = FindObjectOfType<T>();
@@ -67,6 +71,7 @@ namespace umi3d
         /// </summary>
         protected virtual void Awake()
         {
+            applicationIsQuitting = false;
             if (instance != null && instance != this)
             {
                 Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + this.gameObject.name + " will be exterminated");
@@ -76,6 +81,17 @@ namespace umi3d
             {
                 instance = this as T;
             }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            if (instance == this)
+                instance = null;
+        }
+
+        void OnApplicationQuit()
+        {
+            applicationIsQuitting = true;
         }
 
     }

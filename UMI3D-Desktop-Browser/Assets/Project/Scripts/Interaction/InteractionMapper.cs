@@ -75,6 +75,7 @@ public class InteractionMapper : AbstractInteractionMapper
     protected override void Awake()
     {
         base.Awake();
+
         defaultToolbox = new Toolbox(new ToolboxDto
         {
             Id = "defaultLocalToolbox",
@@ -104,6 +105,10 @@ public class InteractionMapper : AbstractInteractionMapper
             toolboxMenu.RemoveAllSubMenu();
             toolboxMenu.RemoveAllMenuItem();
         }
+
+        List<string> toolboxesId = new List<string>(Toolbox.instances.Keys);
+        foreach (string tb in toolboxesId)
+            Toolbox.instances.Remove(tb);
 
         interactionsIdToDto = new Dictionary<string, AbstractInteractionDto>();
         toolboxesIdToMenu = new Dictionary<string, ToolboxSubMenu>();

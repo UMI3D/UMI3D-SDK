@@ -162,7 +162,7 @@ namespace umi3d.edk
             UsersMap.Add(id, user);
             userObj.name = "user " + id;
             avatar.name = "avatar_user " + id;
-            user.avatar.Anchor.name = "Anchor_user " + id;
+            user.avatar.anchor.name = "Anchor_user " + id;
             user.ImmersiveDeviceUser = connection.IsImmersive;
 
             UMI3D.OnUserCreate.Invoke(user);
@@ -176,11 +176,11 @@ namespace umi3d.edk
         {
             UMI3DAvatar avt = avatar.AddComponent<UMI3DAvatar>();
             avt.viewpoint = viewpoint;
-            avt.Anchor = anchor;
+            avt.anchor = anchor;
             avt.listOfPrefabs = this.prefabsDictionary;
-            avt.BonesToFilter = this.BonesToFilter;
+            avt.bonesToFilter = this.BonesToFilter;
             avt.defaultAvatar = this.DefaultAvatar;
-            avt.DisplayMode = this.AvatarDisplay;
+            avt.displayMode = this.AvatarDisplay;
             return avt;
         }
 
@@ -212,6 +212,7 @@ namespace umi3d.edk
             {
                 UMI3D.OnUserQuit.Invoke(user);
                 UsersMap.Remove(Id);
+                UMI3DAvatarBone.instancesByUserId.Remove(Id);
                 Destroy(user.gameObject);
             }
             yield return null;

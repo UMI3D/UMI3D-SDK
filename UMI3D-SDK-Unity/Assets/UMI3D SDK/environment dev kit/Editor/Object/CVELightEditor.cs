@@ -27,6 +27,7 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class CVELightEditor : Editor
     {
+        SerializedProperty isStatic;
         SerializedProperty type;
         SerializedProperty color;
         SerializedProperty intensity;
@@ -104,6 +105,7 @@ namespace umi3d.edk.editor
 
         public void OnEnable()
         {
+            isStatic = serializedObject.FindProperty("isStatic");
             type = serializedObject.FindProperty("_type");
             color = serializedObject.FindProperty("color");
             intensity = serializedObject.FindProperty("intensity");
@@ -133,6 +135,7 @@ namespace umi3d.edk.editor
         public override void OnInspectorGUI()
         {
             EditorGUI.BeginChangeCheck();
+            EditorGUILayout.PropertyField(isStatic);
             EditorGUILayout.PropertyField(type);
             int vType = type.enumValueIndex;
             EditorGUILayout.PropertyField(color);

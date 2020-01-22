@@ -40,11 +40,6 @@ namespace umi3d.cdk
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
 
         /// <summary>
-        /// Current hover state.
-        /// </summary>
-        private bool hoverState = false;
-
-        /// <summary>
         /// Initialize an Interactable according to an AbstractToolDto.
         /// </summary>
         /// <param name="_dto"></param>
@@ -59,35 +54,30 @@ namespace umi3d.cdk
         /// <summary>
         /// Notify the hovering of the object by the user (first frame only).
         /// </summary>
-        public void HoverEnter()
+        public void HoverEnter(string bone)
         {
-            if (!hoverState)
+            HoveredDto hoverDo = new HoveredDto()
             {
-                HoveredDto hoverDo = new HoveredDto()
-                {
-                    abstractObject3DId = objectId,
-                    State = true
-                };
-                UMI3DHttpClient.Interact(hoverDo);
-                hoverState = true;
-            }
+                abstractObject3DId = objectId,
+                boneId = bone,
+                State = true
+            };
+            UMI3DHttpClient.Interact(hoverDo);
+
         }
 
         /// <summary>
         /// Notify the end of the object's hovering by the user (first frame only).
         /// </summary>
-        public void HoverExit()
+        public void HoverExit(string bone)
         {
-            if (hoverState)
+            HoveredDto hoverDo = new HoveredDto()
             {
-                HoveredDto hoverDo = new HoveredDto()
-                {
-                    abstractObject3DId = objectId,
-                    State = false
-                };
-                UMI3DHttpClient.Interact(hoverDo);
-                hoverState = false;
-            }
+                abstractObject3DId = objectId,
+                boneId = bone,
+                State = false
+            };
+            UMI3DHttpClient.Interact(hoverDo);
         }
 
         /// <summary>
@@ -95,13 +85,14 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="position">Object's point hovered (in object's local frame)</param>
         /// <param name="normal">Normal of the hovered point (in objects's local frame)</param>
-        public void Hovered(Vector3 position, Vector3 normal)
+        public void Hovered(string bone, Vector3 position, Vector3 normal)
         {
-            if (dto.trackHoverPosition && hoverState)
+            if (dto.trackHoverPosition)
             {
                 HoveredDto hoverDo = new HoveredDto()
                 {
                     abstractObject3DId = objectId,
+                    boneId = bone,
                     State = true,
                     Normal = normal,
                     Position = position
@@ -109,6 +100,6 @@ namespace umi3d.cdk
                 UMI3DWebSocketClient.Interact(hoverDo);
             }
         }
-    
+
     }
 }

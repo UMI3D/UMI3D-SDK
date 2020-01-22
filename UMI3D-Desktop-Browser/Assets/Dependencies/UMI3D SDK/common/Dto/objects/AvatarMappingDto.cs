@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class AvatarMappingDto : AbstractObject3DDto
+    public class AvatarMappingDto : UMI3DDto
     {
         public BonePairDictionary bonePairDictionary = null;
 

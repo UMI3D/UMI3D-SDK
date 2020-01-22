@@ -60,54 +60,5 @@ namespace umi3d.cdk
                     break;
             }
         }
-
-
-
-
-        /// <summary>
-        /// Update a scene object from dto.
-        /// </summary>
-        /// <param name="go">Gameobject to update</param>
-        /// <param name="olddto">previous dto</param>
-        /// <param name="newdto">dto to update to</param>
-        private void m_UpdateObject3D(GameObject go, AbstractObject3DDto olddto, AbstractObject3DDto newdto)
-        {
-            if (newdto == null)
-                return;
-
-            go.name = newdto.Name;
-            go.transform.localPosition = newdto.Position;
-            go.transform.localScale = newdto.Scale;
-
-            var billboard = go.GetComponent<Billboard>();
-            if (newdto.Billboard)
-            {
-                if (billboard == null)
-                    go.AddComponent<Billboard>();
-            }
-            else
-            {
-                if (billboard != null)
-                    Destroy(billboard);
-                go.transform.localRotation = newdto.Rotation;
-            }
-
-            if (olddto == null || newdto.Pid != olddto.Pid)
-            {
-                GameObject _p = null;
-                if (newdto.Pid == null || newdto.Pid.Length == 0)
-                    _p = gameObject;
-                else
-                    _p = GetObject(newdto.Pid);
-
-                if (_p == null)
-                    RemoveObject(newdto.Id);
-
-                else if (go.transform.parent != _p.transform)
-                    go.transform.SetParent(_p.transform, false);
-            }
-        }
-
-
     }
 }

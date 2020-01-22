@@ -16,6 +16,7 @@ limitations under the License.
 using umi3d.common;
 using umi3d.edk;
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Grab : MonoBehaviour
@@ -36,7 +37,7 @@ public class Grab : MonoBehaviour
     /// <summary>
     /// Avatar bone used for grab.
     /// </summary>
-    private GameObject grabBone;
+    private Transform grabTransform;
 
     private Vector3 offsetOnGrab;
 
@@ -46,17 +47,21 @@ public class Grab : MonoBehaviour
     /// </summary>
     /// <param name="user"></param>
     /// <param name="bone"></param>
-    public void Hold(UMI3DUser user, BoneDto bone)
+    public void Hold(UMI3DUser user, string bone)
     {
-        if (user.avatar.instanciatedBones.TryGetValue(bone.type, out grabBone))
+
+        if (UMI3DAvatarBone.instancesByUserId.TryGetValue(user.UserId, out Dictionary<string, UMI3DAvatarBone> bones))
         {
-            isGrabed = true;
-            offsetOnGrab = grabBone.transform.InverseTransformDirection(this.transform.position - grabBone.transform.position);
+            if (bones.TryGetValue(bone, out UMI3DAvatarBone sceneBone))
+            {
+                isGrabed = true;
+                grabTransform = UMI3D.Scene.GetObject(sceneBone.boneAnchorId).transform;
+                offsetOnGrab = grabTransform.InverseTransformDirection(this.transform.position - grabTransform.position);
+                return;
+            }
         }
-        else
-        {
-            Debug.LogError("Failed to grab, no avatar bone found");
-        }
+        
+        Debug.LogError("Failed to grab, no avatar bone found");
     }
 
     /// <summary>
@@ -75,9 +80,9 @@ public class Grab : MonoBehaviour
         if (isGrabed)
         {
             if (snapToHand)
-                this.transform.position = grabBone.transform.position;
+                this.transform.position = grabTransform.position;
             else
-                this.transform.position = grabBone.transform.position + grabBone.transform.TransformDirection(offsetOnGrab);
+                this.transform.position = grabTransform.position + grabTransform.TransformDirection(offsetOnGrab);
         }
         else if (isGrabed_lastframe)
         {

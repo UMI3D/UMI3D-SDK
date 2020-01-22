@@ -1616,6 +1616,7 @@ MonoBehaviour:
   dofGroups: 04000000050000000600000001000000020000000300000008000000090000000a000000
   ManipulationActionInput:
   - {fileID: 1959977545}
+  bone: 2
 --- !u!1 &1114689105
 GameObject:
   m_ObjectHideFlags: 0
@@ -2689,8 +2690,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1757710148}
   - component: {fileID: 1757710152}
-  - component: {fileID: 1757710150}
   - component: {fileID: 1757710149}
+  - component: {fileID: 1757710150}
   m_Layer: 0
   m_Name: TRZone
   m_TagString: Untagged
@@ -2755,7 +2756,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1757710147}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aae425e3c28338442b70f534abeb14d5, type: 3}
+  m_Script: {fileID: 11500000, guid: d0ef5a23380277947b57948536f7e62a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   viewpoint: {fileID: 297392475}
@@ -2779,7 +2780,7 @@ MonoBehaviour:
   avatar:
     Dtype: umi3d.common.AvatarDto
     Id: 
-    BoneList: []
+    boneList: []
     ScaleScene:
       Dtype: umi3d.common.SerializableVector3
       X: 0
@@ -4351,7 +4352,7 @@ PrefabInstance:
     - target: {fileID: 5657911632511662692, guid: 6f84028fdc2c0b849ae8ad244ba03b41,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.8
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 5657911632511662692, guid: 6f84028fdc2c0b849ae8ad244ba03b41,
         type: 3}
@@ -4397,6 +4398,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7676829564579182415, guid: 6f84028fdc2c0b849ae8ad244ba03b41,
+        type: 3}
+      propertyPath: boneType
+      value: 19
+      objectReference: {fileID: 0}
+    - target: {fileID: 5657911633342141544, guid: 6f84028fdc2c0b849ae8ad244ba03b41,
+        type: 3}
+      propertyPath: boneType
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f84028fdc2c0b849ae8ad244ba03b41, type: 3}

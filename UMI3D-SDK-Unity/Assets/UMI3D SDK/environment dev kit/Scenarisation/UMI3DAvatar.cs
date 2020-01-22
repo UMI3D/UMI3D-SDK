@@ -29,16 +29,9 @@ namespace umi3d.edk
         public Dictionary<BoneType, GameObject> listOfPrefabs;
 
         /// <summary>
-        /// Collection of instantiated bones for each bonetype (if any).
-        /// </summary>
-        /// <see cref="listOfPrefabs"/>
-        public Dictionary<BoneType, GameObject> instanciatedBones = new Dictionary<BoneType, GameObject>();
-
-
-        /// <summary>
         /// Contain the BoneTypes not to use for self-representation.
         /// </summary>
-        public List<BoneType> BonesToFilter;
+        public List<BoneType> bonesToFilter;
 
         /// <summary>
         /// The user represented by the avatar.
@@ -55,22 +48,26 @@ namespace umi3d.edk
         /// </summary>
         public GameObject defaultAvatar;
 
-        public bool DefaultDisplay = false;
+        public bool defaultDisplay = false;
 
         /// <summary>
         /// The display mode of the UMI3D environment.
         /// </summary>
-        public AvatarDisplayMode DisplayMode;
+        public AvatarDisplayMode displayMode;
 
         /// <summary>
         /// The avatar's anchor.
         /// </summary>
-        public GameObject Anchor;
+        public GameObject anchor;
+
+        private AvatarDto avatarDto;
 
         private void Start()
         {
-            CVEAvatar cveavt = Anchor.AddComponent<CVEAvatar>();
+            CVEAvatar cveavt = anchor.AddComponent<CVEAvatar>();
+            anchor.AddComponent<EmptyObject3D>();
             cveavt.UserId = user.UserId;
+            UMI3DAvatarBone.instancesByUserId.Add(user.UserId, new Dictionary<string, UMI3DAvatarBone>());
         }
 
         /// <summary>
@@ -80,32 +77,30 @@ namespace umi3d.edk
         {
             updateGobalPosition(navigation);
 
-            AvatarDto avatar = navigation.Avatar;
-
-            if (this.DisplayMode == AvatarDisplayMode.DynamicDisplay)
+            if (this.displayMode == AvatarDisplayMode.DynamicDisplay)
             {
-                this.renewAppearance(avatar);
+                this.RenewAppearance();
             }
-            else if (this.DisplayMode == AvatarDisplayMode.DefaultDisplay && !this.DefaultDisplay)
-            {  
-                foreach (Transform child in this.Anchor.transform)
+            else if (this.displayMode == AvatarDisplayMode.DefaultDisplay && !this.defaultDisplay)
+            {
+                foreach (Transform child in this.anchor.transform)
                 {
                     Destroy(child.gameObject);
                 }
 
                 if (this.defaultAvatar != null)
                 {
-                   Instantiate(this.defaultAvatar, this.Anchor.transform);
-                }                  
+                    Instantiate(this.defaultAvatar, this.anchor.transform);
+                }
 
-                this.DefaultDisplay = !this.DefaultDisplay;
+                this.defaultDisplay = !this.defaultDisplay;
 
-                this.Anchor.transform.localScale = new Vector3(
-                    1 / avatar.ScaleScene.X, 
-                    1 / avatar.ScaleScene.Y, 
-                    1 / avatar.ScaleScene.Z);
+                this.anchor.transform.localScale = new Vector3(
+                    1 / avatarDto.ScaleScene.X,
+                    1 / avatarDto.ScaleScene.Y,
+                    1 / avatarDto.ScaleScene.Z);
             }
-            else if (this.DisplayMode == AvatarDisplayMode.APIDisplay)
+            else if (this.displayMode == AvatarDisplayMode.APIDisplay)
             {
                 // Connect an API
             }
@@ -124,17 +119,18 @@ namespace umi3d.edk
 
             viewpoint.transform.SetParent(transform);
 
-            AvatarDto avatar = navigation.Avatar;
+            avatarDto = navigation.Avatar;
+
             Vector3 position = new Vector3(
-                navigation.CameraPosition.X / avatar.ScaleScene.X,
-                navigation.CameraPosition.Y / avatar.ScaleScene.Y,
-                navigation.CameraPosition.Z / avatar.ScaleScene.Z);
+                navigation.CameraPosition.X / avatarDto.ScaleScene.X,
+                navigation.CameraPosition.Y / avatarDto.ScaleScene.Y,
+                navigation.CameraPosition.Z / avatarDto.ScaleScene.Z);
 
             viewpoint.transform.position = position;
             viewpoint.transform.localRotation = navigation.CameraRotation;
 
-            Anchor.transform.position = viewpoint.transform.position;
-            Anchor.transform.rotation = viewpoint.transform.rotation;
+            anchor.transform.position = viewpoint.transform.position;
+            anchor.transform.rotation = viewpoint.transform.rotation;
 
             GetComponent<GenericObject3D>().PropertiesHandler.NotifyUpdate();
         }
@@ -142,35 +138,68 @@ namespace umi3d.edk
         /// <summary>
         /// Update the dynamic appearance of the user's avatar by destroying, generating, or updating bones from an AvatarDto.
         /// </summary>
-        private void renewAppearance(AvatarDto avatar)
+        private void RenewAppearance()
         {
-            if (this.DefaultDisplay)
+            if (this.defaultDisplay)
             {
-                Destroy(this.Anchor.transform.GetChild(0));
-                DefaultDisplay = !DefaultDisplay;
+                Destroy(this.anchor.transform.GetChild(0));
+                defaultDisplay = !defaultDisplay;
             }
 
-            List<BoneDto> BonesList = avatar.BoneList;
-            int n = BonesList.Count;
-            int childCount = Anchor.transform.childCount;
+            List<BoneDto> newBoneListFromBrowser = avatarDto.boneList;
 
-            if (n == childCount)
+            List<string> bonesToDelete = new List<string>();
+            List<string> bonesToUpdate = new List<string>();
+            List<string> bonesToCreate = new List<string>();
+
+            UMI3DAvatarBone.instancesByUserId.TryGetValue(user.UserId, out Dictionary<string, UMI3DAvatarBone> oldUserSkeleton);
+
+            List<UMI3DAvatarBone> oldSkeleton = new List<UMI3DAvatarBone>(oldUserSkeleton.Values);
+
+            bonesToDelete = oldSkeleton
+                .ConvertAll<string>(avatarBone => avatarBone.boneId)
+                .FindAll(oldBoneId =>
+                    !newBoneListFromBrowser.Exists(newBone => newBone.Id.Equals(oldBoneId)));
+
+            bonesToUpdate = oldSkeleton
+                .ConvertAll<string>(avatarBone => avatarBone.boneId)
+                .FindAll(oldBoneId =>
+                    newBoneListFromBrowser.Exists(newBone => newBone.Id.Equals(oldBoneId)));
+
+            bonesToCreate = newBoneListFromBrowser.FindAll(newBoneDto => 
+                !oldSkeleton.Exists(oldBone => 
+                    oldBone.boneId.Equals(newBoneDto.Id)))            
+                .ConvertAll<string>(bone => bone.Id);
+
+
+            foreach (string boneId in bonesToDelete)
             {
-                updateBones(BonesList, n);
-            }
-            else
-            if (n > childCount)
-            {
-                updateBones(BonesList, childCount);
-                generateBones(BonesList, childCount);
-            }
-            else
-            {
-                updateBones(BonesList, n);
-                destroyBones(n);
+                Destroy(UMI3D.Scene.GetObject(boneId).gameObject);
+                UMI3DAvatarBone umi3DAvatarBone = oldSkeleton.Find(avatarBone => avatarBone.boneId.Equals(boneId));
+                umi3DAvatarBone.UnRegister();
             }
 
-            this.Anchor.transform.localScale = new Vector3(1 / avatar.ScaleScene.X, 1 / avatar.ScaleScene.Y, 1 / avatar.ScaleScene.Z);
+            foreach (string boneId in bonesToUpdate)
+            {
+                UMI3DAvatarBone umi3DAvatarBone = UMI3DAvatarBone.instancesByUserId[user.UserId][boneId];
+                UpdateBone(UMI3D.Scene.GetObject(umi3DAvatarBone.boneAnchorId).gameObject, avatarDto.boneList.Find(boneDto => boneDto.Id.Equals(boneId)));
+            }
+
+
+            foreach (string boneId in bonesToCreate)
+            {
+                UMI3DAvatarBone umi3DAvatarBone = InstanciateBone(avatarDto.boneList.Find(boneDto => boneDto.Id.Equals(boneId)));
+                umi3DAvatarBone.Register(); 
+            }
+
+
+            if (bonesToCreate.Count != 0 || bonesToDelete.Count != 0)
+            {
+                AvatarMappingDto avatarMappingDto = anchor.GetComponent<CVEAvatar>().ToDto(user);
+                user.Send(avatarMappingDto);
+            }
+
+            this.anchor.transform.localScale = new Vector3(1 / avatarDto.ScaleScene.X, 1 / avatarDto.ScaleScene.Y, 1 / avatarDto.ScaleScene.Z);
         }
 
         /// <summary>
@@ -180,41 +209,16 @@ namespace umi3d.edk
         {
             BonePairDictionary BoneDictionary = new BonePairDictionary();
 
-            List<UMI3DBoneType> Children = new List<UMI3DBoneType>();
-            Anchor.transform.GetComponentsInChildren<UMI3DBoneType>(Children);
-
-            foreach (UMI3DBoneType child in Children)
+            if (UMI3DAvatarBone.instancesByUserId.TryGetValue(user.UserId, out Dictionary<string, UMI3DAvatarBone> userSkeleton))
             {
-                if (child.transform.childCount == 1)
+                foreach (KeyValuePair<string, UMI3DAvatarBone> bone in userSkeleton)
                 {
-                    if (child.GetComponent<UMI3DBoneType>() != null && child.GetComponent<UMI3DBoneType>().BoneType != BoneType.None && !BonesToFilter.Contains(child.GetComponent<UMI3DBoneType>().BoneType) && (child.GetComponentInChildren<CVEModel>() != null || child.GetComponentInChildren<CVEPrimitive>() != null))
+                    foreach (string objectId in bone.Value.meshes)
                     {
                         BoneObjectPair pair = new BoneObjectPair();
-                        pair.boneType = child.GetComponent<UMI3DBoneType>().BoneType;
-                        if (child.GetComponentInChildren<CVEModel>() != null)
-                            pair.objectId = child.GetComponentInChildren<CVEModel>().Id;
-                        else
-                            pair.objectId = child.GetComponentInChildren<CVEPrimitive>().Id;
+                        pair.boneId = bone.Value.boneId;
+                        pair.objectId = objectId;
                         BoneDictionary.TryAdd(pair);
-                    }
-                }
-                else
-                {
-                    if (child.transform.childCount != 0)
-                    {
-                        for (int i = 0; i < child.transform.childCount; i++)
-                        {
-                            if (child.GetComponent<UMI3DBoneType>() != null && child.GetComponent<UMI3DBoneType>().BoneType != BoneType.None && !BonesToFilter.Contains(child.GetComponent<UMI3DBoneType>().BoneType) && (child.transform.GetChild(i).GetComponentInChildren<CVEModel>() != null || child.transform.GetChild(i).GetComponentInChildren<CVEPrimitive>() != null))
-                            {
-                                BoneObjectPair pair = new BoneObjectPair();
-                                pair.boneType = child.GetComponent<UMI3DBoneType>().BoneType;
-                                if (child.transform.GetChild(i).GetComponentInChildren<CVEModel>() != null)
-                                    pair.objectId = child.transform.GetChild(i).GetComponentInChildren<CVEModel>().Id;
-                                else
-                                    pair.objectId = child.transform.GetChild(i).GetComponentInChildren<CVEPrimitive>().Id;
-                                BoneDictionary.Add(pair);
-                            }
-                        }
                     }
                 }
             }
@@ -222,137 +226,70 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Update the first n bones in the children hierarchy with a list of BoneDto.
-        /// </summary>
-        private void updateBones(List<BoneDto> bonesList, int n)
-        {
-            for (int i = 0; i < n; i++)
-            {
-                if (!checkExistingBone(Anchor.transform.GetChild(i), bonesList[i]))
-                {
-                    if (Anchor.transform.GetChild(i).GetComponent<UMI3DBoneType>().BoneType == bonesList[i].type)
-                    {
-                        updateBone(Anchor.transform.GetChild(i).gameObject, bonesList[i]);
-                    }
-                    else
-                    {
-                        GameObject NewBone = instanciateBone(bonesList[i]);
-
-                        BoneType boneTypeToRemove;
-                        if (Enum.TryParse(Anchor.transform.GetChild(i).gameObject.tag, out boneTypeToRemove))
-                        {
-                            instanciatedBones.Remove(boneTypeToRemove);
-                        }
-                        else
-                        {
-                            throw new System.Exception("Internal Error : Unknown bone type !");
-                        }
-                        DestroyImmediate(Anchor.transform.GetChild(i).gameObject);
-                        NewBone.transform.SetSiblingIndex(i);
-                        filterBones(NewBone);
-                    }                    
-                }
-            }
-        }
-
-        /// <summary>
         /// Define if an avatar part is visible or not for self representation.
         /// </summary>
-        private void filterBones(GameObject bone)
+        private void FilterBones(GameObject bone, BoneDto boneDto)
         {
-            if (BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && (bone.GetComponent<AvatarFilter>() == null))
+            if (bonesToFilter.Contains(boneDto.type) && (bone.GetComponent<AvatarFilter>() == null))
             {
                 bone.AddComponent<AvatarFilter>();
-            } 
-            else if (!BonesToFilter.Contains(bone.GetComponent<UMI3DBoneType>().BoneType) && (bone.GetComponent<AvatarFilter>() != null))
+            }
+            else if (!bonesToFilter.Contains(boneDto.type) && (bone.GetComponent<AvatarFilter>() != null))
             {
                 Destroy(bone.GetComponent<AvatarFilter>());
             }
         }
 
         /// <summary>
-        /// Instanciate new bones from each BoneDto in a list after a certain index.
-        /// </summary>
-        private void generateBones(List<BoneDto> BonesList, int index)
-        {
-            for (int i = index; i < BonesList.Count; i++)
-            {
-                GameObject NewBone = instanciateBone(BonesList[i]);
-            }
-        }
-
-        /// <summary>
-        /// Destroy bones in the children hierarchy after a certain index.
-        /// </summary>
-        private void destroyBones(int index)
-        {
-            List<Transform> Children = new List<Transform>();
-            Anchor.transform.GetComponentsInChildren<Transform>(Children);
-            for (int i = index; i < Children.Count; i++)
-            {
-                BoneType boneTypeToRemove;
-                if (Enum.TryParse(Children[i].gameObject.tag, out boneTypeToRemove))
-                {
-                    instanciatedBones.Remove(boneTypeToRemove);
-                }
-                else
-                {
-                    throw new System.Exception("Internal Error : Unknown bone type !");
-                }
-                Destroy(Children[i].gameObject);
-            }
-        }
-
-        /// <summary>
-        /// Check if the parameters of a bone and those of a boneDto are the same.
-        /// </summary>
-        private bool checkExistingBone(Transform existingBone, BoneDto savedBone)
-        {
-            return existingBone.GetComponent<UMI3DBoneType>().BoneType == savedBone.type
-                && existingBone.localPosition == savedBone.Position
-                && existingBone.localRotation == savedBone.Rotation
-                && existingBone.localScale == savedBone.Scale;
-        }
-
-        /// <summary>
         /// Instanciate a new bone with the parameters of a BoneDto.
         /// </summary>
-        private GameObject instanciateBone(BoneDto bone)
+        private UMI3DAvatarBone InstanciateBone(BoneDto bone)
         {
             GameObject Go = null;
             if (bone.type != BoneType.None)
             {
+                List<string> meshesIds = new List<string>();
                 GameObject Prefab;
                 if (listOfPrefabs.TryGetValue(bone.type, out Prefab))
                 {
-                    Go = Instantiate(Prefab, Anchor.transform);
+                    Go = Instantiate(Prefab, anchor.transform);
                     foreach (CVEAvatarPart item in Go.GetComponentsInChildren<CVEAvatarPart>())
                     {
                         item.UserId = user.UserId;
+                        meshesIds.Add(item.Id);
                     }
                 }
                 else
                 {
                     Go = new GameObject(bone.type.ToString());
-                    Go.transform.parent = Anchor.transform;
+                    Go.AddComponent<EmptyObject3D>();
+                    Go.transform.parent = anchor.transform;
                 }
-                Go.AddComponent<UMI3DBoneType>().BoneType = bone.type; 
-                instanciatedBones.Remove(bone.type);
-                instanciatedBones.Add(bone.type, Go);
-                updateBone(Go, bone);
+                UMI3DAvatarBone umi3DAvatarBone = new UMI3DAvatarBone(user.UserId, bone.Id) 
+                { 
+                    meshes = meshesIds.ToArray(), 
+                };
+                GenericObject3D GoComp = Go.GetComponent<GenericObject3D>();
+                if (GoComp)
+                {
+                    umi3DAvatarBone.boneAnchorId = GoComp.Id;
+                }
+                //umi3DAvatarBone.Register();
+                UpdateBone(Go, bone);
+                return umi3DAvatarBone;
             }
-            return Go;
+            return null;
         }
 
         /// <summary>
         /// Update a bone with the parameters of a BoneDto.
         /// </summary>
-        private void updateBone(GameObject go, BoneDto bone)
+        private void UpdateBone(GameObject go, BoneDto boneDto)
         {
-            go.transform.localPosition = bone.Position;
-            go.transform.localRotation = bone.Rotation;
-            go.transform.localScale = bone.Scale;
-            filterBones(go);
+            go.transform.localPosition = boneDto.Position;
+            go.transform.localRotation = boneDto.Rotation;
+            go.transform.localScale = boneDto.Scale;
+            FilterBones(go, boneDto);
         }
     }
 }

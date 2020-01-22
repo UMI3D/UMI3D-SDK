@@ -57,7 +57,6 @@ namespace umi3d.cdk
         protected UITextDtoLoader uiTextDtoLoader;
         protected UIImageDtoLoader uiImageDtoLoader;
         protected CubeMapDtoLoader cubeMabDtoLoader;
-        protected AvatarMappingDtoLoader userMappingDtoLoader;
 
         /// <summary>
         /// Is this device a full 3D media displayer (sush as Computer or Virtual reality headset).
@@ -109,7 +108,6 @@ namespace umi3d.cdk
             uiTextDtoLoader = GetOrAddComponent<UITextDtoLoader>();
             uiImageDtoLoader = GetOrAddComponent<UIImageDtoLoader>();
             cubeMabDtoLoader = GetOrAddComponent<CubeMapDtoLoader>();
-            userMappingDtoLoader = GetOrAddComponent<AvatarMappingDtoLoader>();
         }
 
         protected A GetOrAddComponent<A>() where A : Component
@@ -321,9 +319,6 @@ namespace umi3d.cdk
             else if (def is GenericObject3DDto)
                 genericObject3DDtoLoader.LoadDTO(def as GenericObject3DDto, callback);
 
-            else if (def is AvatarMappingDto)
-                userMappingDtoLoader.LoadDTO(def as AvatarMappingDto, callback);
-
             else
                 Debug.LogError("Unsupported ObjectType: " + def.GetType());
 
@@ -398,9 +393,6 @@ namespace umi3d.cdk
 
             else if (olddto is UIRectDto && newdto is UIRectDto)
                 uiRectDtoLoader.UpdateFromDTO(go, olddto as UIRectDto, newdto as UIRectDto);
-
-            else if (olddto is AvatarMappingDto && newdto is AvatarMappingDto)
-                userMappingDtoLoader.UpdateFromDTO(go, olddto as AvatarMappingDto, newdto as AvatarMappingDto);
 
             CacheDto(newdto.Id, newdto);
         }

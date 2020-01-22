@@ -70,7 +70,8 @@ namespace umi3d.cdk
             }
 
             go.name = newdto.Name;
-            UpdateTransform(go, olddto, newdto);
+            if (!newdto.isStatic || (olddto == null))
+                UpdateTransform(go, olddto, newdto);
             UpdateARTracker(go, newdto);
             UpdateBillboard(go, newdto);
             UpdateHierarchy(go, olddto, newdto);  
@@ -99,7 +100,12 @@ namespace umi3d.cdk
             else if (!newdto.Equals(olddto))
             {
                 if (!AbstractInteractionMapper.Instance.ToolExists(newdto.Id))
+                {
+                    if (olddto != null)
+                        if (AbstractInteractionMapper.Instance.ToolExists(olddto.Id))
+                            AbstractInteractionMapper.Instance.DeleteTool(olddto.Id);
                     AbstractInteractionMapper.Instance.CreateInteractable(newdto, go);
+                }
                 else
                     AbstractInteractionMapper.Instance.UpdateTool(newdto);
             }

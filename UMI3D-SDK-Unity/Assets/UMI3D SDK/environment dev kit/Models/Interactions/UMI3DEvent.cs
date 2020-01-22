@@ -73,11 +73,7 @@ namespace umi3d.edk
                     throw new System.Exception("Invalid argument");
 
                 JSONObject evt = args[0];
-                JSONObject bone = args[1];
-
-                if (!bone.IsObject)
-                    throw new System.Exception("Invalid argument");
-                BoneDto boneDto = DtoUtility.Deserialize(bone) as BoneDto;
+                string bone = args[1].str;
 
                 if (Hold)
                 {
@@ -85,17 +81,17 @@ namespace umi3d.edk
                     {
                         if (evt.b)
                         {
-                            onHold.Invoke(user, boneDto);
+                            onHold.Invoke(user, bone);
                         }
                         else
                         {
-                            onRelease.Invoke(user, boneDto);
+                            onRelease.Invoke(user, bone);
                         }
                     }
                 }
                 else
                 {
-                    onTrigger.Invoke(user, boneDto);
+                    onTrigger.Invoke(user, bone);
                 }
             }
         }

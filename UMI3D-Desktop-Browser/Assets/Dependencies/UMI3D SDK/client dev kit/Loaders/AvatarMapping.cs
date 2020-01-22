@@ -23,7 +23,6 @@ namespace umi3d.cdk
     {
 
         public string userId;
-
         public BonePairDictionary bonePairDictionary = new BonePairDictionary();
 
         /// <summary>

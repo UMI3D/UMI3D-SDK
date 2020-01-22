@@ -113,7 +113,7 @@ namespace BrowserDesktop.Interaction
                 if ((!CircleMenu.Exist || !CircleMenu.Instance.IsExpanded) && Input.GetKey(InputLayoutManager.GetInputCode(activationButton)) && !Input.GetKeyDown(InputLayoutManager.GetInputCode(activationButton)) && (associatedInteraction).Hold)
                 {
                     onInputDown.Invoke();
-                    UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto });
+                    UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
                     risingEdgeEventSent = true;
                 }
             }
@@ -126,7 +126,7 @@ namespace BrowserDesktop.Interaction
         protected virtual void Update()
         {
             if (boneDto == null)
-                boneDto = UMI3DBrowserAvatar.Instance.avatar.BoneList.Find(b => b.type == bone);
+                boneDto = UMI3DBrowserAvatar.Instance.avatar.boneList.Find(b => b.type == bone);
 
             if (LastFrameButton != InputLayoutManager.GetInputCode(activationButton))
             {
@@ -141,12 +141,12 @@ namespace BrowserDesktop.Interaction
                     onInputDown.Invoke();
                     if ((associatedInteraction).Hold)
                     {
-                        UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto });
+                        UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
                         risingEdgeEventSent = true;
                     }
                     else
                     {
-                        UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto });
+                        UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
                     }
                 }
 
@@ -157,7 +157,7 @@ namespace BrowserDesktop.Interaction
                     {
                         if (risingEdgeEventSent)
                         {
-                            UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto });
+                            UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto.Id });
                             risingEdgeEventSent = false;
                         }
                     }
@@ -186,7 +186,7 @@ namespace BrowserDesktop.Interaction
         {
             if (associatedInteraction != null && (associatedInteraction).Hold && risingEdgeEventSent)
             {
-                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto });
+                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto.Id });
             }
             risingEdgeEventSent = false;
         }

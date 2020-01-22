@@ -126,19 +126,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 6006322579840380176}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 2323753490101716029}
   trackHoverPosition: 1
   onHoverEnter:
     m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  onHovered:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6006322578804713368}
-        m_MethodName: onHovered
+        m_MethodName: CreateCursor
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -148,14 +144,41 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  onHovered:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6006322578804713368}
+        m_MethodName: UpdateCursorPosition
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+      m_Calls:
+      - m_Target: {fileID: 6006322578804713368}
+        m_MethodName: DestroyCursor
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   lockColliders: 0
   colliderType: 1
   convex: 0
@@ -170,11 +193,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 6006322578804713370}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f04a315a639e94c49bf2123f54751aab, type: 3}
+  m_Script: {fileID: 11500000, guid: 31015d43d0e00da4da08af1ac85514dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactbleObject: {fileID: 6006322578804713375}
-  hoverCursor: {fileID: 6006322580508168424}
+  cursorPrefab: {fileID: 6006322580508168424}
 --- !u!114 &2323753490101716029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -331,25 +353,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 6006322579690358792}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 187536464807279254}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   lockColliders: 0
   colliderType: 3
   convex: 0
@@ -402,7 +425,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onRelease:
     m_PersistentCalls:
@@ -419,12 +442,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onTrigger:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &187536464807279254
 MonoBehaviour:
@@ -518,25 +541,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 6006322578843566460}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 6221527953526554713}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   lockColliders: 0
   colliderType: 3
   convex: 0
@@ -577,12 +601,12 @@ MonoBehaviour:
   onHold:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onRelease:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onTrigger:
     m_PersistentCalls:
@@ -598,7 +622,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &6221527953526554713
 MonoBehaviour:
@@ -677,25 +701,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
 --- !u!1 &6006322579293405585
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,25 +773,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
 --- !u!1 &6006322579602861415
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,25 +887,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
 --- !u!1 &6006322579690358792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1080,25 +1107,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 6006322578747287576}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   lockColliders: 0
   colliderType: 1
   convex: 0
@@ -1305,25 +1333,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 6006322579900931851}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   lockColliders: 0
   colliderType: 0
   convex: 0
@@ -1425,25 +1454,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 0}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   autoCascade: 0
 --- !u!1 &6006322580801167736
 GameObject:
@@ -1491,25 +1521,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   preview: {fileID: 6006322579986226040}
   billboard: 0
+  isStatic: 0
   immersiveOnly: 0
   interactable: {fileID: 0}
   trackHoverPosition: 0
   onHoverEnter:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
   onHovered:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.17021,
+    m_TypeName: umi3d.edk.GenericObject3D+HoverEvent, Assembly-CSharp, Version=1.0.2.28644,
       Culture=neutral, PublicKeyToken=null
   onHoverExit:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: umi3d.edk.UMI3DUserEvent, Assembly-CSharp, Version=1.0.2.17021, Culture=neutral,
-      PublicKeyToken=null
-  hoverState: 0
+    m_TypeName: umi3d.edk.UMI3DUserBoneEvent, Assembly-CSharp, Version=1.0.2.28644,
+      Culture=neutral, PublicKeyToken=null
+  hoveringBones: []
   lockColliders: 0
   colliderType: 0
   convex: 0
@@ -1603,6 +1634,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6006322579293405584}
     m_Modifications:
+    - target: {fileID: 8432735200040224337, guid: 56b71c80e510c504fa47638803ff2e79,
+        type: 3}
+      propertyPath: m_Name
+      value: TV
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432735200040224337, guid: 56b71c80e510c504fa47638803ff2e79,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5350246954515524192, guid: 56b71c80e510c504fa47638803ff2e79,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1671,16 +1712,6 @@ PrefabInstance:
     - target: {fileID: 5350246954515524192, guid: 56b71c80e510c504fa47638803ff2e79,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8432735200040224337, guid: 56b71c80e510c504fa47638803ff2e79,
-        type: 3}
-      propertyPath: m_Name
-      value: TV
-      objectReference: {fileID: 0}
-    - target: {fileID: 8432735200040224337, guid: 56b71c80e510c504fa47638803ff2e79,
-        type: 3}
-      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3828348395089140396, guid: 56b71c80e510c504fa47638803ff2e79,

@@ -23,7 +23,7 @@ namespace umi3d.common
     [System.Serializable]
     public class AvatarDto : AbstractEntityDto
     {
-        public List<BoneDto> BoneList = null;
+        public List<BoneDto> boneList = null;
         public SerializableVector3 ScaleScene = null;
 
         public AvatarDto() : base() { }

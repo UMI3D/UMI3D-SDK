@@ -442,6 +442,15 @@ namespace umi3d.edk
                     return ip.ToString();
                 }
             }
+            //if offline. 
+            Debug.LogWarning("No public IP found. This computer seems to be offline.");
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork )
+                {
+                    return ip.ToString();
+                }
+            }
             throw new Exception("Local IP Address Not Found!");
         }
 

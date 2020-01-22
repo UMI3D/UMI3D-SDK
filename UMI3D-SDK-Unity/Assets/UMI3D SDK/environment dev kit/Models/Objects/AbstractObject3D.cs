@@ -45,6 +45,7 @@ namespace umi3d.edk
             dto.Id = Id;
             dto.Pid = ParentId;
             dto.Name = gameObject.name;
+            dto.isStatic = isStatic;
             dto.ImmersiveOnly = objectImmersiveOnly.GetValue(user);
             dto.Billboard = objectBillboard.GetValue(user);
             dto.Position = objectPosition.GetValue(user);

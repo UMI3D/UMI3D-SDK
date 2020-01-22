@@ -13,16 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.cdk;
-using umi3d.common;
-using umi3d.cdk.menu.core;
-using UnityEngine;
 using BrowserDesktop.Cursor;
 using BrowserDesktop.Interaction;
 using BrowserDesktop.Menu;
 using BrowserDesktop.Parameters;
+using System.Collections.Generic;
+using umi3d.cdk;
+using umi3d.common;
+using UnityEngine;
 
 namespace BrowserDesktop.Controller
 {
@@ -41,6 +39,14 @@ namespace BrowserDesktop.Controller
         List<DofGroupEnum> dofGroups = new List<DofGroupEnum>();
         [SerializeField]
         List<CursorKeyInput> ManipulationActionInput = new List<CursorKeyInput>();
+
+        /// <summary>
+        /// Avatar bone linked to this input.
+        /// </summary>
+        public BoneType bone = BoneType.Hand_Right;
+
+        protected BoneDto boneDto;
+
 
         #region Hover
 
@@ -207,6 +213,8 @@ namespace BrowserDesktop.Controller
 
         void MouseHandler()
         {
+
+
             if (!(
                         mouseData.HoverState == HoverState.AutoProjected
                         && (CursorHandler.State == CursorHandler.CursorState.Clicked || CircleMenu.Exist && CircleMenu.Instance.IsExpanded)
@@ -247,6 +255,12 @@ namespace BrowserDesktop.Controller
 
         void Hover()
         {
+            if (boneDto == null)
+            {
+                boneDto = UMI3DBrowserAvatar.Instance.avatar.boneList.Find(b => b.type == bone);
+            }
+                
+
             if (mouseData.CurentHovered != null)
             {
                 if (mouseData.CurentHovered != mouseData.OldHovered)
@@ -257,7 +271,7 @@ namespace BrowserDesktop.Controller
                         {
                             InteractionMapper.ReleaseTool(mouseData.OldHovered.dto.Id, new RequestedByUser());
                         }
-                        mouseData.OldHovered.HoverExit();
+                        mouseData.OldHovered.HoverExit(boneDto.Id);
                         CircleMenu.Instance.Collapse();
                         mouseData.OldHovered = null;
                     }
@@ -270,9 +284,9 @@ namespace BrowserDesktop.Controller
                         CircleMenu.Instance.MenuColapsed.AddListener(CircleMenuColapsed);
                         mouseData.OldHovered = mouseData.CurentHovered;
                     }
-                    mouseData.CurentHovered.HoverEnter();
+                    mouseData.CurentHovered.HoverEnter(boneDto.Id);
                 }
-                mouseData.CurentHovered.Hovered(mouseData.point, mouseData.normal);
+                mouseData.CurentHovered.Hovered(boneDto.Id, mouseData.point, mouseData.normal);
             }
             else if (mouseData.OldHovered != null)
             {
@@ -281,7 +295,7 @@ namespace BrowserDesktop.Controller
                     CircleMenu.Instance.MenuColapsed.RemoveListener(CircleMenuColapsed);
                     InteractionMapper.ReleaseTool(mouseData.OldHovered.dto.Id, new RequestedByUser());
                 }
-                mouseData.OldHovered.HoverExit();
+                mouseData.OldHovered.HoverExit(boneDto.Id);
                 CircleMenu.Instance.Collapse();
                 CursorHandler.State = CursorHandler.CursorState.Default;
                 mouseData.OldHovered = null;

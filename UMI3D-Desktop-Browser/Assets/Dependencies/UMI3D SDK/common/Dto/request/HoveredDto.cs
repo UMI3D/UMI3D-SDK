@@ -33,6 +33,11 @@ namespace umi3d.common
         public bool State;
 
         /// <summary>
+        /// Avatar bone used for hover.
+        /// </summary>
+        public string boneId;
+
+        /// <summary>
         /// Hovered point position in the object's local frame.
         /// </summary>
         public SerializableVector3 Position;

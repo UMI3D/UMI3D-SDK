@@ -209,9 +209,10 @@ namespace umi3d.edk
             if (UMI3D.Scene)
                 UMI3D.Scene.Remove(this);
 
-            foreach (UMI3DUser user in UMI3D.UserManager.GetUsers())
-                if (availableLastFrame.ContainsKey(user) && availableLastFrame[user])
-                    user.InteractionsIdsToRemove.Add(Id);
+            if (UMI3D.Exist)
+                foreach (UMI3DUser user in UMI3D.UserManager.GetUsers())
+                    if (availableLastFrame.ContainsKey(user) && availableLastFrame[user])
+                        user.InteractionsIdsToRemove.Add(Id);
         }
 
         #endregion

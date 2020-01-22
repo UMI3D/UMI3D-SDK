@@ -90,6 +90,12 @@ namespace umi3d.edk
         [SerializeField]
         protected bool billboard = false;
 
+        /// <summary>
+        /// False if the object is alowed to move during the application exectution.
+        /// </summary>
+        [SerializeField]
+        protected bool isStatic = false;
+
 
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
@@ -144,7 +150,7 @@ namespace umi3d.edk
         /// the third argument is the normal to the object's surface at the hovered position in the object's local frame.
         /// </summary>
         [Serializable]
-        public class HoverEvent : UnityEvent<UMI3DUser, Vector3, Vector3> { }
+        public class HoverEvent : UnityEvent<UMI3DUser, string, Vector3, Vector3> { }
 
 
         public InteractableDto GetInteractableDto(UMI3DUser user)
@@ -163,23 +169,27 @@ namespace umi3d.edk
         [SerializeField]
         protected bool trackHoverPosition;
 
+        public UMI3DAsyncProperty<CVEInteractable> objectInteractable;
+        public UMI3DAsyncProperty<bool> objectTrackHoverPosition;
 
         public bool isInteractable { get { return interactable != null; } }
 
         [SerializeField]
-        public UMI3DUserEvent onHoverEnter = new UMI3DUserEvent();
+        public UMI3DUserBoneEvent onHoverEnter = new UMI3DUserBoneEvent();
 
         [SerializeField]
         public HoverEvent onHovered = new HoverEvent();
 
         [SerializeField]
-        public UMI3DUserEvent onHoverExit = new UMI3DUserEvent();
+        public UMI3DUserBoneEvent onHoverExit = new UMI3DUserBoneEvent();
 
         /// <summary>
-        /// Current hover state.
+        /// List of bones hovering this object (if any).
         /// </summary>
-        [HideInInspector]
-        public bool hoverState = false;
+        public List<string> hoveringBones = new List<string>();
+
+        public bool isHovered { get { return hoveringBones.Count > 0; } }
+
         #endregion
 
         #endregion
@@ -237,6 +247,12 @@ namespace umi3d.edk
             objectImmersiveOnly = new UMI3DAsyncProperty<bool>(PropertiesHandler, this.immersiveOnly);
             objectImmersiveOnly.OnValueChanged += (bool b) => immersiveOnly = b;
 
+            objectInteractable = new UMI3DAsyncProperty<CVEInteractable>(PropertiesHandler, this.interactable);
+            objectInteractable.OnValueChanged += (CVEInteractable i) => interactable = i;
+
+            objectTrackHoverPosition = new UMI3DAsyncProperty<bool>(PropertiesHandler, this.trackHoverPosition);
+            objectTrackHoverPosition.OnValueChanged += (bool b) => trackHoverPosition = b;
+
             if (ARTracker)
             {
                 ARTracker.initDefinition();
@@ -259,7 +275,8 @@ namespace umi3d.edk
         protected virtual void Update()
         {
             Register();
-            SyncTransform();
+            if (!isStatic)
+                SyncTransform();
             PropertiesHandler.BroadcastUpdates();
         }
 
@@ -355,9 +372,10 @@ namespace umi3d.edk
             if (UMI3D.Scene)
                 UMI3D.Scene.Remove(this);
 
-            foreach (UMI3DUser user in UMI3D.UserManager.GetUsers())
-                if (VisibleLastFrame.ContainsKey(user) && VisibleLastFrame[user])
-                    user.ObjectsToRemove.Add(new RemoveObjectDto() { Id = this.Id });
+            if(UMI3D.Exist)
+                foreach (UMI3DUser user in UMI3D.UserManager.GetUsers())
+                    if (VisibleLastFrame.ContainsKey(user) && VisibleLastFrame[user])
+                        user.ObjectsToRemove.Add(new RemoveObjectDto() { Id = this.Id });
         }
 
         #endregion

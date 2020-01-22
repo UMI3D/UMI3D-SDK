@@ -68,15 +68,13 @@ public class UMI3DBrowserNavigation : MonoBehaviour
             if (UMI3DBrowser.Scene != null)
             {
                 var scene = UMI3DBrowser.Scene.transform;
-
                 UMI3DBrowserAvatar.Instance.BonesIterator(UMI3DBrowserAvatar.Instance.avatar, this.viewpoint);
                 UMI3DBrowserAvatar.Instance.avatar.ScaleScene = scene.transform.lossyScale;
-
                 var data = new NavigationRequestDto();
                 data.TrackingZonePosition = -world.position;
                 data.TrackingZoneRotation = Quaternion.Inverse(world.rotation);
                 data.CameraPosition = world.InverseTransformPoint(this.viewpoint.position) - world.InverseTransformPoint(scene.transform.position);
-                data.CameraRotation = viewpoint.localRotation;
+                data.CameraRotation = viewpoint.rotation;
                 data.Avatar = UMI3DBrowserAvatar.Instance.avatar;
 
                 try

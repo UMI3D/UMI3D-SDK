@@ -99,18 +99,18 @@ public class KeyMenuInput : AbstractUMI3DInput
     void Pressed(bool down)
     {
         if (boneDto == null)
-            boneDto = UMI3DBrowserAvatar.Instance.avatar.BoneList.Find(b => b.type == bone);
+            boneDto = UMI3DBrowserAvatar.Instance.avatar.boneList.Find(b => b.type == bone);
         if (down)
         {
             onInputDown.Invoke();
             if ((associatedInteraction).Hold)
             {
-                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto });
+                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
                 risingEdgeEventSent = true;
             }
             else
             {
-                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto });
+                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
             }
         }
         else
@@ -120,7 +120,7 @@ public class KeyMenuInput : AbstractUMI3DInput
             {
                 if (risingEdgeEventSent)
                 {
-                    UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto });
+                    UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto.Id });
                     risingEdgeEventSent = false;
                 }
             }

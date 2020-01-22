@@ -27,7 +27,7 @@ namespace umi3d.common
     [Serializable]
     public class BoneObjectPair : AbstractEntityDto
     {
-        public BoneType boneType;
+        public string boneId;
         public string objectId;
     }
 
@@ -59,7 +59,7 @@ namespace umi3d.common
         {
             foreach (BoneObjectPair pair_ in ObjectPairList)
             {
-                if (pair_.boneType == pair.boneType)
+                if (pair_.boneId == pair.boneId)
                 {
                     return false;
                 }
@@ -82,13 +82,13 @@ namespace umi3d.common
         }
 
         /// <summary>
-        /// Try to get the Id associated to a certain BoneType. Return true if passed, false otherwise.
+        /// Try to get the Id associated to a certain boneId. Return true if passed, false otherwise.
         /// </summary>
-        public bool TryGetIdValue(BoneType bonetype, out string id)
+        public bool TryGetIdValue(string boneId, out string id)
         {
             foreach (BoneObjectPair pair_ in ObjectPairList)
             {
-                if (pair_.boneType == bonetype)
+                if (pair_.boneId == boneId)
                 {
                     id = pair_.objectId;
                     return true;
@@ -99,30 +99,30 @@ namespace umi3d.common
         }
 
         /// <summary>
-        /// Try to get the BoneType associated to a certain Id. Return true if passed, false otherwise.
+        /// Try to get the BoneType associated to a certain objectId. Return true if passed, false otherwise.
         /// </summary>
-        public bool TryGetTypeKey(string id, out BoneType type)
+        public bool TryGetIdKey(string objectId, out string boneId)
         {
             foreach (BoneObjectPair pair_ in ObjectPairList)
             {
-                if (pair_.objectId == id)
+                if (pair_.objectId == objectId)
                 {
-                    type = pair_.boneType;
+                    boneId = pair_.boneId;
                     return true;
                 }
             }
-            type = BoneType.None;
+            boneId = null;
             return false;
         }
 
         /// <summary>
-        /// Check if a BoneType is contained in the ObjectPairList.
+        /// Check if a boneId is contained in the ObjectPairList.
         /// </summary>
-        public bool ContainsKey(BoneType bonetype)
+        public bool ContainsKey(string boneId)
         {
             foreach (BoneObjectPair pair_ in ObjectPairList)
             {
-                if (pair_.boneType == bonetype)
+                if (pair_.boneId == boneId)
                 {
                     return true;
                 }

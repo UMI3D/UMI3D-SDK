@@ -228,7 +228,7 @@ namespace umi3d.cdk
 
         public static void Logout()
         {
-            Instance.StartCoroutine(Instance._Logout());
+            Instance?.StartCoroutine(Instance._Logout());
         }
 
         IEnumerator _Logout()

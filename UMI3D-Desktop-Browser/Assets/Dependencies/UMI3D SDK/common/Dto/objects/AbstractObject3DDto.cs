@@ -28,6 +28,7 @@ namespace umi3d.common
     public abstract class AbstractObject3DDto : AbstractEntityDto
     {
         public string Name = null;
+        public bool isStatic = false;
         public bool ImmersiveOnly = false;
         public ARTrackerDto TrackerDto = null;
         public SerializableVector3 Position = null;

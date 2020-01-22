@@ -30,10 +30,11 @@ public class DirectGrab : MonoBehaviour
     public void Hold(UMI3DUser user, BoneDto bone)
     {
         originalParent = this.transform.parent;
-        GameObject grabBone;
-        if (user.avatar.instanciatedBones.TryGetValue(bone.type, out grabBone))
+        UMI3DAvatarBone grabBone;
+        if (UMI3DAvatarBone.instancesByUserId[user.UserId].TryGetValue(bone.Id, out grabBone))
         {
-            this.transform.parent = grabBone.transform;
+            Transform grabTransform = UMI3D.Scene.GetObject(grabBone.boneId).transform;
+            this.transform.parent = grabTransform;
             this.transform.localPosition = new Vector3(0, 0, 0);
             this.transform.localRotation = Quaternion.Euler(0, 0, 0);
         }

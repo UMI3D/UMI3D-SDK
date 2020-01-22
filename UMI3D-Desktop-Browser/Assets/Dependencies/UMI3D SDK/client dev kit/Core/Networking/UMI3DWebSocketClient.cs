@@ -92,8 +92,11 @@ namespace umi3d.cdk
             else if (obj is MediaUpdateDto && UMI3DBrowser.Scene)
                 UMI3DBrowser.Scene.UpdateFromDTO(obj as MediaUpdateDto);
 
-            else if (obj is UpdateInteractionDto && obj!=null && UMI3DBrowser.interactionMapper)
+            else if (obj is UpdateInteractionDto && obj != null && UMI3DBrowser.interactionMapper)
                 UMI3DBrowser.interactionMapper.UpdateInteraction((obj as UpdateInteractionDto).Entity);
+
+            else if (obj is AvatarMappingDto && obj != null)
+                UMI3DBrowserAvatar.Instance.LoadAvatarMapping(obj as AvatarMappingDto);
 
             else if (obj is NavigateDto && UMI3DBrowser.Navigation)
                 UMI3DBrowser.Navigation.Navigate(obj as NavigateDto);

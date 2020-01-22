@@ -27,6 +27,7 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class GenericObject3DEditor : Editor
     {
+        SerializedProperty isStatic;
         SerializedProperty billboard;
         SerializedProperty ImmerseiveOnly;
         SerializedProperty interactable;
@@ -37,6 +38,8 @@ namespace umi3d.edk.editor
 
         protected virtual void OnEnable()
         {
+            isStatic = serializedObject.FindProperty("isStatic");
+
             billboard = serializedObject.FindProperty("billboard");
             ImmerseiveOnly = serializedObject.FindProperty("immersiveOnly");
 
@@ -65,6 +68,7 @@ namespace umi3d.edk.editor
             }
 
 
+            EditorGUILayout.PropertyField(isStatic);
             EditorGUILayout.PropertyField(billboard);
             EditorGUILayout.PropertyField(ImmerseiveOnly);
             serializedObject.ApplyModifiedProperties();

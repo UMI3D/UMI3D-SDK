@@ -457,7 +457,7 @@ namespace umi3d.cdk
                         options.localEulerAngles = new Vector3(0f, 0f, 0f);
                         options.localScale = Vector3.one;
                         options.localPosition = Vector3.zero;
-                        options.buildColliders = true;
+                        options.buildColliders = false;
                         importer.ImportingComplete += () =>
                         {
                             if (Instance.modelCache.ContainsKey(resource.Url) && Instance.modelCache[resource.Url] != null)
