@@ -68,6 +68,7 @@ namespace umi3d.cdk.menu.view
 
         public UnityEvent onDisplay = new UnityEvent();
         public UnityEvent onHide = new UnityEvent();
+        public UnityEvent onDestroy = new UnityEvent();
 
         /// <summary>
         /// Is the menu being displayed ?
@@ -295,7 +296,8 @@ namespace umi3d.cdk.menu.view
 
                 subContainer.SetMenuItem(subMenu);
                 subContainer.parent = container;
-                UnityAction<AbstractMenuItem> action = (item) =>
+                UnityAction OnManagerDestroyedAction;
+                UnityAction<AbstractMenuItem> OnItemAddedAction = (item) =>
                 {
                     AbstractMenuDisplayContainer currentSubContainer;
                     if (menuToDisplayer.TryGetValue(subMenu, out currentSubContainer))
@@ -304,14 +306,20 @@ namespace umi3d.cdk.menu.view
                         else CreateItem(currentSubContainer, item);
                     }
                 };
-                subMenu.onAbstractMenuItemAdded.AddListener(action);
+                OnManagerDestroyedAction = () =>
+                {
+                    subMenu.onAbstractMenuItemAdded.RemoveListener(OnItemAddedAction);
+                };
+                subMenu.onAbstractMenuItemAdded.AddListener(OnItemAddedAction);
                 subMenu.OnDestroy.AddListener(() => {
                     subMenu.onAbstractMenuItemAdded.RemoveAllListeners();
+                    this.onDestroy.RemoveListener(OnManagerDestroyedAction);
                     if ((container != null) && (container.gameObject != null))
                         container?.Remove(subContainer, false);
                     if ((subContainer != null) && (subContainer.gameObject != null))
                         Destroy(subContainer.gameObject);
                 });
+                this.onDestroy.AddListener(OnManagerDestroyedAction);
                 if (subMenu.navigable)
                     subContainer.Subscribe(() =>
                     {
@@ -340,7 +348,7 @@ namespace umi3d.cdk.menu.view
 
         /// <summary>
         /// Create a displayer for a menuItem and add it into a container.
-        /// </summary>
+        /// </summary> 
         /// <param name="container"></param>
         /// <param name="item"></param>
         void CreateItem(AbstractMenuDisplayContainer container, AbstractMenuItem item)
@@ -548,6 +556,12 @@ namespace umi3d.cdk.menu.view
         }
 
 
+        private void OnDestroy()
+        {
+            onDestroy.Invoke();
+            Clear();
+        }
+
+
     }
 }
-

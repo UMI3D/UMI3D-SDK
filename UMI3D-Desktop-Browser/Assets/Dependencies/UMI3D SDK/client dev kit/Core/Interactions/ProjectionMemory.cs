@@ -21,16 +21,29 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class ProjectionMemory
+    public class ProjectionMemory : MonoBehaviour
     {
+        protected string id_ = "";
+        public string id 
+        { 
+            get 
+            {
+                if (id_.Equals(""))
+                    id_ = (this.gameObject.GetInstanceID() + Random.Range(0, 1000)).ToString();
+                return id_;
+            } 
+        }
 
         /// <summary>
         /// Projection memory.
         /// </summary>
-        protected ProjectionTreeNode memoryRoot = new ProjectionTreeNode()
+        protected ProjectionTreeNode memoryRoot;
+
+        protected virtual void Awake()
         {
-            id = "root"
-        };
+            memoryRoot = new ProjectionTreeNode(id) { id = "root" };   
+        }
+
 
         /// <summary>
         /// Get Inputs of a controller for a list of interactions.
@@ -71,7 +84,7 @@ namespace umi3d.cdk
                             if (projection == null)
                                 throw new NoInputFoundException();
 
-                            return new ManipulationNode()
+                            return new ManipulationNode(id)
                             {
                                 id = (interaction as ManipulationDto).Id,
                                 manipulation = interaction as ManipulationDto,
@@ -102,7 +115,7 @@ namespace umi3d.cdk
 
                         if (projection == null)
                             throw new NoInputFoundException();
-                        return new EventNode()
+                        return new EventNode(id)
                         {
                             id = (interaction as EventDto).Id,
                             evt = interaction as EventDto,
@@ -139,7 +152,7 @@ namespace umi3d.cdk
                         if (projection == null)
                             throw new NoInputFoundException();
 
-                        ParameterNode param = new ParameterNode()
+                        ParameterNode param = new ParameterNode(id)
                         {
                             id = (interaction as AbstractParameterDto).Id,
                             parameter = interaction as AbstractParameterDto,
@@ -192,7 +205,7 @@ namespace umi3d.cdk
                 if (projection == null)
                     throw new NoInputFoundException();
 
-                return new ManipulationNode()
+                return new ManipulationNode(id)
                 {
                     id = manip.Id,
                     manipulation = manip,
@@ -234,7 +247,7 @@ namespace umi3d.cdk
                 if (projection == null)
                     throw new NoInputFoundException();
 
-                return new EventNode()
+                return new EventNode(id)
                 {
                     id = evt.Id,
                     evt = evt,
@@ -299,7 +312,7 @@ namespace umi3d.cdk
                             if (projection == null)
                                 throw new NoInputFoundException();
 
-                            return new ManipulationNode()
+                            return new ManipulationNode(id)
                             {
                                 id = (interaction as ManipulationDto).Id,
                                 manipulation = interaction as ManipulationDto,
@@ -331,7 +344,7 @@ namespace umi3d.cdk
 
                         if (projection == null)
                             throw new NoInputFoundException();
-                        return new EventNode()
+                        return new EventNode(id)
                         {
                             id = (interaction as EventDto).Id,
                             evt = interaction as EventDto,
@@ -369,7 +382,7 @@ namespace umi3d.cdk
                         if (projection == null)
                             throw new NoInputFoundException();
 
-                        ParameterNode param = new ParameterNode()
+                        ParameterNode param = new ParameterNode(id)
                         {
                             id = (interaction as AbstractParameterDto).Id,
                             parameter = interaction as AbstractParameterDto,
@@ -493,8 +506,11 @@ namespace umi3d.cdk
     [System.Serializable]
     public class ProjectionTreeNode
     {
+        /// <summary>
+        /// Nodes collection by tree id.
+        /// </summary>
         [SerializeField]
-        protected static Dictionary<string, ProjectionTreeNode> nodes = new Dictionary<string, ProjectionTreeNode>();
+        protected static Dictionary<string, Dictionary<string, ProjectionTreeNode>> nodesByTree = new Dictionary<string, Dictionary<string, ProjectionTreeNode>>();
 
         /// <summary>
         /// Node's children. Please avoid calling this field too often as it is slow to compute.
@@ -506,9 +522,9 @@ namespace umi3d.cdk
                 List<ProjectionTreeNode> buffer = new List<ProjectionTreeNode>();
                 foreach (string id in childrensId)
                 {
-                    ProjectionTreeNode child;
-                    if (nodes.TryGetValue(id, out child))
-                        buffer.Add(child);
+                    if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+                        if (nodes.TryGetValue(id, out ProjectionTreeNode child))
+                            buffer.Add(child);
                 }
                 return buffer;
             }
@@ -524,11 +540,19 @@ namespace umi3d.cdk
         [SerializeField]
         public string id;
 
+        public string treeId { get; protected set; }
+
         /// <summary>
         /// UMI3D Input projected to this node. 
         /// </summary>
         [SerializeField]
         public AbstractUMI3DInput projectedInput;
+
+
+        public ProjectionTreeNode (string treeId)
+        {
+            this.treeId = treeId;
+        }
 
         /// <summary>
         /// Add a child to this node.
@@ -539,10 +563,12 @@ namespace umi3d.cdk
             if (childrensId.Contains(child.id))
                 return;
             childrensId.Add(child.id);
-
-            if (!nodes.ContainsKey(child.id))
+            if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
             {
-                nodes.Add(child.id, child);
+                if (!nodes.ContainsKey(child.id))
+                {
+                    nodes.Add(child.id, child);
+                }
             }
         }
 
@@ -552,13 +578,17 @@ namespace umi3d.cdk
         /// <param name="path">path to the file</param>
         public void SaveToFile(string path)
         {
-            string objectJson = JsonUtility.ToJson(this, true);
-            string staticRefIds = JsonUtility.ToJson(nodes.Keys, true);
-            string storage = objectJson;// + "@\n" + static_json;
+            if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+            {
 
-            StreamWriter writer = new StreamWriter(path);
-            writer.Write(storage);
-            writer.Close();
+                string objectJson = JsonUtility.ToJson(this, true);
+                string staticRefIds = JsonUtility.ToJson(nodes.Keys, true);
+                string storage = objectJson;// + "@\n" + static_json;
+
+                StreamWriter writer = new StreamWriter(path);
+                writer.Write(storage);
+                writer.Close();
+            }
         }
 
         /// <summary>
@@ -567,15 +597,18 @@ namespace umi3d.cdk
         /// <param name="path">path to the file</param>
         public void LoadFromFile(string path)
         {
-            StreamReader reader = new StreamReader(path);
-            string storage = reader.ReadToEnd();
-            string[] buffer = storage.Split('@');
+            if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+            {
+                StreamReader reader = new StreamReader(path);
+                string storage = reader.ReadToEnd();
+                string[] buffer = storage.Split('@');
 
-            string object_json = buffer[0];
-            string static_json = buffer[1];
+                string object_json = buffer[0];
+                string static_json = buffer[1];
 
-            JsonUtility.FromJsonOverwrite(static_json, nodes);
-            JsonUtility.FromJsonOverwrite(object_json, this);
+                JsonUtility.FromJsonOverwrite(static_json, nodes);
+                JsonUtility.FromJsonOverwrite(object_json, this);
+            }
         }
 
     }
@@ -585,6 +618,8 @@ namespace umi3d.cdk
     {
         [SerializeField]
         public EventDto evt;
+
+        public EventNode (string treeId) : base(treeId) { }
     }
 
     [System.Serializable]
@@ -595,6 +630,8 @@ namespace umi3d.cdk
 
         [SerializeField]
         public DofGroupDto manipulationDofGroupDto;
+
+        public ManipulationNode(string treeId) : base(treeId) { }
     }
 
     [System.Serializable]
@@ -602,5 +639,7 @@ namespace umi3d.cdk
     {
         [SerializeField]
         public AbstractParameterDto parameter;
+
+        public ParameterNode(string treeId) : base(treeId) { }
     }
 }

@@ -15,6 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -50,13 +51,26 @@ namespace umi3d.edk
         IHasAsyncProperties source;
 
         /// <summary>
+        /// the function use to check the Equality between two T object;
+        /// </summary>
+        Func<T, T, bool> Equal;
+
+        /// <summary>
         /// UMI3DAsyncProperty constructor.
         /// </summary>
         /// <param name="source">The object to which this property belongs.</param>
         /// <param name="value">The current default or synchronized value.</param>
         /// <param name="async">Indicates if the property is asynchronous.</param>
-        public UMI3DAsyncProperty(IHasAsyncProperties source, T value, bool async = false)
+        /// <param name="equal">Set the function use to check the equality between to value. If null the default object.Equals function will be use</param>
+        public UMI3DAsyncProperty(IHasAsyncProperties source, T value, bool async = false , Func<T,T, bool> equal = null)
         {
+
+            if(equal == null)
+            {
+                equal = (T a, T b) => { return a.Equals(b); };
+            }
+            Equal = equal;
+
             this.source = source;
             this.value = value;
             this.isAsync = async;
@@ -89,7 +103,7 @@ namespace umi3d.edk
         /// <param name="value">the new property's value</param>
         public void SetValue(T value)
         {
-            if (this.value == null && value == null || this.value != null && this.value.Equals(value))
+            if (this.value == null && value == null || this.value != null && Equal(this.value,value))
                 return;
             this.value = value;
             if (OnValueChanged != null)
@@ -109,7 +123,7 @@ namespace umi3d.edk
             {
                 if (asyncValues.ContainsKey(user))
                 {
-                    if (asyncValues[user] == null && value == null || asyncValues[user].Equals(value))
+                    if (asyncValues[user] == null && value == null || Equal(asyncValues[user], value))
                         return ;
                     else
                     {
@@ -143,4 +157,40 @@ namespace umi3d.edk
         }
 
     }
+
+    public class UMI3DAsyncPropertyEquality
+    {
+        public float epsilon = 0.000001f;
+
+        public bool Vector3Equality(Vector3 a, Vector3 b)
+        {
+            return InRange(a.x - b.x) && InRange(a.y - b.y) && InRange(a.z - b.z);
+        }
+
+        public bool Vector2Equality(Vector2 a, Vector2 b)
+        {
+            return InRange(a.x - b.x) && InRange(a.y - b.y);
+        }
+
+        public bool Vector4Equality(Vector4 a, Vector4 b)
+        {
+            return InRange(a.x - b.x) && InRange(a.y - b.y) && InRange(a.z - b.z) && InRange(a.w - b.w);
+        }
+
+        public bool QuaternionEquality(Quaternion a, Quaternion b)
+        {
+            return InRange(Quaternion.Angle(a, b));
+        }
+
+        public bool FloatEquality(float a, float b)
+        {
+            return InRange(a-b);
+        }
+
+        bool InRange(float d)
+        {
+            return (d < epsilon && d > -epsilon);
+        }
+    }
+
 }

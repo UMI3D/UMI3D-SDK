@@ -148,6 +148,7 @@ namespace umi3d.edk
                 light.shadowNormalBias = shadowsNormalBiais;
                 light.shadowNearPlane = shadowsNearPlane;
                 light.shadows = shadowsType.Convert();
+                light.enabled = this.enabled;
             }
         }
 

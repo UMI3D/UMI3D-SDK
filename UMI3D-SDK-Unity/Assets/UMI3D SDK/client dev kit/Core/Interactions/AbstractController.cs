@@ -42,12 +42,7 @@ namespace umi3d.cdk
         /// </summary>
         protected Dictionary<string, AbstractUMI3DInput[]> associatedInputs = new Dictionary<string, AbstractUMI3DInput[]>();
 
-        /// <summary>
-        /// For internal user only.
-        /// </summary>
-        [SerializeField]
-        protected string memoryPath = "projectionMemory.json";
-        public ProjectionMemory projectionMemory = new ProjectionMemory();
+        public ProjectionMemory projectionMemory;
 
         #endregion
 
@@ -149,7 +144,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="tool"> The ToolDto to be projected.</param>
         /// <see cref="Release(AbstractTool)"/>
-        public virtual void Project(AbstractTool tool)
+        public virtual void Project(AbstractTool tool, InteractionMappingReason reason)
         {
             if (!IsCompatibleWith(tool))
                 throw new System.Exception("Trying to project an uncompatible tool !");
@@ -174,7 +169,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="tool">Tool to release</param>
         /// <see cref="Project(AbstractTool)"/>
-        public virtual void Release(AbstractTool tool)
+        public virtual void Release(AbstractTool tool, InteractionMappingReason reason)
         {
             if (currentTool == null)
                 throw new System.Exception("no tool is not currently projected on this controller");

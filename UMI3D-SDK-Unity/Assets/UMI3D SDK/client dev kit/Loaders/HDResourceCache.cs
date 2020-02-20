@@ -452,7 +452,7 @@ namespace umi3d.cdk
                         break;
                     default:
                         var importer = pivot.AddComponent<ObjectImporter>();
-                        var options = new ImportOptions();
+                        var options = new AsImpL.ImportOptions();
                         options.localPosition = Vector3.zero;
                         options.localEulerAngles = new Vector3(0f, 0f, 0f);
                         options.localScale = Vector3.one;

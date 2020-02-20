@@ -143,10 +143,11 @@ namespace BrowserDesktop.Menu
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             InputLayoutManager.OnLayoutChanged.RemoveListener(layoutChanged);
             optionButton.onClick.RemoveAllListeners();
+            base.OnDestroy();
         }
 
     }

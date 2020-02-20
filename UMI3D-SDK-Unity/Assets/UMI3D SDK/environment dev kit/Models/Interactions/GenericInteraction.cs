@@ -191,9 +191,9 @@ namespace umi3d.edk
         {
             if (!AvailableFor(user))
                 return;
-                var res = new UpdateInteractionDto();
-                res.Entity = ConvertToDto(user) as AbstractInteractionDto;
-                user.Send(res);
+            var res = new UpdateInteractionDto();
+            res.Entity = ConvertToDto(user) as AbstractInteractionDto;
+            user.Send(res);
         }
 
         #endregion

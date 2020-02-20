@@ -23,12 +23,12 @@ using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(umi3d.edk.GenericObject3D),true)]
+    [CustomEditor(typeof(umi3d.edk.GenericObject3D), true)]
     [CanEditMultipleObjects]
     public class GenericObject3DEditor : Editor
     {
         SerializedProperty isStatic;
-        SerializedProperty billboard;
+        SerializedProperty Xbillboard, Ybillboard;
         SerializedProperty ImmerseiveOnly;
         SerializedProperty interactable;
         SerializedProperty onHoverEnter;
@@ -40,7 +40,8 @@ namespace umi3d.edk.editor
         {
             isStatic = serializedObject.FindProperty("isStatic");
 
-            billboard = serializedObject.FindProperty("billboard");
+            Xbillboard = serializedObject.FindProperty("Xbillboard");
+            Ybillboard = serializedObject.FindProperty("Ybillboard");
             ImmerseiveOnly = serializedObject.FindProperty("immersiveOnly");
 
             interactable = serializedObject.FindProperty("interactable");
@@ -67,9 +68,23 @@ namespace umi3d.edk.editor
                 EditorGUILayout.Space();
             }
 
-
+            float filedWidth = EditorGUIUtility.fieldWidth;
+            float labelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.fieldWidth = 0;
+            EditorGUIUtility.labelWidth = 0;
             EditorGUILayout.PropertyField(isStatic);
-            EditorGUILayout.PropertyField(billboard);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField(new GUIContent("Billboard", "Force the forward vector of the object in a client to be colinear with the forward vector of the client viewpoint"), GUILayout.Width(labelWidth));
+            EditorGUILayout.LabelField(new GUIContent("X", "Enable the billboard on world axis X"), GUILayout.Width(10));
+            EditorGUILayout.PropertyField(Xbillboard, GUIContent.none, true, GUILayout.Width(10));
+            EditorGUILayout.LabelField(GUIContent.none, GUILayout.Width(10));
+            EditorGUILayout.LabelField(new GUIContent("Y", "Enable the billboard on world axis Y"), GUILayout.Width(10));
+            EditorGUILayout.PropertyField(Ybillboard, GUIContent.none, true, GUILayout.Width(10));
+            EditorGUILayout.EndHorizontal();
+            EditorGUIUtility.labelWidth = labelWidth;
+            EditorGUIUtility.fieldWidth = filedWidth;
+
+
             EditorGUILayout.PropertyField(ImmerseiveOnly);
             serializedObject.ApplyModifiedProperties();
         }

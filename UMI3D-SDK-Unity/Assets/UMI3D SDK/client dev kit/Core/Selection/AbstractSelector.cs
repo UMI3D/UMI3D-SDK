@@ -14,35 +14,48 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace umi3d.cdk
 {
     public abstract class AbstractSelector : MonoBehaviour
     {
-        public static AbstractSelector current { get; protected set; }
+        public List<int> deactivationRequesters = new List<int>();
 
         public bool activated { get; protected set; }
 
-        public bool activateOnLoad;
+
+        protected virtual void ActivateInternal() { activated = true; }
+        protected virtual void DeactivateInternal() { activated = false; }
+
+        protected virtual void Awake()
+        {
+            ActivateInternal();
+        }
+
 
         /// <summary>
         /// Activate the Selector.
         /// </summary>
-        public virtual void Activate()
+        public virtual void Activate(int id)
         {
-            if (current.activated && (current != this))
-                current.Desactivate();
+            if (deactivationRequesters.Contains(id))
+                deactivationRequesters.Remove(id);
 
-            current = this;
-            activated = true;            
+            if ((deactivationRequesters.Count == 0) && !activated)
+                ActivateInternal();
         }
 
         /// <summary>
         /// Deactivate the Selector.
         /// </summary>
-        public virtual void Desactivate()
+        public virtual void Deactivate(int id)
         {
-            activated = false;
+            if (!deactivationRequesters.Contains(id))
+                deactivationRequesters.Add(id);
+            if (activated)
+                DeactivateInternal();
         }
 
         /// <summary>
@@ -51,10 +64,7 @@ namespace umi3d.cdk
         public abstract void Select();
 
 
-        protected virtual void Awake()
-        {
-            if (activateOnLoad)
-                Activate();
-        }
+
+
     }
 }

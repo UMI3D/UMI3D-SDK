@@ -58,5 +58,11 @@ namespace umi3d.common
             return new Vector4(v.X, v.Y, v.Z, v.W);
         }
 
+        public float this[int i]
+        {
+            get { if (i == 0) return X; else if (i == 1) return Y; else if (i == 2) return Z; else if (i == 3) return W; else throw new ArgumentOutOfRangeException(); }
+            set { if (i == 0) X = value; else if (i == 1) Y = value; else if (i == 2) Z = value; else if (i == 3) W = value; else throw new ArgumentOutOfRangeException(); }
+        }
+
     }
 }

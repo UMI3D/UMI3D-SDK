@@ -45,8 +45,7 @@ namespace umi3d.cdk
         
         public void LoadAvatarMapping(AvatarMappingDto avatarMappingDto)
         {
-            AvatarMappingDtoLoader avatarMappingDtoLoader = new AvatarMappingDtoLoader();
-            avatarMappingDtoLoader.LoadAvatarMapping(avatarMappingDto);
+            AvatarMapping.Instance.LoadAvatarMapping(avatarMappingDto);
         }
     }
 }

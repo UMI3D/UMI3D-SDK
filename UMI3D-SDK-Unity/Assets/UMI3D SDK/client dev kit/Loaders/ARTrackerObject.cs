@@ -26,10 +26,17 @@ namespace umi3d.cdk
 
     }
 
+    [System.Serializable]
+    public class OnARTrackerDeleted : UnityEvent<ARTrackerObject>
+    {
+
+    }
+
     public class ARTrackerObject : MonoBehaviour
     {
 
         static OnARTrackerCreated _OnARTrackerCreated;
+        static OnARTrackerDeleted _OnARTrackerDeleted;
 
         static public OnARTrackerCreated OnARTrackerCreated
         {
@@ -40,13 +47,26 @@ namespace umi3d.cdk
             }
         }
 
+        static public OnARTrackerDeleted OnARTrackerDeleted
+        {
+            get {
+                if (_OnARTrackerDeleted == null)
+                    _OnARTrackerDeleted = new OnARTrackerDeleted();
+                return _OnARTrackerDeleted;
+            }
+        }
 
         public Vector3 position;
         public Vector3 scale;
         public Quaternion rotation;
+
         public Vector3 positionOffset;
         public Vector3 scaleOffset;
         public Quaternion rotationOffset;
+
+        public Vector3 targetWorldPosition;
+        public Vector3 targetWorldScale;
+        public Quaternion targetWorldRotation;
 
         public string TrackerId;
 
@@ -70,6 +90,14 @@ namespace umi3d.cdk
             positionOffset = newdto.PositionOffset;
             scaleOffset = newdto.ScaleOffset;
             rotationOffset = newdto.RotationOffset;
+            targetWorldPosition = newdto.TargetWorldPosition;
+            targetWorldRotation = newdto.TargetWorldRotation;
+            targetWorldScale = newdto.TargetWorldScale;
+        }
+
+        private void OnDestroy()
+        {
+            OnARTrackerDeleted.Invoke(this);
         }
     }
 }

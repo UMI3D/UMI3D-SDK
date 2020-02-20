@@ -47,7 +47,8 @@ namespace umi3d.edk
             dto.Name = gameObject.name;
             dto.isStatic = isStatic;
             dto.ImmersiveOnly = objectImmersiveOnly.GetValue(user);
-            dto.Billboard = objectBillboard.GetValue(user);
+            dto.XBillboard = objectXBillboard.GetValue(user);
+            dto.YBillboard = objectYBillboard.GetValue(user);
             dto.Position = objectPosition.GetValue(user);
             dto.Scale = objectScale.GetValue(user);
             dto.Rotation = objectRotation.GetValue(user);

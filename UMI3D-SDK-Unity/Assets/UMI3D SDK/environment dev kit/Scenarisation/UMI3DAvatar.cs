@@ -41,12 +41,17 @@ namespace umi3d.edk
         /// <summary>
         /// The user's viewpoint.
         /// </summary>
-        public GameObject viewpoint;
+        public Camera viewpoint;
 
         /// <summary>
         /// The default representation of the UMI3D environment.
         /// </summary>
         public GameObject defaultAvatar;
+
+        /// <summary>
+        /// The default representation of the UMI3D environment.
+        /// </summary>
+        public GameObject GLTFAvatar;
 
         public bool defaultDisplay = false;
 
@@ -59,6 +64,11 @@ namespace umi3d.edk
         /// The avatar's anchor.
         /// </summary>
         public GameObject anchor;
+
+        /// <summary>
+        /// The username displayer.
+        /// </summary>
+        public GameObject usernameDisplayer;
 
         private AvatarDto avatarDto;
 
@@ -77,32 +87,84 @@ namespace umi3d.edk
         {
             updateGobalPosition(navigation);
 
-            if (this.displayMode == AvatarDisplayMode.DynamicDisplay)
+            switch (displayMode)
             {
-                this.RenewAppearance();
-            }
-            else if (this.displayMode == AvatarDisplayMode.DefaultDisplay && !this.defaultDisplay)
-            {
-                foreach (Transform child in this.anchor.transform)
-                {
-                    Destroy(child.gameObject);
-                }
+                case AvatarDisplayMode.None:
+                    break;
 
-                if (this.defaultAvatar != null)
-                {
-                    Instantiate(this.defaultAvatar, this.anchor.transform);
-                }
+                case AvatarDisplayMode.DynamicDisplay:
+                    if (this.defaultDisplay)
+                    {
+                        Destroy(this.anchor.transform.GetChild(0));
+                        defaultDisplay = !defaultDisplay;
+                    }
 
-                this.defaultDisplay = !this.defaultDisplay;
+                    this.RenewAppearance();
 
-                this.anchor.transform.localScale = new Vector3(
-                    1 / avatarDto.ScaleScene.X,
-                    1 / avatarDto.ScaleScene.Y,
-                    1 / avatarDto.ScaleScene.Z);
-            }
-            else if (this.displayMode == AvatarDisplayMode.APIDisplay)
-            {
-                // Connect an API
+                    this.anchor.transform.localScale = new Vector3(
+                        1 / avatarDto.ScaleScene.X,
+                        1 / avatarDto.ScaleScene.Y,
+                        1 / avatarDto.ScaleScene.Z);
+
+                    break;
+
+                case AvatarDisplayMode.DefaultDisplay:
+                    if (!this.defaultDisplay)
+                    {
+                        foreach (Transform child in this.anchor.transform)
+                        {
+                            Destroy(child.gameObject);
+                        }
+
+                        if (this.defaultAvatar != null)
+                        {
+                            Instantiate(this.defaultAvatar, this.anchor.transform);
+                        }
+
+                        this.defaultDisplay = !this.defaultDisplay;
+
+                        this.anchor.transform.localScale = new Vector3(
+                            1 / avatarDto.ScaleScene.X,
+                            1 / avatarDto.ScaleScene.Y,
+                            1 / avatarDto.ScaleScene.Z);
+                    }
+
+                    this.RenewAppearance();
+
+                    break;
+
+                case AvatarDisplayMode.GLTFDisplay:
+                    if (!this.defaultDisplay)
+                    {
+                        foreach (Transform child in this.anchor.transform)
+                        {
+                            Destroy(child.gameObject);
+                        }
+
+                        if (this.GLTFAvatar != null)
+                        {
+                            Instantiate(this.GLTFAvatar, this.anchor.transform);
+                        }
+
+                        this.defaultDisplay = !this.defaultDisplay;
+
+                        // size a la mano pour le moment. Dépend du modèle.
+
+                        this.anchor.transform.localScale = new Vector3(
+                            1.8f * 1.05f / avatarDto.ScaleScene.X,
+                            1.8f * 1.05f / avatarDto.ScaleScene.Y,
+                            1.8f * 1.05f / avatarDto.ScaleScene.Z);
+                    }
+
+                    this.RenewAppearance();
+
+                    break;
+
+                case AvatarDisplayMode.APIDisplay:
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -113,24 +175,24 @@ namespace umi3d.edk
         {
             var parent = transform.parent;
             transform.SetParent(UMI3D.Scene.transform);
-            transform.localPosition = navigation.TrackingZonePosition;
-            transform.localRotation = navigation.TrackingZoneRotation;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
             transform.SetParent(parent);
-
-            viewpoint.transform.SetParent(transform);
 
             avatarDto = navigation.Avatar;
 
-            Vector3 position = new Vector3(
-                navigation.CameraPosition.X / avatarDto.ScaleScene.X,
-                navigation.CameraPosition.Y / avatarDto.ScaleScene.Y,
-                navigation.CameraPosition.Z / avatarDto.ScaleScene.Z);
+            Vector3 position = ((Vector3)navigation.CameraDto.Position).Unscaled(avatarDto.ScaleScene);
 
             viewpoint.transform.position = position;
-            viewpoint.transform.localRotation = navigation.CameraRotation;
+            viewpoint.transform.localRotation = navigation.CameraDto.Rotation;
+            viewpoint.projectionMatrix = navigation.CameraDto.projectionMatrix;
 
             anchor.transform.position = viewpoint.transform.position;
             anchor.transform.rotation = viewpoint.transform.rotation;
+
+            if (usernameDisplayer != null)
+                usernameDisplayer.transform.position = viewpoint.transform.position;
+            //usernameDisplayer.transform.rotation = viewpoint.transform.rotation; //billboard
 
             GetComponent<GenericObject3D>().PropertiesHandler.NotifyUpdate();
         }
@@ -140,12 +202,6 @@ namespace umi3d.edk
         /// </summary>
         private void RenewAppearance()
         {
-            if (this.defaultDisplay)
-            {
-                Destroy(this.anchor.transform.GetChild(0));
-                defaultDisplay = !defaultDisplay;
-            }
-
             List<BoneDto> newBoneListFromBrowser = avatarDto.boneList;
 
             List<string> bonesToDelete = new List<string>();
@@ -166,9 +222,9 @@ namespace umi3d.edk
                 .FindAll(oldBoneId =>
                     newBoneListFromBrowser.Exists(newBone => newBone.Id.Equals(oldBoneId)));
 
-            bonesToCreate = newBoneListFromBrowser.FindAll(newBoneDto => 
-                !oldSkeleton.Exists(oldBone => 
-                    oldBone.boneId.Equals(newBoneDto.Id)))            
+            bonesToCreate = newBoneListFromBrowser.FindAll(newBoneDto =>
+                !oldSkeleton.Exists(oldBone =>
+                    oldBone.boneId.Equals(newBoneDto.Id)))
                 .ConvertAll<string>(bone => bone.Id);
 
 
@@ -185,21 +241,17 @@ namespace umi3d.edk
                 UpdateBone(UMI3D.Scene.GetObject(umi3DAvatarBone.boneAnchorId).gameObject, avatarDto.boneList.Find(boneDto => boneDto.Id.Equals(boneId)));
             }
 
-
             foreach (string boneId in bonesToCreate)
             {
                 UMI3DAvatarBone umi3DAvatarBone = InstanciateBone(avatarDto.boneList.Find(boneDto => boneDto.Id.Equals(boneId)));
-                umi3DAvatarBone.Register(); 
+                umi3DAvatarBone.Register();
             }
 
-
-            if (bonesToCreate.Count != 0 || bonesToDelete.Count != 0)
+            if ((bonesToCreate.Count != 0 || bonesToDelete.Count != 0) && displayMode == AvatarDisplayMode.DynamicDisplay)
             {
                 AvatarMappingDto avatarMappingDto = anchor.GetComponent<CVEAvatar>().ToDto(user);
                 user.Send(avatarMappingDto);
             }
-
-            this.anchor.transform.localScale = new Vector3(1 / avatarDto.ScaleScene.X, 1 / avatarDto.ScaleScene.Y, 1 / avatarDto.ScaleScene.Z);
         }
 
         /// <summary>
@@ -250,7 +302,7 @@ namespace umi3d.edk
             {
                 List<string> meshesIds = new List<string>();
                 GameObject Prefab;
-                if (listOfPrefabs.TryGetValue(bone.type, out Prefab))
+                if (listOfPrefabs.TryGetValue(bone.type, out Prefab) && displayMode == AvatarDisplayMode.DynamicDisplay)
                 {
                     Go = Instantiate(Prefab, anchor.transform);
                     foreach (CVEAvatarPart item in Go.GetComponentsInChildren<CVEAvatarPart>())
@@ -265,9 +317,9 @@ namespace umi3d.edk
                     Go.AddComponent<EmptyObject3D>();
                     Go.transform.parent = anchor.transform;
                 }
-                UMI3DAvatarBone umi3DAvatarBone = new UMI3DAvatarBone(user.UserId, bone.Id) 
-                { 
-                    meshes = meshesIds.ToArray(), 
+                UMI3DAvatarBone umi3DAvatarBone = new UMI3DAvatarBone(user.UserId, bone.Id)
+                {
+                    meshes = meshesIds.ToArray(),
                 };
                 GenericObject3D GoComp = Go.GetComponent<GenericObject3D>();
                 if (GoComp)

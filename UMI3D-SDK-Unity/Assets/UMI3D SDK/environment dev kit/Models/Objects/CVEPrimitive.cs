@@ -156,7 +156,7 @@ namespace umi3d.edk
                 if (video)
                     video.SyncVideo();
             }
-            catch (Exception e)
+            catch 
             {
                 return;
             }

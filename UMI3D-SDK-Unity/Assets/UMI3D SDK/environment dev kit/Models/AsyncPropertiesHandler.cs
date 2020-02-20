@@ -84,6 +84,5 @@ namespace umi3d.edk
         {
             if (DelegatebroadcastUpdateForUser != null) DelegatebroadcastUpdateForUser(user);
         }
-
     }
 }

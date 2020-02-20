@@ -99,6 +99,12 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAvatar avatar;
 
+        /// <summary>
+        /// The user's name.
+        /// </summary>
+        public string UserName;
+
+
         public bool ImmersiveDeviceUser;
 
         private float TimeSinceConnectionLost = -1000;

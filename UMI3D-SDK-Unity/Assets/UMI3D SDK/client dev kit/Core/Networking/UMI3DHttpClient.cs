@@ -159,6 +159,8 @@ namespace umi3d.cdk
                                 Debug.LogWarning("No tool to project !");
                             }
                         }
+                        else if (data is NotificationDto)
+                            UMI3DBrowser.notificationManager?.Notify(data as NotificationDto);
                     }
                 }
                 yield return new WaitForSeconds(0.1f);

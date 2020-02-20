@@ -23,6 +23,8 @@ ShaderVariantCollection:
       variants:
       - keywords: DIRECTIONAL LIGHTPROBE_SH
         passType: 4
+      - keywords: DIRECTIONAL LIGHTPROBE_SH SHADOWS_SCREEN
+        passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH VERTEXLIGHT_ON
         passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH _NORMALMAP
@@ -41,6 +43,10 @@ ShaderVariantCollection:
         passType: 5
       - keywords: POINT
         passType: 5
+      - keywords: POINT SHADOWS_CUBE
+        passType: 5
+      - keywords: POINT SHADOWS_CUBE SHADOWS_SOFT
+        passType: 5
       - keywords: DIRECTIONAL _NORMALMAP
         passType: 5
       - keywords: SPOT _ALPHABLEND_ON
@@ -55,13 +61,21 @@ ShaderVariantCollection:
         passType: 5
       - keywords: SHADOWS_DEPTH
         passType: 8
+      - keywords: SHADOWS_CUBE
+        passType: 8
       - keywords: SHADOWS_DEPTH _ALPHABLEND_ON
+        passType: 8
+      - keywords: SHADOWS_CUBE _ALPHABLEND_ON
         passType: 8
       - keywords: SHADOWS_DEPTH _ALPHAPREMULTIPLY_ON
         passType: 8
   - first: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
+      - keywords: DIRECTIONAL DYNAMICLIGHTMAP_ON LIGHTMAP_ON
+        passType: 4
+      - keywords: DIRECTIONAL DYNAMICLIGHTMAP_ON LIGHTMAP_ON SHADOWS_SCREEN
+        passType: 4
       - keywords: DIRECTIONAL DIRLIGHTMAP_COMBINED DYNAMICLIGHTMAP_ON LIGHTMAP_ON
         passType: 4
       - keywords: DIRECTIONAL DIRLIGHTMAP_COMBINED DYNAMICLIGHTMAP_ON LIGHTMAP_ON
@@ -79,12 +93,16 @@ ShaderVariantCollection:
         passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH VERTEXLIGHT_ON _EMISSION
         passType: 4
+      - keywords: DIRECTIONAL DYNAMICLIGHTMAP_ON LIGHTMAP_ON _NORMALMAP
+        passType: 4
       - keywords: DIRECTIONAL DIRLIGHTMAP_COMBINED DYNAMICLIGHTMAP_ON LIGHTMAP_ON
           _NORMALMAP
         passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH _NORMALMAP
         passType: 4
       - keywords: DIRECTIONAL LIGHTPROBE_SH _EMISSION _NORMALMAP
+        passType: 4
+      - keywords: DIRECTIONAL DYNAMICLIGHTMAP_ON LIGHTMAP_ON _ALPHATEST_ON
         passType: 4
       - keywords: DIRECTIONAL DIRLIGHTMAP_COMBINED DYNAMICLIGHTMAP_ON LIGHTMAP_ON
           _ALPHATEST_ON
@@ -312,11 +330,59 @@ ShaderVariantCollection:
         passType: 0
       - keywords: UNITY_UI_ALPHACLIP
         passType: 0
+  - first: {fileID: 4800000, guid: 2d9a4ca4b2730b64e8aade7030f8caeb, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 1
+  - first: {fileID: 4800000, guid: e833a1d82dd8ca1498c865fb06e09e42, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 1
+  - first: {fileID: 4800000, guid: 0ffe2976cdefd434c8fcd886ffa69322, type: 3}
+    second:
+      variants:
+      - keywords: DIRECTIONAL LIGHTPROBE_SH _ALPHABLEND_ON _EMISSION _SPECGLOSSMAP
+        passType: 4
+  - first: {fileID: 4800000, guid: 9836e4430eb58204086d7d1440e16a4f, type: 3}
+    second:
+      variants:
+      - keywords: DIRECTIONAL LIGHTPROBE_SH _ALPHABLEND_ON
+        passType: 4
+      - keywords: DIRECTIONAL LIGHTPROBE_SH _ALPHATEST_ON _EMISSION _NORMALMAP
+        passType: 4
+      - keywords: DIRECTIONAL LIGHTPROBE_SH SHADOWS_SCREEN _VERTEX_COLORS
+        passType: 4
+      - keywords: SHADOWS_DEPTH
+        passType: 8
   - first: {fileID: 9006, guid: 0000000000000000f000000000000000, type: 0}
     second:
       variants:
       - keywords: 
         passType: 0
+  - first: {fileID: 4800000, guid: 68e6db2ebdc24f95958faec2be5558d6, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: UNDERLAY_ON
+        passType: 0
+      - keywords: BEVEL_ON UNDERLAY_ON
+        passType: 0
+      - keywords: GLOW_ON UNDERLAY_ON
+        passType: 0
+      - keywords: BEVEL_ON GLOW_ON UNDERLAY_ON
+        passType: 0
+      - keywords: OUTLINE_ON UNDERLAY_ON
+        passType: 0
+  - first: {fileID: 4800000, guid: 85187c2149c549c5b33f0cdb02836b17, type: 3}
+    second:
+      variants:
+      - keywords: DIRECTIONAL LIGHTPROBE_SH
+        passType: 4
+      - keywords: SHADOWS_DEPTH
+        passType: 8
   - first: {fileID: 4800000, guid: fe393ace9b354375a9cb14cdbbc28be4, type: 3}
     second:
       variants:

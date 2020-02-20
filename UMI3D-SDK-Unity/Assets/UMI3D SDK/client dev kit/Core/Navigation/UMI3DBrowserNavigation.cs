@@ -23,6 +23,7 @@ using umi3d.common;
 public class UMI3DBrowserNavigation : MonoBehaviour
 {
     public Transform viewpoint;
+    public Camera viewpointCamera;
     public Transform world;
     public AbstractNavigation orbitation;
     public AbstractNavigation walk;
@@ -69,14 +70,13 @@ public class UMI3DBrowserNavigation : MonoBehaviour
             {
                 var scene = UMI3DBrowser.Scene.transform;
                 UMI3DBrowserAvatar.Instance.BonesIterator(UMI3DBrowserAvatar.Instance.avatar, this.viewpoint);
-                UMI3DBrowserAvatar.Instance.avatar.ScaleScene = scene.transform.lossyScale;
+                UMI3DBrowserAvatar.Instance.avatar.ScaleScene = scene.transform.lossyScale.Unscaled(world.lossyScale);
                 var data = new NavigationRequestDto();
-                data.TrackingZonePosition = -world.position;
-                data.TrackingZoneRotation = Quaternion.Inverse(world.rotation);
-                data.CameraPosition = world.InverseTransformPoint(this.viewpoint.position) - world.InverseTransformPoint(scene.transform.position);
-                data.CameraRotation = viewpoint.rotation;
+                data.CameraDto = new CameraDto();
+                data.CameraDto.Position = world.InverseTransformPoint(this.viewpoint.position) - world.InverseTransformPoint(scene.transform.position);
+                data.CameraDto.Rotation = viewpoint.rotation * Quaternion.Inverse(world.rotation);
+                data.CameraDto.projectionMatrix = viewpointCamera.projectionMatrix;
                 data.Avatar = UMI3DBrowserAvatar.Instance.avatar;
-
                 try
                 {
                     UMI3DWebSocketClient.Navigate(data);

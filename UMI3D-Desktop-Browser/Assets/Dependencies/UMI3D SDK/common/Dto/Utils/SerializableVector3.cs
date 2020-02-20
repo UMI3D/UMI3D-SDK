@@ -54,5 +54,12 @@ namespace umi3d.common
         {
             return new Vector3(v.X, v.Y, v.Z);
         }
+
+        public float this[int i]
+        {
+            get { if (i == 0) return X; else if (i == 1) return Y; else if (i == 2) return Z; else throw new ArgumentOutOfRangeException(); }
+            set { if (i == 0) X = value; else if (i == 1) Y = value; else if (i == 2) Z = value; else throw new ArgumentOutOfRangeException(); }
+        }
+
     }
 }

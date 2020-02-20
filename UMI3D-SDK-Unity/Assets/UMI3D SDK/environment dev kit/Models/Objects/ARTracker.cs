@@ -96,6 +96,9 @@ namespace umi3d.edk
             dto.PositionOffset = objectPositionOffset.GetValue(user);
             dto.RotationOffset = Quaternion.Euler(objectRotationOffset.GetValue(user));
             dto.ScaleOffset = objectScaleOffset.GetValue(user);
+            dto.TargetWorldPosition = UMI3D.Instance.transform.InverseTransformPoint(transform.position + transform.rotation * objectPositionOffset.GetValue(user).Scaled(transform.lossyScale));
+            dto.TargetWorldRotation = transform.rotation * Quaternion.Euler(objectRotationOffset.GetValue(user)) * Quaternion.Inverse(UMI3D.Instance.transform.rotation);
+            dto.TargetWorldScale = transform.lossyScale.Scaled(objectScaleOffset.GetValue(user)).Unscaled(UMI3D.Instance.transform.lossyScale);
             return dto;
         }
 
@@ -114,5 +117,29 @@ namespace umi3d.edk
                 SyncProperties();
         }
 
+        Color color = new Color(1, 0, 0, 0.3f);
+        private void OnDrawGizmosSelected()
+        {
+#if UNITY_EDITOR
+            Gizmos.color = color;
+
+
+            Gizmos.DrawLine(
+                transform.position,
+                transform.position + transform.rotation * PositionOffset.Scaled(transform.lossyScale)
+            );
+
+            Matrix4x4 baserot = Gizmos.matrix;
+            Matrix4x4 rotationMatrix = Matrix4x4.TRS(transform.position + transform.rotation * PositionOffset.Scaled(transform.lossyScale), transform.rotation * Quaternion.Euler(RotationOffset), transform.lossyScale);
+            Gizmos.matrix = rotationMatrix;
+            Vector3 scale = new Vector3(1, 0.01f, 1);
+            scale.Scale(ScaleOffset);
+            scale.y = 0.01f;
+            Gizmos.DrawCube(Vector3.zero, scale);
+
+            Gizmos.matrix = baserot;
+            Gizmos.color = Color.white;
+#endif
+        }
     }
 }

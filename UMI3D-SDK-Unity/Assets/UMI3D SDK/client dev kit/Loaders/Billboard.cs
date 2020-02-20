@@ -20,14 +20,33 @@ using UnityEngine;
 /// <summary>
 /// Constraint the object's rotation to make it face the main camera.
 /// </summary>
-public class Billboard : MonoBehaviour {
+public class Billboard : MonoBehaviour
+{
+
+    public bool X;
+    public bool Y;
+    public Quaternion rotation;
 
     void Start()
     {
-        transform.LookAt(Camera.main.transform.position, Vector3.up);
+        ComputeOriantation();
     }
-   
-    void Update () {
-        transform.LookAt(Camera.main.transform.position, Vector3.up);
+
+    void Update()
+    {
+        ComputeOriantation();
+    }
+
+    void ComputeOriantation()
+    {
+        Vector3 pos = (Camera.main.transform.position - transform.position);
+
+        if (!X) { pos -= Vector3.up * Vector3.Dot(Vector3.up, pos); }
+        if (!Y) { pos -= Vector3.right * Vector3.Dot(Vector3.right, pos); }
+
+        if (pos != Vector3.zero)
+            transform.rotation = Quaternion.LookRotation(-pos) * rotation;
+        else
+            transform.rotation = rotation;
     }
 }

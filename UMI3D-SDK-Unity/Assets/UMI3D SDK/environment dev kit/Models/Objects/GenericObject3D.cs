@@ -42,6 +42,7 @@ namespace umi3d.edk
         protected bool inited = false;
 
         public AsyncPropertiesHandler PropertiesHandler { protected set; get; }
+        UMI3DAsyncPropertyEquality PropertyEquality;
 
         /// <summary>
         /// The objects's unique id. 
@@ -80,15 +81,26 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Indicates if the object is permanently facing the users
+        /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectBillboard;
+        public UMI3DAsyncProperty<bool> objectXBillboard;
+        /// <summary>
+        /// Indicates if the object is permanently facing the users YBillboard
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectYBillboard;
+
 
         /// <summary>
-        /// An editor field to modify default objectBillboard value
+        /// An editor field to modify default objectXBillboard value
         /// </summary>
         [SerializeField]
-        protected bool billboard = false;
+        protected bool Xbillboard = false;
+        /// <summary>
+        /// An editor field to modify default objectYBillboard value
+        /// </summary>
+        [SerializeField]
+        protected bool Ybillboard = false;
+
 
         /// <summary>
         /// False if the object is alowed to move during the application exectution.
@@ -231,18 +243,23 @@ namespace umi3d.edk
             PropertiesHandler.DelegateBroadcastUpdate += BroadcastUpdates;
             PropertiesHandler.DelegatebroadcastUpdateForUser += BroadcastUpdates;
 
+            PropertyEquality = new UMI3DAsyncPropertyEquality();
+            PropertyEquality.epsilon = 0.000001f;
 
-            objectPosition = new UMI3DAsyncProperty<Vector3>(PropertiesHandler, new Vector3());
+            objectPosition = new UMI3DAsyncProperty<Vector3>(PropertiesHandler, new Vector3(), false, PropertyEquality.Vector3Equality);
             objectPosition.OnValueChanged += (Vector3 p) => transform.localPosition = p;
 
-            objectRotation = new UMI3DAsyncProperty<Quaternion>(PropertiesHandler, new Quaternion());
+            objectRotation = new UMI3DAsyncProperty<Quaternion>(PropertiesHandler, new Quaternion(), false, PropertyEquality.QuaternionEquality);
             objectRotation.OnValueChanged += (Quaternion r) => transform.localRotation = r;
 
-            objectScale = new UMI3DAsyncProperty<Vector3>(PropertiesHandler, new Vector3());
+            objectScale = new UMI3DAsyncProperty<Vector3>(PropertiesHandler, new Vector3(),false, PropertyEquality.Vector3Equality);
             objectScale.OnValueChanged += (Vector3 s) => transform.localScale = s;
 
-            objectBillboard = new UMI3DAsyncProperty<bool>(PropertiesHandler, this.billboard);
-            objectBillboard.OnValueChanged += (bool b) => billboard = b;
+            objectXBillboard = new UMI3DAsyncProperty<bool>(PropertiesHandler, this.Xbillboard);
+            objectXBillboard.OnValueChanged += (bool b) => Xbillboard = b ;
+
+            objectYBillboard = new UMI3DAsyncProperty<bool>(PropertiesHandler,  this.Ybillboard );
+            objectYBillboard.OnValueChanged += (bool b) =>  Ybillboard = b;
 
             objectImmersiveOnly = new UMI3DAsyncProperty<bool>(PropertiesHandler, this.immersiveOnly);
             objectImmersiveOnly.OnValueChanged += (bool b) => immersiveOnly = b;
@@ -311,7 +328,8 @@ namespace umi3d.edk
         {
             if (inited)
             {
-                objectBillboard.SetValue(billboard);
+                objectXBillboard.SetValue(Xbillboard);
+                objectYBillboard.SetValue(Ybillboard);
                 SyncTransform();
             }
         }
@@ -398,7 +416,7 @@ namespace umi3d.edk
             if (!VisibilityOnFrame.ContainsKey(user))
                 VisibilityOnFrame.Add(user, true);
 
-            if (!gameObject.activeInHierarchy || !user.ImmersiveDeviceUser && immersiveOnly)
+            if (!gameObject.activeInHierarchy || !enabled || (!user.ImmersiveDeviceUser && immersiveOnly))
             {
                 VisibilityOnFrame[user] = false;
                 return false;

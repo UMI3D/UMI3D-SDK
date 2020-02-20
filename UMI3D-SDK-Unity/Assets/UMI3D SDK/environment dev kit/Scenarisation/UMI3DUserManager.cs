@@ -50,6 +50,22 @@ namespace umi3d.edk
         public GameObject DefaultAvatar;
 
         /// <summary>
+        /// Contain the default avatar GameObject.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("GLTF avatar GameObject.")]
+        public GameObject GLTFAvatar;
+
+        /// <summary>
+        /// Contain the username displayer GameObject.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Username displayer GameObject.")]
+        public GameObject UsernameDisplayer;
+
+        public bool DisplayName = false;
+
+        /// <summary>
         /// Contain the default avatar spawn position.
         /// </summary>
         [SerializeField]
@@ -134,17 +150,30 @@ namespace umi3d.edk
             GameObject viewpoint = new GameObject("viewpoint");
             GameObject Anchor = new GameObject("Anchor");
 
+
+            GameObject nameDisplayer = null;
+
+            if (DisplayName)
+            {
+                if (UsernameDisplayer != null)
+                    nameDisplayer = Instantiate(UsernameDisplayer, avatar.transform);
+            }
+
             viewpoint.transform.SetParent(avatar.transform);
             Anchor.transform.SetParent(avatar.transform);           
 
             avatar.AddComponent<EmptyObject3D>();
 
-            UMI3DAvatar avt = this.setAvatar(avatar, viewpoint, Anchor);
+            UMI3DAvatar avt = this.setAvatar(avatar, viewpoint.AddComponent<Camera>(), Anchor, nameDisplayer);
 
             avatar.transform.SetParent(transform, false);
             userObj.transform.SetParent(UMI3D.Scene.transform, false);
             UMI3DUser user = userObj.AddComponent<UMI3DUser>();
             user.avatar = avatar.GetComponent<UMI3DAvatar>();
+            user.UserName = connection.UserName;
+
+            if (DisplayName)
+                nameDisplayer.GetComponent<UsernameDisplayer>().SetDisplayer(user.UserName, "");
 
             if (avt != null)
                 avt.user = user;
@@ -162,7 +191,7 @@ namespace umi3d.edk
             UsersMap.Add(id, user);
             userObj.name = "user " + id;
             avatar.name = "avatar_user " + id;
-            user.avatar.anchor.name = "Anchor_user " + id;
+            avt.anchor.name = "Anchor_user " + id;
             user.ImmersiveDeviceUser = connection.IsImmersive;
 
             UMI3D.OnUserCreate.Invoke(user);
@@ -172,17 +201,23 @@ namespace umi3d.edk
         /// <summary>
         /// Add a UMI3DAvatar component with the appropriate parameters.
         /// </summary>
-        private UMI3DAvatar setAvatar(GameObject avatar, GameObject viewpoint, GameObject anchor)
+        private UMI3DAvatar setAvatar(GameObject avatar, Camera viewpoint, GameObject anchor, GameObject nameDisplayer)
         {
             UMI3DAvatar avt = avatar.AddComponent<UMI3DAvatar>();
             avt.viewpoint = viewpoint;
             avt.anchor = anchor;
+
+            if (DisplayName)
+                avt.usernameDisplayer = nameDisplayer;
+
             avt.listOfPrefabs = this.prefabsDictionary;
             avt.bonesToFilter = this.BonesToFilter;
             avt.defaultAvatar = this.DefaultAvatar;
+            avt.GLTFAvatar = this.GLTFAvatar;
             avt.displayMode = this.AvatarDisplay;
             return avt;
         }
+
 
         /// <summary>
         /// Called during a connection closure.

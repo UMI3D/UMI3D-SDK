@@ -20,6 +20,7 @@ namespace umi3d.common
         None,
         DynamicDisplay,
         DefaultDisplay,
+        GLTFDisplay,
         APIDisplay
     }
 }

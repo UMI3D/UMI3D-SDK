@@ -18,7 +18,7 @@ using UnityEngine;
 using umi3d.common;
 using System.Collections;
 using System.Collections.Generic;
-
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -27,6 +27,10 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractScene : MonoBehaviour
     {
+        [System.Serializable]
+        public class LoadEvent : UnityEvent<AbstractObject3DDto> { }
+        public LoadEvent onObjectLoaded = new LoadEvent();
+
         /// <summary>
         /// Objects stored in the scene.
         /// </summary>
@@ -61,9 +65,9 @@ namespace umi3d.cdk
         /// <summary>
         /// Is this device a full 3D media displayer (sush as Computer or Virtual reality headset).
         /// </summary>
-        static public bool IsImmersiveDevice = true;
+        static public bool isImmersiveDevice = true;
         [SerializeField]
-        bool _IsImmersiveDevice = true;
+        bool _isImmersiveDevice = true;
 
         /// <summary>
         /// Skybox material.
@@ -80,6 +84,16 @@ namespace umi3d.cdk
         /// </summary>
         public Shader defaultMeshShader;
 
+        /// <summary>
+        /// True if the first scene load has been done.
+        /// </summary>
+        private bool firstLoadDone = false;
+
+        /// <summary>
+        /// Event raised when the scene has been fully loaded.
+        /// </summary>
+        public UnityEvent onSceneLoaded = new UnityEvent();
+
 
         // Use this for initialization
         protected void Start()
@@ -88,7 +102,7 @@ namespace umi3d.cdk
             dtos = new Dictionary<string, AbstractObject3DDto>();
             avatars = new Dictionary<string, AvatarDto>();
 
-            IsImmersiveDevice = _IsImmersiveDevice;
+            isImmersiveDevice = _isImmersiveDevice;
 
 
 
@@ -202,6 +216,7 @@ namespace umi3d.cdk
                 avatars.Clear();
             foreach (Transform t in gameObject.transform)
                 Destroy(t.gameObject);
+            firstLoadDone = false;
         }
 
         /// <summary>
@@ -261,6 +276,7 @@ namespace umi3d.cdk
                     objects.Add(def.Id, result);
                     SetLayerRecursively(result, gameObject.layer);
                     finished = true;
+                    onObjectLoaded.Invoke(def);
                 });
                 while (!finished)
                     yield return new WaitForEndOfFrame();
@@ -274,6 +290,13 @@ namespace umi3d.cdk
             }
             isloading = false;
             yield return null;
+
+            while (countLoading >= 0)
+                yield return new WaitForEndOfFrame();
+
+            if (!firstLoadDone)
+                onSceneLoaded.Invoke();
+            firstLoadDone = true;
         }
 
         /// <summary>

@@ -120,10 +120,10 @@ namespace umi3d.cdk
         /// <param name="newdto">Dto to update the gameobject transform to</param>
         protected virtual void UpdateTransform(GameObject go, DTO olddto, DTO newdto)
         {
-            if(AbstractScene.IsImmersiveDevice || newdto.TrackerDto == null)
+            if(AbstractScene.isImmersiveDevice || newdto.TrackerDto == null)
                 go.transform.localPosition = newdto.Position;
             go.transform.localScale = newdto.Scale;
-            if (!newdto.Billboard)
+            if (!newdto.XBillboard && !newdto.YBillboard )
                 go.transform.localRotation = newdto.Rotation;
         }
 
@@ -136,7 +136,7 @@ namespace umi3d.cdk
         protected virtual void UpdateARTracker(GameObject go, DTO newdto)
         {
             var arTracker = go.GetComponent<ARTrackerObject>();
-            if (!AbstractScene.IsImmersiveDevice && newdto.TrackerDto != null)
+            if (!AbstractScene.isImmersiveDevice && newdto.TrackerDto != null)
             {
                 if (arTracker == null)
                 {
@@ -170,10 +170,13 @@ namespace umi3d.cdk
         protected virtual void UpdateBillboard(GameObject go, DTO newdto)
         {
             var billboard = go.GetComponent<Billboard>();
-            if (newdto.Billboard)
+            if (newdto.XBillboard || newdto.YBillboard)
             {
                 if (billboard == null)
-                    go.AddComponent<Billboard>();
+                    billboard = go.AddComponent<Billboard>();
+                billboard.X = newdto.XBillboard;
+                billboard.Y = newdto.YBillboard;
+                billboard.rotation = newdto.Rotation;
             }
             else
             {

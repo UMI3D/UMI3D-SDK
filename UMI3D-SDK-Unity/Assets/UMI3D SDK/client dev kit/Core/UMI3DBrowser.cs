@@ -124,6 +124,11 @@ namespace umi3d.cdk
         [System.Obsolete("Will be deleted soon")]
         public bool connectOnStart = true;
 
+        /// <summary>
+        /// Raised on connection to an environment.
+        /// </summary>
+        public UnityEvent onStartLoading;
+
         #region modules
 
 
@@ -175,7 +180,12 @@ namespace umi3d.cdk
             }
         }
 
-
+        [SerializeField]
+        private AbstractNotificationManager notificationManager_ = null;
+        public static AbstractNotificationManager notificationManager 
+        { 
+            get { return Exist ? Instance.notificationManager_ : null; } 
+        }
         
         #endregion
         
@@ -259,9 +269,10 @@ namespace umi3d.cdk
             ResetModules();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             UMI3DHttpClient.Logout();
+            base.OnDestroy();
         }
 
         /// <summary>
@@ -288,6 +299,7 @@ namespace umi3d.cdk
             Scene.SetSkybox(Media.Skybox);
             UMI3DWebSocketClient.Init();
             Instance.StartCoroutine(Instance.EnterTeleportationAfterSetup(data.UserPosition));
+            Instance.onStartLoading.Invoke();
         }
 
         public static bool isEnterTeleportationAllowed = false;
@@ -344,7 +356,7 @@ namespace umi3d.cdk
             UMI3DHttpClient.Login(new ConnectionRequestDto()
             {
                 UserName = "toto",
-                IsImmersive = AbstractScene.IsImmersiveDevice
+                IsImmersive = AbstractScene.isImmersiveDevice
             });
 
         }

@@ -165,7 +165,7 @@ public class InteractionMapper : AbstractInteractionMapper
 
         if (toolIdToController.TryGetValue(tool.id, out AbstractController controller))
         {
-            controller.Release(tool);
+            controller.Release(tool,reason);
             toolIdToController.Remove(tool.id);
             projectedTools.Remove(tool.id);
 
@@ -235,7 +235,7 @@ public class InteractionMapper : AbstractInteractionMapper
             toolIdToController.Add(tool.id, controller);
             projectedTools.Add(tool.id, reason);
 
-            controller.Project(tool);
+            controller.Project(tool,reason);
 
             return true;
         }
@@ -266,7 +266,7 @@ public class InteractionMapper : AbstractInteractionMapper
     //this function will change/move in the future.
     protected bool ShouldForceProjection(AbstractController controller, AbstractTool tool, InteractionMappingReason reason)
     {
-        if (controller.IsAvailableFor(tool))
+        if (controller.IsAvailableFor(tool))    
             return true;
 
         if (controller.tool == null)

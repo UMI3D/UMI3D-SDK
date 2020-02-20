@@ -35,7 +35,8 @@ namespace umi3d.common
         public SerializableQuaternion Rotation = null;
         public SerializableVector3 Scale = null;
         public string Pid = null;
-        public bool Billboard = false;
+        public bool XBillboard = false;
+        public bool YBillboard = false;
         public float Time = 0f;
         public InteractableDto Interactable = null;
     }

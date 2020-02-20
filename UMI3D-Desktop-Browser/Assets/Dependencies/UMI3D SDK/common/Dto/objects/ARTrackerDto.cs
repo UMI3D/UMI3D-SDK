@@ -26,6 +26,10 @@ namespace umi3d.common
         public SerializableVector3 PositionOffset = null;
         public SerializableQuaternion RotationOffset = null;
         public SerializableVector3 ScaleOffset = null;
+        public SerializableVector3 TargetWorldPosition = null;
+        public SerializableQuaternion TargetWorldRotation = null;
+        public SerializableVector3 TargetWorldScale = null;
+
         public ARTrackerDto() : base() { }
     }
 }

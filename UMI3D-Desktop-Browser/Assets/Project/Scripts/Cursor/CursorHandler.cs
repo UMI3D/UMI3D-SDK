@@ -28,11 +28,13 @@ namespace BrowserDesktop.Cursor
         public RectTransform CircleCursor;
         public RectTransform ClickedCursor;
         public RectTransform LeftClickOptionCursor;
+        public RectTransform LeftClickExitCursor;
 
         public enum CursorState { Default, Hover, Clicked }
         public enum CursorMovement { Free, Center, Confined }
 
         public bool MenuIndicator = false;
+        public bool ExitIndicator = false;
 
         CursorState state;
         CursorMovement cursorMovement;
@@ -87,6 +89,7 @@ namespace BrowserDesktop.Cursor
                 stateUpdated = false;
             }
             if (LeftClickOptionCursor.gameObject.activeSelf != (LastMenuState && MenuIndicator)) LeftClickOptionCursor.gameObject.SetActive(LastMenuState && MenuIndicator);
+            if (LeftClickExitCursor.gameObject.activeSelf != (LastMenuState && ExitIndicator)) LeftClickExitCursor.gameObject.SetActive(LastMenuState && ExitIndicator);
 
         }
 

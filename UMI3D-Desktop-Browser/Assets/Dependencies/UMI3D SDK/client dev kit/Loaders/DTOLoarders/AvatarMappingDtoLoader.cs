@@ -30,11 +30,8 @@ namespace umi3d.cdk
             try
             {
                 GameObject avatarObj = UMI3DBrowserAvatar.Instance.gameObject;
-                AvatarMapping avatarMapping = avatarObj.GetComponent<AvatarMapping>();
-                if (!avatarMapping)
-                {
-                    avatarMapping = avatarObj.AddComponent<AvatarMapping>();
-                }
+                AvatarMapping avatarMapping = AvatarMapping.Instance;
+
                 avatarMapping.SetMapping(avatarMappingDto.userId, avatarMappingDto.bonePairDictionary);
                 UpdateFromDTO(avatarObj, avatarMappingDto);
             }
@@ -51,7 +48,7 @@ namespace umi3d.cdk
         /// <param name="newdto">Dto to update the AvatarMapping to</param>
         public void UpdateFromDTO(GameObject go, AvatarMappingDto newdto)
         {
-            go.GetComponent<AvatarMapping>().SetMapping(newdto.userId, newdto.bonePairDictionary);
+             AvatarMapping.Instance.SetMapping(newdto.userId, newdto.bonePairDictionary);
         }
     }
 }

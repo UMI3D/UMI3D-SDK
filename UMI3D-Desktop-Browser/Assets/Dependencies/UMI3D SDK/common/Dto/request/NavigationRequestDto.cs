@@ -13,17 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-
 namespace umi3d.common
 {
     [System.Serializable]
     public class NavigationRequestDto:UMI3DDto
     {
-        public SerializableVector3 TrackingZonePosition;
-        public SerializableQuaternion TrackingZoneRotation;
-        public SerializableVector3 CameraPosition;
-        public SerializableQuaternion CameraRotation;
+        public CameraDto CameraDto;
+
         public AvatarDto Avatar;
 
         public NavigationRequestDto() : base() { }
