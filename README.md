@@ -3,7 +3,7 @@ UMI3D is a web protocol that enables the creation of 3D media in which users of 
 
 For more information about UMI3D, visit the UMI3D Consortium's website: https://umi3d-consortium.org
 
-The Current UMI3D-SDK version is the 1.0.b.200110.
+The Current UMI3D-SDK version is the 1.1.b.200219.
 There is currently no documentation or tutorial online. Those should be uploaded with upcomming UMI3D-SDK version 1.0.
 
 The Git contain two unity projects.
