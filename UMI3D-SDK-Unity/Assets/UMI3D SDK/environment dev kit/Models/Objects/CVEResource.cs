@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using System.IO;
 using umi3d.common;
-
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -62,23 +63,53 @@ namespace umi3d.edk
             NotifyUpdate();
         }
 
-        public string GetUrl()
+        public string GetOsFolder(string path, UMI3DUser user = null)
+        {
+            if (path != null && path != "")
+            {
+                OSQualitycollection.OSQualityFolder bestQualities = null;
+                UMI3D.Scene.OSQualitycollection.DefaultQuality.path = UMI3D.Scene.OSQualitycollection.DefaultQuality.path.Replace(@"\", "/");
+                if (user != null && UMI3D.Exist && user.os != null && user.os != "")
+                {
+                    string basePath = UMI3D.GetResourceRoot();
+                    foreach (OSQualitycollection.OSQualityFolder qualities in UMI3D.Scene.OSQualitycollection.OSQualities)
+                    {
+                        qualities.path = qualities.path.Replace(@"\", "/");
+                        if (qualities.os == user.os && qualities.quality == user.quality)
+                        {
+                            if (File.Exists(System.IO.Path.GetFullPath(basePath + qualities.path + path)))
+                            {
+                                bestQualities = qualities;
+                            }
+                        }
+                    }
+                }
+                string basepath = ((bestQualities != null) ? bestQualities.path : UMI3D.Scene.OSQualitycollection.DefaultQuality.path);
+                if (basepath != null && basepath != "")
+                {
+                    return umi3d.Path.Combine(basepath + path);
+                }
+            }
+            return path;
+        }
+
+        public string GetUrl(UMI3DUser user = null)
         {
             Path = Path.Replace(@"\", "/");
             if ( Path != null && Path != "" && !(Path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
             {
                 Path = "/" + Path;
             }
-            return ((IsLocalFile && UMI3D.
+            return umi3d.Path.Combine(((IsLocalFile && UMI3D.
                 Server.
-                GetEnvironmentUrl() != null) ? UMI3D.Server.GetEnvironmentUrl() : Domain) + Path;
+                GetEnvironmentUrl() != null) ? UMI3D.Server.GetEnvironmentUrl() : Domain) , GetOsFolder(Path,user));
         }
 
         public ResourceDto ToDto(UMI3DUser user)
         {
             var dto = new ResourceDto();
 
-            dto.Url = GetUrl();
+            dto.Url = GetUrl(user);
             dto.ApiKey = ApiKey;
             dto.Login = objectLogin.GetValue(user);
             dto.Password = objectPassword.GetValue(user);

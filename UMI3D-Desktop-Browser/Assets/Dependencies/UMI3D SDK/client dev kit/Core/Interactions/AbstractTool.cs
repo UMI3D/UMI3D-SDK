@@ -17,6 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -27,7 +28,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Tool Id.
         /// </summary>
-        public string id { get { return abstractDto.Id; } }
+        public string id { get { return abstractDto.id; } }
         
         /// <summary>
         /// Toolbox name.
@@ -54,6 +55,17 @@ namespace umi3d.cdk
         /// </summary>
         public List<string> interactions = new List<string>();
 
+        /// <summary>
+        /// Event raised when the abstract tool is projected.
+        /// </summary>
+        public UnityEvent onProject = new UnityEvent();
+
+        /// <summary>
+        /// Event raised when the abstract tool is released.
+        /// </summary>
+        public UnityEvent onRelease = new UnityEvent();
+
+
         protected abstract AbstractToolDto abstractDto { get; set; }
 
         /// <summary>
@@ -63,7 +75,7 @@ namespace umi3d.cdk
         public virtual void SetFromDto(AbstractToolDto dto)
         {
             this.abstractDto = dto;
-            interactions = dto.interactions.ConvertAll(inter => inter.Id);
+            interactions = dto.interactions.ConvertAll(inter => inter.id);
         }
 
                

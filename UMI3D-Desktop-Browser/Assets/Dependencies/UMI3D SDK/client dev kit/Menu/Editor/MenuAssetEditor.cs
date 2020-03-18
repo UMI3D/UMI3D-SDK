@@ -20,69 +20,74 @@ using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using umi3d.cdk.menu.core;
 
-[CustomEditor(typeof(MenuAsset))]
-public class MenuAssetEditor : Editor
+#if UNITY_EDITOR
+namespace umi3d.cdk.editor
 {
-    MenuAsset menuAsset;
-    
-    // SerializeField is used to ensure the view state is written to the window 
-    // layout file. This means that the state survives restarting Unity as long as the window
-    // is not closed. If the attribute is omitted then the state is still serialized/deserialized.
-    [SerializeField] TreeViewState m_TreeViewState;
-    SimpleTreeView treeView;
-
-
-    void OnEnable()
+    [CustomEditor(typeof(MenuAsset))]
+    public class MenuAssetEditor : Editor
     {
-        if (m_TreeViewState == null)
-            m_TreeViewState = new TreeViewState();
+        MenuAsset menuAsset;
 
-        treeView = new SimpleTreeView(m_TreeViewState);
-    }
+        // SerializeField is used to ensure the view state is written to the window 
+        // layout file. This means that the state survives restarting Unity as long as the window
+        // is not closed. If the attribute is omitted then the state is still serialized/deserialized.
+        [SerializeField] TreeViewState m_TreeViewState;
+        SimpleTreeView treeView;
 
-    public override void OnInspectorGUI()
-    {
-        menuAsset = target as MenuAsset;
 
-        if ((menuAsset != null) && (menuAsset.menu != null))
+        void OnEnable()
+        {
+            if (m_TreeViewState == null)
+                m_TreeViewState = new TreeViewState();
+
+            treeView = new SimpleTreeView(m_TreeViewState);
+        }
+
+        public override void OnInspectorGUI()
+        {
+            menuAsset = target as MenuAsset;
+
+            if ((menuAsset != null) && (menuAsset.menu != null))
+            {
+                List<TreeViewItem> list = new List<TreeViewItem>();
+                list = toList(menuAsset.menu, 0, 1);
+                treeView.SetItems(list);
+                treeView.Reload();
+                treeView.OnGUI(EditorGUILayout.GetControlRect(true, 500));
+            }
+            else
+            {
+                EditorGUILayout.LabelField("No data");
+            }
+
+        }
+
+        List<TreeViewItem> toList(umi3d.cdk.menu.core.Menu menu, int depth, int id)
         {
             List<TreeViewItem> list = new List<TreeViewItem>();
-            list = toList(menuAsset.menu, 0, 1);
-            treeView.SetItems(list);
-            treeView.Reload();
-            treeView.OnGUI(EditorGUILayout.GetControlRect(true, 500));
-        }
-        else
-        {
-            EditorGUILayout.LabelField("No data");
-        }
+            int localID = id;
 
-    }
-
-    List<TreeViewItem> toList(umi3d.cdk.menu.core.Menu menu, int depth, int id)
-    {
-        List<TreeViewItem> list = new List<TreeViewItem>();
-        int localID = id;
-
-        list.Add(new TreeViewItem(localID, depth, menu.Name));
-        localID++;
-
-
-        foreach (umi3d.cdk.menu.core.Menu submenu in menu.GetSubMenu())
-        {
-            List<TreeViewItem> subList = toList(submenu, depth + 1, localID);
-            foreach (TreeViewItem item in subList)
-                list.Add(item);
-            localID += subList.Count;
-        }
-
-        foreach (umi3d.cdk.menu.core.MenuItem item in menu.GetMenuItems())
-        {
-            list.Add(new TreeViewItem(localID, depth + 1, item.Name));
+            list.Add(new TreeViewItem(localID, depth, menu.Name));
             localID++;
+
+
+            foreach (umi3d.cdk.menu.core.Menu submenu in menu.GetSubMenu())
+            {
+                List<TreeViewItem> subList = toList(submenu, depth + 1, localID);
+                foreach (TreeViewItem item in subList)
+                    list.Add(item);
+                localID += subList.Count;
+            }
+
+            foreach (umi3d.cdk.menu.core.MenuItem item in menu.GetMenuItems())
+            {
+                list.Add(new TreeViewItem(localID, depth + 1, item.Name));
+                localID++;
+            }
+
+            return list;
         }
 
-        return list;
     }
-
 }
+#endif

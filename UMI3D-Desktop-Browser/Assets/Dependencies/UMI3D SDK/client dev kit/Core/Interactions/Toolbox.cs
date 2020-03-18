@@ -59,12 +59,12 @@ namespace umi3d.cdk
         /// <param name="dto">Dto to construct from.</param>
         public void UpdateFromDto(ToolboxDto dto)
         {
-            id = dto.Id;
+            id = dto.id;
             name = dto.name;
             description = dto.description;
             icon2D = dto.icon2D;
             icon3D = dto.icon3D;
-            tools = dto.tools.ConvertAll(tool => tool.Id);
+            tools = dto.tools.ConvertAll(tool => tool.id);
         }
 
 

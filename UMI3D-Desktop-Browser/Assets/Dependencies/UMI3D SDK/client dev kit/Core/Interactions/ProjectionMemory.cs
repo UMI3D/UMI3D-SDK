@@ -86,7 +86,7 @@ namespace umi3d.cdk
 
                             return new ManipulationNode(id)
                             {
-                                id = (interaction as ManipulationDto).Id,
+                                id = (interaction as ManipulationDto).id,
                                 manipulation = interaction as ManipulationDto,
                                 manipulationDofGroupDto = sep,
                                 projectedInput = projection
@@ -117,7 +117,7 @@ namespace umi3d.cdk
                             throw new NoInputFoundException();
                         return new EventNode(id)
                         {
-                            id = (interaction as EventDto).Id,
+                            id = (interaction as EventDto).id,
                             evt = interaction as EventDto,
                             projectedInput = projection
                         };
@@ -154,7 +154,7 @@ namespace umi3d.cdk
 
                         ParameterNode param = new ParameterNode(id)
                         {
-                            id = (interaction as AbstractParameterDto).Id,
+                            id = (interaction as AbstractParameterDto).id,
                             parameter = interaction as AbstractParameterDto,
                             projectedInput = projection
                         };
@@ -207,7 +207,7 @@ namespace umi3d.cdk
 
                 return new ManipulationNode(id)
                 {
-                    id = manip.Id,
+                    id = manip.id,
                     manipulation = manip,
                     manipulationDofGroupDto = dof,
                     projectedInput = projection
@@ -249,7 +249,7 @@ namespace umi3d.cdk
 
                 return new EventNode(id)
                 {
-                    id = evt.Id,
+                    id = evt.id,
                     evt = evt,
                     projectedInput = projection
                 };
@@ -314,7 +314,7 @@ namespace umi3d.cdk
 
                             return new ManipulationNode(id)
                             {
-                                id = (interaction as ManipulationDto).Id,
+                                id = (interaction as ManipulationDto).id,
                                 manipulation = interaction as ManipulationDto,
                                 manipulationDofGroupDto = sep,
                                 projectedInput = projection
@@ -346,7 +346,7 @@ namespace umi3d.cdk
                             throw new NoInputFoundException();
                         return new EventNode(id)
                         {
-                            id = (interaction as EventDto).Id,
+                            id = (interaction as EventDto).id,
                             evt = interaction as EventDto,
                             projectedInput = projection
                         };
@@ -384,7 +384,7 @@ namespace umi3d.cdk
 
                         ParameterNode param = new ParameterNode(id)
                         {
-                            id = (interaction as AbstractParameterDto).Id,
+                            id = (interaction as AbstractParameterDto).id,
                             parameter = interaction as AbstractParameterDto,
                             projectedInput = projection
                         };

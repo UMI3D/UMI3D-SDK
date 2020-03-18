@@ -19,7 +19,7 @@ using umi3d.common;
 using System;
 using UnityEngine.Networking;
 using System.Text;
-
+using System.Collections.Generic;
 
 namespace umi3d.cdk
 {
@@ -61,13 +61,12 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="pid">the id of the parent object</param>
         /// <param name="finished">the callback to call after the children are loaded</param>
-        public static void LoadSubObjects(string pid, Action finished)
+        public static void LoadSubObjects(string pid, Action<IEnumerable<GameObject>> finished, Action<string> onError)
         {
-            loadingObjectsCount++;
-            Instance.StartCoroutine(Instance._LoadSubObjects(pid, finished));
+            Instance.StartCoroutine(Instance._LoadSubObjects(pid, finished, onError));
         }
 
-        IEnumerator _LoadSubObjects(string pid, Action finished)
+        IEnumerator _LoadSubObjects(string pid, Action<IEnumerable<GameObject>> finished, Action<string> onError)
         {
             var url = UMI3DBrowser.Media.Url + "/load?user=" + UMI3DBrowser.UserId + "&pid=" + pid;
             UnityWebRequest www = UnityWebRequest.Get(url);
@@ -78,11 +77,11 @@ namespace umi3d.cdk
             {
                 Debug.LogError(www.error);
                 Debug.LogError("Failed to load " + www.url);
+                onError("Failed to load " + www.url);
                 yield break;
             }
             var res = www.downloadHandler.text;
-            UMI3DBrowser.Scene.Load(DtoUtility.Deserialize(res) as LoadDto);
-            finished.Invoke();
+            UMI3DBrowser.Scene.Load(DtoUtility.Deserialize(res) as LoadDto, finished, onError);
         }
         #endregion
 
@@ -100,6 +99,7 @@ namespace umi3d.cdk
 
         IEnumerator _PoolUpdates()
         {
+            bool firstPool = true;
             while (true)
             {
                 if (UMI3DBrowser.UserId != null)
@@ -144,7 +144,15 @@ namespace umi3d.cdk
                             {
                                 foreach (var del in updates.RemovedObjects)
                                     UMI3DBrowser.Scene.Remove(del);
-                                UMI3DBrowser.Scene.Load(updates.LoadedObjects);
+
+                                loadingObjectsCount += updates.LoadedObjects.Entities.Count;
+                                UMI3DBrowser.Scene.Load(updates.LoadedObjects, 
+                                    x => { loadingObjectsCount -= updates.LoadedObjects.Entities.Count; }, 
+                                    (e) =>
+                                    {
+                                        Debug.LogError("Loading error "+e);
+                                        loadingObjectsCount -= updates.LoadedObjects.Entities.Count;
+                                    });
                             }
                         }
                         else if (data is ToolProjectionRequestDto)
@@ -166,6 +174,11 @@ namespace umi3d.cdk
                 yield return new WaitForSeconds(0.1f);
                 while (loadingObjectsCount > 0)
                     yield return new WaitForEndOfFrame();
+                if (firstPool)
+                {
+                    firstPool = false;
+                    UMI3DBrowser.Scene.SendOnSceneLoaded();
+                }
             }
         }
         #endregion
@@ -183,7 +196,7 @@ namespace umi3d.cdk
         {
             var request = new InteractionRequestDto
             {
-                Id = id,
+                id = id,
                 Arguments = evt
             };
             Instance.StartCoroutine(Instance._RequestInteraction(request));

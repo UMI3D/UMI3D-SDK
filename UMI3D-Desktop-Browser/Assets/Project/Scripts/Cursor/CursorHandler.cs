@@ -29,9 +29,10 @@ namespace BrowserDesktop.Cursor
         public RectTransform ClickedCursor;
         public RectTransform LeftClickOptionCursor;
         public RectTransform LeftClickExitCursor;
+        public RectTransform FollowCursor;
 
         public enum CursorState { Default, Hover, Clicked }
-        public enum CursorMovement { Free, Center, Confined }
+        public enum CursorMovement { Free, Center, Confined, FreeHiden }
 
         public bool MenuIndicator = false;
         public bool ExitIndicator = false;
@@ -72,6 +73,10 @@ namespace BrowserDesktop.Cursor
                         UnityEngine.Cursor.lockState = CursorLockMode.None;
                         UnityEngine.Cursor.visible = true;
                         break;
+                    case CursorMovement.FreeHiden:
+                        UnityEngine.Cursor.lockState = CursorLockMode.None;
+                        UnityEngine.Cursor.visible = false;
+                        break;
                     case CursorMovement.Confined:
                         UnityEngine.Cursor.lockState = CursorLockMode.Confined;
                         UnityEngine.Cursor.visible = true;
@@ -79,18 +84,19 @@ namespace BrowserDesktop.Cursor
                 }
                 movementUpdated = false;
             }
-            bool newMenuState = ((!MainMenu.Exist || !MainMenu.IsDisplaying) && cursorMovement == CursorMovement.Center);
+            bool newMenuState = ((!MainMenu.Exist || !MainMenu.IsDisplaying) && (cursorMovement == CursorMovement.Center || cursorMovement == CursorMovement.FreeHiden) );
             if (stateUpdated || LastMenuState != newMenuState)
             {
                 LastMenuState = newMenuState;
-                if (CrossCursor.gameObject.activeSelf != (state == CursorState.Default && LastMenuState)) CrossCursor.gameObject.SetActive(state == CursorState.Default && LastMenuState);
-                if (CircleCursor.gameObject.activeSelf != (state == CursorState.Hover && LastMenuState)) CircleCursor.gameObject.SetActive(state == CursorState.Hover && LastMenuState);
-                if (ClickedCursor.gameObject.activeSelf != (state == CursorState.Clicked && LastMenuState)) ClickedCursor.gameObject.SetActive(state == CursorState.Clicked && LastMenuState);
+                if (CrossCursor.gameObject.activeSelf != (cursorMovement == CursorMovement.Center && state == CursorState.Default && LastMenuState)) CrossCursor.gameObject.SetActive(cursorMovement == CursorMovement.Center && state == CursorState.Default && LastMenuState);
+                if (CircleCursor.gameObject.activeSelf != (cursorMovement == CursorMovement.Center && state == CursorState.Hover && LastMenuState)) CircleCursor.gameObject.SetActive(cursorMovement == CursorMovement.Center && state == CursorState.Hover && LastMenuState);
+                if (ClickedCursor.gameObject.activeSelf != (cursorMovement == CursorMovement.Center && state == CursorState.Clicked && LastMenuState)) ClickedCursor.gameObject.SetActive(cursorMovement == CursorMovement.Center && state == CursorState.Clicked && LastMenuState);
+                if (FollowCursor.gameObject.activeSelf != (cursorMovement == CursorMovement.FreeHiden && LastMenuState)) FollowCursor.gameObject.SetActive(cursorMovement == CursorMovement.FreeHiden && LastMenuState);
                 stateUpdated = false;
             }
             if (LeftClickOptionCursor.gameObject.activeSelf != (LastMenuState && MenuIndicator)) LeftClickOptionCursor.gameObject.SetActive(LastMenuState && MenuIndicator);
             if (LeftClickExitCursor.gameObject.activeSelf != (LastMenuState && ExitIndicator)) LeftClickExitCursor.gameObject.SetActive(LastMenuState && ExitIndicator);
-
+            if (FollowCursor.gameObject.activeSelf) FollowCursor.position = Input.mousePosition - new Vector3(Screen.width/2,Screen.height/2,0);
         }
 
         protected override void OnDestroy()

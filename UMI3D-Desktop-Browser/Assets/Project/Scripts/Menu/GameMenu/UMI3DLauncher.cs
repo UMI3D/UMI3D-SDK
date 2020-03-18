@@ -33,6 +33,7 @@ namespace BrowserDesktop.Menu
         {
             public string ip = null;
             public string port = null;
+            public string username = null;
             public string keyboard = "";
         }
         public string scene;
@@ -43,6 +44,7 @@ namespace BrowserDesktop.Menu
 
         public InputField _ip;
         public InputField _port;
+        public InputField _username;
         public Dropdown keyboardMode;
         public Text _version;
 
@@ -50,6 +52,8 @@ namespace BrowserDesktop.Menu
         void Start()
         {
             LoadXml();
+            _ip.gameObject.SetActive(true);
+            _port.gameObject.SetActive(true);
             _version.text = umi3d.UMI3DVersion.version;
             InputLayoutManager.OnLayoutLoaded.AddListener(layoutChanged);
             if (InputLayoutManager.LayoutLoaded) layoutChanged();
@@ -64,6 +68,7 @@ namespace BrowserDesktop.Menu
                 var xml = serializer.Deserialize(stream) as StartData;
                 _ip.text = xml.ip;
                 _port.text = xml.port;
+                _username.text = xml.username;
                 KeyBoardValue = xml.keyboard;
                 stream.Close();
             }
@@ -77,6 +82,7 @@ namespace BrowserDesktop.Menu
             {
                 ip = _ip.text,
                 port = _port.text,
+                username = _username.text,
                 keyboard = (keyboardMode) ? keyboardMode.options[keyboardMode.value].text : "",
             };
             serializer.Serialize(stream, xml);
@@ -104,10 +110,14 @@ namespace BrowserDesktop.Menu
 
         IEnumerator WaitReady()
         {
+            UMI3DBrowser.UserName = _username.text;
+
+
             SceneManager.LoadScene(scene, LoadSceneMode.Additive);
             while (!UMI3DBrowser.Exist)
                 yield return new WaitForEndOfFrame();
             UMI3DBrowser.ChangeEnvironment(_ip.text + ":" + _port.text);
+
             UMI3DBrowser.useQwerty = (keyboardMode.value == 1);
             SceneManager.UnloadSceneAsync(thisScene);
 

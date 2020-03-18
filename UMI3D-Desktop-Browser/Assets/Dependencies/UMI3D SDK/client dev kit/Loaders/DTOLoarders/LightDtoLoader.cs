@@ -29,7 +29,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Data to load from.</param>
         /// <param name="callback">Callback to execute after loading.</param>
-        public override void LoadDTO(LightDto dto, Action<GameObject> callback)
+        public override void LoadDTO(LightDto dto, Action<GameObject> callback, Action<string> onError)
         {
             GameObject res = new GameObject();
             res.AddComponent<Light>();

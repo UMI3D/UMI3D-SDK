@@ -27,8 +27,9 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractScene : MonoBehaviour
     {
+
         [System.Serializable]
-        public class LoadEvent : UnityEvent<AbstractObject3DDto> { }
+        public class LoadEvent : UnityEvent<EmptyObject3DDto> { }
         public LoadEvent onObjectLoaded = new LoadEvent();
 
         /// <summary>
@@ -39,14 +40,14 @@ namespace umi3d.cdk
         /// <summary>
         /// Objects stored in the scene dtos.
         /// </summary>
-        private Dictionary<string, AbstractObject3DDto> dtos;
+        private Dictionary<string, EmptyObject3DDto> dtos;
 
         /// <summary>
         /// Avatars in the scene.
         /// </summary>
         private Dictionary<string, AvatarDto> avatars;
 
-        protected GenericObject3DDtoLoader genericObject3DDtoLoader;
+        protected EmptyObject3DDTOLoader emptyObject3DDtoLoader;
         protected ARTrackerDtoLoader ARTrackerDtoLoader;
         protected LightDtoLoader lightDtoLoader;
         protected LineDtoLoader lineDtoLoader;
@@ -94,20 +95,25 @@ namespace umi3d.cdk
         /// </summary>
         public UnityEvent onSceneLoaded = new UnityEvent();
 
+        public void SendOnSceneLoaded()
+        {
+            onSceneLoaded.Invoke();
+        }
 
         // Use this for initialization
         protected void Start()
         {
             objects = new Dictionary<string, GameObject>();
-            dtos = new Dictionary<string, AbstractObject3DDto>();
+            dtos = new Dictionary<string, EmptyObject3DDto>();
             avatars = new Dictionary<string, AvatarDto>();
 
             isImmersiveDevice = _isImmersiveDevice;
 
+            firstLoadDone = false;
 
 
             //creating default loaders
-            genericObject3DDtoLoader = GetOrAddComponent<GenericObject3DDtoLoader>();
+            emptyObject3DDtoLoader = GetOrAddComponent<EmptyObject3DDTOLoader>();
             ARTrackerDtoLoader = GetOrAddComponent<ARTrackerDtoLoader>();
             lightDtoLoader = GetOrAddComponent<LightDtoLoader>();
             lineDtoLoader = GetOrAddComponent<LineDtoLoader>();
@@ -146,7 +152,8 @@ namespace umi3d.cdk
                 cubeMabDtoLoader.LoadDTO(cubeMap, (Cubemap result) => {
                     skyboxMaterial.SetTexture("_Tex", result);
                     RenderSettings.skybox = skyboxMaterial;
-                });
+                }, 
+                (e) => Debug.LogError("Failed to load skybox ("+e+")"));
         }
 
         /// <summary>
@@ -163,10 +170,10 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">dto id</param>
         /// <param name="dto">object dto to store</param>
-        void CacheDto(string id, AbstractObject3DDto dto)
+        void CacheDto(string id, EmptyObject3DDto dto)
         {
             bool exists = dtos.ContainsKey(id);
-            if (exists && dtos[id].Time <= dto.Time)
+            if (exists && dtos[id].time <= dto.time)
                 dtos[id] = dto;
             else if (!exists)
                 dtos.Add(id, dto);
@@ -189,7 +196,7 @@ namespace umi3d.cdk
         /// Get object dto by id.
         /// </summary>
         /// <param name="id">id of the dto to get</param>
-        public AbstractObject3DDto GetDto(string id)
+        public EmptyObject3DDto GetDto(string id)
         {
             return dtos.ContainsKey(id) ? dtos[id] : null;
         }
@@ -239,114 +246,153 @@ namespace umi3d.cdk
         /// Load objects to the scene.
         /// </summary>
         /// <param name="data"></param>
-        public void Load(LoadDto data)
+        public void Load(LoadDto data, Action<IEnumerable<GameObject>> onSucess, Action<string> onFailure)
         {
-            StartCoroutine(load(data));
+            StartCoroutine(load(data, onSucess, onFailure));
         }
 
-        bool isloading = false;
         int countLoading = 0;
         int maxLoading = 200;
         /// <summary>
         /// Load objects to the scene.
         /// </summary>
         /// <param name="data"></param>
-        IEnumerator load(LoadDto data)
+        IEnumerator load(LoadDto data, Action<IEnumerable<GameObject>> onSucess, Action<string> onFailure)
         {
-            while (isloading)
-                yield return new WaitForEndOfFrame();
-            isloading = true;
+            int innerCountLoading = 0;
+            
+            List<GameObject> loadedObjects = new List<GameObject>();
+            List<EmptyObject3DDto> loadedObjectsDto = new List<EmptyObject3DDto>();
+            List<EmptyObject3DDto> failedObjectsDto = new List<EmptyObject3DDto>();
+            List<EmptyObject3DDto> canceledObjectsDto = new List<EmptyObject3DDto>();
+
             foreach (var def in data.Entities)
             {
-                bool finished = false;
-                CacheDto(def.Id, def);
+                CacheDto(def.id, def);
                 Load(def, (GameObject result) =>
                 {
                     if (result == null)
                     {
-                        finished = true;
+                        canceledObjectsDto.Add(def);
                         return;
                     }
-                    if (objects.ContainsKey(def.Id))
+                    if (objects.ContainsKey(def.id))
                     {
+                        canceledObjectsDto.Add(def);
                         Destroy(result);
-                        finished = true;
                         return;
                     }
-                    objects.Add(def.Id, result);
+                    objects.Add(def.id, result);
                     SetLayerRecursively(result, gameObject.layer);
-                    finished = true;
                     onObjectLoaded.Invoke(def);
+                    loadedObjects.Add(result);
+                    loadedObjectsDto.Add(def);
+                },
+                (e) =>
+                {
+                    Debug.LogError("Failed to load object : " + def.name + "(id : " + def.id+" "+e+") ");
+                    failedObjectsDto.Add(def);
                 });
-                while (!finished)
-                    yield return new WaitForEndOfFrame();
+
             }
-            foreach (var def in data.Entities)
+
+            while (loadedObjectsDto.Count + failedObjectsDto.Count + canceledObjectsDto.Count < data.Entities.Count)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            foreach (var def in loadedObjectsDto)
             {
                 countLoading++;
-                UMI3DHttpClient.LoadSubObjects(def.Id, () => { UMI3DHttpClient.loadingObjectsCount--; countLoading--; });
+                innerCountLoading++;
+                UMI3DHttpClient.LoadSubObjects(
+                    def.id,
+                    list => 
+                    {
+                        countLoading--;
+                        innerCountLoading--;
+                        loadedObjects.AddRange(list);
+                    },
+                    (e) =>
+                    {
+                        countLoading--;
+                        innerCountLoading--;
+                        Debug.LogError("Failed to load sub object : " + def.name + "(id : " + def.id + " "+e+")");
+                    });
                 while (countLoading >= maxLoading)
+                {
                     yield return new WaitForEndOfFrame();
+                }
             }
-            isloading = false;
-            yield return null;
 
-            while (countLoading >= 0)
+            foreach (var def in failedObjectsDto)
+            {
+                //TODO
+                onFailure.Invoke("fail to load obj dto");
+
+                yield break;
+            }
+
+
+            while (innerCountLoading > 0)
+            {
                 yield return new WaitForEndOfFrame();
+            }
+            onSucess.Invoke(loadedObjects);
 
-            if (!firstLoadDone)
-                onSceneLoaded.Invoke();
-            firstLoadDone = true;
         }
 
         /// <summary>
         /// Load object from dto to the scene and pass the gameobject to a given callback.
         /// </summary>
         /// <param name="def">Dto to load from</param>
-        /// <param name="callback">Callback to execute</param>
-        protected void Load(AbstractObject3DDto def, Action<GameObject> callback)
+        /// <param name="onSuccess">Callback to execute</param>
+        protected void Load(EmptyObject3DDto def, Action<GameObject> onSuccess, Action<string> onError)
         {
             if (def == null)
                 return;
+            else
+                CacheDto(def.id, def);
 
-            else if (def is AvatarPartDto && (def as AvatarPartDto).UserId == UMI3DBrowser.UserId)
-                avatarPartDtoLoader.LoadDTO(def as AvatarPartDto, callback);
+            if (def is AvatarPartDto && (def as AvatarPartDto).UserId == UMI3DBrowser.UserId)
+                avatarPartDtoLoader.LoadDTO(def as AvatarPartDto, onSuccess, onError);
 
             else if (def is ModelDto)
-                modelDtoLoader.LoadDTO(def as ModelDto, callback);
+                modelDtoLoader.LoadDTO(def as ModelDto, onSuccess, onError);
 
             else if (def is PrimitiveDto)
-                primitiveDtoLoader.LoadDTO(def as PrimitiveDto, callback);
+                primitiveDtoLoader.LoadDTO(def as PrimitiveDto, onSuccess, onError);
 
             else if (def is LightDto)
-                lightDtoLoader.LoadDTO(def as LightDto, callback);
+                lightDtoLoader.LoadDTO(def as LightDto, onSuccess, onError);
 
             else if (def is LineDto)
-                lineDtoLoader.LoadDTO(def as LineDto, callback);
+                lineDtoLoader.LoadDTO(def as LineDto, onSuccess, onError);
 
             else if (def is AudioSourceDto)
-                audioSourceDtoLoader.LoadDTO(def as AudioSourceDto, callback);
+                audioSourceDtoLoader.LoadDTO(def as AudioSourceDto, onSuccess, onError);
 
             else if (def is UICanvasDto)
-                uiCanvasDtoLoader.LoadDTO(def as UICanvasDto, callback);
+                uiCanvasDtoLoader.LoadDTO(def as UICanvasDto, onSuccess, onError);
 
             else if (def is UIImageDto)
-                uiImageDtoLoader.LoadDTO(def as UIImageDto, callback);
+                uiImageDtoLoader.LoadDTO(def as UIImageDto, onSuccess, onError);
 
             else if (def is UITextDto)
-                uiTextDtoLoader.LoadDTO(def as UITextDto, callback);
+                uiTextDtoLoader.LoadDTO(def as UITextDto, onSuccess, onError);
 
             else if (def is UIRectDto)
-                uiRectDtoLoader.LoadDTO(def as UIRectDto, callback);
+                uiRectDtoLoader.LoadDTO(def as UIRectDto, onSuccess, onError);
 
-            else if (def is GenericObject3DDto)
-                genericObject3DDtoLoader.LoadDTO(def as GenericObject3DDto, callback);
+            else if (def is EmptyObject3DDto)
+                emptyObject3DDtoLoader.LoadDTO(def as EmptyObject3DDto, onSuccess, onError);
 
             else
+            {
                 Debug.LogError("Unsupported ObjectType: " + def.GetType());
+                onError("Unsupported ObjectType: " + def.GetType());
+            }
 
-            if (def != null)
-                CacheDto(def.Id, def);
         }
 
 
@@ -359,13 +405,13 @@ namespace umi3d.cdk
         {
             if (data == null || data.Entity == null)
                 return;
-            var obj = GetObject(data.Entity.Id);
-            var dto = GetDto(data.Entity.Id);
+            var obj = GetObject(data.Entity.id);
+            var dto = GetDto(data.Entity.id);
             if (dto != null)
             {
-                if (obj != null && dto.Time <= data.Entity.Time)
+                if (obj != null && dto.time <= data.Entity.time)
                     UpdateObject(obj, dto, data.Entity);
-                CacheDto(dto.Id, dto);
+                CacheDto(dto.id, dto);
             }
 
         }
@@ -376,18 +422,16 @@ namespace umi3d.cdk
         /// <param name="go">Gameobject to update</param>
         /// <param name="olddto">previous dto</param>
         /// <param name="newdto">dto to update to</param>
-        private void UpdateObject(GameObject go, AbstractObject3DDto olddto, AbstractObject3DDto newdto)
+        private void UpdateObject(GameObject go, EmptyObject3DDto olddto, EmptyObject3DDto newdto)
         {
             if (olddto == null || newdto == null)
                 return;
 
-            if (olddto.Time > newdto.Time)
+            if (olddto.time > newdto.time)
                 return;
 
-            if (olddto is GenericObject3DDto && newdto is GenericObject3DDto)
-                genericObject3DDtoLoader.UpdateFromDTO(go, olddto as GenericObject3DDto, newdto as GenericObject3DDto);
 
-            else if (olddto is AvatarPartDto && newdto is AvatarPartDto && (newdto as AvatarPartDto).UserId == UMI3DBrowser.UserId)
+            if (olddto is AvatarPartDto && newdto is AvatarPartDto && (newdto as AvatarPartDto).UserId == UMI3DBrowser.UserId)
                 avatarPartDtoLoader.UpdateFromDTO(go, olddto as AvatarPartDto, newdto as AvatarPartDto);
 
             else if (olddto is ModelDto && newdto is ModelDto)
@@ -417,7 +461,10 @@ namespace umi3d.cdk
             else if (olddto is UIRectDto && newdto is UIRectDto)
                 uiRectDtoLoader.UpdateFromDTO(go, olddto as UIRectDto, newdto as UIRectDto);
 
-            CacheDto(newdto.Id, newdto);
+            else if (olddto is EmptyObject3DDto && newdto is EmptyObject3DDto)
+                emptyObject3DDtoLoader.UpdateFromDTO(go, olddto as EmptyObject3DDto, newdto as EmptyObject3DDto);
+
+            CacheDto(newdto.id, newdto);
         }
 
 
@@ -430,7 +477,7 @@ namespace umi3d.cdk
         {
             if (data == null)
                 return;
-            RemoveObject(data.Id);
+            RemoveObject(data.id);
         }
 
         /// <summary>
@@ -443,7 +490,7 @@ namespace umi3d.cdk
 
             if (obj != null)
             {
-                string interId = GetDto(id)?.Interactable?.Id;
+                string interId = GetDto(id)?.interactable?.id;
                 if (interId != null)
                     AbstractInteractionMapper.Instance.DeleteTool(interId);
 

@@ -13,6 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
+using umi3d.common;
+
 namespace umi3d.cdk
 {
 
@@ -35,6 +38,14 @@ namespace umi3d.cdk
     /// </summary>
     /// <see cref="InteractionMappingReason"/>
     public class RequestedByEnvironment : InteractionMappingReason { }
+
+    /// <summary>
+    /// The equiped equipment is an interactable.
+    /// </summary>
+    public class Equiped : RequestedByEnvironment
+    {
+        public EquipeDto dto;
+    }
 
     /// <summary>
     /// Motivation behind a tool selection/release.

@@ -24,7 +24,7 @@ namespace umi3d.common
         /// <summary>
         /// Id of the abstract object 3D hovered.
         /// </summary>
-        /// <see cref="AbstractObject3DDto"/>
+        /// <see cref="EmptyObject3DDto"/>
         public string abstractObject3DId;
 
         /// <summary>

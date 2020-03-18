@@ -171,6 +171,8 @@ namespace umi3d.edk
             UMI3DUser user = userObj.AddComponent<UMI3DUser>();
             user.avatar = avatar.GetComponent<UMI3DAvatar>();
             user.UserName = connection.UserName;
+            user.quality = connection.Quality;
+            user.os = connection.OS;
 
             if (DisplayName)
                 nameDisplayer.GetComponent<UsernameDisplayer>().SetDisplayer(user.UserName, "");

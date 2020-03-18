@@ -27,7 +27,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="callback"></param>
-        public override void LoadDTO(MaterialDto dto, Action<MeshMaterial> callback)
+        public override void LoadDTO(MaterialDto dto, Action<MeshMaterial> callback, Action<string> onError)
         {
             MeshMaterial meshMaterial = GetComponent<MeshMaterial>();
             if (meshMaterial == null)

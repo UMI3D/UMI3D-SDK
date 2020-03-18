@@ -16,7 +16,7 @@ limitations under the License.
 namespace umi3d.common
 {
     [System.Serializable]
-    public class CameraDto : AbstractObject3DDto
+    public class CameraDto : EmptyObject3DDto
     {
         public SerializableMatrix4x4 projectionMatrix = null;
 

@@ -23,12 +23,12 @@ namespace umi3d.cdk
     public class VideoDtoLoader : AbstractDTOLoader<VideoDto, Video>
     {
 
-        public override void LoadDTO(VideoDto dto, Action<Video> callback)
+        public override void LoadDTO(VideoDto dto, Action<Video> onSuccess, Action<string> onError)
         {
             Video video = GetComponent<Video>() ?? gameObject.AddComponent<Video>();
             video._AudioSource = dto.AudioSource;
             UpdateFromDTO(video, null, dto);
-            callback(video);
+            onSuccess(video);
         }
 
 

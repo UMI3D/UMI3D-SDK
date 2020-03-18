@@ -20,7 +20,7 @@ using UnityEngine;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class PrimitiveDto : AbstractObject3DDto
+    public class PrimitiveDto : EmptyObject3DDto
     {
         /// <summary>
         /// Primitive type.

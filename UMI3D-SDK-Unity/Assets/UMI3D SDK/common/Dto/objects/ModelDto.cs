@@ -23,7 +23,7 @@ namespace umi3d.common
     /// Model Dto.
     /// </summary>
     [System.Serializable]
-    public class ModelDto : AbstractObject3DDto
+    public class ModelDto : EmptyObject3DDto
     {
         /// <summary>
         /// Should override model material ?

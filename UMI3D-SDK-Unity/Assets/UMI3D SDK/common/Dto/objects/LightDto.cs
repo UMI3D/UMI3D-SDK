@@ -18,7 +18,7 @@ limitations under the License.
 namespace umi3d.common
 {
     [System.Serializable]
-    public class LightDto : AbstractObject3DDto
+    public class LightDto : EmptyObject3DDto
     {
 
         public LightDto() : base() { }

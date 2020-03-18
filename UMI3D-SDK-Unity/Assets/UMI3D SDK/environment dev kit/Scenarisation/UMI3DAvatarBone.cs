@@ -16,14 +16,17 @@ namespace umi3d.edk
         public string userId { get; protected set; }
         public string boneId { get; protected set; }
 
+        public BoneType boneType { get; protected set; }
+
         public string boneAnchorId;
 
         public string[] meshes;
 
 
-        public UMI3DAvatarBone(string userId, string boneId)
+        public UMI3DAvatarBone(string userId, string boneId, BoneType boneType)
         {
             this.boneId = boneId;
+            this.boneType = boneType;
             this.userId = userId;
         }
 
@@ -67,5 +70,21 @@ namespace umi3d.edk
                 throw new System.Exception("Internal error");
             }
         }
+
+        public static UMI3DAvatarBone GetUserBoneByType(string userId, BoneType boneType)
+        {
+            if (instancesByUserId.TryGetValue(userId, out Dictionary<string, UMI3DAvatarBone> userBoneDictionary))
+            {
+                foreach (KeyValuePair<string, UMI3DAvatarBone> item in userBoneDictionary)
+                {
+                    if (item.Value.boneType == boneType)
+                    {
+                        return item.Value;
+                    }
+                }
+            }
+            return null;
+        }
+
     }
 }

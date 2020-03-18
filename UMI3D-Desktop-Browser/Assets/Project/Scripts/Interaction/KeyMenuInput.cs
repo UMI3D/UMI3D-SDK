@@ -105,12 +105,12 @@ public class KeyMenuInput : AbstractUMI3DInput
             onInputDown.Invoke();
             if ((associatedInteraction).Hold)
             {
-                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
+                UMI3DHttpClient.Interact(associatedInteraction.id, new object[2] { true, boneDto.id });
                 risingEdgeEventSent = true;
             }
             else
             {
-                UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { true, boneDto.Id });
+                UMI3DHttpClient.Interact(associatedInteraction.id, new object[2] { true, boneDto.id });
             }
         }
         else
@@ -120,7 +120,7 @@ public class KeyMenuInput : AbstractUMI3DInput
             {
                 if (risingEdgeEventSent)
                 {
-                    UMI3DHttpClient.Interact(associatedInteraction.Id, new object[2] { false, boneDto.Id });
+                    UMI3DHttpClient.Interact(associatedInteraction.id, new object[2] { false, boneDto.id });
                     risingEdgeEventSent = false;
                 }
             }

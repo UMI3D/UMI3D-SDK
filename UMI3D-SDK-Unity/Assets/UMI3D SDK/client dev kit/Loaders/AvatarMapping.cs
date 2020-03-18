@@ -22,7 +22,7 @@ namespace umi3d.cdk
 {
     public class AvatarMapping : Singleton<AvatarMapping>
     {
-        private List<AvatarPartDto> pendingAvatarPartDto = new List<AvatarPartDto>();
+        private Dictionary<AvatarPartDto, KeyValuePair<Action<GameObject>, Action<string>>> pendingAvatarPartDto = new Dictionary<AvatarPartDto, KeyValuePair<Action<GameObject>, Action<string>>>();
         public string userId;
         public BonePairDictionary bonePairDictionary = new BonePairDictionary();
 
@@ -37,9 +37,10 @@ namespace umi3d.cdk
             bonePairDictionary = pairDictionary;
         }
 
-        public void AddPendingBone(AvatarPartDto avatarPartDto)
+        public void AddPendingBone(AvatarPartDto avatarPartDto, Action<GameObject> onLoad, Action<string> onError)
         {
-            pendingAvatarPartDto.Add(avatarPartDto);
+            pendingAvatarPartDto.Add(avatarPartDto, new KeyValuePair<Action<GameObject>, Action<string>>(onLoad, onError));
+
         }
 
         /// <summary>
@@ -67,15 +68,22 @@ namespace umi3d.cdk
         {
             if (pendingAvatarPartDto.Count != 0)
             {
-                LoadDto loadDto = new LoadDto();
-
-                foreach (AbstractObject3DDto dto in pendingAvatarPartDto)
-                {
-                    loadDto.Entities.Add(dto);
-                }
-
-                UMI3DBrowser.Scene.Load(loadDto);
+                Dictionary<AvatarPartDto, KeyValuePair<Action<GameObject>, Action<string>>> buffer =
+                    new Dictionary<AvatarPartDto, KeyValuePair<Action<GameObject>, Action<string>>>(pendingAvatarPartDto);
                 pendingAvatarPartDto.Clear();
+
+                foreach (KeyValuePair<AvatarPartDto, KeyValuePair<Action<GameObject>, Action<string>>> dto in buffer)
+                {
+                    Debug.Log(dto.Key.name);
+                    LoadDto loadDto = new LoadDto();
+                    loadDto.Entities.Add(dto.Key);
+                    UMI3DBrowser.Scene.Load(loadDto,
+                        list => { dto.Value.Key.Invoke(list.GetEnumerator().Current); },
+                        (e) => {
+                            Debug.Log("fail to load pending part " + e);
+                            dto.Value.Value.Invoke(e);
+                        });
+                }
             }
         }
     }

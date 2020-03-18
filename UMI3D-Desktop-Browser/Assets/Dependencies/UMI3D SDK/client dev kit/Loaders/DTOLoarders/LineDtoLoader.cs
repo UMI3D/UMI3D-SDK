@@ -32,13 +32,13 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Line to load</param>
         /// <param name="callback">Callback to raise (the argument is the Line GameObject)</param>
-        public override void LoadDTO(LineDto dto, Action<GameObject> callback)
+        public override void LoadDTO(LineDto dto, Action<GameObject> onSuccess, Action<string> onError)
         {
             GameObject res = new GameObject();
             var r = res.AddComponent<LineRenderer>();
             r.material = new Material(lineShader);
-            callback(res);
             InitObjectFromDto(res, dto);
+            onSuccess.Invoke(res);
         }
 
 

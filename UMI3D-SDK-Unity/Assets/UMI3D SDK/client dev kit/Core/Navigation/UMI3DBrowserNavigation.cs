@@ -20,43 +20,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using umi3d.common;
 
-public class UMI3DBrowserNavigation : MonoBehaviour
+namespace umi3d.cdk
 {
-    public Transform viewpoint;
-    public Camera viewpointCamera;
-    public Transform world;
-    public AbstractNavigation orbitation;
-    public AbstractNavigation walk;
-    public AbstractNavigation fly;
-    AbstractNavigation currentNav = null;
-
-    /*
-     * 
-     *      Main Behaviour
-     * 
-     */
-
-    bool IsWalking() { return currentNav == walk; }
-    bool IsFlying() { return currentNav == fly; }
-    bool IsOrbitating() { return currentNav == orbitation; }
-
-    void Start()
+    public class UMI3DBrowserNavigation : MonoBehaviour
     {
-        currentNav = walk;
-        UMI3DBrowser.Navigation = currentNav;
-        walk.Setup(world, viewpoint);
-        StartCoroutine(LogUserPosition(1f / 30f));
-    }
+        public Transform viewpoint;
+        public Camera viewpointCamera;
+        public Transform world;
+        public AbstractNavigation orbitation;
+        public AbstractNavigation walk;
+        public AbstractNavigation fly;
+        AbstractNavigation currentNav = null;
 
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
-    }
+        /*
+         * 
+         *      Main Behaviour
+         * 
+         */
 
-    private void OnApplicationQuit()
-    {
-        StopAllCoroutines();
-    }
+        bool IsWalking() { return currentNav == walk; }
+        bool IsFlying() { return currentNav == fly; }
+        bool IsOrbitating() { return currentNav == orbitation; }
+
+        void Start()
+        {
+            currentNav = walk;
+            UMI3DBrowser.Navigation = currentNav;
+            walk.Setup(world, viewpoint);
+            StartCoroutine(LogUserPosition(1f / 30f));
+        }
+
+        private void OnDestroy()
+        {
+            StopAllCoroutines();
+        }
+
+        private void OnApplicationQuit()
+        {
+            StopAllCoroutines();
+        }
 
     /// <summary>
     /// Send the user tracking data to the server
@@ -73,8 +75,8 @@ public class UMI3DBrowserNavigation : MonoBehaviour
                 UMI3DBrowserAvatar.Instance.avatar.ScaleScene = scene.transform.lossyScale.Unscaled(world.lossyScale);
                 var data = new NavigationRequestDto();
                 data.CameraDto = new CameraDto();
-                data.CameraDto.Position = world.InverseTransformPoint(this.viewpoint.position) - world.InverseTransformPoint(scene.transform.position);
-                data.CameraDto.Rotation = viewpoint.rotation * Quaternion.Inverse(world.rotation);
+                data.CameraDto.position = world.InverseTransformPoint(this.viewpoint.position) - world.InverseTransformPoint(scene.transform.position);
+                data.CameraDto.rotation = viewpoint.rotation * Quaternion.Inverse(world.rotation);
                 data.CameraDto.projectionMatrix = viewpointCamera.projectionMatrix;
                 data.Avatar = UMI3DBrowserAvatar.Instance.avatar;
                 try
@@ -91,40 +93,41 @@ public class UMI3DBrowserNavigation : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Update the browser's navigation type
-    /// </summary>
-    private void UpdateNavigation()
-    {
-        AbstractNavigation newnav = null;
-
-        if (UMI3DBrowser.Media == null || UMI3DBrowser.Media.NavigationType == NavigationType.Walk)
-            newnav = walk;
-        else if (UMI3DBrowser.Media.NavigationType == NavigationType.Orbitation)
-            newnav = orbitation;
-
-        else if (UMI3DBrowser.Media.NavigationType == NavigationType.Fly)
-            newnav = fly;
-
-        if (newnav != currentNav)
+        /// <summary>
+        /// Update the browser's navigation type
+        /// </summary>
+        private void UpdateNavigation()
         {
-            if (currentNav != null)
-                currentNav.Disable();
-            if (newnav != null)
-                newnav.Setup(world, viewpoint);
-            currentNav = newnav;
-            UMI3DBrowser.Navigation = currentNav;
+            AbstractNavigation newnav = null;
+
+            if (UMI3DBrowser.Media == null || UMI3DBrowser.Media.NavigationType == NavigationType.Walk)
+                newnav = walk;
+            else if (UMI3DBrowser.Media.NavigationType == NavigationType.Orbitation)
+                newnav = orbitation;
+
+            else if (UMI3DBrowser.Media.NavigationType == NavigationType.Fly)
+                newnav = fly;
+
+            if (newnav != currentNav)
+            {
+                if (currentNav != null)
+                    currentNav.Disable();
+                if (newnav != null)
+                    newnav.Setup(world, viewpoint);
+                currentNav = newnav;
+                UMI3DBrowser.Navigation = currentNav;
+            }
+            UMI3DBrowser.isEnterTeleportationAllowed = true;
+            UMI3DBrowser.viewpointOffsetForEnterTeleportation = new Vector3(viewpoint.position.x, 0, viewpoint.position.z);
         }
-        UMI3DBrowser.isEnterTeleportationAllowed = true;
-        UMI3DBrowser.viewpointOffsetForEnterTeleportation = new Vector3(viewpoint.position.x, 0, viewpoint.position.z);
-    }
 
-    /*
-     * Rotate the camera or zoom depending on the input of the player.
-     */
+        /*
+         * Rotate the camera or zoom depending on the input of the player.
+         */
 
-    void LateUpdate()
-    {
-        UpdateNavigation();
+        void LateUpdate()
+        {
+            UpdateNavigation();
+        }
     }
 }

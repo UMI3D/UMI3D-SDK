@@ -30,8 +30,8 @@ namespace umi3d.cdk
         /// Load an object from dto and pass its value to a given callback.
         /// </summary>
         /// <param name="dto">Data to load from</param>
-        /// <param name="callback">Callback to execute after loading</param>
-        public abstract void LoadDTO(DTO dto, Action<A> callback);     
+        /// <param name="onSuccess">Callback to execute after loading</param>
+        public abstract void LoadDTO(DTO dto, Action<A> onSuccess, Action<string> onError);     
  
 
         /// <summary>

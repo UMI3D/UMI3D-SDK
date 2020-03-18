@@ -21,6 +21,7 @@ using UnityEngine.UI;
 using umi3d.cdk;
 using umi3d.cdk.menu.view;
 using TMPro;
+using umi3d.cdk.menu.core;
 
 namespace BrowserDesktop.Menu
 {
@@ -35,6 +36,8 @@ namespace BrowserDesktop.Menu
         public Texture2D DefaultIcon;
         public Image LoadingBackgroud;
         public Image Icon;
+        public GameObject warning;
+        public TMP_Text ErrorText;
 
         public float loadingRotationSpeed = 1f;
 
@@ -60,6 +63,25 @@ namespace BrowserDesktop.Menu
                 StopCoroutine(LoadingAnimation);
                 LoadingAnimation = null;
             }
+            List<string> errors = new List<string>();
+
+            List<string> extensionNotFound;
+            if(!UMI3DBrowser.IsCompatible(mediaMenuItem.media,out extensionNotFound))
+            {
+                string extensionError = "extensions missing [|";
+                foreach (string extension in extensionNotFound)
+                {
+                    extensionError += extension + "|";
+                }
+                extensionError += "]";
+                errors.Add(extensionError);
+            }
+            string versionError;
+            if (!UMI3DBrowser.IsCompatible(mediaMenuItem.media, out versionError))
+            {
+                errors.Add(versionError);
+            }
+            SetError(errors);
 
             if (!isDisplaying || forceUpdate)
             {
@@ -94,6 +116,7 @@ namespace BrowserDesktop.Menu
                 gameObject.SetActive(true);
             }
         }
+
 
         void SetIcon(Texture2D texture)
         {
@@ -143,6 +166,17 @@ namespace BrowserDesktop.Menu
                 LoadingAnimation = null;
             }
         }
+
+        void SetError(List<string> errors)
+        {
+            warning.SetActive(errors.Count != 0);
+            ErrorText.text = "";
+            foreach(string error in errors)
+            {
+                ErrorText.text = error + "\n";
+            }
+        }
+
 
     }
 }

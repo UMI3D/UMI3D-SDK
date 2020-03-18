@@ -18,6 +18,7 @@ using System.Linq;
 using umi3d.common;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace umi3d.cdk
 {
@@ -32,56 +33,89 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="callback"></param>
-        public override void LoadDTO(ModelDto dto, Action<GameObject> callback)
+        public override void LoadDTO(ModelDto dto, Action<GameObject> onSuccess, Action<string> onError)
         {
             try
-            {                
+            {
                 Resource resource = new Resource();
                 resource.Set(dto.objResource);
 
-                GameObject obj = new GameObject();
-                HDResourceCache.Download(resource, obj.transform, ( GameObject model) => {
-
-                    var renderers = model.GetComponentsInChildren<MeshRenderer>(true);
-                    foreach (var r in renderers)
-                    {
-                        var matdef = r.gameObject.AddComponent<MeshMaterial>();
-                        matdef.dtoid = dto.Id;
-                        matdef.previousMaterial = r.sharedMaterial;
-
-                        MaterialDtoLoader materialDTOLoader = GetComponentInParent<MaterialDtoLoader>();
-
-                        materialDTOLoader.LoadDTO(dto.material, (MeshMaterial meshMaterial) =>
-                        {
-                            matdef.Set(meshMaterial);
-                        });
-
-                        matdef.LoadMaterial();
-
-                        if (dto.video != null)
-                        {
-                            var videoDef = r.gameObject.AddComponent<Video>();
-                            VideoDtoLoader videoDtoLoader = GetComponentInParent<VideoDtoLoader>();
-                            videoDtoLoader.LoadDTO(dto.video, (Video video) => {
-                                videoDef.Set(video);
-                                videoDef.LoadVideo(r.GetComponent<MeshRenderer>());
-                            });
-                        }
-                    }
-
-                    obj.SetActive(true);
-                    callback(obj);
-                    InitObjectFromDto(obj, dto);
-                });
-
-
+                GameObject parent = new GameObject();
+                HDResourceCache.Download(resource, parent.transform, (GameObject model) =>
+                    StartCoroutine(onGameobjectResourceLoaded(parent, model, dto, onSuccess, onError)),
+                    onError,
+                    dto.name
+                );
             }
             catch (Exception e)
             {
                 Debug.LogError(e);
+                onError.Invoke(e.Message);
             }
         }
 
+
+        private IEnumerator onGameobjectResourceLoaded(GameObject parent, GameObject model, ModelDto dto, Action<GameObject> onSuccess, Action<string> onError)
+        {
+            var renderers = model.GetComponentsInChildren<MeshRenderer>(true);
+            bool anErrorOccured = false;
+            bool stateFinished = false;
+            foreach (var r in renderers)
+            {
+                var matdef = r.gameObject.AddComponent<MeshMaterial>();
+                matdef.dtoid = dto.id;
+                matdef.previousMaterial = r.sharedMaterial;
+
+                MaterialDtoLoader materialDTOLoader = GetComponentInParent<MaterialDtoLoader>();
+
+                materialDTOLoader.LoadDTO(dto.material,
+                    (MeshMaterial meshMaterial) =>
+                    {
+                        matdef.Set(meshMaterial);
+                        matdef.LoadMaterial();
+                        stateFinished = true;
+                    },
+                    (e) => 
+                    {
+                        anErrorOccured = true;
+                        Debug.LogError("An error occured while loading the model " + dto.name+" "+e);
+                    });
+
+                while (!stateFinished && !anErrorOccured)
+                    yield return new WaitForEndOfFrame();
+                if (anErrorOccured)
+                {
+                    onError.Invoke("an error occured in modle dto loader");
+                    yield break;
+                }
+                stateFinished = false;
+
+                if (dto.video != null)
+                {
+                    var videoDef = r.gameObject.AddComponent<Video>();
+                    VideoDtoLoader videoDtoLoader = GetComponentInParent<VideoDtoLoader>();
+                    videoDtoLoader.LoadDTO(dto.video, (Video video) => {
+                        videoDef.Set(video);
+                        videoDef.LoadVideo(r.GetComponent<MeshRenderer>());
+                        stateFinished = true;
+                    },
+                    (e) => anErrorOccured = true);
+
+                    while (!stateFinished && !anErrorOccured)
+                        yield return new WaitForEndOfFrame();
+                    if (anErrorOccured)
+                    {
+                        onError.Invoke("an error occured in modle dto loader");
+                        yield break;
+                    }
+                    stateFinished = false;
+                }
+            }
+
+            parent.SetActive(true);
+            InitObjectFromDto(parent, dto);
+            onSuccess(parent);
+        }
 
         /// <summary>
         /// Compute the bouding box around a collection of MeshRenderers.
@@ -146,7 +180,7 @@ namespace umi3d.cdk
             base.UpdateFromDTO(go, olddto, newdto);
             try
             {
-                IEnumerable<MeshMaterial> mats = go.GetComponentsInChildren<MeshMaterial>(true).Where(mat => mat.dtoid == newdto.Id);
+                IEnumerable<MeshMaterial> mats = go.GetComponentsInChildren<MeshMaterial>(true).Where(mat => mat.dtoid == newdto.id);
                 foreach (var mat in mats)
                 {
                     var renderer = mat.gameObject.GetComponent<MeshRenderer>();
@@ -156,17 +190,14 @@ namespace umi3d.cdk
                         materialDTOLoader.LoadDTO(newdto.material, (MeshMaterial meshMaterial) =>
                         {
                             mat.Set(meshMaterial);
-                        });
+                            mat.material = mat.LoadMaterial();
 
+                            if (renderer != null && newdto.OverrideModelMaterial)
+                                renderer.enabled = !(mat.Transparent && mat.MainColor.a == 0);
 
-                        mat.material = mat.LoadMaterial();
-
-                        if (renderer != null && (newdto.OverrideModelMaterial))
-                        {
-                            renderer.enabled = !(mat.Transparent && mat.MainColor.a == 0);
-                        }
-
-                        renderer.material = mat.material;
+                            renderer.material = mat.material;
+                        },
+                        (e) => Debug.LogError("An error occured while updating the model " + newdto.name+ " "+e));                        
                     }
                     else
                     {
@@ -177,7 +208,7 @@ namespace umi3d.cdk
 
                 if (newdto.video != null)
                 {
-                    var videos = go.GetComponentsInChildren<Video>(true).Where(mat => mat.dtoid == newdto.Id);
+                    var videos = go.GetComponentsInChildren<Video>(true).Where(mat => mat.dtoid == newdto.id);
                     foreach (var video in videos)
                     {
                         var renderer = video.gameObject.GetComponent<MeshRenderer>();

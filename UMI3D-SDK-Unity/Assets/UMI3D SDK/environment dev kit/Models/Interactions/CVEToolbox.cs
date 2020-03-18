@@ -182,7 +182,7 @@ namespace umi3d.edk
         public ToolboxDto ConvertToDto(UMI3DUser user)
         {
             ToolboxDto dto = new ToolboxDto();
-            dto.Id = toolboxId;
+            dto.id = toolboxId;
             dto.name = display.name;
             dto.icon2D = display.icon2D.ToDto();
             dto.icon3D = display.icon3D.ToDto();

@@ -78,7 +78,7 @@ public class InteractionMapper : AbstractInteractionMapper
 
         defaultToolbox = new Toolbox(new ToolboxDto
         {
-            Id = "defaultLocalToolbox",
+            id = "defaultLocalToolbox",
             name = "default",
             description = "Local default toolbox"
         });
@@ -169,7 +169,12 @@ public class InteractionMapper : AbstractInteractionMapper
             toolIdToController.Remove(tool.id);
             projectedTools.Remove(tool.id);
 
-            //interactionActionSet.Deactivate();
+            if (tool is Interactable)
+            {
+                Equipment equipment = UMI3DBrowser.Scene.GetObject((tool as Interactable).objectId).GetComponent<Equipment>();
+                if (equipment != null)
+                    equipment.Unequipe();
+            }
         }
         else
         {
@@ -321,7 +326,7 @@ public class InteractionMapper : AbstractInteractionMapper
             toolbox = toolbox
         };
 
-        toolboxesIdToMenu.Add(dto.Id, sub);
+        toolboxesIdToMenu.Add(dto.id, sub);
         toolboxMenu.Add(sub);
 
         CreateTools(dto.tools);
@@ -363,7 +368,7 @@ public class InteractionMapper : AbstractInteractionMapper
 
     protected Tool CreateToolInternal(ToolDto dto)
     {
-        if (ToolExists(dto.Id))
+        if (ToolExists(dto.id))
             return null;
 
         ToolDto tooldto = dto as ToolDto;
@@ -374,7 +379,7 @@ public class InteractionMapper : AbstractInteractionMapper
             throw new Exception("Toolbox not found");
 
         Toolbox toolbox = GetToolbox(tooldto.toolboxId);
-        toolbox.tools.Add(tooldto.Id);
+        toolbox.tools.Add(tooldto.id);
 
 
         Tool tool = this.gameObject.AddComponent<Tool>();
@@ -392,15 +397,15 @@ public class InteractionMapper : AbstractInteractionMapper
             {
                 if (toolMenuItem.toolSelected)
                 {
-                    ReleaseTool(tooldto.Id, new RequestedFromMenu());
+                    ReleaseTool(tooldto.id, new RequestedFromMenu());
                 }
                 else
                 {
-                    SelectTool(tooldto.Id, new RequestedFromMenu());
+                    SelectTool(tooldto.id, new RequestedFromMenu());
                 }
             });
 
-            toolsIdToMenu.Add(tooldto.Id, toolMenuItem);
+            toolsIdToMenu.Add(tooldto.id, toolMenuItem);
         }
         else
         {
@@ -409,8 +414,8 @@ public class InteractionMapper : AbstractInteractionMapper
 
         foreach (AbstractInteractionDto inter in tooldto.interactions)
         {
-            if (!InteractionExists(inter.Id))
-                interactionsIdToDto.Add(inter.Id, inter);
+            if (!InteractionExists(inter.id))
+                interactionsIdToDto.Add(inter.id, inter);
         }
 
         return tool;
@@ -439,7 +444,7 @@ public class InteractionMapper : AbstractInteractionMapper
 
     public override Interactable CreateInteractable(InteractableDto dto, GameObject interactableObject = null)
     {
-        if (ToolExists(dto.Id))
+        if (ToolExists(dto.id))
             throw new Exception("This interactable already exists.");
 
         if (interactableObject == null)
@@ -452,8 +457,8 @@ public class InteractionMapper : AbstractInteractionMapper
 
         foreach (AbstractInteractionDto inter in dto.interactions)
         {
-            if (!InteractionExists(inter.Id))
-                interactionsIdToDto.Add(inter.Id, inter);
+            if (!InteractionExists(inter.id))
+                interactionsIdToDto.Add(inter.id, inter);
         }
         return interactable;
     }
@@ -469,15 +474,15 @@ public class InteractionMapper : AbstractInteractionMapper
 
     public override bool CreateInteraction(AbstractInteractionDto dto)
     {
-        if (InteractionExists(dto.Id) || !ToolExists(dto.ToolId))
+        if (InteractionExists(dto.id) || !ToolExists(dto.ToolId))
             return false;
 
         AbstractTool tool = GetTool(dto.ToolId);
         if (tool.interactions.Contains(dto.ToolId))
             return false;
 
-        tool.interactions.Add(dto.Id);
-        interactionsIdToDto.Add(dto.Id, dto);
+        tool.interactions.Add(dto.id);
+        interactionsIdToDto.Add(dto.id, dto);
         return true;
     }
 
@@ -562,13 +567,13 @@ public class InteractionMapper : AbstractInteractionMapper
 
     public override void UpdateToolbox(ToolboxDto dto)
     {
-        if (!ToolboxExists(dto.Id))
+        if (!ToolboxExists(dto.id))
             return;
 
-        Toolbox toolbox = GetToolbox(dto.Id);
+        Toolbox toolbox = GetToolbox(dto.id);
         toolbox.UpdateFromDto(dto);
 
-        if (toolboxesIdToMenu.TryGetValue(dto.Id, out ToolboxSubMenu tbsm))
+        if (toolboxesIdToMenu.TryGetValue(dto.id, out ToolboxSubMenu tbsm))
         {
             tbsm.toolbox = toolbox;
             tbsm.Name = dto.name;
@@ -585,10 +590,10 @@ public class InteractionMapper : AbstractInteractionMapper
 
     public override void UpdateTool(AbstractToolDto dto)
     {
-        if (!ToolExists(dto.Id))
+        if (!ToolExists(dto.id))
             return;
 
-        AbstractTool tool = GetTool(dto.Id);
+        AbstractTool tool = GetTool(dto.id);
         if (dto is ToolDto)
         {
             tool.SetFromDto(dto as ToolDto);
@@ -610,7 +615,7 @@ public class InteractionMapper : AbstractInteractionMapper
             string newObjId = (tool as Interactable).dto.objectId;
 
             if (!oldObjId.Equals(newObjId))
-                ChangeInteractableObject(dto.Id, oldObjId, newObjId);
+                ChangeInteractableObject(dto.id, oldObjId, newObjId);
         }
         else
         {
@@ -651,20 +656,20 @@ public class InteractionMapper : AbstractInteractionMapper
 
     public override void UpdateInteraction(AbstractInteractionDto dto)
     {
-        if (!InteractionExists(dto.Id))
+        if (!InteractionExists(dto.id))
             return;
 
-        if (interactionsIdToDto.TryGetValue(dto.Id, out AbstractInteractionDto old))
+        if (interactionsIdToDto.TryGetValue(dto.id, out AbstractInteractionDto old))
         {
             if (!old.Equals(dto))
             {
-                interactionsIdToDto.Remove(dto.Id);
-                interactionsIdToDto.Add(dto.Id, dto);
+                interactionsIdToDto.Remove(dto.id);
+                interactionsIdToDto.Add(dto.id, dto);
             }
         }
         else
         {
-            interactionsIdToDto.Add(dto.Id, dto);
+            interactionsIdToDto.Add(dto.id, dto);
         }
     }
 

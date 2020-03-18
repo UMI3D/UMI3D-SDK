@@ -25,7 +25,7 @@ namespace umi3d.edk
         {
             InteractableDto dto = new InteractableDto()
             {
-                Id = toolId,
+                id = toolId,
                 description = description,
                 name = Display.name,
                 icon2D = Display.icon2D.ToDto(),

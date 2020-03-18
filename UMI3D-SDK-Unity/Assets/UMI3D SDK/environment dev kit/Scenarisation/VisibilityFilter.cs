@@ -20,7 +20,7 @@ namespace umi3d.edk
     /// <summary>
     /// Filter to restrain UMI3D scene object's visibility.
     /// </summary>
-    [RequireComponent(typeof(GenericObject3D))]
+    [RequireComponent(typeof(AbstractObject3D))]
     public abstract class VisibilityFilter : MonoBehaviour
     {
         /// <summary>

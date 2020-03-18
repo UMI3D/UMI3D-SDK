@@ -133,12 +133,15 @@ namespace umi3d.edk.editor
                     var GBut = new GUIContent("Browse", "Select a file on your computer");
                     if (GUI.Button(RbrowseLine, GBut))
                     {
-                        string path = System.IO.Path.GetFullPath(Application.dataPath + @"/../Public/");
-                        //Debug.Log(path);
+                        string path = System.IO.Path.GetFullPath(UMI3D.GetDefaultRoot());
                         Directory.CreateDirectory(path);
-                        var FilePath = System.IO.Path.GetFullPath(EditorUtility.OpenFilePanel("Load Resources", path, ""));
-                        if (!FilePath.Contains(path)) EditorUtility.DisplayDialog("Invalid File", "The File should be under <project folder>/Public/ folder or any of its subfolder", "Ok, my bad");
-                        else Path.stringValue = FilePath.Split(new string[] { path }, StringSplitOptions.None)[1];
+                        var FilePath = EditorUtility.OpenFilePanel("Load Resources", path, "");
+                        if (FilePath != null && FilePath != "")
+                        {
+                            FilePath = System.IO.Path.GetFullPath(FilePath);
+                            if (!FilePath.Contains(path)) EditorUtility.DisplayDialog("Invalid File", "The File should be under <project folder>/Public/ folder or any of its subfolder", "Ok, my bad");
+                            else Path.stringValue = FilePath.Split(new string[] { path }, StringSplitOptions.None)[1];
+                        }
                     }
 
                 }

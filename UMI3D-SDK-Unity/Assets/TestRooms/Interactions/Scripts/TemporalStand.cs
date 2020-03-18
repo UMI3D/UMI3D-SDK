@@ -21,7 +21,7 @@ public class TemporalStand : MonoBehaviour
 {
     public CVEInteractable Interaction1;
     public CVEInteractable Interaction2;
-    public GenericObject3D Interactible;
+    public AbstractObject3D Interactible;
     [Range(1,30)]
     public float TimeBetweenChange;
     float time;
@@ -41,6 +41,6 @@ public class TemporalStand : MonoBehaviour
             state = !state;
             text.text = "Interaction :" + ((state) ? 2 : 1);
         }
-        text2.text = (TimeBetweenChange - time).ToString();
+       // text2.text = (TimeBetweenChange - time).ToString();
     }
 }

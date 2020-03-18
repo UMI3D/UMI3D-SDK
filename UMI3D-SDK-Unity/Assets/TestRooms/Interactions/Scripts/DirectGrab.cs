@@ -31,7 +31,7 @@ public class DirectGrab : MonoBehaviour
     {
         originalParent = this.transform.parent;
         UMI3DAvatarBone grabBone;
-        if (UMI3DAvatarBone.instancesByUserId[user.UserId].TryGetValue(bone.Id, out grabBone))
+        if (UMI3DAvatarBone.instancesByUserId[user.UserId].TryGetValue(bone.id, out grabBone))
         {
             Transform grabTransform = UMI3D.Scene.GetObject(grabBone.boneId).transform;
             this.transform.parent = grabTransform;

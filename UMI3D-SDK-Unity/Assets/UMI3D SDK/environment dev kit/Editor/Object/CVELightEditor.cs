@@ -23,9 +23,9 @@ using UnityEngine.Rendering;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(CVELight))]
+    [CustomEditor(typeof(CVELight), true)]
     [CanEditMultipleObjects]
-    public class CVELightEditor : Editor
+    public class CVELightEditor : GenericObject3DEditor
     {
         SerializedProperty isStatic;
         SerializedProperty type;
@@ -103,8 +103,9 @@ namespace umi3d.edk.editor
         //    }
         //}
 
-        public void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             isStatic = serializedObject.FindProperty("isStatic");
             type = serializedObject.FindProperty("_type");
             color = serializedObject.FindProperty("color");
@@ -134,6 +135,7 @@ namespace umi3d.edk.editor
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(isStatic);
             EditorGUILayout.PropertyField(type);

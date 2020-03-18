@@ -23,7 +23,7 @@ namespace umi3d.cdk
     /// Abstract class for Gameobject DTO loading.
     /// </summary>
     /// <typeparam name="DTO">Data To Object</typeparam>
-    public abstract class AbstractObjectDTOLoader<DTO> : AbstractDTOLoader<DTO, GameObject> where DTO : AbstractObject3DDto
+    public abstract class AbstractObjectDTOLoader<DTO> : AbstractDTOLoader<DTO, GameObject> where DTO : EmptyObject3DDto
     {
 
         /// <summary>
@@ -31,11 +31,11 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Data to load from</param>
         /// <param name="callback">Callback to execute after loading</param>
-        public override void LoadDTO(DTO dto, Action<GameObject> callback)
+        public override void LoadDTO(DTO dto, Action<GameObject> onSuccess, Action<string> onError)
         {
             GameObject obj = new GameObject();
-            callback(obj);
             InitObjectFromDto(obj, dto);
+            onSuccess(obj);
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace umi3d.cdk
         {
             if(obj != null && dto != null)
             {
-                DTO old = UMI3DBrowser.Scene.GetDto(dto.Id) as DTO;
-                DTO last = old.Time > dto.Time ? old : dto;
+                DTO old = UMI3DBrowser.Scene.GetDto(dto.id) as DTO;
+                DTO last = old.time > dto.time ? old : dto;
                 UpdateFromDTO(obj, null, last);
             }
         }
@@ -69,13 +69,19 @@ namespace umi3d.cdk
                 return;
             }
 
-            go.name = newdto.Name;
-            if (!newdto.isStatic || (olddto == null))
+            go.name = newdto.name;
+
+            Equipment equipment = go.GetComponent<Equipment>();
+            bool isEquiped = (equipment != null) ? equipment.isEquiped : false;
+
+            if ((!newdto.isStatic || (olddto == null)) && !isEquiped)
                 UpdateTransform(go, olddto, newdto);
             UpdateARTracker(go, newdto);
-            UpdateBillboard(go, newdto);
+
+            if (!isEquiped)
+                UpdateBillboard(go, newdto);
             UpdateHierarchy(go, olddto, newdto);  
-            UpdateInteractable(go, newdto.Id, (olddto != null) ? olddto.Interactable : null, newdto.Interactable);
+            UpdateInteractable(go, newdto.id, (olddto != null) ? olddto.interactable : null, newdto.interactable);
         }
 
         /// <summary>
@@ -94,16 +100,16 @@ namespace umi3d.cdk
                     Destroy(inter);
 
                 if (olddto != null)
-                    if (AbstractInteractionMapper.Instance.ToolExists(olddto.Id))
-                        AbstractInteractionMapper.Instance.DeleteTool(olddto.Id);
+                    if (AbstractInteractionMapper.Instance.ToolExists(olddto.id))
+                        AbstractInteractionMapper.Instance.DeleteTool(olddto.id);
             }
             else if (!newdto.Equals(olddto))
             {
-                if (!AbstractInteractionMapper.Instance.ToolExists(newdto.Id))
+                if (!AbstractInteractionMapper.Instance.ToolExists(newdto.id))
                 {
                     if (olddto != null)
-                        if (AbstractInteractionMapper.Instance.ToolExists(olddto.Id))
-                            AbstractInteractionMapper.Instance.DeleteTool(olddto.Id);
+                        if (AbstractInteractionMapper.Instance.ToolExists(olddto.id))
+                            AbstractInteractionMapper.Instance.DeleteTool(olddto.id);
                     AbstractInteractionMapper.Instance.CreateInteractable(newdto, go);
                 }
                 else
@@ -120,11 +126,11 @@ namespace umi3d.cdk
         /// <param name="newdto">Dto to update the gameobject transform to</param>
         protected virtual void UpdateTransform(GameObject go, DTO olddto, DTO newdto)
         {
-            if(AbstractScene.isImmersiveDevice || newdto.TrackerDto == null)
-                go.transform.localPosition = newdto.Position;
-            go.transform.localScale = newdto.Scale;
-            if (!newdto.XBillboard && !newdto.YBillboard )
-                go.transform.localRotation = newdto.Rotation;
+            if(AbstractScene.isImmersiveDevice || newdto.trackerDto == null)
+                go.transform.localPosition = newdto.position;
+            go.transform.localScale = newdto.scale;
+            if (!newdto.xBillboard && !newdto.yBillboard )
+                go.transform.localRotation = newdto.rotation;
         }
 
         /// <summary>
@@ -136,23 +142,24 @@ namespace umi3d.cdk
         protected virtual void UpdateARTracker(GameObject go, DTO newdto)
         {
             var arTracker = go.GetComponent<ARTrackerObject>();
-            if (!AbstractScene.isImmersiveDevice && newdto.TrackerDto != null)
+            if (!AbstractScene.isImmersiveDevice && newdto.trackerDto != null)
             {
                 if (arTracker == null)
                 {
-                    GetComponentInParent<ARTrackerDtoLoader>()?.LoadDTO(newdto.TrackerDto, (ARTrackerObject) =>
+                    GetComponentInParent<ARTrackerDtoLoader>()?.LoadDTO(newdto.trackerDto, (ARTrackerObject) =>
                     {
                         arTracker = go.AddComponent<ARTrackerObject>();
                         arTracker.Set(ARTrackerObject);
                         Destroy(ARTrackerObject);
-                    });
+                    },
+                    (e) => Debug.LogError("Failed to update ar tracker (id:" + newdto.id + " "+e+")"));
                 }
 
-                arTracker.UpdateTracker(newdto.TrackerDto);
+                arTracker.UpdateTracker(newdto.trackerDto);
 
-                arTracker.position = newdto.Position;
-                arTracker.rotation = newdto.Rotation;
-                arTracker.scale = newdto.Scale;
+                arTracker.position = newdto.position;
+                arTracker.rotation = newdto.rotation;
+                arTracker.scale = newdto.scale;
             }
             else
             {
@@ -170,13 +177,13 @@ namespace umi3d.cdk
         protected virtual void UpdateBillboard(GameObject go, DTO newdto)
         {
             var billboard = go.GetComponent<Billboard>();
-            if (newdto.XBillboard || newdto.YBillboard)
+            if (newdto.xBillboard || newdto.yBillboard)
             {
                 if (billboard == null)
                     billboard = go.AddComponent<Billboard>();
-                billboard.X = newdto.XBillboard;
-                billboard.Y = newdto.YBillboard;
-                billboard.rotation = newdto.Rotation;
+                billboard.X = newdto.xBillboard;
+                billboard.Y = newdto.yBillboard;
+                billboard.rotation = newdto.rotation;
             }
             else
             {
@@ -194,16 +201,16 @@ namespace umi3d.cdk
         protected virtual void UpdateHierarchy(GameObject go, DTO olddto, DTO newdto)
         {
 
-            if (olddto == null || newdto.Pid != olddto.Pid)
+            if (olddto == null || newdto.pid != olddto.pid)
             {
                 GameObject _p = null;
-                if (newdto.Pid == null || newdto.Pid.Length == 0)
+                if (newdto.pid == null || newdto.pid.Length == 0)
                     _p = gameObject;
                 else
-                    _p = UMI3DBrowser.Scene.GetObject(newdto.Pid);
+                    _p = UMI3DBrowser.Scene.GetObject(newdto.pid);
 
                 if (_p == null)
-                    UMI3DBrowser.Scene.RemoveObject(newdto.Id);
+                    UMI3DBrowser.Scene.RemoveObject(newdto.id);
 
                 else if (go.transform.parent != _p.transform)
                     go.transform.SetParent(_p.transform, false);

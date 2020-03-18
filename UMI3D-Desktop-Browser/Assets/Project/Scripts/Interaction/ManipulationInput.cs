@@ -30,7 +30,7 @@ namespace BrowserDesktop.Interaction
     {
         #region Instances List
 
-        static int currentInstance;
+        static public int currentInstance { get; private set; }
 
 
         static public void NextManipulation()
@@ -48,7 +48,7 @@ namespace BrowserDesktop.Interaction
             SwicthManipulation(0);
         }
 
-        static void SwicthManipulation(int i)
+        static public void SwicthManipulation(int i)
         {
             if (ManipulationGroup.CurrentManipulationGroup == null || ManipulationGroup.InputInstances == null || !ManipulationGroup.InputInstances.ContainsKey(ManipulationGroup.CurrentManipulationGroup))
                 return;
@@ -277,11 +277,12 @@ namespace BrowserDesktop.Interaction
 
                                 ManipulationParametersDto arg = MapDistanceWithDof(distanceInFrame);
 
-                                UMI3DHttpClient.Interact(associatedInteraction.Id, arg);
+                                UMI3DHttpClient.Interact(associatedInteraction.id, arg);
                             }
                             else
                             {
                                 manipulated = true;
+                                CursorHandler.Movement = CursorHandler.CursorMovement.FreeHiden; 
                                 StartPosition = frameOfReference.position;
                                 manipulationCursor.position = StartPosition;
                                 frameIndicator.gameObject.SetActive(true);
@@ -293,6 +294,7 @@ namespace BrowserDesktop.Interaction
                         else if (manipulated)
                         {
                             manipulated = false;
+                            CursorHandler.Movement = CursorHandler.CursorMovement.Center;
                             frameIndicator.gameObject.SetActive(false);
                             CursorHandler.State = CursorHandler.CursorState.Hover;
                         }

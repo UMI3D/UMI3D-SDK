@@ -24,6 +24,8 @@ namespace umi3d.common
         public bool IsImmersive;
         public string Login;
         public string Pwd;
+        public QualityType Quality;
+        public string OS;
 
         public ConnectionRequestDto() : base() { }
     }

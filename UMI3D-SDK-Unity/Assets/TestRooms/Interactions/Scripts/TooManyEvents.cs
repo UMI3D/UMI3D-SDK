@@ -28,8 +28,8 @@ public class TooManyEvents : MonoBehaviour
         {
             umi3d.edk.UMI3DEvent _event = gameObject.AddComponent<umi3d.edk.UMI3DEvent>();
             _event.Hold = true;
-            _event.onHold.AddListener((a,b) => cube.Move());
-            _event.onRelease.AddListener((a, b) => cube.ResetPosition());
+            _event.onHold.AddListener((a,b) => { cube.Move(); cube.GetComponent<BooleanVisibleFilter>().display.SetValue(a,false); });
+            _event.onRelease.AddListener((a, b) => { cube.ResetPosition(); cube.GetComponent<BooleanVisibleFilter>().display.Sync(a,true); });
             _event.tool = tool;
             _event.InteractionName = cube.name;
         }

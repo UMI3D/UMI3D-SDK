@@ -86,7 +86,7 @@ namespace umi3d.edk
         public override AbstractToolDto ConvertToDto(UMI3DUser user)
         {
             ToolDto dto = new ToolDto();
-            dto.Id = toolId;
+            dto.id = toolId;
             dto.name = Display.name;
             dto.icon2D = Display.icon2D.ToDto();
             dto.icon3D = Display.icon3D.ToDto();

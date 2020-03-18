@@ -19,7 +19,7 @@ using umi3d.common;
 
 public class NotificationsExamples : MonoBehaviour
 {
-    public GenericObject3D objectNotified;
+    public AbstractObject3D objectNotified;
 
     public void SendGlobalNotification(UMI3DUser user, string boneId)
     {

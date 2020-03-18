@@ -23,7 +23,7 @@ using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(umi3d.edk.CVEPrimitive))]
+    [CustomEditor(typeof(umi3d.edk.CVEPrimitive),true)]
     [CanEditMultipleObjects]
     public class CVEPrimitiveEditor : GenericObject3DEditor
     {

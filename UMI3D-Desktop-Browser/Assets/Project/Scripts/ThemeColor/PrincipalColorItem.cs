@@ -15,6 +15,7 @@ limitations under the License.
 */
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,12 +23,19 @@ namespace BrowserDesktop.Theme {
 
     public class PrincipalColorItem : ThemeListener
     {
+        Image Image;
+        Text Text;
+        TMP_Text Text2;
+
         public override void ApplyTheme()
         {
-            var img = GetComponent<Image>();
-            var text = GetComponent<Text>();
-            if (img != null) img.color = Theme.PrincipalColor;
-            if (text != null) text.color = Theme.PrincipalTextColor;
+            if(Image == null) Image = GetComponent<Image>();
+            if (Text == null) Text = GetComponent<Text>();
+            if (Text2 == null) Text2 = GetComponent<TMP_Text>();
+
+            if (Image != null) Image.color = Theme.PrincipalColor;
+            if (Text != null) Text.color = Theme.PrincipalTextColor;
+            if (Text2 != null) Text2.color = Theme.PrincipalTextColor;
         }
     }
 

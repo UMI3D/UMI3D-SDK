@@ -26,7 +26,7 @@ namespace umi3d.edk
     /// Component Overidding a genericObject3D texture to display a viedo on it
     /// Require a genericObject3D on the same GameObject;
     /// </summary>
-    [RequireComponent(typeof(GenericObject3D))]
+    [RequireComponent(typeof(AbstractObject3D))]
     public class CVEVideo : MonoBehaviour, IHasAsyncProperties
     {
         [SerializeField]
@@ -42,13 +42,13 @@ namespace umi3d.edk
         protected bool updated = false;
         protected List<UMI3DUser> updatedFor = new List<UMI3DUser>();
 
-        GenericObject3D _object3D;
+        AbstractObject3D _object3D;
         /// <summary>
         /// The genericObject this component is attached to
         /// </summary>
-        public GenericObject3D Object3D
+        public AbstractObject3D Object3D
         {
-            get { if (!_object3D) _object3D = GetComponent<GenericObject3D>(); return _object3D; }
+            get { if (!_object3D) _object3D = GetComponent<AbstractObject3D>(); return _object3D; }
             set { _object3D = value; }
         }
 

@@ -20,11 +20,11 @@ namespace umi3d.edk
     /// <summary>
     /// 3D Object with only position, scale and rotation.
     /// </summary>
-    public class EmptyObject3D : AbstractObject3D<GenericObject3DDto>
+    public class EmptyObject3D : AbstractObject3D<EmptyObject3DDto>
     {
-        public override GenericObject3DDto CreateDto()
+        public override EmptyObject3DDto CreateDto()
         {
-            return new GenericObject3DDto();
+            return new EmptyObject3DDto();
         }
     }
 

@@ -41,7 +41,7 @@ namespace umi3d.edk
         /// <summary>
         /// The available interactions on last update.
         /// </summary>
-        protected GenericInteraction[] currentInteractions;
+        protected AbstractInteraction[] currentInteractions;
 
         /// <summary>
         /// Indicate if the first GetUpdates has been done.
@@ -51,7 +51,7 @@ namespace umi3d.edk
         /// <summary>
         /// List of objects to load on the next frame for the user.
         /// </summary>
-        public List<AbstractObject3DDto> ObjectsToLoad = new List<AbstractObject3DDto>();
+        public List<EmptyObject3DDto> ObjectsToLoad = new List<EmptyObject3DDto>();
 
         /// <summary>
         /// List of objects to remove on the next frame for the user.
@@ -88,11 +88,15 @@ namespace umi3d.edk
         /// </summary>
         public List<string> InteractionsIdsToRemove = new List<string>();
 
+        /// <summary>
+        /// List of equipable equipped on the user.
+        /// </summary>
+        public List<CVEEquipable> userEquipment = new List<CVEEquipable>();
 
         /// <summary>
         /// An event to handle the user disconnection.
         /// </summary>
-        protected UMI3DUserEvent onUserDisconnection = new UMI3DUserEvent();
+        public UMI3DUserEvent onUserDisconnection = new UMI3DUserEvent();
 
         /// <summary>
         /// The user avatar.
@@ -109,6 +113,8 @@ namespace umi3d.edk
 
         private float TimeSinceConnectionLost = -1000;
 
+        public QualityType quality;
+        public string os;
 
         #region connection
 
@@ -158,6 +164,8 @@ namespace umi3d.edk
         {
             if (avatar != null)
                 Destroy(avatar.gameObject);
+            foreach (CVEEquipable equipable in userEquipment)
+                equipable.onUnequiped.Invoke();
             onUserDisconnection.Invoke(this);
         }
 
@@ -184,7 +192,7 @@ namespace umi3d.edk
             else if (e is HoveredDto)
             {
                 HoveredDto hover = e as HoveredDto;
-                GenericObject3D obj = UMI3D.Scene.GetObject(hover.abstractObject3DId);
+                AbstractObject3D obj = UMI3D.Scene.GetObject(hover.abstractObject3DId);
 
                 if ((obj != null) && obj.isInteractable)
                 {
@@ -214,7 +222,44 @@ namespace umi3d.edk
 
 
             }
-            
+            else if (e is AbstractEquipeConfirmationDto)
+            {
+                AbstractObject3D object3D = UMI3D.Scene.GetObject((e as AbstractEquipeConfirmationDto).objectId);
+                if (object3D)
+                {
+                    CVEEquipable equipable = object3D.gameObject.GetComponent<CVEEquipable>();
+                    if (e is EquipeConfirmationDto)
+                    {
+                        object3D.objectPosition.DeSync(this, false);
+                        object3D.objectRotation.DeSync(this, false);
+                        object3D.objectScale.DeSync(this, false);
+                        userEquipment.Add(equipable);
+                        equipable.equipedUser = this;
+                        equipable.onEquiped.Invoke();
+                    }
+                    else if (e is UnequipeConfirmationDto)
+                    {
+                        object3D.objectPosition.DeSync(this, true);
+                        object3D.objectRotation.DeSync(this, true);
+                        object3D.objectScale.DeSync(this, true);
+                        userEquipment.Remove(equipable);
+                        equipable.equipedUser = null;
+                        equipable.onUnequiped.Invoke();
+                    }
+                }
+            }
+            else if (e is UpdateEquipmentTransformDto)
+            {
+                UpdateEquipmentTransformDto dto = e as UpdateEquipmentTransformDto;
+
+                AbstractObject3D equipment = UMI3D.Scene.GetObject(dto.objectId);
+                if (equipment != null)
+                {
+                    equipment.objectPosition.SetValue(dto.position);
+                    equipment.objectRotation.SetValue(dto.rotation);
+                    equipment.objectScale.SetValue(dto.scale);
+                }
+            }
         }
 
         #endregion
@@ -232,11 +277,11 @@ namespace umi3d.edk
             var res = new LoadDto();
             if (list.Count > 0)
             {
-                foreach (GenericObject3D child in list)
+                foreach (AbstractObject3D child in list)
                     if (child.VisibleFor(this))
                     {
-                        var dto = child.ConvertToDto(this) as AbstractObject3DDto;
-                        dto.Pid = parentId;
+                        var dto = child.ConvertToDto(this) as EmptyObject3DDto;
+                        dto.pid = parentId;
                         res.Entities.Add(dto);
                     }
             }
@@ -254,9 +299,9 @@ namespace umi3d.edk
         /// <param name="request">The InteractionRequestDto DTO that contains the request parameters.</param>
         void Interact(InteractionRequestDto request)
         {
-            if (request.Id == null)
+            if (request.id == null)
                 return;
-            GenericInteraction interaction = UMI3D.Scene.GetInteraction(request.Id);
+            AbstractInteraction interaction = UMI3D.Scene.GetInteraction(request.id);
             if (interaction != null)
                 interaction.OnUserInteraction(this, (JSONObject)request.Arguments);
         }
@@ -310,7 +355,7 @@ namespace umi3d.edk
         /// <param name="res">The UpdateDto to be completed.</param>
         private void updateObjectsVisibility(UpdateDto res)
         {
-            foreach (GenericObject3D obj in UMI3D.Scene.Objects)
+            foreach (AbstractObject3D obj in UMI3D.Scene.Objects)
                 obj.UpdateVisibilityForUser(this);
 
             res.LoadedObjects.Entities.AddRange(ObjectsToLoad);
@@ -319,7 +364,7 @@ namespace umi3d.edk
             ObjectsToLoad.Clear();
             ObjectsToRemove.Clear();
 
-            foreach (GenericObject3D obj in UMI3D.Scene.Objects)
+            foreach (AbstractObject3D obj in UMI3D.Scene.Objects)
                 obj.UpdateVisibilityLastFrame(this);
         }
 
@@ -337,7 +382,7 @@ namespace umi3d.edk
                     {
                         if(tool.UpdateAvailabilityForUser(this))
                         {
-                            foreach (GenericInteraction interaction in tool.Interactions)
+                            foreach (AbstractInteraction interaction in tool.Interactions)
                             {
                                 interaction.UpdateAvailabilityForUser(this);
                             }
@@ -366,12 +411,17 @@ namespace umi3d.edk
                 foreach (CVETool tool in toolbox.tools)
                 {
                     tool.UpdateAvailabilityLastFrame(this);
-                    foreach (GenericInteraction interaction in tool.Interactions)
+                    foreach (AbstractInteraction interaction in tool.Interactions)
                     {
                         interaction.UpdateAvailabilityLastFrame(this);
                     }
                 }
             }
+        }
+
+        private void UpdateEquipmentTransform(UpdateEquipmentTransformDto dto)
+        {
+            throw new System.NotImplementedException();
         }
 
         #endregion
@@ -399,6 +449,8 @@ namespace umi3d.edk
         {
             if (avatar != null)
                 Destroy(avatar.gameObject);
+            foreach (CVEEquipable equipable in userEquipment)
+                equipable.onUnequiped.Invoke();
             onUserDisconnection.Invoke(this);
         }
         #endregion

@@ -27,7 +27,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="callback"></param>
-        public override void LoadDTO(ResourceDto dto, Action<Cubemap> callback)
+        public override void LoadDTO(ResourceDto dto, Action<Cubemap> callback, Action<string> onError)
         {
             //Material skyboxMat;
 

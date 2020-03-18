@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Id of the interactable object 3D.
         /// </summary>
-        /// <see cref="AbstractObject3DDto"/>
+        /// <see cref="EmptyObject3DDto"/>
         public string objectId { get; protected set; }
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
 

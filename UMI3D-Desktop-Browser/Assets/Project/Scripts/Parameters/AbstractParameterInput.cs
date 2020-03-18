@@ -63,7 +63,7 @@ namespace BrowserDesktop.Parameters
                     CircleMenu.Instance.MenuDisplayManager.menu.Add(menuItem);
 
                 menuItem.NotifyValueChange((interaction as ParameterType).Value);
-                callback = x => UMI3DHttpClient.Interact(currentInteraction.Id, x);
+                callback = x => UMI3DHttpClient.Interact(currentInteraction.id, x);
                 menuItem.Subscribe(callback);
                 currentInteraction = interaction;
             }

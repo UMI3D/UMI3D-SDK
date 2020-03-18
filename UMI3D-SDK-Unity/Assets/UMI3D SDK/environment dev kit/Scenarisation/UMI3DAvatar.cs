@@ -181,10 +181,10 @@ namespace umi3d.edk
 
             avatarDto = navigation.Avatar;
 
-            Vector3 position = ((Vector3)navigation.CameraDto.Position).Unscaled(avatarDto.ScaleScene);
+            Vector3 position = ((Vector3)navigation.CameraDto.position).Unscaled(avatarDto.ScaleScene);
 
             viewpoint.transform.position = position;
-            viewpoint.transform.localRotation = navigation.CameraDto.Rotation;
+            viewpoint.transform.localRotation = navigation.CameraDto.rotation;
             viewpoint.projectionMatrix = navigation.CameraDto.projectionMatrix;
 
             anchor.transform.position = viewpoint.transform.position;
@@ -194,7 +194,7 @@ namespace umi3d.edk
                 usernameDisplayer.transform.position = viewpoint.transform.position;
             //usernameDisplayer.transform.rotation = viewpoint.transform.rotation; //billboard
 
-            GetComponent<GenericObject3D>().PropertiesHandler.NotifyUpdate();
+            GetComponent<AbstractObject3D>().PropertiesHandler.NotifyUpdate();
         }
 
         /// <summary>
@@ -215,17 +215,17 @@ namespace umi3d.edk
             bonesToDelete = oldSkeleton
                 .ConvertAll<string>(avatarBone => avatarBone.boneId)
                 .FindAll(oldBoneId =>
-                    !newBoneListFromBrowser.Exists(newBone => newBone.Id.Equals(oldBoneId)));
+                    !newBoneListFromBrowser.Exists(newBone => newBone.id.Equals(oldBoneId)));
 
             bonesToUpdate = oldSkeleton
                 .ConvertAll<string>(avatarBone => avatarBone.boneId)
                 .FindAll(oldBoneId =>
-                    newBoneListFromBrowser.Exists(newBone => newBone.Id.Equals(oldBoneId)));
+                    newBoneListFromBrowser.Exists(newBone => newBone.id.Equals(oldBoneId)));
 
             bonesToCreate = newBoneListFromBrowser.FindAll(newBoneDto =>
                 !oldSkeleton.Exists(oldBone =>
-                    oldBone.boneId.Equals(newBoneDto.Id)))
-                .ConvertAll<string>(bone => bone.Id);
+                    oldBone.boneId.Equals(newBoneDto.id)))
+                .ConvertAll<string>(bone => bone.id);
 
 
             foreach (string boneId in bonesToDelete)
@@ -238,12 +238,12 @@ namespace umi3d.edk
             foreach (string boneId in bonesToUpdate)
             {
                 UMI3DAvatarBone umi3DAvatarBone = UMI3DAvatarBone.instancesByUserId[user.UserId][boneId];
-                UpdateBone(UMI3D.Scene.GetObject(umi3DAvatarBone.boneAnchorId).gameObject, avatarDto.boneList.Find(boneDto => boneDto.Id.Equals(boneId)));
+                UpdateBone(UMI3D.Scene.GetObject(umi3DAvatarBone.boneAnchorId).gameObject, avatarDto.boneList.Find(boneDto => boneDto.id.Equals(boneId)));
             }
 
             foreach (string boneId in bonesToCreate)
             {
-                UMI3DAvatarBone umi3DAvatarBone = InstanciateBone(avatarDto.boneList.Find(boneDto => boneDto.Id.Equals(boneId)));
+                UMI3DAvatarBone umi3DAvatarBone = InstanciateBone(avatarDto.boneList.Find(boneDto => boneDto.id.Equals(boneId)));
                 umi3DAvatarBone.Register();
             }
 
@@ -317,11 +317,11 @@ namespace umi3d.edk
                     Go.AddComponent<EmptyObject3D>();
                     Go.transform.parent = anchor.transform;
                 }
-                UMI3DAvatarBone umi3DAvatarBone = new UMI3DAvatarBone(user.UserId, bone.Id)
+                UMI3DAvatarBone umi3DAvatarBone = new UMI3DAvatarBone(user.UserId, bone.id, bone.type)
                 {
                     meshes = meshesIds.ToArray(),
                 };
-                GenericObject3D GoComp = Go.GetComponent<GenericObject3D>();
+                AbstractObject3D GoComp = Go.GetComponent<AbstractObject3D>();
                 if (GoComp)
                 {
                     umi3DAvatarBone.boneAnchorId = GoComp.Id;
@@ -338,9 +338,9 @@ namespace umi3d.edk
         /// </summary>
         private void UpdateBone(GameObject go, BoneDto boneDto)
         {
-            go.transform.localPosition = boneDto.Position;
-            go.transform.localRotation = boneDto.Rotation;
-            go.transform.localScale = boneDto.Scale;
+            go.transform.localPosition = boneDto.position;
+            go.transform.localRotation = boneDto.rotation;
+            go.transform.localScale = boneDto.scale;
             FilterBones(go, boneDto);
         }
     }

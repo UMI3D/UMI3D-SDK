@@ -21,7 +21,7 @@ namespace umi3d.common
     [System.Serializable]
     public class LoadDto : UMI3DDto
     {
-        public List<AbstractObject3DDto> Entities = new List<AbstractObject3DDto>();
+        public List<EmptyObject3DDto> Entities = new List<EmptyObject3DDto>();
 
         public LoadDto() : base() { }
     }

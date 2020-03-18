@@ -613,7 +613,7 @@ namespace AsImpL
         /// <returns>Unity material</returns>
         private Material BuildMaterial(MaterialData md)
         {
-            string shaderName = "Standard";// (md.illumType == 2) ? "Standard (Specular setup)" : "Standard";
+            string shaderName = (md.illumType == 2) ? "Standard (Specular setup)" : "Standard";
             bool specularMode = false;// (md.specularTex != null);
             ModelUtil.MtlBlendMode mode = md.overallAlpha < 1.0f ? ModelUtil.MtlBlendMode.TRANSPARENT : ModelUtil.MtlBlendMode.OPAQUE;
 

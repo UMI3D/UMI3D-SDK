@@ -17,59 +17,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using umi3d.cdk.menu.core;
 
-public class MenuTools : MonoBehaviour
+namespace umi3d.cdk.menu.core
 {
-    public MenuAsset menu;
-
-    /// <summary>
-    /// Add a BooleanInputMenuItem to the Menu.
-    /// </summary>
-    [ContextMenu("Add Bool input")]
-    public void AddInputItem()
+    public class MenuTools : MonoBehaviour
     {
-        BooleanInputMenuItem menuItem = new BooleanInputMenuItem()
+        public MenuAsset menu;
+
+        /// <summary>
+        /// Add a BooleanInputMenuItem to the Menu.
+        /// </summary>
+        [ContextMenu("Add Bool input")]
+        public void AddInputItem()
         {
-            Name = "My Bool Input"
-        };
+            BooleanInputMenuItem menuItem = new BooleanInputMenuItem()
+            {
+                Name = "My Bool Input"
+            };
 
-        menu.menu.Add(menuItem);
-    }
+            menu.menu.Add(menuItem);
+        }
 
-    /// <summary>
-    /// Convert to a Menu. 
-    /// </summary>
-    [ContextMenu("Convert to 3D Menu")]
-    public void ToMenu()
-    {
-        menu.menu = new umi3d.cdk.menu.core.Menu();
-        menu.menu.RemoveAllMenuItem();
-        menu.menu.RemoveAllSubMenu();
-        ToMenuAux(menu.menu, this.transform);
-        Debug.Log("Convertion done for " + menu.menu.Name);
-        Debug.Log(new List<AbstractMenu>(menu.menu.GetSubMenu()).Count);
-
-    }
-
-
-    private void ToMenuAux(umi3d.cdk.menu.core.Menu menu_, Transform root)
-    {
-        foreach(Transform child in root.transform.GetComponentInChildren<Transform>())
+        /// <summary>
+        /// Convert to a Menu. 
+        /// </summary>
+        [ContextMenu("Convert to 3D Menu")]
+        public void ToMenu()
         {
-            if (child.childCount == 0)
-            {
-                Debug.Log("add item");
-                umi3d.cdk.menu.core.MenuItem menuItem = new umi3d.cdk.menu.core.MenuItem();
-                menuItem.Name = child.gameObject.name;
-                menu_.Add(menuItem);
-            }
-            else
-            {
-                umi3d.cdk.menu.core.Menu submenu = new umi3d.cdk.menu.core.Menu();
-                submenu.Name = child.gameObject.name;
-                menu_.Add(submenu);
-                ToMenuAux(submenu, child);
-            }
-        }        
-    }
+            menu.menu = new umi3d.cdk.menu.core.Menu();
+            menu.menu.RemoveAllMenuItem();
+            menu.menu.RemoveAllSubMenu();
+            ToMenuAux(menu.menu, this.transform);
+            Debug.Log("Convertion done for " + menu.menu.Name);
+            Debug.Log(new List<AbstractMenu>(menu.menu.GetSubMenu()).Count);
 
+        }
+
+
+        private void ToMenuAux(umi3d.cdk.menu.core.Menu menu_, Transform root)
+        {
+            foreach (Transform child in root.transform.GetComponentInChildren<Transform>())
+            {
+                if (child.childCount == 0)
+                {
+                    Debug.Log("add item");
+                    umi3d.cdk.menu.core.MenuItem menuItem = new umi3d.cdk.menu.core.MenuItem();
+                    menuItem.Name = child.gameObject.name;
+                    menu_.Add(menuItem);
+                }
+                else
+                {
+                    umi3d.cdk.menu.core.Menu submenu = new umi3d.cdk.menu.core.Menu();
+                    submenu.Name = child.gameObject.name;
+                    menu_.Add(submenu);
+                    ToMenuAux(submenu, child);
+                }
+            }
+        }
+
+    }
 }

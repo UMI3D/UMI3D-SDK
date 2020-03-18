@@ -21,7 +21,7 @@ using System.Text;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class BoneDto : AbstractObject3DDto
+    public class BoneDto : EmptyObject3DDto
     {
         public BoneType type = BoneType.None;
 

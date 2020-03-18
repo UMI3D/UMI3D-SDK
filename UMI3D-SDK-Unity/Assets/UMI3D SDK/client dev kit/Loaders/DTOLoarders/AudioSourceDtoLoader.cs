@@ -29,7 +29,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Audio source dto to load</param>
         /// <param name="callback">Callback to raise (the argument is the audiosource)</param>
-        public override void LoadDTO(AudioSourceDto dto, Action<GameObject> callback)
+        public override void LoadDTO(AudioSourceDto dto, Action<GameObject> callback, Action<string> onError)
         {
             GameObject res = new GameObject();
             res.AddComponent<AudioSource>();

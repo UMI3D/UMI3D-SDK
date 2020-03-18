@@ -36,7 +36,7 @@ namespace BrowserDesktop.Parameters
 
                 callback = newValue =>
                 {
-                    UMI3DHttpClient.Interact(interaction.Id, newValue);
+                    UMI3DHttpClient.Interact(interaction.id, newValue);
                 };
 
                 menuItem = new InputMenuItem()

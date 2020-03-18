@@ -19,28 +19,32 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 
-class SimpleTreeView : TreeView
-{
-    public IList<TreeViewItem> content = new List<TreeViewItem>();
-
-    public SimpleTreeView(TreeViewState treeViewState)
-        : base(treeViewState)
+#if UNITY_EDITOR
+namespace umi3d.cdk.editor {
+    class SimpleTreeView : TreeView
     {
-        Reload();
-    }
+        public IList<TreeViewItem> content = new List<TreeViewItem>();
 
-    protected override TreeViewItem BuildRoot()
-    {
-        var root = new TreeViewItem { id = 0, depth = -1, displayName = "Root" };
-        var allItems = content;
+        public SimpleTreeView(TreeViewState treeViewState)
+            : base(treeViewState)
+        {
+            Reload();
+        }
 
-        // Utility method that initializes the TreeViewItem.children and .parent for all items.
-        SetupParentsAndChildrenFromDepths(root, allItems);
-        return root;
-    }
+        protected override TreeViewItem BuildRoot()
+        {
+            var root = new TreeViewItem { id = 0, depth = -1, displayName = "Root" };
+            var allItems = content;
 
-    public void SetItems(IList<TreeViewItem> rows)
-    {
-        content = rows;
+            // Utility method that initializes the TreeViewItem.children and .parent for all items.
+            SetupParentsAndChildrenFromDepths(root, allItems);
+            return root;
+        }
+
+        public void SetItems(IList<TreeViewItem> rows)
+        {
+            content = rows;
+        }
     }
 }
+#endif

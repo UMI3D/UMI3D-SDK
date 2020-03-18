@@ -119,6 +119,9 @@ namespace umi3d.cdk
             else if (obj is NotificationDto)
                 UMI3DBrowser.notificationManager?.Notify(obj as NotificationDto);
 
+            else if (obj is AbstractEquipEventDto)
+                UMI3DEquipablesManager.Instance.DtoDispatcher(obj as AbstractEquipEventDto);
+
             yield return null;
         }
 
@@ -152,7 +155,7 @@ namespace umi3d.cdk
         public static void Interact(string id, object evt = null)
         {
             var request = new InteractionRequestDto();
-            request.Id = id;
+            request.id = id;
             request.Arguments = evt;
             Send(request);
         }

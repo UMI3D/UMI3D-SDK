@@ -19,6 +19,8 @@ using umi3d.common;
 using System.Globalization;
 using UnityEngine.Events;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.Networking;
 
 namespace umi3d.cdk
 {
@@ -48,6 +50,11 @@ namespace umi3d.cdk
                     Instance.userId = value;
             }
         }
+
+        /// <summary>
+        /// Username on server.
+        /// </summary>
+        public static string UserName;
 
         /// <summary>
         /// Environment connected to.
@@ -89,6 +96,9 @@ namespace umi3d.cdk
         /// Navigation z-axis.
         /// </summary>
         public static string navigationAxis_Z { get { return useQwerty ? "NavZ_qwerty" : "NavZ"; } }
+
+        public QualityType quality;
+        public string os;
 
         private string signaling = "";
         public static string Signaling
@@ -139,7 +149,7 @@ namespace umi3d.cdk
         {
             get
             {
-                return Exist ? AbstractInteractionMapper.Instance : null ;
+                return Exist ? AbstractInteractionMapper.Instance : null;
             }
         }
 
@@ -182,13 +192,13 @@ namespace umi3d.cdk
 
         [SerializeField]
         private AbstractNotificationManager notificationManager_ = null;
-        public static AbstractNotificationManager notificationManager 
-        { 
-            get { return Exist ? Instance.notificationManager_ : null; } 
+        public static AbstractNotificationManager notificationManager
+        {
+            get { return Exist ? Instance.notificationManager_ : null; }
         }
-        
+
         #endregion
-        
+
         /// <summary>
         /// Media loading position for media environment.
         /// </summary>
@@ -200,7 +210,8 @@ namespace umi3d.cdk
         /// World position.
         /// </summary>
         public static Transform WorldAnchor { get { return Exist ? Instance.worldAnchor : null; } }
-        
+
+        private List<AssetBundle> loadedBundles = new List<AssetBundle>();
 
 
         #region Connection/Disconnection public events
@@ -286,6 +297,10 @@ namespace umi3d.cdk
                 interactionMapper.ResetModule();
             if (Instance.scene != null)
                 Instance.scene.ResetModule();
+            foreach (AssetBundle bundle in Instance.loadedBundles)
+            {
+                bundle.Unload(false);
+            }
         }
 
         /// <summary>
@@ -295,12 +310,50 @@ namespace umi3d.cdk
         public static void OpenEnvironment(EnterDto data)
         {
             UserId = data.UserID;
-            UMI3DHttpClient.PoolUpdates();
-            Scene.SetSkybox(Media.Skybox);
-            UMI3DWebSocketClient.Init();
-            Instance.StartCoroutine(Instance.EnterTeleportationAfterSetup(data.UserPosition));
-            Instance.onStartLoading.Invoke();
+
+            Instance.StartCoroutine(Instance.LoadRequiredResources(Media.requiredResources,
+                () =>
+                {
+                    UMI3DHttpClient.PoolUpdates();
+                    Scene.SetSkybox(Media.Skybox);
+                    UMI3DWebSocketClient.Init();
+                    Instance.StartCoroutine(Instance.EnterTeleportationAfterSetup(data.UserPosition));
+                    Instance.onStartLoading.Invoke();
+                },
+                err =>
+                {
+                    Debug.LogError(err);
+                }));
+
+
         }
+
+
+        private IEnumerator LoadRequiredResources(List<ResourceDto> resources, System.Action onSuccess, System.Action<string> onError)
+        {
+            foreach (ResourceDto resource in resources)
+            {
+                UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(resource.Url);
+                yield return www.SendWebRequest();
+
+                if (www.isNetworkError || www.isHttpError)
+                {
+                    onError?.Invoke(www.error);
+                    yield break;
+                }
+                AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(www);
+                if (bundle != null)
+                {
+                    bundle.LoadAllAssets();
+                    loadedBundles.Add(bundle);
+                }
+
+                yield return null;
+            }
+
+            onSuccess.Invoke();
+        }
+
 
         public static bool isEnterTeleportationAllowed = false;
         public static Vector3 viewpointOffsetForEnterTeleportation;
@@ -317,6 +370,50 @@ namespace umi3d.cdk
                 tpData.Position = positionToTeleport;
             }
             Navigation.Teleport(tpData);
+        }
+
+        /// <summary>
+        /// State if this client is compatible with an environement.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="extensionNotFound"></param>
+        /// <returns></returns>
+        static public bool IsCompatible(MediaDto dto, out List<string> extensionNotFound)
+        {
+            extensionNotFound = new List<string>();
+            if (dto.extensionNeeded != null)
+                foreach (string extension in dto.extensionNeeded)
+                {
+                    if (!HDResourceCache.ExtensionReadable.Contains(extension))
+                        extensionNotFound.Add(extension);
+                }
+            return extensionNotFound.Count == 0;
+        }
+
+        static public bool IsCompatible(MediaDto dto, out string error)
+        {
+            error = "[Client version :" + UMI3DVersion.version + "| Environement version :" + dto.VersionMajor + "." + dto.VersionMinor + "." + dto.VersionStatus + "." + dto.VersionDate + "]";
+            if (dto.VersionMajor != UMI3DVersion.major)
+            {
+                error = "Major version is different " + error;
+                return false;
+            }
+            if (dto.VersionMinor != UMI3DVersion.minor)
+            {
+                error = "Minor version is different " + error;
+                return false;
+            }
+            if (dto.VersionStatus != UMI3DVersion.status)
+            {
+                error = "Status version is different " + error;
+                return false;
+            }
+            if (dto.VersionDate != UMI3DVersion.date)
+            {
+                error = "Status version is different " + error;
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -352,13 +449,13 @@ namespace umi3d.cdk
 
             Scene.transform.SetParent(dto.EnvironmentType == EnvironmentType.Media ? Instance.MediaAnchor : WorldAnchor, false);
 
-
             UMI3DHttpClient.Login(new ConnectionRequestDto()
             {
-                UserName = "toto",
-                IsImmersive = AbstractScene.isImmersiveDevice
+                UserName = UserName,
+                IsImmersive = AbstractScene.isImmersiveDevice,
+                Quality = Instance.quality,
+                OS = Instance.os,
             });
-
         }
 
         /// <summary>

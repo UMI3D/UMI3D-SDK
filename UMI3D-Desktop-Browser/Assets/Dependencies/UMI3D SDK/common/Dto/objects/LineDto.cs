@@ -21,7 +21,7 @@ using UnityEngine;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class LineDto : AbstractObject3DDto
+    public class LineDto : EmptyObject3DDto
     {
 
         public LineDto() : base() { }

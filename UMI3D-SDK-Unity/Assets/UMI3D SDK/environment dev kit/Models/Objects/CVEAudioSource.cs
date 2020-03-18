@@ -236,7 +236,7 @@ namespace umi3d.edk
                 Play();
         }
         
-        protected new void Update()
+        protected override void Update()
         {
             base.Update();
 

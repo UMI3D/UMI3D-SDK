@@ -30,12 +30,12 @@ namespace umi3d.cdk {
         /// </summary>
         /// <param name="dto">Dto to create object from</param>
         /// <param name="callback">Callback to execute</param>
-        public override void LoadDTO(UIRectDto dto, Action<GameObject> callback)
+        public override void LoadDTO(UIRectDto dto, Action<GameObject> onSuccess, Action<string> onError)
         {
             GameObject instance = new GameObject();
             instance.AddComponent<RectTransform>();
             InitObjectFromDto(instance, dto);
-            callback(instance);
+            onSuccess(instance);
         }
 
         /// <summary>

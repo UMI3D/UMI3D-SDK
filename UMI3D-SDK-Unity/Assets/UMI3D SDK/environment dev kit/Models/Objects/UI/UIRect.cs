@@ -163,7 +163,7 @@ namespace umi3d.edk
             return dto;
         }
 
-        protected new void Update()
+        protected override void Update()
         {
             base.Update();
             SyncProperties();

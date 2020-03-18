@@ -30,7 +30,21 @@ namespace umi3d.cdk
     public class HDResourceCache : PersistentSingleton<HDResourceCache>
     {
 
-        struct ModelCache
+        /// <summary>
+        /// List of extension that could be read by the client
+        /// </summary>
+        public List<string> extensionReadable;
+
+        public List<AbstractExtensionLoader> ExtensionLoader;
+        public AbstractExtensionLoader DefaultLoader;
+
+
+        /// <summary>
+        /// List of extension that could be read by the client
+        /// </summary>
+        public static List<string> ExtensionReadable { get { if (Exist) return Instance.extensionReadable; else return null; } }
+
+        public struct ModelCache
         {
             public Transform transform;
             public Action<GameObject> callback;
@@ -46,20 +60,20 @@ namespace umi3d.cdk
 
         Transform loadingSpot;
 
-        Dictionary<string, string> httpCache = new Dictionary<string, string>();
-        Dictionary<string, List<Action<string>>> httpCallbackCache = new Dictionary<string, List<Action<string>>>();
-        Dictionary<string, List<Action<UnityWebRequest>>> httpFailCallbackCache = new Dictionary<string, List<Action<UnityWebRequest>>>();
+        public Dictionary<string, string> httpCache = new Dictionary<string, string>();
+        public Dictionary<string, List<Action<string>>> httpCallbackCache = new Dictionary<string, List<Action<string>>>();
+        public Dictionary<string, List<Action<UnityWebRequest>>> httpFailCallbackCache = new Dictionary<string, List<Action<UnityWebRequest>>>();
 
-        Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
-        Dictionary<string, List<Action<Texture2D>>> textureCallbackCache = new Dictionary<string, List<Action<Texture2D>>>();
-        Dictionary<string, List<Action<UnityWebRequest>>> textureFailCallbackCache = new Dictionary<string, List<Action<UnityWebRequest>>>();
+        public Dictionary<string, Texture2D> textureCache = new Dictionary<string, Texture2D>();
+        public Dictionary<string, List<Action<Texture2D>>> textureCallbackCache = new Dictionary<string, List<Action<Texture2D>>>();
+        public Dictionary<string, List<Action<UnityWebRequest>>> textureFailCallbackCache = new Dictionary<string, List<Action<UnityWebRequest>>>();
 
-        Dictionary<string, GameObject> modelCache = new Dictionary<string, GameObject>();
-        Dictionary<string, List<ModelCache>> modelCallbackCache = new Dictionary<string, List<ModelCache>>();
+        public Dictionary<string, GameObject> modelCache = new Dictionary<string, GameObject>();
+        public Dictionary<string, List<ModelCache>> modelCallbackCache = new Dictionary<string, List<ModelCache>>();
 
-        Dictionary<string, AudioClip> audioCache = new Dictionary<string, AudioClip>();
-        Dictionary<string, List<Action<AudioClip>>> audioCallbackCache = new Dictionary<string, List<Action<AudioClip>>>();
-        Dictionary<string, List<Action<UnityWebRequest>>> audioFailCallbackCache = new Dictionary<string, List<Action<UnityWebRequest>>>();
+        public Dictionary<string, AudioClip> audioCache = new Dictionary<string, AudioClip>();
+        public Dictionary<string, List<Action<AudioClip>>> audioCallbackCache = new Dictionary<string, List<Action<AudioClip>>>();
+        public Dictionary<string, List<Action<UnityWebRequest>>> audioFailCallbackCache = new Dictionary<string, List<Action<UnityWebRequest>>>();
 
         protected override void Awake()
         {
@@ -223,7 +237,6 @@ namespace umi3d.cdk
                     if (failCallback != null)
                     {
                         failCallback.Invoke(www);
-
                     }
                     else
                     {
@@ -368,21 +381,21 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="resource">Ressource to download</param>
         /// <param name="parent">Scene object to instantiate object as child of</param>
-        /// <param name="callback">Callback to execute</param>
+        /// <param name="onSuccess">Callback to execute</param>
         /// <param name="name">Model's name in scene</param>
-        public static void Download(Resource resource, Transform parent, Action<GameObject> callback, string name = "model")
+        public static void Download(Resource resource, Transform parent, Action<GameObject> onSuccess, Action<string> onError, string name = "model")
         {
             resource.Url = resource.Url.Replace('\\', '/');
             if (Instance.modelCache.ContainsKey(resource.Url))
             {
                 if (Instance.modelCache[resource.Url] != null)
-                    Instance.InstanciateFromCache(resource.Url, parent, callback, name);
+                    Instance.InstanciateFromCache(resource.Url, parent, onSuccess, name);
                 else
                 {
                     if (!Instance.modelCallbackCache.ContainsKey(resource.Url))
                         Instance.modelCallbackCache.Add(resource.Url, new List<ModelCache>());
 
-                    Instance.modelCallbackCache[resource.Url].Add(new ModelCache(parent, callback, name));
+                    Instance.modelCallbackCache[resource.Url].Add(new ModelCache(parent, onSuccess, name));
                 }
             }
             else
@@ -393,96 +406,19 @@ namespace umi3d.cdk
                 pivot.transform.localPosition = Vector3.zero;
                 pivot.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
                 pivot.transform.localScale = Vector3.one;
-                string extension = Path.GetExtension(resource.Url);
-                switch (extension)
+                string extension = System.IO.Path.GetExtension(resource.Url);
+                bool useDefaultLoader = true;
+                foreach(AbstractExtensionLoader loader in Instance.ExtensionLoader)
                 {
-                    case ".gltf":
-                        var gltf_component = pivot.AddComponent<GLTFComponent>();
-                        //TODO IF RESOURCE FILE NOT LOCAL
-                        gltf_component.GLTFUri = resource.Url;
-                        gltf_component.MaximumLod = 300;
-                        gltf_component.Collider = GLTFSceneImporter.ColliderType.Mesh;
-                        gltf_component.Load();
-                        if (Instance.modelCache.ContainsKey(resource.Url) && Instance.modelCache[resource.Url] != null)
-                        {
-                            Destroy(pivot);
-                        }
-                        else
-                        {
-                            Instance.modelCache[resource.Url] = pivot;
-                            pivot.SetActive(false);
-                        }
-                        Instance.InstanciateFromCache(resource.Url, parent, callback, name);
-
-                        if (Instance.modelCallbackCache.ContainsKey(resource.Url))
-                        {
-                            foreach (ModelCache model in Instance.modelCallbackCache[resource.Url])
-                            {
-                                Instance.InstanciateFromCache(resource.Url, model.transform, model.callback, model.name);
-                            }
-                            Instance.modelCallbackCache.Remove(resource.Url);
-                        }
-                        break;
-                    case ".glb":
-                        var glb_component = pivot.AddComponent<GLTFComponent>();
-                        //TODO IF RESOURCE FILE NOT LOCAL
-                        glb_component.GLTFUri = resource.Url;
-                        glb_component.MaximumLod = 300;
-                        glb_component.Collider = GLTFSceneImporter.ColliderType.Mesh;
-                        glb_component.Load();
-                        if (Instance.modelCache.ContainsKey(resource.Url) && Instance.modelCache[resource.Url] != null)
-                        {
-                            Destroy(pivot);
-                        }
-                        else
-                        {
-                            Instance.modelCache[resource.Url] = pivot;
-                            pivot.SetActive(false);
-                        }
-                        Instance.InstanciateFromCache(resource.Url, parent, callback, name);
-
-                        if (Instance.modelCallbackCache.ContainsKey(resource.Url))
-                        {
-                            foreach (ModelCache model in Instance.modelCallbackCache[resource.Url])
-                            {
-                                Instance.InstanciateFromCache(resource.Url, model.transform, model.callback, model.name);
-                            }
-                            Instance.modelCallbackCache.Remove(resource.Url);
-                        }
-                        break;
-                    default:
-                        var importer = pivot.AddComponent<ObjectImporter>();
-                        var options = new AsImpL.ImportOptions();
-                        options.localPosition = Vector3.zero;
-                        options.localEulerAngles = new Vector3(0f, 0f, 0f);
-                        options.localScale = Vector3.one;
-                        options.localPosition = Vector3.zero;
-                        options.buildColliders = false;
-                        importer.ImportingComplete += () =>
-                        {
-                            if (Instance.modelCache.ContainsKey(resource.Url) && Instance.modelCache[resource.Url] != null)
-                            {
-                                Destroy(pivot);
-                            }
-                            else
-                            {
-                                Instance.modelCache[resource.Url] = pivot;
-                                pivot.SetActive(false);
-                            }
-                            Instance.InstanciateFromCache(resource.Url, parent, callback, name);
-
-                            if (Instance.modelCallbackCache.ContainsKey(resource.Url))
-                            {
-                                foreach (ModelCache model in Instance.modelCallbackCache[resource.Url])
-                                {
-                                    Instance.InstanciateFromCache(resource.Url, model.transform, model.callback, model.name);
-                                }
-                                Instance.modelCallbackCache.Remove(resource.Url);
-                            }
-                        };
-                        importer.ImportModelAsync(name, resource, pivot.transform, options);
-                        break;
+                    if (loader.IsSuitable(extension))
+                    {
+                        loader.Load(extension, resource, pivot, parent, onSuccess, onError);
+                        useDefaultLoader = false;
+                    }
                 }
+                if(useDefaultLoader)
+                    Instance.DefaultLoader.Load(extension, resource, pivot, parent, onSuccess, onError);
+
             }
         }
 
@@ -494,7 +430,7 @@ namespace umi3d.cdk
         /// <param name="parent">Scene object to instantiate object as child of</param>
         /// <param name="callback">Callback to execute after instantiation</param>
         /// <param name="name">Model's name in scene</param>
-        void InstanciateFromCache(string url, Transform parent, Action<GameObject> callback, string name = "model")
+        public void InstanciateFromCache(string url, Transform parent, Action<GameObject> callback, string name = "model")
         {
             if (modelCache.ContainsKey(url))
             {

@@ -52,11 +52,13 @@ namespace umi3d.common
         {
             lock (_executionQueue)
             {
-                if (_executionQueue.Count < maxQueueSize)
-                    _executionQueue.Enqueue(() =>
-                    {
-                        StartCoroutine(action);
-                    });
+                //if (_executionQueue.Count < maxQueueSize)
+                //    _executionQueue.Clear();
+
+                _executionQueue.Enqueue(() =>
+                {
+                    StartCoroutine(action);
+                });
             }
         }
 

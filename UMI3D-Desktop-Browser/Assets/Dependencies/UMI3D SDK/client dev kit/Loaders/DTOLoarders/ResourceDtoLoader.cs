@@ -22,7 +22,7 @@ namespace umi3d.cdk
     public class ResourceDtoLoader : AbstractDTOLoader<ResourceDto, Resource>
     {
 
-        public override void LoadDTO(ResourceDto dto, Action<Resource> callback)
+        public override void LoadDTO(ResourceDto dto, Action<Resource> onSuccess, Action<string> onError)
         {
             // TO CHANGE
             Resource resource = new Resource();
@@ -33,7 +33,7 @@ namespace umi3d.cdk
             resource.Password = dto.Password;
             resource.RequestType = dto.RequestType;
 
-            callback(resource);
+            onSuccess(resource);
         }
 
         public override void UpdateFromDTO(Resource resource, ResourceDto olddto, ResourceDto newdto)

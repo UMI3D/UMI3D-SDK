@@ -16,6 +16,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk
 {
@@ -34,16 +35,26 @@ namespace umi3d.edk
         /// The current async i.e. user specific values.
         /// </summary>
         Dictionary<UMI3DUser, T> asyncValues;
+        Dictionary<UMI3DUser, UnityAction<UMI3DUser>> UserAsyncListeners;
+        Dictionary<UMI3DUser, UnityAction<UMI3DUser>> UserDesyncListeners;
+        /// <summary>
+        /// Indicates if the property is asynchronous.
+        /// </summary>
+        public bool isAsync { get => asyncValues != null && asyncValues.Count > 0; }
 
         /// <summary>
         /// Indicates if the property is asynchronous.
         /// </summary>
-        bool isAsync;
-        
+        public bool isDeSync { get => UserDesyncListeners != null && UserDesyncListeners.Count > 0; }
+
         /// <summary>
         /// A event that is triggered when value changes.
         /// </summary>
         public Action<T> OnValueChanged;
+        /// <summary>
+        /// A event that is triggered when value changes.
+        /// </summary>
+        public Action<UMI3DUser, T> OnUserValueChanged;
 
         /// <summary>
         /// The object to which this property belongs.
@@ -56,13 +67,22 @@ namespace umi3d.edk
         Func<T, T, bool> Equal;
 
         /// <summary>
+        /// 
+        /// </summary>
+        public IEnumerable<UMI3DUser> AsynchronousUser
+        {
+            get {
+                return asyncValues.Keys;
+            }
+        }
+
+        /// <summary>
         /// UMI3DAsyncProperty constructor.
         /// </summary>
         /// <param name="source">The object to which this property belongs.</param>
         /// <param name="value">The current default or synchronized value.</param>
-        /// <param name="async">Indicates if the property is asynchronous.</param>
         /// <param name="equal">Set the function use to check the equality between to value. If null the default object.Equals function will be use</param>
-        public UMI3DAsyncProperty(IHasAsyncProperties source, T value, bool async = false , Func<T,T, bool> equal = null)
+        public UMI3DAsyncProperty(IHasAsyncProperties source, T value, Func<T,T, bool> equal = null)
         {
 
             if(equal == null)
@@ -73,8 +93,9 @@ namespace umi3d.edk
 
             this.source = source;
             this.value = value;
-            this.isAsync = async;
             asyncValues = new Dictionary<UMI3DUser, T>();
+            UserAsyncListeners = new Dictionary<UMI3DUser, UnityAction<UMI3DUser>>();
+            UserDesyncListeners = new Dictionary<UMI3DUser, UnityAction<UMI3DUser>>();
         }
 
         /// <summary>
@@ -103,56 +124,118 @@ namespace umi3d.edk
         /// <param name="value">the new property's value</param>
         public void SetValue(T value)
         {
-            if (this.value == null && value == null || this.value != null && Equal(this.value,value))
+            if (this.value == null && value == null || this.value != null && Equal(this.value, value))
                 return;
             this.value = value;
             if (OnValueChanged != null)
                 OnValueChanged.Invoke(value);
-            source.NotifyUpdate();
+            if ((isAsync || isDeSync) && UMI3D.Exist)
+            {
+                foreach (var user in UMI3D.UserManager.GetUsers())
+                {
+                    if (!asyncValues.ContainsKey(user) && !UserDesyncListeners.ContainsKey(user)) source.NotifyUpdate(user);
+                }
+            }
+            else source.NotifyUpdate();
         }
 
         /// <summary>
         /// Set the property's value for a given user.
-        /// If synchronized, the default/synchronized value is setted.
         /// </summary>
         /// <param name="user">the user</param>
         /// <param name="value">the new property's value</param>
         public void SetValue(UMI3DUser user,T value)
         {
-            if (isAsync)
+            if (asyncValues.ContainsKey(user))
             {
-                if (asyncValues.ContainsKey(user))
-                {
-                    if (asyncValues[user] == null && value == null || Equal(asyncValues[user], value))
-                        return ;
-                    else
-                    {
-                        asyncValues[user] = value;
-                        source.NotifyUpdate(user);
-                    }
-                }
+                if (asyncValues[user] == null && value == null || Equal(asyncValues[user], value))
+                    return ;
                 else
                 {
-                    asyncValues.Add(user, value);
-                    source.NotifyUpdate(user);
+                    asyncValues[user] = value;
+                    if (OnUserValueChanged != null)
+                        OnUserValueChanged.Invoke(user, value);
+                    if (!UserDesyncListeners.ContainsKey(user))
+                        source.NotifyUpdate(user);
                 }
             }
             else
-                SetValue(value);
+            {
+                Sync(user, false);
+                asyncValues[user] = value;
+                if (OnUserValueChanged != null)
+                    OnUserValueChanged.Invoke(user, value);
+                if(!UserDesyncListeners.ContainsKey(user))
+                    source.NotifyUpdate(user);
+            }
         }
 
         /// <summary>
         /// Set the property as synchronized/asynchronous.
         /// </summary>
-        /// <param name="isSync">Is the property async ?</param>
-        public void Sync(bool isSync)
+        public void Sync()
         {
-            if (isAsync && isSync)
+            if (isAsync || isDeSync)
                 source.NotifyUpdate();
-            isAsync = !isSync;
-            if (isSync)
+            foreach(var pair in UserAsyncListeners)
             {
-                asyncValues.Clear();
+                pair.Key.onUserDisconnection.RemoveListener(pair.Value);
+            }
+            foreach (var pair in UserDesyncListeners)
+            {
+                pair.Key.onUserDisconnection.RemoveListener(pair.Value);
+            }
+            asyncValues.Clear();
+            UserAsyncListeners.Clear();
+            UserDesyncListeners.Clear();
+        }
+
+        /// <summary>
+        /// Set the property as synchronized/asynchronous for a user.
+        /// </summary>
+        /// <param name="user">the user</param>
+        /// <param name="isSync">Is the property async ?</param>
+        public void Sync(UMI3DUser user, bool isSync)
+        {
+            if (!isSync)
+            {
+                asyncValues[user] = value;
+                UnityAction<UMI3DUser> action = (u) => { Sync(user, true); };
+                user.onUserDisconnection.AddListener(action);
+                UserAsyncListeners[user] = action;
+            }
+            else if(asyncValues.ContainsKey(user))
+            {
+                if(!Equal(asyncValues[user], value) && !UserDesyncListeners.ContainsKey(user))
+                {
+                    source.NotifyUpdate(user);
+                }
+                asyncValues.Remove(user);
+                user.onUserDisconnection.RemoveListener(UserAsyncListeners[user]);
+                UserAsyncListeners.Remove(user);
+            }
+        }
+
+        /// <summary>
+        /// THe property will not notify update if desync.
+        /// </summary>
+        /// <param name="user">the user</param>
+        /// <param name="isSync">Is the property async ?</param>
+        public void DeSync(UMI3DUser user, bool isnotifying)
+        {
+            if (!isnotifying)
+            {
+                if (!UserDesyncListeners.ContainsKey(user))
+                {
+                    UnityAction<UMI3DUser> action = (u) => { DeSync(user, true); };
+                    user.onUserDisconnection.AddListener(action);
+                    UserDesyncListeners[user] = action;
+                }
+            }
+            else if (UserDesyncListeners.ContainsKey(user))
+            {
+                user.onUserDisconnection.RemoveListener(UserDesyncListeners[user]);
+                UserDesyncListeners.Remove(user);
             }
         }
 

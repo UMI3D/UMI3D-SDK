@@ -17,7 +17,7 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class GenericObject3DDtoLoader : AbstractObjectDTOLoader<GenericObject3DDto>
+    public class EmptyObject3DDTOLoader : AbstractObjectDTOLoader<EmptyObject3DDto>
     {
 
     }

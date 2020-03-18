@@ -21,7 +21,7 @@ using UnityEngine.UI;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UIRectDto : AbstractObject3DDto
+    public class UIRectDto : EmptyObject3DDto
     {
         public SerializableVector2 anchoredPosition;
         public SerializableVector3 anchoredPosition3D;

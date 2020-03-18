@@ -49,6 +49,7 @@ namespace BrowserDesktop.Controller
 
         protected BoneDto boneDto;
 
+        Dictionary<int, int> manipulationMap;
 
         #region Hover
 
@@ -175,11 +176,11 @@ namespace BrowserDesktop.Controller
 
         private void Update()
         {
-            if (Input.GetKeyDown(InputLayoutManager.GetInputCode(InputLayoutManager.Input.ContextualMenuNavigationDirect)) || Input.mouseScrollDelta.y > 0)
+            if (Input.GetKeyDown(InputLayoutManager.GetInputCode(InputLayoutManager.Input.ContextualMenuNavigationDirect)) || Input.mouseScrollDelta.y < 0)
             {
                 navigationDirect++;
             }
-            else if (Input.mouseScrollDelta.y < 0)
+            else if (Input.mouseScrollDelta.y > 0)
             {
                 navigationDirect--;
             }
@@ -275,14 +276,10 @@ namespace BrowserDesktop.Controller
             }
             else
             {
-
-
                 if (boneDto == null)
                 {
                     boneDto = UMI3DBrowserAvatar.Instance.avatar.boneList.Find(b => b.type == bone);
                 }
-
-
                 if (mouseData.CurentHovered != null)
                 {
                     if (mouseData.CurentHovered != mouseData.OldHovered)
@@ -293,22 +290,22 @@ namespace BrowserDesktop.Controller
                             {
                                 InteractionMapper.ReleaseTool(currentTool.id, new RequestedByUser());
                             }
-                            mouseData.OldHovered.HoverExit(boneDto.Id);
+                            mouseData.OldHovered.HoverExit(boneDto.id);
                             CircleMenu.Instance.Collapse();
                             mouseData.OldHovered = null;
                         }
                         mouseData.HoverState = HoverState.Hovering;
                         if (mouseData.CurentHovered.dto.interactions.Count > 0 && IsCompatibleWith(mouseData.CurentHovered))
                         {
-                            InteractionMapper.SelectTool(mouseData.CurentHovered.dto.Id, this,reason);
+                            InteractionMapper.SelectTool(mouseData.CurentHovered.dto.id, this,reason);
                             CursorHandler.State = CursorHandler.CursorState.Hover;
                             mouseData.HoverState = HoverState.AutoProjected;
                             CircleMenu.Instance.MenuColapsed.AddListener(CircleMenuColapsed);
                             mouseData.OldHovered = mouseData.CurentHovered;
                         }
-                        mouseData.CurentHovered.HoverEnter(boneDto.Id);
+                        mouseData.CurentHovered.HoverEnter(boneDto.id);
                     }
-                    mouseData.CurentHovered.Hovered(boneDto.Id, mouseData.point, mouseData.normal);
+                    mouseData.CurentHovered.Hovered(boneDto.id, mouseData.point, mouseData.normal);
                 }
                 else if (mouseData.OldHovered != null)
                 {
@@ -317,7 +314,7 @@ namespace BrowserDesktop.Controller
                         CircleMenu.Instance.MenuColapsed.RemoveListener(CircleMenuColapsed);
                         InteractionMapper.ReleaseTool(currentTool.id, new RequestedByUser());
                     }
-                    mouseData.OldHovered.HoverExit(boneDto.Id);
+                    mouseData.OldHovered.HoverExit(boneDto.id);
                     CircleMenu.Instance.Collapse();
                     CursorHandler.State = CursorHandler.CursorState.Default;
                     mouseData.OldHovered = null;
@@ -571,7 +568,7 @@ namespace BrowserDesktop.Controller
             //try
             //{
             base.Release(tool,reason);
-            if (mouseData.CurentHovered != null && mouseData.CurentHovered.dto.Id == tool.id)
+            if (mouseData.CurentHovered != null && mouseData.CurentHovered.dto.id == tool.id)
             {
                 mouseData.CurentHovered = null;
                 mouseData.HoverState = HoverState.None;
@@ -586,7 +583,7 @@ namespace BrowserDesktop.Controller
         public override void Project(AbstractTool tool, InteractionMappingReason reason)
         {
             base.Project(tool, reason);
-            if (reason is RequestedByEnvironment )
+            if (reason is RequestedByEnvironment)
                 mouseData.ForcePorjection = true;
         }
     }

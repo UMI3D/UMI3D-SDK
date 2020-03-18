@@ -28,7 +28,7 @@ namespace BrowserDesktop.Menu
         public void Set(string label, string inputName, Sprite icon)
         {
             Set(label, icon);
-            State(true);
+            //State(true);
             this.input.text = inputName;
         }
     }

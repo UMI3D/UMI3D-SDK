@@ -17,36 +17,39 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Constraint the object's rotation to make it face the main camera.
-/// </summary>
-public class Billboard : MonoBehaviour
+namespace umi3d.cdk
 {
-
-    public bool X;
-    public bool Y;
-    public Quaternion rotation;
-
-    void Start()
+    /// <summary>
+    /// Constraint the object's rotation to make it face the main camera.
+    /// </summary>
+    public class Billboard : MonoBehaviour
     {
-        ComputeOriantation();
-    }
 
-    void Update()
-    {
-        ComputeOriantation();
-    }
+        public bool X;
+        public bool Y;
+        public Quaternion rotation;
 
-    void ComputeOriantation()
-    {
-        Vector3 pos = (Camera.main.transform.position - transform.position);
+        void Start()
+        {
+            ComputeOriantation();
+        }
 
-        if (!X) { pos -= Vector3.up * Vector3.Dot(Vector3.up, pos); }
-        if (!Y) { pos -= Vector3.right * Vector3.Dot(Vector3.right, pos); }
+        void Update()
+        {
+            ComputeOriantation();
+        }
 
-        if (pos != Vector3.zero)
-            transform.rotation = Quaternion.LookRotation(-pos) * rotation;
-        else
-            transform.rotation = rotation;
+        void ComputeOriantation()
+        {
+            Vector3 pos = (Camera.main.transform.position - transform.position);
+
+            if (!X) { pos -= Vector3.up * Vector3.Dot(Vector3.up, pos); }
+            if (!Y) { pos -= Vector3.right * Vector3.Dot(Vector3.right, pos); }
+
+            if (pos != Vector3.zero)
+                transform.rotation = Quaternion.LookRotation(-pos) * rotation;
+            else
+                transform.rotation = rotation;
+        }
     }
 }

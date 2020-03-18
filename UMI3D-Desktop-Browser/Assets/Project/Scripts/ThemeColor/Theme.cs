@@ -23,13 +23,11 @@ namespace BrowserDesktop.Theme
     {
         [SerializeField] ThemeInstance _Theme = null;
 
-        public static Color PrincipalColor { get { return Exist && Instance._Theme != null ? Instance._Theme.PrincipalColor : Color.black; } }
-        public static Color SecondaryColor { get { return Exist && Instance._Theme != null ? Instance._Theme.SecondaryColor : Color.white; } }
-        public static Color PrincipalTextColor { get { return Exist && Instance._Theme != null ? Instance._Theme.PrincipalTextColor : Color.white; } }
-        public static Color SecondaryTextColor { get { return Exist && Instance._Theme != null ? Instance._Theme.SecondaryTextColor : Color.black; } }
-        public static Color SeparatorColor { get { return Exist && Instance._Theme != null ? Instance._Theme.SeparatorColor : Color.grey; } }
-
-
+        public static Color PrincipalColor { get { return Exist && Instance?._Theme != null && Instance?._Theme?.PrincipalColor != null ? Instance._Theme.PrincipalColor : Color.black; } }
+        public static Color SecondaryColor { get { return Exist && Instance?._Theme != null && Instance?._Theme?.SecondaryColor != null ? Instance._Theme.SecondaryColor : Color.white; } }
+        public static Color PrincipalTextColor { get { return Exist && Instance?._Theme != null && Instance?._Theme?.PrincipalTextColor != null ? Instance._Theme.PrincipalTextColor : Color.white; } }
+        public static Color SecondaryTextColor { get { return Exist && Instance?._Theme != null && Instance?._Theme?.SecondaryTextColor != null ? Instance._Theme.SecondaryTextColor : Color.black; } }
+        public static Color SeparatorColor { get { return Exist && Instance?._Theme != null && Instance?._Theme?.SeparatorColor != null ? Instance._Theme.SeparatorColor : Color.grey; } }
 
         private void Start()
         {

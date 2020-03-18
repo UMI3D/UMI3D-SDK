@@ -13,10 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using umi3d.cdk.menu.core;
 using UnityEngine;
 
-public class ImageMenu : Menu
+namespace umi3d.cdk.menu.core
 {
-    public Sprite image;
+    public class ImageMenu : Menu
+    {
+        public Sprite image;
+    }
 }

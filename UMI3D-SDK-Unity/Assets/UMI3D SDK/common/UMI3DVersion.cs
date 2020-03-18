@@ -22,9 +22,9 @@ namespace umi3d
     {
         public static string version { get { return major + "." + minor + "." + status + "." + date; } }
         public readonly static string major = "1";
-        public readonly static string minor = "1";
+        public readonly static string minor = "3";
         public readonly static string status = "b";
-        public readonly static string date = "200219";
+        public readonly static string date = "200318";
 
     }
 }

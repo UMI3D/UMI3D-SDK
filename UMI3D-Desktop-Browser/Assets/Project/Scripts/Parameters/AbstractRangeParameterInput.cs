@@ -51,7 +51,7 @@ namespace BrowserDesktop.Parameters
                 {
                     if ((x.CompareTo(param.Min) >= 0) && (x.CompareTo(param.Max) <= 0))
                     {
-                        UMI3DHttpClient.Interact(interaction.Id, x);
+                        UMI3DHttpClient.Interact(interaction.id, x);
                     }
                 };
 

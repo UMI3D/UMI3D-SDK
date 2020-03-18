@@ -26,6 +26,6 @@ namespace umi3d.common
         /// <summary>
         /// Id of the entity
         /// </summary>
-        public string Id = null;
+        public string id = null;
     }
 }

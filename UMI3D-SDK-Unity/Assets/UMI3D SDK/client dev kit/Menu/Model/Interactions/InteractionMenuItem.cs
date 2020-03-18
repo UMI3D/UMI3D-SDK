@@ -23,7 +23,7 @@ namespace umi3d.cdk.menu.core
         
         public bool isProjected()
         {
-            if ((interaction == null) || (interaction.Id == null))
+            if ((interaction == null) || (interaction.id == null))
                 return false;
 
             if (!AbstractInteractionMapper.Instance.IsToolSelected(interaction.ToolId))
@@ -32,7 +32,7 @@ namespace umi3d.cdk.menu.core
             AbstractController controller = AbstractInteractionMapper.Instance.GetController(interaction.ToolId);
             if (controller != null)
             {
-                return controller.inputs.Exists(input => (input.CurrentInteraction() != null) ? input.CurrentInteraction().Id.Equals(interaction.Id) : false);
+                return controller.inputs.Exists(input => (input.CurrentInteraction() != null) ? input.CurrentInteraction().id.Equals(interaction.id) : false);
             }
             else
             {

@@ -13,19 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UsernameDisplayer : MonoBehaviour
+namespace umi3d.edk
 {
-    public Text username;
-    public Text role;
-
-    public void SetDisplayer(string name, string userRole)
+    public class UsernameDisplayer : MonoBehaviour
     {
-        username.text = name;
-        role.text = userRole;
+        public Text username;
+        public Text role;
+
+        public void SetDisplayer(string name, string userRole)
+        {
+            username.text = name;
+            role.text = userRole;
+        }
     }
 }

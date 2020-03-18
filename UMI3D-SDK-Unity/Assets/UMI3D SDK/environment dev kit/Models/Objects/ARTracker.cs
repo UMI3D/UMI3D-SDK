@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-    [RequireComponent(typeof(GenericObject3D))]
+    [RequireComponent(typeof(AbstractObject3D))]
     public class ARTracker : MonoBehaviour
     {
         [SerializeField]
@@ -74,14 +74,14 @@ namespace umi3d.edk
 
         public void initDefinition()
         {
-            objectTrackerID = new UMI3DAsyncProperty<string>(GetComponent<GenericObject3D>().PropertiesHandler, TrackerID);
+            objectTrackerID = new UMI3DAsyncProperty<string>(GetComponent<AbstractObject3D>().PropertiesHandler, TrackerID);
             objectTrackerID.OnValueChanged += (string value) => TrackerID = value;
 
-            objectPositionOffset = new UMI3DAsyncProperty<Vector3>(GetComponent<GenericObject3D>().PropertiesHandler, PositionOffset);
+            objectPositionOffset = new UMI3DAsyncProperty<Vector3>(GetComponent<AbstractObject3D>().PropertiesHandler, PositionOffset);
             objectPositionOffset.OnValueChanged += (Vector3 value) => PositionOffset = value;
-            objectScaleOffset = new UMI3DAsyncProperty<Vector3>(GetComponent<GenericObject3D>().PropertiesHandler, ScaleOffset);
+            objectScaleOffset = new UMI3DAsyncProperty<Vector3>(GetComponent<AbstractObject3D>().PropertiesHandler, ScaleOffset);
             objectScaleOffset.OnValueChanged += (Vector3 value) => ScaleOffset = value;
-            objectRotationOffset = new UMI3DAsyncProperty<Vector3>(GetComponent<GenericObject3D>().PropertiesHandler, RotationOffset);
+            objectRotationOffset = new UMI3DAsyncProperty<Vector3>(GetComponent<AbstractObject3D>().PropertiesHandler, RotationOffset);
             objectRotationOffset.OnValueChanged += (Vector3 value) => RotationOffset = value;
 
             inited = true;

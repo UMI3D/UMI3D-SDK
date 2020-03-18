@@ -19,8 +19,23 @@ using UnityEngine;
 
 public class BallPistol : MonoBehaviour
 {
+    public CVEEquipable equipable;
+    public Transform defaultParent;
+
+    public Transform shootPosition;
     public GameObject bulletPrefab;
     public float strength = 10;
+
+
+    protected virtual void Awake()
+    {
+        equipable.onUnequiped.AddListener(() =>
+        {
+            this.transform.parent = defaultParent;
+            this.transform.localPosition = Vector3.zero;
+            this.transform.localRotation = Quaternion.Euler(Vector3.zero);
+        });
+    }
 
     /// <summary>
     /// This have on purpose to be call by a OnTrigger Event.
@@ -28,9 +43,28 @@ public class BallPistol : MonoBehaviour
     /// </summary>
     /// <param name="user">user who triggered</param>
     /// <param name="bone">bone the user used to trigger</param>
-    public void Shoot(UMI3DUser user, BoneDto bone)
+    public void Shoot()
     {
-        GameObject bullet = Instantiate(bulletPrefab);
-        bullet.GetComponent<Rigidbody>().velocity = strength * this.transform.forward;
+        GameObject bullet = Instantiate(bulletPrefab, UMI3D.Scene.transform);
+        bullet.transform.position = shootPosition.position;
+        bullet.GetComponent<Rigidbody>().velocity = strength * shootPosition.transform.forward;
+        Destroy(bullet, 2);
     }
+
+    public void Equipe(UMI3DUser user, string bone)
+    {
+        BoneType boneType = UMI3DAvatarBone.instancesByUserId[user.UserId][bone].boneType;
+
+        if ((boneType == BoneType.Hand_Left) || (boneType == BoneType.Hand_Right))
+        {
+            equipable.RequestEquip(user, bone);
+        }
+        else
+        {
+            UMI3DAvatarBone userBone = UMI3DAvatarBone.GetUserBoneByType(user.UserId, BoneType.Hand_Right);
+            equipable.RequestEquip(user, (userBone != null) ? userBone.boneId : bone);
+        }
+    }
+
+
 }

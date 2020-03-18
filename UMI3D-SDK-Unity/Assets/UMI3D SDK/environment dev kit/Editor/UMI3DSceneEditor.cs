@@ -40,7 +40,9 @@ namespace umi3d.edk.editor
         SerializedProperty Icon;
         SerializedProperty Icon3D;
         SerializedProperty Skybox;
-
+        SerializedProperty Extension;
+        SerializedProperty OSQualities;
+        SerializedProperty RequiredResources;
 
         // Start is called before the first frame update
         public void OnEnable()
@@ -57,6 +59,9 @@ namespace umi3d.edk.editor
             Icon = serializedObject.FindProperty("icon");
             Icon3D = serializedObject.FindProperty("icon3D");
             Skybox = serializedObject.FindProperty("skybox");
+            Extension = serializedObject.FindProperty("extensionNeeded");
+            OSQualities = serializedObject.FindProperty("OSQualitycollection");
+            RequiredResources = serializedObject.FindProperty("requiredResources");
         }
 
         // Update is called once per frame
@@ -88,6 +93,9 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(Icon);
             EditorGUILayout.PropertyField(Icon3D);
             EditorGUILayout.PropertyField(Skybox);
+            EditorGUILayout.PropertyField(Extension,true);
+            EditorGUILayout.PropertyField(OSQualities, true);
+            EditorGUILayout.PropertyField(RequiredResources, true);
 
             if (EditorGUI.EndChangeCheck())
             {

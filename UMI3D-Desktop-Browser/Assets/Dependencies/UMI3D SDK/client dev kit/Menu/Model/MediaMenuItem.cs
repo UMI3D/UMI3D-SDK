@@ -14,14 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using umi3d.common;
-using umi3d.cdk.menu.core;
 
-public class MediaMenuItem : MenuItem
+namespace umi3d.cdk.menu.core
 {
-    /// <summary>
-    /// Media represented.
-    /// </summary>
-    public MediaDto media;
+    public class MediaMenuItem : MenuItem
+    {
+        /// <summary>
+        /// Media represented.
+        /// </summary>
+        public MediaDto media;
 
 
+    }
 }

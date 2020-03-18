@@ -29,16 +29,16 @@ namespace umi3d.edk
             name = "new tool"
         };
 
-        public readonly List<GenericInteraction> Interactions = new List<GenericInteraction>();
+        public readonly List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
 
-        public void RemoveInteraction(GenericInteraction interaction)
+        public void RemoveInteraction(AbstractInteraction interaction)
         {
             interaction.tool = null;
             interaction.currentTool = null;
             Interactions.Remove(interaction);
         }
 
-        public void AddInteraction(GenericInteraction interaction)
+        public void AddInteraction(AbstractInteraction interaction)
         {
             interaction.tool = this;
             interaction.currentTool = this;

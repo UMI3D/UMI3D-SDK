@@ -16,6 +16,8 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using umi3d.cdk;
+using umi3d.common;
 
 namespace BrowserDesktop.Avatar
 {
@@ -25,6 +27,7 @@ namespace BrowserDesktop.Avatar
         public float speed = 1.0F;
         public Transform Shoulder;
         public Transform Hand;
+        public Transform BoneHand;
         public float ArmLength = 1;
 
         private Vector3 RestPos;
@@ -37,7 +40,11 @@ namespace BrowserDesktop.Avatar
         public float maxForce = 500f;
         public float gain = 800f;
 
-        public GameObject GO1;
+        public GameObject UpperArm;
+        public Transform toolPosition;
+
+        [SerializeField]
+        private bool equipedRightHand = false;
 
         // Start is called before the first frame update
         void Start()
@@ -45,6 +52,18 @@ namespace BrowserDesktop.Avatar
             RestPos = this.transform.InverseTransformPoint(Hand.position);
             isTouching = false;
             isTouched = false;
+
+            UMI3DEquipablesManager.Instance.onEquip.AddListener((Equipment equipment) =>
+            {
+                if (equipment.bone.boneType.Equals(BoneType.Hand_Right))
+                    equipedRightHand = true;
+            });
+
+            UMI3DEquipablesManager.Instance.onUnequip.AddListener((Equipment equipment) =>
+            {
+                if (equipment.bone.boneType.Equals(BoneType.Hand_Right))
+                    equipedRightHand = false;
+            });
         }
 
         // Update is called once per frame
@@ -53,9 +72,27 @@ namespace BrowserDesktop.Avatar
             RaycastHit hit;
             Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+            if (toolPosition != null && equipedRightHand)
             {
-                Transform objectHit = hit.transform;
+                Vector3 m = this.transform.TransformPoint(transform.InverseTransformPoint(toolPosition.position)) - Hand.transform.position;
+                Vector3 tgtVel = Vector3.ClampMagnitude(toVel * m, maxVel);
+                Vector3 error = tgtVel - Hand.GetComponent<Rigidbody>().velocity;
+                Vector3 force = Vector3.ClampMagnitude(gain * error, maxForce);
+                Hand.GetComponent<Rigidbody>().AddForce(force);
+
+                if (m.magnitude < 0.1f)
+                {
+                    Hand.transform.position = this.transform.TransformPoint(transform.InverseTransformPoint(toolPosition.position));
+                }
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    BoneHand.LookAt(hit.point);
+                }
+            }
+
+            else if (Physics.Raycast(ray, out hit))
+            {
                 float shoulderDist = Vector3.Distance(hit.point, Shoulder.position);
                 if (shoulderDist <= ArmLength)
                 {
@@ -129,7 +166,7 @@ namespace BrowserDesktop.Avatar
                 else
                 {
                     Hand.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                    GO1.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                    UpperArm.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
                     Hand.transform.position = this.transform.TransformPoint(RestPos);
                 }
             }

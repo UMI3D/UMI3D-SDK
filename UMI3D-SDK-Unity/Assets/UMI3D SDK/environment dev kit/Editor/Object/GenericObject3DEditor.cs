@@ -23,7 +23,7 @@ using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(umi3d.edk.GenericObject3D), true)]
+    [CustomEditor(typeof(umi3d.edk.AbstractObject3D), true)]
     [CanEditMultipleObjects]
     public class GenericObject3DEditor : Editor
     {

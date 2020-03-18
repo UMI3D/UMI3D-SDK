@@ -19,7 +19,7 @@ namespace umi3d.common
     [System.Serializable]
     public class UpdateObjectDto : UMI3DDto
     {
-        public AbstractObject3DDto Entity;
+        public EmptyObject3DDto Entity;
 
         public UpdateObjectDto() : base() { }
     }

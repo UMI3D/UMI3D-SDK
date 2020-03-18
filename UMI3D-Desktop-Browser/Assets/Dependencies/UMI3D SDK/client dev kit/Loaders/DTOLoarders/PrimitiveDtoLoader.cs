@@ -23,8 +23,9 @@ namespace umi3d.cdk
     public class PrimitiveDtoLoader : AbstractObjectDTOLoader<PrimitiveDto>
     {
 
-        public override void LoadDTO(PrimitiveDto dto, Action<GameObject> callback)
+        public override void LoadDTO(PrimitiveDto dto, Action<GameObject> onSuccess, Action<string> onError)
         {
+            bool anErrorOccured = false;
             try
             {
                 //Primitive creation
@@ -62,13 +63,19 @@ namespace umi3d.cdk
                 if (res != null)
                 {
                     var matdef = res.AddComponent<MeshMaterial>();
-                    matdef.dtoid = dto.Id;
+                    matdef.dtoid = dto.id;
 
                     MaterialDtoLoader materialDTOLoader = GetComponentInParent<MaterialDtoLoader>();
 
                     materialDTOLoader.LoadDTO(dto.material, (MeshMaterial meshMaterial) =>
                     {
                         matdef.Set(meshMaterial);
+                        matdef.LoadMaterial();
+                    },
+                    (e) => 
+                    {
+                        anErrorOccured = true;
+                        Debug.LogError("An error occured while loading the primitive " + dto.name+ " "+e);
                     });
 
                     if (dto.video != null)
@@ -76,19 +83,25 @@ namespace umi3d.cdk
 
 
                         var videoDef = res.gameObject.AddComponent<Video>();
-                        videoDef.dtoid = dto.Id;
+                        videoDef.dtoid = dto.id;
                         VideoDtoLoader videoDtoLoader = GetComponentInParent<VideoDtoLoader>();
                         videoDtoLoader.LoadDTO(dto.video, (Video video) =>
                         {
                             videoDef.Set(video);
                             videoDef.LoadVideo(res.GetComponent<MeshRenderer>());
-                        });
+                        },
+                        (e) => anErrorOccured = true);
 
                     }
-                    matdef.LoadMaterial();
                 }
                 InitObjectFromDto(res, dto);
-                callback(res);
+
+                if (anErrorOccured)
+                {
+                    onError.Invoke("an error Occured in primitive loader");
+                    return;
+                }
+                onSuccess(res);
             }
             catch (Exception e)
             {
@@ -112,7 +125,7 @@ namespace umi3d.cdk
                     }
                 }
 
-                var mats = go.GetComponentsInChildren<MeshMaterial>(true).Where(mat => mat.dtoid == newdto.Id);
+                var mats = go.GetComponentsInChildren<MeshMaterial>(true).Where(mat => mat.dtoid == newdto.id);
                 foreach (MeshMaterial mat in mats)
                 {
                     MaterialDtoLoader materialDTOLoader = GetComponentInParent<MaterialDtoLoader>();
@@ -120,19 +133,22 @@ namespace umi3d.cdk
                     {
                         mat.Set(meshMaterial);
                         mat.LoadMaterial();
-                    });
 
-                    var renderer = mat.gameObject.GetComponent<MeshRenderer>();
-                    renderer.material = mat.material;
+                        var renderer = mat.gameObject.GetComponent<MeshRenderer>();
+                        renderer.material = mat.material;
 
-                    if (renderer != null)
-                    {
-                        renderer.enabled = !(mat.Transparent && mat.MainColor.a == 0);
-                    }
+                        if (renderer != null)
+                        {
+                            renderer.enabled = !(mat.Transparent && mat.MainColor.a == 0);
+                        }
+                    },
+                    (e) => Debug.LogError("Failed to load the material " + mat.name+ " "+e));
+
+                   
                 }
                 if (newdto.video != null)
                 {
-                    var videos = go.GetComponentsInChildren<Video>(true).Where(mat => mat.dtoid == newdto.Id);
+                    var videos = go.GetComponentsInChildren<Video>(true).Where(mat => mat.dtoid == newdto.id);
                     foreach (var video in videos)
                     {
                         var renderer = video.gameObject.GetComponent<MeshRenderer>();

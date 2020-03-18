@@ -32,7 +32,7 @@ namespace BrowserDesktop.Menu
         /// </summary>
         public Slider slider;
         public TMPro.TextMeshProUGUI label;
-        public TMPro.TextMeshProUGUI sliderValue;
+        public TMPro.TMP_InputField sliderValue;
 
         Vector3 anchor;
         Vector3 direction;
@@ -124,11 +124,18 @@ namespace BrowserDesktop.Menu
             }
             label.text = menuItem.ToString();
             slider.value = menuItem.GetValue();
-            sliderValue.text = slider.value.ToString();
-            slider.onValueChanged.AddListener((i) => { valueChanged = true; sliderValue.text = slider.value.ToString(); });
-            if(gameObject.activeInHierarchy)
+            sliderValue.text = FormatValue(slider.value);
+            slider.onValueChanged.AddListener((i) => { valueChanged = true; sliderValue.text = FormatValue(slider.value); });
+            sliderValue.onEndEdit.AddListener((i) => { float f = 0; if (float.TryParse(i, out f) && slider.value != f) { valueChanged = true; slider.value = f; sliderValue.text = FormatValue(slider.value); } });
+            if (gameObject.activeInHierarchy)
                 messageSenderCoroutine = StartCoroutine(networkMessageSender());
         }
+
+        string FormatValue(float f)
+        {
+            return string.Format("{0:###0.##}", f);
+        }
+
 
         /// <summary>
         /// Hide the range input.

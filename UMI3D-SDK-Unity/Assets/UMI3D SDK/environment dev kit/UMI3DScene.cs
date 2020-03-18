@@ -24,6 +24,7 @@ namespace umi3d.edk
     public class UMI3DScene : MonoBehaviour
     {
 
+        public OSQualitycollection OSQualitycollection;
 
         /// <summary>
         /// Scene's name.
@@ -39,17 +40,22 @@ namespace umi3d.edk
         /// Scene's navigation default method.
         /// </summary>
         public NavigationType _navigation = NavigationType.Walk;
+
+        [SerializeField]
+        private List<CVEResource> requiredResources = new List<CVEResource>();
         
+
+
         #region Dictionaries
 
         /// <summary>
         /// Contains the objects stored in the scene.
         /// </summary>
-        DictionaryGenerator<GenericObject3D> objectsDictionary = new DictionaryGenerator<GenericObject3D>("object3d_");
+        DictionaryGenerator<AbstractObject3D> objectsDictionary = new DictionaryGenerator<AbstractObject3D>("object3d_");
         /// <summary>
         /// Contains the interactions stored in the scene.
         /// </summary>
-        DictionaryGenerator<GenericInteraction> interactionsDictionary = new DictionaryGenerator<GenericInteraction>("interaction_");
+        DictionaryGenerator<AbstractInteraction> interactionsDictionary = new DictionaryGenerator<AbstractInteraction>("interaction_");
         /// <summary>
         /// Contains the tools stored in the scene.
         /// </summary>
@@ -66,11 +72,11 @@ namespace umi3d.edk
         /// <summary>
         /// Access to the objects stored in the scene.
         /// </summary>
-        public GenericObject3D[] Objects { get { return objectsDictionary.Values.ToArray(); } }
+        public AbstractObject3D[] Objects { get { return objectsDictionary.Values.ToArray(); } }
         /// <summary>
         /// Access to the interactions stored in the scene.
         /// </summary>
-        public GenericInteraction[] Interactions { get { return interactionsDictionary.Values.ToArray(); } }
+        public AbstractInteraction[] Interactions { get { return interactionsDictionary.Values.ToArray(); } }
         /// <summary>
         /// Access to the tools stored in the scene.
         /// </summary>
@@ -84,12 +90,12 @@ namespace umi3d.edk
         /// Get scene object by id.
         /// </summary>
         /// <param name="id">Object to get id</param>
-        public GenericObject3D GetObject(string id) { return objectsDictionary[id]; }
+        public AbstractObject3D GetObject(string id) { return objectsDictionary[id]; }
         /// <summary>
         /// Get scene interaction by id.
         /// </summary>
         /// <param name="id">Object to get id</param>
-        public GenericInteraction GetInteraction(string id) { return interactionsDictionary[id]; }
+        public AbstractInteraction GetInteraction(string id) { return interactionsDictionary[id]; }
         /// <summary>
         /// Get scene tool by id.
         /// </summary>
@@ -103,16 +109,16 @@ namespace umi3d.edk
 
         /// <summary>
         /// Register an object to the scene, and return it's id. 
-        /// Supported Types: GenericObject3D, GenericInteraction, Tool, Toolbox
+        /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
         /// </summary>
         /// <param name="obj">Object to register</param>
         /// <returns>Registered object's id.</returns>
         public string Register(object obj)
         {
-            if (obj is GenericObject3D)
-                return objectsDictionary.Register(obj as GenericObject3D);
-            else if (obj is GenericInteraction)
-                return interactionsDictionary.Register(obj as GenericInteraction);
+            if (obj is AbstractObject3D)
+                return objectsDictionary.Register(obj as AbstractObject3D);
+            else if (obj is AbstractInteraction)
+                return interactionsDictionary.Register(obj as AbstractInteraction);
             else if (obj is CVETool)
                 return toolsDictionary.Register(obj as CVETool);
             else if (obj is CVEInteractable)
@@ -125,15 +131,15 @@ namespace umi3d.edk
         
         /// <summary>
         /// Remove an object from the scene. 
-        /// Supported Types: GenericObject3D, GenericInteraction, Tool, Toolbox
+        /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
         /// </summary>
         /// <param name="obj">Object to remove</param>
         public void Remove(object obj)
         {
-            if (obj is GenericObject3D)
-                objectsDictionary.Remove((obj as GenericObject3D).Id);
-            else if (obj is GenericInteraction)
-                interactionsDictionary.Remove((obj as GenericInteraction).Id);
+            if (obj is AbstractObject3D)
+                objectsDictionary.Remove((obj as AbstractObject3D).Id);
+            else if (obj is AbstractInteraction)
+                interactionsDictionary.Remove((obj as AbstractInteraction).Id);
             else if (obj is CVETool)
                 toolsDictionary.Remove((obj as CVETool).Id);
             else if (obj is CVEInteractable)
@@ -371,6 +377,11 @@ namespace umi3d.edk
         };
 
         /// <summary>
+        /// List of extension that could be send by the environement in ResourceDto
+        /// </summary>
+        public List<string> extensionNeeded;
+
+        /// <summary>
         /// Get scene's information required for client connection.
         /// </summary>
         public MediaDto ToDto()
@@ -384,6 +395,8 @@ namespace umi3d.edk
             res.Icon = icon.ToDto();
             res.Icon3D = icon3D.ToDto();
             res.Skybox = skybox.ToDto();
+            res.extensionNeeded = extensionNeeded;
+            res.requiredResources = requiredResources.ConvertAll<ResourceDto>(cver => cver.ToDto());
 
             res.VersionMajor = UMI3DVersion.major;
             res.VersionMinor = UMI3DVersion.minor;
@@ -416,14 +429,14 @@ namespace umi3d.edk
         /// <param name="pid">Parent object id to get children of</param>
         /// <param name="user">User to get children for</param>
         /// <returns></returns>
-        public List<GenericObject3D> GetChildren(string pid, UMI3DUser user)
+        public List<AbstractObject3D> GetChildren(string pid, UMI3DUser user)
         {
-            var res = new List<GenericObject3D>();
+            var res = new List<AbstractObject3D>();
             if (pid == null || pid.Length == 0)
             {
                 foreach (Transform ct in transform)
                 {
-                    var child = ct.gameObject.GetComponent<GenericObject3D>();
+                    var child = ct.gameObject.GetComponent<AbstractObject3D>();
                     if (child != null && ct.gameObject.activeInHierarchy)
                         res.Add(child);
                 }
@@ -477,12 +490,15 @@ namespace umi3d.edk
         }
 
 
-        /// <summary>
-        /// Unity MonoBehaviour Update method.
-        /// </summary>
+        private float clock = 0;
         private void Update()
         {
-            PropertiesHandler.BroadcastUpdates();
+            if (clock > 1f / UMI3D.TargetFrameRate)
+            {
+                PropertiesHandler.BroadcastUpdates();
+                clock = 0;
+            }
+            clock += Time.deltaTime;
         }
 
         /// <summary>

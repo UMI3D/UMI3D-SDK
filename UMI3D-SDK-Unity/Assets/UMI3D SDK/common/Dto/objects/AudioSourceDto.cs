@@ -20,7 +20,7 @@ using UnityEngine;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class AudioSourceDto : AbstractObject3DDto
+    public class AudioSourceDto : EmptyObject3DDto
     {
 
         public ResourceDto AudioClipResource = null;

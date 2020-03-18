@@ -189,7 +189,7 @@ namespace umi3d.edk
             previousMaterial = material;
         }
 
-        protected new void Update()
+        protected override void Update()
         {
             base.Update();
             if (previousMaterial != material)

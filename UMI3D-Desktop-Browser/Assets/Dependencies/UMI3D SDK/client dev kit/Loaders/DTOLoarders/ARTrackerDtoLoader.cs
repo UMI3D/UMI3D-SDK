@@ -25,7 +25,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">ARTrackerDto to load</param>
         /// <param name="callback">Callback to raise (the argument is the ARTrackerObject)</param>
-        public override void LoadDTO(ARTrackerDto dto, Action<ARTrackerObject> callback)
+        public override void LoadDTO(ARTrackerDto dto, Action<ARTrackerObject> callback, Action<string> onError)
         {
             var entity = GetComponent<ARTrackerObject>() ?? gameObject.AddComponent<ARTrackerObject>();
             UpdateFromDTO(entity, null, dto);

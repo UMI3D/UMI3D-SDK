@@ -37,15 +37,15 @@ namespace umi3d.cdk
         {
             return (boneType == BoneType.None) ? null : new BoneDto()
             {
-                Id = id,
-                Name = boneType.ToString(),
+                id = id,
+                name = boneType.ToString(),
                 isStatic = false,
                 type = boneType,
-                Position = Vector3.Scale(
+                position = Vector3.Scale(
                     viewpoint.transform.InverseTransformPoint(transform.position),
                     viewpoint.lossyScale),
-                Rotation = Quaternion.Inverse(viewpoint.transform.rotation) * transform.rotation,
-                Scale = transform.lossyScale
+                rotation = Quaternion.Inverse(viewpoint.transform.rotation) * transform.rotation,
+                scale = transform.lossyScale
             };
         }
 

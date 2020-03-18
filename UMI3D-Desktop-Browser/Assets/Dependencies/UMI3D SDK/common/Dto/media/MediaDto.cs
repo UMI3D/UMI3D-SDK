@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     /// <summary>
@@ -52,10 +54,17 @@ namespace umi3d.common
         /// </summary>
         public ResourceDto Skybox;
 
+        public List<ResourceDto> requiredResources;
+
         public string VersionMajor;
         public string VersionMinor;
         public string VersionStatus;
         public string VersionDate;
+
+        /// <summary>
+        /// List of extension that could be send by the environement in ResourceDto
+        /// </summary>
+        public List<string> extensionNeeded;
 
         /// <summary>
         /// Url of the media

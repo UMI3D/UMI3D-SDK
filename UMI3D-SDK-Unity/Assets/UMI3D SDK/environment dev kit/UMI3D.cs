@@ -208,13 +208,6 @@ namespace umi3d.edk
         }
 
 
-
-        private void Update()
-        {
-            if (Application.targetFrameRate != targetFrameRate)
-                Application.targetFrameRate = targetFrameRate;
-        }
-
         protected override void Awake()
         {
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
@@ -231,5 +224,29 @@ namespace umi3d.edk
                     Run();
             }
         }
+
+        static public string GetResourceRoot()
+        {
+
+            return System.IO.Path.GetFullPath(UnityEngine.Application.dataPath + @"/../Public/");
+        }
+
+        static public string GetDefaultRoot()
+        {
+            UMI3D instance = Exist ?  Instance : GameObject.Find("UMI3D").GetComponent<UMI3D>();
+            if (instance == null)
+                throw new System.Exception("No UMI3D node found");
+            if(instance?.scene?.OSQualitycollection?.DefaultQuality?.path == null)
+            {
+                throw new System.Exception("Default path of OSQualitycollection in UMI3DScene not set");
+            }
+            instance.scene.OSQualitycollection.DefaultQuality.path = instance.scene.OSQualitycollection.DefaultQuality.path.Replace(@"\", "/");
+            if (instance.scene.OSQualitycollection.DefaultQuality.path != null && instance.scene.OSQualitycollection.DefaultQuality.path != "" && !(instance.scene.OSQualitycollection.DefaultQuality.path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
+            {
+                instance.scene.OSQualitycollection.DefaultQuality.path = "/" + instance.scene.OSQualitycollection.DefaultQuality.path;
+            }
+            return Path.Combine(GetResourceRoot() , instance.scene.OSQualitycollection.DefaultQuality.path);
+        }
+
     }
 }
