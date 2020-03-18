@@ -1,0 +1,27 @@
+var classumi3d_1_1edk_1_1_generic_interaction =
+[
+    [ "AvailableAsChildFor", "classumi3d_1_1edk_1_1_generic_interaction.html#a76ae9de72d5b3dacf7db90f53dd1db97", null ],
+    [ "AvailableFor", "classumi3d_1_1edk_1_1_generic_interaction.html#ae02dd5f14b7507b4e8411665b0b2a31a", null ],
+    [ "checkForUpdates", "classumi3d_1_1edk_1_1_generic_interaction.html#a834329c72ee92afada8bd13f023db9ed", null ],
+    [ "ConvertToDto", "classumi3d_1_1edk_1_1_generic_interaction.html#a57849d9965fb501a80d5c600665d36bb", null ],
+    [ "initDefinition", "classumi3d_1_1edk_1_1_generic_interaction.html#a5f2f5373cee574227ed09cc7af688c8b", null ],
+    [ "OnDestroy", "classumi3d_1_1edk_1_1_generic_interaction.html#a7204fc4357d67f98d13b297a48fcc318", null ],
+    [ "OnUserInteraction", "classumi3d_1_1edk_1_1_generic_interaction.html#a985e957493621eba92dc90ecfc09e4ff", null ],
+    [ "OnValidate", "classumi3d_1_1edk_1_1_generic_interaction.html#a2a545ff387bb9f023823b363c09de90c", null ],
+    [ "SetTool", "classumi3d_1_1edk_1_1_generic_interaction.html#af5ff9ae6e3acb8d2a811f7d8017552ce", null ],
+    [ "Start", "classumi3d_1_1edk_1_1_generic_interaction.html#a281ada70d970c356205bd038b57860a2", null ],
+    [ "syncProperties", "classumi3d_1_1edk_1_1_generic_interaction.html#a462daa0ce0e6d0c23c0a90d46f99b9af", null ],
+    [ "Update", "classumi3d_1_1edk_1_1_generic_interaction.html#a9e7f9d7557efb17af9aa228b88960fff", null ],
+    [ "UpdateAvailabilityForUser", "classumi3d_1_1edk_1_1_generic_interaction.html#a3af59a93cca9a54b7f97205324477785", null ],
+    [ "UpdateAvailabilityLastFrame", "classumi3d_1_1edk_1_1_generic_interaction.html#ae2fb2bd43e002327bb4c7e8ddabfc4cf", null ],
+    [ "availableLastFrame", "classumi3d_1_1edk_1_1_generic_interaction.html#adb30f1580905e8531d544684d9a22fb3", null ],
+    [ "currentIcon", "classumi3d_1_1edk_1_1_generic_interaction.html#ad95e1a14fc1817e38b142b2ecf55bb64", null ],
+    [ "currentInteractionName", "classumi3d_1_1edk_1_1_generic_interaction.html#a2b9a71e3d789b0b45b13010ded696334", null ],
+    [ "Icon2D", "classumi3d_1_1edk_1_1_generic_interaction.html#a8f9bfbdc2dc70f2e68e5c769645329af", null ],
+    [ "Icon3D", "classumi3d_1_1edk_1_1_generic_interaction.html#a41161b749ecebe5fbaca78499cdc7fb5", null ],
+    [ "inited", "classumi3d_1_1edk_1_1_generic_interaction.html#ad1f60d7304fc6529eba2d48d1b3a5258", null ],
+    [ "InteractionName", "classumi3d_1_1edk_1_1_generic_interaction.html#a6f4b4cec25461c64de140802d555205b", null ],
+    [ "IsSubInteraction", "classumi3d_1_1edk_1_1_generic_interaction.html#aba614166b353cd540252ea1756546c17", null ],
+    [ "Id", "classumi3d_1_1edk_1_1_generic_interaction.html#a250440f1bc77dfbd257e31024060cf6d", null ],
+    [ "PropertiesHandler", "classumi3d_1_1edk_1_1_generic_interaction.html#a886331a147666015336d55a8f7d49d22", null ]
+];
