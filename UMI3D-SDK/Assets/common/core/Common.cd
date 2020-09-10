@@ -1,0 +1,1318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.common.editor.ConstStringDisplayer" Collapsed="true">
+    <Position X="230.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\ConstStringDisplayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AudioDto" Collapsed="true">
+    <Position X="38" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\AudioDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractEquipeConfirmationDto" Collapsed="true">
+    <Position X="45.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\AbstractEquipeConfirmationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractEquipEventDto" Collapsed="true">
+    <Position X="70.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\AbstractEquipEventDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EnterDto" Collapsed="true">
+    <Position X="78.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\EnterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EquipeConfirmationDto" Collapsed="true">
+    <Position X="44.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\EquipeConfirmationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EquipeDto" Collapsed="true">
+    <Position X="69.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\EquipeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.NavigateDto" Collapsed="true">
+    <Position X="98.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\NavigateDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.NotificationDto" Collapsed="true">
+    <Position X="213.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAEIAQAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\NotificationDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.common.NotificationOnObjectDto" Collapsed="true">
+    <Position X="213.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\NotificationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.TeleportDto" Collapsed="true">
+    <Position X="98.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\TeleportDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UnequipeConfirmationDto" Collapsed="true">
+    <Position X="47" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\UnequipeConfirmationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UnequipeDto" Collapsed="true">
+    <Position X="71.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Events\UnequipeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.WebsocketConnectionDto" Collapsed="true">
+    <Position X="155" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAgAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\media\WebsocketConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AudioSourceDto" Collapsed="true">
+    <Position X="184.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEhAIAIwCAgAASEDAAAAAAIAAAAIQAAAAJAAAAAEAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\AudioSourceDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.CameraDto" Collapsed="true">
+    <Position X="186.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\CameraDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LineDto" Collapsed="true">
+    <Position X="188.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAgAAAAAAAAEAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\LineDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.VideoDto" Collapsed="true">
+    <Position X="74" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAIQAAAAAAAACAAAAAYAAAACAAAAABAAACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\objects\VideoDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractAnimationDto" Collapsed="true">
+    <Position X="182" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAgAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\AbstractAnimationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractGlTFExtensions&lt;UMI3D_EXT&gt;" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\AbstractGlTFExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ColliderDto" Collapsed="true">
+    <Position X="89.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAEAAAAAAIABAgAAAAAEAAAIAAAACAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\ColliderDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.FileDto" Collapsed="true">
+    <Position X="101" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACCAAAAIIAAAAAAUAAAAAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\FileDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.FileListDto" Collapsed="true">
+    <Position X="107.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\FileListDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFAsset" Collapsed="true">
+    <Position X="226.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFAsset.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFEnvironmentDto" Collapsed="true">
+    <Position X="218" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAGAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFEnvironmentDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFEnvironmentExtensions" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFEnvironmentExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFMaterialDto" Collapsed="true">
+    <Position X="228.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAABAAAAAAAAAEAAAAAAAAAAgIQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFMaterialDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFMaterialExtensions" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFMaterialExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFNodeDto" Collapsed="true">
+    <Position X="11" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAACAIAACAAAEAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFNodeDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.common.GlTFNodeExtensions" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFNodeExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GlTFSceneDto" Collapsed="true">
+    <Position X="49.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAABIIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFSceneDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.common.GlTFSceneExtensions" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\GlTFSceneExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.KHR_lights_punctual" Collapsed="true">
+    <Position X="233.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAFCACAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\KHR_lights_punctual.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.KHR_texture_transform" Collapsed="true">
+    <Position X="226.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAACAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\KHR_texture_transform.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AssetMetricDto" Collapsed="true">
+    <Position X="93" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\metrics\AssetMetricDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.MapMetricDto" Collapsed="true">
+    <Position X="92" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\metrics\MapMetricDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.MeshMetricDto" Collapsed="true">
+    <Position X="94.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAEAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\metrics\MeshMetricDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.PreloadedScene" Collapsed="true">
+    <Position X="233.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\PreloadedScene.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ResourceDto" Collapsed="true">
+    <Position X="123.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\ResourceDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ScalableTextureDto" Collapsed="true">
+    <Position X="123.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\ScalableTextureDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SubModelDto" Collapsed="true">
+    <Position X="202.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\SubModelDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.TextureDto" Collapsed="true">
+    <Position X="123.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\TextureDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UICanvasDto" Collapsed="true">
+    <Position X="191" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UI\UICanvasDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UIImageDto" Collapsed="true">
+    <Position X="193.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABABAACAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UI\UIImageDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UIRectDto" Collapsed="true">
+    <Position X="193.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQABAAAAAAAAACAAAAAAMAAAAAAAAIgAABAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UI\UIRectDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UITextDto" Collapsed="true">
+    <Position X="195.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAECCAIAAAAgAAAMAACIEAAACAgEAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UI\UITextDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DAbstractNodeDto" Collapsed="true">
+    <Position X="194.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAIBAAAAAAAAAAAACAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DAbstractNodeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DAnchorDto" Collapsed="true">
+    <Position X="85.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAAAAAAEABAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DAnchorDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DAnimationDto" Collapsed="true">
+    <Position X="206.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAgIAAAAAAAggAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DAnimationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DEnvironementDto" Collapsed="true">
+    <Position X="103.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAQAAAAAAgCAAAAAAAAAAAICAgAAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DEnvironementDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DMaterialDto" Collapsed="true">
+    <Position X="215.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAgAAAAAAAAAAQAAAAAAIAAAgBgAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DMaterialDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DMeshNodeDto" Collapsed="true">
+    <Position X="200" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAABAAAAAAAAAAAAAAAAQBAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DMeshNodeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DNodeDto" Collapsed="true">
+    <Position X="193.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAEAIAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DNodeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DSceneNodeDto" Collapsed="true">
+    <Position X="204.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAIEACAAAAEAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\UMI3DSceneNodeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractBrowserRequestDto" Collapsed="true">
+    <Position X="140.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\AbstractBrowserRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractEntityDto" Collapsed="true">
+    <Position X="187.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\AbstractEntityDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractOperationDto" Collapsed="true">
+    <Position X="22.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\AbstractOperationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractValueDto" Collapsed="true">
+    <Position X="40.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\AbstractValueDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DeleteEntityDto" Collapsed="true">
+    <Position X="13.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\DeleteEntityDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LoadEntityDto" Collapsed="true">
+    <Position X="15.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\LoadEntityDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.MediaDto" Collapsed="true">
+    <Position X="80.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAgAAAAAAAAAABCACAAAAEEIAIBQAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\MediaDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityDictionaryAddPropertyDto" Collapsed="true">
+    <Position X="22.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityDictionaryAddPropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityDictionaryPropertyDto" Collapsed="true">
+    <Position X="23.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityDictionaryPropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityDictionaryRemovePropertyDto" Collapsed="true">
+    <Position X="24.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityDictionaryRemovePropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityListAddPropertyDto" Collapsed="true">
+    <Position X="26.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityListAddPropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityListPropertyDto" Collapsed="true">
+    <Position X="27.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityListPropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityListRemovePropertyDto" Collapsed="true">
+    <Position X="29" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityListRemovePropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityMatrixPropertyDto" Collapsed="true">
+    <Position X="31.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityMatrixPropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetEntityPropertyDto" Collapsed="true">
+    <Position X="26.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAACAAAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\SetEntityPropertyDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.TransactionDto" Collapsed="true">
+    <Position X="220.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\TransactionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DDto" Collapsed="true">
+    <Position X="116.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAQAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DCoreDto\Umi3DDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractInteractionDto" Collapsed="true">
+    <Position X="166.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAIAAgAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\AbstractInteractionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractToolDto" Collapsed="true">
+    <Position X="178.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAIAAgAAAAAAAEAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\AbstractToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EventDto" Collapsed="true">
+    <Position X="157.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\EventDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.FormDto" Collapsed="true">
+    <Position X="179.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\FormDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InteractableDto" Collapsed="true">
+    <Position X="177.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\InteractableDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ManipulationDto" Collapsed="true">
+    <Position X="159.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DofGroupDto" Collapsed="true">
+    <Position X="110" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DofGroupOptionDto" Collapsed="true">
+    <Position X="116.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractParameterDto&lt;V&gt;" Collapsed="true">
+    <Position X="168.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\AbstractParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractParameterDto" Collapsed="true">
+    <Position X="168.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\AbstractParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractRangeParameterDto&lt;T&gt;" Collapsed="true">
+    <Position X="171.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\AbstractRangeParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.BooleanParameterDto" Collapsed="true">
+    <Position X="175.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\BooleanParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EnumParameterDto&lt;T&gt;" Collapsed="true">
+    <Position X="161.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\EnumParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.FloatParameterDto" Collapsed="true">
+    <Position X="164" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\FloatParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.FloatRangeParameterDto" Collapsed="true">
+    <Position X="170.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\FloatRangeParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.IntegerParameterDto" Collapsed="true">
+    <Position X="166.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\IntegerParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.IntegerRangeParameterDto" Collapsed="true">
+    <Position X="173" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\IntegerRangeParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.StringParameterDto" Collapsed="true">
+    <Position X="168.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\Parameter\StringParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ToolboxDto" Collapsed="true">
+    <Position X="209" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAIAAgAAAAAABEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\ToolboxDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ToolDto" Collapsed="true">
+    <Position X="179.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\ToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ProjectToolDto" Collapsed="true">
+    <Position X="17.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Operations\ProjectToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ReleaseToolDto" Collapsed="true">
+    <Position X="20" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Operations\ReleaseToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SwitchToolDto" Collapsed="true">
+    <Position X="17.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Operations\SwitchToolsDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EventStateChangedDto" Collapsed="true">
+    <Position X="137" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\EventStateChangedDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.EventTriggeredDto" Collapsed="true">
+    <Position X="139.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\EventTriggeredDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.HoveredDto" Collapsed="true">
+    <Position X="141.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAIAgAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\HoveredDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.HoverStateChangedDto" Collapsed="true">
+    <Position X="130.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEgAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\HoverStateChangedDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InteractionRequestDto" Collapsed="true">
+    <Position X="135.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\InteractionRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ManipulationRequestDto" Collapsed="true">
+    <Position X="132.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\ManipulationRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ParameterSettingRequestDto" Collapsed="true">
+    <Position X="134.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\ParameterSettingRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ToolProjectedDto" Collapsed="true">
+    <Position X="143.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\ToolProjectedDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ToolReleasedDto" Collapsed="true">
+    <Position X="146" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\Requests\ToolReleasedDto .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AnswerDto" Collapsed="true">
+    <Position X="56" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\AnswerDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.CandidateDto" Collapsed="true">
+    <Position X="58.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAIAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\CandidateDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.IdentityDto" Collapsed="true">
+    <Position X="112.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\IdentityDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.JoinDto" Collapsed="true">
+    <Position X="119" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\JoinDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.LeaveDto" Collapsed="true">
+    <Position X="60.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\LeaveDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.OfferDto" Collapsed="true">
+    <Position X="62.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAk=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\OfferDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RTCCloseConnectionDto" Collapsed="true">
+    <Position X="65" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\RTCCloseConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RTCCloseDataChannelDto" Collapsed="true">
+    <Position X="67.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\RTCCloseDataChannelDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RTCConnectionDTO" Collapsed="true">
+    <Position X="51.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\RTCConnectionDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RTCDataChannelDto" Collapsed="true">
+    <Position X="53.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAABBAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\RTCDataChannelDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.RTCDto" Collapsed="true">
+    <Position X="59.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\RTCDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.StatusDto" Collapsed="true">
+    <Position X="76.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\StatusDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.TokenDto" Collapsed="true">
+    <Position X="83" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\TokenDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserConnectionDto" Collapsed="true">
+    <Position X="211.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\UserConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserDto" Collapsed="true">
+    <Position X="211.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\UserDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserListDto" Collapsed="true">
+    <Position X="105.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DSignaling\UserListDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.BoneObjectPair" Collapsed="true">
+    <Position X="114.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\BonePairDictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.BonePairDictionary" Collapsed="true">
+    <Position X="121.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAAAAAAEAAAAAAAAACSAAAAAAAAAAAAAAADAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\BonePairDictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableColor" Collapsed="true">
+    <Position X="125.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAEAAAAIAAAAAAAAAAAAAAAKAEAAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableColor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableMatrix4x4" Collapsed="true">
+    <Position X="128" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAACAAAAACAAACAAAAAAABACAAAEAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableMatrix4x4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableVector2" Collapsed="true">
+    <Position X="152.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAECAAAAAAAAAAAAgAAAAAAAAAAYAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableVector2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableVector3" Collapsed="true">
+    <Position X="222.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAECAAAAAAAAAAABAAAAAAAAAAAYAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableVector3.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SerializableVector4" Collapsed="true">
+    <Position X="33.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAECAAAAAAAAACAAAAAAAAAAAAI4AE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\Utils\SerializableVector4.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DofType" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIACAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\DofType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GenericEnumString" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAEgAAAAAAAAAAAAIAAAAAgAAAAAiA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\GenericEnumString.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.InputType" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAgAAAAAAACAAAAAAAAAgAAAIAASAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\InputType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.PrimitiveTypeConverter" Collapsed="true">
+    <Position X="225" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ShadowTypeConverter" Collapsed="true">
+    <Position X="226.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AmbientTypeConverter" Collapsed="true">
+    <Position X="226.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AuthenticationTypeConverter" Collapsed="true">
+    <Position X="228.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.ImageTypeConverter" Collapsed="true">
+    <Position X="232" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.TextAnchortTypeConverter" Collapsed="true">
+    <Position X="230.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.FontStyleTypeConverter" Collapsed="true">
+    <Position X="233.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.HorizontalWrapTypeConverter" Collapsed="true">
+    <Position X="230.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.VerticalWrapTypeConverter" Collapsed="true">
+    <Position X="232" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.KHR_lightsKeys" Collapsed="true">
+    <Position X="225" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAIAAABAAAAAAAAgAAIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\KHR_lightsKeys.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DGlobalID" Collapsed="true">
+    <Position X="232" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\UMI3DGlobalID.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DLocalAssetDirectory" Collapsed="true">
+    <Position X="233.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAACAAAAAAAEAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\UMI3DLocalAssetDirectory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DNetworkingKeys" Collapsed="true">
+    <Position X="225" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAIAAACQBAQAgAAIAEoAIAAAAACAAAAAAAAhABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\UMI3DNetworkingKeys.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UMI3DPropertyKeys" Collapsed="true">
+    <Position X="226.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ZGAEEQEyBAJoAoFoREoAMswQCwoQJjAsHgygLAmmgtA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\UMI3DPropertyKeys.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AbstractWebRtcClient" Collapsed="true">
+    <Position X="225" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAIAAUBgYAgoAAAAAMAABBAAABBBCABEIAABIQBAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\AbstractWebRtcClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DataChannel" Collapsed="true">
+    <Position X="232" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAIAEAEAAIIAAAAAAAAAAAACBBAAQAEAKAIACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\DataChannel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.GetOrCreateComponentExtension" Collapsed="true">
+    <Position X="225" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\GetOrCreateComponentExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.VectorExtension" Collapsed="true">
+    <Position X="230.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\VectorExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.WebRtcChannels" Collapsed="true">
+    <Position X="233.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\WebRtcChannels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.WebRTCconnection" Collapsed="true">
+    <Position X="225" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oESAAAFAIACQCCCAAEQABIAQRA5EAFAOAAgyAQCBgFA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\WebRTCconnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AssetLibraryDto" Collapsed="true">
+    <Position X="35.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAIQAAAgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\AssetLibraryDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LibrariesDto" Collapsed="true">
+    <Position X="42.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DContent\LibrariesDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.common.UserTrackingSystem.BoneBindingDto" Collapsed="true">
+    <Position X="87.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAACAIAEAAABAAAAAAAAAIAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DUserTrackingSystem\BoneBindingDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserTrackingSystem.BoneDto" Collapsed="true">
+    <Position X="96.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAIAQCAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DUserTrackingSystem\BoneDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserTrackingSystem.UMI3DAvatarNodeDto" Collapsed="true">
+    <Position X="197.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAgAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DUserTrackingSystem\UMI3DAvatarNodeDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserTrackingSystem.UserCameraPropertiesDto" Collapsed="true">
+    <Position X="148.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DUserTrackingSystem\UserCameraPropertiesDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.UserTrackingSystem.UserTrackingFrameDto" Collapsed="true">
+    <Position X="150.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACACAIAICAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DUserTrackingSystem\UserTrackingFrameDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.Physics" Collapsed="true">
+    <Position X="232" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAQAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Physics.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.PersistentSingleton&lt;T&gt;" Collapsed="true">
+    <Position X="230.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABABAAAAAAAAAAAABAAAAAAABAAAAAQAAAAAEAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Templates\PersistentSingleton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.Singleton&lt;T&gt;" Collapsed="true">
+    <Position X="228.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABABAAAAAAAAAAAABAAAAAAABAAAAAQAAAAAEAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Templates\Singleton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.UMI3DVersion" Collapsed="true">
+    <Position X="228.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\UMI3DVersion.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.Path" Collapsed="true">
+    <Position X="228.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Utils\Path.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="umi3d.common.IEntity" Collapsed="true">
+    <Position X="225" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Templates\IEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.IObservable&lt;T&gt;" Collapsed="true">
+    <Position X="226.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAACAAAAQABAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Templates\IObservable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.ISelectable" Collapsed="true">
+    <Position X="228.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAQAAAQAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Templates\ISelectable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.ITogglable" Collapsed="true">
+    <Position X="230.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAACAAAAQAAAQAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Templates\ITogglable.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="umi3d.common.DofGroupEnum" Collapsed="true">
+    <Position X="228.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAACAAAMAIAAAAEMAIAAAgCIAAAAAAAAAAgAAYAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.AmbientType" Collapsed="true">
+    <Position X="225" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\AmbientType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.AppearanceType" Collapsed="true">
+    <Position X="226.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\AppearanceTypes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.AuthenticationType" Collapsed="true">
+    <Position X="228.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAgAAAACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\AuthenticationType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.AvatarDisplayMode" Collapsed="true">
+    <Position X="230.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAAAAAAAAAIgAAAAAAAAAAAACAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\AvatarDisplayModes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ColliderType" Collapsed="true">
+    <Position X="233.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAQAAAAAAAIAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ColliderType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.DataType" Collapsed="true">
+    <Position X="225" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAABAAAAAAIAAAAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\DataType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.DirectionalType" Collapsed="true">
+    <Position X="226.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAAAAAAQAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\DirectionalType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.EnvironmentType" Collapsed="true">
+    <Position X="230.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\EnvironmentType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ImageType" Collapsed="true">
+    <Position X="225" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAQQAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ImageType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.MeshPrimitive" Collapsed="true">
+    <Position X="226.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAIAQAAAAAAAAAAAAAAAYAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\MeshPrimitive.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.NavigationType" Collapsed="true">
+    <Position X="228.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\NavigationType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.QualityType" Collapsed="true">
+    <Position X="230.25" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAIAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\QualityType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ShaderType" Collapsed="true">
+    <Position X="232" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ShaderType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.ShadowType" Collapsed="true">
+    <Position X="233.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAQAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\ShadowType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.StatusType" Collapsed="true">
+    <Position X="225" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAABAAAAgAAAAAAAAAAAQAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\StatusType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.TextAnchorType" Collapsed="true">
+    <Position X="226.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAACAECAAAAEQAAAAAAAAAAgACQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\TextAnchorType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.UMI3DAssetFormat" Collapsed="true">
+    <Position X="228.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAACAAABAoAAAAEAAAAAAAAAAAAAAAAAAAQQAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\UMI3DAssetFormat.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="FontStyleType" Collapsed="true">
+    <Position X="232" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAIACAAAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\FontStyleType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="HorizontalWrapType" Collapsed="true">
+    <Position X="233.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\HorizontalWrapType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="VerticalWrapType" Collapsed="true">
+    <Position X="230.25" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Enums\VerticalWrapType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.common.UserTrackingSystem.BoneType" Collapsed="true">
+    <Position X="232" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEUIAkgCQAIFIBMAAAhQECAgAAMgkAgIAAQAQEIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\common\Dto\UMI3DUserTrackingSystem\BoneTypes.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

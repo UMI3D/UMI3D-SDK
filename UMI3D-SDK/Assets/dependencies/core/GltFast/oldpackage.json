@@ -1,0 +1,23 @@
+{
+  "name": "com.atteneder.gltfast",
+  "version": "1.1.1",
+  "displayName": "glTFast",
+  "description": "Load glTF assets at runtime.",
+  "unity": "2019.1",
+  "keywords": [
+    "mesh",
+    "gltf",
+    "asset",
+    "format",
+    "draco",
+    "ktx",
+    "basis",
+    "universal",
+    "basisu"
+  ],
+  "author": {
+    "name": "Andreas Atteneder",
+    "email": "andreas.atteneder@gmail.com",
+    "url": "https://atteneder.netlify.app"
+  }
+}
