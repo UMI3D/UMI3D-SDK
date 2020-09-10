@@ -1,0 +1,12 @@
+{
+	"name": "com.gfi-innovaton.umi3d.edk.interaction-system",
+	"version": "2.0",
+	"displayName": "UMI3D EDK Interaction System",
+	"unity": "2019.4",
+	"author": "Gfi Innovation",
+	"description": "UMI3D Environment DevlopmentKit.",
+	"dependencies": {
+		"com.gfi-innovaton.umi3d.edk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\EnvironmentDevlopmentKit\Core#development",
+		"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\Common\InteractionSystem#development"
+	}
+}

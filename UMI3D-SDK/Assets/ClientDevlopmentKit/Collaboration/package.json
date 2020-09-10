@@ -1,0 +1,14 @@
+{
+	"name": "com.gfi-innovaton.umi3d.cdk.collaboration",
+	"version": "2.0",
+	"displayName": "UMI3D Common Core",
+	"unity": "2019.4",
+	"author": "Gfi Innovation",
+	"description": "UMI3D Common Core.",
+	"dependencies": {
+		"com.gfi-innovaton.umi3d.cdk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\ClientDevlopmentKit\InteractionSystem#development",
+		"com.gfi-innovaton.umi3d.cdk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\ClientDevlopmentKit\UserCapture#development",
+		"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\Common\Collaboration#development",
+		"com.unity.webrtc": "2.1.0-preview.4"
+	}
+}

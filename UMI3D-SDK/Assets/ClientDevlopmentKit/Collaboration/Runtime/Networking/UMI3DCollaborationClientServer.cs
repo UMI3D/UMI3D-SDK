@@ -420,6 +420,6 @@ namespace umi3d.cdk.collaboration
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
-
+        public override string GetId() { return Identity.userId; }
     }
 }

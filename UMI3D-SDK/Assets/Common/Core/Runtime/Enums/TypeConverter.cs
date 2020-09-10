@@ -124,38 +124,6 @@ namespace umi3d.common
         }
     }
 
-    static public class AuthenticationTypeConverter
-    {
-
-        static public AuthenticationType Convert(this WebSocketSharp.Net.AuthenticationSchemes Scheme)
-        {
-            switch (Scheme)
-            {
-                case WebSocketSharp.Net.AuthenticationSchemes.Digest:
-                    return AuthenticationType.Digest;
-                case WebSocketSharp.Net.AuthenticationSchemes.Basic:
-                    return AuthenticationType.Basic;
-                case WebSocketSharp.Net.AuthenticationSchemes.Anonymous:
-                    return AuthenticationType.Anonymous;
-            }
-            return AuthenticationType.Anonymous;
-        }
-
-        static public WebSocketSharp.Net.AuthenticationSchemes Convert(this AuthenticationType Scheme)
-        {
-            switch (Scheme)
-            {
-                case AuthenticationType.Digest:
-                    return WebSocketSharp.Net.AuthenticationSchemes.Digest;
-                case AuthenticationType.Basic:
-                    return WebSocketSharp.Net.AuthenticationSchemes.Basic;
-                case AuthenticationType.Anonymous:
-                    return WebSocketSharp.Net.AuthenticationSchemes.Anonymous;
-            }
-            return WebSocketSharp.Net.AuthenticationSchemes.None;
-        }
-    }
-
     static public class ImageTypeConverter
     {
 

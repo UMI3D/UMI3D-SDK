@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.cdk.collaboration;
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
@@ -47,7 +46,7 @@ namespace umi3d.cdk.userCapture
 
         void Update()
         {
-            if (UMI3DCollaborationClientServer.Exists)
+            if (UMI3DClientServer.Exists)
                 DispatchTracking();
 
             if (iterationCooldown())
@@ -58,7 +57,7 @@ namespace umi3d.cdk.userCapture
         {
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
             {
-                UMI3DCollaborationClientServer.SendTracking(LastFrameDto, false);
+                UMI3DClientServer.SendTracking(LastFrameDto, false);
             }
         }
 
@@ -81,7 +80,7 @@ namespace umi3d.cdk.userCapture
                 position = Anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
                 rotation = Anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
                 scale = Anchor.localScale,
-                userId = UMI3DCollaborationClientServer.Identity.userId
+                userId = UMI3DClientServer.Instance.GetId()
             };
 
             skeletonParsedEvent.Invoke();

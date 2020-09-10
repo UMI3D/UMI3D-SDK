@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using umi3d.cdk.collaboration;
+
 using umi3d.cdk.menu;
 using umi3d.cdk.menu.interaction;
 using umi3d.common.interaction;
@@ -87,7 +87,7 @@ namespace umi3d.cdk.interaction
                                 entityId = booleanParameterDto.id,
                                 parameter = booleanParameterDto,
                             };
-                            UMI3DCollaborationClientServer.Send(pararmeterDto, true);
+                            UMI3DClientServer.Send(pararmeterDto, true);
                         }
                     );
                     result = b;
@@ -102,7 +102,7 @@ namespace umi3d.cdk.interaction
                             entityId = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
                         };
-                        UMI3DCollaborationClientServer.Send(pararmeterDto, true);
+                        UMI3DClientServer.Send(pararmeterDto, true);
                     }
                     );
                     result = f;
@@ -117,7 +117,7 @@ namespace umi3d.cdk.interaction
                             entityId = enumParameterDto.id,
                             parameter = enumParameterDto,
                         };
-                        UMI3DCollaborationClientServer.Send(pararmeterDto, true);
+                        UMI3DClientServer.Send(pararmeterDto, true);
                     }
                     );
                     result = en;
@@ -132,7 +132,7 @@ namespace umi3d.cdk.interaction
                             entityId = stringParameterDto.id,
                             parameter = stringParameterDto,
                         };
-                        UMI3DCollaborationClientServer.Send(pararmeterDto, true);
+                        UMI3DClientServer.Send(pararmeterDto, true);
                     }
                     );
                     result = s;

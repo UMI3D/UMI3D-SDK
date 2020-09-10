@@ -48,5 +48,8 @@ namespace umi3d.cdk
 
         protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { }
 
+
+        public virtual string GetId() { return null; }
+
     }
 }

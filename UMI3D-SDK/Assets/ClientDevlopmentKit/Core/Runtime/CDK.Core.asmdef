@@ -1,0 +1,18 @@
+{
+    "name": "CDK.Core",
+    "references": [
+        "GUID:6e34c4b4c3202a14eb95e0a784041765",
+        "GUID:215efa65361782e41b5e3fac87a2c7e3",
+        "GUID:b1a706ea5d8ecfd4aa97f6b9462b80a0",
+        "GUID:a42927d1d4a3b4cda9b076a7adecb9cc"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

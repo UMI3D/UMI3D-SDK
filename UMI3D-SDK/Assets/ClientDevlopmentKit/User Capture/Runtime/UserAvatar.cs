@@ -17,7 +17,6 @@ limitations under the License.
 
 
 using System.Collections.Generic;
-using umi3d.cdk.collaboration;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -141,7 +140,7 @@ namespace umi3d.cdk.userCapture
 
         void UpdateBindingPosition(BoneBindingDto dto)
         {
-            if (userId == UMI3DCollaborationClientServer.Identity.userId)
+            if (userId == UMI3DClientServer.Instance.GetId())
             {
                 UMI3DClientUserTrackingBone bone = UMI3DClientUserTrackingBone.instances[dto.boneType];
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
@@ -169,7 +168,7 @@ namespace umi3d.cdk.userCapture
 
         void ResetParent(BoneBindingDto dto)
         {
-            if (userId == UMI3DCollaborationClientServer.Identity.userId)
+            if (userId == UMI3DClientServer.Instance.GetId())
             {
                 UMI3DClientUserTrackingBone bone = UMI3DClientUserTrackingBone.instances[dto.boneType];
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);

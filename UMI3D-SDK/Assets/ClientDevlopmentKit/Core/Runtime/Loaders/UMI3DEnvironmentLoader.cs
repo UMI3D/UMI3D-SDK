@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.cdk.collaboration;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
@@ -323,7 +322,7 @@ namespace umi3d.cdk
                     break;
                 case AssetLibraryDto library:
                     UMI3DResourcesManager.DownloadLibrary(library,
-                        UMI3DCollaborationClientServer.Media.name,
+                        UMI3DClientServer.Media.name,
                         () =>
                         {
                             UMI3DResourcesManager.LoadLibrary(library.id, performed);

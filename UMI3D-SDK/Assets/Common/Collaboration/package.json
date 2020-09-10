@@ -1,0 +1,12 @@
+{
+	"name": "com.gfi-innovaton.umi3d.common.collaboration",
+	"version": "2.0",
+	"displayName": "UMI3D Common Collaboration",
+	"unity": "2019.4",
+	"author": "Gfi Innovation",
+	"description": "UMI3D Common Collaboration.",
+	"dependencies": {
+		"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\Common\InteractionSystem#development",
+		"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\Common\UserCapture#development"
+	}
+}

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Linq;
-using umi3d.cdk.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -56,7 +55,7 @@ namespace umi3d.cdk.interaction
                 boneType = bone,
                 state = true
             };
-            UMI3DCollaborationClientServer.Send(hoverDto, true);
+            UMI3DClientServer.Send(hoverDto, true);
         }
 
         /// <summary>
@@ -71,7 +70,7 @@ namespace umi3d.cdk.interaction
                 boneType = bone,
                 state = false
             };
-            UMI3DCollaborationClientServer.Send(hoverDto, true);
+            UMI3DClientServer.Send(hoverDto, true);
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace umi3d.cdk.interaction
                     position = position,
                     direction = direction
                 };
-                UMI3DCollaborationClientServer.Send(hoverDto, false);
+                UMI3DClientServer.Send(hoverDto, false);
             }
         }
 
