@@ -33,6 +33,7 @@ var namespaceumi3d_1_1edk =
     [ "UMI3DAudioPlayer", "d2/d7f/classumi3d_1_1edk_1_1_u_m_i3_d_audio_player.html", "d2/d7f/classumi3d_1_1edk_1_1_u_m_i3_d_audio_player" ],
     [ "UMI3DEntity", "d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html", "d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity" ],
     [ "UMI3DEnvironment", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment" ],
+    [ "UMI3DKHRLight", "dc/d4e/classumi3d_1_1edk_1_1_u_m_i3_d_k_h_r_light.html", "dc/d4e/classumi3d_1_1edk_1_1_u_m_i3_d_k_h_r_light" ],
     [ "UMI3DLoadableEntity", "d4/d97/interfaceumi3d_1_1edk_1_1_u_m_i3_d_loadable_entity.html", "d4/d97/interfaceumi3d_1_1edk_1_1_u_m_i3_d_loadable_entity" ],
     [ "UMI3DModel", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model" ],
     [ "UMI3DNode", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node" ],

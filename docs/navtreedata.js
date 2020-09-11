@@ -51,15 +51,15 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d2/d5b/classumi3d_1_1common_1_1_u_m_i3_d_material_dto.html#a36e56c94b3da4902becca26d6f87bcb4",
-"d3/dea/classumi3d_1_1cdk_1_1_abstract_navigation.html#aafe0515cf923009b1d4026194adc78a1",
+"d2/d5b/classumi3d_1_1common_1_1_u_m_i3_d_material_dto.html#a43613c3480d65372edc5e0363403e18d",
+"d3/dea/classumi3d_1_1cdk_1_1_abstract_navigation.html#a4a0221fad062803ca43aaa6b0ced4fa6",
 "d5/d8a/classumi3d_1_1common_1_1interaction_1_1_interactable_dto.html#a9e41718d3b3cfccef5bf3c95ccc9e561",
-"d7/d55/classumi3d_1_1common_1_1_data_channel.html",
-"d8/db8/classumi3d_1_1cdk_1_1_abstract_mesh_dto_loader.html#a9a216e750e125d31f7f0fd943c7f577f",
-"da/db7/classumi3d_1_1common_1_1_mesh_metric_dto.html#a022afceb68a1178975c0edf08c399be7",
-"dc/d7d/classumi3d_1_1common_1_1_audio_source_dto.html#ad6c72d45a7e9dad4a9efe1a201440ba2",
-"de/d43/classumi3d_1_1edk_1_1_set_entity_dictionary_add_property.html#a0c7f7ea77a4e1fa0d8a8d7879f97d275",
-"functions_d.html"
+"d7/d55/classumi3d_1_1common_1_1_data_channel.html#a670ac87ab8fb1739c608aa4e0b0e98ff",
+"d8/dca/classumi3d_1_1common_1_1_set_entity_dictionary_remove_property_dto.html",
+"da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#abceb3dc76b278c924cfb674c88ff3e0e",
+"dc/d94/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_toolbox_sub_menu.html",
+"de/d5c/classumi3d_1_1edk_1_1interaction_1_1_boolean_parameter.html#a391cb9aab6e601e728b3487d84fd501d",
+"functions_enum.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

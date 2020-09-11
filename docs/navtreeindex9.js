@@ -1,11 +1,9 @@
 var NAVTREEINDEX9 =
 {
-"functions_d.html":[2,3,0,4],
-"functions_e.html":[2,3,0,5],
 "functions_enum.html":[2,3,3],
 "functions_f.html":[2,3,0,6],
-"functions_func.html":[2,3,1,0],
 "functions_func.html":[2,3,1],
+"functions_func.html":[2,3,1,0],
 "functions_func_a.html":[2,3,1,1],
 "functions_func_b.html":[2,3,1,2],
 "functions_func_c.html":[2,3,1,3],
@@ -76,8 +74,8 @@ var NAVTREEINDEX9 =
 "functions_y.html":[2,3,0,25],
 "functions_z.html":[2,3,0,26],
 "hierarchy.html":[2,2],
-"index.html":[],
 "index.html":[0],
+"index.html":[],
 "index.html#autotoc_md1":[0],
 "index.html#autotoc_md2":[1],
 "index.html#autotoc_md3":[2],
