@@ -1,0 +1,27 @@
+#projectlogo
+{
+	text-align: center;
+	vertical-align: middle;
+	border-collapse: separate;
+}
+ 
+#projectlogo img
+{ 
+    margin-top: 8px;
+    margin-bottom: 8px;
+	width: auto;
+	height: 50px;
+}
+
+#titlearea {
+    padding: 0% 1%;
+    width: 98%;
+	background-color: #fff;
+    border-bottom: 1px solid #5373B4;
+}
+
+#projectbrief {
+    font: 120% Tahoma, Arial,sans-serif;
+    margin: 1px;
+    padding: 0px;
+}
