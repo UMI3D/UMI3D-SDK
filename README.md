@@ -10,9 +10,9 @@ The documentation can be found [https://gfi-innovation.github.io/UMI3D-SDK/docs/
 
 ### UMI3D Browser & Samples
 
-* [Virtual Worlds Samples](url)
-* [UMI3D desktop browser](url)
-* [UMI3D SteamVR browser](url)
+* [Virtual Worlds Samples](https://github.com/UMI3D/UMI3D-Samples)
+* [UMI3D desktop browser](https://github.com/UMI3D/UMI3D-Desktop-Browser)
+* UMI3D SteamVR browser (Coming soon)
 
 ### Installation through .unitypackage
 
