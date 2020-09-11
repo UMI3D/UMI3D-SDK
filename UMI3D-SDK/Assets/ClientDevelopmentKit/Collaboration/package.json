@@ -1,10 +1,10 @@
 {
 	"name": "com.gfi-innovaton.umi3d.cdk.collaboration",
 	"version": "2.0.0",
-	"displayName": "UMI3D Common Core",
+	"displayName": "UMI3D CDK Collaboration",
 	"unity": "2019.4",
 	"author": "Gfi Innovation",
-	"description": "UMI3D Common Core.",
+	"description": "UMI3D Client Development Kit Collaboration.",
 	"dependencies": {
 		"com.gfi-innovaton.umi3d.cdk.interaction-system":"2.0.0",
 		"com.gfi-innovaton.umi3d.cdk.user-capture":"2.0.0",
