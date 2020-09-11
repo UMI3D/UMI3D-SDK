@@ -16,12 +16,8 @@ The documentation can be found [https://gfi-innovation.github.io/UMI3D-SDK/docs/
 
 ### Installation through .unitypackage
 
-* [UMI3D Virtual World Development Kit](/Packages/edk.unitypackage)
-
-This is the server-side part of the UMI3D SDK.Enables to design Collaborative Virtual Environments that are accessible using a UMI3D Browser.
-* [UMI3D Browser Development Kit](/Packages/cdk.unitypackage)
-
-This is the client-side part of the UMI3D SDK. Enables to create your own UMI3D Browser.
+* [UMI3D Virtual World Development Kit](/Packages/edk.unitypackage)   This is the server-side part of the UMI3D SDK. Enables to design Collaborative Virtual Environments that are accessible using a UMI3D Browser.
+* [UMI3D Browser Development Kit](/Packages/cdk.unitypackage)   This is the client-side part of the UMI3D SDK. Enables to create your own UMI3D Browser.
 
 ### Installation through Unity's Package Manager
 
