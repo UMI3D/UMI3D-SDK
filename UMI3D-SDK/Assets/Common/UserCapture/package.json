@@ -6,6 +6,6 @@
 	"author": "Gfi Innovation",
 	"description": "UMI3D Common User Capture.",
 	"dependencies": {
-		"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#v2.0.0"
+		"com.gfi-innovaton.umi3d.common.core":"2.0.0"
 	}
 }
