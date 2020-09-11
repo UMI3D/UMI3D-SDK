@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
 

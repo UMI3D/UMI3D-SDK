@@ -1,5 +1,5 @@
 {
-    "name": "Common.Interaction-System",
+    "name": "UMI3D.Common.InteractionSystem",
     "references": [
         "GUID:6e34c4b4c3202a14eb95e0a784041765"
     ],

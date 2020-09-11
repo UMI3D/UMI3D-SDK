@@ -50,7 +50,7 @@ namespace umi3d.cdk
                 return;
             }
 
-            base.ReadUMI3DExtension(dto, node,()=>
+            base.ReadUMI3DExtension(dto, node, () =>
             {
 
                 //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
@@ -69,13 +69,13 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform); 
+                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform);
                             finished.Invoke();
                         },
                         failed,
                         loader.DeleteObject
                         );
-            },failed);
+            }, failed);
         }
 
 
@@ -94,7 +94,7 @@ namespace umi3d.cdk
                 Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())
                 {
-                    if (!ignoredPrimitiveNameForSubObjectsLoading.Contains( child.name) ) // ignore game objects created by the gltf importer or other importer 
+                    if (!ignoredPrimitiveNameForSubObjectsLoading.Contains(child.name)) // ignore game objects created by the gltf importer or other importer 
                     {
                         child.SetParent(copy.transform.parent);
                         subObjectsReferences.Add(child.name, child);
@@ -128,7 +128,7 @@ namespace umi3d.cdk
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             ColliderDto colliderDto = ((UMI3DNodeDto)dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
-           
+
             if (dto.overridedMaterials != null && dto.overridedMaterials.Count > 0)
             {
                 //TODO a améliorer 
@@ -137,7 +137,7 @@ namespace umi3d.cdk
                     var matEntity = UMI3DEnvironmentLoader.GetEntity(mat.newMaterialId);
                     if (matEntity != null)
                     {
-                        if(mat.overridedMaterialsId.Contains("ANY_mat"))
+                        if (mat.overridedMaterialsId.Contains("ANY_mat"))
                         {
                             OverrideMaterial(instance, (Material)matEntity.Object, (s) => true);
                         }
@@ -145,8 +145,8 @@ namespace umi3d.cdk
                         {
                             foreach (string matKey in mat.overridedMaterialsId)
                             {
-                                OverrideMaterial(instance, (Material)matEntity.Object, 
-                                    (s) => s == matKey || (s .Equals(matKey + " (Instance)" )));
+                                OverrideMaterial(instance, (Material)matEntity.Object,
+                                    (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")));
 
                             }
                         }
@@ -160,21 +160,26 @@ namespace umi3d.cdk
             }
         }
 
-        private void OverrideMaterial(GameObject go, Material newMat, Func<string,bool> filter)
+        private void OverrideMaterial(GameObject go, Material newMat, Func<string, bool> filter)
         {
             foreach (Renderer renderer in go.GetComponentsInChildren<Renderer>())
             {
-                foreach (Material sharedMaterial in renderer.materials)
+
+                Material[] mats = renderer.sharedMaterials;
+                bool modified = false;
+
+                for (int i = 0; i < renderer.sharedMaterials.Length; i++)
                 {
-
-
-                    if (filter(sharedMaterial.name) )
+                    if (filter(renderer.sharedMaterials[i].name))
                     {
-                        sharedMaterial.CopyPropertiesFromMaterial(newMat);
-                        
+                        renderer.sharedMaterials.SetValue(newMat, i);
+
+                        mats[i] = newMat;
+                        modified = true;
                     }
-                    //TODO save old material
                 }
+                if (modified)
+                    renderer.materials = mats;
             }
         }
 

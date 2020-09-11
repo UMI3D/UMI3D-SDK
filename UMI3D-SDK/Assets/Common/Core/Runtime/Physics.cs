@@ -17,34 +17,34 @@ limitations under the License.
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d
+namespace umi3d.common
 {
 
     public class Physics : MonoBehaviour
     {
-        public static UnityEngine.RaycastHit[] RaycastAll(Ray ray, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static RaycastHit[] RaycastAll(Ray ray, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             return Sort(UnityEngine.Physics.RaycastAll(ray, maxDistance, layerMask, queryTriggerInteraction));
         }
 
-        public static UnityEngine.RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             return Sort(UnityEngine.Physics.RaycastAll(origin, direction, maxDistance, layerMask, queryTriggerInteraction));
         }
 
 
-         static UnityEngine.RaycastHit[] Sort(UnityEngine.RaycastHit[] array)
+        static RaycastHit[] Sort(RaycastHit[] array)
         {
-            List<UnityEngine.RaycastHit> l = new List<UnityEngine.RaycastHit>();
+            List<RaycastHit> l = new List<RaycastHit>();
             foreach (RaycastHit r in array)
                 l.Add(r);
             l.Sort(Comparison);
-            return  l.ToArray();
+            return l.ToArray();
         }
 
-        static int Comparison(UnityEngine.RaycastHit x, UnityEngine.RaycastHit y)
+        static int Comparison(RaycastHit x, RaycastHit y)
         {
-            return (x.distance == y.distance)? 0 : (x.distance < y.distance) ? -1 : 1;
+            return x.distance == y.distance ? 0 : x.distance < y.distance ? -1 : 1;
         }
 
 

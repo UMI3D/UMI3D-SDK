@@ -25,6 +25,7 @@ using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
+using Path = umi3d.common.Path;
 
 namespace umi3d.cdk
 {

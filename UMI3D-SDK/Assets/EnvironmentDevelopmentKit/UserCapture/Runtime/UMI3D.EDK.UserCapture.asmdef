@@ -1,5 +1,5 @@
 {
-    "name": "EDK.UserCapture",
+    "name": "UMI3D.EDK.UserCapture",
     "references": [
         "GUID:260f6d2a9a3243446ba8d9c686824226",
         "GUID:6e34c4b4c3202a14eb95e0a784041765",

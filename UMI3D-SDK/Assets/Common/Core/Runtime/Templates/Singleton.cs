@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d
+namespace umi3d.common
 {
     public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
@@ -75,7 +75,7 @@ namespace umi3d
             applicationIsQuitting = false;
             if (instance != null && instance != this)
             {
-                Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + this.gameObject.name + " will be exterminated");
+                Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated");
                 Destroy(this);
             }
             else

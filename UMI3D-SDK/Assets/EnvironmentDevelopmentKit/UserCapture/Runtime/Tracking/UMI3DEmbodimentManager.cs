@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;

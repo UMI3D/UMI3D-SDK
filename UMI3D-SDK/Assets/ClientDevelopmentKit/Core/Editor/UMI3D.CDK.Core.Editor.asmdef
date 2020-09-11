@@ -1,5 +1,5 @@
 {
-    "name": "CDK.Core.Editor",
+    "name": "UMI3D.CDK.Core.Editor",
     "references": [
         "GUID:29a403b1410bc9e44b9b0cbcfde58e71"
     ],

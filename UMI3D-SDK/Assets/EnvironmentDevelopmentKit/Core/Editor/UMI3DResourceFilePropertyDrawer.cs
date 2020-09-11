@@ -23,6 +23,8 @@ using umi3d.edk;
 using UnityEngine;
 using System.IO;
 using System;
+using umi3d.common;
+using Path = umi3d.common.Path;
 
 namespace umi3d.edk.editor
 {

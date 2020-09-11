@@ -16,13 +16,13 @@ limitations under the License.
 
 using UnityEngine.Events;
 
-namespace umi3d
+namespace umi3d.common
 {
     /// <summary>
     /// Interface for observable objects containing a value.
     /// </summary>
     /// <typeparam name="T">Type of the value contained</typeparam>
-    public interface IObservable<T> 
+    public interface IObservable<T>
     {
         /// <summary>
         /// Get contained value.

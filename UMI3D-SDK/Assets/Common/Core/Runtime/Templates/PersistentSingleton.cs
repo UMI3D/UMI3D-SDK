@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d
+namespace umi3d.common
 {
     public class PersistentSingleton<T> : MonoBehaviour where T : PersistentSingleton<T>
     {
@@ -73,10 +73,10 @@ namespace umi3d
         {
             if (instance != null && instance != this)
             {
-                if (instance.gameObject.name == this.gameObject.name)
-                    Debug.LogWarning("There is already a Singleton<" + typeof(T) + "> , instance on " + this.gameObject.name + " will be exterminated. This could occur after reloaded a scene with a PersistentSingleton in it");
+                if (instance.gameObject.name == gameObject.name)
+                    Debug.LogWarning("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated. This could occur after reloaded a scene with a PersistentSingleton in it");
                 else
-                    Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + this.gameObject.name + " will be exterminated.");
+                    Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated.");
                 Destroy(this);
             }
             else

@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine.Events;
 
-namespace umi3d
+namespace umi3d.common
 {
     /// <summary>
     /// Interface for Togglable objects.
