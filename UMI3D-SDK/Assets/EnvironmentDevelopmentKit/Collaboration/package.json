@@ -6,9 +6,9 @@
 	"author": "Gfi Innovation",
 	"description": "UMI3D Environment Devlopment Kit Collaboration.",
 	"dependencies": {
-		"com.gfi-innovaton.umi3d.edk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevlopmentKit/UserCapture#2.0.d.200911",
-		"com.gfi-innovaton.umi3d.edk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevlopmentKit/InteractionSystem#2.0.d.200911",
-		"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.0.d.200911",
+		"com.gfi-innovaton.umi3d.edk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevlopmentKit/UserCapture#v2.0.0",
+		"com.gfi-innovaton.umi3d.edk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevlopmentKit/InteractionSystem#v2.0.0",
+		"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#v2.0.0",
 		"com.unity.webrtc": "2.1.0-preview.4"
 	}
 }

@@ -6,7 +6,7 @@
 	"author": "Gfi Innovation",
 	"description": "UMI3D Client Devlopment Kit User Capture.",
 	"dependencies": {
-		"com.gfi-innovaton.umi3d.cdk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevlopmentKit/Core#2.0.d.200911",
-		"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.0.d.200911"
+		"com.gfi-innovaton.umi3d.cdk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevlopmentKit/Core#v2.0.0",
+		"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#v2.0.0"
 	}
 }
