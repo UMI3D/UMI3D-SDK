@@ -714,7 +714,7 @@ namespace umi3d.cdk
                 }
                 else objectData.downloadedPath = filePath;
             }
-            else CacheCollection.Add(new ObjectData(url, key, filePath));
+            else CacheCollection.Add(new ObjectData(url, null, key, filePath));
 
             UMI3DClientServer.GetFile(url, action, error2);
             yield return new WaitUntil(() => { return finished; });
