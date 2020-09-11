@@ -6,6 +6,6 @@
 	"author": "Gfi Innovation",
 	"description": "UMI3D Common Core.",
 	"dependencies": {
-		"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=\UMI3D-SDK\Assets\Dependencies#development"
+		"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#development"
 	}
 }
