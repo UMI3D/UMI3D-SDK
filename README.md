@@ -16,7 +16,8 @@ The documentation can be found [https://gfi-innovation.github.io/UMI3D-SDK/docs/
 
 ### Installation through .unitypackage
 
-Coming soon
+* [UMI3D Virtual World Development Kit](/Packages/edk.unitypackage)
+* [UMI3D Browser Development Kit](/Packages/cdk.unitypackage)
 
 ### Installation through Unity's Package Manager
 
