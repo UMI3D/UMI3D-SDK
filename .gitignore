@@ -33,3 +33,6 @@ sysinfo.txt
 
 # Builds
 *.apk
+
+/UMI3D-SDK/Assets/EXCLUDED.meta
+/UMI3D-SDK/Assets/EXCLUDED
