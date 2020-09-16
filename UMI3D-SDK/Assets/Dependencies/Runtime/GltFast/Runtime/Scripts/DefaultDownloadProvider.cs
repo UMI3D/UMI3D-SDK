@@ -13,6 +13,8 @@
 // limitations under the License.
 //
 
+using System.IO;
+using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -55,7 +57,27 @@ namespace GLTFast.Loading {
 
         public string error { get { return request.error; } }
         public byte[] data { get { return request.downloadHandler.data; } }
-        public string text { get { return request.downloadHandler.text; } }
+        public string text
+        {
+            get {
+                string text;
+
+                if (request.GetResponseHeader("Content-Encoding") == "gzip")
+                {
+                    // GZipStream is from System.IO.Compression in .Net 4.5+
+                    var stream = new StreamReader(new GZipStream(new MemoryStream(request.downloadHandler.data),
+                    CompressionMode.Decompress));
+                    text = stream.ReadToEnd();
+                    stream.Close();
+                }
+                else
+                {
+                    text = request.downloadHandler.text;
+                }
+
+                return text;
+            }
+        }
     }
 
     public class AwaitableTextureDownload : AwaitableDownload, ITextureDownload {
