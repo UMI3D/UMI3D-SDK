@@ -53,7 +53,7 @@ namespace umi3d.edk.collaboration
         public bool useRandomHttpPort;
         public int httpPort;
 
-        protected AuthenticationType Authentication;
+        public AuthenticationType Authentication;
 
         /// <summary>
         /// Return the Authentication type.
