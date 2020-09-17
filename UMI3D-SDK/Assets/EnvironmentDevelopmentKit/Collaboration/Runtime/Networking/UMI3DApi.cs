@@ -345,7 +345,7 @@ namespace umi3d.edk.collaboration
 
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             JoinDto dto = ReadDto(e.Request) as JoinDto;
-            e.Response.WriteContent((new EnterDto()).ToBson());
+            e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
             UMI3DCollaborationServer.newUser(user);
         }
 

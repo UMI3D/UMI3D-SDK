@@ -44,6 +44,15 @@ namespace umi3d.edk
 
         public List<AssetLibrary> globalLibraries;
 
+        [HideInInspector]
+        private Vector3 defaultStartPosition;
+        [HideInInspector]
+        private Vector3 defaultStartOrentation;
+        static public UMI3DAsyncProperty<Vector3> objectStartPosition;
+        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion;
+
+
+
         private void Start()
         {
             foreach (UMI3DAbstractNode node in GetComponentsInChildren<UMI3DAbstractNode>(true))
@@ -88,6 +97,12 @@ namespace umi3d.edk
             return env;
         }
 
+        public static EnterDto ToEnterDto(UMI3DUser user)
+        {
+            return new EnterDto();
+        }
+
+
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
             List<AssetLibraryDto> libraries = globalLibraries.Select(l => l.ToDto()).ToList();
@@ -106,6 +121,10 @@ namespace umi3d.edk
         void InitDefinition()
         {
             var id = UMI3DGlobalID.EnvironementId;
+
+            objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, null, defaultStartPosition);
+            objectStartQuaternion = new UMI3DAsyncProperty<Quaternion>(id, null, Quaternion.Euler(defaultStartOrentation));
+
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (AmbientType)mode);
             objectSkyColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, skyColor, (c, u) => (SerializableColor)c);

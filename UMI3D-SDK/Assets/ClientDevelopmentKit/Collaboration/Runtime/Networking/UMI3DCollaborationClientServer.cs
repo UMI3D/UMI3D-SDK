@@ -311,7 +311,7 @@ namespace umi3d.cdk.collaboration
             joinning = true;
             Instance.HttpClient.SendPostJoin(
                 new JoinDto(),
-                (enter) => { joinning = false; connected = true; Instance.EnterScene(); },
+                (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
                 (error) => { joinning = false; Debug.Log("error on get id :" + error); });
         }
 
@@ -395,13 +395,14 @@ namespace umi3d.cdk.collaboration
                 Logout(null, null);
         }
 
-        void EnterScene()
+        void EnterScene(EnterDto enter)
         {
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {
                     Action setStatus = () =>
                     {
+                        UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
                         UserDto.status = StatusType.ACTIVE;
                         HttpClient.SendPostUpdateIdentity(null, null);
                     };

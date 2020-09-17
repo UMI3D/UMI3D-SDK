@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DNavigation : Singleton<UMI3DNavigation>
     {
-        AbstractNavigation currentNav = null;
+        public AbstractNavigation currentNav { get; protected set; } = null;
         public List<AbstractNavigation> navigations;
 
         // Start is called before the first frame update
