@@ -32,6 +32,8 @@ namespace umi3d.edk.collaboration
     {
         public static new UMI3DCollaborationServer Instance { get { return UMI3DServer.Instance as UMI3DCollaborationServer; } set { UMI3DServer.Instance = value; } }
 
+        public bool isRunning { get; protected set; } = false;
+
         UMI3DHttp http;
         UMI3DWebsocket websocket;
         UMI3DWebRTC webRTC;
@@ -103,6 +105,8 @@ namespace umi3d.edk.collaboration
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
             webRTC = new UMI3DWebRTC(this);
+
+            isRunning = true;
         }
 
         /// <summary>
@@ -183,6 +187,7 @@ namespace umi3d.edk.collaboration
             http?.Stop();
             websocket?.Stop();
             webRTC?.Stop();
+            isRunning = false;
         }
 
         void Clear()
@@ -190,6 +195,7 @@ namespace umi3d.edk.collaboration
             http?.Stop();
             websocket?.Stop();
             webRTC?.Clear();
+            isRunning = false;
         }
 
         public static void Stop()
