@@ -25,6 +25,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using Unity.WebRTC;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
@@ -107,6 +108,7 @@ namespace umi3d.edk.collaboration
             webRTC = new UMI3DWebRTC(this);
 
             isRunning = true;
+            OnServerStart.Invoke();
         }
 
         /// <summary>
@@ -188,6 +190,7 @@ namespace umi3d.edk.collaboration
             websocket?.Stop();
             webRTC?.Stop();
             isRunning = false;
+            OnServerStop.Invoke();
         }
 
         void Clear()
@@ -196,6 +199,7 @@ namespace umi3d.edk.collaboration
             websocket?.Stop();
             webRTC?.Clear();
             isRunning = false;
+            OnServerStop.Invoke();
         }
 
         public static void Stop()
@@ -333,5 +337,10 @@ namespace umi3d.edk.collaboration
             }
 
         }
+
+        #region session
+        public UnityEvent OnServerStart = new UnityEvent();
+        public UnityEvent OnServerStop = new UnityEvent();
+        #endregion
     }
 }
