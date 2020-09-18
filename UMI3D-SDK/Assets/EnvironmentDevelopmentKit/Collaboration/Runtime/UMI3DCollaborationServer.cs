@@ -39,6 +39,7 @@ namespace umi3d.edk.collaboration
         UMI3DWebsocket websocket;
         UMI3DWebRTC webRTC;
 
+        static public UMI3DWebsocket Websocket { get => Exists ? Instance.websocket : null; }
         static public UMI3DWebRTC WebRTC { get => Exists ? Instance.webRTC : null; }
 
         public float tokenLifeTime = 10f;
