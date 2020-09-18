@@ -32,6 +32,22 @@ namespace umi3d.edk.interaction
         [SerializeField]
         protected UMI3DNode Node;
 
+        public override LoadEntity Register()
+        {
+            base.Register();
+            return GetLoadEntity();
+        }
+
+        protected virtual LoadEntity GetLoadEntity()
+        {
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
         /// <summary>
         /// Class for event rising on hover when <see cref="NotifyHoverPosition"/> is enabled. 
         /// The first argument is the hovering user
