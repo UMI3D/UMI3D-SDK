@@ -183,5 +183,23 @@ namespace umi3d.cdk
             }
         }
 
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
+            if (base.SetUMI3DProperty(entity, property)) return true;
+            if (entity == null) return false;
+            switch (property.property)
+            {
+                case UMI3DPropertyKeys.Model:
+                    ((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d).mesh = (ResourceDto)property.value;
+                    ReadUMI3DExtension(((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d), ((UMI3DNodeInstance)entity).transform.parent.gameObject, null, null);
+
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+
     }
 }

@@ -359,6 +359,18 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Color Equality test component by component using epsilon.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>True if all components are close enough.</returns>
+        /// <seealso cref="epsilon"/>
+        public bool ColorEquality(Color a, Color b)
+        {
+            return InRange(a.a - b.a) && InRange(a.r - b.r) && InRange(a.b - b.b) && InRange(a.g - b.g);
+        }
+
+        /// <summary>
         /// Quaternion Equality test by angle using epsilon.
         /// </summary>
         /// <param name="a"></param>

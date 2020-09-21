@@ -8,7 +8,7 @@ namespace umi3d.common
     [System.Serializable]
     public class PBRMaterialDto 
     {
-        public SerializableVector4 baseColorFactor;
+        public SerializableColor baseColorFactor;
         public float metallicFactor;
         public float roughnessFactor;
 

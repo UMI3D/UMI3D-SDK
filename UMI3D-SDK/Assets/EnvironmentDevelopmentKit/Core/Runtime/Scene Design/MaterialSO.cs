@@ -9,18 +9,6 @@ namespace umi3d.edk
     //[CreateAssetMenu(fileName = "Umi3DMaterial", menuName = "UMI3D/Umi3DMaterial")]
     public abstract class MaterialSO : ScriptableObject, UMI3DEntity
     {
-        /*
-        [SerializeField]
-        private List<string> materialsToOveride;
-        //public IMaterialDto material;
-        public List<string> MaterialsToOveride
-        {
-            get => this.materialsToOveride;
-            set => this.materialsToOveride = value;
-        }
-        */
-        //[HideInInspector]
-        // public string idMaterialSO = "";
 
         public enum AlphaMode
         {
@@ -30,7 +18,7 @@ namespace umi3d.edk
 
         protected abstract void OnEnable();
 
-        public abstract string GetId();
+        protected abstract string GetId();
 
         /*   private void Awake()
            {
@@ -45,5 +33,19 @@ namespace umi3d.edk
         {
             return GetId();
         }
+        protected abstract void InitDefinition(string id);
+
+        protected void RegisterMaterial(AbstractEntityDto mat)
+        {
+            //   Debug.Log("try registered");
+            if (string.IsNullOrEmpty(mat.id) || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
+            {
+                mat.id = UMI3DEnvironment.Register(this);
+                InitDefinition(mat.id);
+
+                //      Debug.Log("registered");
+            }
+        }
+
     }
 }
