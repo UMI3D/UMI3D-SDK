@@ -412,7 +412,7 @@ namespace umi3d.edk
         /// <returns></returns>
         internal virtual List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
-            Debug.LogError("GetGlTFMaterialsFor is unimplemented!");
+            //Debug.LogError("GetGlTFMaterialsFor is unimplemented!");
             return new List<GlTFMaterialDto>();
         }
 
