@@ -25,6 +25,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using Unity.WebRTC;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
@@ -32,10 +33,13 @@ namespace umi3d.edk.collaboration
     {
         public static new UMI3DCollaborationServer Instance { get { return UMI3DServer.Instance as UMI3DCollaborationServer; } set { UMI3DServer.Instance = value; } }
 
+        public bool isRunning { get; protected set; } = false;
+
         UMI3DHttp http;
         UMI3DWebsocket websocket;
         UMI3DWebRTC webRTC;
 
+        static public UMI3DWebsocket Websocket { get => Exists ? Instance.websocket : null; }
         static public UMI3DWebRTC WebRTC { get => Exists ? Instance.webRTC : null; }
 
         public float tokenLifeTime = 10f;
@@ -53,7 +57,7 @@ namespace umi3d.edk.collaboration
         public bool useRandomHttpPort;
         public int httpPort;
 
-        protected AuthenticationType Authentication;
+        public AuthenticationType Authentication;
 
         /// <summary>
         /// Return the Authentication type.
@@ -103,6 +107,9 @@ namespace umi3d.edk.collaboration
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
             webRTC = new UMI3DWebRTC(this);
+
+            isRunning = true;
+            OnServerStart.Invoke();
         }
 
         /// <summary>
@@ -183,6 +190,8 @@ namespace umi3d.edk.collaboration
             http?.Stop();
             websocket?.Stop();
             webRTC?.Stop();
+            isRunning = false;
+            OnServerStop.Invoke();
         }
 
         void Clear()
@@ -190,6 +199,8 @@ namespace umi3d.edk.collaboration
             http?.Stop();
             websocket?.Stop();
             webRTC?.Clear();
+            isRunning = false;
+            OnServerStop.Invoke();
         }
 
         public static void Stop()
@@ -327,5 +338,10 @@ namespace umi3d.edk.collaboration
             }
 
         }
+
+        #region session
+        public UnityEvent OnServerStart = new UnityEvent();
+        public UnityEvent OnServerStop = new UnityEvent();
+        #endregion
     }
 }

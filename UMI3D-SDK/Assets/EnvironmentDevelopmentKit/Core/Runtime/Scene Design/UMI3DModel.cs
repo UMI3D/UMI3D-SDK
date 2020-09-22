@@ -83,7 +83,7 @@ namespace umi3d.edk
        
         }
 
-        private void SetSubHierarchy()
+        public void SetSubHierarchy()
         {
             if (idGenerator == null || idGenerator.Length < 1)
             {
@@ -98,7 +98,11 @@ namespace umi3d.edk
                 {
                     UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
                     subModel.parentModel = this;
-
+                }
+                else if(child.gameObject.GetComponent<UMI3DSubModel>() != null)
+                {
+                    UMI3DSubModel subModel = child.gameObject.GetComponent<UMI3DSubModel>();
+                    subModel.parentModel = this;
                 }
             }
         }

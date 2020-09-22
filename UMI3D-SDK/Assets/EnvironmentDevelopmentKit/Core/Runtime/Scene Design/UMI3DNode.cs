@@ -32,12 +32,6 @@ namespace umi3d.edk
         #region properties
 
         /// <summary>
-        /// The object preview in Unity Editor
-        /// </summary>
-        [HideInInspector]
-        public GameObject preview;
-
-        /// <summary>
         /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
         public UMI3DAsyncProperty<bool> objectXBillboard;

@@ -74,9 +74,10 @@ namespace umi3d.cdk.collaboration
             //WebRTCClient.audio = Audio.CaptureStream();
             //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
             //image.texture = cam.targetTexture;
-            if (Identity.login == default)
+            if (Identity.login == default || Identity.login == "")
             {
                 Identity.login = "Default";
+                Debug.LogWarning("Login should always have a value. Login set to 'Default'");
             }
             connected = false;
             joinning = false;
@@ -311,7 +312,7 @@ namespace umi3d.cdk.collaboration
             joinning = true;
             Instance.HttpClient.SendPostJoin(
                 new JoinDto(),
-                (enter) => { joinning = false; connected = true; Instance.EnterScene(); },
+                (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
                 (error) => { joinning = false; Debug.Log("error on get id :" + error); });
         }
 
@@ -395,13 +396,14 @@ namespace umi3d.cdk.collaboration
                 Logout(null, null);
         }
 
-        void EnterScene()
+        void EnterScene(EnterDto enter)
         {
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {
                     Action setStatus = () =>
                     {
+                        UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
                         UserDto.status = StatusType.ACTIVE;
                         HttpClient.SendPostUpdateIdentity(null, null);
                     };

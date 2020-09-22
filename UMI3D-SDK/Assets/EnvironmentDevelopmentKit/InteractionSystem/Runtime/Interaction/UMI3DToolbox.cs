@@ -57,13 +57,28 @@ namespace umi3d.edk.interaction
             return toolboxId;
         }
 
-        void Register()
+        /// <summary>
+        /// Check if the Toolbox has been registered to the UMI3DScene and do it if not
+        /// </summary>
+        /// <returns>Return a LoadEntity</returns>
+        public virtual LoadEntity Register()
         {
             if (toolboxId == null && UMI3DEnvironment.Exists)
             {
                 toolboxId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolboxId);
             }
+            return GetLoadEntity();
+        }
+
+        protected virtual LoadEntity GetLoadEntity()
+        {
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
         }
 
         /// <summary>
