@@ -45,9 +45,9 @@ namespace umi3d.edk
         public List<AssetLibrary> globalLibraries;
 
         [HideInInspector]
-        private Vector3 defaultStartPosition;
+        private Vector3 defaultStartPosition = new Vector3();
         [HideInInspector]
-        private Vector3 defaultStartOrentation;
+        private Vector3 defaultStartOrentation = new Vector3();
         static public UMI3DAsyncProperty<Vector3> objectStartPosition;
         static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion;
 
