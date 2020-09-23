@@ -22,7 +22,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DWebsocket
     {
-        HttpServer wssv;
+        public HttpServer wssv;
 
         public UMI3DWebsocket()
         {

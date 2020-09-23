@@ -22,10 +22,11 @@ using UnityEngine.UI;
 
 namespace umi3d.edk
 {
-    [Obsolete("This class isn't mean to be use in production",false)]
+    [Obsolete("This class isn't mean to be use in production", false)]
     public partial class SimpleModificationListener : MonoBehaviour
     {
         UMI3DNode[] nodes;
+        UMI3DScene[] scenes;
         public float time = 0f;
         float timeTmp = 0;
         public int max = 0;
@@ -37,6 +38,7 @@ namespace umi3d.edk
         void Start()
         {
             nodes = GetComponentsInChildren<UMI3DNode>();
+            scenes = GetComponentsInChildren<UMI3DScene>();
         }
 
         // Update is called once per frame
@@ -46,7 +48,10 @@ namespace umi3d.edk
             {
                 foreach (var node in nodes)
                     Update(node);
-                
+
+                foreach (var scene in scenes)
+                    MaterialUpdate(scene);
+
                 Dispatch();
             }
         }
@@ -55,9 +60,9 @@ namespace umi3d.edk
         {
             if (checkTime() || checkMax())
             {
-                
+
                 var transaction = new Transaction();
-                transaction.Operations = sets.SelectMany(p => p.Value).Select(p=>(Operation)p.Value).ToList();
+                transaction.Operations = sets.SelectMany(p => p.Value).Select(p => (Operation)p.Value).ToList();
                 if (transaction.Operations.Count > 0)
                 {
                     transaction.reliable = false;
@@ -70,7 +75,7 @@ namespace umi3d.edk
         bool checkTime()
         {
             timeTmp -= Time.deltaTime;
-            if(time == 0 || timeTmp <= 0)
+            if (time == 0 || timeTmp <= 0)
             {
                 timeTmp = time;
                 return true;
@@ -80,7 +85,7 @@ namespace umi3d.edk
 
         bool checkMax()
         {
-            return (max != 0) && (sets.SelectMany(p=>p.Value).Count() > max);
+            return (max != 0) && (sets.SelectMany(p => p.Value).Count() > max);
         }
 
         private void Update(UMI3DNode obj)
@@ -93,11 +98,46 @@ namespace umi3d.edk
             setOperation(obj.objectScale.SetValue(obj.transform.localScale));
             setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
             setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
-            
+
             UIUpdate(obj as UIRect);
-            
+
             ModelUpdate(obj);
 
+        }
+
+        private void MaterialUpdate(UMI3DScene scene)
+        {
+            if (sets == null) sets = new Dictionary<string, Dictionary<string, SetEntityProperty>>();
+
+
+            foreach (MaterialSO mat in scene.materialSOs)
+            {
+                if (!sets.ContainsKey(mat.Id())) sets[mat.Id()] = new Dictionary<string, SetEntityProperty>();
+                if (mat as PBRMaterial)
+                {
+                    setOperation(((PBRMaterial)mat).objectBaseColorFactor.SetValue(((PBRMaterial)mat).baseColorFactor));
+                    setOperation(((PBRMaterial)mat).objectEmissiveFactor.SetValue(((PBRMaterial)mat).emissive));
+                    setOperation(((PBRMaterial)mat).objectEmissiveTexture.SetValue(((PBRMaterial)mat).textures.emissiveTexture));
+                    setOperation(((PBRMaterial)mat).objectHeightTexture.SetValue(((PBRMaterial)mat).textures.heightTexture));
+                    setOperation(((PBRMaterial)mat).objectHeightTextureScale.SetValue(((PBRMaterial)mat).textures.heightTexture.scale));
+                    setOperation(((PBRMaterial)mat).objectMaintexture.SetValue(((PBRMaterial)mat).textures.baseColorTexture));
+                    setOperation(((PBRMaterial)mat).objectMetallicFactor.SetValue(((PBRMaterial)mat).metallicFactor));
+                    setOperation(((PBRMaterial)mat).objectMetallicRoughnessTexture.SetValue(((PBRMaterial)mat).textures.metallicRoughnessTexture));
+                    setOperation(((PBRMaterial)mat).objectMetallicTexture.SetValue(((PBRMaterial)mat).textures.metallicTexture));
+                    setOperation(((PBRMaterial)mat).objectNormalTexture.SetValue(((PBRMaterial)mat).textures.normalTexture));
+                    setOperation(((PBRMaterial)mat).objectNormalTextureScale.SetValue(((PBRMaterial)mat).textures.normalTexture.scale));
+                    setOperation(((PBRMaterial)mat).objectOcclusionTexture.SetValue(((PBRMaterial)mat).textures.occlusionTexture));
+                    setOperation(((PBRMaterial)mat).objectRoughnessFactor.SetValue(((PBRMaterial)mat).roughnessFactor));
+                    setOperation(((PBRMaterial)mat).objectRoughnessTexture.SetValue(((PBRMaterial)mat).textures.roughnessTexture));
+                    setOperation(((PBRMaterial)mat).objectShaderProperties.SetValue(((PBRMaterial)mat).shaderProperties));
+                    setOperation(((PBRMaterial)mat).objectTextureTilingOffset.SetValue(((PBRMaterial)mat).tilingOffset));
+                    setOperation(((PBRMaterial)mat).objectTextureTilingScale.SetValue(((PBRMaterial)mat).tilingScale));
+                }
+                else
+                {
+                    Debug.LogWarning("unsupported material type");
+                }
+            }
         }
 
         private void ModelUpdate(UMI3DNode obj)
@@ -114,7 +154,6 @@ namespace umi3d.edk
             setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
             setOperation(obj.objectIsConvexe.SetValue(obj.convex));
             setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-            
 
         }
 
@@ -176,7 +215,19 @@ namespace umi3d.edk
         {
             if (operation != null)
             {
-                sets[operation.entityId][operation.property] = operation;
+
+                try
+                {
+                    sets[operation.entityId][operation.property] = operation;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    Debug.Log("entityid = " + operation.entityId);
+                    Debug.Log("property = " + operation.property);
+
+                }
+
             }
         }
 

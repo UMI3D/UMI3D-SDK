@@ -47,7 +47,7 @@ namespace umi3d.edk
 
                 return new UMI3DMeshNodeDto.MaterialOverrideDto()
                 {
-                    newMaterialId = newMaterial.GetId(),
+                    newMaterialId = newMaterial.Id(),
                     overridedMaterialsId = overidedMaterials
                 };
             }
@@ -57,48 +57,9 @@ namespace umi3d.edk
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
 
-        /*
-        [Serializable]
-        public class MaterialMemory
-        {
-            public MeshRenderer renderer;
-            public Material material;
-        }
-        public List<MaterialMemory> Renderers = new List<MaterialMemory>();
-        */
-
-        /*
-        [SerializeField]
-        private CVEMaterial material;
-        public CVEMaterial Material
-        {
-            get {
-                if (!material)
-                    try
-                    {
-                        material = CVEMaterial.DefaultMaterial;
-                    }
-                    catch { }
-                return material;
-            }
-
-            set
-            {
-                if (material != null)
-                    material.removeListener(PropertiesHandler);
-                material = value;
-                Material.initDefinition();
-                Material.addListener(PropertiesHandler);
-            }
-        }
-        CVEVideo video { get { return GetComponent<CVEVideo>(); } }
-        */
-
         public UMI3DAsyncProperty<bool> objectMaterialsOverrided;
         public UMI3DAsyncListProperty<MaterialOverrider> objectMaterrialOveriders;
 
-//        public UMI3DAsyncProperty<bool> objectAreSubobjectsTracked;
- //       public UMI3DAsyncProperty<bool> objectIsSubHierarchyAllowedToBeModified;
 
         protected override void InitDefinition(string id)
         {
@@ -110,14 +71,7 @@ namespace umi3d.edk
             objectMaterrialOveriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverider);//.ConvertAll((mat) => mat.ToDto()));
 
             objectMaterrialOveriders.OnInnerValueChanged += (int index, MaterialOverrider value) => Debug.LogError("not implemented");
-            /*
-                        objectAreSubobjectsTracked = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.AreSubobjectsTracked, this.areSubobjectsTracked);
-                        objectAreSubobjectsTracked.OnValueChanged += (bool value) => areSubobjectsTracked = value; 
-
-
-                        objectIsSubHierarchyAllowedToBeModified = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsSubHierarchyAllowedToBeModified, this.isSubHierarchyAllowedToBeModified);
-                        objectIsSubHierarchyAllowedToBeModified.OnValueChanged += (bool value) => isSubHierarchyAllowedToBeModified = value;
-                         */
+  
 
             if(areSubobjectsTracked)
             {
@@ -126,25 +80,10 @@ namespace umi3d.edk
 
             objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r,u) => r.ToDto());
 
-            /* Material overriding not Implemented for now 
-            objectMaterialOverrided.OnValueChanged += (bool value) => SyncMeshRenderer();
-            Material.initDefinition();
-            Material.addListener(PropertiesHandler);
-            */
-
-            /* VIDEO Feature moved to materials
-            if (video)
-            {
-                video.initDefinition();
-                video.addListener(PropertiesHandler);
-            }
-            */
-
-            //objResource.initDefinition();
-            //objResource.addListener(PropertiesHandler);
+       
         }
 
-        private void SetSubHierarchy()
+        public void SetSubHierarchy()
         {
             if (idGenerator == null || idGenerator.Length < 1)
             {
@@ -159,7 +98,11 @@ namespace umi3d.edk
                 {
                     UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
                     subModel.parentModel = this;
-
+                }
+                else if(child.gameObject.GetComponent<UMI3DSubModel>() != null)
+                {
+                    UMI3DSubModel subModel = child.gameObject.GetComponent<UMI3DSubModel>();
+                    subModel.parentModel = this;
                 }
             }
         }
@@ -197,13 +140,10 @@ namespace umi3d.edk
             
         }
 
-       
-
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
 
             return materialsOverider.ConvertAll(mat => mat.newMaterial.ToDto());
-            //return new List<GlTFMaterialDto>();
 
         }
     }

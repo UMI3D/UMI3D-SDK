@@ -84,10 +84,13 @@ namespace umi3d.cdk
         /// <returns></returns>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
+            var node = entity as UMI3DNodeInstance;
+            if (node == null)
+            {
+                return SetUMI3DMaterialProperty(entity, property);
+            }
             if (base.SetUMI3DProperty(entity, property))
                 return true;
-            var node = entity as UMI3DNodeInstance;
-            if (node == null) return false;
             UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
             if (dto == null) return false;
             switch (property.property)
@@ -114,19 +117,12 @@ namespace umi3d.cdk
             {
                 try
                 {
-                    //question:
-                    /*      comment on choisit le shader?
-                          combien de type de matériaux (Que 2 et c est fixe ou prévoir plus ou N)?
-                          les loaders de mat en brut dans le loader de scene on je fais un loader par type de mat ?
-                          */
 
-                    /*var newmat = */
                     EnvironementLoader.materialLoader.LoadMaterialFromExtension(material, (m) =>
                     {
                         m.name = material.name;
-                        //register le mat
-                        UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(material.extensions.umi3d.id, material.extensions.umi3d, m);
-                        //entity.Object = m;
+                        //register the material
+                        UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(material.extensions.umi3d.id, material, m);
                     }
                     );
 
@@ -139,7 +135,107 @@ namespace umi3d.cdk
             callback.Invoke();
         }
 
-      
+
+        public bool SetUMI3DMaterialProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
+            if (entity != null && entity.Object is Material)
+            {
+                // Debug.Log("change mat property");
+                switch (property.property)
+                {
+                    case UMI3DPropertyKeys.RoughnessFactor:
+                        ((Material)entity.Object).SetFloat("_Roughness", (float)(double)property.value);
+                        ((GlTFMaterialDto)entity.dto).pbrMetallicRoughness.roughnessFactor = (float)(double)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.MetallicFactor:
+                        ((Material)entity.Object).SetFloat("_Metallic", (float)(double)property.value);
+                        ((GlTFMaterialDto)entity.dto).pbrMetallicRoughness.metallicFactor = (float)(double)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.BaseColorFactor:
+                        ((Material)entity.Object).color = ((SerializableColor)property.value);
+                        ((GlTFMaterialDto)entity.dto).pbrMetallicRoughness.baseColorFactor = (SerializableColor)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.EmissiveFactor:
+                        ((Material)entity.Object).SetColor("_EmissionColor", ((SerializableColor)property.value));
+                        ((GlTFMaterialDto)entity.dto).emissiveFactor = (Vector3)(Vector4)(Color)(SerializableColor)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.Maintexture:
+                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_MainTex", (Material)entity.Object);
+                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.baseColorTexture = (TextureDto)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.NormalTexture:
+                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((ScalableTextureDto)property.value, "_BumpMap", (Material)entity.Object);
+                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.normalTexture = (ScalableTextureDto)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.EmissiveTexture:
+                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_EmissionMap", (Material)entity.Object);
+                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.emissiveTexture = (TextureDto)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.MetallicTexture:
+                    case UMI3DPropertyKeys.MetallicRoughnessTexture:
+                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_MetallicGlossMap", (Material)entity.Object);
+                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.baseColorTexture = (TextureDto)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.OcclusionTexture:
+                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_OcclusionMap", (Material)entity.Object);
+                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.occlusionTexture = (TextureDto)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.RoughnessTexture:
+                        Debug.LogWarning("Roughness Texture not supported");
+                        break;
+
+                    case UMI3DPropertyKeys.HeightTexture:
+                        Debug.LogWarning("Height Texture not supported");
+                        break;
+
+                    case UMI3DPropertyKeys.TextureTilingOffset:
+                        Vector2 offset = (SerializableVector2)property.value;
+                        foreach (string textureName in ((Material)entity.Object).GetTexturePropertyNames())
+                        {
+                            ((Material)entity.Object).SetTextureOffset(textureName, offset);
+                        }
+                        ((GlTFMaterialDto)entity.dto).extensions.KHR_texture_transform.offset = offset;
+                        break;
+
+                    case UMI3DPropertyKeys.TextureTilingScale:
+                        var scale = (SerializableVector2)property.value;
+                        foreach (string textureName in ((Material)entity.Object).GetTexturePropertyNames())
+                        {
+                            ((Material)entity.Object).SetTextureScale(textureName, scale);
+                        }
+                        ((GlTFMaterialDto)entity.dto).extensions.KHR_texture_transform.scale = scale;
+                        break;
+
+                    case UMI3DPropertyKeys.NormalTextureScale:
+                        ((Material)entity.Object).SetFloat("_BumpScale", (float)(double)property.value);
+                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.normalTexture.scale = (float)(double)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.HeightTextureScale:
+                        Debug.LogWarning("Height Texture not supported");
+
+                        break;
+
+
+                    default:
+                        return false;
+
+                }
+                return true;
+            }
+
+
+            return false;
+        }
 
 
     }

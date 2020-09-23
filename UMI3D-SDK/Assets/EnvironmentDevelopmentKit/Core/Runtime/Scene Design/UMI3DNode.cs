@@ -32,12 +32,6 @@ namespace umi3d.edk
         #region properties
 
         /// <summary>
-        /// The object preview in Unity Editor
-        /// </summary>
-        [HideInInspector]
-        public GameObject preview;
-
-        /// <summary>
         /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
         public UMI3DAsyncProperty<bool> objectXBillboard;
@@ -418,7 +412,7 @@ namespace umi3d.edk
         /// <returns></returns>
         internal virtual List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
-            Debug.LogError("GetGlTFMaterialsFor is unimplemented!");
+            //Debug.LogError("GetGlTFMaterialsFor is unimplemented!");
             return new List<GlTFMaterialDto>();
         }
 

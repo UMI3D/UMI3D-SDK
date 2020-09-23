@@ -62,6 +62,43 @@ namespace umi3d.edk
             {
                 switch (op)
                 {
+                    case SetEntityDictionaryAddProperty a:
+                    case SetEntityDictionaryRemoveProperty r:
+                    case SetEntityListAddProperty al:
+                    case SetEntityListRemoveProperty rl:
+                        newOperations.Add(op);
+                        break;
+                    case SetEntityListProperty sl:
+                        foreach (var nop in newOperations.ToList())
+                        {
+                            if (nop is SetEntityListProperty)
+                            {
+                                var ne = nop as SetEntityListProperty;
+                                if (ne.entityId == sl.entityId && ne.property == sl.property && ne.index == sl.index)
+                                {
+                                    ne -= sl.users;
+                                    if (ne.users.Count == 0)
+                                        newOperations.Remove(ne);
+                                }
+                            }
+                        }
+                        break;
+                    case SetEntityDictionaryProperty sd:
+                        
+                        foreach (var nop in newOperations.ToList())
+                        {
+                            if (nop is SetEntityDictionaryProperty)
+                            {
+                                var ne = nop as SetEntityDictionaryProperty;
+                                if (ne.entityId == sd.entityId && ne.property == sd.property && ne.key == sd.key)
+                                {
+                                    ne -= sd.users;
+                                    if (ne.users.Count == 0)
+                                        newOperations.Remove(ne);
+                                }
+                            }
+                        }
+                        break;
                     case SetEntityProperty e:
                         foreach (var nop in newOperations.ToList())
                         {

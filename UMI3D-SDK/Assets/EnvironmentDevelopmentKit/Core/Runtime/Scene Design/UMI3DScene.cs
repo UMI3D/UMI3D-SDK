@@ -103,6 +103,15 @@ namespace umi3d.edk
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
 
+
+        //Remember already added entities
+        // [HideInInspector]
+        public List<string> materialIds = new List<string>();
+        [HideInInspector]
+        public List<string> animationIds = new List<string>();
+        public List<MaterialSO> materialSOs = new List<MaterialSO>();
+
+
         /// <summary>
         /// Writte the scene contents in a GlTFSceneDto.
         /// </summary>
@@ -111,12 +120,9 @@ namespace umi3d.edk
         /// <returns></returns>
         protected virtual void WriteCollections(GlTFSceneDto scene, UMI3DUser user)
         {
-            //Get all nodes
-            
-
-            //Remember already added entities
-            List<string> materialIds = new List<string>();
-            List<string> animationIds = new List<string>();
+            //Clear materials lists
+            materialIds.Clear();
+            animationIds.Clear();
 
             //Fill arrays
             foreach (UMI3DNode node in nodes) {
@@ -125,13 +131,13 @@ namespace umi3d.edk
                 scene.nodes.Add(node.ToGlTFNodeDto(user));
 
                 //Get new materials
-                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m =>
-                {
-                    return !materialIds.Contains(m.extensions.umi3d.id);
-                });
+                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !materialIds.Contains(m.extensions.umi3d.id));
+
 
                 //Add them to the glTF scene
                 scene.materials.AddRange(materials);
+                materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
+
                 //remember their ids
                 materialIds.AddRange(materials.Select(m => m.extensions.umi3d.id));
 
@@ -143,9 +149,6 @@ namespace umi3d.edk
                 animationIds.AddRange(animations.Select(a => a.id));
             }
          
-
-
-
         }
 
 
