@@ -35,9 +35,11 @@ namespace umi3d.edk.editor
         SerializedProperty overrideModelMaterials;
 
         SerializedProperty areSubobjectsTracked;
-     //   SerializedProperty isSubHierarchyAllowedToBeModified;
-        
-        
+        SerializedProperty castShadow;
+        SerializedProperty receiveShadow;
+        //   SerializedProperty isSubHierarchyAllowedToBeModified;
+
+
 
         private Editor _materialEditor = null;
 
@@ -53,8 +55,9 @@ namespace umi3d.edk.editor
             variants = serializedObject.FindProperty("model.variants");
         //    isSubHierarchyAllowedToBeModified = serializedObject.FindProperty("isSubHierarchyAllowedToBeModified");
             areSubobjectsTracked = serializedObject.FindProperty("areSubobjectsTracked");
-
-          //  Target = (CVEModel)target;
+            castShadow = serializedObject.FindProperty("castShadow");
+            receiveShadow = serializedObject.FindProperty("receiveShadow");
+            //  Target = (CVEModel)target;
 
             /*
             if (Target.Material != null)
@@ -96,7 +99,8 @@ namespace umi3d.edk.editor
 
 
             EditorGUILayout.PropertyField(areSubobjectsTracked);
-
+            EditorGUILayout.PropertyField(castShadow);
+            EditorGUILayout.PropertyField(receiveShadow);
 
             /*
             if (!overrideModelMaterial.boolValue) { }
