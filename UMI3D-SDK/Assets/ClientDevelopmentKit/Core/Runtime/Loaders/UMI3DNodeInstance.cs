@@ -27,6 +27,17 @@ namespace umi3d.cdk
         public GameObject gameObject;
         public Transform transform { get { return gameObject.transform; } }
 
+        private List<Renderer> _renderers;
+        public List<Renderer> renderers
+        {
+            get {
+                if (_renderers == null)
+                    _renderers = new List<Renderer>();
+                return _renderers;
+            }
+            set { _renderers = value; }
+        }
+
         private List<Collider> _colliders;
         public List<Collider> colliders 
         {  
