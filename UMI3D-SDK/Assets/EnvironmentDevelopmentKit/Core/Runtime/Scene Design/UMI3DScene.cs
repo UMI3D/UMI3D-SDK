@@ -120,8 +120,10 @@ namespace umi3d.edk
         /// <returns></returns>
         protected virtual void WriteCollections(GlTFSceneDto scene, UMI3DUser user)
         {
-            //Get all nodes
-            
+            //Clear materials lists
+            materialIds.Clear();
+            animationIds.Clear();
+
             //Fill arrays
             foreach (UMI3DNode node in nodes) {
 

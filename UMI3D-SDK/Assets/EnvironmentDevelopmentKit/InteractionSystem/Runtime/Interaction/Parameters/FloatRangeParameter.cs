@@ -37,6 +37,10 @@ namespace umi3d.edk.interaction
         /// </summary>
         public float max = 1;
 
+        /// <summary>
+        /// Range's increment value.
+        /// </summary>
+        public int increment = 0;
 
         [Serializable]
         public class FloatRangeListener : UnityEvent<UMI3DUser, float> { }
@@ -69,6 +73,10 @@ namespace umi3d.edk.interaction
             frDto.Min = min;
             frDto.Max = max;
             frDto.value = value;
+            if (increment != 0)
+            {
+                frDto.Increment = increment;
+            }
         }
 
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
