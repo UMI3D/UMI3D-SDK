@@ -140,7 +140,9 @@ namespace umi3d.edk
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
             meshDto.idGenerator = idGenerator;
-         
+            meshDto.receiveShadow = objectReceiveShadow.GetValue(user);
+            meshDto.castShadow = objectCastShadow.GetValue(user);
+
             if (this.overrideModelMaterials)
             {
                 meshDto.overridedMaterials = materialsOverider.ConvertAll((mat) => mat.ToDto());
