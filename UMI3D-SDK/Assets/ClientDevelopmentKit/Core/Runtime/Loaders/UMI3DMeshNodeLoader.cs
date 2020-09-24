@@ -200,8 +200,8 @@ namespace umi3d.cdk
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
             if (entity == null) return false;
-            var dto = ((UMI3DMeshNodeDto)((GlTFNodeDto)entity?.dto)?.extensions?.umi3d);
-            if(dto == null) return false;
+            var dto = (((entity?.dto as GlTFNodeDto)?.extensions?.umi3d) as UMI3DMeshNodeDto);
+            if (dto == null) return false;
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Model:
