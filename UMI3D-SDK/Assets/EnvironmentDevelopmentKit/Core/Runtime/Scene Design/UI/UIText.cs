@@ -29,72 +29,72 @@ namespace umi3d.edk
         /// Text aligment.
         /// </summary>
         /// <see cref="TextAnchor"/>
-        public UMI3DAsyncProperty<TextAnchor> Alignment;
+        public UMI3DAsyncProperty<TextAnchor> Alignment { get { Register(); return _alignment; } protected set => _alignment = value; }
 
         /// <summary>
         /// Use the extents of glyph geometry to perform horizontal alignment rather than glyph metrics.
         /// </summary>
-        public UMI3DAsyncProperty<bool> AlignByGeometry;
+        public UMI3DAsyncProperty<bool> AlignByGeometry { get { Register(); return _alignByGeometry; } protected set => _alignByGeometry = value; }
 
         /// <summary>
         /// Text color.
         /// </summary>
-        public UMI3DAsyncProperty<Color> TextColor;
+        public UMI3DAsyncProperty<Color> TextColor { get { Register(); return _textColor; } protected set => _textColor = value; }
 
         /// <summary>
         /// Text font.
         /// </summary>
-        public UMI3DAsyncProperty<Font> TextFont;
+        public UMI3DAsyncProperty<Font> TextFont { get { Register(); return _textFont; } protected set => _textFont = value; }
 
         /// <summary>
         /// Font size.
         /// </summary>
-        public UMI3DAsyncProperty<int> FontSize;
+        public UMI3DAsyncProperty<int> FontSize { get { Register(); return _fontSize; } protected set => _fontSize = value; }
 
         /// <summary>
         /// Font style.
         /// </summary>
-        public UMI3DAsyncProperty<FontStyle> FontStyle;
+        public UMI3DAsyncProperty<FontStyle> FontStyle { get { Register(); return _fontStyle; } protected set => _fontStyle = value; }
 
         /// <summary>
         /// Horizontal overflow mode.
         /// </summary>
-        public UMI3DAsyncProperty<HorizontalWrapMode> HorizontalOverflow;
+        public UMI3DAsyncProperty<HorizontalWrapMode> HorizontalOverflow { get { Register(); return _horizontalOverflow; } protected set => _horizontalOverflow = value; }
 
         /// <summary>
         /// Line spacing.
         /// </summary>
-        public UMI3DAsyncProperty<float> LineSpacing;
+        public UMI3DAsyncProperty<float> LineSpacing { get { Register(); return _lineSpacing; } protected set => _lineSpacing = value; }
 
         /// <summary>
         /// Auto resize text.
         /// </summary>
-        public UMI3DAsyncProperty<bool> ResizeTextForBestFit;
+        public UMI3DAsyncProperty<bool> ResizeTextForBestFit { get { Register(); return _resizeTextForBestFit; } protected set => _resizeTextForBestFit = value; }
 
         /// <summary>
         /// Maximum size allowed for text resizing. 
         /// </summary>
-        public UMI3DAsyncProperty<int> ResizeTextMaxSize;
+        public UMI3DAsyncProperty<int> ResizeTextMaxSize { get { Register(); return _resizeTextMaxSize; } protected set => _resizeTextMaxSize = value; }
 
         /// <summary>
         /// Minimum size allowed for text resizing. 
         /// </summary>
-        public UMI3DAsyncProperty<int> ResizeTextMinSize;
+        public UMI3DAsyncProperty<int> ResizeTextMinSize { get { Register(); return _resizeTextMinSize; } protected set => _resizeTextMinSize = value; }
 
         /// <summary>
         /// Does the text support rich format.
         /// </summary>
-        public UMI3DAsyncProperty<bool> SupportRichText;
+        public UMI3DAsyncProperty<bool> SupportRichText { get { Register(); return _supportRichText; } protected set => _supportRichText = value; }
 
         /// <summary>
         /// Text content.
         /// </summary>
-        public UMI3DAsyncProperty<string> Text;
+        public UMI3DAsyncProperty<string> Text { get { Register(); return _text; } protected set => _text = value; }
 
         /// <summary>
         /// Vertical overflow mode.
         /// </summary>
-        public UMI3DAsyncProperty<VerticalWrapMode> VerticalOverflow;
+        public UMI3DAsyncProperty<VerticalWrapMode> VerticalOverflow { get { Register(); return _verticalOverflow; } protected set => _verticalOverflow = value; }
 
 
         /// <see cref="Alignment"/>
@@ -140,13 +140,29 @@ namespace umi3d.edk
         VerticalWrapMode verticalOverflow { get { return GetComponent<Text>().verticalOverflow; } }
 
         UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+
+        private UMI3DAsyncProperty<TextAnchor> _alignment;
+        private UMI3DAsyncProperty<bool> _alignByGeometry;
+        private UMI3DAsyncProperty<Color> _textColor;
+        private UMI3DAsyncProperty<Font> _textFont;
+        private UMI3DAsyncProperty<int> _fontSize;
+        private UMI3DAsyncProperty<FontStyle> _fontStyle;
+        private UMI3DAsyncProperty<HorizontalWrapMode> _horizontalOverflow;
+        private UMI3DAsyncProperty<float> _lineSpacing;
+        private UMI3DAsyncProperty<bool> _resizeTextForBestFit;
+        private UMI3DAsyncProperty<int> _resizeTextMaxSize;
+        private UMI3DAsyncProperty<int> _resizeTextMinSize;
+        private UMI3DAsyncProperty<bool> _supportRichText;
+        private UMI3DAsyncProperty<string> _text;
+        private UMI3DAsyncProperty<VerticalWrapMode> _verticalOverflow;
+
         /// <summary>
         /// Initialise component.
         /// </summary>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
-            Alignment = new UMI3DAsyncProperty<TextAnchor>(objectId, UMI3DPropertyKeys.Alignement, alignment, (a,u)=>a.Convert());
+            Alignment = new UMI3DAsyncProperty<TextAnchor>(objectId, UMI3DPropertyKeys.Alignement, alignment, (a, u) => a.Convert());
             AlignByGeometry = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.AlignByGeometry, alignByGeometry);
             TextColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.AlignByGeometry, color, ToUMI3DSerializable.ToSerializableColor);
             TextFont = new UMI3DAsyncProperty<Font>(objectId, UMI3DPropertyKeys.TextFont, font, (a, u) => a.name);

@@ -49,8 +49,8 @@ namespace umi3d.edk
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
         [SerializeField]
         private Vector3 defaultStartOrentation = new Vector3(0, 0, 0); 
-        static public UMI3DAsyncProperty<Vector3> objectStartPosition;
-        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion;
+        static public UMI3DAsyncProperty<Vector3> objectStartPosition {get; protected set;}
+        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
 
 
 

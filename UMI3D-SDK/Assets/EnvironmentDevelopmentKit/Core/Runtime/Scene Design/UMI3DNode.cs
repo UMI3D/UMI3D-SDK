@@ -34,11 +34,11 @@ namespace umi3d.edk
         /// <summary>
         /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectXBillboard;
+        public UMI3DAsyncProperty<bool> objectXBillboard { get { Register();  return _objectXBillboard; } protected set => _objectXBillboard = value; }
         /// <summary>
         /// Indicates if the object is permanently facing the users YBillboard
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectYBillboard;
+        public UMI3DAsyncProperty<bool> objectYBillboard { get { Register(); return _objectYBillboard; } protected set => _objectYBillboard = value; }
 
 
 
@@ -106,22 +106,22 @@ namespace umi3d.edk
 
 
         // UMI3DAsyncProperties for 
-        public UMI3DAsyncProperty<bool> objectHasCollider;
-        public UMI3DAsyncProperty<ColliderType> objectColliderType;
-        public UMI3DAsyncProperty<bool> objectIsConvexe;
-        public UMI3DAsyncProperty<Vector3> objectColliderCenter;
-        public UMI3DAsyncProperty<float> objectColliderRadius;
-        public UMI3DAsyncProperty<Vector3> objectColliderBoxSize;
-        public UMI3DAsyncProperty<float> objectColliderHeight;
-        public UMI3DAsyncProperty<DirectionalType> objectColliderDirection;
-        public UMI3DAsyncProperty<bool> objectIsMeshCustom;
+        public UMI3DAsyncProperty<bool> objectHasCollider { get { Register(); return _objectHasCollider; } protected set => _objectHasCollider = value; }
+        public UMI3DAsyncProperty<ColliderType> objectColliderType { get { Register(); return _objectColliderType; } protected set => _objectColliderType = value; }
+        public UMI3DAsyncProperty<bool> objectIsConvexe { get { Register(); return _objectIsConvexe; } protected set => _objectIsConvexe = value; }
+        public UMI3DAsyncProperty<Vector3> objectColliderCenter { get { Register(); return _objectColliderCenter; } protected set => _objectColliderCenter = value; }
+        public UMI3DAsyncProperty<float> objectColliderRadius { get { Register(); return _objectColliderRadius; } protected set => _objectColliderRadius = value; }
+        public UMI3DAsyncProperty<Vector3> objectColliderBoxSize { get { Register(); return _objectColliderBoxSize; } protected set => _objectColliderBoxSize = value; }
+        public UMI3DAsyncProperty<float> objectColliderHeight { get { Register(); return _objectColliderHeight; } protected set => _objectColliderHeight = value; }
+        public UMI3DAsyncProperty<DirectionalType> objectColliderDirection { get { Register(); return _objectColliderDirection; } protected set => _objectColliderDirection = value; }
+        public UMI3DAsyncProperty<bool> objectIsMeshCustom { get { Register(); return _objectIsMeshCustom; } protected set => _objectIsMeshCustom = value; }
         // custom mesh collider is not synchronized at runtime
-        public UMI3DAsyncProperty<UMI3DResource> objectCustomMeshCollider;
+        public UMI3DAsyncProperty<UMI3DResource> objectCustomMeshCollider { get { Register(); return _objectCustomMeshCollider; } protected set => _objectCustomMeshCollider = value; }
 
 
         #endregion
 
-        public UMI3DAsyncProperty<UMI3DKHRLight> objectLight;
+        public UMI3DAsyncProperty<UMI3DKHRLight> objectLight { get { Register(); return _objectLight; } protected set => _objectLight = value; }
 
         /// <summary>
         /// Indicates if the visibility state of the object has been checked on this frame.
@@ -137,7 +137,21 @@ namespace umi3d.edk
         /// Indicates the visibility state of a user for the last frame check of visibility.
         /// </summary>
         public Dictionary<UMI3DUser, bool> visibleLastFrame = new Dictionary<UMI3DUser, bool>();
-        
+
+        private UMI3DAsyncProperty<bool> _objectXBillboard;
+        private UMI3DAsyncProperty<bool> _objectYBillboard;
+        private UMI3DAsyncProperty<bool> _objectHasCollider;
+        private UMI3DAsyncProperty<ColliderType> _objectColliderType;
+        private UMI3DAsyncProperty<bool> _objectIsConvexe;
+        private UMI3DAsyncProperty<Vector3> _objectColliderCenter;
+        private UMI3DAsyncProperty<float> _objectColliderRadius;
+        private UMI3DAsyncProperty<Vector3> _objectColliderBoxSize;
+        private UMI3DAsyncProperty<float> _objectColliderHeight;
+        private UMI3DAsyncProperty<DirectionalType> _objectColliderDirection;
+        private UMI3DAsyncProperty<bool> _objectIsMeshCustom;
+        private UMI3DAsyncProperty<UMI3DResource> _objectCustomMeshCollider;
+        private UMI3DAsyncProperty<UMI3DKHRLight> _objectLight;
+
         #endregion
 
 
@@ -170,7 +184,7 @@ namespace umi3d.edk
             objectHasCollider = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.HasCollider, this.hasCollider);
             objectColliderType = new UMI3DAsyncProperty<ColliderType>(objectId, UMI3DPropertyKeys.ColliderType, this.colliderType);
             objectIsConvexe = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.Convex, this.convex);
-            objectColliderCenter = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.ColliderCenter, this.colliderCenter, ToUMI3DSerializable.ToSerializableVector3, (v1,v2)=> UMI3DAsyncPropertyEquality.Equals(v1,v2));
+            objectColliderCenter = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.ColliderCenter, this.colliderCenter, ToUMI3DSerializable.ToSerializableVector3, (v1, v2) => UMI3DAsyncPropertyEquality.Equals(v1, v2));
             objectColliderRadius = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.ColliderRadius, this.colliderRadius, null, (f1, f2) => UMI3DAsyncPropertyEquality.Equals(f1, f2));
             objectColliderBoxSize = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.ColliderBoxSize, this.colliderBoxSize, ToUMI3DSerializable.ToSerializableVector3, (v1, v2) => UMI3DAsyncPropertyEquality.Equals(v1, v2));
             objectColliderHeight = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.ColliderHeight, this.colliderHeight, null, (f1, f2) => UMI3DAsyncPropertyEquality.Equals(f1, f2));
@@ -191,7 +205,7 @@ namespace umi3d.edk
             objectCustomMeshCollider.OnValueChanged += (UMI3DResource r) => { customMeshCollider = r; };
 
             var light = GetComponent<Light>();
-            objectLight = new UMI3DAsyncProperty<UMI3DKHRLight>(objectId, UMI3DPropertyKeys.Light,light ? new UMI3DKHRLight(objectId,light):null,(l,u)=>l?.ToDto(u));
+            objectLight = new UMI3DAsyncProperty<UMI3DKHRLight>(objectId, UMI3DPropertyKeys.Light, light ? new UMI3DKHRLight(objectId, light) : null, (l, u) => l?.ToDto(u));
 
             /*if (ARTracker)
             {
@@ -336,6 +350,7 @@ namespace umi3d.edk
         /// <returns></returns>
         public bool VisibleFor(UMI3DUser user)
         {
+            Register();
             //TODO remove this later
             if (user == null)
                 return true;
@@ -424,7 +439,7 @@ namespace umi3d.edk
         internal List<UMI3DAbstractAnimationDto> GetAnimationsFor(UMI3DUser user)
         {
             var anim = GetComponents<UMI3DAbstractAnimation>();
-            return anim?.Select(a=>a.ToAnimationDto(user))?.ToList();
+            return anim?.Select(a => a.ToAnimationDto(user))?.ToList();
         }
 
         /// <summary>
@@ -481,7 +496,7 @@ namespace umi3d.edk
                     res.colliderRadius = colliderRadius;
                     break;
                 case ColliderType.Mesh:
-                    if(isMeshCustom)
+                    if (isMeshCustom)
                     {
                         res.customMeshCollider = customMeshCollider.ToDto();
                         res.convex = false;

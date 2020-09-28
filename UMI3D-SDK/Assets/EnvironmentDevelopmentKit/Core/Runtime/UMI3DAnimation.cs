@@ -40,9 +40,11 @@ namespace umi3d.edk
         float duration = 10f;
         [SerializeField]
         List<AnimationChain> animationChain = null;
+        private UMI3DAsyncProperty<float> _objectDuration;
+        private UMI3DAsyncListProperty<AnimationChain> _objectAnimationChain;
 
-        public UMI3DAsyncProperty<float> ObjectDuration;
-        public UMI3DAsyncListProperty<AnimationChain> ObjectAnimationChain;
+        public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return _objectDuration; } protected set => _objectDuration = value; }
+        public UMI3DAsyncListProperty<AnimationChain> ObjectAnimationChain { get { Register(); return _objectAnimationChain; } protected set => _objectAnimationChain = value; }
 
         protected override UMI3DAbstractAnimationDto CreateDto()
         {

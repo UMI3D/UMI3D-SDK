@@ -91,12 +91,15 @@ namespace umi3d.edk.interaction
         /// List of bones hovering this object (if any).
         /// </summary>
         public List<string> hoveringBones = new List<string>();
+        private UMI3DAsyncProperty<bool> objectNotifyHoverPosition1;
+        private UMI3DAsyncProperty<bool> objectNotifySubObject1;
+        private UMI3DAsyncProperty<UMI3DNode> objectNodeId1;
 
         public bool isHovered { get { return hoveringBones.Count > 0; } }
 
-        public UMI3DAsyncProperty<bool> objectNotifyHoverPosition;
-        public UMI3DAsyncProperty<bool> objectNotifySubObject;
-        public UMI3DAsyncProperty<UMI3DNode> objectNodeId;
+        public UMI3DAsyncProperty<bool> objectNotifyHoverPosition { get { Register(); return objectNotifyHoverPosition1; } protected set => objectNotifyHoverPosition1 = value; }
+        public UMI3DAsyncProperty<bool> objectNotifySubObject { get { Register(); return objectNotifySubObject1; } protected set => objectNotifySubObject1 = value; }
+        public UMI3DAsyncProperty<UMI3DNode> objectNodeId { get { Register(); return objectNodeId1; } protected set => objectNodeId1 = value; }
 
         /// <summary>
         /// Create an empty Dto.

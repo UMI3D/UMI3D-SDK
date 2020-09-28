@@ -34,10 +34,10 @@ namespace umi3d.edk.interaction
 
         [SerializeField]
         protected UMI3DScene Scene;
-        public UMI3DAsyncProperty<UMI3DScene> objectScene;
+        public UMI3DAsyncProperty<UMI3DScene> objectScene { get { Register(); return _objectScene; } protected set => _objectScene = value; }
 
         public List<UMI3DTool> tools = new List<UMI3DTool>();
-        public UMI3DAsyncListProperty<UMI3DTool> objectTools;
+        public UMI3DAsyncListProperty<UMI3DTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
 
 
         #region properties
@@ -90,6 +90,8 @@ namespace umi3d.edk.interaction
         /// Indicates the availability state of a user for the last frame check of visibility.
         /// </summary>
         protected Dictionary<UMI3DUser, bool> availableLastFrame = new Dictionary<UMI3DUser, bool>();
+        private UMI3DAsyncProperty<UMI3DScene> _objectScene;
+        private UMI3DAsyncListProperty<UMI3DTool> _objectTools;
 
         #endregion
 

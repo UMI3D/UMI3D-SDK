@@ -35,17 +35,16 @@ namespace umi3d.edk
                 return new UMI3DNodeAnimationDto.OperationChainDto() { operation = Operation.ToOperationDto(user), startOnProgress = progress };
             }
         }
-        
+
         [SerializeField]
         float duration = 10f;
         [SerializeField]
         List<OperationChain> animationChain = null;
+        private UMI3DAsyncProperty<float> objectDuration;
+        private UMI3DAsyncListProperty<OperationChain> objectAnimationChain;
 
-
-
-
-        public UMI3DAsyncProperty<float> ObjectDuration;
-        public UMI3DAsyncListProperty<OperationChain> ObjectAnimationChain;
+        public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return objectDuration; } protected set => objectDuration = value; }
+        public UMI3DAsyncListProperty<OperationChain> ObjectAnimationChain { get { Register(); return objectAnimationChain; } protected set => objectAnimationChain = value; }
 
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
