@@ -72,12 +72,17 @@ namespace umi3d.edk
             {
                 UMI3DMaterialDto matDto = this.textures.ToDto();
                 RegisterMaterial(matDto);
-                registered = true;
-                textures.id = matDto.id;
             }
             //   Debug.Log("Material id : " + textures.id);
             return textures.id;
         }
+
+        protected override void SetId(string id)
+        {
+            textures.id = id;
+            registered = true;
+        }
+
         private bool registered = false;
 
         protected override void OnEnable()
