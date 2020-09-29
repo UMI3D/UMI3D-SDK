@@ -157,7 +157,7 @@ namespace umi3d.cdk.interaction
             else
             {
                 AbstractInteractionDto[] interactions = tool.interactions.ToArray();
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions);
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id);
                 associatedInputs.Add(tool.id, inputs);
             }
 

@@ -186,7 +186,7 @@ namespace umi3d.cdk.interaction
         /// <param name="manip">Manipulation to project</param>
         /// <param name="dof">Dof to project</param>
         /// <param name="unusedInputsOnly">Project on unused inputs only</param>
-        public AbstractUMI3DInput PartialProject(AbstractController controller, ManipulationDto manip, DofGroupDto dof, bool unusedInputsOnly)
+        public AbstractUMI3DInput PartialProject(AbstractController controller, ManipulationDto manip, DofGroupDto dof, bool unusedInputsOnly, string toolId)
         {
             ProjectionTreeNode currentMemoryTreeState = memoryRoot;
 
@@ -223,7 +223,7 @@ namespace umi3d.cdk.interaction
                     else
                         throw new System.Exception("Internal error");
                 }
-                node.projectedInput.Associate(manip, dof.dofs);
+                node.projectedInput.Associate(manip, dof.dofs, toolId);
             };
 
             currentMemoryTreeState = Project(currentMemoryTreeState, adequation, deepProjectionCreation, chooseProjection, unusedInputsOnly);
@@ -236,7 +236,7 @@ namespace umi3d.cdk.interaction
         /// <param name="controller">Controller to project on</param>
         /// <param name="evt">Event dto to project</param>
         /// <param name="unusedInputsOnly">Project on unused inputs only</param>
-        public AbstractUMI3DInput PartialProject(AbstractController controller, EventDto evt, bool unusedInputsOnly = false)
+        public AbstractUMI3DInput PartialProject(AbstractController controller, EventDto evt, string toolId, bool unusedInputsOnly = false)
         {
             System.Func<ProjectionTreeNode> deepProjectionCreation = () =>
             {
@@ -269,7 +269,7 @@ namespace umi3d.cdk.interaction
                     else
                         throw new System.Exception("Internal error");
                 }
-                node.projectedInput.Associate(evt);
+                node.projectedInput.Associate(evt, toolId);
             };
 
             return Project(memoryRoot, adequation, deepProjectionCreation, chooseProjection, unusedInputsOnly).projectedInput;
@@ -280,7 +280,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="controller">Controller to project interactions on</param>
         /// <param name="interactions">Interactions to project</param>
-        public AbstractUMI3DInput[] Project(AbstractController controller, AbstractInteractionDto[] interactions)
+        public AbstractUMI3DInput[] Project(AbstractController controller, AbstractInteractionDto[] interactions, string toolId)
         {
             ProjectionTreeNode currentMemoryTreeState = memoryRoot;
 
@@ -323,7 +323,7 @@ namespace umi3d.cdk.interaction
 
                         chooseProjection = node =>
                         {
-                            node.projectedInput.Associate(interaction as ManipulationDto, sep.dofs);
+                            node.projectedInput.Associate(interaction as ManipulationDto, sep.dofs, toolId);
                             selectedInputs.Add(node.projectedInput);
                         };
 
@@ -361,7 +361,7 @@ namespace umi3d.cdk.interaction
                             throw new System.Exception("No input found");
                         }
 
-                        node.projectedInput.Associate(interaction);
+                        node.projectedInput.Associate(interaction, toolId);
                         selectedInputs.Add(node.projectedInput);
                     };
 
@@ -394,7 +394,7 @@ namespace umi3d.cdk.interaction
 
                     chooseProjection = node =>
                     {
-                        node.projectedInput.Associate(interaction);
+                        node.projectedInput.Associate(interaction, toolId);
                         selectedInputs.Add(node.projectedInput);
                     };
 
