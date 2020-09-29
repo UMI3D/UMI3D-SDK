@@ -84,7 +84,8 @@ namespace umi3d.cdk.interaction
                             booleanParameterDto.value = x;
                             var pararmeterDto = new ParameterSettingRequestDto()
                             {
-                                entityId = booleanParameterDto.id,
+                                toolId = dto.id,
+                                id = booleanParameterDto.id,
                                 parameter = booleanParameterDto,
                             };
                             UMI3DClientServer.Send(pararmeterDto, true);
@@ -99,7 +100,8 @@ namespace umi3d.cdk.interaction
                         floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = floatRangeParameterDto.id,
+                            toolId = dto.id,
+                            id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
@@ -114,7 +116,8 @@ namespace umi3d.cdk.interaction
                         enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = enumParameterDto.id,
+                            toolId = dto.id,
+                            id = enumParameterDto.id,
                             parameter = enumParameterDto,
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
@@ -129,7 +132,8 @@ namespace umi3d.cdk.interaction
                         stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = stringParameterDto.id,
+                            toolId = dto.id,
+                            id = stringParameterDto.id,
                             parameter = stringParameterDto,
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
