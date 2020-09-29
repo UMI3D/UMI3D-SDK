@@ -20,7 +20,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class FloatRangeParameter : AbstractInteraction
+    public class FloatRangeParameter : AbstractParameter
     {
         /// <summary>
         /// Current input value.

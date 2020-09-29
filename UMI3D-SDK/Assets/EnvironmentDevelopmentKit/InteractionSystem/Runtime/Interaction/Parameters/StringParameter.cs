@@ -19,7 +19,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class StringParameter : AbstractInteraction
+    public class StringParameter : AbstractParameter
     {
         /// <summary>
         /// Current input value.

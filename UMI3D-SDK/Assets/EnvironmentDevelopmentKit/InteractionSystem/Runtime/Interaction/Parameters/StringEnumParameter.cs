@@ -20,7 +20,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class StringEnumParameter : AbstractInteraction
+    public class StringEnumParameter : AbstractParameter
     {
         /// <summary>
         /// Current value.

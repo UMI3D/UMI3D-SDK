@@ -14,17 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
+using umi3d.common.interaction;
+using UnityEngine;
 
-namespace umi3d.common.interaction
+namespace umi3d.edk.interaction
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class FormDto : AbstractInteractionDto
+    public abstract class AbstractParameter : AbstractInteraction
     {
-        public List<AbstractParameterDto> Fields = new List<AbstractParameterDto>();
-
-        public FormDto() : base() { }
+        
     }
 }

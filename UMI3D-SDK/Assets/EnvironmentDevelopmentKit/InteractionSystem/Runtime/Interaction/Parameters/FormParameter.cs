@@ -16,45 +16,50 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class FormParameter : UMI3DTool
+    public class FormParameter : AbstractInteraction
     {
-        public List<AbstractInteraction> Fields = new List<AbstractInteraction>();
+        public List<AbstractParameter> Fields = new List<AbstractParameter>();
 
-        // Start is called before the first frame update
-        void Start()
-        {
+        [System.Serializable]
+        public class FormListener : UnityEvent<UMI3DUser, FormDto> { }
 
-        }
 
-        // Update is called once per frame
-        void Update()
-        {
+        /// <summary>
+        /// Event raised on value change.
+        /// </summary>
+        public FormListener onFormCompleted = new FormListener();
 
-        }
-
-        protected override AbstractToolDto CreateDto()
+        protected override AbstractInteractionDto CreateDto()
         {
             return new FormDto();
         }
 
-        public override AbstractToolDto ToDto(UMI3DUser user)
+        protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
-            FormDto dto = (base.ToDto(user) as FormDto);
-
-            //foreach (AbstractInteraction field in Fields)
-            //{
-            //    dto.Fields.Add(field.ToDto(user));
-            //}
-
-            return dto;
+            base.WriteProperties(dto_, user);
+            var dto = (dto_ as FormDto);
+            if (dto == null)
+                return;
+            dto.Fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
         }
 
-
+        public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
+        {
+            switch (interactionRequest)
+            {
+                case FormAnswer formAnswer:
+                    onFormCompleted.Invoke(user, formAnswer.form);
+                    break;
+                default:
+                    throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
+            }
+        }
     }
 }

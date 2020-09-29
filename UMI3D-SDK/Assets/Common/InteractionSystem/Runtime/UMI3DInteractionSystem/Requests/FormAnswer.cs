@@ -14,17 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-
 namespace umi3d.common.interaction
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class FormDto : AbstractInteractionDto
+    public class FormAnswer : InteractionRequestDto
     {
-        public List<AbstractParameterDto> Fields = new List<AbstractParameterDto>();
-
-        public FormDto() : base() { }
+        public FormDto form;
     }
 }
