@@ -39,8 +39,8 @@ namespace umi3d.cdk.userCapture
 
         public UnityEvent skeletonParsedEvent;
 
-        UserTrackingFrameDto LastFrameDto;
-        UserCameraPropertiesDto CameraPropertiesDto;
+        UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
+        UserCameraPropertiesDto CameraPropertiesDto = new UserCameraPropertiesDto();
 
 
         protected override void Awake()
