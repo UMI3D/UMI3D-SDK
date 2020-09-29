@@ -436,9 +436,32 @@ namespace umi3d.cdk
         {
             if (!Exists) return false;
             var node = UMI3DEnvironmentLoader.GetEntity(dto.entityId);
-            if (SetUMI3DPorperty(node, dto)) return true;
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
-            return Parameters.SetUMI3DProperty(node, dto);
+            if (node == null) {
+
+                return false;
+            }
+            else
+            {
+
+                if (SetUMI3DPorperty(node, dto)) return true;
+                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
+                return Parameters.SetUMI3DProperty(node, dto);
+            }
         }
+
+        IEnumerator _SetEntity(SetEntityPropertyDto dto)
+        {
+            var wait = new WaitForFixedUpdate();
+            UMI3DEntityInstance node = null;
+            yield return wait;
+            while((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
+            {
+                yield return wait;
+            }
+            if (SetUMI3DPorperty(node, dto)) yield break;
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) yield break;
+            Parameters.SetUMI3DProperty(node, dto);
+        }
+
     }
 }
