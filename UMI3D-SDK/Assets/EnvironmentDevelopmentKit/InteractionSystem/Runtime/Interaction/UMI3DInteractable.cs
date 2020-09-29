@@ -142,8 +142,8 @@ namespace umi3d.edk.interaction
         }
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
-            if (dto.state) onHoverEnter.Invoke(user, dto.boneType, Id());
-            else onHoverExit.Invoke(user, dto.boneType, Id());
+            if (dto.state) onHoverEnter.Invoke(user, dto.boneType, dto.toolId, dto.id);
+            else onHoverExit.Invoke(user, dto.boneType, dto.toolId, dto.id);
         }
 
         public IEntity ToEntityDto(UMI3DUser user)

@@ -51,16 +51,16 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case EventTriggeredDto eventTriggered:
-                    onTrigger.Invoke(user, eventTriggered.boneType, eventTriggered.toolId);
+                    onTrigger.Invoke(user, eventTriggered.boneType, eventTriggered.toolId, eventTriggered.id);
                     break;
                 case EventStateChangedDto eventStateChanged:
                     if (eventStateChanged.active)
                     {
-                        onHold.Invoke(user, eventStateChanged.boneType, eventStateChanged.toolId);
+                        onHold.Invoke(user, eventStateChanged.boneType, eventStateChanged.toolId, eventStateChanged.id);
                     }
                     else
                     {
-                        onRelease.Invoke(user, eventStateChanged.boneType, eventStateChanged.toolId);
+                        onRelease.Invoke(user, eventStateChanged.boneType, eventStateChanged.toolId, eventStateChanged.id);
                     }
                     break;
             }

@@ -29,5 +29,5 @@ namespace umi3d.edk
     /// Event rising an UMI3DUser and an avatar bone.
     /// </summary>
     [Serializable]
-    public class UMI3DUserBoneEvent : UnityEvent<UMI3DUser, string, string> { }
+    public class UMI3DUserBoneEvent : UnityEvent<UMI3DUser, string, string, string> { }
 }
