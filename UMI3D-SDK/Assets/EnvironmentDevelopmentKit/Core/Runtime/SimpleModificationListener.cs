@@ -154,7 +154,11 @@ namespace umi3d.edk
             setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
             setOperation(obj.objectIsConvexe.SetValue(obj.convex));
             setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-
+            if(obj as UMI3DModel)
+            {
+                setOperation(((UMI3DModel)obj).objectMaterialsOverrided.SetValue(((UMI3DModel)obj).overrideModelMaterials));
+                setOperation(((UMI3DModel)obj).objectMaterialOveriders.SetValue(((UMI3DModel)obj).materialsOverider));
+            }
         }
 
         private void UIUpdate(UIRect obj)

@@ -128,7 +128,12 @@ namespace umi3d.cdk
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             ColliderDto colliderDto = ((UMI3DNodeDto)dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
+            SetMaterialOverided(dto, instance);
+           
+        }
 
+        private void SetMaterialOverided(UMI3DMeshNodeDto dto, GameObject instance)
+        {
             if (dto.overridedMaterials != null && dto.overridedMaterials.Count > 0)
             {
                 //TODO a améliorer 
@@ -147,7 +152,6 @@ namespace umi3d.cdk
                             {
                                 OverrideMaterial(instance, (Material)matEntity.Object,
                                     (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")));
-
                             }
                         }
                     }
@@ -156,7 +160,6 @@ namespace umi3d.cdk
                         Debug.LogWarning("Material not found : " + mat.newMaterialId);
                     }
                 }
-
             }
         }
 
@@ -170,16 +173,22 @@ namespace umi3d.cdk
 
                 for (int i = 0; i < renderer.sharedMaterials.Length; i++)
                 {
-                    if (filter(renderer.sharedMaterials[i].name))
+                    var oldMats = renderer.gameObject.GetComponent<OldMaterialContainer>();
+                    if (filter(renderer.sharedMaterials[i].name) || (oldMats!=null && oldMats.oldMats[i]!=null && filter(oldMats.oldMats[i].name)))
                     {
-                        renderer.sharedMaterials.SetValue(newMat, i);
+                        if (renderer.gameObject.GetOrAddComponent<OldMaterialContainer>().oldMats[i] == null)
+                            renderer.gameObject.GetComponent<OldMaterialContainer>().oldMats[i] = renderer.sharedMaterials[i];
 
                         mats[i] = newMat;
+
                         modified = true;
                     }
+
                 }
                 if (modified)
+                {
                     renderer.materials = mats;
+                }
             }
         }
 
@@ -187,13 +196,74 @@ namespace umi3d.cdk
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
             if (entity == null) return false;
+                var extension = (UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d;
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Model:
-                    ((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d).mesh = (ResourceDto)property.value;
-                    ReadUMI3DExtension(((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d), ((UMI3DNodeInstance)entity).transform.parent.gameObject, null, null);
-
+                    extension.mesh = (ResourceDto)property.value;
+                    ReadUMI3DExtension(extension, ((UMI3DNodeInstance)entity).transform.parent.gameObject, null, null);
                     break;
+                case UMI3DPropertyKeys.IsMaterialOverided:
+                    if (!(bool)property.value) //revert original materials
+                    {
+                        foreach (Renderer renderer in ((UMI3DNodeInstance)entity).gameObject.GetComponentsInChildren<Renderer>() )
+                        {
+                            OldMaterialContainer oldMaterialContainer = renderer.gameObject.GetComponent<OldMaterialContainer>();
+                            if (oldMaterialContainer != null)
+                            {
+                                Material[] oldMats = oldMaterialContainer.oldMats;
+                                Material[] matsToApply = renderer.sharedMaterials;
+                                for (int i = 0; i < renderer.sharedMaterials.Length; i++)
+                                {
+                                    if (oldMats[i] != null)
+                                    {
+                                        matsToApply[i] = (oldMats[i]);
+                                    }
+                                }
+                                renderer.materials = matsToApply;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        SetMaterialOverided(extension, ((UMI3DNodeInstance)entity).gameObject);
+                    }
+                    //extension. = (bool)property.value;
+                    break;
+                case UMI3DPropertyKeys.OverideMaterialId:
+                    Debug.Log("override mat id");
+
+                    switch (property)
+                    {
+                        case SetEntityListAddPropertyDto addProperty:
+                            Debug.Log("SetEntityListAddPropertyDto");
+                            UMI3DEntityInstance matEntity = UMI3DEnvironmentLoader.GetEntity(((UMI3DMeshNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId);
+                            List<string> listToOverride = ((UMI3DMeshNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId;
+                            if (listToOverride.Contains("ANY_mat"))
+                            {
+                                OverrideMaterial(((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)).gameObject, (Material)matEntity.Object, (s) => true);
+                            } 
+                            else
+                            {
+                                foreach (string matKey in listToOverride)
+                                {
+                                    OverrideMaterial(((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)).gameObject, (Material)matEntity.Object,
+                                        (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")));
+                                }
+                            }
+                            extension.overridedMaterials.Add((UMI3DMeshNodeDto.MaterialOverrideDto)addProperty.value);
+                            break;
+                        case SetEntityListRemovePropertyDto removeProperty:
+                        case SetEntityListPropertyDto changeProperty:
+                        case SetEntityPropertyDto prop:
+                            break;
+                        default:
+                            Debug.LogWarning("wrong type in AsyncProperty list ");
+                            break;
+                    }
+
+                   break;
+
                 default:
                     return false;
             }
@@ -202,4 +272,5 @@ namespace umi3d.cdk
 
 
     }
+
 }

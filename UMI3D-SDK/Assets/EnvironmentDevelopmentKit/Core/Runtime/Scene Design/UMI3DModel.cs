@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-    public class UMI3DModel : UMI3DNode
+    public partial class UMI3DModel : UMI3DNode
     {
         [Obsolete("will be removed soon")]
         public bool lockColliders = false;
@@ -33,32 +33,15 @@ namespace umi3d.edk
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
 
+        [System.Obsolete("Will be removed soon")]
         public bool overrideModelMaterials = false;
         public List<MaterialOverrider> materialsOverider = new List<MaterialOverrider>();
-        
-        [Serializable]
-        public class MaterialOverrider
-        {
-            public MaterialSO newMaterial;
-            public List<string> overidedMaterials;
-
-            public UMI3DMeshNodeDto.MaterialOverrideDto ToDto()
-            {
-
-                return new UMI3DMeshNodeDto.MaterialOverrideDto()
-                {
-                    newMaterialId = newMaterial.Id(),
-                    overridedMaterialsId = overidedMaterials
-                };
-            }
-
-        }
 
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
 
         public UMI3DAsyncProperty<bool> objectMaterialsOverrided;
-        public UMI3DAsyncListProperty<MaterialOverrider> objectMaterrialOveriders;
+        public UMI3DAsyncListProperty<MaterialOverrider> objectMaterialOveriders;
 
 
         protected override void InitDefinition(string id)
@@ -68,12 +51,15 @@ namespace umi3d.edk
             objectMaterialsOverrided = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsMaterialOverided, this.overrideModelMaterials);
             objectMaterialsOverrided.OnValueChanged += (bool value) => overrideModelMaterials = value;
 
-            objectMaterrialOveriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverider);//.ConvertAll((mat) => mat.ToDto()));
+            objectMaterialOveriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverider,(x,u) => x.ToDto(),(a,b)=> { return  a.GetHashCode().Equals(b.GetHashCode()); });
 
-            objectMaterrialOveriders.OnInnerValueChanged += (int index, MaterialOverrider value) => Debug.LogError("not implemented");
-  
+            objectMaterialOveriders.OnInnerValueChanged += (int index, MaterialOverrider value) => materialsOverider[index] = value;
+            objectMaterialOveriders.OnInnerValueRemoved += (int index, MaterialOverrider value) => materialsOverider.RemoveAt(index);
+            objectMaterialOveriders.OnInnerValueAdded += (int index, MaterialOverrider value) => { Debug.Log("add inner value in matOverriders"); /* materialsOverider.Add(value); */};
+            objectMaterialOveriders.OnValueChanged += (List<MaterialOverrider> value) => materialsOverider = value;
 
-            if(areSubobjectsTracked)
+
+            if (areSubobjectsTracked)
             {
                 SetSubHierarchy();
             }

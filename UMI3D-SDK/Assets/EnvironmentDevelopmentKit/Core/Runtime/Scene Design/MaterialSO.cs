@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     //[CreateAssetMenu(fileName = "Umi3DMaterial", menuName = "UMI3D/Umi3DMaterial")]
-    public abstract class MaterialSO : ScriptableObject, UMI3DEntity
+    public abstract class MaterialSO : ScriptableObject, UMI3DLoadableEntity
     {
 
         public enum AlphaMode
@@ -62,5 +62,7 @@ namespace umi3d.edk
             }
         }
 
+        public abstract IEntity ToEntityDto(UMI3DUser user);
+   
     }
 }
