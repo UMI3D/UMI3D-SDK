@@ -312,6 +312,7 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         void _LoadEntity(IEntity entity, Action performed)
         {
+            Debug.Log("load entity");
             switch (entity)
             {
                 case GlTFSceneDto scene:
@@ -437,12 +438,11 @@ namespace umi3d.cdk
             if (!Exists) return false;
             var node = UMI3DEnvironmentLoader.GetEntity(dto.entityId);
             if (node == null) {
-
+                Instance.StartCoroutine(Instance._SetEntity(dto));
                 return false;
             }
             else
             {
-
                 if (SetUMI3DPorperty(node, dto)) return true;
                 if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
                 return Parameters.SetUMI3DProperty(node, dto);
@@ -457,6 +457,7 @@ namespace umi3d.cdk
             while((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
             {
                 yield return wait;
+                Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
             }
             if (SetUMI3DPorperty(node, dto)) yield break;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) yield break;

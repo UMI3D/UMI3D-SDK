@@ -83,12 +83,26 @@ namespace umi3d.edk
         /// Return load operation
         /// </summary>
         /// <returns></returns>
-        protected virtual LoadEntity GetLoadEntity()
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
             };
             return operation;
         }
