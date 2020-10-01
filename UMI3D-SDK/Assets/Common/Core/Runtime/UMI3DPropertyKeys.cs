@@ -48,7 +48,7 @@ namespace umi3d.common
         #region Model
         public const string Model = "umi3d_model";
         //public const string OverrideMaterial = "umi3d_model_override_material";
-        public const string IsMaterialOverided = "umi3d_is_material_overided";
+        public const string ApplyCustomMaterial = "umi3d_is_custom_material_applied";
         public const string AreSubobjectsTracked = "umi3d_are_subobject_tracked";
         #endregion
 

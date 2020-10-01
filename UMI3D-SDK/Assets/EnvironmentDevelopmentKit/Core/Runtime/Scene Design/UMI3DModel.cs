@@ -33,7 +33,6 @@ namespace umi3d.edk
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
 
-        [System.Obsolete("Will be removed soon")]
         public bool overrideModelMaterials = false;
         public List<MaterialOverrider> materialsOverider = new List<MaterialOverrider>();
 
@@ -48,7 +47,7 @@ namespace umi3d.edk
         {
             base.InitDefinition(id);
 
-            objectMaterialsOverrided = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsMaterialOverided, this.overrideModelMaterials);
+            objectMaterialsOverrided = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ApplyCustomMaterial, this.overrideModelMaterials);
             objectMaterialsOverrided.OnValueChanged += (bool value) => overrideModelMaterials = value;
 
             objectMaterialOveriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverider,(x,u) => x.ToDto(),(a,b)=> { return  a.GetHashCode().Equals(b.GetHashCode()); });
@@ -117,12 +116,10 @@ namespace umi3d.edk
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
             meshDto.idGenerator = idGenerator;
-         
-            if (this.overrideModelMaterials)
-            {
-                meshDto.overridedMaterials = materialsOverider.ConvertAll((mat) => mat.ToDto());
+            meshDto.applyCustomMaterial = overrideModelMaterials;
+            meshDto.overridedMaterials = materialsOverider.ConvertAll((mat) => mat.ToDto());
 
-            }
+            
             
         }
 

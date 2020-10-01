@@ -36,6 +36,11 @@ namespace umi3d.common
         /// Should some material be overrided
         /// </summary>
         public List<MaterialOverrideDto> overridedMaterials = null;
+        
+        /// <summary>
+        /// Should apply the overriders list
+        /// </summary>
+        public bool applyCustomMaterial = false;
 
         /// <summary>
         /// Optional id generator for child objects. Can be used to animate sub objects without to split it in different assets.
