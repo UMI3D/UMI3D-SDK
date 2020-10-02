@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture
         public UnityEvent skeletonParsedEvent;
 
         UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
-        UserCameraPropertiesDto CameraPropertiesDto = new UserCameraPropertiesDto();
+        UserCameraPropertiesDto CameraPropertiesDto;
 
 
         protected override void Awake()
@@ -50,7 +50,7 @@ namespace umi3d.cdk.userCapture
             CameraPropertiesDto = new UserCameraPropertiesDto()
             {
                 scale = 1f,
-                projectionMatrix = viewpoint.TryGetComponent<Camera>(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
+                projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
                 boneType = viewpointBonetype,
             };
         }
