@@ -105,12 +105,14 @@ namespace umi3d.edk
 
 
         //Remember already added entities
-        // [HideInInspector]
+        [HideInInspector]
         public List<string> materialIds = new List<string>();
         [HideInInspector]
         public List<string> animationIds = new List<string>();
+        //[HideInInspector]
         public List<MaterialSO> materialSOs = new List<MaterialSO>();
-
+        public List<MaterialSO> PreloadedMaterials = new List<MaterialSO>();
+        
 
         /// <summary>
         /// Writte the scene contents in a GlTFSceneDto.
@@ -124,6 +126,9 @@ namespace umi3d.edk
             materialIds.Clear();
             animationIds.Clear();
 
+            materialIds.AddRange(PreloadedMaterials.Select(m => m.ToDto().extensions.umi3d.id));
+            materialSOs.AddRange(PreloadedMaterials);
+
             //Fill arrays
             foreach (UMI3DNode node in nodes) {
 
@@ -131,11 +136,12 @@ namespace umi3d.edk
                 scene.nodes.Add(node.ToGlTFNodeDto(user));
 
                 //Get new materials
-                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !materialIds.Contains(m.extensions.umi3d.id));
+                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !(materialIds).Contains(m.extensions.umi3d.id ));
 
 
                 //Add them to the glTF scene
                 scene.materials.AddRange(materials);
+                scene.materials.AddRange(PreloadedMaterials.Select(m => m.ToDto()));
                 materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
 
                 //remember their ids

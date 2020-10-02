@@ -73,12 +73,15 @@ namespace umi3d.cdk
                                 var instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, true);
                                 AbstractMeshDtoLoader.ShowModelRecursively(instance);
                                 instance.transform.localPosition = Vector3.zero;
-                                //instance.transform.localEulerAngles = Vector3.zero;
+                                instance.transform.localEulerAngles = new Vector3(0, 180, 0);
                                 instance.transform.localScale = Vector3.one;
                                 SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
                             });
                         }
-
+                        var rootDto = UMI3DEnvironmentLoader.GetNode(((SubModelDto)nodeDto).pid).dto;
+                        var rootGO = UMI3DEnvironmentLoader.GetNode(((SubModelDto)nodeDto).pid).gameObject;
+                        //TODO
+                        //then apply sub Model overriderMaterials 
                     }
                     finished?.Invoke();
                 }
