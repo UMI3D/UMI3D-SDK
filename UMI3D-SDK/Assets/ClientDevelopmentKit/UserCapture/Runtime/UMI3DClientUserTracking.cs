@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -57,6 +58,17 @@ namespace umi3d.cdk.userCapture
 
         protected void Start()
         {
+            StartCoroutine("DispatchCamera");
+        }
+
+        IEnumerator DispatchCamera()
+        {
+            while (UMI3DClientServer.Instance.GetId() == null)
+            {
+                yield return null;
+            }
+
+            Debug.LogWarning("DispatchCamera");
             UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
         }
 
