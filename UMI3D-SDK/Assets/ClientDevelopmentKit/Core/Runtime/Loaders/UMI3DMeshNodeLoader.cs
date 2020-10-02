@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -120,12 +121,24 @@ namespace umi3d.cdk
             {
                 root = go;
             }
+
+
             var instance = GameObject.Instantiate(root, parent, true);
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
+            var renderers = instance.GetComponentsInChildren<Renderer>();
+            nodeInstance.renderers = renderers.ToList();
+
+            foreach(var renderer in renderers)
+            {
+                renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = dto.receiveShadow;
+            }
+
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
+            
             ColliderDto colliderDto = ((UMI3DNodeDto)dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
 
@@ -187,12 +200,33 @@ namespace umi3d.cdk
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
             if (entity == null) return false;
+            var dto = (((entity?.dto as GlTFNodeDto)?.extensions?.umi3d) as UMI3DMeshNodeDto);
+            if (dto == null) return false;
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Model:
-                    ((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d).mesh = (ResourceDto)property.value;
+                    dto.mesh = (ResourceDto)property.value;
                     ReadUMI3DExtension(((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d), ((UMI3DNodeInstance)entity).transform.parent.gameObject, null, null);
-
+                    break;
+                case UMI3DPropertyKeys.CastShadow:
+                    dto.castShadow = (bool)property.value;
+                    if (entity is UMI3DNodeInstance)
+                    {
+                        var node = entity as UMI3DNodeInstance;
+                        foreach (var renderer in node.renderers)
+                            renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                    }
+                    else return false;
+                    break;
+                case UMI3DPropertyKeys.ReceiveShadow:
+                    dto.receiveShadow = (bool)property.value;
+                    if (entity is UMI3DNodeInstance)
+                    {
+                        var node = entity as UMI3DNodeInstance;
+                        foreach (var renderer in node.renderers)
+                            renderer.receiveShadows = dto.receiveShadow;
+                    }
+                    else return false;
                     break;
                 default:
                     return false;

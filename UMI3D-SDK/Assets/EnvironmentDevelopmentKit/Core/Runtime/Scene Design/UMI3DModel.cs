@@ -60,6 +60,13 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<bool> objectMaterialsOverrided;
         public UMI3DAsyncListProperty<MaterialOverrider> objectMaterrialOveriders;
 
+        [SerializeField]
+        protected bool castShadow = true;
+        [SerializeField]
+        protected bool receiveShadow = true;
+        public UMI3DAsyncProperty<bool> objectCastShadow;
+        public UMI3DAsyncProperty<bool> objectReceiveShadow;
+
 
         protected override void InitDefinition(string id)
         {
@@ -71,9 +78,11 @@ namespace umi3d.edk
             objectMaterrialOveriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverider);//.ConvertAll((mat) => mat.ToDto()));
 
             objectMaterrialOveriders.OnInnerValueChanged += (int index, MaterialOverrider value) => Debug.LogError("not implemented");
-  
 
-            if(areSubobjectsTracked)
+            objectCastShadow = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.CastShadow, castShadow);
+            objectReceiveShadow = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ReceiveShadow, receiveShadow);
+
+            if (areSubobjectsTracked)
             {
                 SetSubHierarchy();
             }
@@ -131,7 +140,9 @@ namespace umi3d.edk
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
             meshDto.idGenerator = idGenerator;
-         
+            meshDto.receiveShadow = objectReceiveShadow.GetValue(user);
+            meshDto.castShadow = objectCastShadow.GetValue(user);
+
             if (this.overrideModelMaterials)
             {
                 meshDto.overridedMaterials = materialsOverider.ConvertAll((mat) => mat.ToDto());
