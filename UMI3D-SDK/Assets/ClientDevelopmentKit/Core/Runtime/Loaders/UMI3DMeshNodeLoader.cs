@@ -134,7 +134,7 @@ namespace umi3d.cdk
            
         }
 
-        private void SetMaterialOverided(UMI3DMeshNodeDto dto, GameObject instance)
+        public void SetMaterialOverided(UMI3DMeshNodeDto dto, GameObject instance)
         {
             if (dto.applyCustomMaterial && dto.overridedMaterials != null )
             {
