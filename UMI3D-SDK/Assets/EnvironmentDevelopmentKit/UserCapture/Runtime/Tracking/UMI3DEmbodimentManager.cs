@@ -112,7 +112,10 @@ namespace umi3d.edk.userCapture
 
         public void UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
         {
-
+            if (!embodimentInstances.ContainsKey(user.Id()))
+            {
+                throw new Exception("Internal error : the user is not registered");
+            }
         }
 
         /// <summary>

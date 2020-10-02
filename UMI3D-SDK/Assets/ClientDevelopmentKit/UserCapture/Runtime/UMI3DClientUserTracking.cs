@@ -55,6 +55,11 @@ namespace umi3d.cdk.userCapture
             };
         }
 
+        protected void Start()
+        {
+            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+        }
+
         void Update()
         {
             if (UMI3DClientServer.Exists)
