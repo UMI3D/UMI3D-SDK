@@ -119,6 +119,8 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
             userEmbd.userCameraPropertiesDto = dto;
+
+            Debug.LogWarning("bonetype : " + dto.boneType);
         }
 
         /// <summary>
