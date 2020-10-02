@@ -116,6 +116,9 @@ namespace umi3d.edk.userCapture
             {
                 throw new Exception("Internal error : the user is not registered");
             }
+
+            UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
+            userEmbd.userCameraPropertiesDto = dto;
         }
 
         /// <summary>
