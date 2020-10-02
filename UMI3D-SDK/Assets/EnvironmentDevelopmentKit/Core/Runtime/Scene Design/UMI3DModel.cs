@@ -40,7 +40,7 @@ namespace umi3d.edk
         public bool areSubobjectsTracked = false;
 
         public UMI3DAsyncProperty<bool> objectMaterialsOverrided { get { Register(); return _objectMaterialsOverrided; } protected set => _objectMaterialsOverrided = value; }
-        public UMI3DAsyncListProperty<MaterialOverrider> objectMaterrialOveriders { get { Register(); return _objectMaterrialOveriders; } protected set => _objectMaterrialOveriders = value; }
+        public UMI3DAsyncListProperty<MaterialOverrider> objectMaterialOveriders { get { Register(); return _objectMaterialOveriders; } protected set => _objectMaterialOveriders = value; }
 
         [SerializeField]
         protected bool castShadow = true;
@@ -48,7 +48,7 @@ namespace umi3d.edk
         protected bool receiveShadow = true;
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
         private UMI3DAsyncProperty<bool> _objectMaterialsOverrided;
-        private UMI3DAsyncListProperty<MaterialOverrider> _objectMaterrialOveriders;
+        private UMI3DAsyncListProperty<MaterialOverrider> _objectMaterialOveriders;
         private UMI3DAsyncProperty<bool> _objectCastShadow;
         private UMI3DAsyncProperty<bool> _objectReceiveShadow;
 

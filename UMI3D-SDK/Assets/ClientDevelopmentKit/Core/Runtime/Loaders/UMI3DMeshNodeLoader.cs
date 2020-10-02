@@ -138,7 +138,6 @@ namespace umi3d.cdk
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
             SetMaterialOverided(dto, instance);
