@@ -74,9 +74,13 @@ namespace umi3d.cdk
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
         {
+            /*     Usefull to find pathIfObjectInBundle in a bundle
+            Debug.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length);
+            Debug.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length);
+            Debug.Log(((AssetBundle)o).GetAllAssetNames()[0]);
+            */
             if (pathIfObjectInBundle != null && pathIfObjectInBundle != "")
             {
-
                 if (Array.Exists(((AssetBundle)o).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
                     var objectInBundle = ((AssetBundle)o).LoadAsset(pathIfObjectInBundle);

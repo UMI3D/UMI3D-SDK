@@ -13,21 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using UnityEngine.Events;
 
+using umi3d.common.interaction;
+using UnityEngine;
 
-namespace umi3d.edk
+namespace umi3d.edk.interaction
 {
-    /// <summary>
-    /// Event raising an UMI3DUser instance.
-    /// </summary>
-    [Serializable]
-    public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
-
-    /// <summary>
-    /// Event rising an UMI3DUser and an avatar bone.
-    /// </summary>
-    [Serializable]
-    public class UMI3DUserBoneEvent : UnityEvent<UMI3DUser, string, string, string> { }
+    public abstract class AbstractParameter : AbstractInteraction
+    {
+        
+    }
 }

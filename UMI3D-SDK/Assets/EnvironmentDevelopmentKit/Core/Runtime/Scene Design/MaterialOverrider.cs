@@ -13,21 +13,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using UnityEngine.Events;
 
+using System;
+using System.Collections.Generic;
+using umi3d.common;
 
 namespace umi3d.edk
 {
-    /// <summary>
-    /// Event raising an UMI3DUser instance.
-    /// </summary>
     [Serializable]
-    public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
+    public class MaterialOverrider
+    {
+        public MaterialSO newMaterial;
+        public List<string> overidedMaterials;
 
-    /// <summary>
-    /// Event rising an UMI3DUser and an avatar bone.
-    /// </summary>
-    [Serializable]
-    public class UMI3DUserBoneEvent : UnityEvent<UMI3DUser, string, string, string> { }
+        public UMI3DMeshNodeDto.MaterialOverrideDto ToDto()
+        {
+
+            return new UMI3DMeshNodeDto.MaterialOverrideDto()
+            {
+                newMaterialId = newMaterial.Id(),
+                overridedMaterialsId = overidedMaterials
+            };
+        }
+
+    }
+    
+
 }

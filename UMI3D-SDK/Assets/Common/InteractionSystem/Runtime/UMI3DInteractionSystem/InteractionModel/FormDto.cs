@@ -21,7 +21,7 @@ namespace umi3d.common.interaction
     /// <summary>
     /// 
     /// </summary>
-    public class FormDto : ToolDto
+    public class FormDto : AbstractInteractionDto
     {
         public List<AbstractParameterDto> Fields = new List<AbstractParameterDto>();
 

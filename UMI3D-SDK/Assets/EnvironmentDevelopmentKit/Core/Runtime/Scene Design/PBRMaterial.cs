@@ -213,6 +213,19 @@ namespace umi3d.edk
             }
         }
 
+        public override IEntity ToEntityDto(UMI3DUser user)
+        {
+            return ToDto();
+        }
+
+        public static LoadEntity CreateLoadOperation(PBRMaterial mat)
+        {
+            var res = new LoadEntity()
+            {
+                entity = mat,
+            };
+            return res;
+        }
     }
     [System.Serializable]
     public class CustomTextures

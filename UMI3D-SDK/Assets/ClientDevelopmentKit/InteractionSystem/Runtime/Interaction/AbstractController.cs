@@ -104,6 +104,14 @@ namespace umi3d.cdk.interaction
         public abstract AbstractUMI3DInput FindInput(AbstractParameterDto param, bool unused = true);
 
         /// <summary>
+        /// Return an input for a given form. Return null if no input is available.
+        /// </summary>
+        /// <param name="form">Form to find an input for</param>
+        /// <param name="unused">Should the input be unused ?</param>
+        /// <returns></returns>
+        public abstract AbstractUMI3DInput FindInput(FormDto form, bool unused = true);
+
+        /// <summary>
         /// Check if a tool can be projected on this controller.
         /// </summary>
         /// <param name="tool"> The tool to be projected.</param>
@@ -157,7 +165,7 @@ namespace umi3d.cdk.interaction
             else
             {
                 AbstractInteractionDto[] interactions = tool.interactions.ToArray();
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions);
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id);
                 associatedInputs.Add(tool.id, inputs);
             }
 

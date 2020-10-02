@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     //[CreateAssetMenu(fileName = "Umi3DMaterial", menuName = "UMI3D/Umi3DMaterial")]
-    public abstract class MaterialSO : ScriptableObject, UMI3DEntity
+    public abstract class MaterialSO : ScriptableObject, UMI3DLoadableEntity
     {
 
         public enum AlphaMode
@@ -58,5 +58,26 @@ namespace umi3d.edk
             }
         }
 
+        public abstract IEntity ToEntityDto(UMI3DUser user);
+
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
     }
 }

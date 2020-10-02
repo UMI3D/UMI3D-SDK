@@ -110,6 +110,11 @@ namespace umi3d.edk.userCapture
             userEmbd.UpdateEmbodiment(dto);
         }
 
+        public void UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
+        {
+
+        }
+
         /// <summary>
         /// Delete the User's Embodiment.
         /// </summary>

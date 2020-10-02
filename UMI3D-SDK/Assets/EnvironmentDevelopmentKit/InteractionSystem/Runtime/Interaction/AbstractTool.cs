@@ -128,7 +128,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user">the user</param>
         /// <returns>an AbstractInteractionDto representing this interaction</returns>
-        public AbstractToolDto ToDto(UMI3DUser user)
+        public virtual AbstractToolDto ToDto(UMI3DUser user)
         {
             var dto = CreateDto();
             WriteProperties(dto, user);

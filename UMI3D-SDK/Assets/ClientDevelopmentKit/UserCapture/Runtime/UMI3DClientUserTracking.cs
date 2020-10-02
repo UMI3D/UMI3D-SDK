@@ -24,7 +24,9 @@ namespace umi3d.cdk.userCapture
 {
     public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
     {
-        public Transform Anchor;
+        public Transform anchor;
+        public Transform viewpoint;
+        public string viewpointBonetype;
 
         public float skeletonParsingIterationCooldown = 0f;
         float cooldownTmp = 0f;
@@ -33,16 +35,24 @@ namespace umi3d.cdk.userCapture
         public int max = 0;
         int counter = 0;
 
-        public UserTrackingFrameDto LastFrameDto;
-
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
         public UnityEvent skeletonParsedEvent;
+
+        UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
+        UserCameraPropertiesDto CameraPropertiesDto;
+
 
         protected override void Awake()
         {
             base.Awake();
             skeletonParsedEvent = new UnityEvent();
+            CameraPropertiesDto = new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
+                boneType = viewpointBonetype,
+            };
         }
 
         void Update()
@@ -70,7 +80,7 @@ namespace umi3d.cdk.userCapture
             List<BoneDto> bonesList = new List<BoneDto>();
             foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
             {
-                BoneDto dto = bone.ToDto(Anchor);
+                BoneDto dto = bone.ToDto(anchor);
                 if (dto != null)
                     bonesList.Add(dto);
             }
@@ -78,9 +88,9 @@ namespace umi3d.cdk.userCapture
             LastFrameDto = new UserTrackingFrameDto()
             {
                 bones = bonesList,
-                position = Anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
-                rotation = Anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
-                scale = Anchor.localScale,
+                position = anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
+                rotation = anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
+                scale = anchor.localScale,
                 userId = UMI3DClientServer.Instance.GetId()
             };
 

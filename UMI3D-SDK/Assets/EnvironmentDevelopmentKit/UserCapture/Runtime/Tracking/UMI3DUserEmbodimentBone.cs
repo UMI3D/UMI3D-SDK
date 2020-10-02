@@ -34,6 +34,8 @@ namespace umi3d.edk.userCapture
 
         public SpatialPosition spatialPosition;
 
+        public bool isTracked;
+
         public UMI3DUserEmbodimentBone(string userId, string boneType)
         {
             this.userId = userId;
