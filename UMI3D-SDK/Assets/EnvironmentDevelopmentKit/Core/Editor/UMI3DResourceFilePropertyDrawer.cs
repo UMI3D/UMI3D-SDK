@@ -25,6 +25,8 @@ using System.IO;
 using System;
 using umi3d.common;
 using Path = umi3d.common.Path;
+using System.Reflection;
+using System.Linq;
 
 namespace umi3d.edk.editor
 {
@@ -47,7 +49,7 @@ namespace umi3d.edk.editor
 
 
         int _choiceIndex = 0;
-        List<string> choices = new List<string> { "standard","unity-standalone","unity-android"};
+        string[] choices;
 
         public bool foldout;
         public bool foldoutMetrics;
@@ -86,7 +88,11 @@ namespace umi3d.edk.editor
             pathIfInBundle = property.FindPropertyRelative("pathIfInBundle");
             libraryKey = property.FindPropertyRelative("libraryKey");
 
-            _choiceIndex = choices.Contains(format.stringValue) ? choices.IndexOf(format.stringValue) : 0;
+            Type type = typeof( UMI3DAssetFormat);
+            choices = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
+                .Select(fi => fi.GetValue(null) as string).ToArray();
+            _choiceIndex = choices.Contains(format.stringValue) ? Array.IndexOf(choices,format.stringValue) : 0;
             var RLine = new Rect(position.x, position.y, position.width, LineHeight);
             foldout = EditorGUI.Foldout(RLine, foldout, format.stringValue + " [ Resolution " + resolution.intValue +" ]", true);
             if (foldout)
