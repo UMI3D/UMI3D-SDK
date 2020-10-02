@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -44,12 +45,12 @@ namespace umi3d.edk
 
         public List<AssetLibrary> globalLibraries;
 
-        [HideInInspector]
-        private Vector3 defaultStartPosition = new Vector3();
-        [HideInInspector]
-        private Vector3 defaultStartOrentation = new Vector3();
-        static public UMI3DAsyncProperty<Vector3> objectStartPosition;
-        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion;
+        [SerializeField]
+        private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
+        [SerializeField]
+        private Vector3 defaultStartOrentation = new Vector3(0, 0, 0); 
+        static public UMI3DAsyncProperty<Vector3> objectStartPosition {get; protected set;}
+        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
 
 
 
@@ -99,7 +100,7 @@ namespace umi3d.edk
 
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto();
+            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartQuaternion.GetValue(user) };
         }
 
 

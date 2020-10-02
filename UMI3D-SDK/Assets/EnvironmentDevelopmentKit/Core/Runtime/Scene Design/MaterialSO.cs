@@ -35,12 +35,7 @@ namespace umi3d.edk
 
         protected abstract string GetId();
 
-        /*   private void Awake()
-           {
-               Debug.Log("on Awake");
-
-               idMaterialSO = System.Guid.NewGuid().ToString();
-           }*/
+        protected abstract void SetId(string id);
 
         public abstract GlTFMaterialDto ToDto();
 
@@ -56,6 +51,7 @@ namespace umi3d.edk
             if (string.IsNullOrEmpty(mat.id) || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
             {
                 mat.id = UMI3DEnvironment.Register(this);
+                SetId(mat.id);
                 InitDefinition(mat.id);
 
                 //      Debug.Log("registered");

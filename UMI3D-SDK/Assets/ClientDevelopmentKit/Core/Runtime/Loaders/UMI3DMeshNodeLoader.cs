@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 using MainThreadDispatcher;
@@ -123,7 +124,17 @@ namespace umi3d.cdk
                 root = go;
             }
             var instance = GameObject.Instantiate(root, parent, true);
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
+            var renderers = instance.GetComponentsInChildren<Renderer>();
+            nodeInstance.renderers = renderers.ToList();
+
+            foreach(var renderer in renderers)
+            {
+                renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = dto.receiveShadow;
+            }
+
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
@@ -320,6 +331,26 @@ namespace umi3d.cdk
 
                    break;
 
+                case UMI3DPropertyKeys.CastShadow:
+                    extension.castShadow = (bool)property.value;
+                    if (entity is UMI3DNodeInstance)
+                    {
+                        var node = entity as UMI3DNodeInstance;
+                        foreach (var renderer in node.renderers)
+                            renderer.shadowCastingMode = extension.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                    }
+                    else return false;
+                    break;
+                case UMI3DPropertyKeys.ReceiveShadow:
+                    extension.receiveShadow = (bool)property.value;
+                    if (entity is UMI3DNodeInstance)
+                    {
+                        var node = entity as UMI3DNodeInstance;
+                        foreach (var renderer in node.renderers)
+                            renderer.receiveShadows = extension.receiveShadow;
+                    }
+                    else return false;
+                    break;
                 default:
                     return false;
             }

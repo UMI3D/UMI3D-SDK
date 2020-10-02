@@ -50,6 +50,8 @@ namespace umi3d.common
         //public const string OverrideMaterial = "umi3d_model_override_material";
         public const string ApplyCustomMaterial = "umi3d_is_custom_material_applied";
         public const string AreSubobjectsTracked = "umi3d_are_subobject_tracked";
+        public const string CastShadow = "umi3d_cast_shadow";
+        public const string ReceiveShadow = "umi3d_receive_shadow";
         #endregion
 
         #region KHR_light

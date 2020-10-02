@@ -110,7 +110,11 @@ namespace umi3d.common
         {
             
             var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
-            if (channel == null) if(connectionState != RTCIceConnectionState.Completed) throw new Exception("No suitable channel found.");
+            if (channel == null)
+            {
+                if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found");
+                return;
+            }
             if (channel.IsOpen)
             {
                 channel.dataChannel.Send(data);
@@ -129,7 +133,11 @@ namespace umi3d.common
         public void Send(byte[] data, bool reliable, DataType dataType)
         {
             var channel = channels.Find((c) => c.reliable == reliable && c.type == dataType);
-            if (channel == null) if (connectionState != RTCIceConnectionState.Completed) throw new Exception($"No suitable channel found for {reliable} && {dataType}");
+            if (channel == null)
+            {
+                if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}");
+                return;
+            }
             if (channel.IsOpen) 
                 channel.dataChannel.Send(data);
             else

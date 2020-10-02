@@ -57,6 +57,16 @@ namespace umi3d.common
         public bool areSubobjectsTracked;
 
         /// <summary>
+        /// State if object will be opaque to light.
+        /// </summary>
+        public bool castShadow;
+        /// <summary>
+        /// State if object display shadow of other object.
+        /// </summary>
+        public bool receiveShadow;
+
+
+        /// <summary>
         /// Should some material be averrided
         /// </summary>
         [System.Serializable]

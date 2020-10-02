@@ -32,10 +32,13 @@ namespace umi3d.edk
         bool looping;
         [SerializeField]
         DateTime startTime;
+        private UMI3DAsyncProperty<bool> _objectPlaying;
+        private UMI3DAsyncProperty<bool> _objectLooping;
+        private UMI3DAsyncProperty<DateTime> _objectStartTime;
 
-        public UMI3DAsyncProperty<bool> objectPlaying;
-        public UMI3DAsyncProperty<bool> objectLooping;
-        public UMI3DAsyncProperty<DateTime> objectStartTime;
+        public UMI3DAsyncProperty<bool> objectPlaying { get { Register();  return _objectPlaying; } protected set => _objectPlaying = value; }
+        public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
+        public UMI3DAsyncProperty<DateTime> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
 
         /// <summary>
         /// Get the Id of the animation.
@@ -80,12 +83,26 @@ namespace umi3d.edk
         /// Return load operation
         /// </summary>
         /// <returns></returns>
-        protected virtual LoadEntity GetLoadEntity()
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
             };
             return operation;
         }

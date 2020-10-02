@@ -33,6 +33,8 @@ namespace umi3d.cdk
         public virtual void CreateLight(KHR_lights_punctual ldto, GameObject node)
         {
             Light light = node.GetOrAddComponent<Light>();
+            light.shadows = LightShadows.Soft;
+
             light.intensity = ldto.intensity;
             light.name = ldto.name;
             light.range = ldto.range;

@@ -180,6 +180,8 @@ namespace umi3d.cdk
             /// <returns></returns>
             public bool MatchUrl(string url, string libraryId = null)
             {
+                if (url == this.url) return true;
+
                 Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
                 Match a = rx.Match(this.url);
                 Match b = rx.Match(url);

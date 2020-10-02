@@ -303,7 +303,7 @@ namespace umi3d.cdk
             if (resourceDto == null) return;
 
             FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(resourceDto.variants);  // Peut etre ameliore
-
+            if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
