@@ -31,13 +31,14 @@ namespace umi3d.edk.userCapture
 
         public Dictionary<string, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<string, UMI3DUserEmbodimentBone>();
 
-        public UMI3DAsyncListProperty<Binding> bindings;
-
-        public UMI3DAsyncProperty<bool> activeBindings;
+        public UMI3DAsyncListProperty<Binding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
+        public UMI3DAsyncProperty<bool> activeBindings { get { Register(); return _activeBindings; } protected set => _activeBindings = value; }
 
         public class OnActivationValueChanged : UnityEvent<string, bool> { };
 
         public static OnActivationValueChanged onActivationValueChanged = new OnActivationValueChanged();
+        private UMI3DAsyncListProperty<Binding> _bindings;
+        private UMI3DAsyncProperty<bool> _activeBindings;
 
         protected override void InitDefinition(string id)
         {

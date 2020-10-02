@@ -28,9 +28,10 @@ namespace umi3d.edk
         //UMI3DMAterial material;
         [SerializeField]
         UMI3DResource videoResources;
+        private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
 
         //public UMI3DAsyncProperty<UMI3DMaterial> ObjectMaterial;
-        public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource;
+        public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource { get { Register(); return objectVideoResource; } protected set => objectVideoResource = value; }
 
         protected override void InitDefinition(string id)
         {

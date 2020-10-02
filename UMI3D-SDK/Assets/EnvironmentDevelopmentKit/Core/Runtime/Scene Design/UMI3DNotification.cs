@@ -63,42 +63,32 @@ namespace umi3d.edk
         }
 
 
-        public LoadEntity ToLoadEntity(UMI3DUser user)
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
-            return new LoadEntity() { entity = this, users = new HashSet<UMI3DUser>() { user } };
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
         }
 
-        public LoadEntity ToLoadEntity(IEnumerable<UMI3DUser> users)
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
-            var load = new LoadEntity() { entity = this, users = new HashSet<UMI3DUser>() };
-            load += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>((u) => users.Contains(u));
-            return load;
-        }
-
-        public LoadEntity ToLoadEntity()
-        {
-            var load = new LoadEntity() { entity = this, users = new HashSet<UMI3DUser>() };
-            load += UMI3DEnvironment.GetEntities<UMI3DUser>();
-            return load;
-        }
-
-        public DeleteEntity ToDeleteEntity(UMI3DUser user)
-        {
-            return new DeleteEntity() { entityId = Id(), users = new HashSet<UMI3DUser>() { user } };
-        }
-
-        public DeleteEntity ToDeleteEntity(IEnumerable<UMI3DUser> users)
-        {
-            var delete = new DeleteEntity() { entityId = Id(), users = new HashSet<UMI3DUser>() };
-            delete += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>((u) => users.Contains(u));
-            return delete;
-        }
-
-        public DeleteEntity ToDeleteEntity()
-        {
-            var delete = new DeleteEntity() { entityId = Id(), users = new HashSet<UMI3DUser>() };
-            delete += UMI3DEnvironment.GetEntities<UMI3DUser>();
-            return delete;
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
         }
 
 

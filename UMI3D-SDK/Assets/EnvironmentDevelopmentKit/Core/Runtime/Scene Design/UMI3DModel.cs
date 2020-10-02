@@ -26,16 +26,16 @@ namespace umi3d.edk
         [Obsolete("will be removed soon")]
         public bool lockColliders = false;
 
- 
+
         [SerializeField]
         UMI3DResource model = new UMI3DResource();
-        public UMI3DAsyncProperty<UMI3DResource> objectModel;
+        public UMI3DAsyncProperty<UMI3DResource> objectModel { get { Register(); return _objectModel; } protected set => _objectModel = value; }
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
 
         public bool overrideModelMaterials = false;
         public List<MaterialOverrider> materialsOverider = new List<MaterialOverrider>();
-        
+
         [Serializable]
         public class MaterialOverrider
         {
@@ -57,15 +57,21 @@ namespace umi3d.edk
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
 
-        public UMI3DAsyncProperty<bool> objectMaterialsOverrided;
-        public UMI3DAsyncListProperty<MaterialOverrider> objectMaterrialOveriders;
+        public UMI3DAsyncProperty<bool> objectMaterialsOverrided { get { Register(); return _objectMaterialsOverrided; } protected set => _objectMaterialsOverrided = value; }
+        public UMI3DAsyncListProperty<MaterialOverrider> objectMaterrialOveriders { get { Register(); return _objectMaterrialOveriders; } protected set => _objectMaterrialOveriders = value; }
 
         [SerializeField]
         protected bool castShadow = true;
         [SerializeField]
         protected bool receiveShadow = true;
-        public UMI3DAsyncProperty<bool> objectCastShadow;
-        public UMI3DAsyncProperty<bool> objectReceiveShadow;
+        private UMI3DAsyncProperty<UMI3DResource> _objectModel;
+        private UMI3DAsyncProperty<bool> _objectMaterialsOverrided;
+        private UMI3DAsyncListProperty<MaterialOverrider> _objectMaterrialOveriders;
+        private UMI3DAsyncProperty<bool> _objectCastShadow;
+        private UMI3DAsyncProperty<bool> _objectReceiveShadow;
+
+        public UMI3DAsyncProperty<bool> objectCastShadow { get { Register(); return _objectCastShadow; } protected set => _objectCastShadow = value; }
+        public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
 
 
         protected override void InitDefinition(string id)
@@ -87,9 +93,9 @@ namespace umi3d.edk
                 SetSubHierarchy();
             }
 
-            objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r,u) => r.ToDto());
+            objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r, u) => r.ToDto());
 
-       
+
         }
 
         public void SetSubHierarchy()
@@ -108,7 +114,7 @@ namespace umi3d.edk
                     UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
                     subModel.parentModel = this;
                 }
-                else if(child.gameObject.GetComponent<UMI3DSubModel>() != null)
+                else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
                 {
                     UMI3DSubModel subModel = child.gameObject.GetComponent<UMI3DSubModel>();
                     subModel.parentModel = this;
@@ -148,7 +154,7 @@ namespace umi3d.edk
                 meshDto.overridedMaterials = materialsOverider.ConvertAll((mat) => mat.ToDto());
 
             }
-            
+
         }
 
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
