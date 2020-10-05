@@ -70,12 +70,12 @@ namespace umi3d.edk.interaction
         {
             base.WriteProperties(dto, user);
             var frDto = dto as FloatRangeParameterDto;
-            frDto.Min = min;
-            frDto.Max = max;
+            frDto.min = min;
+            frDto.max = max;
             frDto.value = value;
             if (increment != 0)
             {
-                frDto.Increment = increment;
+                frDto.increment = increment;
             }
         }
 

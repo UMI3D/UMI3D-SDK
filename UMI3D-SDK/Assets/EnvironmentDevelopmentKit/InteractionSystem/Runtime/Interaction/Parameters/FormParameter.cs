@@ -47,7 +47,7 @@ namespace umi3d.edk.interaction
             var dto = (dto_ as FormDto);
             if (dto == null)
                 return;
-            dto.Fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
+            dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
         }
 
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)

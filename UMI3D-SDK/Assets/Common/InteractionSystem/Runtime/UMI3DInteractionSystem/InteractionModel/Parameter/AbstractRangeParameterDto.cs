@@ -18,8 +18,8 @@ namespace umi3d.common.interaction
 {
     public abstract class AbstractRangeParameterDto<T> : AbstractParameterDto<T> where T : System.IComparable
     {
-        public T Min;
-        public T Max;
-        public T Increment;
+        public T min;
+        public T max;
+        public T increment;
     }
 }

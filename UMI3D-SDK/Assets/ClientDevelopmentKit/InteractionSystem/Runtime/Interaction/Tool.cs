@@ -94,7 +94,7 @@ namespace umi3d.cdk.interaction
                     result = b;
                     break;
                 case FloatRangeParameterDto floatRangeParameterDto:
-                    var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.Max, min = floatRangeParameterDto.Min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.Increment };
+                    var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
                     f.Subscribe((x) =>
                     {
                         floatRangeParameterDto.value = x;
@@ -110,7 +110,7 @@ namespace umi3d.cdk.interaction
                     result = f;
                     break;
                 case EnumParameterDto<string> enumParameterDto:
-                    var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.PossibleValues };
+                    var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
                     en.Subscribe((x) =>
                     {
                         enumParameterDto.value = x;
