@@ -53,36 +53,7 @@ namespace umi3d.cdk
                         node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
                     }
 
-                    if (nodeDto is SubModelDto)
-                    {
-                        string sub = nodeDto.id.Split(new string[] { "==_[" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                        sub = sub.Remove(sub.Length - 1);
-                        UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(((SubModelDto)nodeDto).modelId);
-                        GlTFNodeDto modelDto = (GlTFNodeDto)nodeInstance.dto;
-                        string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariante(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
-
-                        if (UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(modelInCache))
-                        {
-                            GameObject.Instantiate(UMI3DResourcesManager.Instance.subModelsCache[modelInCache][sub].gameObject, node.gameObject.transform);
-                        }
-                        else
-                        {
-                            UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, (o) =>
-                            {
-
-                                var instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, true);
-                                AbstractMeshDtoLoader.ShowModelRecursively(instance);
-                                instance.transform.localPosition = Vector3.zero;
-                                instance.transform.localEulerAngles = new Vector3(0, 180, 0);
-                                instance.transform.localScale = Vector3.one;
-                                SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
-                            });
-                        }
-                        var rootDto = UMI3DEnvironmentLoader.GetNode(((SubModelDto)nodeDto).pid).dto;
-                        var rootGO = UMI3DEnvironmentLoader.GetNode(((SubModelDto)nodeDto).pid).gameObject;
-                        //TODO
-                        //then apply sub Model overriderMaterials 
-                    }
+                    
                     finished?.Invoke();
                 }
                 else failed?.Invoke("nodeDto should not be null");
@@ -298,6 +269,7 @@ namespace umi3d.cdk
         }
 
 
+        #region Collider
         protected void SetCustomCollider(GameObject node, ResourceDto resourceDto)
         {
             if (resourceDto == null) return;
@@ -430,5 +402,8 @@ namespace umi3d.cdk
                     break;
             }
         }
+        #endregion
+
+
     }
 }

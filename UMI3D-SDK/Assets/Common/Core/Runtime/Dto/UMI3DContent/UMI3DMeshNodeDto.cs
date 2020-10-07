@@ -19,28 +19,13 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DMeshNodeDto : UMI3DNodeDto
+    public class UMI3DMeshNodeDto : UMI3DRenderedNodeDto
     {
         
         /// <summary>
         /// Model ressource.
         /// </summary>
         public ResourceDto mesh = new ResourceDto();
-
-        /// <summary>
-        /// An optional collider
-        /// </summary>
-        //public ColliderDto collider;
-
-        /// <summary>
-        /// Should some material be overrided
-        /// </summary>
-        public List<MaterialOverrideDto> overridedMaterials = null;
-        
-        /// <summary>
-        /// Should apply the overriders list
-        /// </summary>
-        public bool applyCustomMaterial = false;
 
         /// <summary>
         /// Optional id generator for child objects. Can be used to animate sub objects without to split it in different assets.
@@ -55,27 +40,6 @@ namespace umi3d.common
         /// If false, it is not possible to move the subobjects of this mesh.
         /// </summary>
         public bool areSubobjectsTracked;
-
-        /// <summary>
-        /// State if object will be opaque to light.
-        /// </summary>
-        public bool castShadow;
-        /// <summary>
-        /// State if object display shadow of other object.
-        /// </summary>
-        public bool receiveShadow;
-
-
-        /// <summary>
-        /// Should some material be averrided
-        /// </summary>
-        [System.Serializable]
-        public class MaterialOverrideDto : UMI3DDto
-        { 
-            public List<string> overridedMaterialsId; // List of names of mat or "ANY_mat" or "DEFAULT_mat"
-            public string newMaterialId;  // name of the umi3d entity (the id of the mat)
-        }
-        
 
     }
     

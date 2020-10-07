@@ -154,10 +154,10 @@ namespace umi3d.edk
             setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
             setOperation(obj.objectIsConvexe.SetValue(obj.convex));
             setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-            if(obj as UMI3DModel)
+            if(obj as AbstractRenderedNode)
             {
-                setOperation(((UMI3DModel)obj).objectMaterialsOverrided.SetValue(((UMI3DModel)obj).overrideModelMaterials));
-                setOperation(((UMI3DModel)obj).objectMaterialOveriders.SetValue(((UMI3DModel)obj).materialsOverider));
+                setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
+                setOperation(((AbstractRenderedNode)obj).objectMaterialOveriders.SetValue(((AbstractRenderedNode)obj).materialsOverider));
             }
         }
 

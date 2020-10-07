@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(UMI3DNode), true)]
+    [CustomEditor(typeof(UMI3DNode), false)]
     [CanEditMultipleObjects]
     public class UMI3DNodeEditor : Editor
     {

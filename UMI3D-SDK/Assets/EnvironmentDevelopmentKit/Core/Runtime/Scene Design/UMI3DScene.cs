@@ -109,7 +109,7 @@ namespace umi3d.edk
         public List<string> materialIds = new List<string>();
         [HideInInspector]
         public List<string> animationIds = new List<string>();
-        //[HideInInspector]
+        [HideInInspector]
         public List<MaterialSO> materialSOs = new List<MaterialSO>();
         public List<MaterialSO> PreloadedMaterials = new List<MaterialSO>();
         

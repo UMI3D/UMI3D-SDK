@@ -18,7 +18,8 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
-    public class UMI3DSubModel : UMI3DNode
+    public class UMI3DSubModel : AbstractRenderedNode
+
 
     {
         public UMI3DAsyncProperty<bool> objectMaterialOverrided { get { Register(); return _objectMaterialOverrided; } protected set => _objectMaterialOverrided = value; }
