@@ -106,6 +106,14 @@ namespace umi3d.cdk
             }
         }
 
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
+            if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
+
+                return base.SetUMI3DProperty(entity, property);
+            else
+                return false;
+        }
 
 
     }

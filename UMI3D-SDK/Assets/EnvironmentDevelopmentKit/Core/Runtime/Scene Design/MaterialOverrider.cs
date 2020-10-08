@@ -24,12 +24,22 @@ namespace umi3d.edk
     public class MaterialOverrider
     {
         public MaterialSO newMaterial;
+        public bool overrideAllMaterial = false;
         public List<string> overidedMaterials;
 
-        public UMI3DMeshNodeDto.MaterialOverrideDto ToDto()
-        {
+        private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat"};
 
-            return new UMI3DMeshNodeDto.MaterialOverrideDto()
+        public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
+        {
+            if(overrideAllMaterial)
+                return new UMI3DRenderedNodeDto.MaterialOverrideDto()
+                {
+                    newMaterialId = newMaterial.Id(),
+                    overridedMaterialsId = ANY_mat
+                    
+                };
+
+            return new UMI3DRenderedNodeDto.MaterialOverrideDto()
             {
                 newMaterialId = newMaterial.Id(),
                 overridedMaterialsId = overidedMaterials
