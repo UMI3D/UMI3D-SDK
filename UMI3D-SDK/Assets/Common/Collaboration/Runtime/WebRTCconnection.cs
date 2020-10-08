@@ -101,6 +101,39 @@ namespace umi3d.common
                 throw new Exception($"Data Channel {channel.Label} is not open yet");
         }
 
+
+        /// <summary>
+        /// Find a suitable channel.
+        /// </summary>
+        /// <param name="reliable">should this channel be reliable.</param>
+        /// <param name="dataType">datatype of the channel.</param>
+        /// <param name="channel">First matching DataChannel.</param>
+        /// <returns>True if a channel was found</returns>
+        public bool Find(bool reliable, DataType dataType, out DataChannel channel)
+        {
+            channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
+            return channel == null;
+        }
+
+        /// <summary>
+        /// Send a message via a datachannel.
+        /// </summary>
+        /// <param name="data">Message.</param>
+        /// <param name="channel">Datachannel.</param>
+        public void Send(byte[] data, DataChannel channel)
+        {
+            if (channel == null)
+            {
+                if (connectionState != RTCIceConnectionState.Completed)
+                    Debug.LogError($"Channel should not be null");
+                return;
+            }
+            if (channel.IsOpen)
+                channel.dataChannel.Send(data);
+            else
+                channel.MessageNotSend.Add(data);
+        }
+
         /// <summary>
         /// Send a bytes message using the first Data channel found.
         /// </summary>
@@ -112,7 +145,8 @@ namespace umi3d.common
             var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
             if (channel == null)
             {
-                if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found");
+                if (connectionState != RTCIceConnectionState.Completed)
+                    Debug.LogWarning($"No suitable channel found");
                 return;
             }
             if (channel.IsOpen)

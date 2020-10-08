@@ -126,6 +126,18 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Find matching channel with the server. 
+        /// </summary>
+        /// <param name="reliable">should this channel be reliable.</param>
+        /// <param name="dataType">datatype of the channel.</param>
+        /// <param name="dataChannels">First matching DataChannels.</param>
+        /// <returns></returns>
+        public virtual bool ExistServer(bool reliable, DataType dataType, out List<DataChannel> dataChannels)
+        {
+            return Exist(reliable, dataType, out dataChannels, UMI3DGlobalID.ServerId);
+        }
+
+        /// <summary>
         /// USe For debug purpose only.
         /// this will add a formated message before webrtc log message.
         /// </summary>
