@@ -14,18 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+using umi3d.common.interaction;
+using UnityEngine;
+
+namespace umi3d.edk.interaction
 {
-    public static class UMI3DAssetFormat
+    public abstract class AbstractParameter : AbstractInteraction
     {
-        public const string gltf = "gltf";
-        public const string obj = "obj";
-        public const string fbx = "fbx";
-        public const string png = "png";
-        public const string jpg = "jpg";
-        //Unity
-        public const string unity_standalone = "unity_standalone";
-        public const string unity_android = "unity_android";
-        public const string unity_ios = "unity_ios";
+        
     }
 }

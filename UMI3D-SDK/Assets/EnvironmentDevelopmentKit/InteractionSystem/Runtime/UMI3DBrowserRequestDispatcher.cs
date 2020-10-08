@@ -33,17 +33,18 @@ namespace umi3d.edk.interaction
                     Debug.Log($"receive transaction from browser {user.Id()}:{dto}");
                     break;
                 case HoveredDto hoveredDto:
-                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoveredDto.entityId)?.Hovered(user, hoveredDto);
+                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoveredDto.id)?.Hovered(user, hoveredDto);
                     break;
                 case HoverStateChangedDto hoverStateChanged:
-                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoverStateChanged.entityId)?.HoverStateChanged(user, hoverStateChanged);
+                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoverStateChanged.id)?.HoverStateChanged(user, hoverStateChanged);
                     break;
                 case EventStateChangedDto eventState:
                 case EventTriggeredDto eventTriggered:
                 case ParameterSettingRequestDto parameterSetting:
                 case ManipulationRequestDto manipulation:
+                case FormAnswer formAnswer:
                     var interaction = dto as InteractionRequestDto;
-                    UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.entityId)?.OnUserInteraction(user, interaction);
+                    UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.id)?.OnUserInteraction(user, interaction);
                     break;
                 default:
                     Debug.LogWarning($"Missing case {dto.GetType()}");

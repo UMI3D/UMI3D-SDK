@@ -50,7 +50,7 @@ namespace umi3d.cdk.interaction
         {
             HoverStateChangedDto hoverDto = new HoverStateChangedDto()
             {
-                entityId = id,
+                toolId = id,
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
                 state = true
@@ -65,7 +65,7 @@ namespace umi3d.cdk.interaction
         {
             HoverStateChangedDto hoverDto = new HoverStateChangedDto()
             {
-                entityId = id,
+                toolId = id,
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
                 state = false
@@ -84,7 +84,7 @@ namespace umi3d.cdk.interaction
             {
                 HoveredDto hoverDto = new HoveredDto()
                 {
-                    entityId = id,
+                    toolId = id,
                     hoveredObjectId = hoveredObjectId,
                     boneType = bone,
                     normal = normal,

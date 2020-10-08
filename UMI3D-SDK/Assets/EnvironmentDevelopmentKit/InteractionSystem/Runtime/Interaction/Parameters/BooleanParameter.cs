@@ -19,7 +19,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class BooleanParameter : AbstractInteraction
+    public class BooleanParameter : AbstractParameter
     {
         /// <summary>
         /// Current input value.

@@ -26,7 +26,9 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the interaction or of the tool (in the case of an interaction related to hoverring).
         /// </summary>
-        public string entityId;
+        public string toolId;
+
+        public string id;
 
         /// <summary>
         /// The type of bone associated to the user's controller.

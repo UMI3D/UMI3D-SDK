@@ -84,7 +84,8 @@ namespace umi3d.cdk.interaction
                             booleanParameterDto.value = x;
                             var pararmeterDto = new ParameterSettingRequestDto()
                             {
-                                entityId = booleanParameterDto.id,
+                                toolId = dto.id,
+                                id = booleanParameterDto.id,
                                 parameter = booleanParameterDto,
                             };
                             UMI3DClientServer.Send(pararmeterDto, true);
@@ -93,13 +94,14 @@ namespace umi3d.cdk.interaction
                     result = b;
                     break;
                 case FloatRangeParameterDto floatRangeParameterDto:
-                    var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.Max, min = floatRangeParameterDto.Min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.Increment };
+                    var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
                     f.Subscribe((x) =>
                     {
                         floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = floatRangeParameterDto.id,
+                            toolId = dto.id,
+                            id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
@@ -108,13 +110,14 @@ namespace umi3d.cdk.interaction
                     result = f;
                     break;
                 case EnumParameterDto<string> enumParameterDto:
-                    var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.PossibleValues };
+                    var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
                     en.Subscribe((x) =>
                     {
                         enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = enumParameterDto.id,
+                            toolId = dto.id,
+                            id = enumParameterDto.id,
                             parameter = enumParameterDto,
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
@@ -129,7 +132,8 @@ namespace umi3d.cdk.interaction
                         stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = stringParameterDto.id,
+                            toolId = dto.id,
+                            id = stringParameterDto.id,
                             parameter = stringParameterDto,
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);

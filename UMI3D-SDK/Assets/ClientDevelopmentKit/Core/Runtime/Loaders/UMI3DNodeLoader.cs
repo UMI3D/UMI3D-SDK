@@ -337,12 +337,17 @@ namespace umi3d.cdk
                     if (dto.isMeshCustom)
                     {
                         MeshCollider mesh = go.AddComponent<MeshCollider>();
-                        mesh.convex = false;
-                        SetCustomCollider(go, dto.customMeshCollider);
-                        if (nodeInstance != null)
-                            nodeInstance.colliders.Add(mesh);
+                        if (mesh.sharedMesh.isReadable)
+                        {
+                            mesh.convex = false;
+                            SetCustomCollider(go, dto.customMeshCollider);
+                            if (nodeInstance != null)
+                                nodeInstance.colliders.Add(mesh);
+                            else
+                                Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                        }
                         else
-                            Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                            Debug.LogWarning("the mesh has been marked as non-accessible. Collider is not registered");
                     }
                     else
                     {

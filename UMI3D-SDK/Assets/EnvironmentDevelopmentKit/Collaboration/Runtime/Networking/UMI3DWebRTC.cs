@@ -283,7 +283,9 @@ namespace umi3d.edk.collaboration
                 var data = UMI3DDto.FromBson(bytes);
                 if (data is common.userCapture.UserTrackingFrameDto)
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(data as common.userCapture.UserTrackingFrameDto);
-                //@nicolas
+
+                else if (data is common.userCapture.UserCameraPropertiesDto)
+                    UMI3DEmbodimentManager.Instance.UserCameraReception(data as common.userCapture.UserCameraPropertiesDto, user);
             }
             else if(channel.type == DataType.Data)
             {
