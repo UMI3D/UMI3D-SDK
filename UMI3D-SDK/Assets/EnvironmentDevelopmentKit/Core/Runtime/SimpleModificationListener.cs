@@ -154,12 +154,11 @@ namespace umi3d.edk
             setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
             setOperation(obj.objectIsConvexe.SetValue(obj.convex));
             setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-            //var model = obj as UMI3DModel;
-            //if (model)
-            //{
-            //    setOperation(model.objectCastShadow.SetValue(model.gameObject.GetComponentInChildren<Renderer>().shadowCastingMode == UnityEngine.Rendering.ShadowCastingMode.On));
-            //    setOperation(model.objectCastShadow.SetValue(model.gameObject.GetComponentInChildren<Renderer>().receiveShadows));
-            //}
+            if(obj as AbstractRenderedNode)
+            {
+                setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
+                setOperation(((AbstractRenderedNode)obj).objectMaterialOveriders.SetValue(((AbstractRenderedNode)obj).materialsOverider));
+            }
         }
 
         private void UIUpdate(UIRect obj)

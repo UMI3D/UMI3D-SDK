@@ -419,6 +419,31 @@ namespace umi3d.common.collaboration
         }
 
         /// <summary>
+        /// Find all existing matching channel. 
+        /// </summary>
+        /// <param name="reliable">should this channel be reliable.</param>
+        /// <param name="dataType">datatype of the channel.</param>
+        /// <param name="dataChannels">First matching DataChannels.</param>
+        /// <param name="peerId">if specified, datachannels contain only first matching channel for this peerId</param>
+        /// <returns></returns>
+        public virtual bool Exist(bool reliable, DataType dataType, out List<DataChannel> dataChannels, string peerId = null)
+        {
+            dataChannels = new List<DataChannel>();
+            DataChannel channel;
+            if (peerId == null)
+                foreach (var connection in peers.Values)
+                {
+                    if (connection.Find(reliable, dataType, out channel))
+                        dataChannels.Add(channel);
+                }
+            else if (peers.ContainsKey(peerId))
+                if (peers[peerId].Find(reliable, dataType, out channel))
+                    dataChannels.Add(channel);
+            return dataChannels.Count > 0;
+        }
+
+
+        /// <summary>
         /// Stop The webrtc client.
         /// </summary>
         public void Stop()

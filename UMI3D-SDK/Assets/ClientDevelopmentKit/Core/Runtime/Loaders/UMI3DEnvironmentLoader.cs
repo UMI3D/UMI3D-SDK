@@ -332,9 +332,19 @@ namespace umi3d.cdk
                 case AbstractEntityDto dto:
                     Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { Debug.Log(s); performed.Invoke(); });
                     break;
+                case GlTFMaterialDto matDto:
+                    materialLoader.LoadMaterialFromExtension(matDto, (m) =>
+                    {
+                        m.name = matDto.name;
+                        //register the material
+                        RegisterEntityInstance(matDto.extensions.umi3d.id, matDto, m);
+                    });
+
+                    break;
                 default:
                     Debug.Log($"load entity fail missing case {entity.GetType()}");
                     break;
+
             }
         }
 

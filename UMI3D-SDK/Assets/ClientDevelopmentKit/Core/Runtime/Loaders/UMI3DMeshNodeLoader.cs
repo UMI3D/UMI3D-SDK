@@ -15,17 +15,19 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
+using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
     /// <summary>
     /// Loader for UMI3D Mesh
     /// </summary>
-    public class UMI3DMeshNodeLoader : UMI3DNodeLoader
+    public class UMI3DMeshNodeLoader : AbstractRenderedNodeLoader
     {
         public List<string> ignoredPrimitiveNameForSubObjectsLoading = new List<string>() { "Gltf_Primitive" };
         public UMI3DMeshNodeLoader(List<string> ignoredPrimitiveNameForSubObjectsLoading)
@@ -121,8 +123,6 @@ namespace umi3d.cdk
             {
                 root = go;
             }
-
-
             var instance = GameObject.Instantiate(root, parent, true);
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
@@ -138,102 +138,14 @@ namespace umi3d.cdk
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
-            
-            ColliderDto colliderDto = ((UMI3DNodeDto)dto).colliderDto;
+            ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
-
-            if (dto.overridedMaterials != null && dto.overridedMaterials.Count > 0)
-            {
-                //TODO a améliorer 
-                foreach (UMI3DMeshNodeDto.MaterialOverrideDto mat in dto.overridedMaterials)
-                {
-                    var matEntity = UMI3DEnvironmentLoader.GetEntity(mat.newMaterialId);
-                    if (matEntity != null)
-                    {
-                        if (mat.overridedMaterialsId.Contains("ANY_mat"))
-                        {
-                            OverrideMaterial(instance, (Material)matEntity.Object, (s) => true);
-                        }
-                        else
-                        {
-                            foreach (string matKey in mat.overridedMaterialsId)
-                            {
-                                OverrideMaterial(instance, (Material)matEntity.Object,
-                                    (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")));
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Material not found : " + mat.newMaterialId);
-                    }
-                }
-
-            }
+            SetMaterialOverided(dto, instance);
+           
         }
 
-        private void OverrideMaterial(GameObject go, Material newMat, Func<string, bool> filter)
-        {
-            foreach (Renderer renderer in go.GetComponentsInChildren<Renderer>())
-            {
-
-                Material[] mats = renderer.sharedMaterials;
-                bool modified = false;
-
-                for (int i = 0; i < renderer.sharedMaterials.Length; i++)
-                {
-                    if (filter(renderer.sharedMaterials[i].name))
-                    {
-                        renderer.sharedMaterials.SetValue(newMat, i);
-
-                        mats[i] = newMat;
-                        modified = true;
-                    }
-                }
-                if (modified)
-                    renderer.materials = mats;
-            }
-        }
-
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
-        {
-            if (base.SetUMI3DProperty(entity, property)) return true;
-            if (entity == null) return false;
-            var dto = (((entity?.dto as GlTFNodeDto)?.extensions?.umi3d) as UMI3DMeshNodeDto);
-            if (dto == null) return false;
-            switch (property.property)
-            {
-                case UMI3DPropertyKeys.Model:
-                    dto.mesh = (ResourceDto)property.value;
-                    ReadUMI3DExtension(((UMI3DMeshNodeDto)((GlTFNodeDto)entity.dto).extensions.umi3d), ((UMI3DNodeInstance)entity).transform.parent.gameObject, null, null);
-                    break;
-                case UMI3DPropertyKeys.CastShadow:
-                    dto.castShadow = (bool)property.value;
-                    if (entity is UMI3DNodeInstance)
-                    {
-                        var node = entity as UMI3DNodeInstance;
-                        foreach (var renderer in node.renderers)
-                            renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
-                    }
-                    else return false;
-                    break;
-                case UMI3DPropertyKeys.ReceiveShadow:
-                    dto.receiveShadow = (bool)property.value;
-                    if (entity is UMI3DNodeInstance)
-                    {
-                        var node = entity as UMI3DNodeInstance;
-                        foreach (var renderer in node.renderers)
-                            renderer.receiveShadows = dto.receiveShadow;
-                    }
-                    else return false;
-                    break;
-                default:
-                    return false;
-            }
-            return true;
-        }
-
+    
 
     }
+
 }

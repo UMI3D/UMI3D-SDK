@@ -59,7 +59,7 @@ namespace umi3d.edk.interaction
         {
             base.WriteProperties(dto, user);
             var epDto = dto as EnumParameterDto<string>;
-            epDto.PossibleValues = options;
+            epDto.possibleValues = options;
             epDto.value = value;
         }
 

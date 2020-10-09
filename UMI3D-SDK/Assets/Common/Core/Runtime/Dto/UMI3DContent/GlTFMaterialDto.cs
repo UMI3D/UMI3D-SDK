@@ -23,7 +23,7 @@ namespace umi3d.common
     /// https://github.com/KhronosGroup/glTF/tree/master/specification/2.0#materials
     /// UMI3D-based textures using ResourceDto should be defined in the umi3d extension.
     /// </summary>
-    public class GlTFMaterialDto : UMI3DDto
+    public class GlTFMaterialDto : UMI3DDto, IEntity
     {
         public string alphaMode;
         public bool doubleSided = false;

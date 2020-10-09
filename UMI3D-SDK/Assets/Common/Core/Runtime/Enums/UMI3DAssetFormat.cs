@@ -16,16 +16,16 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public enum UMI3DAssetFormat
+    public static class UMI3DAssetFormat
     {
-        gltf,
-        obj,
-        fbx,
-        png,
-        jpg,
+        public const string gltf = "gltf";
+        public const string obj = "obj";
+        public const string fbx = "fbx";
+        public const string png = "png";
+        public const string jpg = "jpg";
         //Unity
-        unity_standalone,
-        unity_android,
-        unity_ios
+        public const string unity_standalone = "unity_standalone";
+        public const string unity_android = "unity_android";
+        public const string unity_ios = "unity_ios";
     }
 }

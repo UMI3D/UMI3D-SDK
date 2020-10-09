@@ -45,7 +45,7 @@ namespace umi3d.edk
     }
 
     [System.Serializable]
-    public class UMI3DScalableTextureReource : UMI3DTextureResource
+    public class UMI3DScalableTextureResource : UMI3DTextureResource
     {
         public float scale = 1f;
 

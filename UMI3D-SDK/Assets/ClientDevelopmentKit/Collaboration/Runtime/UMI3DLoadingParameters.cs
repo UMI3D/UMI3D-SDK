@@ -33,6 +33,7 @@ namespace umi3d.cdk
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
         public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
+        public virtual UMI3DSubMeshNodeLoader SubMeshLoader { get; } = new UMI3DSubMeshNodeLoader();
 
         public NotificationLoader notificationLoader;
 
@@ -68,6 +69,9 @@ namespace umi3d.cdk
                     break;
                 case UMI3DMeshNodeDto m:
                     meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    break;
+                case SubModelDto s:
+                    SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
                     break;
                 case UIRectDto r:
                     UILoader.ReadUMI3DExtension(dto, node, callback, failed);
@@ -108,6 +112,8 @@ namespace umi3d.cdk
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity,property))
+                return true;
+            if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, property))
                 return true;

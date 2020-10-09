@@ -25,47 +25,22 @@ namespace umi3d.edk.editor
 {
     [CustomEditor(typeof(UMI3DModel),true)]
     [CanEditMultipleObjects]
-    public class CVEModelEditor : UMI3DNodeEditor
+    public class CVEModelEditor : RenderedNodeEditor
     {
-     //   CVEModel Target;
 
         SerializedProperty variants;
-
-        SerializedProperty material;
-        SerializedProperty overrideModelMaterials;
-
         SerializedProperty areSubobjectsTracked;
-        SerializedProperty castShadow;
-        SerializedProperty receiveShadow;
-        //   SerializedProperty isSubHierarchyAllowedToBeModified;
-
-
 
         private Editor _materialEditor = null;
 
         bool foldout;
 
-
-
         protected override void OnEnable()
         {
             base.OnEnable();
-            material = serializedObject.FindProperty("materialsOverider");
-            overrideModelMaterials = serializedObject.FindProperty("overrideModelMaterials");
+
             variants = serializedObject.FindProperty("model.variants");
-        //    isSubHierarchyAllowedToBeModified = serializedObject.FindProperty("isSubHierarchyAllowedToBeModified");
             areSubobjectsTracked = serializedObject.FindProperty("areSubobjectsTracked");
-            castShadow = serializedObject.FindProperty("castShadow");
-            receiveShadow = serializedObject.FindProperty("receiveShadow");
-            //  Target = (CVEModel)target;
-
-            /*
-            if (Target.Material != null)
-            {
-                // Create an instance of the default MaterialEditor
-                _materialEditor = CreateEditor(Target.Material);
-            }*/
-
         }
 
         void OnDisable()
@@ -81,82 +56,8 @@ namespace umi3d.edk.editor
             serializedObject.Update();
 
             EditorGUILayout.PropertyField(variants, true);
-            
-
-            /*
-                        if (Target.colliderType == ColliderType.Mesh)
-                        {
-                            EditorGUI.indentLevel++;
-                            EditorGUILayout.PropertyField(convex);
-                            EditorGUI.indentLevel--;
-                        }
-            */
-            EditorGUILayout.PropertyField(overrideModelMaterials);
-            if(overrideModelMaterials.boolValue)
-            {
-                EditorGUILayout.PropertyField(material);
-            }
-
-
             EditorGUILayout.PropertyField(areSubobjectsTracked);
-            EditorGUILayout.PropertyField(castShadow);
-            EditorGUILayout.PropertyField(receiveShadow);
 
-            /*
-            if (!overrideModelMaterial.boolValue) { }
-            else
-            {
-
-                EditorGUILayout.PropertyField(material);
-
-                if (EditorGUI.EndChangeCheck())
-                {
-                    serializedObject.ApplyModifiedProperties();
-
-                    if (_materialEditor != null)
-                    {
-                        // Free the memory used by the previous MaterialEditor
-                        DestroyImmediate(_materialEditor);
-                    }
-                    if (Target.Material == null)
-                    {
-                        Target.Material = CVEMaterial.DefaultMaterial;
-                        material.objectReferenceValue = Target.Material;
-                    }
-                    if (Target.Material != null)
-                    {
-                        // Create a new instance of the default MaterialEditor
-                        _materialEditor = (Editor)CreateEditor(Target.Material);
-                    }
-                }
-
-
-                if (_materialEditor != null)
-                {
-                    // Draw the material's foldout and the material shader field
-                    // Required to call _materialEditor.OnInspectorGUI ();
-                    _materialEditor.DrawHeader();
-
-                    Rect rect = EditorGUILayout.GetControlRect(GUILayout.Height(0));
-                    rect.position -= new Vector2(0, 20);
-                    rect.height = EditorGUIUtility.singleLineHeight;
-                    foldout = EditorGUI.Foldout(rect, foldout, "", true, EditorStyles.foldout);
-
-                    if (foldout)
-                    {
-
-                        //  We need to prevent the user to edit Unity default materials
-                        bool isDefaultMaterial = Target.Material == CVEMaterial.DefaultMaterial;
-                        if (!isDefaultMaterial) Target.SyncMeshRenderer();
-                        using (new EditorGUI.DisabledGroupScope(isDefaultMaterial))
-                        {
-                            // Draw the material properties
-                            // Works only if the foldout of _materialEditor.DrawHeader () is open
-                            _materialEditor.OnInspectorGUI();
-                        }
-                    }
-                }
-            }*/
             serializedObject.ApplyModifiedProperties();
         }
 
