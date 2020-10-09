@@ -285,10 +285,7 @@ namespace umi3d.edk.collaboration
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(data as common.userCapture.UserTrackingFrameDto);
 
                 else if (data is common.userCapture.UserCameraPropertiesDto)
-                {
                     UMI3DEmbodimentManager.Instance.UserCameraReception(data as common.userCapture.UserCameraPropertiesDto, user);
-                    Debug.LogWarning("Camera Reception");
-                }
             }
             else if(channel.type == DataType.Data)
             {

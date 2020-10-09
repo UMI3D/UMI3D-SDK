@@ -39,9 +39,11 @@ namespace umi3d.cdk.userCapture
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
         public UnityEvent skeletonParsedEvent;
+        public UnityEvent cameraHasChanged;
 
         UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
         UserCameraPropertiesDto CameraPropertiesDto;
+        bool hasCameraChanged;
 
 
         protected override void Awake()
@@ -54,22 +56,12 @@ namespace umi3d.cdk.userCapture
                 projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
                 boneType = viewpointBonetype,
             };
+            hasCameraChanged = true;
         }
 
         protected void Start()
         {
-            StartCoroutine("DispatchCamera");
-        }
-
-        IEnumerator DispatchCamera()
-        {
-            while (UMI3DClientServer.Instance.GetId() == null)
-            {
-                yield return null;
-            }
-
-            Debug.LogWarning("DispatchCamera");
-            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+            cameraHasChanged.AddListener(() => hasCameraChanged = true);
         }
 
         void Update()
@@ -86,6 +78,13 @@ namespace umi3d.cdk.userCapture
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
             {
                 UMI3DClientServer.SendTracking(LastFrameDto, false);
+
+                if (hasCameraChanged)
+                {
+                    UMI3DClientServer.SendTracking(CameraPropertiesDto, false);
+                    hasCameraChanged = false;
+                    Debug.LogWarning("Camera Dispatched");
+                }
             }
         }
 
