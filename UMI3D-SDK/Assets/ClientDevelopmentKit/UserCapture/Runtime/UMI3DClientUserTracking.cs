@@ -59,12 +59,12 @@ namespace umi3d.cdk.userCapture
             hasCameraChanged = true;
         }
 
-        protected void Start()
+        protected virtual void Start()
         {
             cameraHasChanged.AddListener(() => hasCameraChanged = true);
         }
 
-        void Update()
+        protected virtual void Update()
         {
             if (UMI3DClientServer.Exists)
                 DispatchTracking();
@@ -73,7 +73,7 @@ namespace umi3d.cdk.userCapture
                 BonesIterator();
         }
 
-        void DispatchTracking()
+        protected virtual void DispatchTracking()
         {
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
             {
@@ -91,7 +91,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Iterate through the bones of the browser's skeleton to create BoneDto
         /// </summary>
-        public void BonesIterator()
+        protected void BonesIterator()
         {
             List<BoneDto> bonesList = new List<BoneDto>();
             foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
@@ -146,7 +146,7 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
-        public bool RegisterEmbd(string id, UserAvatar u)
+        public virtual bool RegisterEmbd(string id, UserAvatar u)
         {
             if (embodimentDict.ContainsKey(id))
                 return false;
@@ -157,12 +157,12 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public bool UnregisterEmbd(string id)
+        public virtual bool UnregisterEmbd(string id)
         {
             return embodimentDict.Remove(id);
         }
 
-        public bool TryGetValue(string id, out UserAvatar embd)
+        public virtual bool TryGetValue(string id, out UserAvatar embd)
         {
             return embodimentDict.TryGetValue(id, out embd);
         }
