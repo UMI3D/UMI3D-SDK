@@ -19,6 +19,7 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.common.userCapture;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace umi3d.cdk.userCapture
 {
@@ -142,27 +143,45 @@ namespace umi3d.cdk.userCapture
         {
             if (userId == UMI3DClientServer.Instance.GetId())
             {
-                UMI3DClientUserTrackingBone bone = UMI3DClientUserTrackingBone.instances[dto.boneType];
-                UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
-
-                if (node != null)
+                if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
                 {
-                    if (!oldPositions.ContainsKey(dto.objectId))
+                    UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
+
+                    if (node != null)
                     {
-                        OldPosition oldPosition = new OldPosition
+                        if (!oldPositions.ContainsKey(dto.objectId))
                         {
-                            oldParent = node.transform.parent,
-                            oldPosition = node.transform.localPosition,
-                            oldRotation = node.transform.localRotation
-                        };
+                            OldPosition oldPosition = new OldPosition
+                            {
+                                oldParent = node.transform.parent,
+                                oldPosition = node.transform.localPosition,
+                                oldRotation = node.transform.localRotation
+                            };
 
-                        oldPositions.Add(dto.objectId, oldPosition);
-                        node.transform.SetParent(bone.transform);
+                            oldPositions.Add(dto.objectId, oldPosition);
+
+                            if (dto.rigName == "")
+                                node.transform.SetParent(bone.transform);
+                            else
+                                node.transform.Find(dto.rigName).SetParent(bone.transform);
+                        }
+
+                        if (dto.rigName == "")
+                        {
+                            node.transform.localPosition = dto.position;
+                            node.transform.localRotation = dto.rotation;
+                        }
+                        else
+                        {
+                            Transform rig = node.transform.Find(dto.rigName);
+                            rig.localPosition = dto.position;
+                            rig.localRotation = dto.rotation;
+                        }
+
                     }
-
-                    node.transform.localPosition = dto.position;
-                    node.transform.localRotation = dto.rotation;
                 }
+                else
+                    Debug.LogWarning(dto.boneType + "not found in bones instances");
             }
         }
 
