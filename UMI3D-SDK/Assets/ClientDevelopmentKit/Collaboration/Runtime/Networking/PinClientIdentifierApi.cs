@@ -33,5 +33,10 @@ namespace umi3d.cdk.collaboration
         {
             callback.Invoke(User, Pin);
         }
+
+        public override void GetIdentity(Action<string> callback)
+        {
+            callback.Invoke(User);
+        }
     }
 }

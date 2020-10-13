@@ -79,6 +79,8 @@ namespace umi3d.cdk.collaboration
             //cameraDisplayer.Play();
         }
 
+
+
         //public Texture2D GetStreamTexture2D()
         //{
         //    return cameraDisplayer.texture;

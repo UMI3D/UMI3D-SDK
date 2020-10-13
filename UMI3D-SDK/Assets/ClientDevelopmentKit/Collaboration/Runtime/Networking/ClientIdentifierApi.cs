@@ -33,6 +33,12 @@ namespace umi3d.cdk.collaboration
         public abstract void GetIdentity(Action<string,string> callback);
 
         /// <summary>
+        /// Should return a login as a string for this client via the callback. 
+        /// </summary>
+        /// <param name="callback">Action to return the login.</param>
+        public abstract void GetIdentity(Action<string> callback);
+
+        /// <summary>
         /// Should fill a formDto and return it via a callback.
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>

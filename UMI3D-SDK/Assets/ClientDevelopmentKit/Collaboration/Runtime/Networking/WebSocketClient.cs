@@ -97,13 +97,24 @@ namespace umi3d.cdk.collaboration
                         Debug.LogWarning("Login should always have a value. Login set to 'Default'");
                     }
                     if (password == default) password = "";
+                    UMI3DCollaborationClientServer.Identity.login = login;
                     ws.SetCredentials(login, password, false);
                     ws.Connect();
                 });
             }
             else
-                ws.Connect();
-
+            {
+                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login) =>
+                {
+                    if (login == default || login == "")
+                    {
+                        login = "Default";
+                        Debug.LogWarning("Login should always have a value. Login set to 'Default'");
+                    }
+                    UMI3DCollaborationClientServer.Identity.login = login;
+                    ws.Connect();
+                });
+            }
         }
 
         /// <summary>
