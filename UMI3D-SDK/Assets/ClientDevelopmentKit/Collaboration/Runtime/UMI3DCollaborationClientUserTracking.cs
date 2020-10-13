@@ -14,29 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using umi3d.common;
+using umi3d.cdk.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    /// <summary>
-    /// Implementation of ClientIdentifier returning a pre-filled pin
-    /// </summary>
-    /// <see cref="ClientIdentifierApi"/>
-    [CreateAssetMenu(fileName = "ClientPinIdentifier", menuName = "UMI3D/Client Pin Identifier")]
-    public class PinClientIdentifierApi : ClientIdentifierApi
+    public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
-        public string Pin = "defaultPin";
-        public string User = "defaultUser";
-
-        public override void GetIdentity(Action<string, string> callback)
+        // Start is called before the first frame update
+        void Start()
         {
-            callback.Invoke(User, Pin);
+
         }
 
-        public override void GetIdentity(Action<string> callback)
+        // Update is called once per frame
+        void Update()
         {
-            callback.Invoke(User);
+
         }
     }
 }

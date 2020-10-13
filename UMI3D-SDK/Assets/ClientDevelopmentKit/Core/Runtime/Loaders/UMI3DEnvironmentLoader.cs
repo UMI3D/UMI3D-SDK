@@ -312,7 +312,6 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         void _LoadEntity(IEntity entity, Action performed)
         {
-            Debug.Log("load entity");
             switch (entity)
             {
                 case GlTFSceneDto scene:
