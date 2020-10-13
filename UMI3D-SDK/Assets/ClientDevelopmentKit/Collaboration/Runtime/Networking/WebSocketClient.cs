@@ -90,8 +90,8 @@ namespace umi3d.cdk.collaboration
 
             if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous) {
 
-                UMI3DCollaborationClientServer.Instance.Identifier.GetPassword((password) => {
-                    ws.SetCredentials(UMI3DCollaborationClientServer.Identity.login, password, false);
+                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login,password) => {
+                    ws.SetCredentials(login, password, false);
                     ws.Connect();
                 });
             }
