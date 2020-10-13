@@ -14,24 +14,35 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
+using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.userCapture;
 using umi3d.cdk.userCapture;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
-        // Start is called before the first frame update
-        void Start()
+        protected override void DispatchTracking()
         {
-
+            if ((checkTime() || checkMax()) && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            {
+                UMI3DClientServer.SendTracking(LastFrameDto, false);
+            }
         }
 
-        // Update is called once per frame
-        void Update()
+        protected override IEnumerator DispatchCamera()
         {
+            while (UMI3DClientServer.Instance.GetId() == null && UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            {
+                yield return null;
+            }
 
+            Debug.LogWarning("DispatchCamera");
+            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
         }
     }
 }

@@ -24,10 +24,13 @@ namespace umi3d.common.interaction
     {
 
         /// <summary>
-        /// Id of the interaction or of the tool (in the case of an interaction related to hoverring).
+        /// Id of the interactable or tool (in the case of an interaction related to hoverring).
         /// </summary>
         public string toolId;
 
+        /// <summary>
+        /// Id of the interaction (in the case of an interaction related to hoverring).
+        /// </summary>
         public string id;
 
         /// <summary>
