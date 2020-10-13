@@ -218,14 +218,7 @@ namespace umi3d.edk
             return ToDto();
         }
 
-        public static LoadEntity CreateLoadOperation(PBRMaterial mat)
-        {
-            var res = new LoadEntity()
-            {
-                entity = mat,
-            };
-            return res;
-        }
+     
     }
     [System.Serializable]
     public class CustomTextures

@@ -52,6 +52,7 @@ namespace umi3d.common
         public const string AreSubobjectsTracked = "umi3d_are_subobject_tracked";
         public const string CastShadow = "umi3d_cast_shadow";
         public const string ReceiveShadow = "umi3d_receive_shadow";
+        public const string IgnoreModelMaterialOverride = "umi3d_ignore_model_material_override";
         #endregion
 
         #region KHR_light

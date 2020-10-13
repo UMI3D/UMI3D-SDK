@@ -57,7 +57,7 @@ namespace umi3d.cdk
                             instance.transform.localScale = Vector3.one;
                             SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
 
-                            if (rootDto.applyCustomMaterial)
+                            if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
                             {
                                 // apply root model override
                                 SetMaterialOverided(rootDto, instance);
@@ -80,37 +80,69 @@ namespace umi3d.cdk
         protected override void RevertToOriginalMaterial(UMI3DNodeInstance entity)
         {
 
-            Renderer renderer = entity.gameObject.GetComponentInChildren<Renderer>();
-            if (renderer == null)
+            Renderer[] renderers = entity.gameObject.GetComponentsInChildren<Renderer>();
+            if (renderers == null || renderers.Length == 0)
                 return;
+            SubModelDto subDto = (SubModelDto)((GlTFNodeDto)entity.dto).extensions.umi3d;
 
-            UMI3DMeshNodeDto parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(((SubModelDto)((GlTFNodeDto)entity.dto).extensions.umi3d).modelId).dto).extensions.umi3d;
-
-            OldMaterialContainer oldMaterialContainer = renderer.gameObject.GetComponent<OldMaterialContainer>();
-            if (oldMaterialContainer != null)
+            UMI3DMeshNodeDto parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(subDto.modelId).dto).extensions.umi3d;
+            foreach (Renderer renderer in renderers)
             {
-                Material[] oldMats = oldMaterialContainer.oldMats;
-                Material[] matsToApply = renderer.sharedMaterials;
-                for (int i = 0; i < renderer.sharedMaterials.Length; i++)
+                OldMaterialContainer oldMaterialContainer = renderer.gameObject.GetComponent<OldMaterialContainer>();
+                if (oldMaterialContainer != null)
                 {
-                    if (oldMats[i] != null)
+                    Material[] oldMats = oldMaterialContainer.oldMats;
+                    Material[] matsToApply = renderer.sharedMaterials;
+                    for (int i = 0; i < renderer.sharedMaterials.Length; i++)
                     {
-                        matsToApply[i] = (oldMats[i]);
+                        if (oldMats[i] != null)
+                        {
+                            matsToApply[i] = (oldMats[i]);
+                        }
                     }
+                    renderer.materials = matsToApply;
                 }
-                renderer.materials = matsToApply;
-                if (parentDto.applyCustomMaterial)
+            
+            }
+        
+                if (parentDto.applyCustomMaterial /*&& !subDto.ignoreModelMaterialOverride */ /* && !subDto.applyCustomMaterial */&& !subDto.ignoreModelMaterialOverride)
                 {
-                    SetMaterialOverided(parentDto, entity.gameObject);
+                    SetMaterialOverided(parentDto, entity.gameObject); //..
                 }
             }
-        }
+        
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
+            {
+                if (base.SetUMI3DProperty(entity, property)) return true;
+                var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as SubModelDto;
+                if (extension == null) return false;
+                switch (property.property)
+                {
+                    case UMI3DPropertyKeys.IgnoreModelMaterialOverride:
+                        extension.ignoreModelMaterialOverride = (bool)property.value;
+                        if ((bool)property.value) //revert model override and apply only subModel overriders 
+                        {
+                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                            SetMaterialOverided(extension, ((UMI3DNodeInstance)entity).gameObject);
+                        }
+                        else
+                        {
+                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                            UMI3DMeshNodeDto parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
+                            SetMaterialOverided(parentDto, ((UMI3DNodeInstance)entity).gameObject);
+                            SetMaterialOverided(extension, ((UMI3DNodeInstance)entity).gameObject);
+                        }
+                        break;
 
-                return base.SetUMI3DProperty(entity, property);
+                    default:
+                        return false;
+                }
+                return true;
+
+            }
             else
                 return false;
         }
