@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections;
+using System.Linq;
 
 namespace umi3d.cdk.userCapture
 {
@@ -32,11 +34,17 @@ namespace umi3d.cdk.userCapture
             public Quaternion oldRotation;
         }
 
+        public struct BoundObject
+        {
+            public string objectId;
+            public string rigname;
+        }
+
         public string userId { get; protected set; }
         public bool activeUserBindings { get; protected set; }
         public List<BoneBindingDto> userBindings { get; protected set; }
 
-        Dictionary<string, OldPosition> oldPositions = new Dictionary<string, OldPosition>();
+        Dictionary<BoundObject, OldPosition> oldPositions = new Dictionary<BoundObject, OldPosition>();
 
         /// <summary>
         /// Set a new UserAvatar from an UMI3DAvatarNodeDto.
@@ -75,7 +83,7 @@ namespace umi3d.cdk.userCapture
                 else
                 {
                     foreach (BoneBindingDto dto in userBindings)
-                        if (oldPositions.ContainsKey(dto.objectId))
+                        if (oldPositions.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
                             ResetParent(dto);
                 }
             }
@@ -88,7 +96,7 @@ namespace umi3d.cdk.userCapture
         public void SetBindings(List<BoneBindingDto> newBindings)
         {
             foreach (BoneBindingDto dto in userBindings)
-                if (oldPositions.ContainsKey(dto.objectId))
+                if (oldPositions.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
                     ResetParent(dto);
 
             userBindings = newBindings;
@@ -132,7 +140,7 @@ namespace umi3d.cdk.userCapture
             {
                 if (dto.active)
                     UpdateBindingPosition(dto);
-                else if (oldPositions.ContainsKey(dto.objectId))
+                else if (oldPositions.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
                     ResetParent(dto);
             }
 
@@ -145,43 +153,63 @@ namespace umi3d.cdk.userCapture
             {
                 if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
                 {
-                    UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
 
-                    if (node != null)
-                    {
-                        if (!oldPositions.ContainsKey(dto.objectId))
-                        {
-                            OldPosition oldPosition = new OldPosition
-                            {
-                                oldParent = node.transform.parent,
-                                oldPosition = node.transform.localPosition,
-                                oldRotation = node.transform.localRotation
-                            };
+                    StartCoroutine(WaitForRig(dto, bone));
 
-                            oldPositions.Add(dto.objectId, oldPosition);
-
-                            if (dto.rigName == "")
-                                node.transform.SetParent(bone.transform);
-                            else
-                                node.transform.Find(dto.rigName).SetParent(bone.transform);
-                        }
-
-                        if (dto.rigName == "")
-                        {
-                            node.transform.localPosition = dto.position;
-                            node.transform.localRotation = dto.rotation;
-                        }
-                        else
-                        {
-                            Transform rig = node.transform.Find(dto.rigName);
-                            rig.localPosition = dto.position;
-                            rig.localRotation = dto.rotation;
-                        }
-
-                    }
                 }
                 else
-                    Debug.LogWarning(dto.boneType + "not found in bones instances");
+                    UnityEngine.Debug.LogWarning(dto.boneType + "not found in bones instances");
+            }
+        }
+
+        IEnumerator WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        {
+            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
+
+            if (node != null)
+            {
+                var wait = new WaitForFixedUpdate();
+                Transform obj = null;
+                UnityEngine.Debug.Log($"wait for rig [{dto.rigName}]");
+                if (dto.rigName != "")
+                    while ((obj = UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName)) == null)
+                    {
+                        UnityEngine.Debug.Log($"{UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.name}");
+                        yield return wait;
+                    }
+                UnityEngine.Debug.Log($"rig found {dto.rigName}");
+
+                if (!oldPositions.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
+                {
+                    OldPosition oldPosition = new OldPosition
+                    {
+                        oldParent = node.transform.parent,
+                        oldPosition = node.transform.localPosition,
+                        oldRotation = node.transform.localRotation
+                    };
+
+                    oldPositions.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, oldPosition);
+                    UnityEngine.Debug.Log(dto.rigName);
+                    if (dto.rigName == "")
+                        node.transform.SetParent(bone.transform);
+                    else
+                    {
+                        UnityEngine.Debug.Log($"set {obj.name} under {bone.transform.name}");
+                        obj.SetParent(bone.transform);
+                    }
+                }
+
+                if (dto.rigName == "")
+                {
+                    node.transform.localPosition = dto.position;
+                    node.transform.localRotation = dto.rotation;
+                }
+                else
+                {
+                    Transform rig = obj;
+                    rig.localPosition = dto.position;
+                    rig.localRotation = dto.rotation;
+                }
             }
         }
 
@@ -192,7 +220,7 @@ namespace umi3d.cdk.userCapture
                 UMI3DClientUserTrackingBone bone = UMI3DClientUserTrackingBone.instances[dto.boneType];
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
 
-                if (oldPositions.TryGetValue(dto.objectId, out OldPosition oldPosition))
+                if (oldPositions.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out OldPosition oldPosition))
                 {
                     node.transform.SetParent(oldPosition.oldParent);
                     node.transform.localPosition = oldPosition.oldPosition;
@@ -201,7 +229,7 @@ namespace umi3d.cdk.userCapture
                 else
                     Destroy(node.gameObject);
 
-                oldPositions.Remove(dto.objectId);
+                oldPositions.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
             }
         }
 
