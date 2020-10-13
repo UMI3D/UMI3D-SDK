@@ -90,14 +90,31 @@ namespace umi3d.cdk.collaboration
 
             if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous) {
 
-                UMI3DCollaborationClientServer.Instance.Identifier.GetPassword((password) => {
-                    ws.SetCredentials(UMI3DCollaborationClientServer.Identity.login, password, false);
+                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login,password) => {
+                    if (login == default || login == "")
+                    {
+                        login = "Default";
+                        Debug.LogWarning("Login should always have a value. Login set to 'Default'");
+                    }
+                    if (password == default) password = "";
+                    UMI3DCollaborationClientServer.Identity.login = login;
+                    ws.SetCredentials(login, password, false);
                     ws.Connect();
                 });
             }
             else
-                ws.Connect();
-
+            {
+                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login) =>
+                {
+                    if (login == default || login == "")
+                    {
+                        login = "Default";
+                        Debug.LogWarning("Login should always have a value. Login set to 'Default'");
+                    }
+                    UMI3DCollaborationClientServer.Identity.login = login;
+                    ws.Connect();
+                });
+            }
         }
 
         /// <summary>

@@ -74,15 +74,12 @@ namespace umi3d.cdk.collaboration
             //WebRTCClient.audio = Audio.CaptureStream();
             //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
             //image.texture = cam.targetTexture;
-            if (Identity.login == default || Identity.login == "")
-            {
-                Identity.login = "Default";
-                Debug.LogWarning("Login should always have a value. Login set to 'Default'");
-            }
             connected = false;
             joinning = false;
             //cameraDisplayer.Play();
         }
+
+
 
         //public Texture2D GetStreamTexture2D()
         //{
