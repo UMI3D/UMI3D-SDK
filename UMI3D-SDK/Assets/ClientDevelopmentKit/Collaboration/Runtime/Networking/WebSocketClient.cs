@@ -91,6 +91,12 @@ namespace umi3d.cdk.collaboration
             if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous) {
 
                 UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login,password) => {
+                    if (login == default || login == "")
+                    {
+                        login = "Default";
+                        Debug.LogWarning("Login should always have a value. Login set to 'Default'");
+                    }
+                    if (password == default) password = "";
                     ws.SetCredentials(login, password, false);
                     ws.Connect();
                 });
