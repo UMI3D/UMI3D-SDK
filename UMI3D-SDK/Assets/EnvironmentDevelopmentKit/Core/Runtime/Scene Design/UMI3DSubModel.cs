@@ -25,8 +25,16 @@ namespace umi3d.edk
       //  public UMI3DAsyncProperty<bool> objectMaterialOverrided { get { Register(); return _objectMaterialOverrided; } protected set => _objectMaterialOverrided = value; }
 
         public UMI3DModel parentModel;
-    //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
+        //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
+        public bool ignoreModelMaterialOverride = false;
+        public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
+        protected override void InitDefinition(string id)
+        {
+            base.InitDefinition(id);
+
+            objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id,UMI3DPropertyKeys.IgnoreModelMaterialOverride,ignoreModelMaterialOverride);
+        }
 
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
@@ -68,6 +76,7 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
+            subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
 
         }
 

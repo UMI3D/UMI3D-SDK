@@ -18,10 +18,7 @@ namespace umi3d.cdk
             if (extension == null) return false;
             switch (property.property)
             {
-          /*      case UMI3DPropertyKeys.Model:
-                    extension.mesh = (ResourceDto)property.value;
-                    ReadUMI3DExtension(extension, ((UMI3DNodeInstance)entity).transform.parent.gameObject, null, null);
-                    break;*/
+
                 case UMI3DPropertyKeys.ApplyCustomMaterial:
                     extension.applyCustomMaterial = (bool)property.value;
 

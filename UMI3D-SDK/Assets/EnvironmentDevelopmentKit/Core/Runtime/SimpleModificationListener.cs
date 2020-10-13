@@ -159,6 +159,10 @@ namespace umi3d.edk
                 setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
                 setOperation(((AbstractRenderedNode)obj).objectMaterialOveriders.SetValue(((AbstractRenderedNode)obj).materialsOverider));
             }
+            if(obj as UMI3DSubModel)
+            {
+                setOperation(((UMI3DSubModel)obj).objectIgnoreModelMaterialOverride.SetValue(((UMI3DSubModel)obj).ignoreModelMaterialOverride));
+            }
         }
 
         private void UIUpdate(UIRect obj)
