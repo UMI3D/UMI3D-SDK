@@ -36,12 +36,12 @@ namespace umi3d.cdk.collaboration
 
         protected override IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == null && UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            while (UMI3DClientServer.Instance.GetId() == null || !UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
             {
                 yield return null;
             }
 
-            Debug.LogWarning("DispatchCamera");
+            UnityEngine.Debug.LogWarning("DispatchCamera");
             UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
         }
     }

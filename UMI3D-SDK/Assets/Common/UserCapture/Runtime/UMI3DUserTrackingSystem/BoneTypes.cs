@@ -49,6 +49,7 @@ namespace umi3d.common.userCapture
         public const string RightThigh = "right_thigh";
         public const string RightUpperArm = "right_upper_arm";
         public const string RightWrist = "right_wrist";
+        public const string Root = "root";
         public const string Toe = "toe";
         public const string Torso = "torso";
     }
