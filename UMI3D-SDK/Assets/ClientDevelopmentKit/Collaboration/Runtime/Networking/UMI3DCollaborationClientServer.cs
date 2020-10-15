@@ -17,6 +17,7 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -307,8 +308,16 @@ namespace umi3d.cdk.collaboration
         {
             if (joinning || connected) return;
             joinning = true;
+
+            JoinDto joinDto = new JoinDto()
+            {
+                bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList()
+            };
+
+            Debug.LogWarning("BonesList count : " + joinDto.bonesList.Count);
+
             Instance.HttpClient.SendPostJoin(
-                new JoinDto(),
+                joinDto,
                 (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
                 (error) => { joinning = false; Debug.Log("error on get id :" + error); });
         }

@@ -112,7 +112,8 @@ namespace umi3d.cdk.userCapture
                 position = anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
                 rotation = anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
                 scale = anchor.localScale,
-                userId = UMI3DClientServer.Instance.GetId()
+                userId = UMI3DClientServer.Instance.GetId(),
+                refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
             };
 
             skeletonParsedEvent.Invoke();
