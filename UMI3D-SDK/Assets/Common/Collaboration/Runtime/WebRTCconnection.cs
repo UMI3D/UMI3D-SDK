@@ -128,7 +128,7 @@ namespace umi3d.common
                     Debug.LogError($"Channel should not be null");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState != RTCDataChannelState.Open)
+            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
                 channel.dataChannel.Send(data);
             else
                 channel.MessageNotSend.Add(data);
@@ -149,7 +149,7 @@ namespace umi3d.common
                     Debug.LogWarning($"No suitable channel found");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState != RTCDataChannelState.Open)
+            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
             {
                 channel.dataChannel.Send(data);
             }
@@ -172,7 +172,7 @@ namespace umi3d.common
                 if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState != RTCDataChannelState.Open) 
+            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open) 
                 channel.dataChannel.Send(data);
             else
                 channel.MessageNotSend.Add(data);
