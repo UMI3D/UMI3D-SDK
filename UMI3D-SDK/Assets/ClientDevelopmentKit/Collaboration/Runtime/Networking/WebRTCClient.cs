@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.collaboration;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -77,10 +78,11 @@ namespace umi3d.cdk.collaboration
         /// <param name="channel">Datachannel from which this message was received.</param>
         protected override void OnRtcMessage(string id, byte[] bytes, DataChannel channel)
         {
+            var user = UMI3DCollaborationEnvironmentLoader.Instance.UserList.FirstOrDefault(u => u.id == id);
             if (channel.type == DataType.Audio)
-                AudioManager.Instance.Read(bytes, channel);
+                AudioManager.Instance.Read(user, bytes, channel);
             else
-                UMI3DCollaborationClientServer.OnRtcMessage(bytes, channel);
+                UMI3DCollaborationClientServer.OnRtcMessage(user, bytes, channel);
         }
 
         /// <summary>

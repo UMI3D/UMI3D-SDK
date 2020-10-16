@@ -14,19 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using umi3d.common;
 
-namespace umi3d.common.collaboration
+namespace umi3d.cdk
 {
-    /// <summary>
-    /// Abstract class to describe an operation
-    /// </summary>
-    [Serializable]
-    public class UserDto : AbstractEntityDto
+    public interface IAudioReader
     {
-        public StatusType status;
-        public string avatarId;
-        public string audioSourceId;
-        public string videoSourceId;
+        void OnAudioRead(float[] data);
+        void OnAudioSetPosition(int newPosition);
+        void Read(AudioDto sample);
     }
 }

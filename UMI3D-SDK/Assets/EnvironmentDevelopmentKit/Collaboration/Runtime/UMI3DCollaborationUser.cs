@@ -50,6 +50,9 @@ namespace umi3d.edk.collaboration
         public string login;
 
         public UMI3DWebSocketConnection connection;
+        public UMI3DAudioPlayer audioPlayer;
+        public UMI3DAudioPlayer videoPlayer;
+
 
         public string RenewToken()
         {

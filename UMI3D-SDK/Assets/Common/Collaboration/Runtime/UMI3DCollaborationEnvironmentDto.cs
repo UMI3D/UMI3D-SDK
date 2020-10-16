@@ -13,18 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using System;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
-    /// <summary>
-    /// Abstract class to describe an operation
-    /// </summary>
-    [Serializable]
-    public class UserListDto : UMI3DDto
+    public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironementDto
     {
-        public List<UserDto> users = new List<UserDto>();
+        public List<UserDto> userList;
     }
 }

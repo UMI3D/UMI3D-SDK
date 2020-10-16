@@ -424,18 +424,31 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
+            if (Exists)
+                return Instance._SetUMI3DPorperty(entity, property);
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the new value.</param>
+        /// <returns></returns>
+        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
             if (entity == null) return false;
             var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
             if (dto == null) return false;
             switch (property.property)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
-                    return Parameters.SetUMI3DProperty(entity,property);
+                    return Parameters.SetUMI3DProperty(entity, property);
                 default:
                     return false;
             }
         }
-
 
         /// <summary>
         /// Handle SetEntityPropertyDto operation.

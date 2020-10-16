@@ -145,6 +145,7 @@ namespace umi3d.edk.collaboration
         public static void newUser(UMI3DCollaborationUser user)
         {
             Instance.webRTC.newUser(user);
+            Collaboration.UserJoin(user);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(Instance.NotifyUserJoin(user));
         }
 
@@ -337,6 +338,21 @@ namespace umi3d.edk.collaboration
                 TransactionToBeSend.Remove(user);
             }
 
+        }
+
+        /// <summary>
+        /// Call To Notify a user status change.
+        /// </summary>
+        /// <param name="user">user that get its staus updated</param>
+        /// <param name="status">new status</param>
+        public override void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
+        {
+            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
+        }
+
+        public override void NotifyUserChanged(UMI3DUser user)
+        {
+            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
         #region session
