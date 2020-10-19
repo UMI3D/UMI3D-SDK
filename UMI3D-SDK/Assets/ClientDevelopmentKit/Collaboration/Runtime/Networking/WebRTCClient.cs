@@ -19,6 +19,7 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.collaboration;
+using Unity.WebRTC;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -62,8 +63,13 @@ namespace umi3d.cdk.collaboration
                 foreach(var channel in peer.channels)
                     if(channel.type == DataType.Audio)
                     {
-                        Debug.Log($"Send via [{channel?.IsOpen}] {channel?.Label}:{channel?.dataChannel}" );
-                        channel?.dataChannel?.Send(dto.ToBson());
+                        if (channel?.dataChannel != null && channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
+                        {
+                            //Debug.Log($"Send via [{channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open}] {channel?.Label}:{channel?.dataChannel}");
+                            channel?.dataChannel?.Send(dto.ToBson());
+                        }
+                        //else
+                        //    Debug.Log($"Send via [False] {channel?.Label}:{channel?.dataChannel}");
                         break;
                     }
             }
