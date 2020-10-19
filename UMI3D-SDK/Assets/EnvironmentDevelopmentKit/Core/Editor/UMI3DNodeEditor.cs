@@ -99,7 +99,7 @@ namespace umi3d.edk.editor
 
 
             EditorGUILayout.PropertyField(activeCollider);
-            if (Target.hasCollider)
+            if (activeCollider.boolValue)
             {
                 EditorGUI.indentLevel++;
 
