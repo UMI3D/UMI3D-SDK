@@ -48,5 +48,21 @@ namespace umi3d.cdk
             }
             set { _colliders = value; }
         }
+
+        /// <summary>
+        /// The list of Subnode intance when the model has tracked subMesh. Empty if sub Model are not tracked.
+        /// </summary>
+        private List<UMI3DNodeInstance> _subNodeInstances;
+        public List<UMI3DNodeInstance> subNodeInstances
+        {
+            get
+            {
+                if (_subNodeInstances == null)
+                    _subNodeInstances = new List<UMI3DNodeInstance>();
+                return _subNodeInstances;
+            }
+            set { _subNodeInstances = value; }
+        }
+
     }
 }

@@ -125,5 +125,12 @@ namespace umi3d.cdk
         {
             GameObject.Destroy(objectLoaded as UnityEngine.Object);
         }
+
+        public virtual Vector3 GetRotationOffset()
+        {
+            return Vector3.one;
+        }
+
+
     }
 }
