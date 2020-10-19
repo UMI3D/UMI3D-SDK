@@ -67,7 +67,7 @@ namespace umi3d.cdk
         /// Spread recursively transform layer to all is childrens.
         /// </summary>
         /// <param name="transform">Transform</param>
-        private static void ApplyParentLayerInChildren( Transform transform)
+        public static void ApplyParentLayerInChildren( Transform transform)
         {
             int layer = transform.gameObject.layer;
             foreach (Transform child in transform)
@@ -81,7 +81,7 @@ namespace umi3d.cdk
         /// Hide Model Recursively
         /// </summary>
         /// <param name="go"></param>
-        protected static void HideModelRecursively(GameObject go)
+        public static void HideModelRecursively(GameObject go)
         {
             int invisibleLayer = LayerMask.NameToLayer("Invisible");
             if (invisibleLayer == -1)
