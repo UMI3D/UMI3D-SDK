@@ -51,15 +51,29 @@ namespace umi3d.cdk
                     switch (property)
                     {
                         case SetEntityListAddPropertyDto addProperty:
-                            Debug.Log("SetEntityListAddPropertyDto");
-                            if (extension.applyCustomMaterial)
+                            //  Debug.Log("SetEntityListAddPropertyDto");
+                            if (((SetEntityListAddPropertyDto)property).index == extension.overridedMaterials.Count)
                             {
-                                var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
-                                string newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
-                                UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node));
+                                if (extension.applyCustomMaterial)
+                                {
+                                    var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
+                                    string newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
+                                    UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node));
+
+                                }
+                                extension.overridedMaterials.Add((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value);
+                            }
+                            else
+                            {
+                                extension.overridedMaterials.Insert(((SetEntityListAddPropertyDto)property).index, (UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value);
+                                if (extension.applyCustomMaterial)
+                                {
+                                    var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
+                                    SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)); 
+                                }
 
                             }
-                            extension.overridedMaterials.Add((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value);
+                     //       
                             break;
                         case SetEntityListRemovePropertyDto removeProperty:
 
@@ -67,10 +81,9 @@ namespace umi3d.cdk
                             {
                                 RevertOneOverrider((UMI3DNodeInstance)entity, (UMI3DRenderedNodeDto.MaterialOverrideDto)removeProperty.value);
                                 extension.overridedMaterials.RemoveAt(removeProperty.index);
-                                if (extension.applyCustomMaterial)
-                                {
-                                    SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)); // necessary if multiples overriders override the same removed material
-                                }
+                                
+                                SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)); // necessary if multiples overriders override the same removed material
+                                
                             }
                             else
                             {
