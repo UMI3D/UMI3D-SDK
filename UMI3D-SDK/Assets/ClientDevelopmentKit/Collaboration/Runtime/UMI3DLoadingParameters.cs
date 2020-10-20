@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.interaction;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -28,6 +29,10 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+
+        public List<string> supportedformats = new List<string>();
+        public float maximumResolution;
+
         public virtual UMI3DNodeLoader nodeLoader { get; } = new UMI3DNodeLoader();
         public virtual UMI3DMeshNodeLoader meshLoader { get; } = new UMI3DMeshNodeLoader();
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
@@ -134,12 +139,36 @@ namespace umi3d.cdk
             UMI3DLocalAssetDirectory res = null;
             foreach (var assetDir in assetLibrary.variants)
             {
-                if ((res == null) || (assetDir.metrics.resolution > res.metrics.resolution))
+                bool ok = res == null;
+                if (!ok && !assetDir.formats.Any(f => !supportedformats.Contains(f)))
+                {
+                    if (res.formats.Any(f => !supportedformats.Contains(f)))
+                        ok = true;
+                    else
+                        ok = Compare(assetDir.metrics.resolution, res.metrics.resolution, maximumResolution);
+                }
+
+                if (ok)
                 {
                     res = assetDir;
                 }
             }
             return res;
+        }
+
+        /// <summary>
+        /// is "a" bigger than "b" and inferior than max
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="max">maximum, 0 mean no maximum</param>
+        /// <returns></returns>
+        bool Compare(float a, float b, float max)
+        {
+            if (max == 0) return a > b;
+            if (b > max) return b > a;
+            if (a < max) return a > b;
+            return false;
         }
 
         /// <see cref="AbstractUMI3DLoadingParameters.ChooseVariante(List{FileDto})"/>
@@ -148,7 +177,16 @@ namespace umi3d.cdk
             FileDto res = null;
             foreach (var file in files)
             {
-                if ((res == null) || (file.metrics.resolution > res.metrics.resolution))
+                bool ok = res == null;
+                if(!ok && supportedformats.Contains(file.format))
+                {
+                    if (!supportedformats.Contains(res.format))
+                        ok = true;
+                    else
+                        ok = Compare(file.metrics.resolution, res.metrics.resolution, maximumResolution);
+
+                }
+                if (ok)
                 {
                     res = file;
                 }

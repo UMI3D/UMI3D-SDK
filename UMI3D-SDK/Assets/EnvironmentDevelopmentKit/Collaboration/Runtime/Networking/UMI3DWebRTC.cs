@@ -99,7 +99,7 @@ namespace umi3d.edk.collaboration
                 {
 
                     var dcDto = dto as RTCDataChannelDto;
-                    Debug.Log($"serveur {dcDto.Label}  {dcDto.sourceUser}->{dcDto.targetUser}");
+                    Debug.Log($"serveur {dcDto.Label} {dcDto.type} {dcDto.reliable} {dcDto.sourceUser}->{dcDto.targetUser}");
                     UMI3DCollaborationUser otherUser = UMI3DCollaborationServer.Collaboration.GetUser(dcDto.targetUser);
 
                     var bridge = peerMap.FirstOrDefault(b => b.Contain(dto.sourceUser, dto.targetUser));

@@ -1,0 +1,397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.cdk.UMI3DAbstractAnimation" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAACAAAABAAAAAEAAAAgBAAAAAIAQAACAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Animation\UMI3DAbstractAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DAnimation" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAQAACAAAQBIAAAAAgAIAgAAAAAAIIRAACQAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Animation\UMI3DAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DAnimationManager" Collapsed="true">
+    <Position X="21.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAABAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Animation\UMI3DAnimationManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DAudioPlayer" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAQAECAAAABAAAAAAAAAAAAAEAAAIAAAACAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Animation\UMI3DAudioPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DNodeAnimation" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAQAACAAAQBIAAAAAgAIAgAAAAAAIIRAACQAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Animation\UMI3DNodeAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DVideoPlayer" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAABAAAAAAAAAAAAAAAAAIAAAACAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Animation\UMI3DVideoPlayer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.Billboard" Collapsed="true">
+    <Position X="20" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAABACAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Billboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractMeshDtoLoader" Collapsed="true">
+    <Position X="1.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAMABAAEAAAIBAAgAEAQAAABAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\AbstractMeshDtoLoader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.cdk.AbstractRenderedNodeLoader" Collapsed="true">
+    <Position X="1.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAGAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\AbstractRenderedNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractUMI3DLoadingParameters" Collapsed="true">
+    <Position X="16.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAAAQCAAAAAQgAAAAEAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\AbstractUMI3DLoadingParameters.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AudioLoader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIABAAAAAAIBAEgAEAQAAABAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\AudioLoader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.cdk.BundleDtoLoader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIABAAAAAAIBAAgAEAQAAABAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\BundleDtoLoader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.cdk.GlTFMeshDtoLoader" Collapsed="true">
+    <Position X="2.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAgAAAAAAAAAAAAAEAAAAAAABAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\GlTFMeshDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.GlTFNodeLoader" Collapsed="true">
+    <Position X="14.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAQAAAAAAAAAAAEABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\GlTFNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.ImageDtoLoader" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIABAAAAAAIBAAgAEAQAAABAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\ImageDtoLoader.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.cdk.KHR_lights_punctualLoader" Collapsed="true">
+    <Position X="18.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\KHR_lights_punctualLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.ObjMeshDtoLoader" Collapsed="true">
+    <Position X="0.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAgAAAAAAAEAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\ObjMeshDtoLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.OldMaterialContainer" Collapsed="true">
+    <Position X="14.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\OldMaterialContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.PreloadedSceneLoader" Collapsed="true">
+    <Position X="16.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAASAAAAAAAgAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\PreloadedSceneLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DAbstractAnchorLoader" Collapsed="true">
+    <Position X="18.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DAbstractAnchorLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DAbstractNodeLoader" Collapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DAbstractNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DAnimationLoader" Collapsed="true">
+    <Position X="20" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DAnimationLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DEntityInstance" Collapsed="true">
+    <Position X="10.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DEntityInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DEnvironmentLoader" Collapsed="true">
+    <Position X="14.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEggAAAQAAAgCJAgAFGgwAEECABRgAgIkggAHIAkA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DEnvironmentLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DMeshNodeLoader" Collapsed="true">
+    <Position X="0.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAEAAAAAAAAAgAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DMeshNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DNodeInstance" Collapsed="true">
+    <Position X="10.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAgAAEAAQgCA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DNodeInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DNodeLoader" Collapsed="true">
+    <Position X="3" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAUAAAAAAAAAAAAEAAAAAAAAAAAAAAAAEAAAABA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DPbrMaterialLoader" Collapsed="true">
+    <Position X="18.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAARAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DPbrMaterialLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DResourcesManager" Collapsed="true">
+    <Position X="20" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>UASBQhABMAAAhCABAiMAEAAAAAABAAABgAAEbIAohEw=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DResourcesManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DSceneLoader" Collapsed="true">
+    <Position X="7.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAEAAAAAEAgQgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DSceneLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DSubMeshNodeLoader" Collapsed="true">
+    <Position X="3" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAEAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DSubMeshNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DUICanvasNodeLoader" Collapsed="true">
+    <Position X="13" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DUICanvasNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DUIImageNodeLoader" Collapsed="true">
+    <Position X="14.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DUIImageNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DUINodeLoader" Collapsed="true">
+    <Position X="5.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAACAAEAAAAAAAAAAAAAAAAAAAABAg=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DUINodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DUITextNodeLoader" Collapsed="true">
+    <Position X="16.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\UMI3DUITextNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.AbstractNavigation" Collapsed="true">
+    <Position X="14.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAwBAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Navigation\AbstractNavigation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.NotificationLoader" Collapsed="true">
+    <Position X="13" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Notification\NotificationLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DClientServer" Collapsed="true">
+    <Position X="13" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAgAAAEAAAAAAAAAAAAACAAIUAAIAAAQ=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\UMI3DClientServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DNavigation" Collapsed="true">
+    <Position X="16.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAACAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAIAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\UMI3DNavigation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.UMI3DTransactionDispatcher" Collapsed="true">
+    <Position X="21.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\UMI3DTransactionDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.AbstractMenuItemAdded" Collapsed="true">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\AbstractMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.AbstractMenu" Collapsed="true">
+    <Position X="7.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgIAEgAIAAAAAAAQAAAABAQAAAAQAgAAIAAgAAAQAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\AbstractMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.AbstractMenuItem" Collapsed="true">
+    <Position X="6.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAEAAAAAAAAAEAAAgAAQAAAACAAABQAAAQAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\AbstractMenuItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.cdk.menu.ImageMenu" Collapsed="true">
+    <Position X="7.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\ImageMenu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.MediaMenuItem" Collapsed="true">
+    <Position X="5.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\MediaMenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.Menu" Collapsed="true">
+    <Position X="7.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAEgAAAAAAABAEAAIABAQAAAAAAgAAAAAAAAAQAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\Menu.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.MenuAsset" Collapsed="true">
+    <Position X="20" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\MenuAsset.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.MenuItem" Collapsed="true">
+    <Position X="5.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Model\MenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.SerializableDictionary&lt;TKey, TValue&gt;" Collapsed="true">
+    <Position X="10.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAIAAAAAAAAIABAAAAAABAQAAAAAACAEAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Tools\SerializableDictionary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.ContainerDictionary" Collapsed="true">
+    <Position X="10.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\Tools\SerializableDictionary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.AbstractDisplayer" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAEAAAAQgAAAACBAEBQAAAQABAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\View\AbstractDisplayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.AbstractMenuDisplayContainer" Collapsed="true">
+    <Position X="10.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASAAgEEEAAACABDACAAABAQAAAAAAEAEKABAEAAQAAE=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\View\AbstractMenuDisplayContainer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.ContainerSelector" Collapsed="true">
+    <Position X="13" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAgAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\View\ContainerSelector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.MenuDisplayManager" Collapsed="true">
+    <Position X="21.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBBAAAAAAAAgAABEEA0AQwAAAAAGAACAAgYCFBAA0E=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Menu\View\MenuDisplayManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="umi3d.cdk.IResourcesLoader" Collapsed="true">
+    <Position X="13" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIABAAAAAAABAAgAAAAAAABAAA=</HashCode>
+      <FileName>Assets\ClientDevelopmentKit\Core\Runtime\Loaders\IResourcesLoader.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

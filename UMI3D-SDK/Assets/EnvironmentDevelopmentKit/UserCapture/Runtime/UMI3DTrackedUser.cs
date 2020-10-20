@@ -33,6 +33,7 @@ namespace umi3d.edk.userCapture
                 if (value != null)
                     value.userId = Id();
                 avatar = value;
+                UMI3DServer.Instance.NotifyUserChanged(this);
             }
         }
     }

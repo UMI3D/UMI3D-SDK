@@ -21,7 +21,6 @@ namespace umi3d.common
     {
         public bool xBillboard = false;
         public bool yBillboard = false;
-        public AudioSourceDto audioSource = null;
         public ColliderDto colliderDto = null;
     }
     

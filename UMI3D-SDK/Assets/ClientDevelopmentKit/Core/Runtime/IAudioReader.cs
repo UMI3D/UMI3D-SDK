@@ -14,23 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+using umi3d.common;
+
+namespace umi3d.cdk
 {
-    [System.Serializable]
-    public class VideoDto : UMI3DDto
+    public interface IAudioReader
     {
-        public bool PlayOnAwake = false;
-        public string AudioSource = null;
-        public bool Playing = false;
-        public bool Paused = false;
-        public bool Stoped = false;
-        public double Progress = 0;
-        public bool Loop = false;
-
-        public string StartTimeInMS = "";
-
-        public ResourceDto VideoResource;
-
-        public VideoDto() : base() { }
+        void OnAudioRead(float[] data);
+        void OnAudioSetPosition(int newPosition);
+        void Read(AudioDto sample);
     }
 }

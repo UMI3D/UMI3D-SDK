@@ -37,6 +37,7 @@ namespace umi3d.common
 
         #region environement
         public const string PreloadedScenes = "umi3d_preloadedScenes";
+        public const string UserList = "umi3d_userList";
         public const string AmbientType = "umi3d_ambient_type";
         public const string AmbientSkyColor = "umi3d_ambient_sky_color";
         public const string AmbientHorizontalColor = "umi3d_ambient_horizontal_color";
