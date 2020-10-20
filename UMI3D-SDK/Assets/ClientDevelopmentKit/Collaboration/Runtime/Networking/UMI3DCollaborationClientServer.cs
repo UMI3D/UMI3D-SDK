@@ -22,6 +22,7 @@ using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.userCapture;
+using umi3d.edk.collaboration;
 using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Events;
@@ -325,7 +326,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="bytes">Message to handle</param>
         /// <param name="channel">Channel from which the message was received</param>
-        static public void OnRtcMessage(byte[] bytes, DataChannel channel)
+        static public void OnRtcMessage(UMI3DUser user, byte[] bytes, DataChannel channel)
         {
             var dto = UMI3DDto.FromBson(bytes);
             switch (dto)

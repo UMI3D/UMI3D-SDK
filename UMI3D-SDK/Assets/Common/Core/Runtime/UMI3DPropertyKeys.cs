@@ -37,6 +37,7 @@ namespace umi3d.common
 
         #region environement
         public const string PreloadedScenes = "umi3d_preloadedScenes";
+        public const string UserList = "umi3d_userList";
         public const string AmbientType = "umi3d_ambient_type";
         public const string AmbientSkyColor = "umi3d_ambient_sky_color";
         public const string AmbientHorizontalColor = "umi3d_ambient_horizontal_color";
@@ -52,6 +53,7 @@ namespace umi3d.common
         public const string AreSubobjectsTracked = "umi3d_are_subobject_tracked";
         public const string CastShadow = "umi3d_cast_shadow";
         public const string ReceiveShadow = "umi3d_receive_shadow";
+        public const string IgnoreModelMaterialOverride = "umi3d_ignore_model_material_override";
         #endregion
 
         #region KHR_light

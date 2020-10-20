@@ -81,21 +81,40 @@ namespace umi3d.edk
             return res;
         }
 
-        public GlTFEnvironmentDto ToDto(UMI3DUser user)
+        public virtual GlTFEnvironmentDto ToDto(UMI3DUser user)
         {
             GlTFEnvironmentDto env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
             env.scenes.AddRange(scenes.Select(s => s.ToGlTFNodeDto(user)));
-            env.extensions.umi3d = new UMI3DEnvironementDto();
-            env.extensions.umi3d.LibrariesId = globalLibraries.Select(l => l.id).ToList();
-            env.extensions.umi3d.preloadedScenes = objectPreloadedScenes.GetValue(user).Select( r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
-            env.extensions.umi3d.ambientType = (AmbientType)objectAmbientType.GetValue(user);
-            env.extensions.umi3d.skyColor = objectSkyColor.GetValue(user);
-            env.extensions.umi3d.horizontalColor = objectHorizonColor.GetValue(user);
-            env.extensions.umi3d.groundColor = objectGroundColor.GetValue(user);
-            env.extensions.umi3d.ambientIntensity = objectAmbientIntensity.GetValue(user);
-            env.extensions.umi3d.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+            env.extensions.umi3d = CreateDto();
+            WriteProperties(env.extensions.umi3d, user);
             return env;
+        }
+
+        /// <summary>
+        /// Write Properties on a UMI3DEnvironementDto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="user"></param>
+        protected virtual void WriteProperties(UMI3DEnvironementDto dto, UMI3DUser user)
+        {
+            dto.LibrariesId = globalLibraries.Select(l => l.id).ToList();
+            dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
+            dto.ambientType = (AmbientType)objectAmbientType.GetValue(user);
+            dto.skyColor = objectSkyColor.GetValue(user);
+            dto.horizontalColor = objectHorizonColor.GetValue(user);
+            dto.groundColor = objectGroundColor.GetValue(user);
+            dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
+            dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+        }
+
+        /// <summary>
+        /// Create a UMI3DEnvironementDto.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual UMI3DEnvironementDto CreateDto()
+        {
+            return new UMI3DEnvironementDto();
         }
 
         public static EnterDto ToEnterDto(UMI3DUser user)

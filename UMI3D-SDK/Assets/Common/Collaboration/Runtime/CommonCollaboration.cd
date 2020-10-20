@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.common.collaboration.AbstractWebRtcClient" Collapsed="true">
+    <Position X="19.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAIAAUBgYAgoAAAAAMAABBAAABBBCABEIAABIQFAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\AbstractWebRtcClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.AnswerDto" Collapsed="true">
+    <Position X="5.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\AnswerDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.CandidateDto" Collapsed="true">
+    <Position X="10.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAIAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\CandidateDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.IdentityDto" Collapsed="true">
+    <Position X="24.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\IdentityDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.JoinDto" Collapsed="true">
+    <Position X="19.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\JoinDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.LeaveDto" Collapsed="true">
+    <Position X="1.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\LeaveDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.OfferDto" Collapsed="true">
+    <Position X="8" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAk=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\OfferDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.RTCCloseConnectionDto" Collapsed="true">
+    <Position X="12.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\RTCCloseConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.RTCCloseDataChannelDto" Collapsed="true">
+    <Position X="14.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\RTCCloseDataChannelDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.RTCConnectionDTO" Collapsed="true">
+    <Position X="17" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\RTCConnectionDTO.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.RTCDataChannelDto" Collapsed="true">
+    <Position X="3.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAABBAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\RTCDataChannelDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.RTCDto" Collapsed="true">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\RTCDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.StatusDto" Collapsed="true">
+    <Position X="21.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\StatusDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.TokenDto" Collapsed="true">
+    <Position X="23" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\TokenDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.UserConnectionDto" Collapsed="true">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\UserConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.UserDto" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\UserDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.UserListDto" Collapsed="true">
+    <Position X="24.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\UserListDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.collaboration.WebsocketConnectionDto" Collapsed="true">
+    <Position X="23" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAgAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\UMI3DSignaling\WebsocketConnectionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.DataChannel" Collapsed="true">
+    <Position X="23" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAIAEAEAAIIAAAAAAAAAAAACBBAAQAEAKAIACAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\DataChannel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.AuthenticationTypeConverter" Collapsed="true">
+    <Position X="21.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\TypeConverter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.WebRtcChannels" Collapsed="true">
+    <Position X="19.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\WebRtcChannels.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.WebRTCconnection" Collapsed="true">
+    <Position X="21.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>oESAAAFAIACQCCCAAEQABIAwRA5sAFAOAAgyAQCBgFA=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\WebRTCconnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="umi3d.common.DataType" Collapsed="true">
+    <Position X="19.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAAAAAABAAAAAAIAAAAAg=</HashCode>
+      <FileName>Assets\Common\Collaboration\Runtime\DataType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

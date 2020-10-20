@@ -14,10 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
+using umi3d.common.collaboration;
+using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
@@ -29,6 +33,21 @@ namespace umi3d.edk.collaboration
         /// </summary>
         Dictionary<string, UMI3DCollaborationUser> users = new Dictionary<string, UMI3DCollaborationUser>();
         Dictionary<string, string> loginMap = new Dictionary<string, string>();
+
+        UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList;
+        public UMI3DAsyncListProperty<UMI3DCollaborationUser> ObjectUserList
+        {
+            get {
+                if (objectUserList == null) objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => u.ToUserDto());
+                return objectUserList;
+            }
+        }
+
+        public List<UserDto> Todo()
+        {
+            return ObjectUserList.GetValue().Select(u=>u.ToUserDto()).ToList();
+        }
+
 
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
@@ -62,8 +81,11 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        
+
         public void Logout(UMI3DCollaborationUser user)
         {
+            UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
             if (users.ContainsKey(user.Id()))
                 users.Remove(user.Id());
             if (loginMap.ContainsKey(user.login))
@@ -96,10 +118,52 @@ namespace umi3d.edk.collaboration
             else
             {
                 user = new UMI3DCollaborationUser(Login, connection);
+               
                 users.Add(user.Id(), user);
             }
             Callback.Invoke(user, reconnection);
         }
+
+        public void UserJoin(UMI3DCollaborationUser user)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(AddUserOnJoin(user));
+        }
+
+        public void NotifyUserStatusChanged(UMI3DCollaborationUser user)
+        {
+            if(user != null)
+                UnityMainThreadDispatcher.Instance().Enqueue(UpdateUser(user));
+        }
+
+
+        IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
+        {
+            yield return new WaitForFixedUpdate();
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { ObjectUserList.Add(user) } });
+        }
+
+        IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
+        {
+            yield return new WaitForFixedUpdate();
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { ObjectUserList.Remove(user) } });
+        }
+
+        IEnumerator UpdateUser(UMI3DCollaborationUser user)
+        {
+            yield return new WaitForFixedUpdate();
+            int index = ObjectUserList.GetValue().IndexOf(user);
+            var operation = new SetEntityListProperty()
+            {
+                users = new HashSet<UMI3DUser>() { },
+                entityId = UMI3DGlobalID.EnvironementId,
+                property = UMI3DPropertyKeys.UserList,
+                index = index,
+                value = user.ToUserDto()
+            };
+            operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { operation } });
+        }
+
 
         /// <summary>
         /// Called when a status update is received by the real-time connection.

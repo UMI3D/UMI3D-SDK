@@ -336,41 +336,69 @@ namespace umi3d.cdk
                 case ColliderType.Mesh:
                     if (dto.isMeshCustom)
                     {
-                        MeshCollider mesh = go.AddComponent<MeshCollider>();
-                        if (mesh.sharedMesh.isReadable)
+                        try
                         {
-                            mesh.convex = false;
-                            SetCustomCollider(go, dto.customMeshCollider);
-                            if (nodeInstance != null)
-                                nodeInstance.colliders.Add(mesh);
+
+                            MeshCollider mesh = go.AddComponent<MeshCollider>();
+
+                            if (mesh.sharedMesh.isReadable)
+                            {
+                                mesh.convex = false;
+                                SetCustomCollider(go, dto.customMeshCollider);
+                                if (nodeInstance != null)
+                                    nodeInstance.colliders.Add(mesh);
+                                else
+                                    Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                            }
                             else
-                                Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                                Debug.LogWarning("the mesh has been marked as non-accessible. Collider is not registered");
                         }
-                        else
-                            Debug.LogWarning("the mesh has been marked as non-accessible. Collider is not registered");
+                        catch (Exception e)
+                        {
+                            Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                        }
+
                     }
                     else
                     {
                         foreach (MeshFilter mesh in go.GetComponentsInChildren<MeshFilter>())
                         {
-                            MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
-                            mc.sharedMesh = mesh.sharedMesh;
-                            mc.convex = dto.convex;
-                            if (nodeInstance != null)
-                                nodeInstance.colliders.Add(mc);
-                            else
-                                Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                            try
+                            {
+
+
+                                MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
+                                mc.sharedMesh = mesh.sharedMesh;
+                                mc.convex = dto.convex;
+                                if (nodeInstance != null)
+                                    nodeInstance.colliders.Add(mc);
+                                else
+                                    Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                            }
+                            catch(Exception e)
+                            {
+                                Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                            }
                         }
-                        
+
                         foreach (SkinnedMeshRenderer mesh in go.GetComponentsInChildren<SkinnedMeshRenderer>())
                         {
-                            MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
-                            mc.sharedMesh = mesh.sharedMesh;
-                            mc.convex = dto.convex;
-                            if (nodeInstance != null)
-                                nodeInstance.colliders.Add(mc);
-                            else
-                                Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                            try
+                            {
+
+
+                                MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
+                                mc.sharedMesh = mesh.sharedMesh;
+                                mc.convex = dto.convex;
+                                if (nodeInstance != null)
+                                    nodeInstance.colliders.Add(mc);
+                                else
+                                    Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                            }
+                            catch (Exception e)
+                            {
+                                Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                            }
                         }
                     }
                     break;

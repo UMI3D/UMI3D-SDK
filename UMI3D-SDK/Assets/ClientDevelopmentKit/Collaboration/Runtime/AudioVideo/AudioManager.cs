@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 using umi3d.common;
+using umi3d.edk.collaboration;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace umi3d.cdk.collaboration
 {
@@ -23,42 +25,63 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Singleton use to read AudioDto.
     /// </summary>
-    [RequireComponent(typeof(AudioSource))]
     public class AudioManager : Singleton<AudioManager>
     {
-        AudioSource _audio;
-        public int position = 0;
-        public int samplerate = 44100;
+        Dictionary<string, IAudioReader> GlobalReader = new Dictionary<string, IAudioReader>();
+        Dictionary<string, IAudioReader> SpacialReader = new Dictionary<string, IAudioReader>();
+
+        private void Start()
+        {
+            UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
+            UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
+        }
 
         /// <summary>
-        /// Read an Audio Dto and play it in an audioSource.
+        /// Read an Audio Dto and dispatched it in the right audioSource.
         /// </summary>
         /// <param name="sample"></param>
         /// <param name="channel"></param>
-        public void Read(byte[] sample, DataChannel channel)
+        public void Read(UMI3DUser user, byte[] sample, DataChannel channel)
         {
-            var dto = UMI3DDto.FromBson(sample) as AudioDto;
-            if (_audio == null)
+            if (user != null)
             {
-                _audio = GetComponent<AudioSource>();
-                _audio.clip = AudioClip.Create("test", samplerate * 10, 1, samplerate, false, OnAudioRead, OnAudioSetPosition);
-            }
-            if (sample != null)
-            {
-                // Put the data in the audio source.
-                _audio.clip.SetData(dto.sample, dto.pos);
-                if (!_audio.isPlaying) _audio.Play();
+                string id = user.id;
+                if (UMI3DDto.FromBson(sample) is AudioDto dto)
+                {
+                    if (SpacialReader.ContainsKey(id))
+                    {
+                        SpacialReader[id].Read(dto);
+                    }
+                    else
+                    {
+                        if (!GlobalReader.ContainsKey(id))
+                        {
+                            var g = new GameObject();
+                            g.name = id;
+                            GlobalReader[id] = g.AddComponent<AudioReader>();
+                        }
+                        GlobalReader[id].Read(dto);
+                    }
+                }
             }
         }
 
-        void OnAudioRead(float[] data)
+        /// <summary>
+        /// MAnage user update
+        /// </summary>
+        /// <param name="user"></param>
+        void OnAudioChanged(UMI3DUser user)
         {
-
-        }
-
-        void OnAudioSetPosition(int newPosition)
-        {
-            position = newPosition;
+            var reader = user.audioplayer;
+            if(reader != null)
+            {
+                SpacialReader[user.id] = reader;
+            }
+            else
+            {
+                if (SpacialReader.ContainsKey(user.id))
+                    SpacialReader.Remove(user.id);
+            }
         }
     }
 }
