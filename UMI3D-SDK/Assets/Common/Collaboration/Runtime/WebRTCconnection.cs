@@ -112,7 +112,7 @@ namespace umi3d.common
         public bool Find(bool reliable, DataType dataType, out DataChannel channel)
         {
             channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
-            return channel == null;
+            return channel != null;
         }
 
         /// <summary>

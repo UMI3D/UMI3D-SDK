@@ -84,6 +84,12 @@ namespace umi3d.cdk
                 if (Array.Exists(((AssetBundle)o).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
                     var objectInBundle = ((AssetBundle)o).LoadAsset(pathIfObjectInBundle);
+                    if(objectInBundle is GameObject)
+                    {
+                        Debug.Log("load game object from bundle");
+                        AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                    }
+
                     callback.Invoke(objectInBundle);
                 }
                 else

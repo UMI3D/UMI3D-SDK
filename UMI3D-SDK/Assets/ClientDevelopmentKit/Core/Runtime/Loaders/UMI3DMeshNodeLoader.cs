@@ -64,6 +64,9 @@ namespace umi3d.cdk
                 string authorization = fileToLoad.authorization;
                 string pathIfInBundle = fileToLoad.pathIfInBundle;
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+                Vector3 offset = Vector3.zero;
+                if (loader is AbstractMeshDtoLoader)
+                    offset = ((AbstractMeshDtoLoader)loader).GetRotationOffset();
                 if (loader != null)
                     UMI3DResourcesManager.LoadFile(
                         nodeDto.id,
@@ -72,7 +75,7 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform);
+                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform, offset);
                             finished.Invoke();
                         },
                         failed,
@@ -88,7 +91,7 @@ namespace umi3d.cdk
         /// <param name="goInCache"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto)
+        private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
             string url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.mesh.variants).url;
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
@@ -101,6 +104,9 @@ namespace umi3d.cdk
                     {
                         child.SetParent(copy.transform.parent);
                         subObjectsReferences.Add(child.name, child);
+                        child.transform.localEulerAngles = rotationOffsetByLoader;
+                        child.transform.localPosition = Vector3.zero;
+                        child.transform.localScale = Vector3.one;
                     }
                 }
                 UMI3DResourcesManager.Instance.subModelsCache.Add(url, subObjectsReferences);
@@ -112,12 +118,12 @@ namespace umi3d.cdk
             }
         }
 
-        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent)
+        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
         {
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
-                root = SetSubObjectsReferences(go, dto);
+                root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
             }
             else
             {
@@ -140,7 +146,7 @@ namespace umi3d.cdk
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
             ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
-            SetMaterialOverided(dto, instance);
+            SetMaterialOverided(dto, nodeInstance);
            
         }
 

@@ -60,7 +60,7 @@ namespace umi3d.edk
             }
 
             //Debug.Log("add subobjects in hierarchy for " + gameObject.name);
-            foreach (Transform child in gameObject.transform.GetComponentsInChildren<Transform>())
+            foreach (GameObject child in GetSubModelGameObjectOfUMI3DModel( gameObject.transform))
             {
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
                 {
@@ -68,6 +68,8 @@ namespace umi3d.edk
                     {
                         UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
                         subModel.parentModel = this;
+                        subModel.objectCastShadow.SetValue(this.castShadow);
+                        subModel.objectReceiveShadow.SetValue(this.receiveShadow);
                     }
                     else
                     {
@@ -78,10 +80,35 @@ namespace umi3d.edk
                 {                  
                     UMI3DSubModel subModel = child.gameObject.GetComponent<UMI3DSubModel>();
                     subModel.parentModel = this;
+
                 }
             }
         }
 
+        public List<GameObject> GetSubModelGameObjectOfUMI3DModel(Transform modelRoot)
+        {
+            var res = GetChildrenWhithoutOtherModel(modelRoot);
+            if(modelRoot.GetComponent<Renderer>() != null)
+                res.Add(modelRoot.gameObject);
+            return res;
+        }
+
+        private List<GameObject> GetChildrenWhithoutOtherModel(Transform tr)
+        {
+            var res = new List<GameObject>();
+            for (int i = 0; i < tr.childCount; i++)
+
+            {
+                var child = tr.GetChild(i);
+
+                if (!child.GetComponent<UMI3DModel>())
+                {
+                    res.Add(child.gameObject);
+                    res.AddRange(GetChildrenWhithoutOtherModel(child));
+                }
+            }
+            return res;
+        }
 
         /// <summary>
         /// Create an empty Dto.

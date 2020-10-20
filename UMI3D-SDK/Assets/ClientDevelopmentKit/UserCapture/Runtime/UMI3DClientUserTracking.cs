@@ -41,9 +41,9 @@ namespace umi3d.cdk.userCapture
         public UnityEvent skeletonParsedEvent;
         public UnityEvent cameraHasChanged;
 
-        UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
-        UserCameraPropertiesDto CameraPropertiesDto;
-        bool hasCameraChanged;
+        protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
+        protected UserCameraPropertiesDto CameraPropertiesDto;
+        protected bool hasCameraChanged;
 
 
         protected override void Awake()
@@ -61,7 +61,8 @@ namespace umi3d.cdk.userCapture
 
         protected virtual void Start()
         {
-            cameraHasChanged.AddListener(() => hasCameraChanged = true);
+            cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
+            cameraHasChanged.Invoke();
         }
 
         protected virtual void Update()
@@ -78,14 +79,18 @@ namespace umi3d.cdk.userCapture
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
             {
                 UMI3DClientServer.SendTracking(LastFrameDto, false);
-
-                if (hasCameraChanged)
-                {
-                    UMI3DClientServer.SendTracking(CameraPropertiesDto, false);
-                    hasCameraChanged = false;
-                    Debug.LogWarning("Camera Dispatched");
-                }
             }
+        }
+
+        protected virtual IEnumerator DispatchCamera()
+        {
+            while (UMI3DClientServer.Instance.GetId() == null)
+            {
+                yield return null;
+            }
+
+            Debug.LogWarning("DispatchCamera");
+            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
         }
 
         /// <summary>
@@ -107,7 +112,8 @@ namespace umi3d.cdk.userCapture
                 position = anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
                 rotation = anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
                 scale = anchor.localScale,
-                userId = UMI3DClientServer.Instance.GetId()
+                userId = UMI3DClientServer.Instance.GetId(),
+                refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
             };
 
             skeletonParsedEvent.Invoke();
@@ -124,7 +130,7 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
-        bool checkTime()
+        protected bool checkTime()
         {
             timeTmp -= Time.deltaTime;
             if (time == 0 || timeTmp <= 0)
@@ -135,7 +141,7 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
-        bool checkMax()
+        protected bool checkMax()
         {
             if (max != 0 && counter > max)
             {

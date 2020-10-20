@@ -76,7 +76,7 @@ namespace umi3d.cdk
                         Transform newModel = gltfComp.transform.GetChild(0);
                         newModel.SetParent(UMI3DResourcesManager.Instance.transform);
                         newModel.localPosition = Vector3.zero;
-                        newModel.localEulerAngles += rotOffset;
+                        newModel.localEulerAngles += GetRotationOffset();
                         newModel.gameObject.SetActive(true);
                         callback.Invoke(newModel.gameObject);
 
@@ -120,7 +120,12 @@ namespace umi3d.cdk
             }
         }
        
-        private Vector3 rotOffset = new Vector3(0, 180, 0);
+
+        public override Vector3 GetRotationOffset()
+        {
+            return new Vector3(0, 180, 0);
+        }
+
     }
 }
 

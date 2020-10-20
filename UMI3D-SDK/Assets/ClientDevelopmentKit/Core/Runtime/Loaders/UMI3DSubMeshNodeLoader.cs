@@ -22,8 +22,9 @@ namespace umi3d.cdk
 
                     string sub = nodeDto.id.Split(new string[] { "==_[" }, StringSplitOptions.RemoveEmptyEntries)[1];
                     sub = sub.Remove(sub.Length - 1);
-                    UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode((nodeDto).modelId);
-                    GlTFNodeDto modelDto = (GlTFNodeDto)nodeInstance.dto;
+                    UMI3DNodeInstance modelNodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.modelId);
+                    GlTFNodeDto modelDto = (GlTFNodeDto)modelNodeInstance.dto;
+                    UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
 
                     string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariante(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
 
@@ -33,43 +34,63 @@ namespace umi3d.cdk
                     if (UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(modelInCache))
                     {
                         instance = GameObject.Instantiate(UMI3DResourcesManager.Instance.subModelsCache[modelInCache][sub].gameObject, node.gameObject.transform);
+
+                        UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
+                        var renderers = instance.GetComponentsInChildren<Renderer>();
+                        if (renderers != null)
+                            UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);
                         if (rootDto.applyCustomMaterial)
                         {
                             // apply root model override
-                            SetMaterialOverided(rootDto, instance);
+                            SetMaterialOverided(rootDto, nodeInstance);
                         }
                         if (nodeDto.applyCustomMaterial)
                         {
-                            SetMaterialOverided(nodeDto, instance);
+                            SetMaterialOverided(nodeDto, nodeInstance);
                             // apply sub model overrider
                         }
-
+                        foreach (var renderer in renderers)
+                        {
+                            renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                            renderer.receiveShadows = nodeDto.receiveShadow;
+                        }
                     }
                     else
                     {
                         UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, (o) =>
                         {
 
-                            instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, true);
+                            instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
                             AbstractMeshDtoLoader.ShowModelRecursively(instance);
-                            instance.transform.localPosition = Vector3.zero;
-                            instance.transform.localEulerAngles = new Vector3(0, 180, 0);
-                            instance.transform.localScale = Vector3.one;
+                   /*         instance.transform.localPosition = Vector3.zero;
+                            instance.transform.localEulerAngles = Vector3.zero; //new Vector3(0, 180, 0);
+                            instance.transform.localScale = Vector3.one;*/
                             SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
 
+                            UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
+                            var renderers = instance.GetComponentsInChildren<Renderer>();
+                            if (renderers != null)
+                                UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);
                             if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
                             {
                                 // apply root model override
-                                SetMaterialOverided(rootDto, instance);
+                                SetMaterialOverided(rootDto, nodeInstance);
                             }
                             if (nodeDto.applyCustomMaterial)
                             {
-                                SetMaterialOverided(nodeDto, instance);
+                                SetMaterialOverided(nodeDto, nodeInstance);
                                 // apply sub model overrider
+                            }
+                            
+                            foreach (var renderer in renderers)
+                            {
+                                renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                                renderer.receiveShadows = nodeDto.receiveShadow;
                             }
 
                         });
                     }
+                   
                     finished?.Invoke();
                 }
                 else failed?.Invoke("nodeDto should not be null");
@@ -107,7 +128,7 @@ namespace umi3d.cdk
         
                 if (parentDto.applyCustomMaterial /*&& !subDto.ignoreModelMaterialOverride */ /* && !subDto.applyCustomMaterial */&& !subDto.ignoreModelMaterialOverride)
                 {
-                    SetMaterialOverided(parentDto, entity.gameObject); //..
+                    SetMaterialOverided(parentDto, entity); //..
                 }
             }
         
@@ -126,14 +147,14 @@ namespace umi3d.cdk
                         if ((bool)property.value) //revert model override and apply only subModel overriders 
                         {
                             RevertToOriginalMaterial((UMI3DNodeInstance)entity);
-                            SetMaterialOverided(extension, ((UMI3DNodeInstance)entity).gameObject);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
                         }
                         else
                         {
                             RevertToOriginalMaterial((UMI3DNodeInstance)entity);
                             UMI3DMeshNodeDto parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
-                            SetMaterialOverided(parentDto, ((UMI3DNodeInstance)entity).gameObject);
-                            SetMaterialOverided(extension, ((UMI3DNodeInstance)entity).gameObject);
+                            SetMaterialOverided(parentDto, (UMI3DNodeInstance)entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
                         }
                         break;
 
