@@ -314,8 +314,6 @@ namespace umi3d.cdk.collaboration
                 bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList()
             };
 
-            Debug.LogWarning("BonesList count : " + joinDto.bonesList.Count);
-
             Instance.HttpClient.SendPostJoin(
                 joinDto,
                 (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
@@ -342,7 +340,7 @@ namespace umi3d.cdk.collaboration
                     if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         userAvatar.UpdateBonePosition(trackingFrame);
                     else
-                        throw new Exception("User Avatar not found.");
+                        Debug.LogWarning("User Avatar not found.");
                     break;
                 default:
                     Debug.Log($"Type not catch {dto.GetType()}");
