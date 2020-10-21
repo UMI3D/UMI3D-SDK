@@ -363,11 +363,11 @@ namespace umi3d.edk
             if (!visibilityOnFrame.ContainsKey(user))
                 visibilityOnFrame.Add(user, true);
 
-            if (!gameObject.activeInHierarchy || !enabled || (!user.hasImmersiveDevice && immersiveOnly))
-            {
-                visibilityOnFrame[user] = false;
-                return false;
-            }
+            //if (!gameObject.activeInHierarchy || !enabled || (!user.hasImmersiveDevice && immersiveOnly))
+            //{
+            //    visibilityOnFrame[user] = false;
+            //    return false;
+            //}
 
             foreach (var filter in GetComponents<VisibilityFilter>().Where(f => f.enabled))
                 if (!filter.Accept(user))
