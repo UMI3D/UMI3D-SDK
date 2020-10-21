@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -25,6 +26,7 @@ namespace umi3d.cdk.userCapture
     {
         public static Dictionary<string, UMI3DClientUserTrackingBone> instances = new Dictionary<string, UMI3DClientUserTrackingBone>();
 
+        [ConstStringEnum(typeof(BoneType))]
         public string boneType;
 
         public bool isTracked;

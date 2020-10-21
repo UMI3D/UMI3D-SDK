@@ -16,17 +16,11 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
-using umi3d.edk;
 using UnityEngine;
 using System.IO;
 using System;
-using umi3d.common;
 using Path = umi3d.common.Path;
-using System.Reflection;
-using System.Linq;
 
 namespace umi3d.edk.editor
 {
@@ -48,8 +42,8 @@ namespace umi3d.edk.editor
         SerializedProperty libraryKey;
 
 
-        int _choiceIndex = 0;
-        string[] choices;
+        //int _choiceIndex = 0;
+        //string[] choices;
 
         public bool foldout;
         public bool foldoutMetrics;
@@ -88,20 +82,13 @@ namespace umi3d.edk.editor
             pathIfInBundle = property.FindPropertyRelative("pathIfInBundle");
             libraryKey = property.FindPropertyRelative("libraryKey");
 
-            Type type = typeof( UMI3DAssetFormat);
-            choices = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-                .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
-                .Select(fi => fi.GetValue(null) as string).ToArray();
-            _choiceIndex = choices.Contains(format.stringValue) ? Array.IndexOf(choices,format.stringValue) : 0;
             var RLine = new Rect(position.x, position.y, position.width, LineHeight);
             foldout = EditorGUI.Foldout(RLine, foldout, format.stringValue + " [ Resolution " + resolution.intValue +" ]", true);
             if (foldout)
             {
                 RLine.y += LineHeight;
                 var GFormat = new GUIContent("Format", "The file's format");
-                _choiceIndex = EditorGUI.Popup(RLine, _choiceIndex, choices.ToArray());
-                format.stringValue = choices[_choiceIndex];
-                //format.PropertyField(RLine, format, GFormat);
+                EditorGUI.PropertyField(RLine, format, GFormat);
 
                 RLine.y += 1.25f * LineHeight;
                 float metricsIndent = 10f;
