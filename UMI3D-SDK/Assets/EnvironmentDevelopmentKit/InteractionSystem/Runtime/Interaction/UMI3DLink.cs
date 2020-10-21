@@ -53,7 +53,15 @@ namespace umi3d.edk.interaction
 
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
-            onLinkUsed.Invoke(user);
+            switch (interactionRequest)
+            {
+                case LinkOpened linkOpened:
+                    onLinkUsed.Invoke(user);
+                    break;
+                default:
+                    throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
+            }
+            
         }
     }
 }
