@@ -27,6 +27,8 @@ namespace umi3d.cdk
         public GameObject gameObject;
         public Transform transform { get { return gameObject.transform; } }
 
+        public bool updatePose = true;
+
         private List<Renderer> _renderers;
         public List<Renderer> renderers
         {
