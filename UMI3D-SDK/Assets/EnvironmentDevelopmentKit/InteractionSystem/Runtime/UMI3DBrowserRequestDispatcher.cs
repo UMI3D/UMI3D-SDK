@@ -43,6 +43,7 @@ namespace umi3d.edk.interaction
                 case ParameterSettingRequestDto parameterSetting:
                 case ManipulationRequestDto manipulation:
                 case FormAnswer formAnswer:
+                case LinkOpened linkOpened:
                     var interaction = dto as InteractionRequestDto;
                     UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.id)?.OnUserInteraction(user, interaction);
                     break;

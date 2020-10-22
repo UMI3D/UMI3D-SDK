@@ -360,7 +360,7 @@ namespace umi3d.cdk
                         }
                         catch (Exception e)
                         {
-                            Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                            Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                         }
 
                     }
@@ -382,7 +382,7 @@ namespace umi3d.cdk
                             }
                             catch(Exception e)
                             {
-                                Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                                Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                             }
                         }
 
@@ -402,7 +402,7 @@ namespace umi3d.cdk
                             }
                             catch (Exception e)
                             {
-                                Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                                Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                             }
                         }
                     }

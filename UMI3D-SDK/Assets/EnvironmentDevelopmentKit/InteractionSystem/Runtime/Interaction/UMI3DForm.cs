@@ -23,7 +23,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class FormParameter : AbstractInteraction
+    public class UMI3DForm : AbstractInteraction
     {
         public List<AbstractParameter> Fields = new List<AbstractParameter>();
 

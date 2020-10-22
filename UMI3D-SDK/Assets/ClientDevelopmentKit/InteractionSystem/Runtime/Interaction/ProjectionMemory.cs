@@ -177,6 +177,42 @@ namespace umi3d.cdk.interaction
                         currentMemoryTreeState = Project(currentMemoryTreeState, adequation, deepProjectionCreation, chooseProjection);
                         break;
 
+                    case LinkDto linkDto:
+
+                        adequation = node =>
+                        {
+                            return (node is LinkNode) && (node as LinkNode).link.name.Equals(interaction.name);
+                        };
+
+                        deepProjectionCreation = () =>
+                        {
+                            AbstractUMI3DInput projection = controller.FindInput(linkDto, unused);
+
+                            if (projection == null)
+                                throw new NoInputFoundException();
+                            return new LinkNode(id)
+                            {
+                                id = linkDto.id,
+                                link = linkDto,
+                                projectedInput = projection
+                            };
+                        };
+
+                        chooseProjection = node =>
+                        {
+                            if (node == null)
+                                throw new System.Exception("Internal error");
+                            if (node.projectedInput == null)
+                            {
+                                throw new NoInputFoundException();
+                            }
+
+                            selectedInputs.Add(node.projectedInput);
+                        };
+
+                        currentMemoryTreeState = Project(currentMemoryTreeState, adequation, deepProjectionCreation, chooseProjection);
+                        break;
+
                     case AbstractParameterDto parameterDto:
 
                         adequation = node =>
@@ -270,7 +306,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <summary>
-        /// Project an event dto on a controller and return associated input.
+        /// Project a form dto on a controller and return associated input.
         /// </summary>
         /// <param name="controller">Controller to project on</param>
         /// <param name="form">form dto to project</param>
@@ -309,6 +345,51 @@ namespace umi3d.cdk.interaction
                         throw new System.Exception("Internal error");
                 }
                 node.projectedInput.Associate(form, toolId);
+            };
+
+            return Project(memoryRoot, adequation, deepProjectionCreation, chooseProjection, unusedInputsOnly).projectedInput;
+        }
+
+        /// <summary>
+        /// Project a link dto on a controller and return associated input.
+        /// </summary>
+        /// <param name="controller">Controller to project on</param>
+        /// <param name="link">link dto to project</param>
+        /// <param name="unusedInputsOnly">Project on unused inputs only</param>
+        public AbstractUMI3DInput PartialProject(AbstractController controller, LinkDto link, string toolId, bool unusedInputsOnly = false)
+        {
+            System.Func<ProjectionTreeNode> deepProjectionCreation = () =>
+            {
+                AbstractUMI3DInput projection = controller.FindInput(link, true);
+                if ((projection == null) && !unusedInputsOnly)
+                    projection = controller.FindInput(link, false);
+
+                if (projection == null)
+                    throw new NoInputFoundException();
+
+                return new LinkNode(id)
+                {
+                    id = link.id,
+                    link = link,
+                    projectedInput = projection
+                };
+            };
+
+            System.Predicate<ProjectionTreeNode> adequation = node =>
+            {
+                return (node is LinkNode) && (node as LinkNode).link.name.Equals(link.name);
+            };
+
+            System.Action<ProjectionTreeNode> chooseProjection = node =>
+            {
+                if (!node.projectedInput.IsAvailable())
+                {
+                    if (!unusedInputsOnly)
+                        node.projectedInput.Dissociate();
+                    else
+                        throw new System.Exception("Internal error");
+                }
+                node.projectedInput.Associate(link, toolId);
             };
 
             return Project(memoryRoot, adequation, deepProjectionCreation, chooseProjection, unusedInputsOnly).projectedInput;
@@ -473,6 +554,43 @@ namespace umi3d.cdk.interaction
                             {
                                 id = formDto.id,
                                 form = formDto,
+                                projectedInput = projection
+                            };
+                        };
+
+                        chooseProjection = node =>
+                        {
+                            if (node == null)
+                                throw new System.Exception("Internal error");
+                            if (node.projectedInput == null)
+                            {
+                                throw new System.Exception("No input found");
+                            }
+
+                            node.projectedInput.Associate(interaction, toolId);
+                            selectedInputs.Add(node.projectedInput);
+                        };
+
+                        currentMemoryTreeState = Project(currentMemoryTreeState, adequation, deepProjectionCreation, chooseProjection);
+                        break;
+
+                    case LinkDto linkDto:
+
+                        adequation = node =>
+                        {
+                            return (node is LinkNode) && (node as LinkNode).link.name.Equals(interaction.name);
+                        };
+
+                        deepProjectionCreation = () =>
+                        {
+                            AbstractUMI3DInput projection = controller.FindInput(linkDto, true);
+
+                            if (projection == null)
+                                throw new NoInputFoundException();
+                            return new LinkNode(id)
+                            {
+                                id = linkDto.id,
+                                link = linkDto,
                                 projectedInput = projection
                             };
                         };
@@ -767,6 +885,15 @@ namespace umi3d.cdk.interaction
         public FormDto form;
 
         public FormNode(string treeId) : base(treeId) { }
+    }
+
+    [System.Serializable]
+    public class LinkNode : ProjectionTreeNode
+    {
+        [SerializeField]
+        public LinkDto link;
+
+        public LinkNode(string treeId) : base(treeId) { }
     }
 
     [System.Serializable]

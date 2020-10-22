@@ -27,6 +27,7 @@ namespace umi3d.cdk.userCapture
     {
         public Transform anchor;
         public Transform viewpoint;
+        [ConstStringEnum(typeof(BoneType))]
         public string viewpointBonetype;
 
         public float skeletonParsingIterationCooldown = 0f;
