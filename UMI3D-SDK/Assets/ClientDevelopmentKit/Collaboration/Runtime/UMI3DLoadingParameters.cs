@@ -29,7 +29,7 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
-
+        [ConstStringEnum(typeof(UMI3DAssetFormat))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
 
@@ -165,7 +165,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         bool Compare(float a, float b, float max)
         {
-            if (max == 0) return a > b;
+            if (max <= 0) return a > b;
             if (b > max) return b > a;
             if (a < max) return a > b;
             return false;
