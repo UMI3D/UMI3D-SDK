@@ -84,7 +84,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="channel">Datachannel from which this message was received.</param>
         protected override void OnRtcMessage(string id, byte[] bytes, DataChannel channel)
         {
-            var user = UMI3DCollaborationEnvironmentLoader.Instance.UserList.FirstOrDefault(u => u.id == id);
+            var user = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == id);
             if (channel.type == DataType.Audio)
                 AudioManager.Instance.Read(user, bytes, channel);
             else
