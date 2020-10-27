@@ -45,8 +45,8 @@ namespace umi3d.edk
         public override GlTFMaterialDto ToDto()
         {
             var extensions = new GlTFMaterialExtensions() { umi3d = textures.ToDto() };
-            extensions.umi3d.shaderProperties = shaderProperties;
-            extensions.umi3d.id = GetId();
+            ((UMI3DMaterialDto)extensions.umi3d).shaderProperties = shaderProperties;
+            ((UMI3DMaterialDto)extensions.umi3d).id = GetId();
             extensions.KHR_texture_transform.offset = tilingOffset;
             extensions.KHR_texture_transform.scale = tilingScale;
             return new GlTFMaterialDto()

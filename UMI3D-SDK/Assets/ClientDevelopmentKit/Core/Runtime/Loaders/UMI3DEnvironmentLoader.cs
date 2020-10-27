@@ -144,7 +144,6 @@ namespace umi3d.cdk
 
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
-        public UMI3DPbrMaterialLoader materialLoader { get; private set; }
 
 
         protected override void Awake()
@@ -152,7 +151,6 @@ namespace umi3d.cdk
             base.Awake();
             sceneLoader = new UMI3DSceneLoader(this);
             nodeLoader = new GlTFNodeLoader();
-            materialLoader = new UMI3DPbrMaterialLoader();
         }
 
         #region workflow
@@ -246,7 +244,8 @@ namespace umi3d.cdk
 
         #region parameters
 
-        public AbstractUMI3DLoadingParameters parameters;
+        [SerializeField]
+        private AbstractUMI3DLoadingParameters parameters = null;
         public static AbstractUMI3DLoadingParameters Parameters { get { return Exists ? Instance.parameters : null; } }
 
         #endregion
@@ -332,11 +331,13 @@ namespace umi3d.cdk
                     Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { Debug.Log(s); performed.Invoke(); });
                     break;
                 case GlTFMaterialDto matDto:
-                    materialLoader.LoadMaterialFromExtension(matDto, (m) =>
+                    Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
                     {
-                        m.name = matDto.name;
+
+                        if(matDto.name != null && matDto.name.Length>0)
+                            m.name = matDto.name;
                         //register the material
-                        RegisterEntityInstance(matDto.extensions.umi3d.id, matDto, m);
+                        RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
                     });
 
                     break;

@@ -18,10 +18,11 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
-    public interface IMaterialDto
+    [System.Serializable]
+    public class ExternalMaterialDto : AbstractEntityDto, IMaterialDto
     {
+        public ResourceDto resource;
 
-        Dictionary<string, object> shaderProperties { get; set; }
-
+        public Dictionary<string, object> shaderProperties { get; set; }
     }
 }

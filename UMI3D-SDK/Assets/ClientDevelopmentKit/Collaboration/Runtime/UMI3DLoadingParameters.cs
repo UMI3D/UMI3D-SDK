@@ -48,6 +48,8 @@ namespace umi3d.cdk
 
         public List<IResourcesLoader> ResourcesLoaders { get; } = new List<IResourcesLoader>() { new ObjMeshDtoLoader(), new ImageDtoLoader(), new GlTFMeshDtoLoader(), new BundleDtoLoader(), new AudioLoader() };
 
+        public List<AbstractUMI3DMaterialLoader> MAterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader() };
+
         /// <summary>
         /// Load an UMI3DObject.
         /// </summary>
@@ -205,6 +207,17 @@ namespace umi3d.cdk
                     return null;
             }
             Debug.LogError("there is no compatible loader for this extention : " + extension);
+            return null;
+        }
+
+        public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
+        {
+            foreach (AbstractUMI3DMaterialLoader loader in MAterialLoaders)
+            {
+                if (loader.IsSuitableFor(gltfMatDto))
+                    return loader;
+            }
+            Debug.LogError("there is no compatible material loader for this material.");
             return null;
         }
 
