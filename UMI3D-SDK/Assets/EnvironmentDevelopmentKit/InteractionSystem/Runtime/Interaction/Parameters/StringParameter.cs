@@ -27,7 +27,7 @@ namespace umi3d.edk.interaction
         public string value;
 
         [System.Serializable]
-        public class StringListener : UnityEvent<UMI3DUser, string> { }
+        public class StringListener : ParameterEvent<string> { }
 
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace umi3d.edk.interaction
                     {
                         var parameter = settingRequestDto.parameter as StringParameterDto;
                         value = parameter.value;
-                        onChange.Invoke(user, value);
+                        onChange.Invoke(new ParameterEventContent<string>(user,settingRequestDto,value));
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");

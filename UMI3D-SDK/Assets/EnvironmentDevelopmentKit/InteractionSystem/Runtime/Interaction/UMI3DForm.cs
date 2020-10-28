@@ -30,6 +30,15 @@ namespace umi3d.edk.interaction
         [System.Serializable]
         public class FormListener : UnityEvent<UMI3DUser, FormDto> { }
 
+        public class FormEventContent : InteractionEventContent
+        {
+            public FormDto form;
+            public FormEventContent(UMI3DUser user, FormAnswer dto) : base(user, dto)
+            {
+                form = dto.form;
+            }
+        }
+
 
         /// <summary>
         /// Event raised on value change.

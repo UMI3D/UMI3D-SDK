@@ -33,7 +33,7 @@ namespace umi3d.edk.interaction
         public List<string> options = new List<string>();
 
         [System.Serializable]
-        public class OnChangeListener : UnityEvent<UMI3DUser, string> { }
+        public class OnChangeListener : ParameterEvent<string> { }
 
         /// <summary>
         /// Event raised on value change.
@@ -71,7 +71,7 @@ namespace umi3d.edk.interaction
                     if (settingRequestDto.parameter is EnumParameterDto<string>)
                     {
                         value = (settingRequestDto.parameter as EnumParameterDto<string>).value;
-                        onChange.Invoke(user, value);
+                        onChange.Invoke(new ParameterEventContent<string>(user,settingRequestDto,value));
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");

@@ -16,11 +16,35 @@ limitations under the License.
 
 using umi3d.common.interaction;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
     public abstract class AbstractParameter : AbstractInteraction
     {
-        
+        /// <summary>
+        /// Event when an interaction is performed on a parameter.
+        /// </summary>
+        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        [System.Serializable]
+        public class ParameterEvent<T> : UnityEvent<ParameterEventContent<T>> { }
+
+        /// <summary>
+        /// Parameter interaction Event content.
+        /// </summary>
+        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        [System.Serializable]
+        public class ParameterEventContent<T> : InteractionEventContent
+        {
+            /// <summary>
+            /// New value.
+            /// </summary>
+            public T value;
+
+            public ParameterEventContent(UMI3DUser user, ParameterSettingRequestDto dto, T value) : base(user, dto)
+            {
+                this.value = value;
+            }
+        }
     }
 }
