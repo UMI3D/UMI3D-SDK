@@ -140,7 +140,7 @@ namespace umi3d.edk
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
 
-            return materialsOverider.ConvertAll(mat => mat.newMaterial.ToDto());
+            return materialsOverrider.ConvertAll(mat => mat.newMaterial.ToDto());
 
         }
     }

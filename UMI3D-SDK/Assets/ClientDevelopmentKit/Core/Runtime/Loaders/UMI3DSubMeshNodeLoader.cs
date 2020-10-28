@@ -36,6 +36,8 @@ namespace umi3d.cdk
                         instance = GameObject.Instantiate(UMI3DResourcesManager.Instance.subModelsCache[modelInCache][sub].gameObject, node.gameObject.transform);
 
                         UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
+                        AbstractMeshDtoLoader.ShowModelRecursively(instance);
+
                         var renderers = instance.GetComponentsInChildren<Renderer>();
                         if (renderers != null)
                             UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);

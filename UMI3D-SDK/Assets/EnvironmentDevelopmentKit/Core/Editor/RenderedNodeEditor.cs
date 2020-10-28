@@ -20,7 +20,7 @@ namespace umi3d.edk.editor
         protected override void OnEnable()
         {
             base.OnEnable();
-            material = serializedObject.FindProperty("materialsOverider");
+            material = serializedObject.FindProperty("materialsOverrider");
             overrideModelMaterials = serializedObject.FindProperty("overrideModelMaterials");
 
             castShadow = serializedObject.FindProperty("castShadow");

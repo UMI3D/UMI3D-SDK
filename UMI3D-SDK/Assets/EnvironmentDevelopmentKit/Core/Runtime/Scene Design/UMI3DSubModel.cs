@@ -22,7 +22,6 @@ namespace umi3d.edk
 
 
     {
-      //  public UMI3DAsyncProperty<bool> objectMaterialOverrided { get { Register(); return _objectMaterialOverrided; } protected set => _objectMaterialOverrided = value; }
 
         public UMI3DModel parentModel;
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
