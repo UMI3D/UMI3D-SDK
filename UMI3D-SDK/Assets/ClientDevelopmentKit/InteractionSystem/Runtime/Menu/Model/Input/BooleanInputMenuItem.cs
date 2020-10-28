@@ -32,7 +32,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private List<UnityAction<bool, string>> subscribers = new List<UnityAction<bool, string>>();
 
 
         /// <summary>
@@ -47,21 +47,21 @@ namespace umi3d.cdk.menu
         /// Notify a change of the input value.
         /// </summary>
         /// <param name="newValue"></param>
-        public override void NotifyValueChange(bool newValue)
+        public override void NotifyValueChange(bool newValue, string hoveredObjectId)
         {
             value = newValue;
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (UnityAction<bool, string> sub in subscribers)
             {
-                sub.Invoke(newValue);
+                sub.Invoke(newValue, hoveredObjectId);
             }
         }
 
         /// <summary>
         /// Subscribe a callback to the value change.
         /// </summary>
-        /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{T})"/>
-        public override void Subscribe(UnityAction<bool> callback)
+        /// <param name="callback">Callback to raise on a value change (argument is the new value and the id of the Hovered Object)</param>
+        /// <see cref="UnSubscribe(UnityAction{bool,string})"/>
+        public override void Subscribe(UnityAction<bool, string> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -78,8 +78,8 @@ namespace umi3d.cdk.menu
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
-        public override void UnSubscribe(UnityAction<bool> callback)
+        /// <see cref="Subscribe(UnityAction{bool,string})"/>
+        public override void UnSubscribe(UnityAction<bool, string> callback)
         {
             subscribers.Remove(callback);
         }

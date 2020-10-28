@@ -33,21 +33,21 @@ namespace umi3d.common
         /// Notify a value change.
         /// </summary>
         /// <param name="newValue">New value</param>
-        void NotifyValueChange(T newValue);
+        /// <param name="hoveredObjectId">Id of the </param>
+        void NotifyValueChange(T newValue, string hoveredObjectId);
 
         /// <summary>
         /// Subscribe a callback to the value change.
         /// </summary>
-        /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{T})"/>
-        void Subscribe(UnityAction<T> callback);
+        /// <param name="callback">Callback to raise on a value change (argument is the new value and the hoveredObjectId)</param>
+        /// <see cref="UnSubscribe(UnityAction{T, string})"/>
+        void Subscribe(UnityAction<T, string> callback);
 
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
-        void UnSubscribe(UnityAction<T> callback);
+        /// <see cref="Subscribe(UnityAction{T, string})"/>
+        void UnSubscribe(UnityAction<T, string> callback);
     }
-
 }

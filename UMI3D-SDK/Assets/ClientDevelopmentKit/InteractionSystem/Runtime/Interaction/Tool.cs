@@ -53,7 +53,7 @@ namespace umi3d.cdk.interaction
                 tool = this,
                 Name = name,
             };
-            foreach(var interaction in dto.interactions)
+            foreach (var interaction in dto.interactions)
             {
                 var item = getInteractionItem(interaction);
                 Menu.Add(item);
@@ -79,7 +79,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case BooleanParameterDto booleanParameterDto:
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
-                    b.Subscribe((x) =>
+                    b.Subscribe((x, id) =>
                         {
                             booleanParameterDto.value = x;
                             var pararmeterDto = new ParameterSettingRequestDto()
@@ -87,6 +87,7 @@ namespace umi3d.cdk.interaction
                                 toolId = dto.id,
                                 id = booleanParameterDto.id,
                                 parameter = booleanParameterDto,
+                                hoveredObjectId = id
                             };
                             UMI3DClientServer.Send(pararmeterDto, true);
                         }
@@ -95,7 +96,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case FloatRangeParameterDto floatRangeParameterDto:
                     var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
-                    f.Subscribe((x) =>
+                    f.Subscribe((x, id) =>
                     {
                         floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -103,6 +104,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
+                            hoveredObjectId = id
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -111,7 +113,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case EnumParameterDto<string> enumParameterDto:
                     var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
-                    en.Subscribe((x) =>
+                    en.Subscribe((x, id) =>
                     {
                         enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -119,6 +121,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = enumParameterDto.id,
                             parameter = enumParameterDto,
+                            hoveredObjectId = id
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -126,8 +129,8 @@ namespace umi3d.cdk.interaction
                     result = en;
                     break;
                 case StringParameterDto stringParameterDto:
-                    var s = new TextInputMenuItem() { dto = stringParameterDto};
-                    s.Subscribe((x) =>
+                    var s = new TextInputMenuItem() { dto = stringParameterDto };
+                    s.Subscribe((x, id) =>
                     {
                         stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -135,6 +138,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = stringParameterDto.id,
                             parameter = stringParameterDto,
+                            hoveredObjectId = id
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }

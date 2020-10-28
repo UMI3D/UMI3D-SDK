@@ -26,9 +26,9 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Notify that the button has been pressed.
         /// </summary>
-        public void NotifyPress()
+        public void NotifyPress(string hoveredObjectId)
         {
-            menuItem.NotifyValueChange(!menuItem.GetValue());
+            menuItem.NotifyValueChange(!menuItem.GetValue(),hoveredObjectId);
         }
 
         /// <summary>

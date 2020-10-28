@@ -33,7 +33,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<T>> subscribers = new List<UnityAction<T>>();
+        private List<UnityAction<T, string>> subscribers = new List<UnityAction<T, string>>();
 
         /// <summary>
         /// Get displayed value.
@@ -47,12 +47,12 @@ namespace umi3d.cdk.menu
         /// Notify a change of the input value.
         /// </summary>
         /// <param name="newValue"></param>
-        public override void NotifyValueChange(T newValue)
+        public override void NotifyValueChange(T newValue, string hoveredObjectId)
         {
             value = newValue;
-            foreach (UnityAction<T> sub in subscribers)
+            foreach (UnityAction<T, string> sub in subscribers)
             {
-                sub.Invoke(newValue);
+                sub.Invoke(newValue, hoveredObjectId);
             }
         }
 
@@ -61,7 +61,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
         /// <see cref="UnSubscribe(UnityAction{T})"/>
-        public override void Subscribe(UnityAction<T> callback)
+        public override void Subscribe(UnityAction<T, string> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -75,7 +75,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction{T})"/>
-        public override void UnSubscribe(UnityAction<T> callback)
+        public override void UnSubscribe(UnityAction<T, string> callback)
         {
             subscribers.Remove(callback);
         }

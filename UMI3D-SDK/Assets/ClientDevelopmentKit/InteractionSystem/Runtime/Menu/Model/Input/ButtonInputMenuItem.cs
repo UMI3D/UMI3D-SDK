@@ -37,11 +37,11 @@ namespace umi3d.cdk.menu
 
 
         private bool pressedState = false;
-        
+
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private List<UnityAction<bool, string>> subscribers = new List<UnityAction<bool, string>>();
 
 
 
@@ -49,19 +49,19 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback for button press.
         /// </summary>
         /// <param name="callback">Callback to invoke on button press</param>
-        public override void Subscribe(UnityAction<bool> callback)
+        public override void Subscribe(UnityAction<bool, string> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
             }
-        }       
-        
+        }
+
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public override void UnSubscribe(UnityAction<bool> callback)
+        public override void UnSubscribe(UnityAction<bool, string> callback)
         {
             subscribers.Remove(callback);
         }
@@ -88,16 +88,16 @@ namespace umi3d.cdk.menu
         /// Notify a value change to the subscribers.
         /// </summary>
         /// <param name="newValue"></param>
-        public override void NotifyValueChange(bool newValue)
+        public override void NotifyValueChange(bool newValue, string hoveredObjectId)
         {
             if (toggle)
             {
                 pressedState = !pressedState;
             }
 
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (UnityAction<bool, string> sub in subscribers)
             {
-                sub.Invoke(pressedState);
+                sub.Invoke(pressedState, hoveredObjectId);
             }
         }
     }
