@@ -120,12 +120,16 @@ namespace umi3d.edk
         }
 
 
+        public virtual void NotifyUserChanged(UMI3DUser user)
+        {
+        }
+
         /// <summary>
         /// Call To Notify a user status change.
         /// </summary>
         /// <param name="user">user that get its staus updated</param>
         /// <param name="status">new status</param>
-        public void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
+        public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
             switch (status)
             {

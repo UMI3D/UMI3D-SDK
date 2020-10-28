@@ -17,10 +17,12 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.userCapture;
+using umi3d.edk.collaboration;
 using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Events;
@@ -74,15 +76,12 @@ namespace umi3d.cdk.collaboration
             //WebRTCClient.audio = Audio.CaptureStream();
             //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
             //image.texture = cam.targetTexture;
-            if (Identity.login == default || Identity.login == "")
-            {
-                Identity.login = "Default";
-                Debug.LogWarning("Login should always have a value. Login set to 'Default'");
-            }
             connected = false;
             joinning = false;
             //cameraDisplayer.Play();
         }
+
+
 
         //public Texture2D GetStreamTexture2D()
         //{
@@ -310,8 +309,14 @@ namespace umi3d.cdk.collaboration
         {
             if (joinning || connected) return;
             joinning = true;
+
+            JoinDto joinDto = new JoinDto()
+            {
+                bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList()
+            };
+
             Instance.HttpClient.SendPostJoin(
-                new JoinDto(),
+                joinDto,
                 (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
                 (error) => { joinning = false; Debug.Log("error on get id :" + error); });
         }
@@ -321,7 +326,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="bytes">Message to handle</param>
         /// <param name="channel">Channel from which the message was received</param>
-        static public void OnRtcMessage(byte[] bytes, DataChannel channel)
+        static public void OnRtcMessage(UMI3DUser user, byte[] bytes, DataChannel channel)
         {
             var dto = UMI3DDto.FromBson(bytes);
             switch (dto)
@@ -336,7 +341,7 @@ namespace umi3d.cdk.collaboration
                     if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         userAvatar.UpdateBonePosition(trackingFrame);
                     else
-                        throw new Exception("User Avatar not found.");
+                        Debug.LogWarning("User Avatar not found.");
                     break;
                 default:
                     Debug.Log($"Type not catch {dto.GetType()}");

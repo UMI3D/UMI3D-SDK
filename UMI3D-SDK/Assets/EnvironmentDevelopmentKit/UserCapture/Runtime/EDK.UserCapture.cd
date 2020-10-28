@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.edk.userCapture.UMI3DAvatarNode" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAABAgAQAAAAAAACAIAIBBBQAAiAAAAAAACAIBIAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DAvatarNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DEmbodimentManager" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BA4hEBABACAICAACAAEAAAAKQKABABYAAAIBBAAAgGA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DEmbodimentManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DUserEmbodimentBone" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAEAAAAAAAAAAAIAAAAAAAAI=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DUserEmbodimentBone.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.Binding" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAQBDAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAI=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DUserEmbodimentBone.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DTrackedUser" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\UMI3DTrackedUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -81,21 +81,40 @@ namespace umi3d.edk
             return res;
         }
 
-        public GlTFEnvironmentDto ToDto(UMI3DUser user)
+        public virtual GlTFEnvironmentDto ToDto(UMI3DUser user)
         {
             GlTFEnvironmentDto env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
             env.scenes.AddRange(scenes.Select(s => s.ToGlTFNodeDto(user)));
-            env.extensions.umi3d = new UMI3DEnvironementDto();
-            env.extensions.umi3d.LibrariesId = globalLibraries.Select(l => l.id).ToList();
-            env.extensions.umi3d.preloadedScenes = objectPreloadedScenes.GetValue(user).Select( r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
-            env.extensions.umi3d.ambientType = (AmbientType)objectAmbientType.GetValue(user);
-            env.extensions.umi3d.skyColor = objectSkyColor.GetValue(user);
-            env.extensions.umi3d.horizontalColor = objectHorizonColor.GetValue(user);
-            env.extensions.umi3d.groundColor = objectGroundColor.GetValue(user);
-            env.extensions.umi3d.ambientIntensity = objectAmbientIntensity.GetValue(user);
-            env.extensions.umi3d.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+            env.extensions.umi3d = CreateDto();
+            WriteProperties(env.extensions.umi3d, user);
             return env;
+        }
+
+        /// <summary>
+        /// Write Properties on a UMI3DEnvironementDto.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="user"></param>
+        protected virtual void WriteProperties(UMI3DEnvironementDto dto, UMI3DUser user)
+        {
+            dto.LibrariesId = globalLibraries.Select(l => l.id).ToList();
+            dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
+            dto.ambientType = (AmbientType)objectAmbientType.GetValue(user);
+            dto.skyColor = objectSkyColor.GetValue(user);
+            dto.horizontalColor = objectHorizonColor.GetValue(user);
+            dto.groundColor = objectGroundColor.GetValue(user);
+            dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
+            dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+        }
+
+        /// <summary>
+        /// Create a UMI3DEnvironementDto.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual UMI3DEnvironementDto CreateDto()
+        {
+            return new UMI3DEnvironementDto();
         }
 
         public static EnterDto ToEnterDto(UMI3DUser user)
@@ -245,6 +264,25 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Register an entity to the environment with an id, and return it's id. 
+        /// </summary>
+        /// <param name="entity">Entity to register</param>
+        /// <param name="id">id to use</param>
+        /// <returns>Registered object's id (same as id field if the id wasn't already used).</returns>
+        public static string Register(UMI3DEntity entity, string id)
+        {
+            if (Exists)
+            {
+                if (entity != null)
+                    return Instance.entities.Register(entity,id);
+                else
+                    throw new System.NullReferenceException("Trying to register null entity !");
+            }
+            else
+                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+        }
+
+        /// <summary>
         /// Remove an object from the scene. 
         /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
         /// </summary>
@@ -281,6 +319,19 @@ namespace umi3d.edk
             {
                 byte[] key = Guid.NewGuid().ToByteArray();
                 string guid = Convert.ToBase64String(key);
+                objects.Add(guid, obj);
+                return guid;
+            }
+
+            public string Register(A obj,string guid)
+            {
+                if (objects.ContainsKey(guid))
+                {
+                    string old = guid;
+                    byte[] key = Guid.NewGuid().ToByteArray();
+                    guid = Convert.ToBase64String(key);
+                    Debug.LogWarning($"Guid [{old}] was already used node register with another id [{guid}]");
+                }
                 objects.Add(guid, obj);
                 return guid;
             }

@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.edk.collaboration.HttpRoutingUtil" Collapsed="true">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQEAAAAQAAAAIAAAAABAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\HttpRoutingUtil.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.IdentifierApi" Collapsed="true">
+    <Position X="1.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAhAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAQEA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\IdentifierApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.PinIdentifierApi" Collapsed="true">
+    <Position X="0.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAEAAAAAABAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\PinIdentifierApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DApi" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAQAAAIBAQAHAAAA2AAEEAAgYQg=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DHttp" Collapsed="true">
+    <Position X="7" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAIAAAAAgAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DHttp.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DWebRTC" Collapsed="true">
+    <Position X="10.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAOBAAAAAAAAAAIAAABAAABAAAABAAgEAAQAIAAY=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWebRTC.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DWebsocket" Collapsed="true">
+    <Position X="5.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWebsocket.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DWebSocketConnection" Collapsed="true">
+    <Position X="7" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAEAAIAAAAAABABAAIAAAAIAAAAAQAKAAAJAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWebSocketConnection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UnsecuredIdentifierApi" Collapsed="true">
+    <Position X="2.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAAAAAABAAAAAAAAAAAAAAAEAAAAAABQAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UnsecuredIdentifierApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.WebServiceMethod" Collapsed="true">
+    <Position X="8.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAIAAhAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.WebServiceMethodAttribute" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAIAQCAAAAAAABAAAAAAAAAAAABAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethodAttributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.HttpGet" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethodAttributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.HttpPost" Collapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethodAttributes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DCollaborationServer" Collapsed="true">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wI0AABAAABEgMEJQAMoAIAIgAAAQEgAQ9SACQIBIAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DCollaborationUser" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAACAAACAAAAAAABAAIAQAAAAAAAAAAIAAAAEAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DCollabTrackingManager" Collapsed="true">
+    <Position X="5.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAACAACAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollabTrackingManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DUserManager" Collapsed="true">
+    <Position X="8.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAACAAAQIwCAAAAAAAAAIAAAAAAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DUserManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

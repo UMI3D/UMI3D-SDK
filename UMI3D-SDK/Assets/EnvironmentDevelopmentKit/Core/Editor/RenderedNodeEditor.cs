@@ -14,6 +14,8 @@ namespace umi3d.edk.editor
         SerializedProperty overrideModelMaterials;
         SerializedProperty castShadow;
         SerializedProperty receiveShadow;
+        SerializedProperty ignoreParent;
+
 
         protected override void OnEnable()
         {
@@ -24,6 +26,7 @@ namespace umi3d.edk.editor
             castShadow = serializedObject.FindProperty("castShadow");
             receiveShadow = serializedObject.FindProperty("receiveShadow");
 
+            ignoreParent = serializedObject.FindProperty("ignoreModelMaterialOverride"); // could be null
 
         }
         public override void OnInspectorGUI()
@@ -40,6 +43,10 @@ namespace umi3d.edk.editor
                 EditorGUILayout.PropertyField(material);
             }
 
+            if(target is UMI3DSubModel)
+            {
+                EditorGUILayout.PropertyField(ignoreParent);
+            }
 
             EditorGUILayout.PropertyField(castShadow);
             EditorGUILayout.PropertyField(receiveShadow);

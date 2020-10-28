@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -24,8 +25,19 @@ namespace umi3d.edk
     public class MaterialOverrider
     {
         public MaterialSO newMaterial;
-        public bool overrideAllMaterial = false;
-        public List<string> overidedMaterials;
+        [SerializeField]
+        private OverridedMaterialList materialListToOverride = new OverridedMaterialList();
+
+        public bool overrideAllMaterial { get => materialListToOverride.overrideAllMaterial; set => materialListToOverride.overrideAllMaterial = value; }
+
+        public List<string> overidedMaterials { get => materialListToOverride.overidedMaterials; set => materialListToOverride.overidedMaterials = value; }
+
+        [Serializable]
+        public class OverridedMaterialList
+        {
+            public bool overrideAllMaterial = false;
+            public List<string> overidedMaterials = new List<string>();
+        }
 
         private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat"};
 

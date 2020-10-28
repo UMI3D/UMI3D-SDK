@@ -112,6 +112,14 @@ namespace umi3d.cdk.interaction
         public abstract AbstractUMI3DInput FindInput(FormDto form, bool unused = true);
 
         /// <summary>
+        /// Return an input for a given form. Return null if no input is available.
+        /// </summary>
+        /// <param name="link">Form to find an input for</param>
+        /// <param name="unused">Should the input be unused ?</param>
+        /// <returns></returns>
+        public abstract AbstractUMI3DInput FindInput(LinkDto link, bool unused = true);
+
+        /// <summary>
         /// Check if a tool can be projected on this controller.
         /// </summary>
         /// <param name="tool"> The tool to be projected.</param>

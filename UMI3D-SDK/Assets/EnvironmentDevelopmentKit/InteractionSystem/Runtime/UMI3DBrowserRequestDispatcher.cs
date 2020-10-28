@@ -33,16 +33,17 @@ namespace umi3d.edk.interaction
                     Debug.Log($"receive transaction from browser {user.Id()}:{dto}");
                     break;
                 case HoveredDto hoveredDto:
-                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoveredDto.id)?.Hovered(user, hoveredDto);
+                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoveredDto.toolId)?.Hovered(user, hoveredDto);
                     break;
                 case HoverStateChangedDto hoverStateChanged:
-                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoverStateChanged.id)?.HoverStateChanged(user, hoverStateChanged);
+                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoverStateChanged.toolId)?.HoverStateChanged(user, hoverStateChanged);
                     break;
                 case EventStateChangedDto eventState:
                 case EventTriggeredDto eventTriggered:
                 case ParameterSettingRequestDto parameterSetting:
                 case ManipulationRequestDto manipulation:
                 case FormAnswer formAnswer:
+                case LinkOpened linkOpened:
                     var interaction = dto as InteractionRequestDto;
                     UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.id)?.OnUserInteraction(user, interaction);
                     break;

@@ -34,5 +34,7 @@ namespace umi3d.common.userCapture
         public SerializableVector4 rotation;
 
         public SerializableVector3 scale;
+
+        public float refreshFrequency;
     }
 }
