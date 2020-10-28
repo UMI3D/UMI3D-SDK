@@ -28,7 +28,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private List<UnityAction<string, string>> subscribers = new List<UnityAction<string, string>>();
+        private List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
         /// <summary>
         /// Get displayed value.
         /// </summary>
@@ -41,13 +41,13 @@ namespace umi3d.cdk.menu.view
         /// Notify a value change.
         /// </summary>
         /// <param name="newValue"></param>
-        public void NotifyValueChange(string newValue, string hoveredObjectId)
+        public void NotifyValueChange(string newValue)
         {
             
-            menuItem.NotifyValueChange(newValue,hoveredObjectId);
-            foreach (UnityAction<string, string> sub in subscribers)
+            menuItem.NotifyValueChange(newValue);
+            foreach (UnityAction<string> sub in subscribers)
             {
-                sub.Invoke(newValue,hoveredObjectId);
+                sub.Invoke(newValue);
             }
         }
 
@@ -68,7 +68,7 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public void Subscribe(UnityAction<string, string> callback)
+        public void Subscribe(UnityAction<string> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -79,7 +79,7 @@ namespace umi3d.cdk.menu.view
         /// nsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public void UnSubscribe(UnityAction<string, string> callback)
+        public void UnSubscribe(UnityAction<string> callback)
         {
             subscribers.Remove(callback);
         }

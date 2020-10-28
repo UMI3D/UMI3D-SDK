@@ -37,21 +37,21 @@ namespace umi3d.cdk.menu
         /// </summary>
         /// <param name="newValue">New value</param>
         /// <param name="hoveredObjectId">Id of the </param>
-        public abstract void NotifyValueChange(T newValue, string hoveredObjectId);
+        public abstract void NotifyValueChange(T newValue);
 
         /// <summary>
         /// Subscribe a callback to the value change.
         /// </summary>
-        /// <param name="callback">Callback to raise on a value change (argument is the new value and the hoveredObjectId)</param>
-        /// <see cref="UnSubscribe(UnityAction{T, string})"/>
-        public abstract void Subscribe(UnityAction<T, string> callback);
+        /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
+        /// <see cref="UnSubscribe(UnityAction{T})"/>
+        public abstract void Subscribe(UnityAction<T> callback);
 
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T, string})"/>
-        public abstract void UnSubscribe(UnityAction<T, string> callback);
+        /// <see cref="Subscribe(UnityAction{T})"/>
+        public abstract void UnSubscribe(UnityAction<T> callback);
     }
 
     /// <summary>

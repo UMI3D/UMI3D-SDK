@@ -33,7 +33,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private List<UnityAction<float, string>> subscribers = new List<UnityAction<float, string>>();
+        private List<UnityAction<float>> subscribers = new List<UnityAction<float>>();
 
         /// <summary>
         /// Get displayed value.
@@ -47,12 +47,12 @@ namespace umi3d.cdk.menu.view
         /// Notify a value change.
         /// </summary>
         /// <param name="newValue">New value</param>
-        public void NotifyValueChange(float newValue, string hoveredObjectId)
+        public void NotifyValueChange(float newValue)
         {
-            menuItem.NotifyValueChange(newValue, hoveredObjectId);
-            foreach (UnityAction<float, string> sub in subscribers)
+            menuItem.NotifyValueChange(newValue);
+            foreach (UnityAction<float> sub in subscribers)
             {
-                sub.Invoke(newValue, hoveredObjectId);
+                sub.Invoke(newValue);
             }
         }
 
@@ -75,8 +75,8 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{bool,string})"/>
-        public void Subscribe(UnityAction<float, string> callback)
+        /// <see cref="UnSubscribe(UnityAction{bool})"/>
+        public void Subscribe(UnityAction<float> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -88,8 +88,8 @@ namespace umi3d.cdk.menu.view
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{bool,string})"/>
-        public void UnSubscribe(UnityAction<float, string> callback)
+        /// <see cref="Subscribe(UnityAction{bool})"/>
+        public void UnSubscribe(UnityAction<float> callback)
         {
             subscribers.Remove(callback);
         }

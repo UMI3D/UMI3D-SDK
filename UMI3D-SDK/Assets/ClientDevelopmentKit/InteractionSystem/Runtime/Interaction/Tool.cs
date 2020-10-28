@@ -79,7 +79,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case BooleanParameterDto booleanParameterDto:
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
-                    b.Subscribe((x, id) =>
+                    b.Subscribe((x) =>
                         {
                             booleanParameterDto.value = x;
                             var pararmeterDto = new ParameterSettingRequestDto()
@@ -87,7 +87,7 @@ namespace umi3d.cdk.interaction
                                 toolId = dto.id,
                                 id = booleanParameterDto.id,
                                 parameter = booleanParameterDto,
-                                hoveredObjectId = id
+                                hoveredObjectId = null
                             };
                             UMI3DClientServer.Send(pararmeterDto, true);
                         }
@@ -96,7 +96,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case FloatRangeParameterDto floatRangeParameterDto:
                     var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
-                    f.Subscribe((x, id) =>
+                    f.Subscribe((x) =>
                     {
                         floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -104,7 +104,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
-                            hoveredObjectId = id
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -113,7 +113,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case EnumParameterDto<string> enumParameterDto:
                     var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
-                    en.Subscribe((x, id) =>
+                    en.Subscribe((x) =>
                     {
                         enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -121,7 +121,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = enumParameterDto.id,
                             parameter = enumParameterDto,
-                            hoveredObjectId = id
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -130,7 +130,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case StringParameterDto stringParameterDto:
                     var s = new TextInputMenuItem() { dto = stringParameterDto };
-                    s.Subscribe((x, id) =>
+                    s.Subscribe((x) =>
                     {
                         stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -138,7 +138,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = stringParameterDto.id,
                             parameter = stringParameterDto,
-                            hoveredObjectId = id
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }

@@ -33,7 +33,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private List<UnityAction<string, string>> subscribers = new List<UnityAction<string, string>>();
+        private List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
 
         /// <summary>
         /// Get displayed value.
@@ -47,12 +47,12 @@ namespace umi3d.cdk.menu.view
         /// Notify a value change.
         /// </summary>
         /// <param name="newValue">New value</param>
-        public void NotifyValueChange(string newValue, string hoveredObjectId)
+        public void NotifyValueChange(string newValue)
         {
-            menuItem.NotifyValueChange(newValue,hoveredObjectId);
-            foreach (UnityAction<string, string> sub in subscribers)
+            menuItem.NotifyValueChange(newValue);
+            foreach (UnityAction<string> sub in subscribers)
             {
-                sub.Invoke(newValue,hoveredObjectId);
+                sub.Invoke(newValue);
             }
         }
 
@@ -61,7 +61,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
         /// <see cref="UnSubscribe(UnityAction{string})"/>
-        public void Subscribe(UnityAction<string, string> callback)
+        public void Subscribe(UnityAction<string> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -74,7 +74,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction{string})"/>
-        public void UnSubscribe(UnityAction<string, string> callback)
+        public void UnSubscribe(UnityAction<string> callback)
         {
             subscribers.Remove(callback);
         }
