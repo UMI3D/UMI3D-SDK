@@ -68,8 +68,13 @@ namespace umi3d.cdk
         /// <returns></returns>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            if (base.SetUMI3DProperty(entity, property)) return true;
             var node = entity as UMI3DNodeInstance;
+
+            if (!node.updatePose && property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation)
+                return true;
+            
+            if (base.SetUMI3DProperty(entity, property)) return true;
+
             if (node == null) return false;
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
             if (dto == null) return false;
@@ -355,7 +360,7 @@ namespace umi3d.cdk
                         }
                         catch (Exception e)
                         {
-                            Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                            Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                         }
 
                     }
@@ -377,7 +382,7 @@ namespace umi3d.cdk
                             }
                             catch(Exception e)
                             {
-                                Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                                Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                             }
                         }
 
@@ -397,7 +402,7 @@ namespace umi3d.cdk
                             }
                             catch (Exception e)
                             {
-                                Debug.LogWarning("the mesh failed to be added, collider is not registered. Collider is not accessible");
+                                Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                             }
                         }
                     }

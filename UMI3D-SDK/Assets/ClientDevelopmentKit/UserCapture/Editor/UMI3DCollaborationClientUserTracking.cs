@@ -25,11 +25,12 @@ using System;
 using umi3d.common.editor;
 using umi3d.common.userCapture;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.collaboration;
 
 namespace umi3d.cdk.editor
 {
-    [CustomEditor(typeof(UMI3DClientUserTracking))]
-    public class UMI3DClientUserTrackingEditor : Editor
+    [CustomEditor(typeof(UMI3DCollaborationClientUserTracking))]
+    public class UMI3DCollaborationClientUserTrackingEditor : Editor
     {
         SerializedProperty anchor;
         SerializedProperty viewpoint;
@@ -38,7 +39,7 @@ namespace umi3d.cdk.editor
         SerializedProperty time;
         SerializedProperty max;
 
-        ConstStringDisplayer constDisplayer;
+        //ConstStringDisplayer constDisplayer;
 
         // Start is called before the first frame update
         void OnEnable()
@@ -50,7 +51,7 @@ namespace umi3d.cdk.editor
             time = serializedObject.FindProperty("time");
             max = serializedObject.FindProperty("max");
 
-            constDisplayer = new ConstStringDisplayer(viewpointBonetype.name, typeof(BoneType), viewpointBonetype.stringValue);
+            //constDisplayer = new ConstStringDisplayer(viewpointBonetype.name, typeof(BoneType), viewpointBonetype.stringValue);
         }
 
         // Update is called once per frame
@@ -58,7 +59,8 @@ namespace umi3d.cdk.editor
         {
             EditorGUILayout.PropertyField(anchor);
             EditorGUILayout.PropertyField(viewpoint);
-            viewpointBonetype.stringValue = constDisplayer.display();
+            EditorGUILayout.PropertyField(viewpointBonetype);
+            //viewpointBonetype.stringValue = constDisplayer.display();
             EditorGUILayout.PropertyField(skeletonParsingIterationCooldown);
             EditorGUILayout.PropertyField(time);
             EditorGUILayout.PropertyField(max);

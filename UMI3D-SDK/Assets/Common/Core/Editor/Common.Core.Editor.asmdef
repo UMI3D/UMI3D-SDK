@@ -1,11 +1,7 @@
 {
-    "name": "UMI3D.CDK.UserCapture.Editor",
+    "name": "Common.Core.Editor",
     "references": [
-        "GUID:09603449e2002d4418d8adc054084195",
-        "GUID:608ff695b5b1d8f46a32962b70ec9792",
-        "GUID:6e34c4b4c3202a14eb95e0a784041765",
-        "GUID:5fcc83811144000419d9262c4c25c3e8",
-        "GUID:e9d5e86aa6d2c734784eee5383b04e89"
+        "GUID:6e34c4b4c3202a14eb95e0a784041765"
     ],
     "includePlatforms": [
         "Editor"

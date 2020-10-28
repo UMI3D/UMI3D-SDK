@@ -42,8 +42,7 @@ namespace umi3d.edk
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
-                objectId = parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id());
-
+                objectId = UMI3DEnvironment.Register(this, parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id()));
                 InitDefinition(objectId);
             }
             return GetLoadEntity();

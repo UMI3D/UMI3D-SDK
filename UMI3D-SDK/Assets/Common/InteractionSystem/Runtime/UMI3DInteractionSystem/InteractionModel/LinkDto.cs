@@ -14,13 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.interaction
 {
-    public class JoinDto : UMI3DDto
+    public class LinkDto : AbstractInteractionDto
     {
-        public List<BoneDto> bonesList;
+
+        public string url;
+
+        public LinkDto() : base()
+        {
+        }
     }
 }

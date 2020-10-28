@@ -191,7 +191,10 @@ namespace umi3d.cdk.userCapture
                     oldPositions.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, oldPosition);
                     UnityEngine.Debug.Log(dto.rigName);
                     if (dto.rigName == "")
+                    {
                         node.transform.SetParent(bone.transform);
+                        node.updatePose = false;
+                    }
                     else
                     {
                         UnityEngine.Debug.Log($"set {obj.name} under {bone.transform.name}");
@@ -209,7 +212,7 @@ namespace umi3d.cdk.userCapture
                     Transform rig = obj;
                     rig.localPosition = dto.position;
                     rig.localRotation = dto.rotation;
-                }
+                }      
             }
         }
 
@@ -225,6 +228,7 @@ namespace umi3d.cdk.userCapture
                     node.transform.SetParent(oldPosition.oldParent);
                     node.transform.localPosition = oldPosition.oldPosition;
                     node.transform.localRotation = oldPosition.oldRotation;
+                    node.updatePose = true;
                 }
                 else
                     Destroy(node.gameObject);
