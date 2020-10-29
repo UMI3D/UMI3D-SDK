@@ -216,7 +216,7 @@ namespace umi3d.edk
         public static IEnumerable<E> GetEntities<E>() where E : class, UMI3DEntity
         {
             if (Exists)
-                return Instance.entities.Values?.ToList().Where(entities => entities is E).Select(e => e as E);
+                return Instance.entities?.Values?.ToList()?.Where(entities => entities is E)?.Select(e => e as E);
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
