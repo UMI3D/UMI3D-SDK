@@ -249,7 +249,7 @@ namespace umi3d.cdk.collaboration
         protected override void _Send(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
-                Instance.WebRTCClient?.SendServer(dto, reliable);
+                Instance?.WebRTCClient?.SendServer(dto, reliable);
         }
 
         /// <summary>
@@ -260,7 +260,7 @@ namespace umi3d.cdk.collaboration
         protected override void _SendTracking(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
-                Instance.WebRTCClient.Send(dto, reliable, DataType.Tracking);
+                Instance?.WebRTCClient?.Send(dto, reliable, DataType.Tracking);
         }
 
         /// <summary>
