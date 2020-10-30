@@ -289,10 +289,14 @@ namespace umi3d.cdk
                 return node.renderers;
             if (((GlTFNodeDto)node.dto).extensions.umi3d is SubModelDto)
             {
+                if (node.renderers != null && node.renderers.Count > 0)
+                    return node.renderers;
                 List<Renderer> modelMeshs = UMI3DEnvironmentLoader.GetNode(((SubModelDto)((GlTFNodeDto)node.dto).extensions.umi3d).modelId).renderers;
 
                 //    Renderer[] childRenderers = node.gameObject.GetComponentsInChildren<Renderer>();
-                return node.gameObject.GetComponentsInChildren<Renderer>().Where((r) => modelMeshs.Contains(r)).ToList();
+                node.renderers = node.gameObject.GetComponentsInChildren<Renderer>().Where((r) => modelMeshs.Contains(r)).ToList();
+                Debug.LogWarning("that should not append");
+                return node.renderers;
             }
             
             Debug.LogError("RendererNodeLoader used for non rendered node");
