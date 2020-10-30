@@ -6,12 +6,31 @@ namespace umi3d.cdk
 {
     public class OldMaterialContainer : MonoBehaviour
     {
-        public Material[] oldMats = null;
-
-        private void Awake()
+        public Material[] oldMats
         {
-            int lenght = GetComponent<Renderer>().sharedMaterials.Length;
-            oldMats = new Material[lenght];
+            get
+            {
+                if (_oldMats == null)
+                {
+                    InitOldMats();
+                }
+                return _oldMats;
+            }
+            set { _oldMats = value; }
         }
+ 
+
+        private Material[] _oldMats = null;
+
+
+
+        private void InitOldMats()
+        {
+
+            int lenght = GetComponent<Renderer>().sharedMaterials.Length;
+            _oldMats = new Material[lenght];
+
+        }
+
     }
 }

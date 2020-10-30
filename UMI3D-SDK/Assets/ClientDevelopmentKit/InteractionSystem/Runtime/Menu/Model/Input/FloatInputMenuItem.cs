@@ -18,8 +18,8 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu
 {
-    public class FloatInputMenuItem : AbstractInputMenuItem<float> 
-    { 
+    public class FloatInputMenuItem : AbstractInputMenuItem<float>
+    {
 
         /// <summary>
         /// Range current value.
@@ -43,7 +43,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribe a callback for input value change.
         /// </summary>
-        /// <param name="callback">Callback to invoke on input value change</param>
+        /// <param name="callback">Callback to invoke on input value change (argument is the new value and the hoveredObjectId)</param>
         public override void Subscribe(UnityAction<float> callback)
         {
             if (!subscribers.Contains(callback))
@@ -83,6 +83,5 @@ namespace umi3d.cdk.menu
         {
             return Name;
         }
-
     }
 }

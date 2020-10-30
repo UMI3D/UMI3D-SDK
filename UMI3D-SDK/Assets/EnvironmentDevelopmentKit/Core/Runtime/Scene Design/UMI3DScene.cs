@@ -68,6 +68,8 @@ namespace umi3d.edk
             nodes = GetAllChildrenInThisScene(user);
             dto.extensions.umi3d = ToUMI3DSceneNodeDto(user);
             WriteCollections(dto, user);
+            Debug.Log(dto.materials.Count);
+
             nodes.Clear();
             return dto;
         }
@@ -109,7 +111,7 @@ namespace umi3d.edk
         public List<string> materialIds = new List<string>();
         [HideInInspector]
         public List<string> animationIds = new List<string>();
-        [HideInInspector]
+    //    [HideInInspector]
         public List<MaterialSO> materialSOs = new List<MaterialSO>();
         public List<MaterialSO> PreloadedMaterials = new List<MaterialSO>();
         
@@ -126,8 +128,9 @@ namespace umi3d.edk
             materialIds.Clear();
             animationIds.Clear();
 
-            materialIds.AddRange(PreloadedMaterials.Select(m => m.ToDto().extensions.umi3d.id));
+            materialIds.AddRange(PreloadedMaterials.Select(m => ((AbstractEntityDto)m.ToDto(). extensions.umi3d).id));
             materialSOs.AddRange(PreloadedMaterials);
+            scene.materials.AddRange(PreloadedMaterials.Select(m => m.ToDto()));
 
             //Fill arrays
             foreach (UMI3DNode node in nodes) {
@@ -136,16 +139,15 @@ namespace umi3d.edk
                 scene.nodes.Add(node.ToGlTFNodeDto(user));
 
                 //Get new materials
-                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !(materialIds).Contains(m.extensions.umi3d.id ));
+                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !(materialIds).Contains(((AbstractEntityDto)m.extensions.umi3d).id ));
 
 
                 //Add them to the glTF scene
                 scene.materials.AddRange(materials);
-                scene.materials.AddRange(PreloadedMaterials.Select(m => m.ToDto()));
                 materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
 
                 //remember their ids
-                materialIds.AddRange(materials.Select(m => m.extensions.umi3d.id));
+                materialIds.AddRange(materials.Select(m => ((AbstractEntityDto)m.extensions.umi3d).id));
 
                 //Get new animations
                 IEnumerable<UMI3DAbstractAnimationDto> animations = node.GetAnimationsFor(user).Where(a => !animationIds.Contains(a.id));

@@ -28,6 +28,16 @@ namespace umi3d.common
         public string name;
 
         /// <summary>
+        /// The interaction's icon 2D. 
+        /// </summary>
+        public ResourceDto icon2D;
+
+        /// <summary>
+        /// The interaction's icon 3D. 
+        /// </summary>
+        public ResourceDto icon3D;
+
+        /// <summary>
         /// Type of Navigation.
         /// </summary>
         public NavigationType navigationType;

@@ -70,7 +70,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
 
-            if (!node.updatePose && property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation)
+            if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation))
                 return true;
             
             if (base.SetUMI3DProperty(entity, property)) return true;

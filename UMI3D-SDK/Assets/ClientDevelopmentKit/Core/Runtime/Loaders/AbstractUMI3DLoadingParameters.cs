@@ -39,6 +39,13 @@ namespace umi3d.cdk
         abstract public IResourcesLoader SelectLoader(string extension);
 
         /// <summary>
+        /// Return the best MaterialLoader for a GltfMaterialDto.
+        /// </summary>
+        /// <param name="gltfMatDto"></param>
+        /// <returns></returns>
+        abstract public AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto);
+
+        /// <summary>
         /// Choose the best library variant for this client.
         /// </summary>
         /// <param name="assetLibrary"></param>

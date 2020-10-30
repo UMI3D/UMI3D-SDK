@@ -22,7 +22,6 @@ namespace umi3d.edk
 
 
     {
-      //  public UMI3DAsyncProperty<bool> objectMaterialOverrided { get { Register(); return _objectMaterialOverrided; } protected set => _objectMaterialOverrided = value; }
 
         public UMI3DModel parentModel;
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
@@ -43,8 +42,7 @@ namespace umi3d.edk
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
-                objectId = parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id());
-
+                objectId = UMI3DEnvironment.Register(this, parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id()));
                 InitDefinition(objectId);
             }
             return GetLoadEntity();

@@ -113,30 +113,34 @@ namespace umi3d.edk
             foreach (MaterialSO mat in scene.materialSOs)
             {
                 if (!sets.ContainsKey(mat.Id())) sets[mat.Id()] = new Dictionary<string, SetEntityProperty>();
-                if (mat as PBRMaterial)
+                switch (mat)
                 {
-                    setOperation(((PBRMaterial)mat).objectBaseColorFactor.SetValue(((PBRMaterial)mat).baseColorFactor));
-                    setOperation(((PBRMaterial)mat).objectEmissiveFactor.SetValue(((PBRMaterial)mat).emissive));
-                    setOperation(((PBRMaterial)mat).objectEmissiveTexture.SetValue(((PBRMaterial)mat).textures.emissiveTexture));
-                    setOperation(((PBRMaterial)mat).objectHeightTexture.SetValue(((PBRMaterial)mat).textures.heightTexture));
-                    setOperation(((PBRMaterial)mat).objectHeightTextureScale.SetValue(((PBRMaterial)mat).textures.heightTexture.scale));
-                    setOperation(((PBRMaterial)mat).objectMaintexture.SetValue(((PBRMaterial)mat).textures.baseColorTexture));
-                    setOperation(((PBRMaterial)mat).objectMetallicFactor.SetValue(((PBRMaterial)mat).metallicFactor));
-                    setOperation(((PBRMaterial)mat).objectMetallicRoughnessTexture.SetValue(((PBRMaterial)mat).textures.metallicRoughnessTexture));
-                    setOperation(((PBRMaterial)mat).objectMetallicTexture.SetValue(((PBRMaterial)mat).textures.metallicTexture));
-                    setOperation(((PBRMaterial)mat).objectNormalTexture.SetValue(((PBRMaterial)mat).textures.normalTexture));
-                    setOperation(((PBRMaterial)mat).objectNormalTextureScale.SetValue(((PBRMaterial)mat).textures.normalTexture.scale));
-                    setOperation(((PBRMaterial)mat).objectOcclusionTexture.SetValue(((PBRMaterial)mat).textures.occlusionTexture));
-                    setOperation(((PBRMaterial)mat).objectRoughnessFactor.SetValue(((PBRMaterial)mat).roughnessFactor));
-                    setOperation(((PBRMaterial)mat).objectRoughnessTexture.SetValue(((PBRMaterial)mat).textures.roughnessTexture));
-                    setOperation(((PBRMaterial)mat).objectShaderProperties.SetValue(((PBRMaterial)mat).shaderProperties));
-                    setOperation(((PBRMaterial)mat).objectTextureTilingOffset.SetValue(((PBRMaterial)mat).tilingOffset));
-                    setOperation(((PBRMaterial)mat).objectTextureTilingScale.SetValue(((PBRMaterial)mat).tilingScale));
+                    case PBRMaterial pbrmat:
+                        setOperation((pbrmat).objectBaseColorFactor.SetValue(pbrmat.baseColorFactor));
+                        setOperation((pbrmat).objectEmissiveFactor.SetValue(pbrmat.emissive));
+                        setOperation(pbrmat.objectEmissiveTexture.SetValue(pbrmat.textures.emissiveTexture));
+                        setOperation(pbrmat.objectHeightTexture.SetValue(pbrmat.textures.heightTexture));
+                        setOperation(pbrmat.objectHeightTextureScale.SetValue(pbrmat.textures.heightTexture.scale));
+                        setOperation(pbrmat.objectMaintexture.SetValue(pbrmat.textures.baseColorTexture));
+                        setOperation(pbrmat.objectMetallicFactor.SetValue(pbrmat.metallicFactor));
+                        setOperation(pbrmat.objectMetallicRoughnessTexture.SetValue(pbrmat.textures.metallicRoughnessTexture));
+                        setOperation(pbrmat.objectMetallicTexture.SetValue(pbrmat.textures.metallicTexture));
+                        setOperation(pbrmat.objectNormalTexture.SetValue(pbrmat.textures.normalTexture));
+                        setOperation(pbrmat.objectNormalTextureScale.SetValue(pbrmat.textures.normalTexture.scale));
+                        setOperation(pbrmat.objectOcclusionTexture.SetValue(pbrmat.textures.occlusionTexture));
+                        setOperation(pbrmat.objectRoughnessFactor.SetValue(pbrmat.roughnessFactor));
+                        setOperation(pbrmat.objectRoughnessTexture.SetValue(pbrmat.textures.roughnessTexture));
+                        setOperation(pbrmat.objectShaderProperties.SetValue(pbrmat.shaderProperties));
+                        setOperation(pbrmat.objectTextureTilingOffset.SetValue(pbrmat.tilingOffset));
+                        setOperation(pbrmat.objectTextureTilingScale.SetValue(pbrmat.tilingScale));
+                        break;
+                    case ExternalResourceMaterial extmat:
+                        break;
+                    default:
+                        Debug.LogWarning("unsupported material type");
+                        break;
                 }
-                else
-                {
-                    Debug.LogWarning("unsupported material type");
-                }
+      
             }
         }
 
@@ -157,7 +161,7 @@ namespace umi3d.edk
             if(obj as AbstractRenderedNode)
             {
                 setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
-                setOperation(((AbstractRenderedNode)obj).objectMaterialOveriders.SetValue(((AbstractRenderedNode)obj).materialsOverider));
+                setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
             }
             if(obj as UMI3DSubModel)
             {

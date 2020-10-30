@@ -26,7 +26,7 @@ namespace umi3d.edk
     {
         public MaterialSO newMaterial;
         [SerializeField]
-        private OverridedMaterialList materialListToOverride = null;
+        private OverridedMaterialList materialListToOverride = new OverridedMaterialList();
 
         public bool overrideAllMaterial { get => materialListToOverride.overrideAllMaterial; set => materialListToOverride.overrideAllMaterial = value; }
 

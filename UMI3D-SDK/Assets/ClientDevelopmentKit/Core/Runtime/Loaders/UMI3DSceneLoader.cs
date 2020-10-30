@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -118,11 +119,12 @@ namespace umi3d.cdk
                 try
                 {
 
-                    EnvironementLoader.materialLoader.LoadMaterialFromExtension(material, (m) =>
+                    UMI3DEnvironmentLoader.Parameters.SelectMaterialLoader(material).LoadMaterialFromExtension(material, (m) =>
                     {
-                        m.name = material.name;
+                        if(material.name != null && material.name.Length > 0)
+                            m.name = material.name;
                         //register the material
-                        UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(material.extensions.umi3d.id, material, m);
+                        UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m);
                     }
                     );
 
@@ -164,29 +166,29 @@ namespace umi3d.cdk
                         break;
 
                     case UMI3DPropertyKeys.Maintexture:
-                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_MainTex", (Material)entity.Object);
-                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.baseColorTexture = (TextureDto)property.value;
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_MainTex", (Material)entity.Object);
+                       ((UMI3DMaterialDto) ((GlTFMaterialDto)entity.dto).extensions.umi3d).baseColorTexture = (TextureDto)property.value;
                         break;
 
                     case UMI3DPropertyKeys.NormalTexture:
-                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((ScalableTextureDto)property.value, "_BumpMap", (Material)entity.Object);
-                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.normalTexture = (ScalableTextureDto)property.value;
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((ScalableTextureDto)property.value, "_BumpMap", (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).normalTexture = (ScalableTextureDto)property.value;
                         break;
 
                     case UMI3DPropertyKeys.EmissiveTexture:
-                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_EmissionMap", (Material)entity.Object);
-                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.emissiveTexture = (TextureDto)property.value;
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_EmissionMap", (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).emissiveTexture = (TextureDto)property.value;
                         break;
 
                     case UMI3DPropertyKeys.MetallicTexture:
                     case UMI3DPropertyKeys.MetallicRoughnessTexture:
-                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_MetallicGlossMap", (Material)entity.Object);
-                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.baseColorTexture = (TextureDto)property.value;
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_MetallicGlossMap", (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).baseColorTexture = (TextureDto)property.value;
                         break;
 
                     case UMI3DPropertyKeys.OcclusionTexture:
-                        UMI3DPbrMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_OcclusionMap", (Material)entity.Object);
-                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.occlusionTexture = (TextureDto)property.value;
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, "_OcclusionMap", (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).occlusionTexture = (TextureDto)property.value;
                         break;
 
                     case UMI3DPropertyKeys.RoughnessTexture:
@@ -217,11 +219,45 @@ namespace umi3d.cdk
 
                     case UMI3DPropertyKeys.NormalTextureScale:
                         ((Material)entity.Object).SetFloat("_BumpScale", (float)(double)property.value);
-                        ((GlTFMaterialDto)entity.dto).extensions.umi3d.normalTexture.scale = (float)(double)property.value;
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).normalTexture.scale = (float)(double)property.value;
                         break;
 
                     case UMI3DPropertyKeys.HeightTextureScale:
                         Debug.LogWarning("Height Texture not supported");
+
+                        break;
+
+                    case UMI3DPropertyKeys.ShaderProperties:
+                        Debug.LogWarning("not totaly implemented");
+                        var extension = ((GlTFMaterialDto)entity.dto).extensions.umi3d;
+                        switch (property)
+                        {
+                            case SetEntityDictionaryAddPropertyDto p:
+                                //  string key = (string)p.key;
+                                if(extension.shaderProperties.ContainsKey((string)p.key))
+                                {
+                                    extension.shaderProperties[(string)p.key] = p.value;
+                                    Debug.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value");
+                                }
+                                else
+                                    extension.shaderProperties.Add((string)p.key, p.value);
+                                break;
+                            case SetEntityDictionaryRemovePropertyDto p:
+                                extension.shaderProperties.Remove((string)p.key);
+                                Debug.LogWarning("Warning a property is removed but it cannot be applied");
+                                break;
+                            case SetEntityDictionaryPropertyDto p:
+                                extension.shaderProperties[(string)p.key] = p.value;
+                                break;
+                            case SetEntityPropertyDto p:
+                                extension.shaderProperties = (Dictionary<string, object>)p.value;
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(extension.shaderProperties, (Material)entity.Object);
 
                         break;
 

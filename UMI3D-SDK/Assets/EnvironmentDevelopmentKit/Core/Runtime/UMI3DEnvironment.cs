@@ -216,7 +216,7 @@ namespace umi3d.edk
         public static IEnumerable<E> GetEntities<E>() where E : class, UMI3DEntity
         {
             if (Exists)
-                return Instance.entities.Values?.ToList().Where(entities => entities is E).Select(e => e as E);
+                return Instance.entities?.Values?.ToList()?.Where(entities => entities is E)?.Select(e => e as E);
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -264,6 +264,25 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Register an entity to the environment with an id, and return it's id. 
+        /// </summary>
+        /// <param name="entity">Entity to register</param>
+        /// <param name="id">id to use</param>
+        /// <returns>Registered object's id (same as id field if the id wasn't already used).</returns>
+        public static string Register(UMI3DEntity entity, string id)
+        {
+            if (Exists)
+            {
+                if (entity != null)
+                    return Instance.entities.Register(entity,id);
+                else
+                    throw new System.NullReferenceException("Trying to register null entity !");
+            }
+            else
+                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+        }
+
+        /// <summary>
         /// Remove an object from the scene. 
         /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
         /// </summary>
@@ -300,6 +319,19 @@ namespace umi3d.edk
             {
                 byte[] key = Guid.NewGuid().ToByteArray();
                 string guid = Convert.ToBase64String(key);
+                objects.Add(guid, obj);
+                return guid;
+            }
+
+            public string Register(A obj,string guid)
+            {
+                if (objects.ContainsKey(guid))
+                {
+                    string old = guid;
+                    byte[] key = Guid.NewGuid().ToByteArray();
+                    guid = Convert.ToBase64String(key);
+                    Debug.LogWarning($"Guid [{old}] was already used node register with another id [{guid}]");
+                }
                 objects.Add(guid, obj);
                 return guid;
             }

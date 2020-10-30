@@ -53,7 +53,7 @@ namespace umi3d.cdk.interaction
                 tool = this,
                 Name = name,
             };
-            foreach(var interaction in dto.interactions)
+            foreach (var interaction in dto.interactions)
             {
                 var item = getInteractionItem(interaction);
                 Menu.Add(item);
@@ -87,6 +87,7 @@ namespace umi3d.cdk.interaction
                                 toolId = dto.id,
                                 id = booleanParameterDto.id,
                                 parameter = booleanParameterDto,
+                                hoveredObjectId = null
                             };
                             UMI3DClientServer.Send(pararmeterDto, true);
                         }
@@ -103,6 +104,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -119,6 +121,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = enumParameterDto.id,
                             parameter = enumParameterDto,
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -126,7 +129,7 @@ namespace umi3d.cdk.interaction
                     result = en;
                     break;
                 case StringParameterDto stringParameterDto:
-                    var s = new TextInputMenuItem() { dto = stringParameterDto};
+                    var s = new TextInputMenuItem() { dto = stringParameterDto };
                     s.Subscribe((x) =>
                     {
                         stringParameterDto.value = x;
@@ -135,6 +138,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = stringParameterDto.id,
                             parameter = stringParameterDto,
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }

@@ -28,14 +28,11 @@ namespace umi3d.edk.interaction
     {
         public string url;
 
-        [System.Serializable]
-        public class LinkListener : UnityEvent<UMI3DUser> { }
-
 
         /// <summary>
         /// Event raised on value change.
         /// </summary>
-        public LinkListener onLinkUsed = new LinkListener();
+        public InteractionEvent onLinkUsed = new InteractionEvent();
 
         protected override AbstractInteractionDto CreateDto()
         {
@@ -56,7 +53,7 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case LinkOpened linkOpened:
-                    onLinkUsed.Invoke(user);
+                    onLinkUsed.Invoke(new InteractionEventContent(user,interactionRequest));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

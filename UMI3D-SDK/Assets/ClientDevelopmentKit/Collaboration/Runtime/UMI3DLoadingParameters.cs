@@ -29,7 +29,7 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
-
+        [ConstStringEnum(typeof(UMI3DAssetFormat))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
 
@@ -47,6 +47,8 @@ namespace umi3d.cdk
         public Material skyboxMaterial { get { if (_skyboxMaterial == null) { _skyboxMaterial = new Material(RenderSettings.skybox); RenderSettings.skybox = _skyboxMaterial; } return _skyboxMaterial; } }
 
         public List<IResourcesLoader> ResourcesLoaders { get; } = new List<IResourcesLoader>() { new ObjMeshDtoLoader(), new ImageDtoLoader(), new GlTFMeshDtoLoader(), new BundleDtoLoader(), new AudioLoader() };
+
+        public List<AbstractUMI3DMaterialLoader> MAterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader() };
 
         /// <summary>
         /// Load an UMI3DObject.
@@ -165,7 +167,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         bool Compare(float a, float b, float max)
         {
-            if (max == 0) return a > b;
+            if (max <= 0) return a > b;
             if (b > max) return b > a;
             if (a < max) return a > b;
             return false;
@@ -205,6 +207,17 @@ namespace umi3d.cdk
                     return null;
             }
             Debug.LogError("there is no compatible loader for this extention : " + extension);
+            return null;
+        }
+
+        public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
+        {
+            foreach (AbstractUMI3DMaterialLoader loader in MAterialLoaders)
+            {
+                if (loader.IsSuitableFor(gltfMatDto))
+                    return loader;
+            }
+            Debug.LogError("there is no compatible material loader for this material.");
             return null;
         }
 
@@ -286,11 +299,11 @@ namespace umi3d.cdk
             switch (operation)
             {
                 case SwitchToolDto switchTool:
-                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ProjectToolDto projection:
-                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ReleaseToolDto release:

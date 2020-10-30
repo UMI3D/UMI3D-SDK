@@ -60,7 +60,7 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{T})"/>
+        /// <see cref="UnSubscribe(UnityAction{bool})"/>
         public override void Subscribe(UnityAction<bool> callback)
         {
             if (!subscribers.Contains(callback))
@@ -78,7 +78,7 @@ namespace umi3d.cdk.menu
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
+        /// <see cref="Subscribe(UnityAction{bool})"/>
         public override void UnSubscribe(UnityAction<bool> callback)
         {
             subscribers.Remove(callback);

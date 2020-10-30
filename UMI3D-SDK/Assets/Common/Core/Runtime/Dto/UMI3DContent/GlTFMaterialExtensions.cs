@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public class GlTFMaterialExtensions :AbstractGlTFExtensions<UMI3DMaterialDto>
+    public class GlTFMaterialExtensions :AbstractGlTFExtensions<IMaterialDto>
     {
         public KHR_texture_transform KHR_texture_transform = new KHR_texture_transform();
     }
