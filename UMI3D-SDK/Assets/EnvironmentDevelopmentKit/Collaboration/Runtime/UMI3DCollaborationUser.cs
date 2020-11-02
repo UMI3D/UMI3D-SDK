@@ -40,7 +40,12 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// THe user token
+        /// Does the user have a devise compatible with webrtc
+        /// </summary>
+        public bool useWebrtc { get; set; }
+
+        /// <summary>
+        /// The user token
         /// </summary>
         public string token { get; private set; }
 

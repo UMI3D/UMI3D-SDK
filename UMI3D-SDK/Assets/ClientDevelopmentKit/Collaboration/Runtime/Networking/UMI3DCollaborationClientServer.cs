@@ -22,7 +22,9 @@ using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.userCapture;
+#if UNITY_WEBRTC
 using Unity.WebRTC;
+#endif
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -71,7 +73,9 @@ namespace umi3d.cdk.collaboration
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
             WebSocketClient = new WebSocketClient(this);
+#if UNITY_WEBRTC
             WebRTCClient = new WebRTCClient(this);
+#endif
             //WebRTCClient.audio = Audio.CaptureStream();
             //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
             //image.texture = cam.targetTexture;
@@ -107,7 +111,9 @@ namespace umi3d.cdk.collaboration
 
         private void OnAudioFilterRead(float[] data, int channels)
         {
+#if UNITY_WEBRTC
             Audio.Update(data, data.Length);
+#endif
         }
 
         /// <summary>
@@ -311,8 +317,13 @@ namespace umi3d.cdk.collaboration
 
             JoinDto joinDto = new JoinDto()
             {
-                bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList()
-            };
+                bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList(),
+#if UNITY_WEBRTC
+                useWebrtc = true
+#else
+                useWebrtc = false
+#endif
+        };
 
             Instance.HttpClient.SendPostJoin(
                 joinDto,

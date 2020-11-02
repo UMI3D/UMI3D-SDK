@@ -22,5 +22,6 @@ namespace umi3d.common.collaboration
     public class JoinDto : UMI3DDto
     {
         public List<BoneDto> bonesList;
+        public bool useWebrtc;
     }
 }
