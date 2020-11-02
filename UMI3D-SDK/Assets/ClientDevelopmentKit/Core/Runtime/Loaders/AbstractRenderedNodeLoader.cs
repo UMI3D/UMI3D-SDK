@@ -283,7 +283,7 @@ namespace umi3d.cdk
         }
 
 
-        private List<Renderer> GetChildRenderersWhithoutOtherModel(UMI3DNodeInstance node)
+        protected List<Renderer> GetChildRenderersWhithoutOtherModel(UMI3DNodeInstance node)
         {
             if(((GlTFNodeDto)node.dto).extensions.umi3d is UMI3DMeshNodeDto)
                 return node.renderers;
