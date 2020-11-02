@@ -18,12 +18,13 @@ using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.WebRTC;
 using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
-    public class WebRTCconnection
+    public class WebRTCconnection : IWebRTCconnection
     {
         enum Step { Null, LocalSet, RemoteSet, BothSet, IceChecked, Running };
         Step step = Step.Null;
@@ -67,7 +68,7 @@ namespace umi3d.common.collaboration
         {
             foreach (var c in channels)
             {
-                c.Close();
+                c.Closed();
             }
         }
 
@@ -92,14 +93,14 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="text">Message to send.</param>
         /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(string text, bool reliable)
+        public void Send(string text, bool reliable, bool tryToSendAgain = true)
         {
             var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
             if (channel == null) throw new Exception("No suitable channel found.");
             if (channel.IsOpen)
-                channel.dataChannel.Send(text);
-            else
-                throw new Exception($"Data Channel {channel.Label} is not open yet");
+                channel.Send(text);
+            else if(tryToSendAgain)
+                channel.MessageNotSend.Add(System.Text.Encoding.ASCII.GetBytes(text));
         }
 
 
@@ -121,7 +122,7 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="data">Message.</param>
         /// <param name="channel">Datachannel.</param>
-        public void Send(byte[] data, DataChannel channel)
+        public void Send(byte[] data, DataChannel channel, bool tryToSendAgain = true)
         {
             if (channel == null)
             {
@@ -129,9 +130,9 @@ namespace umi3d.common.collaboration
                     Debug.LogError($"Channel should not be null");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
-                channel.dataChannel.Send(data);
-            else
+            if (channel.IsOpen)
+                channel.Send(data);
+            else if(tryToSendAgain)
                 channel.MessageNotSend.Add(data);
         }
 
@@ -140,7 +141,7 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="data">Message to send.</param>
         /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(byte[] data, bool reliable)
+        public void Send(byte[] data, bool reliable, bool tryToSendAgain = true)
         {
 
             var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
@@ -150,11 +151,11 @@ namespace umi3d.common.collaboration
                     Debug.LogWarning($"No suitable channel found");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
+            if (channel.IsOpen)
             {
-                channel.dataChannel.Send(data);
+                channel.Send(data);
             }
-            else
+            else if(tryToSendAgain)
             {
                 channel.MessageNotSend.Add(data);
             }
@@ -165,7 +166,7 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="data">Message to send.</param>
         /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(byte[] data, bool reliable, DataType dataType)
+        public void Send(byte[] data, bool reliable, DataType dataType, bool tryToSendAgain = true)
         {
             var channel = channels.Find((c) => c.reliable == reliable && c.type == dataType);
             if (channel == null)
@@ -173,9 +174,9 @@ namespace umi3d.common.collaboration
                 if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
-                channel.dataChannel.Send(data);
-            else
+            if (channel.IsOpen)
+                channel.Send(data);
+            else if(tryToSendAgain)
                 channel.MessageNotSend.Add(data);
         }
 
@@ -413,6 +414,20 @@ namespace umi3d.common.collaboration
 
         #region data
 
+        public bool Any(Func<DataChannel, bool> predicate)
+        {
+            return channels.Any(predicate);
+        }
+
+        public DataChannel Find(Func<DataChannel, bool> predicate)
+        {
+            return channels.Find(c => predicate(c));
+        }
+        public DataChannel FirstOrDefault(Func<DataChannel, bool> predicate)
+        {
+            return channels.FirstOrDefault(predicate);
+        }
+
         private void CreateDataChannel(bool reliable, string dataChannelName)
         {
             RTCDataChannelInit conf = new RTCDataChannelInit(reliable);
@@ -423,11 +438,11 @@ namespace umi3d.common.collaboration
         {
             Log($"new dataChannel {channel.Label}");
             bool reliable = false;
-            var dc = channels.Find((c) => c.Label == channel.Label);
+            var dc = channels.Find((c) => c.Label == channel.Label) as WebRTCDataChannel;
             bool isOpen = false;
             if (dc == null)
             {
-                dc = new DataChannel(channel.Label, false, DataType.Data);
+                dc = new WebRTCDataChannel(channel.Label, false, DataType.Data);
                 channels.Add(dc);
                 Log($"create new channel [{channel.Label}]");
             }
@@ -447,7 +462,7 @@ namespace umi3d.common.collaboration
         private void OnDataChannelMessage(DataChannel channel, byte[] bytes)
         {
             Log($"message [{channel.Label}]");
-            channel.Message(bytes);
+            channel.Messaged(bytes);
             if (onMessage != null)
                 onMessage.Invoke(bytes, channel);
         }
@@ -455,7 +470,7 @@ namespace umi3d.common.collaboration
         private void OnDataChannelClose(DataChannel channel)
         {
             Log("Data channel closed");
-            channel.Close();
+            channel.Closed();
             if (onDataChannelClose != null)
                 onDataChannelClose.Invoke(channel);
         }
@@ -513,12 +528,13 @@ namespace umi3d.common.collaboration
         /// Add a DataChannel
         /// </summary>
         /// <param name="channel"></param>
-        public void AddDataChannel(DataChannel channel)
+        public void AddDataChannel(DataChannel channel, bool instanciateChannel = true)
         {
             if (!channels.Contains(channel))
             {
                 channels.Add(channel);
-                CreateDataChannel(channel.reliable, channel.Label);
+                if(instanciateChannel)
+                    CreateDataChannel(channel.reliable, channel.Label);
             }
         }
 
@@ -531,7 +547,7 @@ namespace umi3d.common.collaboration
             if (channels.Contains(channel))
             {
                 channels.Remove(channel);
-                channel.dataChannel.Close();
+                channel.Close();
             }
         }
 

@@ -48,7 +48,7 @@ namespace umi3d.cdk.collaboration
         public void sendAudio(List<DataChannel> channels,AudioDto dto)
         {
             foreach (var c in channels)
-                c.dataChannel.Send(dto.ToBson());
+                c.Send(dto.ToBson());
         }
 
         /// <summary>
@@ -59,18 +59,7 @@ namespace umi3d.cdk.collaboration
         {
             foreach (var peer in peers.Values)
             {
-                foreach(var channel in peer.channels)
-                    if(channel.type == DataType.Audio)
-                    {
-                        if (channel?.dataChannel != null && channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
-                        {
-                            //Debug.Log($"Send via [{channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open}] {channel?.Label}:{channel?.dataChannel}");
-                            channel?.dataChannel?.Send(dto.ToBson());
-                        }
-                        //else
-                        //    Debug.Log($"Send via [False] {channel?.Label}:{channel?.dataChannel}");
-                        break;
-                    }
+                peer.Send(dto.ToBson(), false, DataType.Audio);
             }
         }
 
@@ -113,13 +102,13 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="connection"></param>
-        protected override void ChannelsToAddCreation(string uid, WebRTCconnection connection)
+        protected override void ChannelsToAddCreation(string uid, IWebRTCconnection connection)
         {
             base.ChannelsToAddCreation(uid, connection);
             if(uid == UMI3DGlobalID.ServerId)
                 foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                    if(!connection.channels.Any(c => c.Label == channel.Label))
-                        connection.channels.Add(CreateDataChannel(channel, uid));
+                    if(!connection.Any(c => c.Label == channel.Label))
+                        connection.AddDataChannel(CreateDataChannel(channel, uid),false);
         }
 
         /// <summary>

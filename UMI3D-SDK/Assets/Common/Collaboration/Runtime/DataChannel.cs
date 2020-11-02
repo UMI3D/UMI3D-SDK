@@ -22,7 +22,6 @@ namespace umi3d.common.collaboration
 {
     public class DataChannel
     {
-        public RTCDataChannel dataChannel;
         public string Label;
         public bool reliable;
         public DataType type;
@@ -31,14 +30,16 @@ namespace umi3d.common.collaboration
         public Action OnCreated;
         public Action<byte[]> OnMessage;
         public List<byte[]> MessageNotSend = new List<byte[]>();
-        public bool IsOpen { get; private set; }
+        protected bool isOpen;
+
+        public virtual bool IsOpen { get => isOpen; }
 
         public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
             Label = label;
             this.reliable = reliable;
             this.type = type;
-            IsOpen = false;
+            isOpen = false;
             OnOpen = onOpen;
             OnClose = onClose;
         }
@@ -48,18 +49,41 @@ namespace umi3d.common.collaboration
             Label = channel.Label;
             reliable = channel.reliable;
             type = channel.type;
-            IsOpen = false;
+            isOpen = false;
         }
 
-        public void Open() { OnOpen?.Invoke(); IsOpen = true; }
+        public void Open() { OnOpen?.Invoke(); isOpen = true; }
         public void SendStack()
         {
-            foreach (byte[] msg in MessageNotSend) dataChannel.Send(msg);
+            foreach (byte[] msg in MessageNotSend) Send(msg);
             MessageNotSend.Clear();
         }
 
-        public void Close() { OnClose?.Invoke(); IsOpen = false; }
+        public virtual void Send(byte[] msg) { }
+        public virtual void Send(string msg) { }
+
+        public virtual void Close() { }
+        public void Closed() { OnClose?.Invoke(); isOpen = false; }
         public void Created() { OnCreated?.Invoke(); }
-        public void Message(byte[] data) { OnMessage?.Invoke(data); }
+        public void Messaged(byte[] data) { OnMessage?.Invoke(data); }
     }
+
+    public class WebRTCDataChannel : DataChannel
+    {
+        public RTCDataChannel dataChannel;
+        public override bool IsOpen { get => isOpen && dataChannel.ReadyState == RTCDataChannelState.Open; }
+        public WebRTCDataChannel(DataChannel channel) : base(channel)
+        {
+        }
+
+        public WebRTCDataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        {
+        }
+
+        public override void Send(byte[] msg) { dataChannel.Send(msg); }
+        public override void Send(string msg) { dataChannel.Send(msg); }
+        public override void Close() { dataChannel.Close(); }
+
+    }
+
 }
