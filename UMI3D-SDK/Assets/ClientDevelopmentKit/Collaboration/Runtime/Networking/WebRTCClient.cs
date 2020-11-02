@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.edk.collaboration;
 using Unity.WebRTC;
 using UnityEngine;
 

@@ -24,7 +24,7 @@ using umi3d.common.collaboration;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.cdk.collaboration
 {
     [Serializable]
     public class UMI3DUser

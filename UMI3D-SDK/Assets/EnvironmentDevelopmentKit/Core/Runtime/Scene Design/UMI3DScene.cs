@@ -68,7 +68,6 @@ namespace umi3d.edk
             nodes = GetAllChildrenInThisScene(user);
             dto.extensions.umi3d = ToUMI3DSceneNodeDto(user);
             WriteCollections(dto, user);
-            Debug.Log(dto.materials.Count);
 
             nodes.Clear();
             return dto;

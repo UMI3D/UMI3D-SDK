@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.edk.collaboration;
 using UnityEngine;
 using System.Collections.Generic;
 

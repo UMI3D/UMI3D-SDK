@@ -22,7 +22,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationEnvironmentLoader : UMI3DEnvironmentLoader
     {
