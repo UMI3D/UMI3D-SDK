@@ -72,7 +72,10 @@ namespace umi3d.cdk
                             UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
                             var renderers = instance.GetComponentsInChildren<Renderer>();
                             if (renderers != null)
+                            {
                                 UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);
+                                UMI3DEnvironmentLoader.GetNode(nodeDto.id).renderers.AddRange( renderers);
+                            }
                             if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
                             {
                                 // apply root model override
