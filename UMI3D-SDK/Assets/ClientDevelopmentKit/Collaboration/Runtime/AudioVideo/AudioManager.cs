@@ -18,6 +18,7 @@ using umi3d.common;
 using umi3d.edk.collaboration;
 using UnityEngine;
 using System.Collections.Generic;
+using umi3d.common.collaboration;
 
 namespace umi3d.cdk.collaboration
 {

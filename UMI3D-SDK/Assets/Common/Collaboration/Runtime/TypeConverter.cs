@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     static public class AuthenticationTypeConverter
     {

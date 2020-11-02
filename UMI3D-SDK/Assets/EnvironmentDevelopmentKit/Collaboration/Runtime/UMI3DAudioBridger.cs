@@ -17,6 +17,7 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -45,7 +46,7 @@ namespace umi3d.edk.collaboration
                 if (userA == _user) continue;
                 if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, _user, "Audio"))
                 {
-                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, _user, "Audio", umi3d.common.DataType.Audio, false);
+                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, _user, "Audio", DataType.Audio, false);
                 }
             }
             if (_user is UMI3DCollaborationUser user)

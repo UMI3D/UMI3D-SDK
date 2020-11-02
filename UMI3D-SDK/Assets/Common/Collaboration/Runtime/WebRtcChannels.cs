@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     public static class WebRtcChannels
     {

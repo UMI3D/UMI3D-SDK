@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using Unity.WebRTC;
 using UnityEngine;
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     public class WebRTCconnection
     {
@@ -34,7 +34,7 @@ namespace umi3d.common
         public Action<DataChannel> onDataChannelOpen;
         public Action<DataChannel> onDataChannelClose;
         public Action<RTCTrackEvent> onTrack;
-        public Action<byte[],DataChannel> onMessage;
+        public Action<byte[], DataChannel> onMessage;
         public RTCIceConnectionState connectionState = RTCIceConnectionState.New;
         string name;
 
@@ -44,7 +44,7 @@ namespace umi3d.common
         /// <param name="name"></param>
         /// <param name="audio"></param>
         /// <param name="video"></param>
-        public void Init(string name,bool instanciateChannel)
+        public void Init(string name, bool instanciateChannel)
         {
             this.name = name;
             Log("GetSelectedSdpSemantics");
@@ -52,11 +52,11 @@ namespace umi3d.common
             rtc = new RTCPeerConnection(ref configuration);
             rtc.OnIceCandidate = OnIceCandidate;
             rtc.OnIceConnectionChange = OnIceConnectionChange;
-            rtc.OnDataChannel = (c)=> {  OnDataChannel(c); };
+            rtc.OnDataChannel = (c) => { OnDataChannel(c); };
             rtc.OnNegotiationNeeded = OnNegotiationNeeded;
             rtc.OnTrack = OnTrack;
             Senders = new List<RTCRtpSender>();
-            if(instanciateChannel)
+            if (instanciateChannel)
                 foreach (var channel in channels)
                 {
                     CreateDataChannel(channel.reliable, channel.Label);
@@ -65,13 +65,14 @@ namespace umi3d.common
 
         public void Close()
         {
-            foreach(var c in channels)
+            foreach (var c in channels)
             {
                 c.Close();
             }
         }
 
-        void OnNegotiationNeeded() {
+        void OnNegotiationNeeded()
+        {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnNegotiationNeeded());
         }
 
@@ -141,7 +142,7 @@ namespace umi3d.common
         /// <param name="reliable">Should the dataChannel be reliable.</param>
         public void Send(byte[] data, bool reliable)
         {
-            
+
             var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
             if (channel == null)
             {
@@ -172,7 +173,7 @@ namespace umi3d.common
                 if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open) 
+            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
                 channel.dataChannel.Send(data);
             else
                 channel.MessageNotSend.Add(data);
@@ -227,7 +228,7 @@ namespace umi3d.common
             else
             {
                 Log("SetLocalDescription complete");
-                step = (step == Step.RemoteSet) ? Step.BothSet : Step.LocalSet;
+                step = step == Step.RemoteSet ? Step.BothSet : Step.LocalSet;
             }
 
             if (onOfferCreated == null)
@@ -258,7 +259,7 @@ namespace umi3d.common
         public IEnumerator CreateAnswer(RTCSessionDescription description)
         {
             Log($"SetRemoteDescription start {description.type} {description.sdp}");
-            
+
             var op2 = rtc.SetRemoteDescription(ref description);
             yield return op2;
             if (op2.IsError)
@@ -291,7 +292,7 @@ namespace umi3d.common
             else
             {
                 Log("SetLocalDescription complete");
-                step = (step == Step.LocalSet) ? Step.BothSet : Step.RemoteSet;
+                step = step == Step.LocalSet ? Step.BothSet : Step.RemoteSet;
             }
 
             if (onAnswerCreated == null)
@@ -326,7 +327,7 @@ namespace umi3d.common
             else
             {
                 Log("SetRemoteDescription complete");
-                step = (step == Step.LocalSet) ? Step.BothSet : Step.RemoteSet;
+                step = step == Step.LocalSet ? Step.BothSet : Step.RemoteSet;
             }
         }
 
@@ -412,7 +413,7 @@ namespace umi3d.common
 
         #region data
 
-        private void CreateDataChannel(bool reliable,string dataChannelName)
+        private void CreateDataChannel(bool reliable, string dataChannelName)
         {
             RTCDataChannelInit conf = new RTCDataChannelInit(reliable);
             OnDataChannel(rtc.CreateDataChannel(dataChannelName, ref conf));
@@ -436,7 +437,7 @@ namespace umi3d.common
             }
             reliable = dc.reliable;
             dc.dataChannel = channel;
-            channel.OnMessage = (bytes) => OnDataChannelMessage(dc,bytes);
+            channel.OnMessage = (bytes) => OnDataChannelMessage(dc, bytes);
             channel.OnOpen = () => OnDataChannelOpen(dc);
             channel.OnClose = () => OnDataChannelClose(dc);
             dc.Created();
@@ -558,9 +559,9 @@ namespace umi3d.common
 
         void Log(string message)
         {
-//#if UNITY_EDITOR
-//            Debug.Log($"[{logPrefix}]: " + message);
-//#endif
+            //#if UNITY_EDITOR
+            //            Debug.Log($"[{logPrefix}]: " + message);
+            //#endif
         }
 
         #endregion

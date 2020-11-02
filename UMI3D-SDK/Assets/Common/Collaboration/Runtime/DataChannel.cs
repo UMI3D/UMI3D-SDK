@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using Unity.WebRTC;
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     public class DataChannel
     {
@@ -33,7 +33,7 @@ namespace umi3d.common
         public List<byte[]> MessageNotSend = new List<byte[]>();
         public bool IsOpen { get; private set; }
 
-        public DataChannel(string label, bool reliable, DataType type,Action onCreated = null, Action onOpen = null, Action onClose = null)
+        public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
             Label = label;
             this.reliable = reliable;
@@ -45,14 +45,15 @@ namespace umi3d.common
 
         public DataChannel(DataChannel channel)
         {
-            this.Label = channel.Label;
-            this.reliable = channel.reliable;
-            this.type = channel.type;
+            Label = channel.Label;
+            reliable = channel.reliable;
+            type = channel.type;
             IsOpen = false;
         }
 
         public void Open() { OnOpen?.Invoke(); IsOpen = true; }
-        public void SendStack() {
+        public void SendStack()
+        {
             foreach (byte[] msg in MessageNotSend) dataChannel.Send(msg);
             MessageNotSend.Clear();
         }
