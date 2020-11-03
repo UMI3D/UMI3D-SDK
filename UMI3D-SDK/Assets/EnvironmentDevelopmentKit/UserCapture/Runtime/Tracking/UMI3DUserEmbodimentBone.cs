@@ -43,38 +43,4 @@ namespace umi3d.edk.userCapture
             spatialPosition = new SpatialPosition();
         }
     }
-
-    public class Binding
-    {
-        public string boneType;
-        public bool isBinded = true;
-        public UMI3DNode node;
-        public string rigName = "";
-        public Vector3 offsetPosition = Vector3.zero;
-        public Quaternion offsetRotation = Quaternion.identity;
-
-        public BoneBindingDto ToDto(UMI3DUser user)
-        {
-            BoneBindingDto dto = new BoneBindingDto()
-            {
-                rigName = rigName,
-                active = isBinded,
-                boneType = boneType,
-                position = offsetPosition,
-                rotation = offsetRotation,
-            };
-
-            if (node != null)
-                dto.objectId = node.Id();
-            else
-                dto.objectId = "";
-
-            if (user != null)
-                dto.bindingId = user.Id() + "binding" + rigName + dto.objectId;
-            else
-                dto.bindingId = "binding" + rigName + dto.objectId;
-
-            return dto;
-        }
-    }
 }

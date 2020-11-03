@@ -33,13 +33,13 @@ namespace umi3d.edk.userCapture
 
         public UserCameraPropertiesDto userCameraPropertiesDto;
 
-        public UMI3DAsyncListProperty<Binding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
+        public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
         public UMI3DAsyncProperty<bool> activeBindings { get { Register(); return _activeBindings; } protected set => _activeBindings = value; }
 
         public class OnActivationValueChanged : UnityEvent<string, bool> { };
 
         public static OnActivationValueChanged onActivationValueChanged = new OnActivationValueChanged();
-        private UMI3DAsyncListProperty<Binding> _bindings;
+        private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
         private UMI3DAsyncProperty<bool> _activeBindings;
 
         protected override void InitDefinition(string id)
@@ -52,7 +52,7 @@ namespace umi3d.edk.userCapture
                 activeAvatarBindings_ = b;
             };
 
-            bindings = new UMI3DAsyncListProperty<Binding>(Id(), UMI3DPropertyKeys.UserBindings, new List<Binding>(), (b, u) => b.ToDto(u));
+            bindings = new UMI3DAsyncListProperty<UMI3DBinding>(Id(), UMI3DPropertyKeys.UserBindings, new List<UMI3DBinding>(), (b, u) => b.ToDto(u));
         }
 
         #region UserTracking
