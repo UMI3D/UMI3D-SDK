@@ -15,7 +15,9 @@ limitations under the License.
 */
 using System;
 using System.Collections;
+#if UNITY_WEBRTC
 using Unity.WebRTC;
+#endif
 
 namespace umi3d.common.collaboration
 {
@@ -23,10 +25,14 @@ namespace umi3d.common.collaboration
     {
         void AddDataChannel(DataChannel channel, bool instanciateChannel = true);
         void RemoveDataChannel(DataChannel channel);
+#if UNITY_WEBRTC
         void AddIceCandidate(RTCIceCandidate candidate);
+#endif
         void AddTracks();
         void Close();
+#if UNITY_WEBRTC
         IEnumerator CreateAnswer(RTCSessionDescription description);
+#endif
 
         void Init(string name, bool instanciateChannel);
         void Offer();

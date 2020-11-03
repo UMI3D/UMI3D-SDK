@@ -16,7 +16,9 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+#if UNITY_WEBRTC
 using Unity.WebRTC;
+#endif
 
 namespace umi3d.common.collaboration
 {
@@ -68,6 +70,8 @@ namespace umi3d.common.collaboration
         public void Messaged(byte[] data) { OnMessage?.Invoke(data); }
     }
 
+#if UNITY_WEBRTC
+
     public class WebRTCDataChannel : DataChannel
     {
         public RTCDataChannel dataChannel;
@@ -85,5 +89,5 @@ namespace umi3d.common.collaboration
         public override void Close() { dataChannel.Close(); }
 
     }
-
+#endif
 }
