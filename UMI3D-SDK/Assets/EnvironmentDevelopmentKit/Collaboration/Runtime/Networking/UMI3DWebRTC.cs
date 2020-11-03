@@ -324,11 +324,11 @@ namespace umi3d.edk.collaboration
                 {
                     if (dataType == DataType.Tracking)
                     {
-                        if (data is common.userCapture.UserTrackingFrameDto)
-                            UMI3DEmbodimentManager.Instance.UserTrackingReception(data as common.userCapture.UserTrackingFrameDto);
+                        if (data is common.userCapture.UserTrackingFrameDto tracking)
+                            UMI3DEmbodimentManager.Instance.UserTrackingReception(tracking);
 
-                        else if (data is common.userCapture.UserCameraPropertiesDto)
-                            UMI3DEmbodimentManager.Instance.UserCameraReception(data as common.userCapture.UserCameraPropertiesDto, user);
+                        else if (data is common.userCapture.UserCameraPropertiesDto userCamera)
+                            UMI3DEmbodimentManager.Instance.UserCameraReception(userCamera, user);
                     }
                     else if (dataType == DataType.Data)
                     {
