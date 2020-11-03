@@ -196,7 +196,7 @@ namespace umi3d.common.collaboration
             RTCSessionDescription description = new RTCSessionDescription();
             description.sdp = offer.sdp;
             description.type = RTCSdpType.Offer;
-            UnityMainThreadDispatcher.Instance().Enqueue(peers[offer.sourceUser].CreateAnswer(description));
+            UnityMainThreadDispatcher.Instance().Enqueue((peers[offer.sourceUser] as WebRTCconnection).CreateAnswer(description));
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace umi3d.common.collaboration
         protected virtual void OnRtcAnswer(AnswerDto answer)
         {
             if (peers.ContainsKey(answer.sourceUser))
-                peers[answer.sourceUser].SetRemoteSession(answer.sdp);
+                (peers[answer.sourceUser] as WebRTCconnection).SetRemoteSession(answer.sdp);
             else
                 throw new ArgumentException("Received answer from unknown peer.");
         }
@@ -223,7 +223,7 @@ namespace umi3d.common.collaboration
             candidate.candidate = c.candidate;
             candidate.sdpMid = c.sdpMid;
             candidate.sdpMLineIndex = c.sdpMLineIndex;
-            peers[c.sourceUser].AddIceCandidate(candidate);
+            (peers[c.sourceUser] as WebRTCconnection).AddIceCandidate(candidate);
         }
 
         /// <summary>
@@ -292,6 +292,7 @@ namespace umi3d.common.collaboration
         System.Collections.IEnumerator SendStack(DataChannel dataChannel)
         {
             yield return new WaitForFixedUpdate();
+            yield return new WaitUntil(() => dataChannel.IsOpen);
             dataChannel.SendStack();
         }
 

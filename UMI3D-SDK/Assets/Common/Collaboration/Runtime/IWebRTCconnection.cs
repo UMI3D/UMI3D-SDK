@@ -15,33 +15,20 @@ limitations under the License.
 */
 using System;
 using System.Collections;
-#if UNITY_WEBRTC
-using Unity.WebRTC;
-#endif
 
 namespace umi3d.common.collaboration
 {
     public interface IWebRTCconnection
     {
+        string name { get; }
         void AddDataChannel(DataChannel channel, bool instanciateChannel = true);
         void RemoveDataChannel(DataChannel channel);
-#if UNITY_WEBRTC
-        void AddIceCandidate(RTCIceCandidate candidate);
-#endif
-        void AddTracks();
         void Close();
-#if UNITY_WEBRTC
-        IEnumerator CreateAnswer(RTCSessionDescription description);
-#endif
-
         void Init(string name, bool instanciateChannel);
         void Offer();
-        void RemoveTracks();
         void Send(byte[] data, bool reliable, bool tryToSendAgain = true);
         void Send(byte[] data, bool reliable, DataType dataType, bool tryToSendAgain = true);
         void Send(byte[] data, DataChannel channel, bool tryToSendAgain = true);
-        void Send(string text, bool reliable, bool tryToSendAgain = true);
-        void SetRemoteSession(string sdp);
         bool Any(Func<DataChannel, bool> predicate);
         DataChannel Find(Func<DataChannel, bool> predicate);
         bool Find(bool reliable, DataType dataType, out DataChannel channel);

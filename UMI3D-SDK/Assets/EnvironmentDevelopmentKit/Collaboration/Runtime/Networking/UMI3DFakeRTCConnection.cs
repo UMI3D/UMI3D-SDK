@@ -37,16 +37,19 @@ namespace umi3d.edk.collaboration
 
         Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction;
         Action<UMI3DFakeRTCConnection> closeAction;
+        Action<UMI3DFakeRTCConnection,IdentityDto> identifyAction;
 
-
-        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction) :this(null,reliable, messageAction, closeAction)
+        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction) : this(null, reliable, messageAction, closeAction,identifyAction)
         {
         }
 
-        public UMI3DFakeRTCConnection(string prefix,bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction)
+        public UMI3DFakeRTCConnection(string prefix, bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction)
         {
             _prefix = !prefix.IsNullOrEmpty() ? prefix : "fakeRTCconnection_";
             this.reliable = reliable;
+            this.messageAction = messageAction;
+            this.closeAction = closeAction;
+            this.identifyAction = identifyAction;
         }
 
         private static int getNumber()
@@ -68,7 +71,11 @@ namespace umi3d.edk.collaboration
 
         IEnumerator _OnMessage(MessageEventArgs e)
         {
-            messageAction?.Invoke(this,UMI3DDto.FromBson(e.RawData));
+            var data = UMI3DDto.FromBson(e.RawData);
+            if (data is IdentityDto id)
+                identifyAction?.Invoke(this, id);
+            else
+                messageAction?.Invoke(this, data);
             yield break;
         }
 
@@ -84,14 +91,13 @@ namespace umi3d.edk.collaboration
             Debug.Log("open");
         }
 
-        public void SendData(UMI3DDto obj,Action<bool> callback = null)
+        public void SendData(byte[] data, Action<bool> callback = null)
         {
-            if (obj != null && this.Context.WebSocket.IsConnected)
+            if (data != null && this.Context.WebSocket.IsConnected)
             {
-                var data = obj.ToBson();
                 try
                 {
-                    if(callback == null) callback = (b) => { };
+                    if (callback == null) callback = (b) => { };
                     SendAsync(data, callback);
                 }
                 catch (InvalidOperationException exp)
@@ -106,6 +112,24 @@ namespace umi3d.edk.collaboration
         {
             return _id;
         }
+    }
 
+    public class FakeDataChannel : DataChannel
+    {
+        public UMI3DFakeRTCConnection ws;
+        public FakeDataChannel(DataChannel channel, UMI3DFakeRTCConnection fakeRTC) : base(channel)
+        {
+            ws = fakeRTC;
+        }
+
+        public FakeDataChannel(UMI3DFakeRTCConnection fakeRTC,string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        {
+            ws = fakeRTC;
+        }
+
+        public override void Send(byte[] msg)
+        {
+            ws.SendData(msg);
+        }
     }
 }

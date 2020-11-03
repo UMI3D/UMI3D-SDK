@@ -25,6 +25,6 @@ namespace umi3d.common.collaboration {
         public List<string> targetId;
         public DataType dataType;
         public bool reliable;
-        public UMI3DDto content;
+        public byte[] content;
     }
 }

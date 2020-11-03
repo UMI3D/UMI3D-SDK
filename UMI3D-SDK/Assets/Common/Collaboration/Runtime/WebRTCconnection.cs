@@ -37,7 +37,7 @@ namespace umi3d.common.collaboration
         public Action<RTCTrackEvent> onTrack;
         public Action<byte[], DataChannel> onMessage;
         public RTCIceConnectionState connectionState = RTCIceConnectionState.New;
-        string name;
+        public string name { get; private set; }
 
         /// <summary>
         /// Initialize the connection
@@ -86,21 +86,6 @@ namespace umi3d.common.collaboration
                 Log($"failed to create session: ${op.Error}");
             else
                 UnityMainThreadDispatcher.Instance().Enqueue(OnCreateOfferSuccess(op.Desc));
-        }
-
-        /// <summary>
-        /// Send a string message using the first Data channel found.
-        /// </summary>
-        /// <param name="text">Message to send.</param>
-        /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(string text, bool reliable, bool tryToSendAgain = true)
-        {
-            var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
-            if (channel == null) throw new Exception("No suitable channel found.");
-            if (channel.IsOpen)
-                channel.Send(text);
-            else if(tryToSendAgain)
-                channel.MessageNotSend.Add(System.Text.Encoding.ASCII.GetBytes(text));
         }
 
 

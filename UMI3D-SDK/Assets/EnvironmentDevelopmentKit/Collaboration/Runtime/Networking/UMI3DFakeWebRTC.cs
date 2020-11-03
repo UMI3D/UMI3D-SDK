@@ -16,6 +16,8 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using WebSocketSharp.Server;
@@ -27,11 +29,12 @@ namespace umi3d.edk.collaboration
         public HttpServer wsReliable;
         public HttpServer wsUnreliable;
 
-        Action<string, DataType, bool, List<string>, UMI3DDto> messageAction;
+        Action<string, DataType, bool, List<string>, byte[]> messageAction;
+        UMI3DWebRTC client;
 
-
-        public UMI3DFakeWebRTC(Action<string, DataType,bool, List<string>, UMI3DDto> messageAction)
+        public UMI3DFakeWebRTC(UMI3DWebRTC client,Action<string, DataType,bool, List<string>, byte[]> messageAction)
         {
+            this.client = client;
             this.messageAction = messageAction;
             wsReliable = new HttpServer(UMI3DCollaborationServer.Instance.fakeRTCReliablePort);
             wsUnreliable = new HttpServer(UMI3DCollaborationServer.Instance.fakeRTCUnreliablePort);
@@ -45,17 +48,18 @@ namespace umi3d.edk.collaboration
             ws.AddWebSocketService<UMI3DFakeRTCConnection>(
                 UMI3DNetworkingKeys.websocket,
                 () =>
-                    new UMI3DFakeRTCConnection(reliable, OnMessage, OnClose)
+                    new UMI3DFakeRTCConnection(reliable, OnMessage, OnClose, OnIdentify)
                     {
                         IgnoreExtensions = true,
                         Protocol = UMI3DNetworkingKeys.websocketProtocol,
                     }
             );
-            ws.AuthenticationSchemes = UMI3DCollaborationServer.GetAuthentication().Convert();
+            ws.AuthenticationSchemes = AuthenticationType.Anonymous.Convert();//UMI3DCollaborationServer.GetAuthentication().Convert();
             ws.Realm = "UMI3D";
             ws.UserCredentialsFinder = id =>
             {
                 var name = id.Name;
+                
                 return new WebSocketSharp.Net.NetworkCredential(id.Name, "pwd");
             };
 
@@ -76,6 +80,18 @@ namespace umi3d.edk.collaboration
         }
 
         void OnClose(UMI3DFakeRTCConnection connection) { }
+
+        void OnIdentify(UMI3DFakeRTCConnection connection, IdentityDto id)
+        {
+            var peer = client.peers.Select(p => p.Value).FirstOrDefault((p) => p.name == id.userId) as UMI3DFakeRTCClient;
+            if (peer != null)
+            {
+                if (connection.reliable)
+                    peer.Reliable = connection;
+                else
+                    peer.Unreliable = connection;
+            }
+        }
 
         /// <summary>
         /// Stop the websocket

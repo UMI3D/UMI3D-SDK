@@ -39,6 +39,7 @@ namespace umi3d.cdk.collaboration
         public FakeWebRTCClient(UMI3DCollaborationClientServer client)
         {
             this.client = client;
+            client.StartCoroutine(Init());
         }
 
         #region ws
@@ -46,9 +47,21 @@ namespace umi3d.cdk.collaboration
         /// Setup the client.
         /// </summary>
         /// 
-        public void Init()
+        public IEnumerator Init()
         {
-            var connection = UMI3DCollaborationClientServer.Media.connection as WebsocketConnectionDto;
+            var connection = UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto;
+            
+            while (connection == null)
+            {
+                yield return new WaitForFixedUpdate();
+                connection = UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto;
+            }
+            var id = UMI3DCollaborationClientServer.Identity?.userId;
+            while (id == null)
+            {
+                yield return new WaitForFixedUpdate();
+                id = UMI3DCollaborationClientServer.Identity?.userId;
+            }
             var ReliableUrl = connection.RTCReliableUrl;// UMI3DClientServer.Media.connection;
             var UnreliableUrl = connection.RTCUnreliableUrl;
             ReliableUrl = ReliableUrl.Replace("http", "ws");
@@ -62,7 +75,7 @@ namespace umi3d.cdk.collaboration
         {
             ws.OnOpen += (sender, e) =>
             {
-                //Send(UMI3DCollaborationClientServer.Identity);
+                Send(UMI3DCollaborationClientServer.Identity,reliable);
                 //UnityMainThreadDispatcher.Instance().Enqueue(onOpen());
             };
 
@@ -86,7 +99,7 @@ namespace umi3d.cdk.collaboration
                 UnityMainThreadDispatcher.Instance().Enqueue(onClosed("websocket close " + e.Code + " " + e.Reason, e.Code, reliable));
             };
 
-            ws.SetCredentials(UMI3DCollaborationClientServer.Identity.login, "pwd", false);
+            //ws.SetCredentials(UMI3DCollaborationClientServer.Identity.userId, "pwd", false);
             ws.Connect();
         }
 
@@ -123,8 +136,7 @@ namespace umi3d.cdk.collaboration
         {
             if (reconnect && client.shouldReconnectWebsocket(code))
                 client.StartCoroutine(Reconnect(reliable));
-            else
-                UMI3DCollaborationClientServer.Logout(null, null);
+            Debug.Log("closed");
             yield return null;
         }
 
@@ -244,11 +256,12 @@ namespace umi3d.cdk.collaboration
             Send(dto, target, DataType.Audio, false);
         }
 
-        void Send(UMI3DDto content, List<string> target, DataType dataType, bool reliable)
+        void Send(UMI3DDto content, List<string> target, DataType dataType, bool reliable, bool useWebrtc = true)
         {
+
             var dto = new FakeWebrtcMessageDto()
             {
-                content = content,
+                content = content.ToBson(),
                 targetId = target,
                 dataType = dataType,
                 reliable = reliable

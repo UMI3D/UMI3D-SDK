@@ -65,7 +65,7 @@ namespace umi3d.edk.collaboration
         {
             this.server = server;
             peerMap = new List<bridge>();
-            fakeWebRTC = new UMI3DFakeWebRTC(OnFakeRtcMessage);
+            fakeWebRTC = new UMI3DFakeWebRTC(this,OnFakeRtcMessage);
         }
 
         /// <summary>
@@ -113,6 +113,21 @@ namespace umi3d.edk.collaboration
             else
             {
                 base.HandleMessage(dto);
+            }
+        }
+
+        /// <summary>
+        /// Send a Message to all peers
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="reliable"></param>
+        public void SendRTC(UMI3DDto dto, bool reliable, string peerId = null, bool useWebrtc = true)
+        {
+            if (useWebrtc)
+                Send(dto, reliable, peerId);
+            else
+            {
+
             }
         }
 
@@ -299,8 +314,9 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected void OnFakeRtcMessage(string id, DataType dataType, bool reliable, List<string> ids, UMI3DDto data)
+        protected void OnFakeRtcMessage(string id, DataType dataType, bool reliable, List<string> ids, byte[] _data)
         {
+            var data = UMI3DDto.FromBson(_data);
             var user = UMI3DCollaborationServer.Collaboration.GetUser(id);
             foreach (var target in ids)
             {
@@ -371,6 +387,22 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUser(targetId);
             user.connection.SendData(dto);
+        }
+
+        /// <summary>
+        /// Create and setup WebrtcConnection
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        protected override IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
+        {
+            var user = UMI3DCollaborationServer.Collaboration.GetUser(uid);
+            if (user.useWebrtc)
+                return base.CreateWebRtcConnection(uid, instanciateChannel);
+            UMI3DFakeRTCClient connection = new UMI3DFakeRTCClient(uid);
+            ChannelsToAddCreation(uid, connection);
+            connection.Init(uid, instanciateChannel);
+            return connection;
         }
     }
 }
