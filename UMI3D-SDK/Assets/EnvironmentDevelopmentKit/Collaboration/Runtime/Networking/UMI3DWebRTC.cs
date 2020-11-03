@@ -56,7 +56,7 @@ namespace umi3d.edk.collaboration
 
         public class NewPeerListener : UnityEvent<string> { };
         public NewPeerListener onNewPeer = new NewPeerListener();
-
+        public UMI3DFakeWebRTC fakeWebRTC;
         /// <summary>
         /// Initialization of the WebrtcClient
         /// </summary>
@@ -65,6 +65,7 @@ namespace umi3d.edk.collaboration
         {
             this.server = server;
             peerMap = new List<bridge>();
+            fakeWebRTC = new UMI3DFakeWebRTC(OnFakeRtcMessage);
         }
 
         /// <summary>
@@ -297,6 +298,37 @@ namespace umi3d.edk.collaboration
                 //RadioVideo
             }
         }
+
+        protected void OnFakeRtcMessage(string id, DataType dataType, bool reliable, List<string> ids, UMI3DDto data)
+        {
+            var user = UMI3DCollaborationServer.Collaboration.GetUser(id);
+            foreach (var target in ids)
+            {
+                if (target == UMI3DGlobalID.ServerId)
+                {
+                    if (dataType == DataType.Tracking)
+                    {
+                        if (data is common.userCapture.UserTrackingFrameDto)
+                            UMI3DEmbodimentManager.Instance.UserTrackingReception(data as common.userCapture.UserTrackingFrameDto);
+
+                        else if (data is common.userCapture.UserCameraPropertiesDto)
+                            UMI3DEmbodimentManager.Instance.UserCameraReception(data as common.userCapture.UserCameraPropertiesDto, user);
+                    }
+                    else if (dataType == DataType.Data)
+                    {
+                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
+                    }
+                    else
+                    {
+                        Debug.Log("new radiovideo message");
+                        //RadioVideo
+                    }
+                }
+                else
+                    Debug.Log("transfer message");
+            }
+        }
+
 
         /// <summary>
         /// Add defaultPeerToServerChannels

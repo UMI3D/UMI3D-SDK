@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     /// AbstractWebRtcClient implementation for a client
     /// </summary>
     /// <see cref="AbstractWebRtcClient"/>
-    public class WebRTCClient : AbstractWebRtcClient
+    public class WebRTCClient : AbstractWebRtcClient, IWebRTCClient
     {
         UMI3DCollaborationClientServer client;
 
@@ -45,7 +45,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="channels">list of data channel.</param>
         /// <param name="dto">AudioDto.</param>
-        public void sendAudio(List<DataChannel> channels,AudioDto dto)
+        public void sendAudio(List<DataChannel> channels, AudioDto dto)
         {
             foreach (var c in channels)
                 c.Send(dto.ToBson());
@@ -105,10 +105,10 @@ namespace umi3d.cdk.collaboration
         protected override void ChannelsToAddCreation(string uid, IWebRTCconnection connection)
         {
             base.ChannelsToAddCreation(uid, connection);
-            if(uid == UMI3DGlobalID.ServerId)
+            if (uid == UMI3DGlobalID.ServerId)
                 foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                    if(!connection.Any(c => c.Label == channel.Label))
-                        connection.AddDataChannel(CreateDataChannel(channel, uid),false);
+                    if (!connection.Any(c => c.Label == channel.Label))
+                        connection.AddDataChannel(CreateDataChannel(channel, uid), false);
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">should the data channel be reliable or not</param>
         public void SendServer(UMI3DDto dto, bool reliable)
         {
-            peers[UMI3DGlobalID.ServerId].Send(dto.ToBson(),reliable);
+            peers[UMI3DGlobalID.ServerId].Send(dto.ToBson(), reliable);
         }
 
         /// <summary>

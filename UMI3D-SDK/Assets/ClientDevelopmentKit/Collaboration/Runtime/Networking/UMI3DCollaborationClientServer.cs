@@ -40,7 +40,7 @@ namespace umi3d.cdk.collaboration
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public WebSocketClient WebSocketClient { get; private set; }
-        public WebRTCClient WebRTCClient { get; private set; }
+        public IWebRTCClient WebRTCClient { get; private set; }
         static public IdentityDto Identity = new IdentityDto();
         static public UserConnectionDto UserDto = new UserConnectionDto();
 
@@ -75,6 +75,8 @@ namespace umi3d.cdk.collaboration
             WebSocketClient = new WebSocketClient(this);
 #if UNITY_WEBRTC
             WebRTCClient = new WebRTCClient(this);
+#else
+            WebRTCClient = new FakeWebRTCClient(this);
 #endif
             //WebRTCClient.audio = Audio.CaptureStream();
             //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);

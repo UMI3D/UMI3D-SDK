@@ -24,7 +24,7 @@ using UnityEngine.Events;
 
 namespace umi3d.common.collaboration
 {
-    public abstract class AbstractWebRtcClient
+    public abstract class AbstractWebRtcClient : IAbstractWebRtcClient
     {
         MonoBehaviour behaviour;
         Coroutine WebrtcCoroutine;
@@ -262,7 +262,7 @@ namespace umi3d.common.collaboration
         {
             foreach (var channel in WebRtcChannels.defaultPeerToPeerChannels)
                 if (!connection.Any(c => c.Label == channel.Label))
-                    connection.AddDataChannel(CreateDataChannel(channel, uid),false);
+                    connection.AddDataChannel(CreateDataChannel(channel, uid), false);
             List<DataChannel> otherChannels = null;
             if (peersDataChanelToAdd != null && peersDataChanelToAdd.ContainsKey(uid))
             {
@@ -272,7 +272,7 @@ namespace umi3d.common.collaboration
             if (otherChannels != null)
                 foreach (var channel in otherChannels)
                     if (!connection.Any(c => c.Label == channel.Label))
-                        connection.AddDataChannel(CreateDataChannel(channel, uid),false);
+                        connection.AddDataChannel(CreateDataChannel(channel, uid), false);
 
         }
 
@@ -382,41 +382,16 @@ namespace umi3d.common.collaboration
                 peers[peerId].Send(dto.ToBson(), reliable, dataType);
         }
 
-        /// <summary>
-        /// Send a Message to all peers
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="reliable"></param>
-        public virtual void Send(string message, bool reliable, string peerId = null)
-        {
-            if (peerId == null)
-                foreach (var connection in peers.Values)
-                    connection.Send(message, reliable);
-            else if (peers.ContainsKey(peerId))
-                peers[peerId].Send(message, reliable);
-        }
-
-        /// <summary>
-        /// Send Message to a list of dataChannel
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="dataChannels"></param>
-        public virtual void Send(string message, List<DataChannel> dataChannels)
-        {
-            foreach (var dataChannel in dataChannels)
-                dataChannel.Send(message);
-        }
-
-        /// <summary>
-        /// Send Message to a list of dataChannel
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="dataChannels"></param>
-        public virtual void Send(byte[] bytes, List<DataChannel> dataChannels)
-        {
-            foreach (var dataChannel in dataChannels)
-                dataChannel.Send(bytes);
-        }
+        ///// <summary>
+        ///// Send Message to a list of dataChannel
+        ///// </summary>
+        ///// <param name="bytes"></param>
+        ///// <param name="dataChannels"></param>
+        //public virtual void Send(byte[] bytes, List<DataChannel> dataChannels)
+        //{
+        //    foreach (var dataChannel in dataChannels)
+        //        dataChannel.Send(bytes);
+        //}
 
         /// <summary>
         /// Find all existing matching channel. 

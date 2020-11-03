@@ -57,6 +57,11 @@ namespace umi3d.edk.collaboration
         public bool useRandomHttpPort;
         public int httpPort;
 
+        public bool useRandomFakeRTCReliablePort;
+        public int fakeRTCReliablePort;
+        public bool useRandomFakeRTCUnreliablePort;
+        public int fakeRTCUnreliablePort;
+
         public AuthenticationType Authentication;
 
         /// <summary>
@@ -103,6 +108,8 @@ namespace umi3d.edk.collaboration
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
+            fakeRTCReliablePort = FreeTcpPort(useRandomFakeRTCReliablePort ? 0 : fakeRTCReliablePort);
+            fakeRTCUnreliablePort = FreeTcpPort(useRandomFakeRTCUnreliablePort ? 0 : fakeRTCUnreliablePort);
 
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
@@ -121,16 +128,6 @@ namespace umi3d.edk.collaboration
         public void WebRtcMessage(string id, RTCDto dto)
         {
             Instance.webRTC.HandleMessage(dto);
-        }
-
-        /// <summary>
-        /// Send a Message via The RTCServer to all peers.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="reliable"></param>
-        public static void sendRTC(string message, bool reliable)
-        {
-            Instance.webRTC.Send(message, reliable);
         }
 
         public static void sendRTC(UMI3DUser user, UMI3DDto dto, bool reliable)
