@@ -8,6 +8,6 @@
 	"dependencies": {
 		"com.gfi-innovaton.umi3d.cdk.interaction-system":"2.0.0",
 		"com.gfi-innovaton.umi3d.cdk.user-capture":"2.0.0",
-		"com.gfi-innovaton.umi3d.common.collaboration":"2.0.0",
+		"com.gfi-innovaton.umi3d.common.collaboration":"2.0.0"
 	}
 }
