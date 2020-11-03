@@ -75,7 +75,7 @@ namespace umi3d.cdk.collaboration
         {
             ws.OnOpen += (sender, e) =>
             {
-                Send(UMI3DCollaborationClientServer.Identity,reliable);
+                ws?.Send(UMI3DCollaborationClientServer.Identity.ToBson());
                 //UnityMainThreadDispatcher.Instance().Enqueue(onOpen());
             };
 
@@ -110,9 +110,15 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="obj">message</param>
         /// <returns></returns>
-        protected IEnumerator onMessage(object obj,bool reliable)
+        protected IEnumerator onMessage(UMI3DDto obj,bool reliable)
         {
-            Debug.Log(obj);
+            var fake = obj as FakeWebrtcMessageDto;
+            
+            var user = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == fake.sourceId);
+            if (fake.dataType == DataType.Audio)
+                AudioManager.Instance.Read(user, fake.content, null);
+            else
+                UMI3DCollaborationClientServer.OnRtcMessage(user, fake.content, null);
             yield return null;
         }
 

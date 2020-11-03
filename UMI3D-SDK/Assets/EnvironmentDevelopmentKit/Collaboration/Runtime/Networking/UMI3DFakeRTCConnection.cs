@@ -72,6 +72,7 @@ namespace umi3d.edk.collaboration
         IEnumerator _OnMessage(MessageEventArgs e)
         {
             var data = UMI3DDto.FromBson(e.RawData);
+            Debug.Log(data);
             if (data is IdentityDto id)
                 identifyAction?.Invoke(this, id);
             else

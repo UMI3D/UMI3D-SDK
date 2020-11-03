@@ -123,12 +123,7 @@ namespace umi3d.edk.collaboration
         /// <param name="reliable"></param>
         public void SendRTC(UMI3DDto dto, bool reliable, string peerId = null, bool useWebrtc = true)
         {
-            if (useWebrtc)
-                Send(dto, reliable, peerId);
-            else
-            {
-
-            }
+            Send(dto, reliable, peerId);
         }
 
         public bool ContainsChannel(UMI3DUser userA, UMI3DUser userB, string label)
@@ -336,7 +331,7 @@ namespace umi3d.edk.collaboration
                     }
                     else
                     {
-                        Debug.Log("new radiovideo message");
+                        Debug.Log($"new radiovideo message {dataType}");
                         //RadioVideo
                     }
                 }
