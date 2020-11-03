@@ -261,13 +261,14 @@ namespace umi3d.cdk.collaboration
 
             var dto = new FakeWebrtcMessageDto()
             {
+                sourceId = UMI3DCollaborationClientServer.Identity.userId,
                 content = content.ToBson(),
                 targetId = target,
                 dataType = dataType,
                 reliable = reliable
             };
             var ws = reliable ? wsReliable : wsUnReliable;
-            ws.Send(dto.ToBson());
+            ws?.Send(dto.ToBson());
         }
 
 
