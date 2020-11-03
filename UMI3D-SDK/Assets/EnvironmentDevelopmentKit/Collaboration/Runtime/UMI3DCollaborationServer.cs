@@ -94,6 +94,8 @@ namespace umi3d.edk.collaboration
             dto.Port = httpPort;
             dto.Postfix = UMI3DNetworkingKeys.websocket;
             dto.websocketUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket;
+            dto.RTCUnreliableUrl = "ws://" + ip + ":" + fakeRTCUnreliablePort + UMI3DNetworkingKeys.websocket;
+            dto.RTCReliableUrl = "ws://" + ip + ":" + fakeRTCReliablePort + UMI3DNetworkingKeys.websocket;
             return dto;
         }
 

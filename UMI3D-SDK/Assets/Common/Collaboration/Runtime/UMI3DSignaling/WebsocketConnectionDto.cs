@@ -23,6 +23,8 @@ namespace umi3d.common.collaboration
         public string Postfix;
         public int Port;
         public string websocketUrl;
+        public string RTCReliableUrl;
+        public string RTCUnreliableUrl;
 
         public WebsocketConnectionDto() : base() { }
 

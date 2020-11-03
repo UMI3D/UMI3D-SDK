@@ -49,11 +49,11 @@ namespace umi3d.cdk.collaboration
         public void Init()
         {
             var connection = UMI3DCollaborationClientServer.Media.connection as WebsocketConnectionDto;
-            var socketUrl = connection.websocketUrl;// UMI3DClientServer.Media.connection;
-
-            socketUrl = socketUrl.Replace("http", "ws");
-            wsReliable = new WebSocket(socketUrl, UMI3DNetworkingKeys.websocketProtocol);
-            wsUnReliable = new WebSocket(socketUrl, UMI3DNetworkingKeys.websocketProtocol);
+            var ReliableUrl = connection.RTCReliableUrl;// UMI3DClientServer.Media.connection;
+            var UnreliableUrl = connection.RTCUnreliableUrl;
+            ReliableUrl = ReliableUrl.Replace("http", "ws");
+            wsReliable = new WebSocket(ReliableUrl, UMI3DNetworkingKeys.websocketProtocol);
+            wsUnReliable = new WebSocket(UnreliableUrl, UMI3DNetworkingKeys.websocketProtocol);
             _Init(wsReliable,true);
             _Init(wsUnReliable,false);
         }

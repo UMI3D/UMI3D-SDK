@@ -119,6 +119,16 @@ namespace umi3d.edk
             return null;
         }
 
+        public virtual UMI3DDto ToFakeRTCReliableDto()
+        {
+            return null;
+        }
+
+        public virtual UMI3DDto ToFakeRTCUnreliableDto()
+        {
+            return null;
+        }
+
 
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
