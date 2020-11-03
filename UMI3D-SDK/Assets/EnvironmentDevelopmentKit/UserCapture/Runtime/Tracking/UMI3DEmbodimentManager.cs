@@ -237,7 +237,7 @@ namespace umi3d.edk.userCapture
         /// </summary>
         /// <param name="obj">the avatar node</param>
         /// <param name="bindings">the list of bindings</param>
-        public void UpdateBindingList(UMI3DAvatarNode obj, List<Binding> bindings)
+        public void UpdateBindingList(UMI3DAvatarNode obj, List<UMI3DBinding> bindings)
         {
             setOperation(obj.bindings.SetValue(bindings));
         }
@@ -248,7 +248,7 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the user</param>
         /// <param name="obj">the avatar node</param>
         /// <param name="bindings">the list of bindings</param>
-        public void UpdateBindingList(UMI3DUser user, UMI3DAvatarNode obj, List<Binding> bindings)
+        public void UpdateBindingList(UMI3DUser user, UMI3DAvatarNode obj, List<UMI3DBinding> bindings)
         {
             setOperation(obj.bindings.SetValue(user, bindings));
         }
@@ -259,7 +259,7 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="index">the given index</param>
         /// <param name="binding">the new binding value</param>
-        public void UpdateBinding(UMI3DAvatarNode obj, int index, Binding binding)
+        public void UpdateBinding(UMI3DAvatarNode obj, int index, UMI3DBinding binding)
         {
             setOperation(obj.bindings.SetValue(index, binding));
         }
@@ -271,7 +271,7 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="index">the given index</param>
         /// <param name="binding">the new binding value</param>
-        public void UpdateBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, Binding binding)
+        public void UpdateBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, UMI3DBinding binding)
         {
             setOperation(obj.bindings.SetValue(user, index, binding));
         }
@@ -281,7 +281,7 @@ namespace umi3d.edk.userCapture
         /// </summary>
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
-        public void AddBinding(UMI3DAvatarNode obj, Binding binding)
+        public void AddBinding(UMI3DAvatarNode obj, UMI3DBinding binding)
         {
             setOperation(obj.bindings.Add(binding));
         }
@@ -292,7 +292,7 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the user</param>
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
-        public void AddBinding(UMI3DUser user, UMI3DAvatarNode obj, Binding binding)
+        public void AddBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding)
         {
             setOperation(obj.bindings.Add(user, binding));
         }
@@ -302,7 +302,7 @@ namespace umi3d.edk.userCapture
         /// </summary>
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
-        public void RemoveBinding(UMI3DAvatarNode obj, Binding binding)
+        public void RemoveBinding(UMI3DAvatarNode obj, UMI3DBinding binding)
         {
             setOperation(obj.bindings.Remove(binding));
         }
@@ -313,7 +313,7 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the user</param>
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
-        public void RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, Binding binding)
+        public void RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding)
         {
             setOperation(obj.bindings.Remove(user, binding));
         }
