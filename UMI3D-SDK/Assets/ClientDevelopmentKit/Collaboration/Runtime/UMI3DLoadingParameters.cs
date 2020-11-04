@@ -69,7 +69,7 @@ namespace umi3d.cdk
                     PreloadedSceneLoader.ReadUMI3DExtension(ps, node, finished, failed);
                     break;
                 case InteractableDto i:
-                    UMI3DInteractableLoader.ReadUMI3DExtension(i,node,finished,failed);
+                    UMI3DInteractableLoader.ReadUMI3DExtension(i, node, finished, failed);
                     break;
                 case ToolboxDto t:
                     UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
@@ -93,7 +93,7 @@ namespace umi3d.cdk
                     nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
             }
-            
+
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity,property))
+            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -180,7 +180,7 @@ namespace umi3d.cdk
             foreach (var file in files)
             {
                 bool ok = res == null;
-                if(!ok && supportedformats.Contains(file.format))
+                if (!ok && supportedformats.Contains(file.format))
                 {
                     if (!supportedformats.Contains(res.format))
                         ok = true;

@@ -80,6 +80,12 @@ namespace umi3d.cdk.interaction
         public abstract void Associate(ManipulationDto manipulation, DofGroupEnum dofs, string toolId, string hoveredObjectId);
 
         /// <summary>
+        /// Associate an AbstractInteractionDto to this Input.
+        /// </summary>
+        /// <param name="interaction">The interaction that will be associated</param>
+        public abstract void UpdateHoveredObjectId(string hoveredObjectId);
+
+        /// <summary>
         /// Dissociate the current associated interaction.
         /// </summary>
         public abstract void Dissociate();
