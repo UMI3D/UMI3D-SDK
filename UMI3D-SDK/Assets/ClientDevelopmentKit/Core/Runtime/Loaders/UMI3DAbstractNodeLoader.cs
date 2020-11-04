@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
+using System.Collections;
 using umi3d.common;
 using UnityEngine;
 
@@ -42,15 +44,28 @@ namespace umi3d.cdk
             }
             if (dto != null)
             {
-                UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(nodeDto.pid);
-                node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
-
-                if (node.activeSelf != nodeDto.active)
-                    node.SetActive(nodeDto.active);
-
-                if (nodeDto.isStatic != node.isStatic)
-                    node.isStatic = nodeDto.isStatic;
+                UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node, finished, failed));
             }
+            else
+                finished?.Invoke();
+        }
+
+        IEnumerator WaitForParent(UMI3DAbstractNodeDto dto, GameObject node, Action finished, Action<string> failed)
+        {
+            var wait = new WaitForFixedUpdate();
+            UMI3DNodeInstance parent;
+            while((parent = UMI3DEnvironmentLoader.GetNode(dto.pid)) == null && dto.pid != null)
+            {
+                yield return wait;
+            }
+
+            node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+
+            if (node.activeSelf != dto.active)
+                node.SetActive(dto.active);
+
+            if (dto.isStatic != node.isStatic)
+                node.isStatic = dto.isStatic;
             finished?.Invoke();
         }
 
