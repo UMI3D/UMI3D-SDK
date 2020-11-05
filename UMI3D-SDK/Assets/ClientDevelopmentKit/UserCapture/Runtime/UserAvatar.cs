@@ -235,19 +235,22 @@ namespace umi3d.cdk.userCapture
                 UMI3DClientUserTrackingBone bone = UMI3DClientUserTrackingBone.instances[dto.boneType];
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
 
-                if (oldPositions.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out OldPosition oldPosition))
+                if (node != null)
                 {
-                    oldPosition.obj.SetParent(oldPosition.oldParent);
-                    oldPosition.obj.localPosition = oldPosition.oldPosition;
-                    oldPosition.obj.localRotation = oldPosition.oldRotation;
+                    if (oldPositions.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out OldPosition oldPosition))
+                    {
+                        oldPosition.obj.SetParent(oldPosition.oldParent);
+                        oldPosition.obj.localPosition = oldPosition.oldPosition;
+                        oldPosition.obj.localRotation = oldPosition.oldRotation;
 
-                    if (dto.rigName == "")
-                        node.updatePose = true;
+                        if (dto.rigName == "")
+                            node.updatePose = true;
+                        else
+                            boundRigs.Remove(oldPosition.obj);
+                    }
                     else
-                        boundRigs.Remove(oldPosition.obj);
+                        Destroy(node.gameObject);
                 }
-                else
-                    Destroy(node.gameObject);
 
                 oldPositions.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
             }

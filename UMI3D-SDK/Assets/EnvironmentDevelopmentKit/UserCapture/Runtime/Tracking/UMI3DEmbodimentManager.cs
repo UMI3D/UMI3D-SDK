@@ -192,7 +192,6 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the node to update</param>
         public void UpdateNodeTransform(UMI3DNode obj)
         {
-            setOperation(obj.objectParentId.SetValue(obj.transform.parent.GetComponent<UMI3DAbstractNode>()));
             setOperation(obj.objectPosition.SetValue(obj.transform.localPosition));
             setOperation(obj.objectRotation.SetValue(obj.transform.localRotation));
             setOperation(obj.objectScale.SetValue(obj.transform.localScale));
