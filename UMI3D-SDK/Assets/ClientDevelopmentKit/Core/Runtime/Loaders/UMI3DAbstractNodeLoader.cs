@@ -17,6 +17,7 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections;
+using System.Diagnostics;
 using umi3d.common;
 using UnityEngine;
 
@@ -44,8 +45,19 @@ namespace umi3d.cdk
             }
             if (dto != null)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node));
+
+                UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(nodeDto.pid);
+                node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+
+                if (parent == null && nodeDto.pid != null)
+                    UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node));
+                if (node.activeSelf != nodeDto.active)
+                    node.SetActive(nodeDto.active);
+
+                if (nodeDto.isStatic != node.isStatic)
+                    node.isStatic = nodeDto.isStatic;
                 finished?.Invoke();
+
             }
             else
                 finished?.Invoke();
@@ -54,20 +66,14 @@ namespace umi3d.cdk
         IEnumerator WaitForParent(UMI3DAbstractNodeDto dto, GameObject node)
         {
             var wait = new WaitForFixedUpdate();
-            UMI3DNodeInstance parent;
-            while((parent = UMI3DEnvironmentLoader.GetNode(dto.pid)) == null && dto.pid != null)
+            UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(dto.pid);
+            while ((parent = UMI3DEnvironmentLoader.GetNode(dto.pid)) == null && dto.pid != null)
             {
+                UnityEngine.Debug.Log($"parent not found {dto.pid} [{dto.id}:{node.name}]");
                 yield return wait;
             }
 
             node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
-
-            if (node.activeSelf != dto.active)
-                node.SetActive(dto.active);
-
-            if (dto.isStatic != node.isStatic)
-                node.isStatic = dto.isStatic;
-            
         }
 
         /// <summary>
@@ -98,7 +104,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ParentId:
                     string pid = dto.pid = (string)property.value;
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    Debug.Log(parent);
+                    UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
 
                     break;
