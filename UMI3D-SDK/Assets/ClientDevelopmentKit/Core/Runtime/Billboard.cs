@@ -25,7 +25,7 @@ namespace umi3d.cdk
 
         public bool X;
         public bool Y;
-        public Quaternion rotation;
+        public Quaternion rotation = Quaternion.identity;
 
         void Start()
         {
