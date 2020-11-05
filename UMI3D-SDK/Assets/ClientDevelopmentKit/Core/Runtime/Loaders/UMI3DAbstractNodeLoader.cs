@@ -44,13 +44,14 @@ namespace umi3d.cdk
             }
             if (dto != null)
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node, finished, failed));
+                UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node));
+                finished?.Invoke();
             }
             else
                 finished?.Invoke();
         }
 
-        IEnumerator WaitForParent(UMI3DAbstractNodeDto dto, GameObject node, Action finished, Action<string> failed)
+        IEnumerator WaitForParent(UMI3DAbstractNodeDto dto, GameObject node)
         {
             var wait = new WaitForFixedUpdate();
             UMI3DNodeInstance parent;
@@ -66,7 +67,7 @@ namespace umi3d.cdk
 
             if (dto.isStatic != node.isStatic)
                 node.isStatic = dto.isStatic;
-            finished?.Invoke();
+            
         }
 
         /// <summary>
