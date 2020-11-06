@@ -73,7 +73,8 @@ namespace umi3d.cdk
                 yield return wait;
             }
 
-            node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+            node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
+
         }
 
         /// <summary>
