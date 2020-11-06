@@ -37,13 +37,13 @@ namespace umi3d.common.collaboration
 
         public class RtcMessageListener : UnityEvent<string, byte[], DataChannel> { }
 
-        public AbstractWebRtcClient(MonoBehaviour behaviour)
+        public AbstractWebRtcClient(MonoBehaviour behaviour, EncoderType encoderType)
         {
             this.behaviour = behaviour;
             peers = new Dictionary<string, IWebRTCconnection>();
             if (!webrtcRunning)
             {
-                WebRTC.Initialize();
+                WebRTC.Initialize(encoderType);
                 webrtcRunning = true;
             }
             if (!webrtcUpdating)

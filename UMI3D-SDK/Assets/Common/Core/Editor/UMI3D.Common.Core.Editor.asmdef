@@ -1,5 +1,5 @@
 {
-    "name": "Common.Core.Editor",
+    "name": "UMI3D.Common.Core.Editor",
     "references": [
         "GUID:6e34c4b4c3202a14eb95e0a784041765"
     ],

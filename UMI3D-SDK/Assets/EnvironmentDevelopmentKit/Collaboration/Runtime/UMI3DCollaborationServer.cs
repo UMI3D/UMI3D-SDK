@@ -35,6 +35,7 @@ namespace umi3d.edk.collaboration
 
         public bool isRunning { get; protected set; } = false;
 
+        public EncoderType encoderType;
         UMI3DHttp http;
         UMI3DWebsocket websocket;
         UMI3DWebRTC webRTC;
@@ -115,7 +116,7 @@ namespace umi3d.edk.collaboration
 
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
-            webRTC = new UMI3DWebRTC(this);
+            webRTC = new UMI3DWebRTC(this,encoderType);
 
             isRunning = true;
             OnServerStart.Invoke();

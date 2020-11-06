@@ -37,6 +37,10 @@ namespace umi3d.cdk.collaboration
     {
         public static new UMI3DCollaborationClientServer Instance { get { return UMI3DClientServer.Instance as UMI3DCollaborationClientServer; } set { UMI3DClientServer.Instance = value; } }
 
+#if UNITY_WEBRTC
+        public EncoderType encoderType;
+#endif
+
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public WebSocketClient WebSocketClient { get; private set; }
@@ -74,7 +78,7 @@ namespace umi3d.cdk.collaboration
             HttpClient = new HttpClient(this);
             WebSocketClient = new WebSocketClient(this);
 #if UNITY_WEBRTC
-            WebRTCClient = new WebRTCClient(this);
+            WebRTCClient = new WebRTCClient(this,encoderType);
 #else
             WebRTCClient = new FakeWebRTCClient(this);
 #endif
