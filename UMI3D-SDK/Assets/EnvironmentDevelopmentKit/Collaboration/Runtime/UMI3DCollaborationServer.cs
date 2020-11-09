@@ -35,6 +35,9 @@ namespace umi3d.edk.collaboration
 
         public bool isRunning { get; protected set; } = false;
 
+        [SerializeField]
+        bool useIp = false;
+
         public EncoderType encoderType;
         UMI3DHttp http;
         UMI3DWebsocket websocket;
@@ -107,7 +110,8 @@ namespace umi3d.edk.collaboration
         {
             base.Init();
 
-            ip = GetLocalIPAddress();
+            if(!useIp)
+                ip = GetLocalIPAddress();
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
@@ -159,6 +163,13 @@ namespace umi3d.edk.collaboration
             OnUserJoin.Invoke(user);
             yield break;
         }
+
+        public void SetIP(string ip)
+        {
+            this.ip = ip;
+            useIp = true;
+        }
+
 
         static string GetLocalIPAddress()
         {
