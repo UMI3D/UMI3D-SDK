@@ -33,6 +33,8 @@ namespace umi3d.edk.collaboration
     {
         public static new UMI3DCollaborationServer Instance { get { return UMI3DServer.Instance as UMI3DCollaborationServer; } set { UMI3DServer.Instance = value; } }
 
+        public IceServers iceServers;
+
         public bool isRunning { get; protected set; } = false;
 
         [SerializeField]
@@ -126,6 +128,7 @@ namespace umi3d.edk.collaboration
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
             webRTC = new UMI3DWebRTC(this,encoderType);
+            webRTC.iceServers = iceServers;
 
             isRunning = true;
             OnServerStart.Invoke();

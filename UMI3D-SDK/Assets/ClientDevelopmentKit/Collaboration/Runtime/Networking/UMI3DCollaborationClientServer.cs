@@ -39,6 +39,7 @@ namespace umi3d.cdk.collaboration
 
 #if UNITY_WEBRTC
         public EncoderType encoderType;
+        public IceServers iceServers;
 #endif
 
         static public DateTime lastTokenUpdate { get; private set; }
@@ -79,6 +80,7 @@ namespace umi3d.cdk.collaboration
             WebSocketClient = new WebSocketClient(this);
 #if UNITY_WEBRTC
             WebRTCClient = new WebRTCClient(this,encoderType);
+            (WebRTCClient as WebRTCClient).iceServers = iceServers;
 #else
             WebRTCClient = new FakeWebRTCClient(this);
 #endif

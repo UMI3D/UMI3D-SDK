@@ -40,6 +40,8 @@ namespace umi3d.common.collaboration
         public RTCIceConnectionState connectionState = RTCIceConnectionState.New;
         public string name { get; private set; }
 
+        public IceServers iceServers;
+
         /// <summary>
         /// Initialize the connection
         /// </summary>
@@ -544,16 +546,10 @@ namespace umi3d.common.collaboration
 
         #region configuration
 
-        public RTCIceServer[] iceServers = new RTCIceServer[]
-        {
-            new RTCIceServer { urls = new string[] { "stun:coturn.gfi - research.com:80","stun:stun.l.google.com:19302" } },
-            
-        };
-
         RTCConfiguration GetSelectedSdpSemantics()
         {
             RTCConfiguration config = default;
-            config.iceServers = iceServers;
+            config.iceServers = iceServers.iceServers;
             return config;
         }
 

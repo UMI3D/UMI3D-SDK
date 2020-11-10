@@ -26,6 +26,9 @@ namespace umi3d.common.collaboration
 {
     public abstract class AbstractWebRtcClient : IAbstractWebRtcClient
     {
+
+        public IceServers iceServers;
+
         MonoBehaviour behaviour;
         Coroutine WebrtcCoroutine;
 
@@ -117,70 +120,63 @@ namespace umi3d.common.collaboration
         /// <param name="dto"></param>
         public virtual void HandleMessage(RTCDto dto)
         {
-            if (dto is OfferDto)
+
+            switch (dto)
             {
-                var offer = dto as OfferDto;
-                OnRtcOffer(offer);
-            }
-            else if (dto is AnswerDto)
-            {
-                var answer = dto as AnswerDto;
-                OnRtcAnswer(answer);
-            }
-            else if (dto is CandidateDto)
-            {
-                var candidate = dto as CandidateDto;
-                OnRtcIceCandidate(candidate);
-            }
-            else if (dto is LeaveDto)
-            {
-                if (peers.ContainsKey(dto.sourceUser))
-                    peers.Remove(dto.sourceUser);
-            }
-            else if (dto is RTCConnectionDTO)
-            {
-                if (!peers.ContainsKey(dto.sourceUser))
-                {
-                    IWebRTCconnection rtc = CreateWebRtcConnection(dto.sourceUser, true);
-                    peers.Add(dto.sourceUser, rtc);
-                    rtc.Offer();
-                }
-            }
-            else if (dto is RTCCloseConnectionDto)
-            {
-                if (peers.ContainsKey(dto.sourceUser))
-                {
-                    peers[dto.sourceUser].Close();
-                    peers.Remove(dto.sourceUser);
-                }
-            }
-            else if (dto is RTCDataChannelDto)
-            {
-                var dcDto = dto as RTCDataChannelDto;
-                var otherId = dto.sourceUser == GetUID() ? dto.targetUser : dto.sourceUser;
-                if (peers.ContainsKey(otherId))
-                {
-                    var dc = peers[otherId].Find((dc2) => dcDto.Label == dc2.Label);
-                    if (dc != null)
+                case OfferDto offer:
+                    OnRtcOffer(offer);
+                    break;
+                case AnswerDto answer:
+                    OnRtcAnswer(answer);
+                    break;
+                case CandidateDto candidate:
+                    OnRtcIceCandidate(candidate);
+                    break;
+                case LeaveDto _:
+                    if (peers.ContainsKey(dto.sourceUser))
+                        peers.Remove(dto.sourceUser);
+                    break;
+                case RTCConnectionDTO _:
+                    if (!peers.ContainsKey(dto.sourceUser))
                     {
-                        dc.type = dcDto.type;
-                        dc.reliable = dcDto.reliable;
+                        IWebRTCconnection rtc = CreateWebRtcConnection(dto.sourceUser, true);
+                        peers.Add(dto.sourceUser, rtc);
+                        rtc.Offer();
+                    }
+                    break;
+                case RTCCloseConnectionDto _:
+                    if (peers.ContainsKey(dto.sourceUser))
+                    {
+                        peers[dto.sourceUser].Close();
+                        peers.Remove(dto.sourceUser);
+                    }
+                    break;
+                case RTCDataChannelDto dcDto:
+                    var otherId = dto.sourceUser == GetUID() ? dto.targetUser : dto.sourceUser;
+                    if (peers.ContainsKey(otherId))
+                    {
+                        var dc = peers[otherId].Find((dc2) => dcDto.Label == dc2.Label);
+                        if (dc != null)
+                        {
+                            dc.type = dcDto.type;
+                            dc.reliable = dcDto.reliable;
+                        }
+                        else
+                        {
+                            peers[otherId].AddDataChannel(CreateDataChannel(new WebRTCDataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
+                        }
                     }
                     else
                     {
-                        peers[otherId].AddDataChannel(CreateDataChannel(new WebRTCDataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
+                        if (peersDataChanelToAdd == null) peersDataChanelToAdd = new Dictionary<string, List<DataChannel>>();
+                        if (!peersDataChanelToAdd.ContainsKey(otherId)) { peersDataChanelToAdd[otherId] = new List<DataChannel>(); }
+                        peersDataChanelToAdd[otherId].Add(CreateDataChannel(new WebRTCDataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
                     }
-                }
-                else
-                {
-                    if (peersDataChanelToAdd == null) peersDataChanelToAdd = new Dictionary<string, List<DataChannel>>();
-                    if (!peersDataChanelToAdd.ContainsKey(otherId)) { peersDataChanelToAdd[otherId] = new List<DataChannel>(); }
-                    peersDataChanelToAdd[otherId].Add(CreateDataChannel(new WebRTCDataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
-                }
-            }
-            else
-            {
-                Debug.LogError("other :" + dto);
+
+                    break;
+                default:
+                    Debug.LogError("other :" + dto);
+                    break;
             }
         }
 
@@ -240,6 +236,7 @@ namespace umi3d.common.collaboration
         protected virtual IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
         {
             WebRTCconnection connection = new WebRTCconnection();
+            connection.iceServers = iceServers;
             connection.onIceCandidate += arg => OnIceCandidate(arg, uid);
             connection.onAnswerCreated += arg => OnRtcAnswer(arg, uid);
             connection.onOfferCreated += arg => OnRtcOffer(arg, uid);
