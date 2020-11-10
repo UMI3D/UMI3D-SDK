@@ -544,24 +544,16 @@ namespace umi3d.common.collaboration
 
         #region configuration
 
-        public string[] StunServers = new string[] { "stun:stun.l.google.com:19302" };/*,
-                                                        "stun:stun.l.google.com:19302",
-                                                        "stun:stun1.l.google.com:19302",
-                                                        "stun:stun2.l.google.com:19302",
-                                                        "stun:stun3.l.google.com:19302",
-                                                        "stun:stun4.l.google.com:19302" };
-        public string[] TurnServers = new string[] { "turn:turn01.hubl.in?transport=udp",
-                                                        "turn:turn02.hubl.in?transport=tcp"
-        };*/
+        public RTCIceServer[] iceServers = new RTCIceServer[]
+        {
+            new RTCIceServer { urls = new string[] { "stun:coturn.gfi - research.com:80","stun:stun.l.google.com:19302" } },
+            
+        };
 
         RTCConfiguration GetSelectedSdpSemantics()
         {
             RTCConfiguration config = default;
-            config.iceServers = new RTCIceServer[]
-            {
-                new RTCIceServer { urls = StunServers }/*,
-                new RTCIceServer { urls = TurnServers }*/
-            };
+            config.iceServers = iceServers;
             return config;
         }
 
