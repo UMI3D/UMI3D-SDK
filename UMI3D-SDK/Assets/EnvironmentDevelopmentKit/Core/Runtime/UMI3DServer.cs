@@ -140,6 +140,7 @@ namespace umi3d.edk
         /// <param name="status">new status</param>
         public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
+            //Debug.Log($"{user.Id()}:{status}");
             switch (status)
             {
                 case StatusType.CREATED:
@@ -152,6 +153,7 @@ namespace umi3d.edk
                     OnUserAway.Invoke(user);
                     break;
                 case StatusType.MISSING:
+                    LookForMissing(user);
                     OnUserMissing.Invoke(user);
                     break;
                 case StatusType.ACTIVE:
@@ -159,6 +161,8 @@ namespace umi3d.edk
                     break;
             }
         }
+
+        protected virtual void LookForMissing(UMI3DUser user) { }
 
 
         static public void Dispatch(Transaction transaction)
@@ -179,7 +183,7 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserActive = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserLeave = new UMI3DUserEvent();
-        
+
         #endregion
     }
 }

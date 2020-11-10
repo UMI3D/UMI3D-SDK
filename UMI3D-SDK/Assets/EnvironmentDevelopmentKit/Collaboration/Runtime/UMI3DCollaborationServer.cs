@@ -103,6 +103,11 @@ namespace umi3d.edk.collaboration
             return dto;
         }
 
+        internal void UpdateStatus(UMI3DCollaborationUser user, StatusDto dto)
+        {
+            user.SetStatus(dto.status);
+        }
+
         /// <summary>
         /// Initialize the server.
         /// </summary>
@@ -162,6 +167,12 @@ namespace umi3d.edk.collaboration
         {
             OnUserJoin.Invoke(user);
             yield break;
+        }
+
+        public void ClearIP()
+        {
+            ip = "localhost";
+            useIp = false;
         }
 
         public void SetIP(string ip)
@@ -299,6 +310,40 @@ namespace umi3d.edk.collaboration
             yield break;
         }
 
+
+        public float WaitTimeForPingAnswer = 1f;
+        public int MaxPingingTry = 3;
+
+        protected override void LookForMissing(UMI3DUser user)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
+        }
+
+        IEnumerator _lookForMissing(UMI3DCollaborationUser user)
+        {
+            if (user == null) yield break;
+            yield return new WaitForFixedUpdate();
+            int count = 0;
+            while (count++ < MaxPingingTry)
+            {
+                if (user.status == StatusType.MISSING)
+                {
+                    Ping(user);
+                }
+                else
+                    break;
+                yield return new WaitForSecondsRealtime(WaitTimeForPingAnswer);
+            }
+            Logout(user);
+        }
+
+        public virtual void Ping(UMI3DCollaborationUser user) {
+            Debug.Log($"Ping {user.Id()}");
+            var sr = new StatusRequestDto { CurrentStatus = user.status };
+            user.connection.SendData(sr);
+        }
+
+
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
@@ -359,6 +404,7 @@ namespace umi3d.edk.collaboration
         /// <param name="status">new status</param>
         public override void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
+            base.NotifyUserStatusChanged(user, status);
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 

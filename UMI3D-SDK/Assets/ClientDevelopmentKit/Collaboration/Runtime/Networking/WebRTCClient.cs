@@ -161,6 +161,11 @@ namespace umi3d.cdk.collaboration
         {
             client.Send(dto);
         }
+
+        protected override void OnConnectionDisconnected(string id)
+        {
+            Debug.Log($"client connection lost {id}");
+        }
     }
 }
 #endif

@@ -50,6 +50,27 @@ namespace umi3d.edk.collaboration
             e.Response.WriteContent(identity.ToBson());
         }
 
+
+        /// <summary>
+        /// POST "/me/status"
+        /// Updates the user's information.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        [HttpPost(UMI3DNetworkingKeys.status_update, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void UpdateStatus(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            StatusDto dto = ReadDto(e.Request) as StatusDto;
+            UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, dto));
+        }
+
+        IEnumerator _updateStatus(UMI3DCollaborationUser user, StatusDto dto)
+        {
+            UMI3DCollaborationServer.Instance.UpdateStatus(user, dto);
+            yield break;
+        }
+
         /// <summary>
         /// POST "/me/update"
         /// Updates the user's information.

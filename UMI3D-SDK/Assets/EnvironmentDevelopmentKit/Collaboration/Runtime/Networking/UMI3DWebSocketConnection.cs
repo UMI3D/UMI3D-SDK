@@ -58,6 +58,7 @@ namespace umi3d.edk.collaboration
         //on user quit
         protected override void OnClose(CloseEventArgs e)
         {
+            Debug.Log($"onClose {_id}");
             UnityMainThreadDispatcher.Instance().Enqueue(UMI3DCollaborationServer.Collaboration.ConnectionClose(_id));
         }
 

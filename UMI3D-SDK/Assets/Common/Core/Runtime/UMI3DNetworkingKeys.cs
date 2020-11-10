@@ -21,6 +21,7 @@ namespace umi3d.common
         //users
         public const string identity = "/me";
         public const string identity_update = "/me/update";
+        public const string status_update = "/me/status_update";
         public const string logout = "/logout";
 
         //MEDIA

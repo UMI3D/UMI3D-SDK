@@ -36,6 +36,7 @@ namespace umi3d.common.collaboration
         public Action<DataChannel> onDataChannelClose;
         public Action<RTCTrackEvent> onTrack;
         public Action<byte[], DataChannel> onMessage;
+        public Action onDisconected;
         public RTCIceConnectionState connectionState = RTCIceConnectionState.New;
         public string name { get; private set; }
 
@@ -112,13 +113,24 @@ namespace umi3d.common.collaboration
             if (channel == null)
             {
                 if (connectionState != RTCIceConnectionState.Completed)
-                    Debug.LogError($"Channel should not be null");
+                    Debug.LogError($"Channel should not be null {connectionState}");
                 return;
             }
-            if (channel.IsOpen)
-                channel.Send(data);
-            else if(tryToSendAgain)
-                channel.MessageNotSend.Add(data);
+            if (connectionState == RTCIceConnectionState.Disconnected)
+                Debug.LogWarning($"Connection state is {connectionState}, should not try to send data");
+            switch (channel.State)
+            {
+                case ChannelState.Opening:
+                    if(tryToSendAgain)
+                        channel.MessageNotSend.Add(data);
+                    break;
+                case ChannelState.Open:
+                    channel.Send(data);
+                    break;
+                case ChannelState.Close:
+                    
+                    break;
+            }  
         }
 
         /// <summary>
@@ -133,17 +145,10 @@ namespace umi3d.common.collaboration
             if (channel == null)
             {
                 if (connectionState != RTCIceConnectionState.Completed)
-                    Debug.LogWarning($"No suitable channel found");
+                    Debug.LogWarning($"No suitable channel found {connectionState}");
                 return;
             }
-            if (channel.IsOpen)
-            {
-                channel.Send(data);
-            }
-            else if(tryToSendAgain)
-            {
-                channel.MessageNotSend.Add(data);
-            }
+            Send(data, channel, tryToSendAgain);
         }
 
         /// <summary>
@@ -156,13 +161,11 @@ namespace umi3d.common.collaboration
             var channel = channels.Find((c) => c.reliable == reliable && c.type == dataType);
             if (channel == null)
             {
-                if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}");
+                if (connectionState != RTCIceConnectionState.Completed) 
+                    Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}  {connectionState}");
                 return;
             }
-            if (channel.IsOpen)
-                channel.Send(data);
-            else if(tryToSendAgain)
-                channel.MessageNotSend.Add(data);
+            Send(data, channel, tryToSendAgain);
         }
 
         #region offer
@@ -382,6 +385,7 @@ namespace umi3d.common.collaboration
                     Log("IceConnectionState: Connected");
                     break;
                 case RTCIceConnectionState.Disconnected:
+                    onDisconected?.Invoke();
                     Log("IceConnectionState: Disconnected");
                     break;
                 case RTCIceConnectionState.Failed:
@@ -540,14 +544,23 @@ namespace umi3d.common.collaboration
 
         #region configuration
 
-        public string[] iceServers = new string[] { "stun:stun.l.google.com:19302" };
+        public string[] StunServers = new string[] { "stun:stun.l.google.com:19302" };/*,
+                                                        "stun:stun.l.google.com:19302",
+                                                        "stun:stun1.l.google.com:19302",
+                                                        "stun:stun2.l.google.com:19302",
+                                                        "stun:stun3.l.google.com:19302",
+                                                        "stun:stun4.l.google.com:19302" };
+        public string[] TurnServers = new string[] { "turn:turn01.hubl.in?transport=udp",
+                                                        "turn:turn02.hubl.in?transport=tcp"
+        };*/
 
         RTCConfiguration GetSelectedSdpSemantics()
         {
             RTCConfiguration config = default;
             config.iceServers = new RTCIceServer[]
             {
-            new RTCIceServer { urls = iceServers }
+                new RTCIceServer { urls = StunServers }/*,
+                new RTCIceServer { urls = TurnServers }*/
             };
             return config;
         }
@@ -560,9 +573,9 @@ namespace umi3d.common.collaboration
 
         void Log(string message)
         {
-            //#if UNITY_EDITOR
-            //            Debug.Log($"[{logPrefix}]: " + message);
-            //#endif
+//#if UNITY_EDITOR
+//            Debug.Log($"[{logPrefix}]: " + message);
+//#endif
         }
 
         #endregion

@@ -16,12 +16,20 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 #if UNITY_WEBRTC
 using Unity.WebRTC;
 #endif
 
 namespace umi3d.common.collaboration
 {
+    public enum ChannelState
+    {
+        Opening,
+        Open,
+        Close
+    }
+
     public class DataChannel
     {
         public string Label;
@@ -32,16 +40,24 @@ namespace umi3d.common.collaboration
         public Action OnCreated;
         public Action<byte[]> OnMessage;
         public List<byte[]> MessageNotSend = new List<byte[]>();
-        protected bool isOpen;
+        protected ChannelState state;
 
-        public virtual bool IsOpen { get => isOpen; }
+        public ChannelState State
+        {
+            get {
+                CheckState();
+                return state;
+            }
+        }
+
+        protected virtual void CheckState() { }
 
         public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
             Label = label;
             this.reliable = reliable;
             this.type = type;
-            isOpen = false;
+            state = ChannelState.Opening;
             OnOpen = onOpen;
             OnClose = onClose;
         }
@@ -51,10 +67,10 @@ namespace umi3d.common.collaboration
             Label = channel.Label;
             reliable = channel.reliable;
             type = channel.type;
-            isOpen = false;
+            state = ChannelState.Opening;
         }
 
-        public void Open() { OnOpen?.Invoke(); isOpen = true; }
+        public void Open() { OnOpen?.Invoke(); state = ChannelState.Open; }
         public void SendStack()
         {
             foreach (byte[] msg in MessageNotSend) Send(msg);
@@ -64,7 +80,7 @@ namespace umi3d.common.collaboration
         public virtual void Send(byte[] msg) { }
 
         public virtual void Close() { }
-        public void Closed() { OnClose?.Invoke(); isOpen = false; }
+        public void Closed() { OnClose?.Invoke(); state = ChannelState.Close; }
         public void Created() { OnCreated?.Invoke(); }
         public void Messaged(byte[] data) { OnMessage?.Invoke(data); }
     }
@@ -75,7 +91,27 @@ namespace umi3d.common.collaboration
     {
 #if UNITY_WEBRTC
         public RTCDataChannel dataChannel;
-        public override bool IsOpen { get => isOpen && dataChannel.ReadyState == RTCDataChannelState.Open; }
+        protected override void CheckState()
+        {
+            if (dataChannel != null)
+            {
+                switch (dataChannel.ReadyState)
+                {
+                    case RTCDataChannelState.Connecting:
+                        state = ChannelState.Opening;
+                        break;
+                    case RTCDataChannelState.Open:
+                        state = ChannelState.Open;
+                        break;
+                    case RTCDataChannelState.Closing:
+                    case RTCDataChannelState.Closed:
+                        if (state != ChannelState.Close)
+                            Close();
+                        state = ChannelState.Close;
+                        break;
+                }
+            }
+        }
 #endif
         public WebRTCDataChannel(DataChannel channel) : base(channel)
         {
@@ -84,9 +120,10 @@ namespace umi3d.common.collaboration
         public WebRTCDataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
         {
         }
+
 #if UNITY_WEBRTC
         public override void Send(byte[] msg) { dataChannel.Send(msg); }
-        public override void Close() { dataChannel.Close(); }
+        public override void Close() { Debug.Log("close"); dataChannel.Close(); }
 #endif
     }
 }

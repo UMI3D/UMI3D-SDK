@@ -35,6 +35,7 @@ namespace umi3d.edk.collaboration
         Dictionary<string, string> loginMap = new Dictionary<string, string>();
 
         UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList;
+
         public UMI3DAsyncListProperty<UMI3DCollaborationUser> ObjectUserList
         {
             get {
@@ -96,14 +97,15 @@ namespace umi3d.edk.collaboration
 
         public IEnumerator ConnectionClose(string id)
         {
+            Debug.Log($"connection close {id}");
             if (users.ContainsKey(id))
             {
                 var user = users[id];
                 user.SetStatus(StatusType.MISSING);
             }
+            else Debug.Log($"{id} not found");
             yield break;
         }
-
 
         public void CreateUser(string Login, UMI3DWebSocketConnection connection, Action<UMI3DCollaborationUser, bool> Callback)
         {

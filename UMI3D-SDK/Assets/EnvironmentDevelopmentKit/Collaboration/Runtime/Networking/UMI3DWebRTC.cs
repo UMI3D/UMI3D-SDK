@@ -28,7 +28,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DWebRTC : AbstractWebRtcClient
     {
-        UMI3DServer server;
+        UMI3DCollaborationServer server;
 
         protected struct bridge
         {
@@ -61,7 +61,7 @@ namespace umi3d.edk.collaboration
         /// Initialization of the WebrtcClient
         /// </summary>
         /// <param name="server">The server</param>
-        public UMI3DWebRTC(UMI3DServer server, Unity.WebRTC.EncoderType encoderType) : base (server,encoderType)
+        public UMI3DWebRTC(UMI3DCollaborationServer server, Unity.WebRTC.EncoderType encoderType) : base (server,encoderType)
         {
             this.server = server;
             peerMap = new List<bridge>();
@@ -398,6 +398,12 @@ namespace umi3d.edk.collaboration
             ChannelsToAddCreation(uid, connection);
             connection.Init(uid, instanciateChannel);
             return connection;
+        }
+
+        protected override void OnConnectionDisconnected(string id)
+        {
+            var user = UMI3DCollaborationServer.Collaboration.GetUser(id);
+            user.SetStatus(StatusType.MISSING);
         }
     }
 }

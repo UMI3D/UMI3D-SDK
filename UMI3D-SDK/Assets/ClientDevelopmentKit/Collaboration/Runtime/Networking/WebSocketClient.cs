@@ -167,6 +167,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         protected IEnumerator onClosed(string reason,ushort code)
         {
+            Debug.Log("close");
             if (reconnect && client.shouldReconnectWebsocket(code))
                 client.StartCoroutine(Reconnect());
             else

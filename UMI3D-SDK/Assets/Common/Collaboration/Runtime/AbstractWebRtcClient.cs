@@ -246,6 +246,7 @@ namespace umi3d.common.collaboration
             connection.onMessage += (bytes, channel) => OnRtcMessage(uid, bytes, channel);
             connection.onDataChannelOpen += OnRtcDataChannelOpen;
             connection.onDataChannelClose += OnRtcDataChannelClose;
+            connection.onDisconected += () => OnConnectionDisconnected(uid);
             connection.logPrefix = GetLogPrefix();
             connection.channels = new List<DataChannel>();
             ChannelsToAddCreation(uid, connection);
@@ -292,7 +293,7 @@ namespace umi3d.common.collaboration
         System.Collections.IEnumerator SendStack(DataChannel dataChannel)
         {
             yield return new WaitForFixedUpdate();
-            yield return new WaitUntil(() => dataChannel.IsOpen);
+            yield return new WaitUntil(() => dataChannel.State == ChannelState.Open);
             dataChannel.SendStack();
         }
 
@@ -344,6 +345,8 @@ namespace umi3d.common.collaboration
             };
             WebSocketSend(msg, uid);
         }
+
+        protected abstract void OnConnectionDisconnected(string id);
 
         protected abstract void OnRtcDataChannelOpen(DataChannel channel);
 

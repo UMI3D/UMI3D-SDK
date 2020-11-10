@@ -280,38 +280,40 @@ namespace umi3d.cdk.collaboration
         /// <param name="message"></param>
         static public void OnMessage(object message)
         {
-            if (message is TokenDto)
+            switch (message)
             {
-                var req = message as TokenDto;
-                SetToken(req.token);
-            }
-            if (message is StatusDto)
-            {
-                var req = message as StatusDto;
-                if (req.status == StatusType.CREATED)
-                {
-                    Instance.HttpClient.SendGetIdentity((user) =>
-                    {
-                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                    }, (error) => { Debug.Log("error on get id :" + error); });
-                }
-                else if (req.status == StatusType.READY)
-                {
-                    if (Identity.userId == null)
-                        Instance.HttpClient.SendGetIdentity((user) =>
+                case TokenDto tokenDto:
+                        SetToken(tokenDto.token);
+                        break;
+                case StatusDto statusDto:
+                        switch (statusDto.status)
                         {
-                            UserDto = user;
-                            Identity.userId = user.id;
-                            Instance.Join();
+                            case StatusType.CREATED:
+                                    Instance.HttpClient.SendGetIdentity((user) =>
+                                    {
+                                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                                    }, (error) => { Debug.Log("error on get id :" + error); });
+                                    break;
+                            case StatusType.READY:
+                                    if (Identity.userId == null)
+                                        Instance.HttpClient.SendGetIdentity((user) =>
+                                        {
+                                            UserDto = user;
+                                            Identity.userId = user.id;
+                                            Instance.Join();
 
-                        }, (error) => { Debug.Log("error on get id :" + error); });
-                    else
-                        Instance.Join();
-                }
-            }
-            if (message is RTCDto)
-            {
-                Instance.WebRTCClient.HandleMessage(message as RTCDto);
+                                        }, (error) => { Debug.Log("error on get id :" + error); });
+                                    else
+                                        Instance.Join();
+                                    break;
+                        }
+                        break;
+                case RTCDto rTCDto:
+                    Instance.WebRTCClient.HandleMessage(rTCDto);
+                    break;
+                case StatusRequestDto statusRequestDto:
+                    Instance.HttpClient.SendPostUpdateStatus(null, null);
+                    break;
             }
         }
 

@@ -81,6 +81,21 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Send request using POST method to update user Identity.
+        /// </summary>
+        /// <param name="callback">Action to be call when the request succeed.</param>
+        /// <param name="onError">Action to be call when the request fail.</param>
+        public void SendPostUpdateStatus(Action callback, Action<string> onError)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                //res ?
+                callback?.Invoke();
+            };
+            client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.status_update, new StatusDto() { status = UMI3DCollaborationClientServer.UserDto.status }.ToBson(), action, onError, true));
+        }
+
+        /// <summary>
         /// Send request using POST method to logout of the server.
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
