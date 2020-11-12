@@ -14,17 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-#if UNITY_WEBRTC
-using Unity.WebRTC;
-#endif
-using UnityEngine;
+using System;
 
-[CreateAssetMenu(fileName ="IceServers",menuName = "UMI3D/IceServers")]
-public class IceServers : ScriptableObject
+namespace umi3d.common
 {
-#if UNITY_WEBRTC
-    public RTCIceServer[] iceServers;
-#endif
+    [Serializable]
+    public class IceServer
+    {
+        public string credential;
+        public IceCredentialType credentialType;
+        public string[] urls;
+        public string username;
+    }
+
+    public enum IceCredentialType
+    {
+        Password = 0,
+        OAuth = 1
+    }
 }

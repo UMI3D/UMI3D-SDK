@@ -39,7 +39,6 @@ namespace umi3d.cdk.collaboration
 
 #if UNITY_WEBRTC
         public EncoderType encoderType;
-        public IceServers iceServers;
 #endif
 
         static public DateTime lastTokenUpdate { get; private set; }
@@ -77,13 +76,6 @@ namespace umi3d.cdk.collaboration
         {
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
-            WebSocketClient = new WebSocketClient(this);
-#if UNITY_WEBRTC
-            WebRTCClient = new WebRTCClient(this,encoderType);
-            (WebRTCClient as WebRTCClient).iceServers = iceServers;
-#else
-            WebRTCClient = new FakeWebRTCClient(this);
-#endif
             //WebRTCClient.audio = Audio.CaptureStream();
             //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
             //image.texture = cam.targetTexture;
@@ -92,7 +84,16 @@ namespace umi3d.cdk.collaboration
             //cameraDisplayer.Play();
         }
 
-
+        public void Init()
+        {
+            WebSocketClient = new WebSocketClient(this);
+#if UNITY_WEBRTC
+            WebRTCClient = new WebRTCClient(this, encoderType);
+            (WebRTCClient as WebRTCClient).iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
+#else
+            WebRTCClient = new FakeWebRTCClient(this);
+#endif
+        }
 
         //public Texture2D GetStreamTexture2D()
         //{
@@ -139,6 +140,7 @@ namespace umi3d.cdk.collaboration
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
         static public void Connect()
         {
+            Instance.Init();
             Instance.WebSocketClient.Init();
         }
 
@@ -227,8 +229,18 @@ namespace umi3d.cdk.collaboration
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
         static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null)
         {
-            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) => { Media = media; callback?.Invoke(media); }, failback);
+            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) => { 
+                Media = media; Instance._setMedia();  callback?.Invoke(media); }, failback);
         }
+
+        void _setMedia()
+        {
+#if UNITY_WEBRTC
+            if ((WebRTCClient as WebRTCClient) != null)
+                (WebRTCClient as WebRTCClient).iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
+#endif
+        }
+
 
         /// <summary>
         /// Set the token used to communicate to the server.

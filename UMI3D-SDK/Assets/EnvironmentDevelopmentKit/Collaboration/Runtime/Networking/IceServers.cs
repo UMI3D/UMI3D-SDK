@@ -14,21 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+
+using umi3d.common;
+using UnityEngine;
+
+namespace umi3d.edk.collaboration
 {
-    [System.Serializable]
-    public class WebsocketConnectionDto : UMI3DDto
+    [CreateAssetMenu(fileName = "IceServers", menuName = "UMI3D/IceServers")]
+    public class IceServers : ScriptableObject
     {
-        public string iP;
-        public string postfix;
-        public int port;
-        public string websocketUrl;
-        public string rtcReliableUrl;
-        public string rtcUnreliableUrl;
-
         public IceServer[] iceServers;
-
-        public WebsocketConnectionDto() : base() { }
-
     }
 }

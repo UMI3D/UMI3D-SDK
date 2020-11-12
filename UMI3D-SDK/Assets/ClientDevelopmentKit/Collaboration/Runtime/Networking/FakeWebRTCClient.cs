@@ -62,8 +62,8 @@ namespace umi3d.cdk.collaboration
                 yield return new WaitForFixedUpdate();
                 id = UMI3DCollaborationClientServer.Identity?.userId;
             }
-            var ReliableUrl = connection.RTCReliableUrl;// UMI3DClientServer.Media.connection;
-            var UnreliableUrl = connection.RTCUnreliableUrl;
+            var ReliableUrl = connection.rtcReliableUrl;
+            var UnreliableUrl = connection.rtcUnreliableUrl;
             ReliableUrl = ReliableUrl.Replace("http", "ws");
             wsReliable = new WebSocket(ReliableUrl, UMI3DNetworkingKeys.websocketProtocol);
             wsUnReliable = new WebSocket(UnreliableUrl, UMI3DNetworkingKeys.websocketProtocol);

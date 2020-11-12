@@ -59,7 +59,6 @@ namespace umi3d.edk.collaboration
             ws.UserCredentialsFinder = id =>
             {
                 var name = id.Name;
-                
                 return new WebSocketSharp.Net.NetworkCredential(id.Name, "pwd");
             };
 

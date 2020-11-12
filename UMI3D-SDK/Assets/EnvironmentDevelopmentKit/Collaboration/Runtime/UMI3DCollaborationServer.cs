@@ -96,12 +96,13 @@ namespace umi3d.edk.collaboration
         public override UMI3DDto ToDto()
         {
             var dto = new WebsocketConnectionDto();
-            dto.IP = ip;
-            dto.Port = httpPort;
-            dto.Postfix = UMI3DNetworkingKeys.websocket;
+            dto.iP = ip;
+            dto.port = httpPort;
+            dto.postfix = UMI3DNetworkingKeys.websocket;
             dto.websocketUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket;
-            dto.RTCUnreliableUrl = "ws://" + ip + ":" + fakeRTCUnreliablePort + UMI3DNetworkingKeys.websocket;
-            dto.RTCReliableUrl = "ws://" + ip + ":" + fakeRTCReliablePort + UMI3DNetworkingKeys.websocket;
+            dto.rtcUnreliableUrl = "ws://" + ip + ":" + fakeRTCUnreliablePort + UMI3DNetworkingKeys.websocket;
+            dto.rtcReliableUrl = "ws://" + ip + ":" + fakeRTCReliablePort + UMI3DNetworkingKeys.websocket;
+            dto.iceServers = iceServers?.iceServers;
             return dto;
         }
 
@@ -128,7 +129,7 @@ namespace umi3d.edk.collaboration
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
             webRTC = new UMI3DWebRTC(this,encoderType);
-            webRTC.iceServers = iceServers;
+            webRTC.iceServers = iceServers?.iceServers;
 
             isRunning = true;
             OnServerStart.Invoke();

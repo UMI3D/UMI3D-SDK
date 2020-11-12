@@ -27,7 +27,7 @@ namespace umi3d.common.collaboration
     public abstract class AbstractWebRtcClient : IAbstractWebRtcClient
     {
 
-        public IceServers iceServers;
+        public IceServer[] iceServers;
 
         MonoBehaviour behaviour;
         Coroutine WebrtcCoroutine;
@@ -236,6 +236,7 @@ namespace umi3d.common.collaboration
         protected virtual IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
         {
             WebRTCconnection connection = new WebRTCconnection();
+            //Debug.Log($"{ iceServers} { iceServers.Count()}");
             connection.iceServers = iceServers;
             connection.onIceCandidate += arg => OnIceCandidate(arg, uid);
             connection.onAnswerCreated += arg => OnRtcAnswer(arg, uid);

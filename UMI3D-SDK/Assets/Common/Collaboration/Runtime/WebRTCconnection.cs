@@ -40,7 +40,7 @@ namespace umi3d.common.collaboration
         public RTCIceConnectionState connectionState = RTCIceConnectionState.New;
         public string name { get; private set; }
 
-        public IceServers iceServers;
+        public IceServer[] iceServers;
 
         /// <summary>
         /// Initialize the connection
@@ -546,10 +546,40 @@ namespace umi3d.common.collaboration
 
         #region configuration
 
+        public RTCIceServer[] ToRTCIceServers(common.IceServer[] servers)
+        {
+            return servers.Select(s =>
+            {
+                RTCIceCredentialType cred;
+                switch (s.credentialType)
+                {
+                    case IceCredentialType.Password:
+                        cred = RTCIceCredentialType.Password;
+                        break;
+                    case IceCredentialType.OAuth:
+                        cred = RTCIceCredentialType.OAuth;
+                        break;
+                    default:
+                        Debug.Log($"Credential type {s.credentialType}");
+                        cred = RTCIceCredentialType.Password;
+                        break;
+                }
+
+
+                return new RTCIceServer()
+                {
+                    credential = s.credential,
+                    credentialType = cred,
+                    urls = s.urls,
+                    username = s.username
+                };
+            }).ToArray();
+        }
+
         RTCConfiguration GetSelectedSdpSemantics()
         {
             RTCConfiguration config = default;
-            config.iceServers = iceServers.iceServers;
+            config.iceServers = ToRTCIceServers(iceServers);
             return config;
         }
 
