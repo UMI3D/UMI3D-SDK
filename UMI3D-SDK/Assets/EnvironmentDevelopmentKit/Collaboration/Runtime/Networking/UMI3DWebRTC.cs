@@ -103,11 +103,14 @@ namespace umi3d.edk.collaboration
                     //Debug.Log($"serveur {dcDto.Label} {dcDto.type} {dcDto.reliable} {dcDto.sourceUser}->{dcDto.targetUser}");
                     UMI3DCollaborationUser otherUser = UMI3DCollaborationServer.Collaboration.GetUser(dcDto.targetUser);
                     if (!otherUser.useWebrtc) Debug.LogError("Should Not try to established peer connection with this peer");
-                    var bridge = peerMap.FirstOrDefault(b => b.Contain(dto.sourceUser, dto.targetUser));
-                    if (!bridge.Equals(default) && bridge.channel != null && !bridge.channel.Any(d => d.Label == dcDto.Label))
-                        bridge.channel.Add(dcDto);
-                    if (otherUser != null)
-                        otherUser.connection.SendData(dcDto);
+                    else
+                    {
+                        var bridge = peerMap.FirstOrDefault(b => b.Contain(dto.sourceUser, dto.targetUser));
+                        if (!bridge.Equals(default) && bridge.channel != null && !bridge.channel.Any(d => d.Label == dcDto.Label))
+                            bridge.channel.Add(dcDto);
+                        if (otherUser != null)
+                            otherUser.connection.SendData(dcDto);
+                    }
                 }
             }
             else
@@ -238,9 +241,10 @@ namespace umi3d.edk.collaboration
                 peers[user.Id()] = rtc;
                 rtc.Offer();
             }
+            if(user.useWebrtc)
             foreach(var u in UMI3DCollaborationServer.Collaboration.Users)
             {
-                if (u != user)
+                if (u != user && u.useWebrtc)
                 {
                     if (peerMap.FindAll((b) => { return b.Contain(user.Id(),u.Id()); }).Count == 0)
                     {

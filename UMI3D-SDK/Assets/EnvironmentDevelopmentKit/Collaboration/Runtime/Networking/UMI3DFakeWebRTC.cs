@@ -65,8 +65,8 @@ namespace umi3d.edk.collaboration
             ws.Start();
             if (ws.IsListening)
             {
-                Console.WriteLine("Listening on port {0}, and providing WebSocket services:", wsReliable.Port);
-                foreach (var path in wsReliable.WebSocketServices.Paths)
+                Console.WriteLine("Listening on port {0}, and providing WebSocket services:", ws.Port);
+                foreach (var path in ws.WebSocketServices.Paths)
                     Console.WriteLine("- {0}", path);
             }
         }
