@@ -245,14 +245,16 @@ namespace umi3d.cdk.collaboration
 
         public void sendAudio(AudioDto dto)
         {
-            List<string> target = UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
-            target.Add(UMI3DGlobalID.ServerId);
-            Send(dto, target, DataType.Audio, false);
+            Debug.Log("audio not send via fakeRtc");
+
+            //List<string> target = UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
+            //target.Add(UMI3DGlobalID.ServerId);
+            //Send(dto, target, DataType.Audio, false);
         }
 
         public void sendAudio(List<DataChannel> channels, AudioDto dto)
         {
-            throw new System.NotImplementedException();
+            Debug.Log("audio not send via fakeRtc");
         }
 
         public void SendServer(UMI3DDto dto, bool reliable)

@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -97,7 +98,8 @@ namespace umi3d.edk.userCapture
         {
             if (!embodimentInstances.ContainsKey(dto.userId))
             {
-                throw new Exception("Internal error : the user is not registered");
+                Debug.LogWarning("Internal error : the user is not registered");
+                return;
             }
 
             UMI3DAvatarNode userEmbd = embodimentInstances[dto.userId];
@@ -112,9 +114,15 @@ namespace umi3d.edk.userCapture
 
         public void UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
         {
-            if (!embodimentInstances.ContainsKey(user.Id()))
+            StartCoroutine(_UserCameraReception(dto, user));
+        }
+
+        IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
+        {
+            while (!embodimentInstances.ContainsKey(user.Id()))
             {
-                throw new Exception("Internal error : the user is not registered");
+                Debug.LogWarning("Internal error : the user is not registered");
+                yield return new WaitForFixedUpdate();
             }
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
@@ -122,6 +130,8 @@ namespace umi3d.edk.userCapture
 
             Debug.LogWarning("bonetype : " + dto.boneType);
         }
+
+
 
         /// <summary>
         /// Delete the User's Embodiment.
