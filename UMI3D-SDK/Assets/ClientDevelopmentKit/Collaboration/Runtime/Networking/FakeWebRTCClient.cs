@@ -75,8 +75,7 @@ namespace umi3d.cdk.collaboration
         {
             ws.OnOpen += (sender, e) =>
             {
-                ws?.Send(UMI3DCollaborationClientServer.Identity.ToBson());
-                //UnityMainThreadDispatcher.Instance().Enqueue(onOpen());
+                UnityMainThreadDispatcher.Instance().Enqueue(onOpen(ws));
             };
 
             ws.OnMessage += (sender, e) =>
@@ -104,6 +103,20 @@ namespace umi3d.cdk.collaboration
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Call when a connection is open
+        /// </summary>
+        /// <param name="obj">message</param>
+        /// <returns></returns>
+        protected IEnumerator onOpen(WebSocket ws)
+        {
+            while (!UMI3DCollaborationClientServer.Connected())
+                yield return new WaitForFixedUpdate();
+            ws?.Send(UMI3DCollaborationClientServer.Identity.ToBson());
+            yield return null;
+        }
 
         /// <summary>
         /// Call when a Message is received

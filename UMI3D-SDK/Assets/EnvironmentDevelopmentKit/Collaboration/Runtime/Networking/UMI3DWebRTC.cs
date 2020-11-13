@@ -340,7 +340,7 @@ namespace umi3d.edk.collaboration
                     }
                 }
                 else
-                    Debug.Log("transfer message");
+                    Debug.Log($"transfer message to {target}");
             }
         }
 
