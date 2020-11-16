@@ -239,11 +239,14 @@ namespace umi3d.cdk.userCapture
                 {
                     if (oldPositions.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out OldPosition oldPosition))
                     {
-                        oldPosition.obj.SetParent(oldPosition.oldParent);
-                        oldPosition.obj.localPosition = oldPosition.oldPosition;
-                        oldPosition.obj.localRotation = oldPosition.oldRotation;
+                        if (oldPosition.obj != null)
+                        {
+                            oldPosition.obj.SetParent(oldPosition.oldParent);
+                            oldPosition.obj.localPosition = oldPosition.oldPosition;
+                            oldPosition.obj.localRotation = oldPosition.oldRotation;
+                        }
 
-                        if (dto.rigName == "")
+                        if (dto.rigName == "" && node != null)
                             node.updatePose = true;
                         else
                             boundRigs.Remove(oldPosition.obj);
