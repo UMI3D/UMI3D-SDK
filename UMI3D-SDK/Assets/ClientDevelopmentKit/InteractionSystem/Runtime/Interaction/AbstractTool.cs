@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -63,6 +64,26 @@ namespace umi3d.cdk.interaction
         /// Event raised when the abstract tool is released.
         /// </summary>
         public UnityEvent onRelease = new UnityEvent();
+
+        public void onProjected(string boneType) { 
+            onProject.Invoke();
+            var projectedDto = new ToolProjectedDto
+            {
+                boneType = boneType,
+                toolId = id
+            };
+            UMI3DClientServer.Send(projectedDto, true);
+        }
+
+        public void onReleased(string boneType) { 
+            onRelease.Invoke();
+            var releasedDto = new ToolProjectedDto
+            {
+                boneType = boneType,
+                toolId = id
+            };
+            UMI3DClientServer.Send(releasedDto, true);
+        }
 
         protected AbstractTool(AbstractToolDto abstractDto)
         {
