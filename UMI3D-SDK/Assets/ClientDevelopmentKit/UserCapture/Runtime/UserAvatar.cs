@@ -18,6 +18,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common.userCapture;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections;
@@ -239,11 +240,23 @@ namespace umi3d.cdk.userCapture
                 {
                     if (oldPositions.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out OldPosition oldPosition))
                     {
-                        oldPosition.obj.SetParent(oldPosition.oldParent);
-                        oldPosition.obj.localPosition = oldPosition.oldPosition;
-                        oldPosition.obj.localRotation = oldPosition.oldRotation;
+                        if (oldPosition.obj != null)
+                        {
+                            if (dto.rigName != "")
+                            {
+                                oldPosition.obj.SetParent(oldPosition.oldParent);
+                                oldPosition.obj.localPosition = oldPosition.oldPosition;
+                                oldPosition.obj.localRotation = oldPosition.oldRotation;
+                            }
+                            else
+                            {
+                                node.transform.SetParent(UMI3DEnvironmentLoader.GetNode((node.dto as UMI3DAbstractNodeDto).pid).transform);
+                                node.transform.localPosition = (node.dto as GlTFNodeDto).position;
+                                node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                            }
+                        }
 
-                        if (dto.rigName == "")
+                        if (dto.rigName == "" && node != null)
                             node.updatePose = true;
                         else
                             boundRigs.Remove(oldPosition.obj);
