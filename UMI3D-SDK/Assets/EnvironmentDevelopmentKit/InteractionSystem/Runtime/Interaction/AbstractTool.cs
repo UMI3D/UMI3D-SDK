@@ -100,12 +100,41 @@ namespace umi3d.edk.interaction
             UMI3DEnvironment.Remove(this);
         }
 
-
         /// <summary>
         /// Create an empty Dto.
         /// </summary>
         /// <returns></returns>
         protected abstract AbstractToolDto CreateDto();
+
+        /// <summary>
+        /// Return Project Tool
+        /// </summary>
+        /// <param name="users">List of users to which this operation should be send.</param>
+        /// <returns></returns>
+        public ProjectTool GetProjectTool(HashSet<UMI3DUser> users = null)
+        {
+            return new ProjectTool() { Tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+        }
+
+        /// <summary>
+        /// Return Release Tool
+        /// </summary>
+        /// <param name="users">List of users to which this operation should be send.</param>
+        /// <returns></returns>
+        public ReleaseTool GetReleaseTool(HashSet<UMI3DUser> users = null)
+        {
+            return new ReleaseTool() { Tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+        }
+
+        /// <summary>
+        /// Return Switch Tool
+        /// </summary>
+        /// <param name="users">List of users to which this operation should be send.</param>
+        /// <returns></returns>
+        public SwitchTool GetSwitchTool(AbstractTool ToolToReplace, HashSet<UMI3DUser> users = null)
+        {
+            return new SwitchTool() { Tool = this, ToolToReplace = ToolToReplace, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+        }
 
         /// <summary>
         /// Writte the AbstractTool properties in an object AbstractToolDto is assignable from.
