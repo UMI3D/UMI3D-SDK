@@ -35,6 +35,10 @@ namespace umi3d.edk.editor
         SerializedProperty interactions;
         SerializedProperty display;
         ListDisplayer<AbstractInteraction> ListDisplayer;
+        SerializedProperty onProjection;
+        SerializedProperty onRelease;
+
+        static bool displayEvent = false;
 
         protected virtual void OnEnable()
         {
@@ -42,6 +46,8 @@ namespace umi3d.edk.editor
             _target = new SerializedObject(t);
             display = _target.FindProperty("Display");
             interactions = _target.FindProperty("Interactions");
+            onProjection = _target.FindProperty("onProjection");
+            onRelease = _target.FindProperty("onRelease");
             ListDisplayer = new ListDisplayer<AbstractInteraction>();
         }
 
@@ -60,6 +66,13 @@ namespace umi3d.edk.editor
                             return null;
                     }
                 });
+
+            displayEvent = EditorGUILayout.Foldout(displayEvent, "Tool Events", true);
+            if (displayEvent)
+            {
+                EditorGUILayout.PropertyField(onProjection, true);
+                EditorGUILayout.PropertyField(onRelease, true);
+            }
         }
 
         static bool showList = true;

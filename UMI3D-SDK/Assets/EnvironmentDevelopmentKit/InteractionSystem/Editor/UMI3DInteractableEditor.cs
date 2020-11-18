@@ -54,7 +54,7 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(NotifyHoverPosition);
             EditorGUILayout.PropertyField(NotifySubObject);
             base._OnInspectorGUI();
-            displayEvent = EditorGUILayout.Foldout(displayEvent, "Events", true);
+            displayEvent = EditorGUILayout.Foldout(displayEvent, "Interaction Events", true);
             if (displayEvent)
             {
                 EditorGUILayout.PropertyField(onHoverEnter, true);
