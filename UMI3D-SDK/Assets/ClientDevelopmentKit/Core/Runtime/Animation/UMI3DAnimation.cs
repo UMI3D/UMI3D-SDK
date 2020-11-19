@@ -50,7 +50,7 @@ namespace umi3d.cdk
             foreach (var chain in dto.animationChain)
             {
                 if (GetProgress() < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress,()=> { UMI3DAnimationManager.Start(chain.animationId); })));
+                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Start(chain.animationId); })));
             }
 
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
@@ -59,7 +59,7 @@ namespace umi3d.cdk
         public override void Stop()
         {
             if (!started) return;
-            if(PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
+            if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var chain in dto.animationChain)
                 UMI3DAnimationManager.Stop(chain.animationId);
             foreach (var c in Coroutines)
@@ -78,13 +78,13 @@ namespace umi3d.cdk
             return dto.playing && GetProgress() >= waitFor;
         }
 
-        IEnumerator WaitForProgress(float waitFor,Action action)
+        IEnumerator WaitForProgress(float waitFor, Action action)
         {
-            yield return new WaitUntil(()=>LaunchAnimation(waitFor));
+            yield return new WaitUntil(() => LaunchAnimation(waitFor));
             action.Invoke();
         }
 
-        IEnumerator Playing( Action action)
+        IEnumerator Playing(Action action)
         {
             var fixUpdate = new WaitForFixedUpdate();
             while (GetProgress() < dto.duration)
@@ -104,7 +104,7 @@ namespace umi3d.cdk
                     dto.duration = (float)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
-                    return UpdateChain( property);
+                    return UpdateChain(property);
                 default:
                     return false;
             }
@@ -112,7 +112,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        bool UpdateChain( SetEntityPropertyDto property)
+        bool UpdateChain(SetEntityPropertyDto property)
         {
             switch (property)
             {

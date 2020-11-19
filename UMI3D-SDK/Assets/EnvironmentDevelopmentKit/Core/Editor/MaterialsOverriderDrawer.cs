@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace umi3d.edk.editor
@@ -38,10 +36,10 @@ namespace umi3d.edk.editor
                 lineCount = 1;
             else
             {
-             //   if(overrideAllMaterial == null)
-                    overrideAllMaterial = property.FindPropertyRelative("overrideAllMaterial");
-            //    if(overrideMaterials == null)
-                    overrideMaterials = property.FindPropertyRelative("overidedMaterials");
+                //   if(overrideAllMaterial == null)
+                overrideAllMaterial = property.FindPropertyRelative("overrideAllMaterial");
+                //    if(overrideMaterials == null)
+                overrideMaterials = property.FindPropertyRelative("overidedMaterials");
                 //     lineCount += 2 + extraline;// + overrideMaterials.arraySize;
                 if (overrideAllMaterial.boolValue)
                     lineCount = 1;

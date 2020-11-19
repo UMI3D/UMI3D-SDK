@@ -82,7 +82,7 @@ namespace umi3d.edk.interaction
             public Vector3 normal { get; private set; }
             public Vector3 direction { get; private set; }
 
-            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user,dto)
+            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
                 position = dto.position;
                 normal = dto.normal;

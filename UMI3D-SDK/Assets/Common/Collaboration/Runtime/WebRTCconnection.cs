@@ -123,16 +123,16 @@ namespace umi3d.common.collaboration
             switch (channel.State)
             {
                 case ChannelState.Opening:
-                    if(tryToSendAgain)
+                    if (tryToSendAgain)
                         channel.MessageNotSend.Add(data);
                     break;
                 case ChannelState.Open:
                     channel.Send(data);
                     break;
                 case ChannelState.Close:
-                    
+
                     break;
-            }  
+            }
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace umi3d.common.collaboration
             var channel = channels.Find((c) => c.reliable == reliable && c.type == dataType);
             if (channel == null)
             {
-                if (connectionState != RTCIceConnectionState.Completed) 
+                if (connectionState != RTCIceConnectionState.Completed)
                     Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}  {connectionState}");
                 return;
             }
@@ -524,7 +524,7 @@ namespace umi3d.common.collaboration
             if (!channels.Contains(channel))
             {
                 channels.Add(channel);
-                if(instanciateChannel)
+                if (instanciateChannel)
                     CreateDataChannel(channel.reliable, channel.Label);
             }
         }
@@ -591,9 +591,9 @@ namespace umi3d.common.collaboration
 
         void Log(string message)
         {
-//#if UNITY_EDITOR
-//            Debug.Log($"[{logPrefix}]: " + message);
-//#endif
+            //#if UNITY_EDITOR
+            //            Debug.Log($"[{logPrefix}]: " + message);
+            //#endif
         }
 
         #endregion

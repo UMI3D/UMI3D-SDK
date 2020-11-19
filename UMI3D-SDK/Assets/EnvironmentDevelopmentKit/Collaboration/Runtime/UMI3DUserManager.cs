@@ -46,7 +46,7 @@ namespace umi3d.edk.collaboration
 
         public List<UserDto> Todo()
         {
-            return ObjectUserList.GetValue().Select(u=>u.ToUserDto()).ToList();
+            return ObjectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
         }
 
 
@@ -82,7 +82,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        
+
 
         public void Logout(UMI3DCollaborationUser user)
         {
@@ -120,7 +120,7 @@ namespace umi3d.edk.collaboration
             else
             {
                 user = new UMI3DCollaborationUser(Login, connection);
-               
+
                 users.Add(user.Id(), user);
             }
             Callback.Invoke(user, reconnection);
@@ -133,7 +133,7 @@ namespace umi3d.edk.collaboration
 
         public void NotifyUserStatusChanged(UMI3DCollaborationUser user)
         {
-            if(user != null)
+            if (user != null)
                 UnityMainThreadDispatcher.Instance().Enqueue(UpdateUser(user));
         }
 

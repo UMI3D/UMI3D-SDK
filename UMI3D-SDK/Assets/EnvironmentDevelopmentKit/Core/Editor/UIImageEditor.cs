@@ -16,12 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using System.Reflection;
-using UnityEditorInternal;
-using umi3d.edk;
-using umi3d.common;
 
 namespace umi3d.edk.editor
 {

@@ -39,16 +39,16 @@ namespace umi3d.edk
             public List<string> overidedMaterials = new List<string>();
         }
 
-        private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat"};
+        private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
 
         public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
         {
-            if(overrideAllMaterial)
+            if (overrideAllMaterial)
                 return new UMI3DRenderedNodeDto.MaterialOverrideDto()
                 {
                     newMaterialId = newMaterial.Id(),
                     overridedMaterialsId = ANY_mat
-                    
+
                 };
 
             return new UMI3DRenderedNodeDto.MaterialOverrideDto()
@@ -59,6 +59,6 @@ namespace umi3d.edk
         }
 
     }
-    
+
 
 }

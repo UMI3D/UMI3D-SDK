@@ -73,7 +73,7 @@ namespace umi3d.edk
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DRenderedNodeDto();
-           // rajouter un abstract dto 
+            // rajouter un abstract dto 
         }
 
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)

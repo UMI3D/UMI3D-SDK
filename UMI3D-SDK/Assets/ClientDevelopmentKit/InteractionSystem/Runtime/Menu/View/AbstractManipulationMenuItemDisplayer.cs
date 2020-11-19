@@ -44,7 +44,8 @@ namespace umi3d.cdk.menu.view
                     UnSubscribe(itemSubscriber);
 
                 menu = item;
-                itemSubscriber = x => {
+                itemSubscriber = x =>
+                {
                     if (x)
                         manipulationMenuItem.Select();
                     else

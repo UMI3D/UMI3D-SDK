@@ -50,7 +50,7 @@ namespace umi3d.cdk.menu.view
         public void NotifyValueChange(bool newValue)
         {
             menuItem.NotifyValueChange(newValue);
-            foreach(UnityAction<bool> sub in subscribers)
+            foreach (UnityAction<bool> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }

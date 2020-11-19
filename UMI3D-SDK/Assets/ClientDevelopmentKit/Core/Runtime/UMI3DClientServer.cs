@@ -41,7 +41,8 @@ namespace umi3d.cdk
         protected virtual void _SendTracking(AbstractBrowserRequestDto dto, bool reliable) { }
 
 
-        static public void GetFile(string url, Action<byte[]> callback, Action<string> onError) {
+        static public void GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        {
             if (Exists)
                 Instance._GetFile(url, callback, onError);
         }

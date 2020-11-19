@@ -25,5 +25,5 @@ namespace umi3d.common
         public string pid = null;
         public bool isStatic = false;
     }
-    
+
 }

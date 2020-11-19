@@ -18,7 +18,7 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class FileListDto:UMI3DDto
+    public class FileListDto : UMI3DDto
     {
         public string baseUrl;
         public List<string> files = new List<string>();

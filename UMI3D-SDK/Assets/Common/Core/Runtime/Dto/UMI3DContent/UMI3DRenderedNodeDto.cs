@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
-    public class UMI3DRenderedNodeDto :UMI3DNodeDto
+    public class UMI3DRenderedNodeDto : UMI3DNodeDto
     {
         /// <summary>
         /// Should some material be overrided

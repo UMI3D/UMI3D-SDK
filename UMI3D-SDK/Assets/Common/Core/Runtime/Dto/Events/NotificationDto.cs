@@ -19,7 +19,7 @@ namespace umi3d.common
     /// <summary>
     /// Notification to sent from the environment to a user.
     /// </summary>
-    public class NotificationDto : AbstractEntityDto ,IEntity
+    public class NotificationDto : AbstractEntityDto, IEntity
     {
         public string title;
         public string content;

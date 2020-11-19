@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     [System.Serializable]
-    public class EnterDto:UMI3DDto
+    public class EnterDto : UMI3DDto
     {
         public SerializableVector3 userPosition;
         public SerializableVector4 userRotation;

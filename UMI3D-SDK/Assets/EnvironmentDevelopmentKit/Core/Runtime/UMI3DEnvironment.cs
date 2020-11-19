@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -48,8 +47,8 @@ namespace umi3d.edk
         [SerializeField]
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
         [SerializeField]
-        private Vector3 defaultStartOrentation = new Vector3(0, 0, 0); 
-        static public UMI3DAsyncProperty<Vector3> objectStartPosition {get; protected set;}
+        private Vector3 defaultStartOrentation = new Vector3(0, 0, 0);
+        static public UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
         static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
 
 
@@ -127,13 +126,13 @@ namespace umi3d.edk
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
             List<AssetLibraryDto> libraries = globalLibraries.Select(l => l.ToDto()).ToList();
-            libraries.AddRange(scenes.SelectMany(s => s.libraries).GroupBy(l=>l.id).Select(l=>l.First().ToDto()));
+            libraries.AddRange(scenes.SelectMany(s => s.libraries).GroupBy(l => l.id).Select(l => l.First().ToDto()));
             return new LibrariesDto() { libraries = libraries };
         }
 
         static public bool UseLibrary()
         {
-            return Exists ? Instance.globalLibraries.Any() || Instance.scenes.Any(s=>s.libraries.Any()): false;
+            return Exists ? Instance.globalLibraries.Any() || Instance.scenes.Any(s => s.libraries.Any()) : false;
         }
         #endregion
 
@@ -275,7 +274,7 @@ namespace umi3d.edk
             if (Exists)
             {
                 if (entity != null)
-                    return Instance.entities.Register(entity,id);
+                    return Instance.entities.Register(entity, id);
                 else
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
@@ -306,8 +305,7 @@ namespace umi3d.edk
 
             public A this[string key]
             {
-                get
-                {
+                get {
                     if (key == null || key.Length == 0)
                         return default;
                     else if (objects.ContainsKey(key))
@@ -324,7 +322,7 @@ namespace umi3d.edk
                 return guid;
             }
 
-            public string Register(A obj,string guid)
+            public string Register(A obj, string guid)
             {
                 if (objects.ContainsKey(guid))
                 {

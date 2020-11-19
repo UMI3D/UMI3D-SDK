@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// </summary>
         public ImageDtoLoader()
         {
-            this.supportedFileExtentions = new List<string>() { ".jpg",".bmp",".dib",".rle",".exr",".gif", ".hdr", ".iff",".jpg", ".jpeg",".pict",".pct",".png", ".psd",".tga",".tif",".tiff" };
+            this.supportedFileExtentions = new List<string>() { ".jpg", ".bmp", ".dib", ".rle", ".exr", ".gif", ".hdr", ".iff", ".jpg", ".jpeg", ".pict", ".pct", ".png", ".psd", ".tga", ".tif", ".tiff" };
             this.ignoredFileExtentions = new List<string>();
         }
 
@@ -68,7 +68,7 @@ namespace umi3d.cdk
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
-        {   
+        {
             callback.Invoke(o);
         }
 

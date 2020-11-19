@@ -13,11 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.edk;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -28,9 +25,9 @@ namespace umi3d.edk
 
         public string matId;
         public UMI3DResource resource;
-        
+
         public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
-        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value;  }
+        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
 
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
@@ -65,7 +62,7 @@ namespace umi3d.edk
             }
             return matId;
         }
-    
+
 
         protected override void InitDefinition(string id)
         {
@@ -74,9 +71,9 @@ namespace umi3d.edk
             {
                 return new Dictionary<string, object>(d);
             });
-         //   objectShaderProperties.OnInnerValueChanged += (string s, object o) => { shaderProperties[s] = o; };
-      //      objectShaderProperties.OnInnerValueAdded += (string s, object o) => { shaderProperties.Add(s, o); };
-        //    objectShaderProperties.OnInnerValueRemoved += (string s) => { shaderProperties.Remove(s); };
+            //   objectShaderProperties.OnInnerValueChanged += (string s, object o) => { shaderProperties[s] = o; };
+            //      objectShaderProperties.OnInnerValueAdded += (string s, object o) => { shaderProperties.Add(s, o); };
+            //    objectShaderProperties.OnInnerValueRemoved += (string s) => { shaderProperties.Remove(s); };
             objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
         }
 

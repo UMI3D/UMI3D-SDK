@@ -37,9 +37,9 @@ namespace umi3d.edk.collaboration
 
         Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction;
         Action<UMI3DFakeRTCConnection> closeAction;
-        Action<UMI3DFakeRTCConnection,IdentityDto> identifyAction;
+        Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction;
 
-        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction) : this(null, reliable, messageAction, closeAction,identifyAction)
+        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction) : this(null, reliable, messageAction, closeAction, identifyAction)
         {
         }
 
@@ -123,7 +123,7 @@ namespace umi3d.edk.collaboration
             ws = fakeRTC;
         }
 
-        public FakeDataChannel(UMI3DFakeRTCConnection fakeRTC,string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        public FakeDataChannel(UMI3DFakeRTCConnection fakeRTC, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
         {
             ws = fakeRTC;
         }

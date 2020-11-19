@@ -34,7 +34,7 @@ namespace umi3d.edk
         /// <summary>
         /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectXBillboard { get { Register();  return _objectXBillboard; } protected set => _objectXBillboard = value; }
+        public UMI3DAsyncProperty<bool> objectXBillboard { get { Register(); return _objectXBillboard; } protected set => _objectXBillboard = value; }
         /// <summary>
         /// Indicates if the object is permanently facing the users YBillboard
         /// </summary>

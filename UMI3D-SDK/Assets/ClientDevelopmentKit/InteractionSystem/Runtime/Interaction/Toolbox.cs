@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
-using umi3d.cdk;
+using System.Linq;
 using umi3d.cdk.menu.interaction;
 using umi3d.common.interaction;
-using System.Linq;
 
 namespace umi3d.cdk.interaction
 {
@@ -42,7 +41,7 @@ namespace umi3d.cdk.interaction
             tools = new List<Tool>();
 
             this.dto = dto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto,this);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
             sub = new ToolboxSubMenu()
             {
                 Name = dto.name,
@@ -52,7 +51,7 @@ namespace umi3d.cdk.interaction
 
         public void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id,null);
+            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
         }
 
     }

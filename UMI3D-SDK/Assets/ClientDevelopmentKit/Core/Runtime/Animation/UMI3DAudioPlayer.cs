@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System.Collections;
 using umi3d.common;
 using UnityEngine;
-using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
@@ -32,7 +32,8 @@ namespace umi3d.cdk
             UnityMainThreadDispatcher.Instance().Enqueue(InitPlayer(dto));
         }
 
-        IEnumerator InitPlayer(UMI3DAudioPlayerDto dto) {
+        IEnumerator InitPlayer(UMI3DAudioPlayerDto dto)
+        {
             var wait = new WaitForFixedUpdate();
             var gameObject = UMI3DEnvironmentLoader.Instance.gameObject;
             if (dto.nodeID != null)
@@ -44,7 +45,7 @@ namespace umi3d.cdk
                     gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID).gameObject;
                 }
 
-                
+
             }
             audioSource = gameObject.AddComponent<AudioSource>();
 
@@ -91,7 +92,7 @@ namespace umi3d.cdk
 
         public override float GetProgress()
         {
-            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0)? audioSource.time / audioSource.clip.length : -1;
+            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time / audioSource.clip.length : -1;
         }
 
         public override void Start()
@@ -121,7 +122,8 @@ namespace umi3d.cdk
             var ADto = dto as UMI3DAudioPlayerDto;
             if (ADto == null) return false;
 
-            switch (property.property) {
+            switch (property.property)
+            {
                 case UMI3DPropertyKeys.AnimationVolume:
                     audioSource.volume = ADto.volume = (float)property.value;
                     break;
@@ -190,7 +192,7 @@ namespace umi3d.cdk
         public override void Start(float atTime)
         {
             audioSource?.Stop();
-            if(audioSource)
+            if (audioSource)
                 audioSource.time = atTime;
             audioSource?.Play();
             OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));

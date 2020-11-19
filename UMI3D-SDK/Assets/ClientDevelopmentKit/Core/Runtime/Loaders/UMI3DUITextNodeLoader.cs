@@ -25,7 +25,7 @@ namespace umi3d.cdk
     /// <summary>
     /// LOader for an UMI3D UI Text
     /// </summary>
-    public class UMI3DUITextNodeLoader 
+    public class UMI3DUITextNodeLoader
     {
         /// <summary>
         /// Load an UMI3D UI Text.

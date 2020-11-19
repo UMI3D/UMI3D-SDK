@@ -32,7 +32,7 @@ namespace umi3d.edk
         {
             base.InitDefinition(id);
 
-            objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id,UMI3DPropertyKeys.IgnoreModelMaterialOverride,ignoreModelMaterialOverride);
+            objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.IgnoreModelMaterialOverride, ignoreModelMaterialOverride);
         }
 
         /// <summary>

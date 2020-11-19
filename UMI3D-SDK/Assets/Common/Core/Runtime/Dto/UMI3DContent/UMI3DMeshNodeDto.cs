@@ -14,14 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-
 namespace umi3d.common
 {
     [System.Serializable]
     public class UMI3DMeshNodeDto : UMI3DRenderedNodeDto
     {
-        
+
         /// <summary>
         /// Model ressource.
         /// </summary>
@@ -42,5 +40,5 @@ namespace umi3d.common
         public bool areSubobjectsTracked;
 
     }
-    
+
 }

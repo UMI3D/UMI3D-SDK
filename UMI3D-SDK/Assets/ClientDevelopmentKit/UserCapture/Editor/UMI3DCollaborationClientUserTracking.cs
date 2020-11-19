@@ -15,17 +15,8 @@ limitations under the License.
 */
 
 #if UNITY_EDITOR
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
-using System.Reflection;
-using System.Linq;
-using System;
-using umi3d.common.editor;
-using umi3d.common.userCapture;
-using umi3d.cdk.userCapture;
 using umi3d.cdk.collaboration;
+using UnityEditor;
 
 namespace umi3d.cdk.editor
 {

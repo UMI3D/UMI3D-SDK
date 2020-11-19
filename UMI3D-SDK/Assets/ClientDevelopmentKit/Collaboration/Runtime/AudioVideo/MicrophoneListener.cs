@@ -34,7 +34,7 @@ namespace umi3d.cdk.collaboration
             AudioSource audio = GetComponent<AudioSource>();
             audio.clip = AudioClip.Create("microphone", 10 * FREQUENCY, mic.channels, FREQUENCY, false);
             audio.loop = true;
-            if(UMI3DCollaborationClientServer.Instance.WebRTCClient != null)
+            if (UMI3DCollaborationClientServer.Instance.WebRTCClient != null)
                 AudioUpdate = UMI3DCollaborationClientServer.Instance.WebRTCClient.sendAudio;
         }
 

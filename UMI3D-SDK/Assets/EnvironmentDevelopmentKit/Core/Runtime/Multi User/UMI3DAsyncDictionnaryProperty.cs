@@ -20,12 +20,12 @@ using System.Linq;
 
 namespace umi3d.edk
 {
-    public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T,L>>
+    public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
     {
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
-        public Action<T,L> OnInnerValueChanged;
+        public Action<T, L> OnInnerValueChanged;
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
@@ -56,32 +56,32 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T,UMI3DUser, object> SerializerT;
+        Func<T, UMI3DUser, object> SerializerT;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<L,UMI3DUser, object> SerializerL;
+        Func<L, UMI3DUser, object> SerializerL;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
         Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
 
-        static Func<Dictionary<T,L>, UMI3DUser, object> SerializerToListSeriliser(Func<T,UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
+        static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
         {
             if (serializerT == null && serializerL == null) return null;
             if (serializerT == null)
             {
-                serializerT = (T a,UMI3DUser u) => { return a; };
+                serializerT = (T a, UMI3DUser u) => { return a; };
             }
             if (serializerL == null)
             {
                 serializerL = (L a, UMI3DUser u) => { return a; };
             }
-            object DictionarySerializer(Dictionary<T,L> dictionary,UMI3DUser u)
+            object DictionarySerializer(Dictionary<T, L> dictionary, UMI3DUser u)
             {
-                return dictionary.Select(t => { return new KeyValuePair<object,object>(serializerT(t.Key,u), serializerL(t.Value,u)); }).ToDictionary(pair => pair.Key, pair => pair.Value);
+                return dictionary.Select(t => { return new KeyValuePair<object, object>(serializerT(t.Key, u), serializerL(t.Value, u)); }).ToDictionary(pair => pair.Key, pair => pair.Value);
             }
             return DictionarySerializer;
         }
@@ -100,17 +100,17 @@ namespace umi3d.edk
             public int GetHashCode(L obj) => obj.GetHashCode();
         };
 
-        static Func<Dictionary<T,L>, Dictionary<T,L>, bool> EqualToListEqual(Func<L, L, bool> equal)
+        static Func<Dictionary<T, L>, Dictionary<T, L>, bool> EqualToListEqual(Func<L, L, bool> equal)
         {
             if (equal == null) return null;
             bool DictionnaryEqual(Dictionary<T, L> dict, Dictionary<T, L> other)
             {
-                return !dict.Keys.Except(other.Keys).Any() && !other.Keys.Except(dict.Keys).Any() && !dict.Where(p=> { return !equal(p.Value, other[p.Key]); }).Any();
+                return !dict.Keys.Except(other.Keys).Any() && !other.Keys.Except(dict.Keys).Any() && !dict.Where(p => { return !equal(p.Value, other[p.Key]); }).Any();
             }
             return DictionnaryEqual;
         }
 
-        public UMI3DAsyncDictionnaryProperty(string entityId, string propertyId, Dictionary<T,L> value, Func<T,UMI3DUser, object> serializerT = null, Func<L,UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializerT, serializerL), EqualToListEqual(equal))
+        public UMI3DAsyncDictionnaryProperty(string entityId, string propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializerT, serializerL), EqualToListEqual(equal))
         {
             if (equal == null)
             {
@@ -119,7 +119,7 @@ namespace umi3d.edk
             Equal = equal;
             if (serializerT == null)
             {
-                serializerT = (T a,UMI3DUser u) => { return a; };
+                serializerT = (T a, UMI3DUser u) => { return a; };
             }
             SerializerT = serializerT;
             if (serializerL == null)
@@ -129,7 +129,7 @@ namespace umi3d.edk
             SerializerL = serializerL;
             if (copier == null)
             {
-                copier = (Dictionary<T,L> a) => { return a.ToDictionary(p => p.Key,p => p.Value); };
+                copier = (Dictionary<T, L> a) => { return a.ToDictionary(p => p.Key, p => p.Value); };
             }
             Copier = copier;
         }
@@ -177,7 +177,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = key,
-                value = SerializerL(value,null)
+                value = SerializerL(value, null)
             };
             if (UMI3DEnvironment.Exists)
             {
@@ -210,7 +210,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = key,
-                value = SerializerL(value,user)
+                value = SerializerL(value, user)
             };
             operation.users.Add(user);
 
@@ -245,7 +245,7 @@ namespace umi3d.edk
 
         public SetEntityProperty Add(T key, L value)
         {
-            GetValue().Add(key,value);
+            GetValue().Add(key, value);
             OnInnerValueAdded?.Invoke(key, value);
 
             var operation = new SetEntityDictionaryAddProperty()
@@ -254,7 +254,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = key,
-                value = SerializerL(value,null)
+                value = SerializerL(value, null)
             };
             if (UMI3DEnvironment.Exists)
             {
@@ -279,13 +279,13 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = key,
-                value = SerializerL(value,user)
+                value = SerializerL(value, user)
             };
             operation.users.Add(user);
 
             if (asyncValues.ContainsKey(user))
             {
-                GetValue(user).Add(key,value);
+                GetValue(user).Add(key, value);
                 if (OnUserInnerValueAdded != null)
                     OnUserInnerValueAdded.Invoke(key, user, value);
                 if (!UserDesync.Contains(user))
@@ -297,7 +297,7 @@ namespace umi3d.edk
             {
                 Sync(user, false);
                 asyncValues[user] = Copier(GetValue());
-                GetValue(user).Add(key,value);
+                GetValue(user).Add(key, value);
                 if (OnUserInnerValueAdded != null)
                     OnUserInnerValueAdded.Invoke(key, user, value);
                 if (!UserDesync.Contains(user))
@@ -321,7 +321,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = key,
-                value = SerializerL(value,null)
+                value = SerializerL(value, null)
             };
             if (UMI3DEnvironment.Exists)
             {
@@ -349,7 +349,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = key,
-                value = SerializerL(value,user)
+                value = SerializerL(value, user)
             };
             operation.users.Add(user);
 

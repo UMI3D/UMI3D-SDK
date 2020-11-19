@@ -42,11 +42,12 @@ namespace umi3d.cdk
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
             ImportOptions importOptions = CreateImportOption(authorization);
-  
+
             objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions);
 
 
-            objImporter.ImportingComplete += () => {
+            objImporter.ImportingComplete += () =>
+            {
                 try
                 {
                     HideModelRecursively(createdObj);
@@ -57,7 +58,7 @@ namespace umi3d.cdk
                 }
                 catch
                 {
-                    failCallback("Importing failed with : "+url);
+                    failCallback("Importing failed with : " + url);
                 }
                 GameObject.Destroy(objImporter.gameObject, 1);
             };
@@ -79,7 +80,7 @@ namespace umi3d.cdk
                 authorization = authorization,
                 zUp = false,
                 hideWhileLoading = true,
-                
+
             };
         }
 
