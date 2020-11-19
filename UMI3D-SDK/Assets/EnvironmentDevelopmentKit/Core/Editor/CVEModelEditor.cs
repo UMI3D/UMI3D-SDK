@@ -16,14 +16,11 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using umi3d.edk;
-using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(UMI3DModel),true)]
+    [CustomEditor(typeof(UMI3DModel), true)]
     [CanEditMultipleObjects]
     public class CVEModelEditor : RenderedNodeEditor
     {

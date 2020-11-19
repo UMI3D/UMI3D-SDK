@@ -36,7 +36,7 @@ namespace umi3d.cdk
             {
                 bool performed = false;
                 PerformOperation(operation, () => performed = true);
-                if(performed != true)
+                if (performed != true)
                     yield return new WaitUntil(() => performed);
             }
         }

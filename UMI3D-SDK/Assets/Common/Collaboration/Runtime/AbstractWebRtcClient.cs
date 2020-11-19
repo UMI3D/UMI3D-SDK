@@ -17,7 +17,6 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Events;

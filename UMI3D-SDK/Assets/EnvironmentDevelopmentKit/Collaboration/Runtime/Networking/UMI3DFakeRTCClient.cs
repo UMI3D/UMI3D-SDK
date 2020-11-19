@@ -14,11 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.edk.collaboration;
-using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
@@ -72,7 +70,7 @@ namespace umi3d.common.collaboration
 
         public DataChannel Find(Func<DataChannel, bool> predicate)
         {
-            return channels.Find((c)=> predicate(c));
+            return channels.Find((c) => predicate(c));
         }
 
         public bool Find(bool reliable, DataType dataType, out DataChannel channel)
@@ -93,12 +91,12 @@ namespace umi3d.common.collaboration
 
         public void Offer()
         {
-            
+
         }
 
         public void RemoveDataChannel(DataChannel channel)
         {
-            if(channel is FakeDataChannel fake)
+            if (channel is FakeDataChannel fake)
                 channels.Remove(fake);
         }
 
@@ -130,7 +128,7 @@ namespace umi3d.common.collaboration
             var ws = dto.reliable ? Reliable : Unreliable;
             if (ws != null)
                 ws.SendData(dto.ToBson());
-            else if(tryToSendAgain)
+            else if (tryToSendAgain)
             {
                 if (dto.reliable)
                     StackReliable.Add(dto);

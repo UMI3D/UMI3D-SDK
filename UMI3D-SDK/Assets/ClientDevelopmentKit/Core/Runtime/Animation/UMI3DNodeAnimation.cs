@@ -48,15 +48,15 @@ namespace umi3d.cdk
             progress = 0;
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var chain in dto.animationChain)
-                if(GetProgress() < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress,()=> { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
+                if (GetProgress() < chain.startOnProgress)
+                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
         public override void Stop()
         {
             if (!started) return;
-            if(PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
+            if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var c in Coroutines)
                 UMI3DAnimationManager.Instance.StopCoroutine(c);
         }
@@ -73,13 +73,13 @@ namespace umi3d.cdk
             return dto.playing && GetProgress() >= waitFor;
         }
 
-        IEnumerator WaitForProgress(float waitFor,Action action)
+        IEnumerator WaitForProgress(float waitFor, Action action)
         {
-            yield return new WaitWhile(()=>LaunchAnimation(waitFor));
+            yield return new WaitWhile(() => LaunchAnimation(waitFor));
             action.Invoke();
         }
 
-        IEnumerator Playing( Action action)
+        IEnumerator Playing(Action action)
         {
             var fixUpdate = new WaitForFixedUpdate();
             while (GetProgress() < dto.duration)

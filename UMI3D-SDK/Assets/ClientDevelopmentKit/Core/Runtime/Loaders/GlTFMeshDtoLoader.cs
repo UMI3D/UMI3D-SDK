@@ -53,7 +53,7 @@ namespace umi3d.cdk
         public static void SetCertificateAuthorization(UnityWebRequest www, string authorization)
         {
             if (instance == null)
-                new GlTFMeshDtoLoader(); 
+                new GlTFMeshDtoLoader();
             instance.SetCertificate(www, authorization);
         }
 
@@ -119,7 +119,7 @@ namespace umi3d.cdk
                 gltfComp.Load(url, null, deferAgent);
             }
         }
-       
+
 
         public override Vector3 GetRotationOffset()
         {

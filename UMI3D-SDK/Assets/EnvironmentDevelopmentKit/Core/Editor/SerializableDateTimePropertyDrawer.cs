@@ -1,10 +1,7 @@
 ﻿#if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
-using umi3d.edk;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {

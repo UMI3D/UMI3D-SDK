@@ -48,7 +48,7 @@ namespace umi3d.edk
 
         public static Operation operator -(Operation a, Operation b)
         {
-            foreach(var u in b.users)
+            foreach (var u in b.users)
             {
                 if (a.users.Contains(u)) a.users.Remove(u);
             }

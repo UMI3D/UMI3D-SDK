@@ -16,10 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
-using umi3d.common.userCapture;
 using umi3d.cdk.userCapture;
-using UnityEngine;
-using UnityEngine.Events;
 using umi3d.common.collaboration;
 
 namespace umi3d.cdk.collaboration

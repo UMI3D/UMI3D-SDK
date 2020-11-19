@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEditor;
 
 namespace umi3d.edk.editor
 {
@@ -36,14 +33,14 @@ namespace umi3d.edk.editor
 
             serializedObject.Update();
 
- 
+
             EditorGUILayout.PropertyField(overrideModelMaterials);
             if (overrideModelMaterials.boolValue)
             {
                 EditorGUILayout.PropertyField(material);
             }
 
-            if(target is UMI3DSubModel)
+            if (target is UMI3DSubModel)
             {
                 EditorGUILayout.PropertyField(ignoreParent);
             }

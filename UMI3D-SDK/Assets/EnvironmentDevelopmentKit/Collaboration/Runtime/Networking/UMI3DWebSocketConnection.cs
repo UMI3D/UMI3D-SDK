@@ -95,7 +95,7 @@ namespace umi3d.edk.collaboration
         }
 
 
-        void onUserCreated(UMI3DCollaborationUser user,bool reconnection)
+        void onUserCreated(UMI3DCollaborationUser user, bool reconnection)
         {
             _id = user.Id();
             SendData(user.ToStatusDto());
@@ -108,14 +108,14 @@ namespace umi3d.edk.collaboration
             Debug.Log("open");
         }
 
-        public void SendData(UMI3DDto obj,Action<bool> callback = null)
+        public void SendData(UMI3DDto obj, Action<bool> callback = null)
         {
             if (obj != null && this.Context.WebSocket.IsConnected)
             {
                 var data = obj.ToBson();
                 try
                 {
-                    if(callback == null) callback = (b) => { };
+                    if (callback == null) callback = (b) => { };
                     SendAsync(data, callback);
                 }
                 catch (InvalidOperationException exp)

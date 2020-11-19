@@ -41,7 +41,7 @@ namespace umi3d.cdk
             image.type = dto.type.Convert();
 
 
-            if (dto.sprite == null || dto.sprite.variants == null || dto.sprite.variants.Count <1)
+            if (dto.sprite == null || dto.sprite.variants == null || dto.sprite.variants.Count < 1)
             {
                 image.sprite = null;
                 dto.sprite = null;
@@ -101,7 +101,7 @@ namespace umi3d.cdk
                         Image image = node.gameObject.GetOrAddComponent<Image>();
                         Debug.Log(property.value);
                         FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.sprite.variants);  // Peut etre ameliore
-                        if(fileToLoad == null)
+                        if (fileToLoad == null)
                         {
                             image.sprite = null;
                             dto.sprite.variants = null;

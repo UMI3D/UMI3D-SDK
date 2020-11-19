@@ -16,13 +16,11 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
-using System;
 using System.Linq;
 using umi3d.edk.interaction;
+using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -54,8 +52,9 @@ namespace umi3d.edk.editor
         protected virtual void _OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(display);
-            ListDisplayer.Display(ref showList, interactions, t.Interactions, 
-                t => {
+            ListDisplayer.Display(ref showList, interactions, t.Interactions,
+                t =>
+                {
                     switch (t)
                     {
                         case AbstractInteraction i:

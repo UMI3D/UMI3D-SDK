@@ -215,7 +215,7 @@ namespace umi3d.cdk
                 this.url = url;
             }
 
-            public ObjectData(string url,string extension, HashSet<string> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
+            public ObjectData(string url, string extension, HashSet<string> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
             {
                 value = null;
                 entityIds = entityId;
@@ -227,7 +227,7 @@ namespace umi3d.cdk
                 this.extension = extension;
             }
 
-            public ObjectData(string url,string extension, string entityId, Action<object> loadCallback, Action<string> loadFailCallback)
+            public ObjectData(string url, string extension, string entityId, Action<object> loadCallback, Action<string> loadFailCallback)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -239,7 +239,7 @@ namespace umi3d.cdk
                 this.extension = extension;
             }
 
-            public ObjectData(string url,string extension, string entityId)
+            public ObjectData(string url, string extension, string entityId)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -251,7 +251,7 @@ namespace umi3d.cdk
                 this.extension = extension;
             }
 
-            public ObjectData(string url,string extension, string entityId, string downloadedPath)
+            public ObjectData(string url, string extension, string entityId, string downloadedPath)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -464,7 +464,7 @@ namespace umi3d.cdk
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
                     };
-                    urlToObject.Invoke(path,objectData.extension, null, sucess2, error2, null);
+                    urlToObject.Invoke(path, objectData.extension, null, sucess2, error2, null);
                 };
 
                 Action<string> error = (reason) =>
@@ -483,7 +483,7 @@ namespace umi3d.cdk
             ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(file.url, file.libraryKey); });
             if (objectData == null)
             {
-                objectData = new ObjectData(file.url,file.extension, id);
+                objectData = new ObjectData(file.url, file.extension, id);
                 CacheCollection.Add(objectData);
             }
             _LoadFile(id, objectData, urlToObject, objectFromCache, callback, failCallback, deleteAction, file.pathIfInBundle);

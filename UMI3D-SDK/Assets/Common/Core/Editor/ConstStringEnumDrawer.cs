@@ -15,10 +15,10 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
-using UnityEngine;
-using UnityEditor;
 using System;
 using System.Linq;
+using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.common.editor
 {

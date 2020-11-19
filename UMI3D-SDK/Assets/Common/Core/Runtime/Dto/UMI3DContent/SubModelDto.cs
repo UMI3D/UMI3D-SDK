@@ -26,7 +26,7 @@ namespace umi3d.common
         /// Id of the root object of the model 
         /// </summary>
         public string modelId;
-        
+
         /// <summary>
         /// subModel Loader should apply root model material overrider or ignore it
         /// </summary>

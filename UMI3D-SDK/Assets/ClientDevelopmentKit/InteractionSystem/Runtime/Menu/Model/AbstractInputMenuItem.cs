@@ -60,4 +60,4 @@ namespace umi3d.cdk.menu
     public abstract class AbstractInputMenuItem : MenuItem
     {
     }
-}   
+}

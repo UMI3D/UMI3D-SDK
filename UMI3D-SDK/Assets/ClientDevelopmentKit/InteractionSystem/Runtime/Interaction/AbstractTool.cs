@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -51,7 +50,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Contained tools.
         /// </summary>
-        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions;}}
+        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions; } }
 
 
 
@@ -65,7 +64,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public UnityEvent onRelease = new UnityEvent();
 
-        public void onProjected(string boneType) { 
+        public void onProjected(string boneType)
+        {
             onProject.Invoke();
             var projectedDto = new ToolProjectedDto
             {
@@ -75,7 +75,8 @@ namespace umi3d.cdk.interaction
             UMI3DClientServer.Send(projectedDto, true);
         }
 
-        public void onReleased(string boneType) { 
+        public void onReleased(string boneType)
+        {
             onRelease.Invoke();
             var releasedDto = new ToolReleasedDto
             {

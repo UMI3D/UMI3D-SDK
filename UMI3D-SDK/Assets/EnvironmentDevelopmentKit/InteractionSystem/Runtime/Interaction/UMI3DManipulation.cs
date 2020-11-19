@@ -90,7 +90,7 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case ManipulationRequestDto manip:
-                    onManipulated.Invoke(new ManipulationEventContent(user,manip));
+                    onManipulated.Invoke(new ManipulationEventContent(user, manip));
                     break;
             }
         }

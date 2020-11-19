@@ -18,7 +18,7 @@ using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture
-{ 
+{
 
     public class UMI3DBinding
     {

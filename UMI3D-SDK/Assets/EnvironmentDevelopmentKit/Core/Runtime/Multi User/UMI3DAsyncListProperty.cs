@@ -26,7 +26,7 @@ namespace umi3d.edk
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
-        public Action<int,T> OnInnerValueChanged;
+        public Action<int, T> OnInnerValueChanged;
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
@@ -57,19 +57,19 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T,UMI3DUser, object> Serializer;
+        Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
         Func<List<T>, List<T>> Copier;
 
-        static Func<List<T>,UMI3DUser, object> SerializerToListSeriliser(Func<T,UMI3DUser, object> serializer)
+        static Func<List<T>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializer)
         {
             if (serializer == null) return null;
-            object ListSerializer(List<T> list,UMI3DUser u)
+            object ListSerializer(List<T> list, UMI3DUser u)
             {
-                return list.Select(t => { return serializer(t,u); }).ToList();
+                return list.Select(t => { return serializer(t, u); }).ToList();
             }
             return ListSerializer;
         }
@@ -107,7 +107,7 @@ namespace umi3d.edk
             Equal = equal;
             if (serializer == null)
             {
-                serializer = (T a,UMI3DUser u) => { return a; };
+                serializer = (T a, UMI3DUser u) => { return a; };
             }
             Serializer = serializer;
             if (copier == null)
@@ -122,7 +122,7 @@ namespace umi3d.edk
             get => GetValue()[index];
         }
 
-        public T this[int index,UMI3DUser user]
+        public T this[int index, UMI3DUser user]
         {
             get => GetValue(user)[index];
         }
@@ -143,7 +143,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="index">the index</param>
         /// <param name="value">the new property's value</param>
-        public SetEntityProperty SetValue(int index ,T value)
+        public SetEntityProperty SetValue(int index, T value)
         {
             var oldValue = GetValue()[index];
 
@@ -152,7 +152,7 @@ namespace umi3d.edk
             GetValue()[index] = value;
 
             if (OnInnerValueChanged != null)
-                OnInnerValueChanged.Invoke(index,value);
+                OnInnerValueChanged.Invoke(index, value);
 
             var operation = new SetEntityListProperty()
             {
@@ -160,9 +160,10 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 index = index,
-                value = Serializer(value,null)
+                value = Serializer(value, null)
             };
-            if (UMI3DEnvironment.Exists) {
+            if (UMI3DEnvironment.Exists)
+            {
                 if ((isAsync || isDeSync))
                 {
                     operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
@@ -192,7 +193,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 index = index,
-                value = Serializer(value,user)
+                value = Serializer(value, user)
             };
             operation.users.Add(user);
 
@@ -238,7 +239,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 index = index,
-                value = Serializer(value,null)
+                value = Serializer(value, null)
             };
             if (UMI3DEnvironment.Exists)
             {
@@ -258,7 +259,7 @@ namespace umi3d.edk
         public SetEntityProperty Add(UMI3DUser user, T value)
         {
             var index = GetValue(user).Count;
-            
+
 
             var operation = new SetEntityListAddProperty()
             {
@@ -266,7 +267,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 index = index,
-                value = Serializer(value,user)
+                value = Serializer(value, user)
             };
             operation.users.Add(user);
 
@@ -307,7 +308,7 @@ namespace umi3d.edk
             if (!GetValue(user).Contains(value)) return null;
             int index = GetValue(user).IndexOf(value);
             if (index < 0) return null;
-            return RemoveAt(user,index);
+            return RemoveAt(user, index);
         }
 
         public SetEntityProperty RemoveAt(int index)
@@ -323,7 +324,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 index = index,
-                value = Serializer(value,null)
+                value = Serializer(value, null)
             };
             if (UMI3DEnvironment.Exists)
             {
@@ -351,7 +352,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 index = index,
-                value = Serializer(value,user)
+                value = Serializer(value, user)
             };
             operation.users.Add(user);
 

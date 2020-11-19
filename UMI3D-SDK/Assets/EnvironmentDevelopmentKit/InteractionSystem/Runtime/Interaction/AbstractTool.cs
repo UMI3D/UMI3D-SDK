@@ -87,7 +87,7 @@ namespace umi3d.edk.interaction
         protected virtual void InitDefinition(string id)
         {
             toolId = id;
-            objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i,u) => i.ToDto(u));
+            objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => i.ToDto(u));
             inited = true;
         }
 
@@ -179,7 +179,8 @@ namespace umi3d.edk.interaction
         [Serializable]
         public class ReleaseEvent : UnityEvent<ProjectionContent> { }
 
-        public class ProjectionContent {
+        public class ProjectionContent
+        {
             public UMI3DUser user;
             public string boneType;
             public AbstractTool tool;
@@ -191,7 +192,7 @@ namespace umi3d.edk.interaction
                 this.tool = tool;
             }
         }
-#endregion
+        #endregion
 
 
 

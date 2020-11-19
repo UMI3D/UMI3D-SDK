@@ -16,7 +16,6 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.interaction;
-using umi3d.edk.interaction;
 using UnityEngine;
 
 
@@ -25,7 +24,7 @@ namespace umi3d.edk.interaction
     static public class UMI3DBrowserRequestDispatcher
     {
 
-        static public void DispatchBrowserRequest(UMI3DUser user,UMI3DDto dto)
+        static public void DispatchBrowserRequest(UMI3DUser user, UMI3DDto dto)
         {
             switch (dto)
             {

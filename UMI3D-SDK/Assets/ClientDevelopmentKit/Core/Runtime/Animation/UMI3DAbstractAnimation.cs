@@ -17,7 +17,6 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -48,11 +47,11 @@ namespace umi3d.cdk
                     {
                         if (dto.playing)
                         {
-                            if(dto.startTime == default)
+                            if (dto.startTime == default)
                                 (entity.Object as UMI3DAbstractAnimation).Start();
                             else
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start((float)(DateTime.Now-dto.startTime).TotalMilliseconds);
+                                (entity.Object as UMI3DAbstractAnimation).Start((float)(DateTime.Now - dto.startTime).TotalMilliseconds);
                             }
                         }
                         else (entity.Object as UMI3DAbstractAnimation).Stop();
@@ -76,7 +75,7 @@ namespace umi3d.cdk
         {
             this.dto = dto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
-             if (dto.playing) UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
+            if (dto.playing) UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
         }
 
         /// <summary>

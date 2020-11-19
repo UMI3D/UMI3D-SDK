@@ -84,7 +84,7 @@ namespace umi3d.edk
                         }
                         break;
                     case SetEntityDictionaryProperty sd:
-                        
+
                         foreach (var nop in newOperations.ToList())
                         {
                             if (nop is SetEntityDictionaryProperty)

@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common;
-using UnityEngine;
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.collaboration;
+using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
@@ -73,7 +73,7 @@ namespace umi3d.cdk.collaboration
         void OnAudioChanged(UMI3DUser user)
         {
             var reader = user.audioplayer;
-            if(reader != null)
+            if (reader != null)
             {
                 SpacialReader[user.id] = reader;
             }

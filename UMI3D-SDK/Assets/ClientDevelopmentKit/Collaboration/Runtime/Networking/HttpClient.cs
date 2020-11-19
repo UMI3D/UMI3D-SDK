@@ -57,7 +57,8 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public void SendGetIdentity(Action<UserConnectionDto> callback, Action<string> onError)
         {
-            Action<UnityWebRequest> action = (uwr) => {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
                 var res = uwr.downloadHandler.data;
                 UserConnectionDto user = UMI3DDto.FromBson(res) as UserConnectionDto;
                 callback.Invoke(user);
@@ -128,13 +129,15 @@ namespace umi3d.cdk.collaboration
         /// <param name="url">Url to send the resquest to. For a vanilla server add '/media' at the end of the server url.</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public void SendGetMedia(string url, Action<MediaDto> callback, Action<string> onError) {
-            Action<UnityWebRequest> action = (uwr) => {
+        public void SendGetMedia(string url, Action<MediaDto> callback, Action<string> onError)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
                 var res = uwr.downloadHandler.data;
                 MediaDto media = UMI3DDto.FromBson(res) as MediaDto;
                 callback.Invoke(media);
             };
-            client.StartCoroutine(_GetRequest(url,action,onError));
+            client.StartCoroutine(_GetRequest(url, action, onError));
         }
         #endregion
 
@@ -148,8 +151,9 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public void SendGetLibraries(Action<LibrariesDto> callback, Action<string> onError)
         {
-            Action<UnityWebRequest> action = (uwr) => {
-                var res = UMI3DDto.FromBson(uwr.downloadHandler.data) as LibrariesDto ;
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                var res = UMI3DDto.FromBson(uwr.downloadHandler.data) as LibrariesDto;
                 callback.Invoke(res);
             };
             client.StartCoroutine(_GetRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.libraries, action, onError, true));
@@ -163,7 +167,8 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public void SendGetPublic(string url, Action<byte[]> callback, Action<string> onError)
         {
-            Action<UnityWebRequest> action = (uwr) => {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
                 var res = uwr.downloadHandler.data;
                 callback.Invoke(res);
             };
@@ -195,7 +200,8 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public void SendGetEnvironment(Action<GlTFEnvironmentDto> callback, Action<string> onError)
         {
-            Action<UnityWebRequest> action = (uwr) => {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
                 var res = uwr.downloadHandler.data;
                 GlTFEnvironmentDto user = UMI3DDto.FromBson(res) as GlTFEnvironmentDto;
                 callback.Invoke(user);
@@ -226,7 +232,8 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public void SendPostSceneRequest(Action callback, Action<string> onError)
         {
-            Action<UnityWebRequest> action = (uwr) => {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
                 callback.Invoke();
             };
             client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.scene, null, action, onError, true));
@@ -236,12 +243,13 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Class to be send to try to send a request again.
         /// </summary>
-        public class RequestFailedArgument {
-            
+        public class RequestFailedArgument
+        {
+
             Action tryAgain;
             public DateTime date { get; private set; }
             public UnityWebRequest request { get; private set; }
-            public RequestFailedArgument(UnityWebRequest request,Action tryAgain, int count, DateTime date)
+            public RequestFailedArgument(UnityWebRequest request, Action tryAgain, int count, DateTime date)
             {
                 this.request = request;
                 this.tryAgain = tryAgain;
@@ -275,7 +283,7 @@ namespace umi3d.cdk.collaboration
 
             if (www.isNetworkError || www.isHttpError)
             {
-                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www,() => client.StartCoroutine(_GetRequest(url, callback, onError, UseCredential, tryCount + 1)), tryCount, date)))
+                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_GetRequest(url, callback, onError, UseCredential, tryCount + 1)), tryCount, date)))
                 {
                     if (onError != null)
                     {
@@ -302,14 +310,14 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         IEnumerator _PostRequest(string url, byte[] bytes, Action<UnityWebRequest> callback, Action<string> onError, bool UseCredential = false, int tryCount = 0)
         {
-            UnityWebRequest www = CreatePostRequest(url, bytes , true);
+            UnityWebRequest www = CreatePostRequest(url, bytes, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
             DateTime date = DateTime.UtcNow;
             yield return www.SendWebRequest();
             if (www.isNetworkError || www.isHttpError)
             {
-                if(!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_PostRequest(url, bytes, callback, onError, UseCredential, tryCount + 1)), tryCount, date)))
-                { 
+                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_PostRequest(url, bytes, callback, onError, UseCredential, tryCount + 1)), tryCount, date)))
+                {
                     if (onError != null)
                     {
                         onError.Invoke(www.error + " Failed to post " + www.url);

@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -74,9 +73,9 @@ namespace umi3d.edk.interaction
                     if (settingRequestDto.parameter is BooleanParameterDto parameter)
                     {
                         value = parameter.value;
-                        onChange.Invoke(new ParameterEventContent<bool>(user,settingRequestDto,value));
+                        onChange.Invoke(new ParameterEventContent<bool>(user, settingRequestDto, value));
                         if (parameter.value)
-                            onChangeTrue.Invoke(new InteractionEventContent(user,interactionRequest));
+                            onChangeTrue.Invoke(new InteractionEventContent(user, interactionRequest));
                         else
                             onChangeFalse.Invoke(new InteractionEventContent(user, interactionRequest));
                     }

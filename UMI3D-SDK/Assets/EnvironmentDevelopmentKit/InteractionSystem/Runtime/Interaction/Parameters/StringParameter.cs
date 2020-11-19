@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -65,7 +64,7 @@ namespace umi3d.edk.interaction
                     {
                         var parameter = settingRequestDto.parameter as StringParameterDto;
                         value = parameter.value;
-                        onChange.Invoke(new ParameterEventContent<string>(user,settingRequestDto,value));
+                        onChange.Invoke(new ParameterEventContent<string>(user, settingRequestDto, value));
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");

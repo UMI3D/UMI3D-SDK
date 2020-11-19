@@ -14,11 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
-using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
@@ -32,7 +29,7 @@ namespace umi3d.edk.collaboration
         protected override void WriteProperties(UMI3DEnvironementDto _dto, UMI3DUser user)
         {
             base.WriteProperties(_dto, user);
-            if( _dto is UMI3DCollaborationEnvironmentDto dto)
+            if (_dto is UMI3DCollaborationEnvironmentDto dto)
             {
                 dto.userList = UMI3DCollaborationServer.Collaboration.Todo();
             }

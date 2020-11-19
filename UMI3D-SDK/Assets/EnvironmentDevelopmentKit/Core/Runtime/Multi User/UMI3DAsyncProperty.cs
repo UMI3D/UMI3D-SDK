@@ -68,7 +68,7 @@ namespace umi3d.edk
         /// i.e if some user doesn't listen to change.
         /// </summary>
         public bool isDeSync { get => UserDesync != null && UserDesync.Count > 0; }
-        
+
 
         /// <summary>
         /// the function use to check the Equality between two T objects;
@@ -78,15 +78,14 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T,UMI3DUser, object> Serializer;
+        Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
         /// 
         /// </summary>
         public IEnumerable<UMI3DUser> AsynchronousUser
         {
-            get
-            {
+            get {
                 return asyncValues.Keys;
             }
         }
@@ -104,7 +103,7 @@ namespace umi3d.edk
         /// <param name="source">The object to which this property belongs.</param>
         /// <param name="value">The current default or synchronized value.</param>
         /// <param name="equal">Set the function use to check the equality between to value. If null the default object.Equals function will be use</param>
-        public UMI3DAsyncProperty(string entityId, string propertyId, T value, Func<T,UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
+        public UMI3DAsyncProperty(string entityId, string propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
         {
 
             if (equal == null)
@@ -114,7 +113,7 @@ namespace umi3d.edk
             Equal = equal;
             if (serializer == null)
             {
-                serializer = (T a,UMI3DUser u) => { return a; };
+                serializer = (T a, UMI3DUser u) => { return a; };
             }
             Serializer = serializer;
             this.entityId = entityId;
@@ -198,7 +197,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                value = Serializer(value,user)
+                value = Serializer(value, user)
             };
             operation.users.Add(user);
 
@@ -243,7 +242,7 @@ namespace umi3d.edk
                     users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>()),
                     entityId = entityId,
                     property = propertyId,
-                    value = Serializer(value,null) 
+                    value = Serializer(value, null)
                 };
             }
             asyncValues.Clear();
@@ -273,7 +272,7 @@ namespace umi3d.edk
                         users = new HashSet<UMI3DUser>(),
                         entityId = entityId,
                         property = propertyId,
-                        value = Serializer(value,user)
+                        value = Serializer(value, user)
                     };
                     operation.users.Add(user);
                 }

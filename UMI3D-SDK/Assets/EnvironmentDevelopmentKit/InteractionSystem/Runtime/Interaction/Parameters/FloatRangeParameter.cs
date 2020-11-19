@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -95,7 +94,7 @@ namespace umi3d.edk.interaction
                         else
                         {
                             value = submitedValue;
-                            onChange.Invoke(new ParameterEventContent<float>(user,settingRequestDto,value));
+                            onChange.Invoke(new ParameterEventContent<float>(user, settingRequestDto, value));
                         }
                     }
                     else
