@@ -140,7 +140,6 @@ namespace umi3d.cdk.interaction
         public abstract void CreateToolbox(Toolbox toolbox);
 
         public abstract void CreateTool(Tool tool);
-       
 
         /// <summary>
         /// Request the selection of a Tool.
@@ -162,7 +161,6 @@ namespace umi3d.cdk.interaction
         /// <param name="selected">The tool to be selected</param>
         /// <param name="released">The tool to be released</param>
         public abstract bool SwitchTools(string selected, string released, string hoveredObjectId, InteractionMappingReason reason = null);
-
 
     }
 }

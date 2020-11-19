@@ -77,7 +77,7 @@ namespace umi3d.cdk.interaction
 
         public void onReleased(string boneType) { 
             onRelease.Invoke();
-            var releasedDto = new ToolProjectedDto
+            var releasedDto = new ToolReleasedDto
             {
                 boneType = boneType,
                 toolId = id
