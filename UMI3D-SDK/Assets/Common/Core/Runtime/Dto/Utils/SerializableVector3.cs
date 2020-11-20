@@ -40,6 +40,7 @@ namespace umi3d.common
             Z = z;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Vector3)this).ToString();

@@ -24,7 +24,7 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class SubModelNodeEditor : RenderedNodeEditor
     {
-
+        ///<inheritdoc/>
         protected override void InspectorForMeshCollider()
         {
             EditorGUILayout.PropertyField(isMeshCustom);

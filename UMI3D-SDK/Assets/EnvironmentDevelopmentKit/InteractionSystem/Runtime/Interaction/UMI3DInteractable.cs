@@ -32,6 +32,7 @@ namespace umi3d.edk.interaction
         [SerializeField]
         protected UMI3DNode Node;
 
+        ///<inheritdoc/>
         public override LoadEntity Register()
         {
             base.Register();
@@ -137,7 +138,7 @@ namespace umi3d.edk.interaction
             Idto.nodeId = objectNodeId.GetValue(user).Id();
         }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);

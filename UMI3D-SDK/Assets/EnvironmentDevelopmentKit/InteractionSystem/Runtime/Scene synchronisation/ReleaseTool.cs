@@ -22,11 +22,12 @@ namespace umi3d.edk.interaction
 
     public class ReleaseTool : Operation
     {
-        public AbstractTool Tool;
+        public AbstractTool tool;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            return new ReleaseToolDto() { toolId = Tool.Id() };
+            return new ReleaseToolDto() { toolId = tool.Id() };
         }
     }
 }

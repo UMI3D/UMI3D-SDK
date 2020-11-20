@@ -35,7 +35,7 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>() { ".mtl" };
         }
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
+        ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();

@@ -37,11 +37,13 @@ namespace umi3d.cdk
 
         }
 
+        ///<inheritdoc/>
         public override float GetProgress()
         {
             return progress;
         }
 
+        ///<inheritdoc/>
         public override void Start()
         {
             if (started) return;
@@ -56,6 +58,7 @@ namespace umi3d.cdk
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
+        ///<inheritdoc/>
         public override void Stop()
         {
             if (!started) return;
@@ -66,6 +69,7 @@ namespace umi3d.cdk
                 UMI3DAnimationManager.Instance.StopCoroutine(c);
         }
 
+        ///<inheritdoc/>
         public override void OnEnd()
         {
             PlayingCoroutines = null;
@@ -95,6 +99,7 @@ namespace umi3d.cdk
             action.Invoke();
         }
 
+        ///<inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -132,6 +137,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        ///<inheritdoc/>
         public override void Start(float atTime)
         {
             if (started) return;

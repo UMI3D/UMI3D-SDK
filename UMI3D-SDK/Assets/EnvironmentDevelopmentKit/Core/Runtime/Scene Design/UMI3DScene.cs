@@ -159,7 +159,7 @@ namespace umi3d.edk
 
         }
 
-
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);

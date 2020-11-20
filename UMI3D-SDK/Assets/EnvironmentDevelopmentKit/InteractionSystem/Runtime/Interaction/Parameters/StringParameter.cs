@@ -55,6 +55,7 @@ namespace umi3d.edk.interaction
             (dto as StringParameterDto).value = value;
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)

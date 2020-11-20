@@ -32,6 +32,7 @@ namespace umi3d.edk.editor
 
         bool foldout;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -45,6 +46,7 @@ namespace umi3d.edk.editor
             if (_materialEditor != null) { DestroyImmediate(_materialEditor); }
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -58,6 +60,7 @@ namespace umi3d.edk.editor
             serializedObject.ApplyModifiedProperties();
         }
 
+        ///<inheritdoc/>
         protected override void InspectorForMeshCollider()
         {
             EditorGUILayout.PropertyField(isMeshCustom);

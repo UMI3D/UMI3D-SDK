@@ -28,6 +28,7 @@ namespace umi3d.edk
         public bool ignoreModelMaterialOverride = false;
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -48,6 +49,7 @@ namespace umi3d.edk
             return GetLoadEntity();
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);

@@ -78,6 +78,7 @@ namespace umi3d.edk.collaboration
             return token;
         }
 
+        ///<inheritdoc/>
         public override void SetStatus(StatusType status)
         {
             base.SetStatus(status);

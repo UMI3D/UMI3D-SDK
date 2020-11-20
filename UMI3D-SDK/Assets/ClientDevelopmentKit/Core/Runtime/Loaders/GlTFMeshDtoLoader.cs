@@ -58,7 +58,7 @@ namespace umi3d.cdk
         }
 
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
+        ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();
@@ -120,7 +120,7 @@ namespace umi3d.cdk
             }
         }
 
-
+        ///<inheritdoc/>
         public override Vector3 GetRotationOffset()
         {
             return new Vector3(0, 180, 0);

@@ -42,6 +42,7 @@ namespace umi3d.cdk.editor
             treeView = new SimpleTreeView(m_TreeViewState);
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             menuAsset = target as MenuAsset;

@@ -68,6 +68,7 @@ namespace umi3d.edk.editor
             activeCollider = serializedObject.FindProperty("hasCollider");
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
 

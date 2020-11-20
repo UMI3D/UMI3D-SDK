@@ -360,31 +360,31 @@ namespace umi3d.edk.collaboration
                 connection.AddDataChannel(new WebRTCDataChannel(channel), false);
         }
 
-        /// <inheritdoc cref="AbstractWebRtcClient.OnRtcDataChannelOpen(DataChannel)"/>
+        ///<inheritdoc/>
         protected override void OnRtcDataChannelOpen(DataChannel channel)
         {
             //Debug.Log($"TODO: Data Channel Opened! {channel.Label}");
         }
 
-        /// <inheritdoc cref="AbstractWebRtcClient.OnRtcDataChannelClose(DataChannel)"/>
+        ///<inheritdoc/>
         protected override void OnRtcDataChannelClose(DataChannel channel)
         {
             //Debug.Log($"TODO: Data Channel Closed! {channel.Label}");
         }
 
-        /// <inheritdoc cref="AbstractWebRtcClient.GetLogPrefix()"/>
+        ///<inheritdoc/>
         protected override string GetLogPrefix()
         {
             return $"WebRTC Server";
         }
 
-        /// <inheritdoc cref="AbstractWebRtcClient.GetUID"/>
+        ///<inheritdoc/>
         protected override string GetUID()
         {
             return UMI3DGlobalID.ServerId;
         }
 
-        /// <inheritdoc cref="AbstractWebRtcClient.WebSocketSend(RTCDto, string)"/>
+        ///<inheritdoc/>
         protected override void WebSocketSend(RTCDto dto, string targetId)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUser(targetId);
@@ -407,6 +407,7 @@ namespace umi3d.edk.collaboration
             return connection;
         }
 
+        ///<inheritdoc/>
         protected override void OnConnectionDisconnected(string id)
         {
             var user = UMI3DCollaborationServer.Collaboration.GetUser(id);

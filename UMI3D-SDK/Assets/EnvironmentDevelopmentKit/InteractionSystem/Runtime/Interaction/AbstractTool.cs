@@ -34,7 +34,9 @@ namespace umi3d.edk.interaction
         };
 
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
-        public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions;
+        public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
+        UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
+
 
         /// <summary>
         /// The tool's unique id. 
@@ -110,12 +112,14 @@ namespace umi3d.edk.interaction
 
         /// <summary>
         /// Return Project Tool
-        /// </summary>
+        /// </summary>        
+        /// <param name="releasable">Can the client choose to release the tool.
+        /// if false, the only way of releasing it is through a ReleaseToolDto.</param>
         /// <param name="users">List of users to which this operation should be send.</param>
         /// <returns></returns>
-        public ProjectTool GetProjectTool(HashSet<UMI3DUser> users = null)
+        public ProjectTool GetProjectTool(bool releasable = true, HashSet<UMI3DUser> users = null)
         {
-            return new ProjectTool() { Tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+            return new ProjectTool() { tool = this, releasable = releasable, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
         }
 
         /// <summary>
@@ -125,17 +129,20 @@ namespace umi3d.edk.interaction
         /// <returns></returns>
         public ReleaseTool GetReleaseTool(HashSet<UMI3DUser> users = null)
         {
-            return new ReleaseTool() { Tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+            return new ReleaseTool() { tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
         }
 
         /// <summary>
         /// Return Switch Tool
         /// </summary>
+        /// <param name="toolToReplace">Tool that should be replaced.</param>
+        /// <param name="releasable">Can the client choose to release the tool.
+        /// if false, the only way of releasing it is through a ReleaseToolDto.</param>
         /// <param name="users">List of users to which this operation should be send.</param>
         /// <returns></returns>
-        public SwitchTool GetSwitchTool(AbstractTool ToolToReplace, HashSet<UMI3DUser> users = null)
+        public SwitchTool GetSwitchTool(AbstractTool toolToReplace, bool releasable = true, HashSet<UMI3DUser> users = null)
         {
-            return new SwitchTool() { Tool = this, ToolToReplace = ToolToReplace, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+            return new SwitchTool() { tool = this, toolToReplace = toolToReplace, releasable = releasable, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
         }
 
 

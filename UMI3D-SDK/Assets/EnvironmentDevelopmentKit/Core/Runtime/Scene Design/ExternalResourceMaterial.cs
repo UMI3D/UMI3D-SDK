@@ -31,6 +31,7 @@ namespace umi3d.edk
 
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
+        ///<inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
             var res = new GlTFMaterialDto();
@@ -44,12 +45,15 @@ namespace umi3d.edk
             return res;
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
         private bool registered = false;
+
+        ///<inheritdoc/>
         protected override string GetId()
         {
             if (!registered)
@@ -63,7 +67,7 @@ namespace umi3d.edk
             return matId;
         }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             Debug.Log("id external mat " + id);
@@ -77,12 +81,14 @@ namespace umi3d.edk
             objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
         }
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             matId = null;
             registered = false;
         }
 
+        ///<inheritdoc/>
         protected override void SetId(string id)
         {
             registered = true;

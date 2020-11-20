@@ -71,6 +71,7 @@ namespace umi3d.edk
             OrderInLayer = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.OrderInLayer, _orderInLayer);
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

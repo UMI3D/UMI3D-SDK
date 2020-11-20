@@ -25,6 +25,7 @@ namespace umi3d.common.editor
     [CustomPropertyDrawer(typeof(ConstStringEnumAttribute))]
     public class ConstStringEnumDrawer : PropertyDrawer
     {
+        ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             ConstStringEnumAttribute cseAttribute = attribute as ConstStringEnumAttribute;

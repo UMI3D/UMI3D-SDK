@@ -45,7 +45,7 @@ namespace umi3d.cdk.editor
             //constDisplayer = new ConstStringDisplayer(viewpointBonetype.name, typeof(BoneType), viewpointBonetype.stringValue);
         }
 
-        // Update is called once per frame
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(anchor);

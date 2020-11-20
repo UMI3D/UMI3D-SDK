@@ -89,12 +89,13 @@ namespace umi3d.cdk
 
         }
 
-
+        ///<inheritdoc/>
         public override float GetProgress()
         {
             return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time / audioSource.clip.length : -1;
         }
 
+        ///<inheritdoc/>
         public override void Start()
         {
             audioSource?.Stop();
@@ -109,13 +110,14 @@ namespace umi3d.cdk
             OnEnd();
         }
 
-
+        ///<inheritdoc/>
         public override void Stop()
         {
             audioSource?.Stop();
             if (OnEndCoroutine != null) UMI3DAnimationManager.Instance.StopCoroutine(OnEndCoroutine);
         }
 
+        ///<inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -189,6 +191,7 @@ namespace umi3d.cdk
 
         }
 
+        ///<inheritdoc/>
         public override void Start(float atTime)
         {
             audioSource?.Stop();

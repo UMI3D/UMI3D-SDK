@@ -467,6 +467,7 @@ namespace umi3d.edk
             nodeDto.colliderDto = GetColliderDto();
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);

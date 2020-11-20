@@ -39,10 +39,11 @@ namespace umi3d.cdk.interaction
 
 
         /// <summary>
-        /// Interactable dto describing this object.
+        /// ToolFix t dto describing this object.
         /// </summary>
         public ToolDto dto;
 
+        ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolDto; }
 
         public Tool(ToolDto dto, Toolbox toolbox) : base(dto)

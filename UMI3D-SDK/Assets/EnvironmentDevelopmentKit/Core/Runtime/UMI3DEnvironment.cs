@@ -26,7 +26,7 @@ namespace umi3d.edk
     public class UMI3DEnvironment : Singleton<UMI3DEnvironment>
     {
         #region initialization
-
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();

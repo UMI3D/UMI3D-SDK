@@ -22,11 +22,13 @@ namespace umi3d.edk.interaction
 
     public class ProjectTool : Operation
     {
-        public AbstractTool Tool;
+        public AbstractTool tool;
+        public bool releasable = true;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            return new ProjectToolDto() { toolId = Tool.Id() };
+            return new ProjectToolDto() { toolId = tool.Id(), releasable = releasable };
         }
     }
 }

@@ -11,6 +11,7 @@ namespace umi3d.cdk
     public class AbstractRenderedNodeLoader : UMI3DNodeLoader
     {
 
+        ///<inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;

@@ -24,6 +24,7 @@ namespace umi3d.edk.collaboration
     {
         public static new UMI3DCollabTrackingManager Instance { get { return UMI3DEmbodimentManager.Instance as UMI3DCollabTrackingManager; } set { UMI3DEmbodimentManager.Instance = value; } }
 
+        ///<inheritdoc/>
         protected override void Start()
         {
             base.Start();

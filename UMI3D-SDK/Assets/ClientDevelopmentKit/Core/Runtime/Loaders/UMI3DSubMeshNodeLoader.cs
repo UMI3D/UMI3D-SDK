@@ -8,7 +8,7 @@ namespace umi3d.cdk
     public class UMI3DSubMeshNodeLoader : AbstractRenderedNodeLoader
     {
 
-
+        ///<inheritdoc/>
         public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
         {
 

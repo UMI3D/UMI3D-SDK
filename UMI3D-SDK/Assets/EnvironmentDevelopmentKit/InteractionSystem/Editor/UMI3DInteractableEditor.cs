@@ -31,6 +31,7 @@ namespace umi3d.edk.editor
         SerializedProperty onHoverExit;
         SerializedProperty onHovered;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -44,6 +45,7 @@ namespace umi3d.edk.editor
 
         static bool displayEvent = false;
 
+        ///<inheritdoc/>
         protected override void _OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(Node);

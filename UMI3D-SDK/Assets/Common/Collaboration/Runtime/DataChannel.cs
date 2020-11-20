@@ -91,6 +91,7 @@ namespace umi3d.common.collaboration
     {
 #if UNITY_WEBRTC
         public RTCDataChannel dataChannel;
+        ///<inheritdoc/>
         protected override void CheckState()
         {
             if (dataChannel != null)
@@ -122,7 +123,9 @@ namespace umi3d.common.collaboration
         }
 
 #if UNITY_WEBRTC
+        ///<inheritdoc/>
         public override void Send(byte[] msg) { dataChannel.Send(msg); }
+        ///<inheritdoc/>
         public override void Close() { Debug.Log("close"); dataChannel.Close(); }
 #endif
     }

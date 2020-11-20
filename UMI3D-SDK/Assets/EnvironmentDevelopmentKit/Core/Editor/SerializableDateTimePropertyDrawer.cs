@@ -13,6 +13,7 @@ namespace umi3d.edk.editor
         const int nowButtonSize = 40;
         const int twoDigitField = 20;
 
+        ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Using BeginProperty / EndProperty on the parent property means that
