@@ -78,6 +78,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)

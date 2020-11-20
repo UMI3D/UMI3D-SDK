@@ -57,13 +57,13 @@ namespace umi3d.edk.collaboration
             return Interlocked.Increment(ref _number);
         }
 
-        //on user quit
+        ///<inheritdoc/>
         protected override void OnClose(CloseEventArgs e)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnClose(e));
         }
 
-        //on user send message
+        ///<inheritdoc/>
         protected override void OnMessage(MessageEventArgs e)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnMessage(e));
@@ -86,7 +86,7 @@ namespace umi3d.edk.collaboration
             yield break;
         }
 
-        //on user connect
+        ///<inheritdoc/>
         protected override void OnOpen()
         {
             Debug.Log("open");
@@ -128,6 +128,7 @@ namespace umi3d.edk.collaboration
             ws = fakeRTC;
         }
 
+        ///<inheritdoc/>
         public override void Send(byte[] msg)
         {
             ws.SendData(msg);

@@ -43,6 +43,7 @@ namespace umi3d.common
             A = a;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Color)this).ToString();

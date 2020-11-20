@@ -46,11 +46,13 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return _objectDuration; } protected set => _objectDuration = value; }
         public UMI3DAsyncListProperty<AnimationChain> ObjectAnimationChain { get { Register(); return _objectAnimationChain; } protected set => _objectAnimationChain = value; }
 
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAnimationDto();
         }
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -62,6 +64,7 @@ namespace umi3d.edk
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

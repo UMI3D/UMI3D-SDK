@@ -23,6 +23,8 @@ namespace umi3d.edk.interaction
     public class SwitchTool : ProjectTool
     {
         public AbstractTool toolToReplace;
+
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new SwitchToolDto() { toolId = tool.Id(), replacedToolId = toolToReplace.Id(), releasable = releasable };

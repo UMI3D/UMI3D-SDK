@@ -21,6 +21,7 @@ namespace umi3d.cdk
 {
     public class UMI3DExternalMaterialLoader : AbstractUMI3DMaterialLoader
     {
+        ///<inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
         {
             if (gltfMatDto.extensions.umi3d is ExternalMaterialDto)
@@ -28,6 +29,7 @@ namespace umi3d.cdk
             return false;
         }
 
+        ///<inheritdoc/>
         public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
         {
             ExternalMaterialDto externalMat = dto.extensions.umi3d as ExternalMaterialDto;

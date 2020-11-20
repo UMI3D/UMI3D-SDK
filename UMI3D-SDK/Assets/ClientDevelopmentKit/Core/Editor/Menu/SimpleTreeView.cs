@@ -29,6 +29,7 @@ namespace umi3d.cdk.editor
             Reload();
         }
 
+        ///<inheritdoc/>
         protected override TreeViewItem BuildRoot()
         {
             var root = new TreeViewItem { id = 0, depth = -1, displayName = "Root" };

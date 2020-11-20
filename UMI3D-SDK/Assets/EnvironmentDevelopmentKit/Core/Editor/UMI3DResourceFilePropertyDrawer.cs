@@ -50,6 +50,7 @@ namespace umi3d.edk.editor
         public float LineHeight;
         public float TitleLineHeight;
 
+        ///<inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             isLocalFile = property.FindPropertyRelative("isLocalFile");
@@ -63,6 +64,7 @@ namespace umi3d.edk.editor
             return height;
         }
 
+        ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginChangeCheck();

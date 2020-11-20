@@ -451,17 +451,20 @@ namespace umi3d.cdk.collaboration
                 (error) => { Debug.Log("error on get Environement :" + error); });
         }
 
+        ///<inheritdoc/>
         protected override void OnDestroy()
         {
             WebRTCClient?.Clear();
             base.OnDestroy();
         }
 
+        ///<inheritdoc/>
         protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError)
         {
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
+        ///<inheritdoc/>
         public override string GetId() { return Identity.userId; }
     }
 }

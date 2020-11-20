@@ -146,6 +146,7 @@ namespace umi3d.cdk
         public GlTFNodeLoader nodeLoader { get; private set; }
 
 
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();

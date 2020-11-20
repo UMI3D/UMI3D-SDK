@@ -29,11 +29,13 @@ namespace umi3d.edk.interaction
         /// </summary>
         public InteractionEvent onLinkUsed = new InteractionEvent();
 
+        ///<inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new LinkDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
@@ -43,6 +45,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)

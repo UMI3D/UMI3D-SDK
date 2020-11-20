@@ -80,10 +80,12 @@ namespace umi3d.edk.collaboration
             return Instance.Authentication;
         }
 
+        ///<inheritdoc/>
         protected override string _GetWebsocketUrl()
         {
             return "http://" + ip + ":" + websocketPort;
         }
+        ///<inheritdoc/>
         protected override string _GetHttpUrl()
         {
             return "http://" + ip + ":" + httpPort;
@@ -318,6 +320,7 @@ namespace umi3d.edk.collaboration
         public float WaitTimeForPingAnswer = 1f;
         public int MaxPingingTry = 3;
 
+        ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
@@ -348,7 +351,7 @@ namespace umi3d.edk.collaboration
             user.connection.SendData(sr);
         }
 
-
+        ///<inheritdoc/>
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
@@ -413,6 +416,7 @@ namespace umi3d.edk.collaboration
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
+        ///<inheritdoc/>
         public override void NotifyUserChanged(UMI3DUser user)
         {
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);

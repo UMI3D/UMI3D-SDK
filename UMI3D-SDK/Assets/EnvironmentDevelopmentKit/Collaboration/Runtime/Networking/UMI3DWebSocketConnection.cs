@@ -55,14 +55,14 @@ namespace umi3d.edk.collaboration
             return Interlocked.Increment(ref _number);
         }
 
-        //on user quit
+        ///<inheritdoc/>
         protected override void OnClose(CloseEventArgs e)
         {
             Debug.Log($"onClose {_id}");
             UnityMainThreadDispatcher.Instance().Enqueue(UMI3DCollaborationServer.Collaboration.ConnectionClose(_id));
         }
 
-        //on user send message
+        ///<inheritdoc/>
         protected override void OnMessage(MessageEventArgs e)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnMessage(e));
@@ -102,7 +102,7 @@ namespace umi3d.edk.collaboration
         }
 
 
-        //on user connect
+        ///<inheritdoc/>
         protected override void OnOpen()
         {
             Debug.Log("open");

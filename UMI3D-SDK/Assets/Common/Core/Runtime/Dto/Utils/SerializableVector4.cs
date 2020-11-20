@@ -43,6 +43,7 @@ namespace umi3d.common
             W = w;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Vector4)this).ToString();

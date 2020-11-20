@@ -62,6 +62,7 @@ namespace umi3d.edk
             _dateTime = dateTime.ToString();
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return dateTime.ToString();

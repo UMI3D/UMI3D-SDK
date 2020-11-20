@@ -29,6 +29,7 @@ namespace umi3d.cdk.collaboration
 
         public List<UMI3DUser> UserList;
 
+        ///<inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
         {
             base.ReadUMI3DExtension(_dto, node);
@@ -37,6 +38,7 @@ namespace umi3d.cdk.collaboration
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
         }
 
+        ///<inheritdoc/>
         protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base._SetUMI3DPorperty(entity, property)) return true;

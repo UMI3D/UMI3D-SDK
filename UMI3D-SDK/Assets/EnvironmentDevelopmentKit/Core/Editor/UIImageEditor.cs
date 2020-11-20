@@ -27,12 +27,14 @@ namespace umi3d.edk.editor
 
         SerializedProperty variants;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
             variants = serializedObject.FindProperty("sprite.variants");
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -42,8 +44,6 @@ namespace umi3d.edk.editor
             serializedObject.ApplyModifiedProperties();
 
         }
-
-
     }
 }
 #endif

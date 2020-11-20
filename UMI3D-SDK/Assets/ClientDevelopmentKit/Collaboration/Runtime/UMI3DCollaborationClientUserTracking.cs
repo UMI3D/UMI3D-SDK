@@ -23,6 +23,7 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
+        ///<inheritdoc/>
         protected override void DispatchTracking()
         {
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
@@ -31,6 +32,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
             while (UMI3DClientServer.Instance.GetId() == null || !UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))

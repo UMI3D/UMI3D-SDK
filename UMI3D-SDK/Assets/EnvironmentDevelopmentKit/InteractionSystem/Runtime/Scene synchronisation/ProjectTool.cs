@@ -25,6 +25,7 @@ namespace umi3d.edk.interaction
         public AbstractTool tool;
         public bool releasable = true;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new ProjectToolDto() { toolId = tool.Id(), releasable = releasable };

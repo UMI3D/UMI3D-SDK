@@ -271,6 +271,8 @@ namespace umi3d.cdk
 
         #endregion
         #region setup
+
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();

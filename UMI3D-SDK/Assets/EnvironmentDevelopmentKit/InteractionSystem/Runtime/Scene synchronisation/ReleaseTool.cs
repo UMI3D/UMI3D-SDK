@@ -24,6 +24,7 @@ namespace umi3d.edk.interaction
     {
         public AbstractTool tool;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new ReleaseToolDto() { toolId = tool.Id() };

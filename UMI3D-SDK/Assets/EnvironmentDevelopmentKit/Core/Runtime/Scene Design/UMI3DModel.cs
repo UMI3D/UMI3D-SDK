@@ -39,6 +39,7 @@ namespace umi3d.edk
 
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -137,6 +138,7 @@ namespace umi3d.edk
 
         }
 
+        ///<inheritdoc/>
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
 
