@@ -299,11 +299,11 @@ namespace umi3d.cdk
             switch (operation)
             {
                 case SwitchToolDto switchTool:
-                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, null, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, switchTool.releasable, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ProjectToolDto projection:
-                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, null, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, projection.releasable, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ReleaseToolDto release:
