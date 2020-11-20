@@ -15,6 +15,10 @@ limitations under the License.
 */
 
 
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Text;
 using umi3d.common;
 using UnityEngine;
 
