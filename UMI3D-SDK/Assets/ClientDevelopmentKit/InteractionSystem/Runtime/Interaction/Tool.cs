@@ -39,7 +39,7 @@ namespace umi3d.cdk.interaction
 
 
         /// <summary>
-        /// Interactable dto describing this object.
+        /// ToolFix t dto describing this object.
         /// </summary>
         public ToolDto dto;
 
