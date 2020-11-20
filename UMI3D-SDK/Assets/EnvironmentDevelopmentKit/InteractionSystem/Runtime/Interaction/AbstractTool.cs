@@ -34,7 +34,9 @@ namespace umi3d.edk.interaction
         };
 
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
-        public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions;
+        public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
+        UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
+
 
         /// <summary>
         /// The tool's unique id. 

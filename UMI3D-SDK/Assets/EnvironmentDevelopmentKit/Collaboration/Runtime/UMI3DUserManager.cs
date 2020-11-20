@@ -34,19 +34,19 @@ namespace umi3d.edk.collaboration
         Dictionary<string, UMI3DCollaborationUser> users = new Dictionary<string, UMI3DCollaborationUser>();
         Dictionary<string, string> loginMap = new Dictionary<string, string>();
 
-        UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList;
+        UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
 
-        public UMI3DAsyncListProperty<UMI3DCollaborationUser> ObjectUserList
+        public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
             get {
-                if (objectUserList == null) objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => u.ToUserDto());
-                return objectUserList;
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => u.ToUserDto());
+                return _objectUserList;
             }
         }
 
         public List<UserDto> Todo()
         {
-            return ObjectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
+            return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
         }
 
 
@@ -141,19 +141,19 @@ namespace umi3d.edk.collaboration
         IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { ObjectUserList.Add(user) } });
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Add(user) } });
         }
 
         IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { ObjectUserList.Remove(user) } });
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Remove(user) } });
         }
 
         IEnumerator UpdateUser(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            int index = ObjectUserList.GetValue().IndexOf(user);
+            int index = objectUserList.GetValue().IndexOf(user);
             var operation = new SetEntityListProperty()
             {
                 users = new HashSet<UMI3DUser>() { },
