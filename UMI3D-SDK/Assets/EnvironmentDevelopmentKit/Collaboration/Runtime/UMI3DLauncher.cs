@@ -13,8 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.IO;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -169,7 +172,23 @@ namespace umi3d.edk.collaboration
         /// method called when param <see cref="iceParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetIceServer(string arg) { }
+        protected virtual void SetIceServer(string arg) {
+            try
+            {
+                string file = File.ReadAllText(arg);
+                var serv = JsonConvert.DeserializeObject<IceServer[]>(file, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.None
+                });
+                var ice = ScriptableObject.CreateInstance<IceServers>();
+                ice.iceServers = serv;
+                UMI3DCollaborationServer.Instance.iceServers = ice;
+            }
+            catch (Exception e)
+            {
+                Debug.Log("Error on reading Ice Server file "+e);
+            }
+        }
 
         /// <summary>
         /// method called if a parameter wasn't catch.
