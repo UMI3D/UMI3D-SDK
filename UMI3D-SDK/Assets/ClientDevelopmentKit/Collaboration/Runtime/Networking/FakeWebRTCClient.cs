@@ -243,14 +243,14 @@ namespace umi3d.cdk.collaboration
 
         public void Send(UMI3DDto dto, bool reliable, string peerId = null)
         {
-            List<string> target = peerId == null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
+            List<string> target = peerId != null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).Where(id => UMI3DCollaborationClientServer.Identity.userId != id).ToList();
             target.Add(UMI3DGlobalID.ServerId);
             Send(dto, target, DataType.Data, reliable);
         }
 
         public void Send(UMI3DDto dto, bool reliable, DataType dataType, string peerId = null)
         {
-            List<string> target = peerId == null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
+            List<string> target = peerId != null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).Where(id => UMI3DCollaborationClientServer.Identity.userId != id).ToList();
             target.Add(UMI3DGlobalID.ServerId);
             Send(dto, target, dataType, reliable);
         }
@@ -273,7 +273,7 @@ namespace umi3d.cdk.collaboration
         {
             List<string> target = new List<string>() { UMI3DGlobalID.ServerId };
 
-            Send(dto, target, DataType.Audio, false);
+            Send(dto, target, DataType.Data, false);
         }
 
         void Send(UMI3DDto content, List<string> target, DataType dataType, bool reliable, bool useWebrtc = true)

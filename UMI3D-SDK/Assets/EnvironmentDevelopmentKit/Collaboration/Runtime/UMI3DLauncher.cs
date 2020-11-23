@@ -268,9 +268,8 @@ namespace umi3d.edk.collaboration
                 }
                 else
                     OtherParam(ref i, args);
-
-                StartCoroutine(_launchServer());
             }
+            StartCoroutine(_launchServer());
         }
     }
 }
