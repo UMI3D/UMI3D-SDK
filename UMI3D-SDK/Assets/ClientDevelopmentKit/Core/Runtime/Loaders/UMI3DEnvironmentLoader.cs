@@ -145,6 +145,11 @@ namespace umi3d.cdk
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
 
+        [SerializeField]
+        private Material baseMaterial;
+
+        public Material GetBaseMaterial() { return new Material(baseMaterial); }
+        public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material (newBaseMat); }
 
         protected override void Awake()
         {

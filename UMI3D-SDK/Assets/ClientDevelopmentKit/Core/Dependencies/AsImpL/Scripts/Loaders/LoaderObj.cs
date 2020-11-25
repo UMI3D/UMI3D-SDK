@@ -78,6 +78,12 @@ namespace AsImpL
                     {
                         mtlTexPathList.Add(mtl.opacityTexPath);
                     }
+                    
+                    if (!string.IsNullOrEmpty(mtl.emissiveTexPath))
+                    {
+                        mtlTexPathList.Add(mtl.emissiveTexPath);
+                    }
+                    
                 }
             }
 
@@ -510,6 +516,15 @@ namespace AsImpL
                                 Debug.Log("Map not supported:" + line);
                             }
                             break;
+                        case "map_ke":
+                        case "map_Ke":
+                        case "map_KE":
+                            if (!string.IsNullOrEmpty(parameters))
+                            {
+                                current.emissiveTexPath = parameters;
+                            }
+                            break;
+
                         default:
                             //Debug.Log("this line was not processed :" + line);
                             break;

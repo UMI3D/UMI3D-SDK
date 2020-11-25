@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using MrtkShader;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -57,8 +58,50 @@ namespace umi3d.cdk
             }
         }
 
+        public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)
+        {
+            LoadTextureInMaterial(textureDto, materialKey, mat);
+        }
 
-        public static void LoadTextureInMaterial(TextureDto textureDto, string materialKey, Material mat)
+        public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture> materialKey, Material mat)
+        {
+            if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(textureDto.variants);  // Peut etre ameliore
+
+            string url = fileToLoad.url;
+            string ext = fileToLoad.extension;
+            string authorization = fileToLoad.authorization;
+            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            if (loader != null)
+                UMI3DResourcesManager.LoadFile(
+                    fileToLoad.url,
+                    fileToLoad,
+                    loader.UrlToObject,
+                    loader.ObjectFromCache,
+                    (o) =>
+                    {
+                        var tex = (Texture2D)o;
+                        if (tex != null)
+                        {
+
+                            try
+                            {
+                                mat.ApplyShaderProperty(materialKey, tex);
+                            }
+                            catch
+                            {
+                                Debug.LogError("invalid texture key : " + materialKey);
+                            }
+                        }
+                        else
+                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                    },
+                    Debug.LogWarning,
+                    loader.DeleteObject
+                    );
+        }
+
+        protected static void LoadTextureInMaterial(TextureDto textureDto, string materialKey, Material mat)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
 

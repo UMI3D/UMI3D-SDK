@@ -37,10 +37,11 @@ namespace umi3d.cdk
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
             if (ext != null)
             {
-            /*    Debug.Log("1");
-                Debug.Log("find shader " + (Shader.Find("glTF/PbrMetallicRoughness") != null));
-                Debug.Log("2");*/
-                Material newMat = new Material(Shader.Find("glTF/PbrMetallicRoughness"));
+                /*    Debug.Log("1");
+                    Debug.Log("find shader " + (Shader.Find("glTF/PbrMetallicRoughness") != null));
+                    Debug.Log("2");*/
+                Material newMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();//
+               // Material newMat = new Material(Shader.Find("glTF/PbrMetallicRoughness"));
                 /*unity standard shader
                            newMat.color = (Vector4)( dto.pbrMetallicRoughness.baseColorFactor);
                            LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
@@ -49,15 +50,17 @@ namespace umi3d.cdk
                            LoadTextureInMaterial(ext.heightTexture, "_ParallaxMap", newMat);
 
                            */
-                newMat.EnableKeyword(StandardShaderHelper.KW_EMISSION);
-                newMat.EnableKeyword(StandardShaderHelper.KW_METALLIC_ROUGNESS_MAP);
-                StandardShaderHelper.SetAlphaModeBlend(newMat);
+       //         newMat.EnableKeyword(StandardShaderHelper.KW_EMISSION);
+        //        newMat.EnableKeyword(StandardShaderHelper.KW_METALLIC_ROUGNESS_MAP);
+        //        StandardShaderHelper.SetAlphaModeBlend(newMat);
 
                 //gltf shader
                 newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
                 newMat.SetColor("_EmissionColor", (Vector4)(Vector3)dto.emissiveFactor);
                 newMat.SetFloat("_Metallic", dto.pbrMetallicRoughness.metallicFactor);
                 newMat.SetFloat("_Roughness", dto.pbrMetallicRoughness.roughnessFactor);
+           //     ... TODO
+                //add callback in LoadTextureInMaterial to apply shaderproperty 
                 LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
                 LoadTextureInMaterial(ext.normalTexture, "_BumpMap", newMat);
                 LoadTextureInMaterial(ext.emissiveTexture, "_EmissionMap", newMat);
