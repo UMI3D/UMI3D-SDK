@@ -127,6 +127,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectMetallicTexture;
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectRoughnessTexture;
         private UMI3DAsyncProperty<UMI3DScalableTextureResource> _objectHeightTexture;
+        //TODO Add channel map 
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingScale;
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingOffset;
         private UMI3DAsyncProperty<float> _objectNormalTextureScale;

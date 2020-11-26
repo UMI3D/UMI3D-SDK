@@ -23,6 +23,9 @@ namespace MrtkShader
                 this.defaultValue = defaultValue;
                 this.action = action;
             }
+
+  
+
         }
 
         public static void ApplyShaderProperty<T>(this Material mat, ShaderProperty<T> shaderProperty, T value /*, Material mat*/)
@@ -66,10 +69,16 @@ namespace MrtkShader
         public static ShaderProperty<Color> MainColor = new ShaderProperty<Color>("_Color", Color.white);
         public static ShaderProperty<Color> EmissiveColor = new ShaderProperty<Color>("_EmissiveColor", Color.black, "_EMISSION");
         public static ShaderProperty<Color> ClippingBorderColor = new ShaderProperty<Color>("_ClippingBorderColor", Color.white);
-        public static ShaderProperty<Texture> BumpMap = new ShaderProperty<Texture>("_BumpMap", null);
-        public static ShaderProperty<Texture2D> ChannelMap = new ShaderProperty<Texture2D>("_ChannelMap", null, "_CHANNEL_MAP");
+        public static ShaderProperty<Texture2D> BumpMap = new ShaderProperty<Texture2D>("_BumpMap", null);
+        public static ShaderProperty<Texture2D> ChannelMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
+            (m, s, v) =>
+            {
+                m.EnableKeyword("_CHANNEL_MAP");
+                m.EnableKeyword("_EMISSION");
+                m.SetTexture(s.propertyName, v);
+            });
 
-        public static ShaderProperty<Texture2D> MetallicMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
+    public static ShaderProperty<Texture2D> MetallicMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
             (m, s, v) =>
             {
                 Texture2D chanelMap = (Texture2D)m.GetTexture(s.propertyName);
@@ -116,7 +125,16 @@ namespace MrtkShader
 
             );
         public static ShaderProperty<Texture2D> NormalMap = new ShaderProperty<Texture2D>("_NormalMap", null, "_NORMAL_MAP");
-        public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null);
+        public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null,null,
+            (m, s, v) =>
+            {
+                Texture2D chanelMap = (Texture2D)m.GetTexture(s.propertyName);
+                Texture2D combined = TextureCombiner.Combine(chanelMap, v, chanelMap, chanelMap, Channel.Red, Channel.Green, Channel.RGBAverage, Channel.Alpha) ;
+
+                //m.SetTexture(s.propertyName, v);
+                m.ApplyShaderProperty(ChannelMap, combined);
+
+            });
         public static ShaderProperty<float> Metallic = new ShaderProperty<float>("_Metallic", 0f);
         public static ShaderProperty<float> Smoothness = new ShaderProperty<float>("_Smoothness", 0.5f);
         public static ShaderProperty<float> NormalMapScale = new ShaderProperty<float>("_NormalMapScale", 1f);

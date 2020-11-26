@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
+using MrtkShader;
 
 namespace umi3d.cdk
 {
@@ -37,11 +38,9 @@ namespace umi3d.cdk
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
             if (ext != null)
             {
-                /*    Debug.Log("1");
-                    Debug.Log("find shader " + (Shader.Find("glTF/PbrMetallicRoughness") != null));
-                    Debug.Log("2");*/
+     
                 Material newMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();//
-               // Material newMat = new Material(Shader.Find("glTF/PbrMetallicRoughness"));
+                                                                                    // Material newMat = new Material(Shader.Find("glTF/PbrMetallicRoughness"));
                 /*unity standard shader
                            newMat.color = (Vector4)( dto.pbrMetallicRoughness.baseColorFactor);
                            LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
@@ -50,32 +49,87 @@ namespace umi3d.cdk
                            LoadTextureInMaterial(ext.heightTexture, "_ParallaxMap", newMat);
 
                            */
-       //         newMat.EnableKeyword(StandardShaderHelper.KW_EMISSION);
-        //        newMat.EnableKeyword(StandardShaderHelper.KW_METALLIC_ROUGNESS_MAP);
-        //        StandardShaderHelper.SetAlphaModeBlend(newMat);
+                //         newMat.EnableKeyword(StandardShaderHelper.KW_EMISSION);
+                //        newMat.EnableKeyword(StandardShaderHelper.KW_METALLIC_ROUGNESS_MAP);
+                //        StandardShaderHelper.SetAlphaModeBlend(newMat);
 
                 //gltf shader
-                newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
-                newMat.SetColor("_EmissionColor", (Vector4)(Vector3)dto.emissiveFactor);
-                newMat.SetFloat("_Metallic", dto.pbrMetallicRoughness.metallicFactor);
-                newMat.SetFloat("_Roughness", dto.pbrMetallicRoughness.roughnessFactor);
-           //     ... TODO
-                //add callback in LoadTextureInMaterial to apply shaderproperty 
-                LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
-                LoadTextureInMaterial(ext.normalTexture, "_BumpMap", newMat);
-                LoadTextureInMaterial(ext.emissiveTexture, "_EmissionMap", newMat);
-                LoadTextureInMaterial(ext.metallicRoughnessTexture, "_MetallicGlossMap", newMat);
-                LoadTextureInMaterial(ext.occlusionTexture, "_OcclusionMap", newMat);
-                //LoadTextureInMaterial(ext.heightTexture, "_ParallaxMap", newMat);
-                //LoadTextureInMaterial(ext.metallicTexture, "_BumpMap", newMat);
-                // LoadTextureInMaterial(ext.roughnessTexture, "_BumpMap", newMat);
+                //
+                /*    newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
+                    newMat.SetColor("_EmissionColor", (Vector4)(Vector3)dto.emissiveFactor);
+                    newMat.SetFloat("_Metallic", dto.pbrMetallicRoughness.metallicFactor);
+                    newMat.SetFloat("_Roughness", dto.pbrMetallicRoughness.roughnessFactor);
 
-                newMat.SetFloat("_BumpScale", ((UMI3DMaterialDto)dto.extensions.umi3d).normalTexture.scale);
+                    LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
+                    LoadTextureInMaterial(ext.normalTexture, "_BumpMap", newMat);
+                    LoadTextureInMaterial(ext.emissiveTexture, "_EmissionMap", newMat);
+                    LoadTextureInMaterial(ext.metallicRoughnessTexture, "_MetallicGlossMap", newMat);
+                    LoadTextureInMaterial(ext.occlusionTexture, "_OcclusionMap", newMat);
+
+                    newMat.SetFloat("_BumpScale", ((UMI3DMaterialDto)dto.extensions.umi3d).normalTexture.scale);
+                    */
+
+                //MRTK Shader
+                newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
+                newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)(Vector3)dto.emissiveFactor);
+                newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
+                newMat.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - dto.pbrMetallicRoughness.roughnessFactor);
+
+                LoadTextureInMaterial(ext.baseColorTexture, MRTKShaderUtils.MainTex, newMat);
+                LoadTextureInMaterial(ext.normalTexture, MRTKShaderUtils.NormalMap, newMat);
+                LoadTextureInMaterial(ext.heightTexture, MRTKShaderUtils.BumpMap, newMat);
+
+
+                LoadTextureInMaterial(ext.emissiveTexture, MRTKShaderUtils.EmissionMap, newMat);
+                LoadTextureInMaterial(ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+                LoadTextureInMaterial(ext.metallicRoughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
+
+                // TODO optimise combine chanel map 
+
+                if (ext.emissiveTexture != null || ext.occlusionTexture != null || ext.metallicRoughnessTexture != null || ext.metallicTexture != null || ext.roughnessTexture != null)
+                {
+                    Texture2D channelMap;
+                    if (ext.metallicRoughnessTexture != null)
+                    {
+                        LoadTextureInMaterial(ext.metallicRoughnessTexture, null, newMat, (mrTexture) =>
+                        {
+                            LoadTextureInMaterial(ext.emissiveTexture, null, newMat, (eTexture) =>
+                            {
+                                LoadTextureInMaterial(ext.occlusionTexture, null, newMat, (oTexture) =>
+                                {
+                                    channelMap = TextureCombiner.CombineFromGltfStandard(mrTexture, oTexture, eTexture);
+                                    if(channelMap != null)
+                                        newMat.ApplyShaderProperty(MRTKShaderUtils.ChannelMap, channelMap);
+                                });
+                            });
+                        });
+                    }       
+                    else
+                    {
+                        LoadTextureInMaterial(ext.metallicTexture, null, newMat, (mTexture) =>
+                        {
+                            LoadTextureInMaterial(ext.emissiveTexture, null, newMat, (eTexture) =>
+                            {
+                                LoadTextureInMaterial(ext.occlusionTexture, null, newMat, (oTexture) =>
+                                {
+                                    LoadTextureInMaterial(ext.roughnessTexture, null, newMat, (rTexture) =>
+                                    {
+                                        channelMap = TextureCombiner.CombineFromGltfStandard(mTexture, oTexture, eTexture, rTexture);
+                                        if(channelMap != null)
+                                            newMat.ApplyShaderProperty(MRTKShaderUtils.ChannelMap, channelMap);
+                                    });
+                                });
+                            });
+                        });
+                    }
+
+                }
+
+                newMat.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, ((UMI3DMaterialDto)dto.extensions.umi3d).normalTexture.scale);
 
                 ReadAdditionalShaderProperties(ext.shaderProperties, newMat);
                 ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
 
-                //   return newMat;
                 callback.Invoke(newMat);
             }
             else
@@ -83,8 +137,7 @@ namespace umi3d.cdk
                 Debug.LogWarning("extension is null");
             }
         }
-
-        
+         
     
     }
 

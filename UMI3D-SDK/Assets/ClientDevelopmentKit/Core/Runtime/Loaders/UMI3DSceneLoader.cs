@@ -143,6 +143,7 @@ namespace umi3d.cdk
             return 1 - f;
         }
 
+        //..  
         public bool SetUMI3DMaterialProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity != null && entity.Object is Material)

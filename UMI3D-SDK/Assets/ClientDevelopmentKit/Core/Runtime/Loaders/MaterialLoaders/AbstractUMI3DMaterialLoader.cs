@@ -58,14 +58,19 @@ namespace umi3d.cdk
             }
         }
 
-        public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)
+   /*     public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)
         {
-            LoadTextureInMaterial(textureDto, materialKey, mat);
-        }
+            LoadTextureInMaterial(textureDto, (MRTKShaderUtils.ShaderProperty<Texture> )materialKey, mat);
+        }*/
 
-        public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture> materialKey, Material mat)
+        public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat, Action<Texture2D> alternativeCallback = null)
         {
-            if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
+            if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1)
+            {
+                if (alternativeCallback != null)
+                    alternativeCallback.Invoke(null);
+                return;
+            }
             FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
@@ -86,7 +91,10 @@ namespace umi3d.cdk
 
                             try
                             {
-                                mat.ApplyShaderProperty(materialKey, tex);
+                                if (alternativeCallback == null)
+                                    mat.ApplyShaderProperty(materialKey, tex);
+                                else
+                                    alternativeCallback.Invoke(tex);
                             }
                             catch
                             {
@@ -101,6 +109,7 @@ namespace umi3d.cdk
                     );
         }
 
+        [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
         protected static void LoadTextureInMaterial(TextureDto textureDto, string materialKey, Material mat)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
