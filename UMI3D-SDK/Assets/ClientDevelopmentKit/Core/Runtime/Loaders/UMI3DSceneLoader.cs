@@ -189,20 +189,26 @@ namespace umi3d.cdk
                         ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).emissiveTexture = (TextureDto)property.value;
                         break;
 
-               /*     case UMI3DPropertyKeys.RoughnessTexture:
-                    case UMI3DPropertyKeys.MetallicTexture:
-                    case UMI3DPropertyKeys.MetallicRoughnessTexture:
-                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, ", (Material)entity.Object);
-                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).baseColorTexture = (TextureDto)property.value;
+                    case UMI3DPropertyKeys.RoughnessTexture:
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.RoughnessMap, (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).roughnessTexture = (TextureDto)property.value;
                         break;
-                        */
+
+                    case UMI3DPropertyKeys.MetallicTexture:
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.MetallicMap, (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).metallicTexture = (TextureDto)property.value;
+                        break;
+
+                    case UMI3DPropertyKeys.MetallicRoughnessTexture:
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.MetallicMap, (Material)entity.Object);
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.RoughnessMap, (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).metallicRoughnessTexture = (TextureDto)property.value;
+                        
+                        break;
+                        
                     case UMI3DPropertyKeys.OcclusionTexture:
                         AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.OcclusionMap, (Material)entity.Object);
                         ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).occlusionTexture = (TextureDto)property.value;
-                        break;
-
-                    case UMI3DPropertyKeys.RoughnessTexture:
-                        Debug.LogWarning("Roughness Texture not supported");
                         break;
 
                     case UMI3DPropertyKeys.HeightTexture:
