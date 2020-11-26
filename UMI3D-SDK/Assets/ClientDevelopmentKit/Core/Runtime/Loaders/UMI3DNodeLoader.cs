@@ -71,7 +71,25 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
 
             if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation || property.property == UMI3DPropertyKeys.Scale))
+            {
+                GlTFNodeDto gltfDto = (node.dto as GlTFNodeDto);
+                if (gltfDto == null) return false;
+                switch (property.property)
+                {
+                    case UMI3DPropertyKeys.Position:
+                        gltfDto.position = (SerializableVector3)property.value;
+                        break;
+                    case UMI3DPropertyKeys.Rotation:
+                        gltfDto.rotation = (SerializableVector4)property.value;
+                        break;
+                    case UMI3DPropertyKeys.Scale:
+                        gltfDto.scale = (SerializableVector3)property.value;
+                        break;
+                    default:
+                        break;
+                }
                 return true;
+            }
 
             if (base.SetUMI3DProperty(entity, property)) return true;
 

@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.userCapture;
+using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -34,7 +35,8 @@ namespace umi3d.cdk.userCapture
             public Quaternion oldRotation;
         }
 
-        public struct BoundObject
+
+        private struct BoundObject
         {
             public string objectId;
             public string rigname;
@@ -51,6 +53,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Set a new UserAvatar from an UMI3DAvatarNodeDto.
         /// </summary>
+        /// <param name="dto"></param>
         public void Set(UMI3DAvatarNodeDto dto)
         {
             userId = dto.userId;
@@ -70,6 +73,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Set the binding activation from the given bool.
         /// </summary>
+        /// <param name="b">the activation value</param>
         public void SetActiveBindings(bool b)
         {
             activeUserBindings = b;
@@ -95,6 +99,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Set a new list of BoneBindingDto.
         /// </summary>
+        /// <param name="newBindings">a list of dto containing binding data</param>
         public void SetBindings(List<BoneBindingDto> newBindings)
         {
             foreach (BoneBindingDto dto in userBindings)
@@ -112,6 +117,8 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Add a new BoneBindingDto at the given index.
         /// </summary>
+        /// <param name="index">the index in the list of bindings</param>
+        /// <param name="dto"></param>
         public void AddBinding(int index, BoneBindingDto dto)
         {
             userBindings.Insert(index, dto);
@@ -124,6 +131,8 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Remove the BoneBindingDto at the given index.
         /// </summary>
+        /// <param name="index">the index in the list of bindings</param>
+        /// <param name="dto"></param>
         public void RemoveBinding(int index, BoneBindingDto dto)
         {
             userBindings.RemoveAt(index);
@@ -135,6 +144,8 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Update the BoneBindingDto at the given index.
         /// </summary>
+        /// <param name="index">the index in the list of bindings</param>
+        /// <param name="dto"></param>
         public void UpdateBinding(int index, BoneBindingDto dto)
         {
             userBindings[index] = dto;
@@ -177,11 +188,16 @@ namespace umi3d.cdk.userCapture
 
         IEnumerator WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
         {
-            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
+            UMI3DNodeInstance node;
+            var wait = new WaitForFixedUpdate();
+
+            while ((node = UMI3DEnvironmentLoader.GetNode(dto.objectId)) == null)
+            {
+                yield return wait;
+            }
 
             if (node != null)
             {
-                var wait = new WaitForFixedUpdate();
                 Transform obj = null;
                 UnityEngine.Debug.Log($"wait for rig [{dto.rigName}]");
                 if (dto.rigName != "")
@@ -214,6 +230,7 @@ namespace umi3d.cdk.userCapture
                     UnityEngine.Debug.Log(dto.rigName);
 
                     UnityEngine.Debug.Log($"set {obj.name} under {bone.transform.name}");
+
                     obj.transform.SetParent(bone.transform);
 
                     if (dto.rigName == "")
@@ -236,11 +253,14 @@ namespace umi3d.cdk.userCapture
                 {
                     if (oldPositions.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out OldPosition oldPosition))
                     {
-                        oldPosition.obj.SetParent(oldPosition.oldParent);
-                        oldPosition.obj.localPosition = oldPosition.oldPosition;
-                        oldPosition.obj.localRotation = oldPosition.oldRotation;
+                        if (oldPosition.obj != null)
+                        {
+                            oldPosition.obj.SetParent(oldPosition.oldParent);
+                            oldPosition.obj.localPosition = oldPosition.oldPosition;
+                            oldPosition.obj.localRotation = oldPosition.oldRotation;
+                        }
 
-                        if (dto.rigName == "")
+                        if (dto.rigName == "" && node != null)
                             node.updatePose = true;
                         else
                             boundRigs.Remove(oldPosition.obj);
@@ -256,6 +276,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Update the a UserAvatar directly sent by another client.
         /// </summary>
+        /// <param name="dto">a dto containing the tracking data</param>
         public void UpdateBonePosition(UserTrackingFrameDto dto)
         {
             foreach (BoneDto boneDto in dto.bones)
