@@ -30,14 +30,18 @@ namespace umi3d.cdk.collaboration
     public class WebRTCClient : AbstractWebRtcClient, IWebRTCClient
     {
         UMI3DCollaborationClientServer client;
+        FakeWebRTCClient FakeWebRTC;
+
+        public override AbstractWebsocketRtc websocketRtc => FakeWebRTC;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="client">a reference to the server.</param>
-        public WebRTCClient(UMI3DCollaborationClientServer client, EncoderType encoderType) : base(client, encoderType)
+        public WebRTCClient(UMI3DCollaborationClientServer client, bool useSoftware) : base(client, useSoftware)
         {
             this.client = client;
+            FakeWebRTC = new FakeWebRTCClient(client);
         }
 
         /// <summary>

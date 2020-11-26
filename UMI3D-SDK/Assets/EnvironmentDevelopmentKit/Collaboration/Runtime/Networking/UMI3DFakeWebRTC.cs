@@ -23,12 +23,13 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DFakeWebRTC
+    public class UMI3DFakeWebRTC : AbstractWebsocketRtc
     {
         public HttpServer wsReliable;
         public HttpServer wsUnreliable;
 
         Action<string, DataType, bool, List<string>, byte[]> messageAction;
+        Dictionary<string, (WSContent, WSContent)> websockets = new Dictionary<string, (WSContent, WSContent)>();
         UMI3DWebRTC client;
 
         public UMI3DFakeWebRTC(UMI3DWebRTC client, Action<string, DataType, bool, List<string>, byte[]> messageAction)
@@ -79,15 +80,41 @@ namespace umi3d.edk.collaboration
 
         void OnClose(UMI3DFakeRTCConnection connection) { }
 
+        public class WSContent : AbstractWebsocket
+        {
+
+            UMI3DFakeRTCConnection connection;
+
+            public WSContent(UMI3DFakeRTCConnection connection)
+            {
+                this.connection = connection;
+            }
+
+            public override void Send(byte[] content)
+            {
+                connection.SendData(content);
+            }
+        }
+
+
         void OnIdentify(UMI3DFakeRTCConnection connection, IdentityDto id)
         {
-            var peer = client.peers.Select(p => p.Value).FirstOrDefault((p) => p.name == id.userId) as UMI3DFakeRTCClient;
-            if (peer != null)
+            WSContent ws = new WSContent(connection);
+            (WSContent, WSContent) t = websockets?[id.userId] ?? (null, null);
+
+            if (connection.reliable)
+                t = (ws, t.Item2);
+            else
+                t = (t.Item1, ws);
+            websockets[id.userId] = t;
+
+            if (client.peers.Select(p => p.Value).FirstOrDefault((p) => p.targetId == id.userId) is WebRTCconnection peer)
             {
-                if (connection.reliable)
-                    peer.Reliable = connection;
-                else
-                    peer.Unreliable = connection;
+
+                foreach(var c in peer.channels.Cast<WebRTCDataChannel>().Where(c=>c.reliable = connection.reliable))
+                {
+                    c.socket =  ws;
+                }
             }
         }
 
@@ -100,6 +127,17 @@ namespace umi3d.edk.collaboration
                 wsReliable.Stop();
             if (wsUnreliable != null)
                 wsUnreliable.Stop();
+        }
+
+        public override void SetUpd(WebRTCDataChannel channels)
+        {
+            if (websockets.ContainsKey(channels.id))
+                channels.socket = channels.reliable ? websockets[channels.id].Item1 : websockets[channels.id].Item2;
+        }
+
+        public override void Send(byte[] content, DataType type, bool reliable, List<IWebRTCconnection> connection)
+        {
+            throw new Exception("Should not end up here");
         }
     }
 }

@@ -19,11 +19,11 @@ namespace umi3d.common.collaboration
 {
     public interface IWebRTCconnection
     {
-        string name { get; }
+        string targetId { get; }
         void AddDataChannel(DataChannel channel, bool instanciateChannel = true);
         void RemoveDataChannel(DataChannel channel);
         void Close();
-        void Init(string name, bool instanciateChannel);
+        void Init(string id,string targetId, bool instanciateChannel);
         void Offer();
         void Send(byte[] data, bool reliable, bool tryToSendAgain = true);
         void Send(byte[] data, bool reliable, DataType dataType, bool tryToSendAgain = true);

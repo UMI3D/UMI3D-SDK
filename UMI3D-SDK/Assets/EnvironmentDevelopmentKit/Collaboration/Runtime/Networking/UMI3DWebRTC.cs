@@ -58,6 +58,9 @@ namespace umi3d.edk.collaboration
         public class NewPeerListener : UnityEvent<string> { };
         public NewPeerListener onNewPeer = new NewPeerListener();
         public UMI3DFakeWebRTC fakeWebRTC;
+
+        public override AbstractWebsocketRtc websocketRtc => fakeWebRTC;
+
         /// <summary>
         /// Initialization of the WebrtcClient
         /// </summary>
@@ -66,7 +69,7 @@ namespace umi3d.edk.collaboration
         {
             this.server = server;
             peerMap = new List<bridge>();
-            fakeWebRTC = new UMI3DFakeWebRTC(this, OnFakeRtcMessage);
+             fakeWebRTC = new UMI3DFakeWebRTC(this, OnFakeRtcMessage);
         }
 
         /// <summary>
@@ -201,7 +204,7 @@ namespace umi3d.edk.collaboration
                 if (datachannel.type == type && datachannel.reliable == reliable) return datachannel;
                 else throw new Exception("A datachannel with this label already exist");
             }
-            datachannel = Add(user.Id(), new WebRTCDataChannel(label, reliable, type));
+            datachannel = Add(user.Id(), new WebRTCDataChannel(GetUID(),user.Id(), label, reliable, type));
             return datachannel;
         }
 
@@ -357,7 +360,7 @@ namespace umi3d.edk.collaboration
         {
             base.ChannelsToAddCreation(uid, connection);
             foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                connection.AddDataChannel(new WebRTCDataChannel(channel), false);
+                connection.AddDataChannel(new WebRTCDataChannel(GetUID(),uid,channel), false);
         }
 
         ///<inheritdoc/>
@@ -403,7 +406,7 @@ namespace umi3d.edk.collaboration
                 return base.CreateWebRtcConnection(uid, instanciateChannel);
             UMI3DFakeRTCClient connection = new UMI3DFakeRTCClient(uid);
             ChannelsToAddCreation(uid, connection);
-            connection.Init(uid, instanciateChannel);
+            connection.Init(GetUID(),uid, instanciateChannel);
             return connection;
         }
 

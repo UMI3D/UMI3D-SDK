@@ -26,7 +26,7 @@ namespace umi3d.common.collaboration
         UMI3DFakeRTCConnection unreliable = null;
         List<FakeWebrtcMessageDto> StackReliable = new List<FakeWebrtcMessageDto>();
         List<FakeWebrtcMessageDto> StackUnreliable = new List<FakeWebrtcMessageDto>();
-        public string name { get; private set; }
+        public string targetId { get; private set; }
         public UMI3DFakeRTCConnection Reliable
         {
             get => reliable; set {
@@ -50,7 +50,7 @@ namespace umi3d.common.collaboration
 
         public UMI3DFakeRTCClient(string name)
         {
-            this.name = name;
+            this.targetId = name;
         }
 
         public void AddDataChannel(DataChannel channel, bool instanciateChannel = true)
@@ -84,9 +84,9 @@ namespace umi3d.common.collaboration
             return Find((c) => c.reliable == reliable && dataType == c.type, out channel);
         }
 
-        public void Init(string name, bool instanciateChannel)
+        public void Init(string id,string name, bool instanciateChannel)
         {
-            this.name = name;
+            this.targetId = name;
         }
 
         public void Offer()
@@ -113,7 +113,7 @@ namespace umi3d.common.collaboration
                 content = data,
                 dataType = dataType,
                 reliable = reliable,
-                targetId = new List<string>() { name }
+                targetId = new List<string>() { targetId }
             };
             Send(dto, tryToSendAgain);
         }
@@ -136,6 +136,5 @@ namespace umi3d.common.collaboration
                     StackUnreliable.Add(dto);
             }
         }
-
     }
 }
