@@ -336,7 +336,7 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent</param>
+        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, Transform newparent = null)
         {
@@ -365,7 +365,7 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent</param>
+        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, Transform newparent = null)
         {
@@ -393,7 +393,7 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="index">the given index</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent</param>
+        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, Transform newparent = null)
         {
@@ -426,7 +426,7 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="index">the given index</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent</param>
+        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, Transform newparent = null)
         {
