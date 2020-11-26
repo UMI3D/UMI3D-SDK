@@ -62,7 +62,7 @@ namespace umi3d.edk.collaboration
         /// Initialization of the WebrtcClient
         /// </summary>
         /// <param name="server">The server</param>
-        public UMI3DWebRTC(UMI3DCollaborationServer server, Unity.WebRTC.EncoderType encoderType) : base(server, encoderType)
+        public UMI3DWebRTC(UMI3DCollaborationServer server, bool useSoftware) : base(server, useSoftware)
         {
             this.server = server;
             peerMap = new List<bridge>();

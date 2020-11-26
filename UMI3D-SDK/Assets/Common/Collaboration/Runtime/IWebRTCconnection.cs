@@ -29,8 +29,8 @@ namespace umi3d.common.collaboration
         void Send(byte[] data, bool reliable, DataType dataType, bool tryToSendAgain = true);
         void Send(byte[] data, DataChannel channel, bool tryToSendAgain = true);
         bool Any(Func<DataChannel, bool> predicate);
-        DataChannel Find(Func<DataChannel, bool> predicate);
+        bool Find(Func<DataChannel, bool> predicate, out DataChannel channel);
         bool Find(bool reliable, DataType dataType, out DataChannel channel);
-        DataChannel FirstOrDefault(Func<DataChannel, bool> predicate);
+        DataChannel Find(Func<DataChannel, bool> predicate);
     }
 }

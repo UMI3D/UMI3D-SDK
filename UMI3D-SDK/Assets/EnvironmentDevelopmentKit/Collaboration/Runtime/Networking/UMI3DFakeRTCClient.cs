@@ -70,18 +70,18 @@ namespace umi3d.common.collaboration
 
         public DataChannel Find(Func<DataChannel, bool> predicate)
         {
-            return channels.Find((c) => predicate(c));
+            return channels.FirstOrDefault(predicate);
+        }
+
+        public bool Find(Func<DataChannel, bool> predicate, out DataChannel channel)
+        {
+            channel = Find(predicate);
+            return channel == null;
         }
 
         public bool Find(bool reliable, DataType dataType, out DataChannel channel)
         {
-            channel = channels.FirstOrDefault((c) => c.reliable == reliable && dataType == c.type);
-            return channel == null;
-        }
-
-        public DataChannel FirstOrDefault(Func<DataChannel, bool> predicate)
-        {
-            return channels.FirstOrDefault((c) => predicate(c));
+            return Find((c) => c.reliable == reliable && dataType == c.type, out channel);
         }
 
         public void Init(string name, bool instanciateChannel)

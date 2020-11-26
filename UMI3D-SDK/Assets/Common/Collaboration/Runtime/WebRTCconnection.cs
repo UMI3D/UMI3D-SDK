@@ -91,20 +91,6 @@ namespace umi3d.common.collaboration
                 UnityMainThreadDispatcher.Instance().Enqueue(OnCreateOfferSuccess(op.Desc));
         }
 
-
-        /// <summary>
-        /// Find a suitable channel.
-        /// </summary>
-        /// <param name="reliable">should this channel be reliable.</param>
-        /// <param name="dataType">datatype of the channel.</param>
-        /// <param name="channel">First matching DataChannel.</param>
-        /// <returns>True if a channel was found</returns>
-        public bool Find(bool reliable, DataType dataType, out DataChannel channel)
-        {
-            channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
-            return channel != null;
-        }
-
         /// <summary>
         /// Send a message via a datachannel.
         /// </summary>
@@ -410,13 +396,38 @@ namespace umi3d.common.collaboration
             return channels.Any(predicate);
         }
 
+        /// <summary>
+        /// Find first suitable channel.
+        /// </summary>
+        /// <param name="predicate">predicate for suitable channel.</param>
+        /// <returns>First suitable channel or null if no match</returns>
         public DataChannel Find(Func<DataChannel, bool> predicate)
         {
-            return channels.Find(c => predicate(c));
-        }
-        public DataChannel FirstOrDefault(Func<DataChannel, bool> predicate)
-        {
             return channels.FirstOrDefault(predicate);
+        }
+
+        /// <summary>
+        /// Find first suitable channel.
+        /// </summary>
+        /// <param name="predicate">predicate for suitable channel.</param>
+        /// <param name="channel">First matching DataChannel.</param>
+        /// <returns>True if a channel was found</returns>
+        public bool Find(Func<DataChannel, bool> predicate,out DataChannel channel)
+        {
+            channel = Find(predicate);
+            return channel == default;
+        }
+
+        /// <summary>
+        /// Find first suitable channel.
+        /// </summary>
+        /// <param name="reliable">should this channel be reliable.</param>
+        /// <param name="dataType">datatype of the channel.</param>
+        /// <param name="channel">First matching DataChannel.</param>
+        /// <returns>True if a channel was found</returns>
+        public bool Find(bool reliable, DataType dataType, out DataChannel channel)
+        {
+            return Find((c) => c.reliable == reliable && c.type == DataType.Data,out channel);
         }
 
         private void CreateDataChannel(bool reliable, string dataChannelName)

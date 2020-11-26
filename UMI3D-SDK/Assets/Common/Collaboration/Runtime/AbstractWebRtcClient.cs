@@ -13,11 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if UNITY_WEBRTC
+
 using MainThreadDispatcher;
 using System;
 using System.Collections.Generic;
+#if UNITY_WEBRTC
 using Unity.WebRTC;
+#endif
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,26 +28,29 @@ namespace umi3d.common.collaboration
     public abstract class AbstractWebRtcClient : IAbstractWebRtcClient
     {
 
-        public IceServer[] iceServers;
+        static public IceServer[] iceServers;
 
         MonoBehaviour behaviour;
-        Coroutine WebrtcCoroutine;
-
+        
         public Dictionary<string, IWebRTCconnection> peers;
         public Dictionary<string, List<DataChannel>> peersDataChanelToAdd;
 
+#if UNITY_WEBRTC
+        static Coroutine WebrtcCoroutine;
         static bool webrtcRunning = false;
         static bool webrtcUpdating = false;
+#endif
 
         public class RtcMessageListener : UnityEvent<string, byte[], DataChannel> { }
 
-        public AbstractWebRtcClient(MonoBehaviour behaviour, EncoderType encoderType)
+        public AbstractWebRtcClient(MonoBehaviour behaviour, bool useSofware)
         {
             this.behaviour = behaviour;
             peers = new Dictionary<string, IWebRTCconnection>();
+#if UNITY_WEBRTC
             if (!webrtcRunning)
             {
-                WebRTC.Initialize(encoderType);
+                WebRTC.Initialize(useSofware?EncoderType.Software:EncoderType.Hardware);
                 webrtcRunning = true;
             }
             if (!webrtcUpdating)
@@ -53,6 +58,7 @@ namespace umi3d.common.collaboration
                 WebrtcCoroutine = behaviour.StartCoroutine(WebRTC.Update());
                 webrtcUpdating = true;
             }
+#endif
         }
 
         /// <summary>
@@ -154,8 +160,8 @@ namespace umi3d.common.collaboration
                     var otherId = dto.sourceUser == GetUID() ? dto.targetUser : dto.sourceUser;
                     if (peers.ContainsKey(otherId))
                     {
-                        var dc = peers[otherId].Find((dc2) => dcDto.Label == dc2.Label);
-                        if (dc != null)
+                        DataChannel dc;
+                        if (peers[otherId].Find((dc2) => dcDto.Label == dc2.Label,out dc))
                         {
                             dc.type = dcDto.type;
                             dc.reliable = dcDto.reliable;
@@ -185,6 +191,7 @@ namespace umi3d.common.collaboration
         /// <param name="offer"></param>
         protected virtual void OnRtcOffer(OfferDto offer)
         {
+#if UNITY_WEBRTC
             if (!peers.ContainsKey(offer.sourceUser))
                 peers.Add(offer.sourceUser, CreateWebRtcConnection(offer.sourceUser));
 
@@ -192,6 +199,7 @@ namespace umi3d.common.collaboration
             description.sdp = offer.sdp;
             description.type = RTCSdpType.Offer;
             UnityMainThreadDispatcher.Instance().Enqueue((peers[offer.sourceUser] as WebRTCconnection).CreateAnswer(description));
+#endif
         }
 
         /// <summary>
@@ -200,10 +208,12 @@ namespace umi3d.common.collaboration
         /// <param name="answer"></param>
         protected virtual void OnRtcAnswer(AnswerDto answer)
         {
+#if UNITY_WEBRTC
             if (peers.ContainsKey(answer.sourceUser))
                 (peers[answer.sourceUser] as WebRTCconnection).SetRemoteSession(answer.sdp);
             else
                 throw new ArgumentException("Received answer from unknown peer.");
+#endif
         }
 
         /// <summary>
@@ -212,6 +222,7 @@ namespace umi3d.common.collaboration
         /// <param name="c"></param>
         protected virtual void OnRtcIceCandidate(CandidateDto c)
         {
+#if UNITY_WEBRTC
             if (!peers.ContainsKey(c.sourceUser))
                 peers.Add(c.sourceUser, CreateWebRtcConnection(c.sourceUser));
             RTCIceCandidate candidate = new RTCIceCandidate();
@@ -219,6 +230,7 @@ namespace umi3d.common.collaboration
             candidate.sdpMid = c.sdpMid;
             candidate.sdpMLineIndex = c.sdpMLineIndex;
             (peers[c.sourceUser] as WebRTCconnection).AddIceCandidate(candidate);
+#endif
         }
 
         /// <summary>
@@ -310,6 +322,7 @@ namespace umi3d.common.collaboration
 
         void OnIceCandidate(RTCIceCandidate c, string uid)
         {
+#if UNITY_WEBRTC
             CandidateDto msg = new CandidateDto()
             {
                 candidate = c.candidate,
@@ -319,10 +332,12 @@ namespace umi3d.common.collaboration
                 sourceUser = GetUID(),
             };
             WebSocketSend(msg, uid);
+#endif
         }
 
         void OnRtcAnswer(string sdp, string uid)
         {
+#if UNITY_WEBRTC
             AnswerDto msg = new AnswerDto()
             {
                 sdp = sdp,
@@ -330,10 +345,12 @@ namespace umi3d.common.collaboration
                 sourceUser = GetUID(),
             };
             WebSocketSend(msg, uid);
+#endif
         }
 
         void OnRtcOffer(string sdp, string uid)
         {
+#if UNITY_WEBRTC
             OfferDto msg = new OfferDto()
             {
                 sdp = sdp,
@@ -341,6 +358,7 @@ namespace umi3d.common.collaboration
                 sourceUser = GetUID(),
             };
             WebSocketSend(msg, uid);
+#endif
         }
 
         protected abstract void OnConnectionDisconnected(string id);
@@ -426,13 +444,14 @@ namespace umi3d.common.collaboration
         {
             foreach (var peer in peers)
                 peer.Value.Close();
+#if UNITY_WEBRTC
             if (webrtcUpdating)
             {
                 if (WebrtcCoroutine != null)
                     behaviour.StopCoroutine(WebrtcCoroutine);
                 webrtcUpdating = false;
             }
-
+#endif
 
         }
 
@@ -442,12 +461,13 @@ namespace umi3d.common.collaboration
         public void Clear()
         {
             Stop();
+#if UNITY_WEBRTC
             if (webrtcRunning)
             {
                 WebRTC.Dispose();
                 webrtcRunning = false;
             }
+#endif
         }
     }
 }
-#endif
