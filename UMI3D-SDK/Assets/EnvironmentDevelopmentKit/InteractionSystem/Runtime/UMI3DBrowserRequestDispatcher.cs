@@ -16,7 +16,6 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.interaction;
-using umi3d.edk.interaction;
 using UnityEngine;
 
 
@@ -25,12 +24,18 @@ namespace umi3d.edk.interaction
     static public class UMI3DBrowserRequestDispatcher
     {
 
-        static public void DispatchBrowserRequest(UMI3DUser user,UMI3DDto dto)
+        static public void DispatchBrowserRequest(UMI3DUser user, UMI3DDto dto)
         {
             switch (dto)
             {
                 case TransactionDto transaction:
                     Debug.Log($"receive transaction from browser {user.Id()}:{dto}");
+                    break;
+                case ToolReleasedDto toolReleased:
+                    UMI3DEnvironment.GetEntity<AbstractTool>(toolReleased.toolId)?.OnToolReleased(user, toolReleased);
+                    break;
+                case ToolProjectedDto toolProjected:
+                    UMI3DEnvironment.GetEntity<AbstractTool>(toolProjected.toolId)?.OnToolProjected(user, toolProjected);
                     break;
                 case HoverStateChangedDto hoverStateChanged:
                     UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoverStateChanged.toolId)?.HoverStateChanged(user, hoverStateChanged);
@@ -38,13 +43,7 @@ namespace umi3d.edk.interaction
                 case HoveredDto hoveredDto:
                     UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoveredDto.toolId)?.Hovered(user, hoveredDto);
                     break;
-                case EventStateChangedDto eventState:
-                case EventTriggeredDto eventTriggered:
-                case ParameterSettingRequestDto parameterSetting:
-                case ManipulationRequestDto manipulation:
-                case FormAnswer formAnswer:
-                case LinkOpened linkOpened:
-                    var interaction = dto as InteractionRequestDto;
+                case InteractionRequestDto interaction:
                     UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.id)?.OnUserInteraction(user, interaction);
                     break;
                 default:

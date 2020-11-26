@@ -14,11 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
@@ -45,11 +43,13 @@ namespace umi3d.edk.interaction
         /// </summary>
         public FormListener onFormCompleted = new FormListener();
 
+        ///<inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new FormDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
@@ -59,6 +59,7 @@ namespace umi3d.edk.interaction
             dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)

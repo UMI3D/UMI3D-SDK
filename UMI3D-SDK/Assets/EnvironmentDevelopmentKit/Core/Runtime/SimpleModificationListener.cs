@@ -140,7 +140,7 @@ namespace umi3d.edk
                         Debug.LogWarning("unsupported material type");
                         break;
                 }
-      
+
             }
         }
 
@@ -158,12 +158,12 @@ namespace umi3d.edk
             setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
             setOperation(obj.objectIsConvexe.SetValue(obj.convex));
             setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-            if(obj as AbstractRenderedNode)
+            if (obj as AbstractRenderedNode)
             {
                 setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
                 setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
             }
-            if(obj as UMI3DSubModel)
+            if (obj as UMI3DSubModel)
             {
                 setOperation(((UMI3DSubModel)obj).objectIgnoreModelMaterialOverride.SetValue(((UMI3DSubModel)obj).ignoreModelMaterialOverride));
             }

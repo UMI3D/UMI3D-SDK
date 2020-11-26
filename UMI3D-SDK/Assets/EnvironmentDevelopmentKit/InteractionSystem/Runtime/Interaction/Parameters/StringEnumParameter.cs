@@ -16,7 +16,6 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -63,6 +62,7 @@ namespace umi3d.edk.interaction
             epDto.value = value;
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -71,7 +71,7 @@ namespace umi3d.edk.interaction
                     if (settingRequestDto.parameter is EnumParameterDto<string>)
                     {
                         value = (settingRequestDto.parameter as EnumParameterDto<string>).value;
-                        onChange.Invoke(new ParameterEventContent<string>(user,settingRequestDto,value));
+                        onChange.Invoke(new ParameterEventContent<string>(user, settingRequestDto, value));
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");

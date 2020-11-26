@@ -29,11 +29,13 @@ namespace umi3d.cdk.collaboration
         public string Pin = "defaultPin";
         public string User = "defaultUser";
 
+        ///<inheritdoc/>
         public override void GetIdentity(Action<string, string> callback)
         {
             callback.Invoke(User, Pin);
         }
 
+        ///<inheritdoc/>
         public override void GetIdentity(Action<string> callback)
         {
             callback.Invoke(User);

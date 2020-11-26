@@ -16,14 +16,11 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using umi3d.edk;
-using umi3d.common;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(UMI3DModel),true)]
+    [CustomEditor(typeof(UMI3DModel), true)]
     [CanEditMultipleObjects]
     public class CVEModelEditor : RenderedNodeEditor
     {
@@ -35,6 +32,7 @@ namespace umi3d.edk.editor
 
         bool foldout;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -48,6 +46,7 @@ namespace umi3d.edk.editor
             if (_materialEditor != null) { DestroyImmediate(_materialEditor); }
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -61,6 +60,7 @@ namespace umi3d.edk.editor
             serializedObject.ApplyModifiedProperties();
         }
 
+        ///<inheritdoc/>
         protected override void InspectorForMeshCollider()
         {
             EditorGUILayout.PropertyField(isMeshCustom);

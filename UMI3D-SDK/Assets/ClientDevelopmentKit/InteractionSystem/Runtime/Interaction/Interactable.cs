@@ -37,6 +37,7 @@ namespace umi3d.cdk.interaction
 
         public bool NotifySubObject { get => dto.notifySubObject; }
 
+        ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
 
         public Interactable(InteractableDto dto) : base(dto)
@@ -101,6 +102,7 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        ///<inheritdoc/>
         public override void Destroy()
         {
             foreach (var container in InteractableContainer.containers.Where(c => c.Interactable == this))

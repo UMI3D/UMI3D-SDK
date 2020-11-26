@@ -37,9 +37,9 @@ namespace umi3d.edk.collaboration
 
         Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction;
         Action<UMI3DFakeRTCConnection> closeAction;
-        Action<UMI3DFakeRTCConnection,IdentityDto> identifyAction;
+        Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction;
 
-        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction) : this(null, reliable, messageAction, closeAction,identifyAction)
+        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction) : this(null, reliable, messageAction, closeAction, identifyAction)
         {
         }
 
@@ -57,13 +57,13 @@ namespace umi3d.edk.collaboration
             return Interlocked.Increment(ref _number);
         }
 
-        //on user quit
+        ///<inheritdoc/>
         protected override void OnClose(CloseEventArgs e)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnClose(e));
         }
 
-        //on user send message
+        ///<inheritdoc/>
         protected override void OnMessage(MessageEventArgs e)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnMessage(e));
@@ -72,7 +72,6 @@ namespace umi3d.edk.collaboration
         IEnumerator _OnMessage(MessageEventArgs e)
         {
             var data = UMI3DDto.FromBson(e.RawData);
-            Debug.Log(data);
             if (data is IdentityDto id)
                 identifyAction?.Invoke(this, id);
             else
@@ -86,7 +85,7 @@ namespace umi3d.edk.collaboration
             yield break;
         }
 
-        //on user connect
+        ///<inheritdoc/>
         protected override void OnOpen()
         {
             Debug.Log("open");
@@ -123,11 +122,12 @@ namespace umi3d.edk.collaboration
             ws = fakeRTC;
         }
 
-        public FakeDataChannel(UMI3DFakeRTCConnection fakeRTC,string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        public FakeDataChannel(UMI3DFakeRTCConnection fakeRTC, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
         {
             ws = fakeRTC;
         }
 
+        ///<inheritdoc/>
         public override void Send(byte[] msg)
         {
             ws.SendData(msg);

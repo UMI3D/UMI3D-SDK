@@ -47,6 +47,7 @@ namespace umi3d.cdk.menu
             }
         }
 
+        ///<inheritdoc/>
         public override bool Contains(AbstractMenuItem menuItem)
         {
             if (menuItem is MenuItem)
@@ -60,11 +61,13 @@ namespace umi3d.cdk.menu
             return false;
         }
 
+        ///<inheritdoc/>
         public override int Count
         {
             get => MenuItems.Count + SubMenu.Count;
         }
 
+        ///<inheritdoc/>
         public override IEnumerable<AbstractMenuItem> GetItems()
         {
             List<AbstractMenuItem> items = new List<AbstractMenuItem>();
@@ -122,6 +125,7 @@ namespace umi3d.cdk.menu
             return result;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return Name;

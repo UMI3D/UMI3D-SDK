@@ -14,12 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.interaction;
-using UnityEngine;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -34,31 +29,34 @@ namespace umi3d.edk.interaction
         /// </summary>
         public InteractionEvent onLinkUsed = new InteractionEvent();
 
+        ///<inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new LinkDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
-            if(dto_ is LinkDto dto)
+            if (dto_ is LinkDto dto)
             {
                 dto.url = url;
             }
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
             {
                 case LinkOpened linkOpened:
-                    onLinkUsed.Invoke(new InteractionEventContent(user,interactionRequest));
+                    onLinkUsed.Invoke(new InteractionEventContent(user, interactionRequest));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
-            
+
         }
     }
 }

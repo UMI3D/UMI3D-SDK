@@ -32,6 +32,7 @@ namespace umi3d.edk.interaction
         [SerializeField]
         protected UMI3DNode Node;
 
+        ///<inheritdoc/>
         public override LoadEntity Register()
         {
             base.Register();
@@ -82,7 +83,7 @@ namespace umi3d.edk.interaction
             public Vector3 normal { get; private set; }
             public Vector3 direction { get; private set; }
 
-            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user,dto)
+            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
                 position = dto.position;
                 normal = dto.normal;
@@ -137,7 +138,7 @@ namespace umi3d.edk.interaction
             Idto.nodeId = objectNodeId.GetValue(user).Id();
         }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);

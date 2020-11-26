@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -33,6 +31,7 @@ namespace umi3d.edk
         //public UMI3DAsyncProperty<UMI3DMaterial> ObjectMaterial;
         public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource { get { Register(); return objectVideoResource; } protected set => objectVideoResource = value; }
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -43,6 +42,7 @@ namespace umi3d.edk
             ObjectVideoResource.OnValueChanged += (r) => videoResources = r;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -51,6 +51,7 @@ namespace umi3d.edk
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
         }
 
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DVideoPlayerDto();

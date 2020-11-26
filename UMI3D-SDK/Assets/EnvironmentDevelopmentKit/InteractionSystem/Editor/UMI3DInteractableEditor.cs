@@ -16,12 +16,8 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using System;
 using umi3d.edk.interaction;
+using UnityEditor;
 
 namespace umi3d.edk.editor
 {
@@ -35,6 +31,7 @@ namespace umi3d.edk.editor
         SerializedProperty onHoverExit;
         SerializedProperty onHovered;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -48,13 +45,14 @@ namespace umi3d.edk.editor
 
         static bool displayEvent = false;
 
+        ///<inheritdoc/>
         protected override void _OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(Node);
             EditorGUILayout.PropertyField(NotifyHoverPosition);
             EditorGUILayout.PropertyField(NotifySubObject);
             base._OnInspectorGUI();
-            displayEvent = EditorGUILayout.Foldout(displayEvent, "Events", true);
+            displayEvent = EditorGUILayout.Foldout(displayEvent, "Interaction Events", true);
             if (displayEvent)
             {
                 EditorGUILayout.PropertyField(onHoverEnter, true);

@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.cdk;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -31,14 +29,16 @@ namespace umi3d.cdk.collaboration
 
         public List<UMI3DUser> UserList;
 
+        ///<inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
         {
             base.ReadUMI3DExtension(_dto, node);
             var dto = (_dto?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return;
-            UserList = dto.userList.Select(u=>new UMI3DUser(u)).ToList();
+            UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
         }
 
+        ///<inheritdoc/>
         protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base._SetUMI3DPorperty(entity, property)) return true;
@@ -80,7 +80,7 @@ namespace umi3d.cdk.collaboration
                         UserList[set.index].Update(user2);
                         dto.userList[set.index] = user2;
                     }
-                    else if(UserList.Count == set.index)
+                    else if (UserList.Count == set.index)
                     {
                         UserList.Add(new UMI3DUser(user2));
                         dto.userList.Add(user2);

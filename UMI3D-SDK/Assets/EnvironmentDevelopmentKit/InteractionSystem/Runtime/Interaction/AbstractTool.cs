@@ -14,11 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -32,7 +34,9 @@ namespace umi3d.edk.interaction
         };
 
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
-        public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions;
+        public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
+        UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
+
 
         /// <summary>
         /// The tool's unique id. 
@@ -85,7 +89,7 @@ namespace umi3d.edk.interaction
         protected virtual void InitDefinition(string id)
         {
             toolId = id;
-            objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i,u) => i.ToDto(u));
+            objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => i.ToDto(u));
             inited = true;
         }
 
@@ -100,12 +104,104 @@ namespace umi3d.edk.interaction
             UMI3DEnvironment.Remove(this);
         }
 
-
         /// <summary>
         /// Create an empty Dto.
         /// </summary>
         /// <returns></returns>
         protected abstract AbstractToolDto CreateDto();
+
+        /// <summary>
+        /// Return Project Tool
+        /// </summary>        
+        /// <param name="releasable">Can the client choose to release the tool.
+        /// if false, the only way of releasing it is through a ReleaseToolDto.</param>
+        /// <param name="users">List of users to which this operation should be send.</param>
+        /// <returns></returns>
+        public ProjectTool GetProjectTool(bool releasable = true, HashSet<UMI3DUser> users = null)
+        {
+            return new ProjectTool() { tool = this, releasable = releasable, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+        }
+
+        /// <summary>
+        /// Return Release Tool
+        /// </summary>
+        /// <param name="users">List of users to which this operation should be send.</param>
+        /// <returns></returns>
+        public ReleaseTool GetReleaseTool(HashSet<UMI3DUser> users = null)
+        {
+            return new ReleaseTool() { tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+        }
+
+        /// <summary>
+        /// Return Switch Tool
+        /// </summary>
+        /// <param name="toolToReplace">Tool that should be replaced.</param>
+        /// <param name="releasable">Can the client choose to release the tool.
+        /// if false, the only way of releasing it is through a ReleaseToolDto.</param>
+        /// <param name="users">List of users to which this operation should be send.</param>
+        /// <returns></returns>
+        public SwitchTool GetSwitchTool(AbstractTool toolToReplace, bool releasable = true, HashSet<UMI3DUser> users = null)
+        {
+            return new SwitchTool() { tool = this, toolToReplace = toolToReplace, releasable = releasable, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+        }
+
+
+        /// <summary>
+        /// Called by a user on Tool projected.
+        /// </summary>
+        /// <param name="user">User interacting</param>
+        /// <param name="request">Interaction request</param>
+        public void OnToolProjected(UMI3DUser user, ToolProjectedDto request) { onProjection.Invoke(new ProjectionContent(user, request.boneType, this)); }
+
+        /// <summary>
+        /// Called by a user on Tool release.
+        /// </summary>
+        /// <param name="user">User interacting</param>
+        /// <param name="request">Interaction request</param>
+        public void OnToolReleased(UMI3DUser user, ToolReleasedDto request) { onRelease.Invoke(new ProjectionContent(user, request.boneType, this)); }
+
+
+        #region event
+        /// <summary>
+        /// Called when this tool is projected.
+        /// </summary>
+        [SerializeField]
+        public ProjectionEvent onProjection = new ProjectionEvent();
+
+        /// <summary>
+        /// Called when this tool is released.
+        /// </summary>
+        [SerializeField]
+        public ProjectionEvent onRelease = new ProjectionEvent();
+
+        /// <summary>
+        /// Class for event rising on Projection. 
+        /// </summary>
+        [Serializable]
+        public class ProjectionEvent : UnityEvent<ProjectionContent> { }
+
+        /// <summary>
+        /// Class for event rising on Release. 
+        /// </summary>
+        [Serializable]
+        public class ReleaseEvent : UnityEvent<ProjectionContent> { }
+
+        public class ProjectionContent
+        {
+            public UMI3DUser user;
+            public string boneType;
+            public AbstractTool tool;
+
+            public ProjectionContent(UMI3DUser user, string boneType, AbstractTool tool)
+            {
+                this.user = user;
+                this.boneType = boneType;
+                this.tool = tool;
+            }
+        }
+        #endregion
+
+
 
         /// <summary>
         /// Writte the AbstractTool properties in an object AbstractToolDto is assignable from.

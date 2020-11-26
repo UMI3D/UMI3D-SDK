@@ -42,6 +42,7 @@ namespace umi3d.edk.userCapture
         private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
         private UMI3DAsyncProperty<bool> _activeBindings;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -132,11 +133,13 @@ namespace umi3d.edk.userCapture
 
         #endregion
 
+        ///<inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DAvatarNodeDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

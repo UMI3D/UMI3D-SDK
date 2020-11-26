@@ -229,8 +229,10 @@ namespace umi3d.cdk.collaboration
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
         static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null)
         {
-            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) => { 
-                Media = media; Instance._setMedia();  callback?.Invoke(media); }, failback);
+            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
+            {
+                Media = media; Instance._setMedia(); callback?.Invoke(media);
+            }, failback);
         }
 
         void _setMedia()
@@ -297,31 +299,31 @@ namespace umi3d.cdk.collaboration
             switch (message)
             {
                 case TokenDto tokenDto:
-                        SetToken(tokenDto.token);
-                        break;
+                    SetToken(tokenDto.token);
+                    break;
                 case StatusDto statusDto:
-                        switch (statusDto.status)
-                        {
-                            case StatusType.CREATED:
-                                    Instance.HttpClient.SendGetIdentity((user) =>
-                                    {
-                                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                                    }, (error) => { Debug.Log("error on get id :" + error); });
-                                    break;
-                            case StatusType.READY:
-                                    if (Identity.userId == null)
-                                        Instance.HttpClient.SendGetIdentity((user) =>
-                                        {
-                                            UserDto = user;
-                                            Identity.userId = user.id;
-                                            Instance.Join();
+                    switch (statusDto.status)
+                    {
+                        case StatusType.CREATED:
+                            Instance.HttpClient.SendGetIdentity((user) =>
+                            {
+                                Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                            }, (error) => { Debug.Log("error on get id :" + error); });
+                            break;
+                        case StatusType.READY:
+                            if (Identity.userId == null)
+                                Instance.HttpClient.SendGetIdentity((user) =>
+                                {
+                                    UserDto = user;
+                                    Identity.userId = user.id;
+                                    Instance.Join();
 
-                                        }, (error) => { Debug.Log("error on get id :" + error); });
-                                    else
-                                        Instance.Join();
-                                    break;
-                        }
-                        break;
+                                }, (error) => { Debug.Log("error on get id :" + error); });
+                            else
+                                Instance.Join();
+                            break;
+                    }
+                    break;
                 case RTCDto rTCDto:
                     Instance.WebRTCClient.HandleMessage(rTCDto);
                     break;
@@ -345,7 +347,7 @@ namespace umi3d.cdk.collaboration
 #else
                 useWebrtc = false
 #endif
-        };
+            };
 
             Instance.HttpClient.SendPostJoin(
                 joinDto,
@@ -449,16 +451,20 @@ namespace umi3d.cdk.collaboration
                 (error) => { Debug.Log("error on get Environement :" + error); });
         }
 
+        ///<inheritdoc/>
         protected override void OnDestroy()
         {
             WebRTCClient?.Clear();
             base.OnDestroy();
         }
 
-        protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError) {
+        ///<inheritdoc/>
+        protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        {
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
+        ///<inheritdoc/>
         public override string GetId() { return Identity.userId; }
     }
 }

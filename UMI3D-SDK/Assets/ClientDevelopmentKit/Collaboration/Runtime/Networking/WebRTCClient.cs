@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
         /// Constructor.
         /// </summary>
         /// <param name="client">a reference to the server.</param>
-        public WebRTCClient(UMI3DCollaborationClientServer client, EncoderType encoderType) : base(client,encoderType)
+        public WebRTCClient(UMI3DCollaborationClientServer client, EncoderType encoderType) : base(client, encoderType)
         {
             this.client = client;
         }
@@ -162,6 +162,7 @@ namespace umi3d.cdk.collaboration
             client.Send(dto);
         }
 
+        ///<inheritdoc/>
         protected override void OnConnectionDisconnected(string id)
         {
             Debug.Log($"client connection lost {id}");

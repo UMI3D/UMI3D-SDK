@@ -80,10 +80,12 @@ namespace umi3d.edk.collaboration
             return Instance.Authentication;
         }
 
+        ///<inheritdoc/>
         protected override string _GetWebsocketUrl()
         {
             return "http://" + ip + ":" + websocketPort;
         }
+        ///<inheritdoc/>
         protected override string _GetHttpUrl()
         {
             return "http://" + ip + ":" + httpPort;
@@ -118,7 +120,7 @@ namespace umi3d.edk.collaboration
         {
             base.Init();
 
-            if(!useIp)
+            if (!useIp)
                 ip = GetLocalIPAddress();
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
@@ -128,7 +130,7 @@ namespace umi3d.edk.collaboration
 
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
-            webRTC = new UMI3DWebRTC(this,encoderType);
+            webRTC = new UMI3DWebRTC(this, encoderType);
             webRTC.iceServers = iceServers?.iceServers;
 
             isRunning = true;
@@ -149,7 +151,7 @@ namespace umi3d.edk.collaboration
         public static void sendRTC(UMI3DUser user, UMI3DDto dto, bool reliable)
         {
             var _user = user as UMI3DCollaborationUser;
-            Instance.webRTC.SendRTC(dto, reliable, user.Id(), _user?.useWebrtc ?? false  );
+            Instance.webRTC.SendRTC(dto, reliable, user.Id(), _user?.useWebrtc ?? false);
         }
 
         /// <summary>
@@ -318,6 +320,7 @@ namespace umi3d.edk.collaboration
         public float WaitTimeForPingAnswer = 1f;
         public int MaxPingingTry = 3;
 
+        ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
@@ -341,13 +344,14 @@ namespace umi3d.edk.collaboration
             Logout(user);
         }
 
-        public virtual void Ping(UMI3DCollaborationUser user) {
+        public virtual void Ping(UMI3DCollaborationUser user)
+        {
             Debug.Log($"Ping {user.Id()}");
             var sr = new StatusRequestDto { CurrentStatus = user.status };
             user.connection.SendData(sr);
         }
 
-
+        ///<inheritdoc/>
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
@@ -379,11 +383,11 @@ namespace umi3d.edk.collaboration
         Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
         private void Update()
         {
-            foreach(var kp in TransactionToBeSend.ToList())
+            foreach (var kp in TransactionToBeSend.ToList())
             {
                 var user = kp.Key;
                 var transaction = kp.Value;
-                if(user.status == StatusType.NONE)
+                if (user.status == StatusType.NONE)
                 {
                     TransactionToBeSend.Remove(user);
                     continue;
@@ -412,6 +416,7 @@ namespace umi3d.edk.collaboration
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
+        ///<inheritdoc/>
         public override void NotifyUserChanged(UMI3DUser user)
         {
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);

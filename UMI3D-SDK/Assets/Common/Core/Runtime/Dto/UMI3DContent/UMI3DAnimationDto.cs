@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace umi3d.common
@@ -22,7 +21,7 @@ namespace umi3d.common
     [System.Serializable]
     public class UMI3DAnimationDto : UMI3DAbstractAnimationDto
     {
-        public float duration  = 10f;
+        public float duration = 10f;
         public List<AnimationChainDto> animationChain = null;
 
         public class AnimationChainDto

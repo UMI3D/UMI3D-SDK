@@ -46,6 +46,7 @@ namespace umi3d.edk.userCapture
 
         public UMI3DScene embodimentsScene;
 
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -56,6 +57,7 @@ namespace umi3d.edk.userCapture
 
         }
 
+        ///<inheritdoc/>
         protected virtual void Start()
         {
             UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);

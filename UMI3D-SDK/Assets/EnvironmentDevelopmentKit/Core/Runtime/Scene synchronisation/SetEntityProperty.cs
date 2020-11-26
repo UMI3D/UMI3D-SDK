@@ -40,6 +40,7 @@ namespace umi3d.edk
         /// </summary>
         public object value;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var setEntity = new SetEntityPropertyDto();

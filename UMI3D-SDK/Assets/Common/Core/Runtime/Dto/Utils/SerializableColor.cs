@@ -20,7 +20,7 @@ using UnityEngine;
 namespace umi3d.common
 {
     [Serializable]
-    public class SerializableColor:UMI3DDto
+    public class SerializableColor : UMI3DDto
     {
         public float R;
         public float G;
@@ -43,6 +43,7 @@ namespace umi3d.common
             A = a;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Color)this).ToString();

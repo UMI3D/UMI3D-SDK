@@ -45,7 +45,7 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Set Menu displayed.
         /// </summary>
-        public virtual void SetMenuItem(AbstractMenuItem menu) 
+        public virtual void SetMenuItem(AbstractMenuItem menu)
         {
             this.menu = menu;
             Subscribe(menu.Select);

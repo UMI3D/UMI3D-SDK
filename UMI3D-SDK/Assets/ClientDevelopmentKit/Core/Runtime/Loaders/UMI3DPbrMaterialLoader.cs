@@ -15,8 +15,6 @@ limitations under the License.
 */
 using GLTFast.Materials;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -24,6 +22,7 @@ namespace umi3d.cdk
 {
     public class UMI3DPbrMaterialLoader : AbstractUMI3DMaterialLoader
     {
+        ///<inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
         {
             if (gltfMatDto.extensions.umi3d is UMI3DMaterialDto)
@@ -31,15 +30,16 @@ namespace umi3d.cdk
             return false;
         }
 
+        ///<inheritdoc/>
         public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
         {
             UMI3DMaterialDto ext = dto.extensions.umi3d as UMI3DMaterialDto;
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
             if (ext != null)
             {
-            /*    Debug.Log("1");
-                Debug.Log("find shader " + (Shader.Find("glTF/PbrMetallicRoughness") != null));
-                Debug.Log("2");*/
+                /*    Debug.Log("1");
+                    Debug.Log("find shader " + (Shader.Find("glTF/PbrMetallicRoughness") != null));
+                    Debug.Log("2");*/
                 Material newMat = new Material(Shader.Find("glTF/PbrMetallicRoughness"));
                 /*unity standard shader
                            newMat.color = (Vector4)( dto.pbrMetallicRoughness.baseColorFactor);
@@ -81,8 +81,8 @@ namespace umi3d.cdk
             }
         }
 
-        
-    
+
+
     }
 
 }

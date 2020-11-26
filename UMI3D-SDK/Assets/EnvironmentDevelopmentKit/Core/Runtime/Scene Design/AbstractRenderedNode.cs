@@ -44,7 +44,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<bool> objectCastShadow { get { Register(); return _objectCastShadow; } protected set => _objectCastShadow = value; }
         public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -69,13 +69,14 @@ namespace umi3d.edk
 
         }
 
-
+        ///<inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DRenderedNodeDto();
-           // rajouter un abstract dto 
+            // rajouter un abstract dto 
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

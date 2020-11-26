@@ -13,11 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.edk;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -41,7 +38,7 @@ namespace umi3d.edk
         public Vector2 tilingScale = Vector2.one;
         public Vector2 tilingOffset = Vector2.zero;
 
-
+        ///<inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
             var extensions = new GlTFMaterialExtensions() { umi3d = textures.ToDto() };
@@ -66,6 +63,7 @@ namespace umi3d.edk
             };
         }
 
+        ///<inheritdoc/>
         protected override string GetId()
         {
             if (!registered)
@@ -77,6 +75,7 @@ namespace umi3d.edk
             return textures.id;
         }
 
+        ///<inheritdoc/>
         protected override void SetId(string id)
         {
             textures.id = id;
@@ -85,6 +84,7 @@ namespace umi3d.edk
 
         private bool registered = false;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             //        Debug.Log("init mat id");
@@ -133,6 +133,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<float> _objectHeightTextureScale;
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             Debug.Log("id mat " + id);
@@ -213,12 +214,13 @@ namespace umi3d.edk
             }
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
-     
+
     }
     [System.Serializable]
     public class CustomTextures

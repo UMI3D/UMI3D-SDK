@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.edk.interaction

@@ -15,10 +15,7 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.cdk
 {
@@ -32,21 +29,25 @@ namespace umi3d.cdk
 
         }
 
+        ///<inheritdoc/>
         public override float GetProgress()
         {
             throw new NotImplementedException();
         }
 
+        ///<inheritdoc/>
         public override void Start()
         {
             throw new NotImplementedException();
         }
 
+        ///<inheritdoc/>
         public override void Stop()
         {
             throw new NotImplementedException();
         }
 
+        ///<inheritdoc/>
         public override void Start(float atTime)
         {
             throw new NotImplementedException();

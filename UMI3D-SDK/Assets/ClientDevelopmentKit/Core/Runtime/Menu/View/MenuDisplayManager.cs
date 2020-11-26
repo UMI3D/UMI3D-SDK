@@ -29,8 +29,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         public AbstractMenu menu
         {
-            get
-            {
+            get {
                 if (menuAsset.menu == null)
                     menuAsset.menu = new Menu();
                 return menuAsset.menu;
@@ -293,7 +292,7 @@ namespace umi3d.cdk.menu.view
 
                 subContainer.SetMenuItem(subMenu);
                 subContainer.parent = container;
-                SetMenuAction(container,subMenu,subContainer, containerDepth + 1);
+                SetMenuAction(container, subMenu, subContainer, containerDepth + 1);
                 if (subMenu.navigable)
                     subContainer.Subscribe(() =>
                     {
@@ -315,7 +314,8 @@ namespace umi3d.cdk.menu.view
         /// <param name="menu"></param>
         /// <param name="container"></param>
         /// <param name="containerDepth"></param>
-        void SetMenuAction(AbstractMenuDisplayContainer parentContainer, AbstractMenu menu, AbstractMenuDisplayContainer container, int containerDepth) {
+        void SetMenuAction(AbstractMenuDisplayContainer parentContainer, AbstractMenu menu, AbstractMenuDisplayContainer container, int containerDepth)
+        {
             UnityAction OnManagerDestroyedAction;
             UnityAction<AbstractMenuItem> OnItemAddedAction = (item) =>
             {
@@ -331,7 +331,8 @@ namespace umi3d.cdk.menu.view
                 menu.onAbstractMenuItemAdded.RemoveListener(OnItemAddedAction);
             };
             menu.onAbstractMenuItemAdded.AddListener(OnItemAddedAction);
-            menu.OnDestroy.AddListener(() => {
+            menu.OnDestroy.AddListener(() =>
+            {
                 menu.onAbstractMenuItemAdded.RemoveAllListeners();
                 this.onDestroy.RemoveListener(OnManagerDestroyedAction);
                 if ((parentContainer != null) && (parentContainer.gameObject != null))

@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public enum QualityType 
+    public enum QualityType
     {
         light = 0,
         standard = 1,

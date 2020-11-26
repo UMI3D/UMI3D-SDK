@@ -19,7 +19,7 @@ namespace umi3d.cdk.menu
     [System.Serializable]
     public class MenuItem : AbstractMenuItem
     {
-
+        ///<inheritdoc/>
         public override string ToString()
         {
             return Name;

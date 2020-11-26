@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using MainThreadDispatcher;
-using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
 using WebSocketSharp;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace umi3d.cdk.collaboration
 {
@@ -50,7 +49,7 @@ namespace umi3d.cdk.collaboration
         public IEnumerator Init()
         {
             var connection = UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto;
-            
+
             while (connection == null)
             {
                 yield return new WaitForFixedUpdate();
@@ -67,8 +66,8 @@ namespace umi3d.cdk.collaboration
             ReliableUrl = ReliableUrl.Replace("http", "ws");
             wsReliable = new WebSocket(ReliableUrl, UMI3DNetworkingKeys.websocketProtocol);
             wsUnReliable = new WebSocket(UnreliableUrl, UMI3DNetworkingKeys.websocketProtocol);
-            _Init(wsReliable,true);
-            _Init(wsUnReliable,false);
+            _Init(wsReliable, true);
+            _Init(wsUnReliable, false);
         }
 
         void _Init(WebSocket ws, bool reliable)
@@ -123,10 +122,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="obj">message</param>
         /// <returns></returns>
-        protected IEnumerator onMessage(UMI3DDto obj,bool reliable)
+        protected IEnumerator onMessage(UMI3DDto obj, bool reliable)
         {
             var fake = obj as FakeWebrtcMessageDto;
-            
+
             var user = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == fake.sourceId);
             if (fake.dataType == DataType.Audio)
                 AudioManager.Instance.Read(user, fake.content, null);
@@ -140,7 +139,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="err">error</param>
         /// <returns></returns>
-        protected IEnumerator onError(string err,bool reliable)
+        protected IEnumerator onError(string err, bool reliable)
         {
             yield return null;
         }
@@ -239,19 +238,19 @@ namespace umi3d.cdk.collaboration
 
         public void Remove(DataChannel dataChannel)
         {
-            
+
         }
 
         public void Send(UMI3DDto dto, bool reliable, string peerId = null)
         {
-            List<string> target = peerId == null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
+            List<string> target = peerId != null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).Where(id => UMI3DCollaborationClientServer.Identity.userId != id).ToList();
             target.Add(UMI3DGlobalID.ServerId);
-            Send(dto, target, DataType.Data, reliable);        
+            Send(dto, target, DataType.Data, reliable);
         }
 
         public void Send(UMI3DDto dto, bool reliable, DataType dataType, string peerId = null)
         {
-            List<string> target = peerId == null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
+            List<string> target = peerId != null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).Where(id => UMI3DCollaborationClientServer.Identity.userId != id).ToList();
             target.Add(UMI3DGlobalID.ServerId);
             Send(dto, target, dataType, reliable);
         }
@@ -274,7 +273,7 @@ namespace umi3d.cdk.collaboration
         {
             List<string> target = new List<string>() { UMI3DGlobalID.ServerId };
 
-            Send(dto, target, DataType.Audio, false);
+            Send(dto, target, DataType.Data, false);
         }
 
         void Send(UMI3DDto content, List<string> target, DataType dataType, bool reliable, bool useWebrtc = true)

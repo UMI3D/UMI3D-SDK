@@ -25,5 +25,11 @@ namespace umi3d.common.interaction
         /// Id of the tool to project.
         /// </summary>
         public string toolId;
+
+        /// <summary>
+        /// Can the client choose to release the tool.
+        /// if false, the only way of releasing it is through a ReleaseToolDto.
+        /// </summary>
+        public bool releasable;
     }
 }

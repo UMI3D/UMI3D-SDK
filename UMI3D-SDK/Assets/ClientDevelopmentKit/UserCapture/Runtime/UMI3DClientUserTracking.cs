@@ -46,7 +46,7 @@ namespace umi3d.cdk.userCapture
         protected UserCameraPropertiesDto CameraPropertiesDto;
         protected bool hasCameraChanged;
 
-
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();

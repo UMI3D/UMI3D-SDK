@@ -61,7 +61,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="collider">collider.</param>
         /// <returns></returns>
-        public static string GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k=>(k.Value as UMI3DNodeInstance).colliders.Any(c=>c==collider)).Key : null; }
+        public static string GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : null; }
 
         /// <summary>
         /// Register a node instance.
@@ -146,6 +146,7 @@ namespace umi3d.cdk
         public GlTFNodeLoader nodeLoader { get; private set; }
 
 
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -283,7 +284,7 @@ namespace umi3d.cdk
                 count += 1;
                 UMI3DNodeInstance node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject,()=> { count -= 1; instantiatedNodes += 1; }, (s) => { count -= 1; Debug.LogWarning(s); });
+                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 1; }, (s) => { count -= 1; Debug.LogWarning(s); });
                 node.gameObject.SetActive(true);
             }
             yield return new WaitUntil(() => count <= 0);
@@ -301,7 +302,7 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         static public void LoadEntity(IEntity entity, Action performed)
         {
-            if(Exists)Instance._LoadEntity( entity, performed);
+            if (Exists) Instance._LoadEntity(entity, performed);
         }
 
         /// <summary>
@@ -334,7 +335,7 @@ namespace umi3d.cdk
                     Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
                     {
 
-                        if(matDto.name != null && matDto.name.Length>0)
+                        if (matDto.name != null && matDto.name.Length > 0)
                             m.name = matDto.name;
                         //register the material
                         RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
@@ -362,11 +363,11 @@ namespace umi3d.cdk
                 UMI3DEntityInstance entity = Instance.entities[entityId];
                 if (entity is UMI3DNodeInstance)
                 {
-                    if(entity.dto is GlTFSceneDto)
+                    if (entity.dto is GlTFSceneDto)
                     {
                         var sceneDto = (entity.dto as GlTFSceneDto).extensions.umi3d;
-                        foreach(var library in sceneDto.LibrariesId)
-                            UMI3DResourcesManager.UnloadLibrary(library,sceneDto.id);
+                        foreach (var library in sceneDto.LibrariesId)
+                            UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
                     }
 
                     UMI3DNodeInstance node = entity as UMI3DNodeInstance;
@@ -388,7 +389,7 @@ namespace umi3d.cdk
         /// </summary>
         static public void Clear()
         {
-            foreach(var entity in Instance.entities.ToList().Select(p=> { return p.Key; }))
+            foreach (var entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
                 DeleteEntity(entity, null);
             }
@@ -406,7 +407,7 @@ namespace umi3d.cdk
             if (extension != null)
             {
                 foreach (var scene in extension.preloadedScenes)
-                    Parameters.ReadUMI3DExtension(scene,node,null,null);
+                    Parameters.ReadUMI3DExtension(scene, node, null, null);
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor;
                 RenderSettings.ambientEquatorColor = extension.horizontalColor;
@@ -462,7 +463,8 @@ namespace umi3d.cdk
         {
             if (!Exists) return false;
             var node = UMI3DEnvironmentLoader.GetEntity(dto.entityId);
-            if (node == null) {
+            if (node == null)
+            {
                 Instance.StartCoroutine(Instance._SetEntity(dto));
                 return false;
             }
@@ -479,7 +481,7 @@ namespace umi3d.cdk
             var wait = new WaitForFixedUpdate();
             UMI3DEntityInstance node = null;
             yield return wait;
-            while((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
+            while ((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
             {
                 yield return wait;
                 Debug.Log($"{dto.entityId} not found, will try again next fixed frame");

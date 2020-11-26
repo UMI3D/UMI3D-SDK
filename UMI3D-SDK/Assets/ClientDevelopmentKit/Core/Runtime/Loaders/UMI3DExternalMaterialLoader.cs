@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -23,6 +21,7 @@ namespace umi3d.cdk
 {
     public class UMI3DExternalMaterialLoader : AbstractUMI3DMaterialLoader
     {
+        ///<inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
         {
             if (gltfMatDto.extensions.umi3d is ExternalMaterialDto)
@@ -30,11 +29,12 @@ namespace umi3d.cdk
             return false;
         }
 
+        ///<inheritdoc/>
         public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
         {
             ExternalMaterialDto externalMat = dto.extensions.umi3d as ExternalMaterialDto;
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
-            if(externalMat != null)
+            if (externalMat != null)
             {
                 FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(externalMat.resource.variants);  // Peut etre ameliore
 
@@ -56,16 +56,16 @@ namespace umi3d.cdk
                        {
                            try
                            {
-                          //     ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
+                               //     ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
 
                                callback.Invoke(newMat);
                                ReadAdditionalShaderProperties(externalMat.shaderProperties, newMat);
                            }
                            catch
                            {
-                               Debug.LogError("Fail to load material : "+ url);
+                               Debug.LogError("Fail to load material : " + url);
                            }
-          
+
                        }
                        else
                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}");
@@ -79,7 +79,7 @@ namespace umi3d.cdk
                 }
 
 
-               
+
             }
             else
             {

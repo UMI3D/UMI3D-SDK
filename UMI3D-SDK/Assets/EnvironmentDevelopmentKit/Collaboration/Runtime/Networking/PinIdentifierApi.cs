@@ -25,6 +25,7 @@ namespace umi3d.edk.collaboration
         Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
         public string Pin = "defaultPin";
 
+        ///<inheritdoc/>
         public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
         {
             if (!PasswordMap.ContainsKey(login))

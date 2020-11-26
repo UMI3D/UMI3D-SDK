@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -32,7 +31,7 @@ namespace umi3d.edk.collaboration
         Action<string, DataType, bool, List<string>, byte[]> messageAction;
         UMI3DWebRTC client;
 
-        public UMI3DFakeWebRTC(UMI3DWebRTC client,Action<string, DataType,bool, List<string>, byte[]> messageAction)
+        public UMI3DFakeWebRTC(UMI3DWebRTC client, Action<string, DataType, bool, List<string>, byte[]> messageAction)
         {
             this.client = client;
             this.messageAction = messageAction;
