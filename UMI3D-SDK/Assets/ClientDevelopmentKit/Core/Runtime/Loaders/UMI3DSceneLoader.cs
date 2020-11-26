@@ -143,7 +143,7 @@ namespace umi3d.cdk
             return 1 - f;
         }
 
-        //..  
+        //.. 
         public bool SetUMI3DMaterialProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity != null && entity.Object is Material)
@@ -153,12 +153,14 @@ namespace umi3d.cdk
                 {
                     case UMI3DPropertyKeys.RoughnessFactor:
                 //        ((Material)entity.Object).SetFloat("_Roughness", (float)(double)property.value);
-                        ((Material)entity.Object).SetFloat("_Smoothness", RoughnessToSmoothness((float)(double)property.value)); 
+                  //      ((Material)entity.Object).SetFloat("_Smoothness", RoughnessToSmoothness((float)(double)property.value)); 
+                        ((Material)entity.Object).ApplyShaderProperty(MRTKShaderUtils.Smoothness, RoughnessToSmoothness((float)(double)property.value)); 
+
                         ((GlTFMaterialDto)entity.dto).pbrMetallicRoughness.roughnessFactor = (float)(double)property.value;
                         break;
 
                     case UMI3DPropertyKeys.MetallicFactor:
-                        ((Material)entity.Object).SetFloat("_Metallic", (float)(double)property.value);
+                        ((Material)entity.Object).ApplyShaderProperty(MRTKShaderUtils.Metallic, (float)(double)property.value);
                         ((GlTFMaterialDto)entity.dto).pbrMetallicRoughness.metallicFactor = (float)(double)property.value;
                         break;
 
@@ -168,7 +170,7 @@ namespace umi3d.cdk
                         break;
 
                     case UMI3DPropertyKeys.EmissiveFactor:
-                        ((Material)entity.Object).SetColor("_EmissionColor", ((SerializableColor)property.value));
+                        ((Material)entity.Object).ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ((SerializableColor)property.value));
                         ((GlTFMaterialDto)entity.dto).emissiveFactor = (Vector3)(Vector4)(Color)(SerializableColor)property.value;
                         break;
 
@@ -178,7 +180,7 @@ namespace umi3d.cdk
                         break;
 
                     case UMI3DPropertyKeys.NormalTexture:
-                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((ScalableTextureDto)property.value, MRTKShaderUtils.BumpMap, (Material)entity.Object);
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((ScalableTextureDto)property.value, MRTKShaderUtils.NormalMap, (Material)entity.Object);
                         ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).normalTexture = (ScalableTextureDto)property.value;
                         break;
 
@@ -226,14 +228,16 @@ namespace umi3d.cdk
                         break;
 
                     case UMI3DPropertyKeys.NormalTextureScale:
-                        ((Material)entity.Object).SetFloat("_BumpScale", (float)(double)property.value);
+                        ((Material)entity.Object).ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, (float)(double)property.value);
                         ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).normalTexture.scale = (float)(double)property.value;
                         break;
 
                     case UMI3DPropertyKeys.HeightTextureScale:
-                        Debug.LogWarning("Height Texture not supported");
-
+                        //Debug.LogWarning("Height Texture not supported");
+                        AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.BumpMap, (Material)entity.Object);
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).heightTexture = (ScalableTextureDto)property.value;
                         break;
+
 
                     case UMI3DPropertyKeys.ShaderProperties:
                         Debug.LogWarning("not totaly implemented");

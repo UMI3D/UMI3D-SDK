@@ -74,7 +74,7 @@ namespace MrtkShader
             (m, s, v) =>
             {
                 m.EnableKeyword("_CHANNEL_MAP");
-                m.EnableKeyword("_EMISSION");
+               // m.EnableKeyword("_EMISSION");
                 m.SetTexture(s.propertyName, v);
             });
 
