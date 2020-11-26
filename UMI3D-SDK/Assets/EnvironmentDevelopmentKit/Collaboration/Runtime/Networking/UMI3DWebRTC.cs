@@ -159,14 +159,14 @@ namespace umi3d.edk.collaboration
         public DataChannel GetChannel(UMI3DUser user, string label)
         {
             if (peers.ContainsKey(user.Id()))
-                return peers[user.Id()].FirstOrDefault(d => d.Label == label);
+                return peers[user.Id()].Find(d => d.Label == label);
             return null;
         }
 
         public DataChannel GetChannel(UMI3DUser user, DataType dataType, bool reliable)
         {
             if (peers.ContainsKey(user.Id()))
-                return peers[user.Id()].FirstOrDefault(d => d.type == dataType && d.reliable == reliable);
+                return peers[user.Id()].Find(d => d.type == dataType && d.reliable == reliable);
             return null;
         }
 
@@ -195,7 +195,7 @@ namespace umi3d.edk.collaboration
         public DataChannel OpenChannel(UMI3DUser user, string label, DataType type, bool reliable)
         {
             var connection = peers[user.Id()];
-            var datachannel = connection.FirstOrDefault(d => d.Label == label);
+            var datachannel = connection.Find(d => d.Label == label);
             if (datachannel != default)
             {
                 if (datachannel.type == type && datachannel.reliable == reliable) return datachannel;
@@ -225,8 +225,8 @@ namespace umi3d.edk.collaboration
         public void CloseChannel(UMI3DUser user, string label)
         {
             var connection = peers[user.Id()];
-            var datachannel = connection.FirstOrDefault(d => d.Label == label);
-            if (datachannel != default)
+            DataChannel datachannel;
+            if (connection.Find(d => d.Label == label,out datachannel))
             {
                 connection.RemoveDataChannel(datachannel);
             }
