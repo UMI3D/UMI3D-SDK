@@ -82,6 +82,9 @@ namespace umi3d.cdk
                     case UMI3DPropertyKeys.Rotation:
                         gltfDto.rotation = (SerializableVector4)property.value;
                         break;
+                    case UMI3DPropertyKeys.Scale:
+                        gltfDto.scale = (SerializableVector3)property.value;
+                        break;
                     default:
                         break;
                 }

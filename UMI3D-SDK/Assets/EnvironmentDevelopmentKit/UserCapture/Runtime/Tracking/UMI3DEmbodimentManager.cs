@@ -152,7 +152,7 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode embd = embodimentInstances[user.Id()];
 
-            DeleteEmbodimentObj(embd.Id());
+            DeleteEmbodimentObj(embd);
 
             Destroy(embd.transform.gameObject);
             embodimentInstances.Remove(user.Id());
@@ -165,8 +165,6 @@ namespace umi3d.edk.userCapture
         public void LoadAvatarNode(UMI3DAbstractNode node)
         {
             LoadEntity op = node.Register();
-            op += UMI3DEnvironment.GetEntities<UMI3DUser>();
-
             UMI3DServer.Dispatch(new Transaction
             {
                 Operations = new List<Operation> { op },
@@ -178,25 +176,21 @@ namespace umi3d.edk.userCapture
         /// Remove an Avatar Node with an important update
         /// </summary>
         /// <param name="id"></param>
-        protected void DeleteEmbodimentObj(string id)
+        protected void DeleteEmbodimentObj(UMI3DAvatarNode node)
         {
             transaction.Operations.RemoveAll(o =>
             {
                 if (o is SetEntityProperty)
                 {
-                    return (o as SetEntityProperty).entityId == id;
+                    return (o as SetEntityProperty).entityId == node.Id();
                 }
                 return false;
 
             });
 
-            DeleteEntity op = new DeleteEntity();
-            op.entityId = id;
-            op += UMI3DEnvironment.GetEntities<UMI3DUser>();
-
             UMI3DServer.Dispatch(new Transaction
             {
-                Operations = new List<Operation> { op },
+                Operations = new List<Operation> { node.GetDeleteEntity() },
                 reliable = true
             });
         }
