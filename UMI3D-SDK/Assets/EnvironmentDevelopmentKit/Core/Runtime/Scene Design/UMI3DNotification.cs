@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 
 namespace umi3d.edk
@@ -19,7 +18,7 @@ namespace umi3d.edk
             this.titleProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationTitle, title);
             this.contentProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationContent, content);
             this.durationProperty = new UMI3DAsyncProperty<float>(notificationId, UMI3DPropertyKeys.NotificationDuration, duration, null, PropertyEquality.FloatEquality);
-            this.icon2dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent,icon2d,(r,u)=>r.ToDto());
+            this.icon2dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon2d, (r, u) => r.ToDto());
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
 
@@ -99,16 +98,18 @@ namespace umi3d.edk
 
         public UMI3DAsyncProperty<UMI3DNode> objectIdProperty;
 
-        public UMI3DNotificationOnObject(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d, UMI3DNode objectId) : base(title, content,duration,icon2d,icon3d)
+        public UMI3DNotificationOnObject(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d, UMI3DNode objectId) : base(title, content, duration, icon2d, icon3d)
         {
             this.objectIdProperty = new UMI3DAsyncProperty<UMI3DNode>(Id(), UMI3DPropertyKeys.NotificationObjectId, objectId, (n, u) => n.Id());
         }
 
+        ///<inheritdoc/>
         protected override NotificationDto CreateDto()
         {
             return new NotificationOnObjectDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(NotificationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

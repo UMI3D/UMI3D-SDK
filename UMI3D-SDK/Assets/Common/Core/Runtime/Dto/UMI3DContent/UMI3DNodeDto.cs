@@ -23,5 +23,5 @@ namespace umi3d.common
         public bool yBillboard = false;
         public ColliderDto colliderDto = null;
     }
-    
+
 }

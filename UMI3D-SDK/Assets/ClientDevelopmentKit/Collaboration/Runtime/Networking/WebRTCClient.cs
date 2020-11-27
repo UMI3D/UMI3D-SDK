@@ -13,12 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+#if UNITY_WEBRTC
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.edk.collaboration;
 using Unity.WebRTC;
 using UnityEngine;
 
@@ -28,7 +27,7 @@ namespace umi3d.cdk.collaboration
     /// AbstractWebRtcClient implementation for a client
     /// </summary>
     /// <see cref="AbstractWebRtcClient"/>
-    public class WebRTCClient : AbstractWebRtcClient
+    public class WebRTCClient : AbstractWebRtcClient, IWebRTCClient
     {
         UMI3DCollaborationClientServer client;
 
@@ -36,7 +35,7 @@ namespace umi3d.cdk.collaboration
         /// Constructor.
         /// </summary>
         /// <param name="client">a reference to the server.</param>
-        public WebRTCClient(UMI3DCollaborationClientServer client) : base(client)
+        public WebRTCClient(UMI3DCollaborationClientServer client, EncoderType encoderType) : base(client, encoderType)
         {
             this.client = client;
         }
@@ -46,10 +45,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="channels">list of data channel.</param>
         /// <param name="dto">AudioDto.</param>
-        public void sendAudio(List<DataChannel> channels,AudioDto dto)
+        public void sendAudio(List<DataChannel> channels, AudioDto dto)
         {
             foreach (var c in channels)
-                c.dataChannel.Send(dto.ToBson());
+                c.Send(dto.ToBson());
         }
 
         /// <summary>
@@ -60,18 +59,7 @@ namespace umi3d.cdk.collaboration
         {
             foreach (var peer in peers.Values)
             {
-                foreach(var channel in peer.channels)
-                    if(channel.type == DataType.Audio)
-                    {
-                        if (channel?.dataChannel != null && channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
-                        {
-                            //Debug.Log($"Send via [{channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open}] {channel?.Label}:{channel?.dataChannel}");
-                            channel?.dataChannel?.Send(dto.ToBson());
-                        }
-                        //else
-                        //    Debug.Log($"Send via [False] {channel?.Label}:{channel?.dataChannel}");
-                        break;
-                    }
+                peer.Send(dto.ToBson(), false, DataType.Audio);
             }
         }
 
@@ -114,13 +102,13 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="connection"></param>
-        protected override void ChannelsToAddCreation(string uid, WebRTCconnection connection)
+        protected override void ChannelsToAddCreation(string uid, IWebRTCconnection connection)
         {
             base.ChannelsToAddCreation(uid, connection);
-            if(uid == UMI3DGlobalID.ServerId)
+            if (uid == UMI3DGlobalID.ServerId)
                 foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                    if(!connection.channels.Any(c => c.Label == channel.Label))
-                        connection.channels.Add(CreateDataChannel(channel, uid));
+                    if (!connection.Any(c => c.Label == channel.Label))
+                        connection.AddDataChannel(CreateDataChannel(channel, uid), false);
         }
 
         /// <summary>
@@ -130,7 +118,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">should the data channel be reliable or not</param>
         public void SendServer(UMI3DDto dto, bool reliable)
         {
-            peers[UMI3DGlobalID.ServerId].Send(dto.ToBson(),reliable);
+            peers[UMI3DGlobalID.ServerId].Send(dto.ToBson(), reliable);
         }
 
         /// <summary>
@@ -173,5 +161,12 @@ namespace umi3d.cdk.collaboration
         {
             client.Send(dto);
         }
+
+        ///<inheritdoc/>
+        protected override void OnConnectionDisconnected(string id)
+        {
+            Debug.Log($"client connection lost {id}");
+        }
     }
 }
+#endif

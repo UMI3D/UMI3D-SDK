@@ -55,7 +55,7 @@ namespace umi3d.cdk.menu.view
                 sub.Invoke(newValue);
             }
         }
-        
+
         /// <summary>
         /// Set menu item to display and initialise the display.
         /// </summary>

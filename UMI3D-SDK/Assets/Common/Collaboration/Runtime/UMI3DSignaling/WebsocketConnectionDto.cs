@@ -19,10 +19,14 @@ namespace umi3d.common.collaboration
     [System.Serializable]
     public class WebsocketConnectionDto : UMI3DDto
     {
-        public string IP;
-        public string Postfix;
-        public int Port;
+        public string iP;
+        public string postfix;
+        public int port;
         public string websocketUrl;
+        public string rtcReliableUrl;
+        public string rtcUnreliableUrl;
+
+        public IceServer[] iceServers;
 
         public WebsocketConnectionDto() : base() { }
 

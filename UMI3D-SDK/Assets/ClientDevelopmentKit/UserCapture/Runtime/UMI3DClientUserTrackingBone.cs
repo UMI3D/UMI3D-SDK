@@ -64,6 +64,7 @@ namespace umi3d.cdk.userCapture
 
         private void OnEnable()
         {
+            if (boneType == BoneType.None) return;
             if (instances.ContainsKey(boneType))
             {
                 if (gameObject.GetComponents<UMI3DClientUserTrackingBone>().Count() > 1)
@@ -73,6 +74,5 @@ namespace umi3d.cdk.userCapture
             }
             instances.Add(boneType, this);
         }
-
     }
 }

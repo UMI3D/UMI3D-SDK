@@ -15,9 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.edk.collaboration;
 using UnityEngine;
-using System.Collections.Generic;
 
 namespace umi3d.cdk.collaboration
 {
@@ -52,7 +50,7 @@ namespace umi3d.cdk.collaboration
                 if (!_audio.isPlaying) _audio.Play();
             }
         }
-        
+
 
         public void OnAudioRead(float[] data)
         {

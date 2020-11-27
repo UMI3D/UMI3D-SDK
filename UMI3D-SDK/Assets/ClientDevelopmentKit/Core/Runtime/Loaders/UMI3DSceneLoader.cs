@@ -27,7 +27,8 @@ namespace umi3d.cdk
     {
         UMI3DEnvironmentLoader EnvironementLoader;
 
-        public UMI3DSceneLoader(UMI3DEnvironmentLoader EnvironementLoader) {
+        public UMI3DSceneLoader(UMI3DEnvironmentLoader EnvironementLoader)
+        {
             this.EnvironementLoader = EnvironementLoader;
         }
 
@@ -42,9 +43,9 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
             go.transform.SetParent(EnvironementLoader.transform);
             //Load Materials
-            LoadSceneMaterials(dto, ()=> { EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
+            LoadSceneMaterials(dto, () => { EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
             //Load Nodes
-       //     EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount));
+            //     EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount));
         }
 
         /// <summary>
@@ -54,28 +55,28 @@ namespace umi3d.cdk
         /// <param name="dto"></param>
         public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
         {
-            base.ReadUMI3DExtension(dto, node,()=>
-            {
-                var sceneDto = dto as UMI3DSceneNodeDto;
-                if (sceneDto == null) return;
-                node.transform.localPosition = sceneDto.position;
-                node.transform.localRotation = sceneDto.rotation;
-                node.transform.localScale = sceneDto.scale;
-                foreach (var library in sceneDto.LibrariesId)
-                    UMI3DResourcesManager.LoadLibrary(library, null, sceneDto.id);
-                int count = 0;
-                if (sceneDto.otherEntities != null)
-                {
-                    foreach (var entity in sceneDto.otherEntities)
-                    {
-                        count++;
-                        UMI3DEnvironmentLoader.LoadEntity(entity, () => { count--; if (count == 0) finished.Invoke(); });
-                    }
-                }
+            base.ReadUMI3DExtension(dto, node, () =>
+             {
+                 var sceneDto = dto as UMI3DSceneNodeDto;
+                 if (sceneDto == null) return;
+                 node.transform.localPosition = sceneDto.position;
+                 node.transform.localRotation = sceneDto.rotation;
+                 node.transform.localScale = sceneDto.scale;
+                 foreach (var library in sceneDto.LibrariesId)
+                     UMI3DResourcesManager.LoadLibrary(library, null, sceneDto.id);
+                 int count = 0;
+                 if (sceneDto.otherEntities != null)
+                 {
+                     foreach (var entity in sceneDto.otherEntities)
+                     {
+                         count++;
+                         UMI3DEnvironmentLoader.LoadEntity(entity, () => { count--; if (count == 0) finished.Invoke(); });
+                     }
+                 }
 
-                if (count == 0)
-                    finished.Invoke();
-            },failed);
+                 if (count == 0)
+                     finished.Invoke();
+             }, failed);
         }
 
         /// <summary>
@@ -122,7 +123,7 @@ namespace umi3d.cdk
 
                     UMI3DEnvironmentLoader.Parameters.SelectMaterialLoader(material).LoadMaterialFromExtension(material, (m) =>
                     {
-                        if(material.name != null && material.name.Length > 0)
+                        if (material.name != null && material.name.Length > 0)
                             m.name = material.name;
                         //register the material
                         UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m);
@@ -143,7 +144,6 @@ namespace umi3d.cdk
             return 1 - f;
         }
 
-        //.. 
         public bool SetUMI3DMaterialProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity != null && entity.Object is Material)
@@ -257,7 +257,7 @@ namespace umi3d.cdk
                         {
                             case SetEntityDictionaryAddPropertyDto p:
                                 //  string key = (string)p.key;
-                                if(extension.shaderProperties.ContainsKey((string)p.key))
+                                if (extension.shaderProperties.ContainsKey((string)p.key))
                                 {
                                     extension.shaderProperties[(string)p.key] = p.value;
                                     Debug.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value");

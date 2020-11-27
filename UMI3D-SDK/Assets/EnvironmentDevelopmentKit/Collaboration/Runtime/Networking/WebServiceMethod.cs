@@ -62,7 +62,7 @@ namespace umi3d.edk.collaboration
                     methodInfo.Invoke(source, new object[] { sender, e, attribute.GetParametersFrom(uri) });
                 }
             }
-            catch(Exception ext)
+            catch (Exception ext)
             {
                 UnityEngine.Debug.LogException(ext);
 

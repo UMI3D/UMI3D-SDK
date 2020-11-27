@@ -34,12 +34,15 @@ namespace umi3d.cdk.collaboration
             AudioSource audio = GetComponent<AudioSource>();
             audio.clip = AudioClip.Create("microphone", 10 * FREQUENCY, mic.channels, FREQUENCY, false);
             audio.loop = true;
-            AudioUpdate = UMI3DCollaborationClientServer.Instance.WebRTCClient.sendAudio;
+            if (UMI3DCollaborationClientServer.Instance.WebRTCClient != null)
+                AudioUpdate = UMI3DCollaborationClientServer.Instance.WebRTCClient.sendAudio;
         }
 
         // Update is called once per frame
         void Update()
         {
+            if (AudioUpdate == null && UMI3DCollaborationClientServer.Instance.WebRTCClient != null)
+                AudioUpdate = UMI3DCollaborationClientServer.Instance.WebRTCClient.sendAudio;
             if ((pos = Microphone.GetPosition(null)) > 0)
             {
                 if (lastPos > pos) lastPos = 0;

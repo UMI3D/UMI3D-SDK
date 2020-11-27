@@ -24,7 +24,19 @@ namespace umi3d.edk.interaction
     public class UMI3DManipulation : AbstractInteraction
     {
         [System.Serializable]
-        public class ManipulationListener : UnityEvent<UMI3DUser, Vector3, Quaternion> { }
+        public class ManipulationListener : UnityEvent<ManipulationEventContent> { }
+
+        public class ManipulationEventContent : InteractionEventContent
+        {
+            public Vector3 translation;
+            public Quaternion rotation;
+
+            public ManipulationEventContent(UMI3DUser user, ManipulationRequestDto dto) : base(user, dto)
+            {
+                translation = dto.translation;
+                rotation = dto.rotation;
+            }
+        }
 
         /// <summary>
         /// Space referential.
@@ -78,9 +90,7 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case ManipulationRequestDto manip:
-                    var translation = manip.translation;
-                    var rotation = manip.rotation;
-                    onManipulated.Invoke(user, translation, rotation);
+                    onManipulated.Invoke(new ManipulationEventContent(user, manip));
                     break;
             }
         }

@@ -187,6 +187,7 @@ namespace umi3d.edk
             return new UITextDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

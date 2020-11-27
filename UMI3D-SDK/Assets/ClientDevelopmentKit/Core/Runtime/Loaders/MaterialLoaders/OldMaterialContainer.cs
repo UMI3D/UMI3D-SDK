@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace umi3d.cdk
 {
@@ -8,8 +6,7 @@ namespace umi3d.cdk
     {
         public Material[] oldMats
         {
-            get
-            {
+            get {
                 if (_oldMats == null)
                 {
                     InitOldMats();
@@ -18,7 +15,7 @@ namespace umi3d.cdk
             }
             set { _oldMats = value; }
         }
- 
+
 
         private Material[] _oldMats = null;
 

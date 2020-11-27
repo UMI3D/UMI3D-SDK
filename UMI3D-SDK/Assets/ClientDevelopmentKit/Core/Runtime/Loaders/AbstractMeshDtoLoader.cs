@@ -38,7 +38,7 @@ namespace umi3d.cdk
         /// <param name="fileAuthorization">Authorization</param>
         public virtual void SetCertificate(UnityWebRequest www, string fileAuthorization)
         {
-            if (fileAuthorization != null && fileAuthorization != "" )
+            if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
                 authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
@@ -67,7 +67,7 @@ namespace umi3d.cdk
         /// Spread recursively transform layer to all is childrens.
         /// </summary>
         /// <param name="transform">Transform</param>
-        public static void ApplyParentLayerInChildren( Transform transform)
+        public static void ApplyParentLayerInChildren(Transform transform)
         {
             int layer = transform.gameObject.layer;
             foreach (Transform child in transform)

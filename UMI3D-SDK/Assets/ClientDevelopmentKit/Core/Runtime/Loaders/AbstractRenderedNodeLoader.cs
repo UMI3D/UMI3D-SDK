@@ -11,6 +11,7 @@ namespace umi3d.cdk
     public class AbstractRenderedNodeLoader : UMI3DNodeLoader
     {
 
+        ///<inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -32,12 +33,12 @@ namespace umi3d.cdk
                         SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
 
                         //apply submodel overrider if subojects are tracked
-                        if (extension is UMI3DMeshNodeDto && ((UMI3DMeshNodeDto) extension).areSubobjectsTracked)
+                        if (extension is UMI3DMeshNodeDto && ((UMI3DMeshNodeDto)extension).areSubobjectsTracked)
                         {
                             foreach (UMI3DNodeInstance subNode in ((UMI3DNodeInstance)entity).subNodeInstances)
                             {
                                 SubModelDto subMeshdto = ((GlTFNodeDto)subNode.dto)?.extensions?.umi3d as SubModelDto;
-                                if(subMeshdto.ignoreModelMaterialOverride)
+                                if (subMeshdto.ignoreModelMaterialOverride)
                                     RevertToOriginalMaterial(subNode);
 
                                 SetMaterialOverided(subMeshdto, subNode);
@@ -69,11 +70,11 @@ namespace umi3d.cdk
                                 if (extension.applyCustomMaterial)
                                 {
                                     var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
-                                    SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)); 
+                                    SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
                                 }
 
                             }
-                     //       
+                            //       
                             break;
                         case SetEntityListRemovePropertyDto removeProperty:
 
@@ -81,9 +82,9 @@ namespace umi3d.cdk
                             {
                                 RevertOneOverrider((UMI3DNodeInstance)entity, (UMI3DRenderedNodeDto.MaterialOverrideDto)removeProperty.value);
                                 extension.overridedMaterials.RemoveAt(removeProperty.index);
-                                
+
                                 SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId)); // necessary if multiples overriders override the same removed material
-                                
+
                             }
                             else
                             {
@@ -285,7 +286,7 @@ namespace umi3d.cdk
 
         protected List<Renderer> GetChildRenderersWhithoutOtherModel(UMI3DNodeInstance node)
         {
-            if(((GlTFNodeDto)node.dto).extensions.umi3d is UMI3DMeshNodeDto)
+            if (((GlTFNodeDto)node.dto).extensions.umi3d is UMI3DMeshNodeDto)
                 return node.renderers;
             if (((GlTFNodeDto)node.dto).extensions.umi3d is SubModelDto)
             {
@@ -298,7 +299,7 @@ namespace umi3d.cdk
                 Debug.LogWarning("that should not append");
                 return node.renderers;
             }
-            
+
             Debug.LogError("RendererNodeLoader used for non rendered node");
             return new List<Renderer>();
         }

@@ -13,23 +13,25 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+#if UNITY_WEBRTC
 using MainThreadDispatcher;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.common.collaboration
 {
-    public abstract class AbstractWebRtcClient
+    public abstract class AbstractWebRtcClient : IAbstractWebRtcClient
     {
+
+        public IceServer[] iceServers;
+
         MonoBehaviour behaviour;
         Coroutine WebrtcCoroutine;
 
-        public Dictionary<string, WebRTCconnection> peers;
+        public Dictionary<string, IWebRTCconnection> peers;
         public Dictionary<string, List<DataChannel>> peersDataChanelToAdd;
 
         static bool webrtcRunning = false;
@@ -37,13 +39,13 @@ namespace umi3d.common.collaboration
 
         public class RtcMessageListener : UnityEvent<string, byte[], DataChannel> { }
 
-        public AbstractWebRtcClient(MonoBehaviour behaviour)
+        public AbstractWebRtcClient(MonoBehaviour behaviour, EncoderType encoderType)
         {
             this.behaviour = behaviour;
-            peers = new Dictionary<string, WebRTCconnection>();
+            peers = new Dictionary<string, IWebRTCconnection>();
             if (!webrtcRunning)
             {
-                WebRTC.Initialize();
+                WebRTC.Initialize(encoderType);
                 webrtcRunning = true;
             }
             if (!webrtcUpdating)
@@ -67,7 +69,7 @@ namespace umi3d.common.collaboration
             foreach (var p in peers)
             {
                 i++;
-                var dc = new DataChannel(dataBase);
+                var dc = new WebRTCDataChannel(dataBase);
                 dc.OnCreated += () => OnDataChannelCreated(dc, p.Key);
                 channels.Add(dc);
                 p.Value.AddDataChannel(dc);
@@ -77,7 +79,7 @@ namespace umi3d.common.collaboration
 
         public virtual DataChannel Add(string uid, DataChannel dataBase)
         {
-            var dc = new DataChannel(dataBase);
+            var dc = new WebRTCDataChannel(dataBase);
             dc.OnCreated += () => OnDataChannelCreated(dc, uid);
             peers[uid].AddDataChannel(dc);
             return dc;
@@ -117,70 +119,63 @@ namespace umi3d.common.collaboration
         /// <param name="dto"></param>
         public virtual void HandleMessage(RTCDto dto)
         {
-            if (dto is OfferDto)
+
+            switch (dto)
             {
-                var offer = dto as OfferDto;
-                OnRtcOffer(offer);
-            }
-            else if (dto is AnswerDto)
-            {
-                var answer = dto as AnswerDto;
-                OnRtcAnswer(answer);
-            }
-            else if (dto is CandidateDto)
-            {
-                var candidate = dto as CandidateDto;
-                OnRtcIceCandidate(candidate);
-            }
-            else if (dto is LeaveDto)
-            {
-                if (peers.ContainsKey(dto.sourceUser))
-                    peers.Remove(dto.sourceUser);
-            }
-            else if (dto is RTCConnectionDTO)
-            {
-                if (!peers.ContainsKey(dto.sourceUser))
-                {
-                    WebRTCconnection rtc = CreateWebRtcConnection(dto.sourceUser, true);
-                    peers.Add(dto.sourceUser, rtc);
-                    rtc.Offer();
-                }
-            }
-            else if (dto is RTCCloseConnectionDto)
-            {
-                if (peers.ContainsKey(dto.sourceUser))
-                {
-                    peers[dto.sourceUser].Close();
-                    peers.Remove(dto.sourceUser);
-                }
-            }
-            else if (dto is RTCDataChannelDto)
-            {
-                var dcDto = dto as RTCDataChannelDto;
-                var otherId = dto.sourceUser == GetUID() ? dto.targetUser : dto.sourceUser;
-                if (peers.ContainsKey(otherId))
-                {
-                    var dc = peers[otherId].channels.Find((dc2) => dcDto.Label == dc2.Label);
-                    if (dc != null)
+                case OfferDto offer:
+                    OnRtcOffer(offer);
+                    break;
+                case AnswerDto answer:
+                    OnRtcAnswer(answer);
+                    break;
+                case CandidateDto candidate:
+                    OnRtcIceCandidate(candidate);
+                    break;
+                case LeaveDto _:
+                    if (peers.ContainsKey(dto.sourceUser))
+                        peers.Remove(dto.sourceUser);
+                    break;
+                case RTCConnectionDTO _:
+                    if (!peers.ContainsKey(dto.sourceUser))
                     {
-                        dc.type = dcDto.type;
-                        dc.reliable = dcDto.reliable;
+                        IWebRTCconnection rtc = CreateWebRtcConnection(dto.sourceUser, true);
+                        peers.Add(dto.sourceUser, rtc);
+                        rtc.Offer();
+                    }
+                    break;
+                case RTCCloseConnectionDto _:
+                    if (peers.ContainsKey(dto.sourceUser))
+                    {
+                        peers[dto.sourceUser].Close();
+                        peers.Remove(dto.sourceUser);
+                    }
+                    break;
+                case RTCDataChannelDto dcDto:
+                    var otherId = dto.sourceUser == GetUID() ? dto.targetUser : dto.sourceUser;
+                    if (peers.ContainsKey(otherId))
+                    {
+                        var dc = peers[otherId].Find((dc2) => dcDto.Label == dc2.Label);
+                        if (dc != null)
+                        {
+                            dc.type = dcDto.type;
+                            dc.reliable = dcDto.reliable;
+                        }
+                        else
+                        {
+                            peers[otherId].AddDataChannel(CreateDataChannel(new WebRTCDataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
+                        }
                     }
                     else
                     {
-                        peers[otherId].AddDataChannel(CreateDataChannel(new DataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
+                        if (peersDataChanelToAdd == null) peersDataChanelToAdd = new Dictionary<string, List<DataChannel>>();
+                        if (!peersDataChanelToAdd.ContainsKey(otherId)) { peersDataChanelToAdd[otherId] = new List<DataChannel>(); }
+                        peersDataChanelToAdd[otherId].Add(CreateDataChannel(new WebRTCDataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
                     }
-                }
-                else
-                {
-                    if (peersDataChanelToAdd == null) peersDataChanelToAdd = new Dictionary<string, List<DataChannel>>();
-                    if (!peersDataChanelToAdd.ContainsKey(otherId)) { peersDataChanelToAdd[otherId] = new List<DataChannel>(); }
-                    peersDataChanelToAdd[otherId].Add(CreateDataChannel(new DataChannel(dcDto.Label, dcDto.reliable, dcDto.type), otherId));
-                }
-            }
-            else
-            {
-                Debug.LogError("other :" + dto);
+
+                    break;
+                default:
+                    Debug.LogError("other :" + dto);
+                    break;
             }
         }
 
@@ -196,7 +191,7 @@ namespace umi3d.common.collaboration
             RTCSessionDescription description = new RTCSessionDescription();
             description.sdp = offer.sdp;
             description.type = RTCSdpType.Offer;
-            UnityMainThreadDispatcher.Instance().Enqueue(peers[offer.sourceUser].CreateAnswer(description));
+            UnityMainThreadDispatcher.Instance().Enqueue((peers[offer.sourceUser] as WebRTCconnection).CreateAnswer(description));
         }
 
         /// <summary>
@@ -206,7 +201,7 @@ namespace umi3d.common.collaboration
         protected virtual void OnRtcAnswer(AnswerDto answer)
         {
             if (peers.ContainsKey(answer.sourceUser))
-                peers[answer.sourceUser].SetRemoteSession(answer.sdp);
+                (peers[answer.sourceUser] as WebRTCconnection).SetRemoteSession(answer.sdp);
             else
                 throw new ArgumentException("Received answer from unknown peer.");
         }
@@ -223,7 +218,7 @@ namespace umi3d.common.collaboration
             candidate.candidate = c.candidate;
             candidate.sdpMid = c.sdpMid;
             candidate.sdpMLineIndex = c.sdpMLineIndex;
-            peers[c.sourceUser].AddIceCandidate(candidate);
+            (peers[c.sourceUser] as WebRTCconnection).AddIceCandidate(candidate);
         }
 
         /// <summary>
@@ -237,15 +232,18 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="uid"></param>
         /// <returns></returns>
-        protected WebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
+        protected virtual IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
         {
             WebRTCconnection connection = new WebRTCconnection();
+            //Debug.Log($"{ iceServers} { iceServers.Count()}");
+            connection.iceServers = iceServers;
             connection.onIceCandidate += arg => OnIceCandidate(arg, uid);
             connection.onAnswerCreated += arg => OnRtcAnswer(arg, uid);
             connection.onOfferCreated += arg => OnRtcOffer(arg, uid);
             connection.onMessage += (bytes, channel) => OnRtcMessage(uid, bytes, channel);
             connection.onDataChannelOpen += OnRtcDataChannelOpen;
             connection.onDataChannelClose += OnRtcDataChannelClose;
+            connection.onDisconected += () => OnConnectionDisconnected(uid);
             connection.logPrefix = GetLogPrefix();
             connection.channels = new List<DataChannel>();
             ChannelsToAddCreation(uid, connection);
@@ -258,11 +256,11 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="uid">peer id</param>
         /// <param name="connection"></param>
-        protected virtual void ChannelsToAddCreation(string uid, WebRTCconnection connection)
+        protected virtual void ChannelsToAddCreation(string uid, IWebRTCconnection connection)
         {
             foreach (var channel in WebRtcChannels.defaultPeerToPeerChannels)
-                if (!connection.channels.Any(c => c.Label == channel.Label))
-                    connection.channels.Add(CreateDataChannel(channel, uid));
+                if (!connection.Any(c => c.Label == channel.Label))
+                    connection.AddDataChannel(CreateDataChannel(channel, uid), false);
             List<DataChannel> otherChannels = null;
             if (peersDataChanelToAdd != null && peersDataChanelToAdd.ContainsKey(uid))
             {
@@ -271,8 +269,8 @@ namespace umi3d.common.collaboration
             }
             if (otherChannels != null)
                 foreach (var channel in otherChannels)
-                    if (!connection.channels.Any(c => c.Label == channel.Label))
-                        connection.channels.Add(CreateDataChannel(channel, uid));
+                    if (!connection.Any(c => c.Label == channel.Label))
+                        connection.AddDataChannel(CreateDataChannel(channel, uid), false);
 
         }
 
@@ -283,7 +281,7 @@ namespace umi3d.common.collaboration
         /// <returns></returns>
         protected virtual DataChannel CreateDataChannel(DataChannel Base, string uid)
         {
-            DataChannel dc = new DataChannel(Base);
+            DataChannel dc = new WebRTCDataChannel(Base);
             dc.OnCreated += () => OnDataChannelCreated(dc, uid);
             dc.OnOpen += () => UnityMainThreadDispatcher.Instance().Enqueue(SendStack(dc));
             return dc;
@@ -292,6 +290,7 @@ namespace umi3d.common.collaboration
         System.Collections.IEnumerator SendStack(DataChannel dataChannel)
         {
             yield return new WaitForFixedUpdate();
+            yield return new WaitUntil(() => dataChannel.State == ChannelState.Open);
             dataChannel.SendStack();
         }
 
@@ -344,6 +343,8 @@ namespace umi3d.common.collaboration
             WebSocketSend(msg, uid);
         }
 
+        protected abstract void OnConnectionDisconnected(string id);
+
         protected abstract void OnRtcDataChannelOpen(DataChannel channel);
 
         protected abstract void OnRtcDataChannelClose(DataChannel channel);
@@ -382,41 +383,16 @@ namespace umi3d.common.collaboration
                 peers[peerId].Send(dto.ToBson(), reliable, dataType);
         }
 
-        /// <summary>
-        /// Send a Message to all peers
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="reliable"></param>
-        public virtual void Send(string message, bool reliable, string peerId = null)
-        {
-            if (peerId == null)
-                foreach (var connection in peers.Values)
-                    connection.Send(message, reliable);
-            else if (peers.ContainsKey(peerId))
-                peers[peerId].Send(message, reliable);
-        }
-
-        /// <summary>
-        /// Send Message to a list of dataChannel
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="dataChannels"></param>
-        public virtual void Send(string message, List<DataChannel> dataChannels)
-        {
-            foreach (var dataChannel in dataChannels)
-                dataChannel.dataChannel.Send(message);
-        }
-
-        /// <summary>
-        /// Send Message to a list of dataChannel
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <param name="dataChannels"></param>
-        public virtual void Send(byte[] bytes, List<DataChannel> dataChannels)
-        {
-            foreach (var dataChannel in dataChannels)
-                dataChannel.dataChannel.Send(bytes);
-        }
+        ///// <summary>
+        ///// Send Message to a list of dataChannel
+        ///// </summary>
+        ///// <param name="bytes"></param>
+        ///// <param name="dataChannels"></param>
+        //public virtual void Send(byte[] bytes, List<DataChannel> dataChannels)
+        //{
+        //    foreach (var dataChannel in dataChannels)
+        //        dataChannel.Send(bytes);
+        //}
 
         /// <summary>
         /// Find all existing matching channel. 
@@ -474,3 +450,4 @@ namespace umi3d.common.collaboration
         }
     }
 }
+#endif

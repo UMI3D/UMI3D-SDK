@@ -15,12 +15,10 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
-using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
@@ -135,7 +133,7 @@ namespace umi3d.cdk
             var renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
 
-            foreach(var renderer in renderers)
+            foreach (var renderer in renderers)
             {
                 renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 renderer.receiveShadows = dto.receiveShadow;
@@ -147,10 +145,10 @@ namespace umi3d.cdk
             ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
-           
+
         }
 
-    
+
 
     }
 

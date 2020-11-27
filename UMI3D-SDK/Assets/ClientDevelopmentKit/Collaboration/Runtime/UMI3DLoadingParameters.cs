@@ -69,7 +69,7 @@ namespace umi3d.cdk
                     PreloadedSceneLoader.ReadUMI3DExtension(ps, node, finished, failed);
                     break;
                 case InteractableDto i:
-                    UMI3DInteractableLoader.ReadUMI3DExtension(i,node,finished,failed);
+                    UMI3DInteractableLoader.ReadUMI3DExtension(i, node, finished, failed);
                     break;
                 case ToolboxDto t:
                     UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
@@ -93,7 +93,7 @@ namespace umi3d.cdk
                     nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
             }
-            
+
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity,property))
+            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -135,7 +135,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.ChooseVariant(AssetLibraryDto)"/>
+        ///<inheritdoc/>
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {
             UMI3DLocalAssetDirectory res = null;
@@ -173,14 +173,14 @@ namespace umi3d.cdk
             return false;
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.ChooseVariante(List{FileDto})"/>
+        ///<inheritdoc/>
         public override FileDto ChooseVariante(List<FileDto> files)
         {
             FileDto res = null;
             foreach (var file in files)
             {
                 bool ok = res == null;
-                if(!ok && supportedformats.Contains(file.format))
+                if (!ok && supportedformats.Contains(file.format))
                 {
                     if (!supportedformats.Contains(res.format))
                         ok = true;
@@ -196,7 +196,7 @@ namespace umi3d.cdk
             return res;
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.SelectLoader(string)"/>
+        ///<inheritdoc/>
         public override IResourcesLoader SelectLoader(string extension)
         {
             foreach (IResourcesLoader loader in ResourcesLoaders)
@@ -210,6 +210,7 @@ namespace umi3d.cdk
             return null;
         }
 
+        ///<inheritdoc/>
         public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
         {
             foreach (AbstractUMI3DMaterialLoader loader in MaterialLoaders)
@@ -221,7 +222,7 @@ namespace umi3d.cdk
             return null;
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.loadSkybox(ResourceDto)"/>
+        ///<inheritdoc/>
         public override void loadSkybox(ResourceDto skybox)
         {
             FileDto fileToLoad = ChooseVariante(skybox.variants);
@@ -293,17 +294,17 @@ namespace umi3d.cdk
                     );
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.UnknownOperationHandler(AbstractOperationDto, Action)"/>
+        ///<inheritdoc/>
         public override void UnknownOperationHandler(AbstractOperationDto operation, Action performed)
         {
             switch (operation)
             {
                 case SwitchToolDto switchTool:
-                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, switchTool.releasable, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ProjectToolDto projection:
-                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, projection.releasable, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ReleaseToolDto release:

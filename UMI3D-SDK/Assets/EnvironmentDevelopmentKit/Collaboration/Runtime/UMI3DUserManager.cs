@@ -34,18 +34,19 @@ namespace umi3d.edk.collaboration
         Dictionary<string, UMI3DCollaborationUser> users = new Dictionary<string, UMI3DCollaborationUser>();
         Dictionary<string, string> loginMap = new Dictionary<string, string>();
 
-        UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList;
-        public UMI3DAsyncListProperty<UMI3DCollaborationUser> ObjectUserList
+        UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
+
+        public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
             get {
-                if (objectUserList == null) objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => u.ToUserDto());
-                return objectUserList;
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => u.ToUserDto());
+                return _objectUserList;
             }
         }
 
         public List<UserDto> Todo()
         {
-            return ObjectUserList.GetValue().Select(u=>u.ToUserDto()).ToList();
+            return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
         }
 
 
@@ -81,7 +82,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        
+
 
         public void Logout(UMI3DCollaborationUser user)
         {
@@ -96,14 +97,15 @@ namespace umi3d.edk.collaboration
 
         public IEnumerator ConnectionClose(string id)
         {
+            Debug.Log($"connection close {id}");
             if (users.ContainsKey(id))
             {
                 var user = users[id];
                 user.SetStatus(StatusType.MISSING);
             }
+            else Debug.Log($"{id} not found");
             yield break;
         }
-
 
         public void CreateUser(string Login, UMI3DWebSocketConnection connection, Action<UMI3DCollaborationUser, bool> Callback)
         {
@@ -118,7 +120,7 @@ namespace umi3d.edk.collaboration
             else
             {
                 user = new UMI3DCollaborationUser(Login, connection);
-               
+
                 users.Add(user.Id(), user);
             }
             Callback.Invoke(user, reconnection);
@@ -131,7 +133,7 @@ namespace umi3d.edk.collaboration
 
         public void NotifyUserStatusChanged(UMI3DCollaborationUser user)
         {
-            if(user != null)
+            if (user != null)
                 UnityMainThreadDispatcher.Instance().Enqueue(UpdateUser(user));
         }
 
@@ -139,19 +141,19 @@ namespace umi3d.edk.collaboration
         IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { ObjectUserList.Add(user) } });
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Add(user) } });
         }
 
         IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { ObjectUserList.Remove(user) } });
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Remove(user) } });
         }
 
         IEnumerator UpdateUser(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            int index = ObjectUserList.GetValue().IndexOf(user);
+            int index = objectUserList.GetValue().IndexOf(user);
             var operation = new SetEntityListProperty()
             {
                 users = new HashSet<UMI3DUser>() { },

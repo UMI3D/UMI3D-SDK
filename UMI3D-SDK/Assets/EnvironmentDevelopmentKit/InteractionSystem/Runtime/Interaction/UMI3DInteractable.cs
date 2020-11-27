@@ -32,6 +32,7 @@ namespace umi3d.edk.interaction
         [SerializeField]
         protected UMI3DNode Node;
 
+        ///<inheritdoc/>
         public override LoadEntity Register()
         {
             base.Register();
@@ -76,34 +77,28 @@ namespace umi3d.edk.interaction
         public class HoverEvent : UnityEvent<HoverEventContent> { }
 
         [Serializable]
-        public class HoverEventContent
+        public class HoverEventContent : AbstractInteraction.InteractionEventContent
         {
-            public UMI3DUser user { get; private set; }
-            public string boneType { get; private set; }
             public Vector3 position { get; private set; }
             public Vector3 normal { get; private set; }
             public Vector3 direction { get; private set; }
-            public string hoveredId { get; private set; }
 
-            public HoverEventContent(UMI3DUser user, HoveredDto dto)
+            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
-                this.user = user;
-                boneType = dto.boneType;
                 position = dto.position;
                 normal = dto.normal;
                 direction = dto.direction;
-                hoveredId = dto.hoveredObjectId;
             }
         }
 
         [SerializeField]
-        public UMI3DUserBoneEvent onHoverEnter = new UMI3DUserBoneEvent();
+        public HoverEvent onHoverEnter = new HoverEvent();
 
         [SerializeField]
         public HoverEvent onHovered = new HoverEvent();
 
         [SerializeField]
-        public UMI3DUserBoneEvent onHoverExit = new UMI3DUserBoneEvent();
+        public HoverEvent onHoverExit = new HoverEvent();
 
         /// <summary>
         /// List of bones hovering this object (if any).
@@ -143,7 +138,7 @@ namespace umi3d.edk.interaction
             Idto.nodeId = objectNodeId.GetValue(user).Id();
         }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -163,8 +158,8 @@ namespace umi3d.edk.interaction
         }
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
-            if (dto.state) onHoverEnter.Invoke(user, dto.boneType, dto.toolId, dto.id);
-            else onHoverExit.Invoke(user, dto.boneType, dto.toolId, dto.id);
+            if (dto.state) onHoverEnter.Invoke(new HoverEventContent(user, dto));
+            else onHoverExit.Invoke(new HoverEventContent(user, dto));
         }
 
         public IEntity ToEntityDto(UMI3DUser user)

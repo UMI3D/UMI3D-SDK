@@ -28,6 +28,6 @@ namespace umi3d.common
         public float Width = 0.01f;
         public List<SerializableVector3> Points = new List<SerializableVector3>();
         public SerializableColor Color = UnityEngine.Color.gray;
-        
+
     }
 }

@@ -35,7 +35,7 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>() { ".mtl" };
         }
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
+        ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();
@@ -46,7 +46,8 @@ namespace umi3d.cdk
             objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions,UMI3DEnvironmentLoader.Instance.GetBaseMaterial());
 
 
-            objImporter.ImportingComplete += () => {
+            objImporter.ImportingComplete += () =>
+            {
                 try
                 {
                     HideModelRecursively(createdObj);
@@ -57,7 +58,7 @@ namespace umi3d.cdk
                 }
                 catch
                 {
-                    failCallback("Importing failed with : "+url);
+                    failCallback("Importing failed with : " + url);
                 }
                 GameObject.Destroy(objImporter.gameObject, 1);
             };
@@ -79,7 +80,7 @@ namespace umi3d.cdk
                 authorization = authorization,
                 zUp = false,
                 hideWhileLoading = true,
-                
+
             };
         }
 

@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using umi3d.common;
-using umi3d.edk;
-using UnityEngine;
+﻿using umi3d.common;
 
 
 namespace umi3d.edk
@@ -29,19 +25,19 @@ namespace umi3d.edk
         public new TextureDto ToDto()
         {
             TextureDto res = new TextureDto();
-            var resource = base.ToDto() ;
+            var resource = base.ToDto();
             res.variants = resource.variants;
             res.animationId = animationId;
             res.audioSourceId = audioSourceId;
             res.streamingFromUserId = streamingFromUserId;
             return res;
         }
-/*
-        public static implicit operator TextureDto (UMI3DTextureResource r)
-        {
-            return r.ToDto();
-        }
-        */
+        /*
+                public static implicit operator TextureDto (UMI3DTextureResource r)
+                {
+                    return r.ToDto();
+                }
+                */
     }
 
     [System.Serializable]
@@ -49,7 +45,7 @@ namespace umi3d.edk
     {
         public float scale = 1f;
 
-        public new ScalableTextureDto ToDto() 
+        public new ScalableTextureDto ToDto()
         {
             var textureDto = base.ToDto();
             return new ScalableTextureDto()

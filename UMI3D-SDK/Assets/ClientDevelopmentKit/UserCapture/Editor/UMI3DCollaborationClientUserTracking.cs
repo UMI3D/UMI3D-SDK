@@ -15,17 +15,8 @@ limitations under the License.
 */
 
 #if UNITY_EDITOR
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
-using System.Reflection;
-using System.Linq;
-using System;
-using umi3d.common.editor;
-using umi3d.common.userCapture;
-using umi3d.cdk.userCapture;
 using umi3d.cdk.collaboration;
+using UnityEditor;
 
 namespace umi3d.cdk.editor
 {
@@ -54,7 +45,7 @@ namespace umi3d.cdk.editor
             //constDisplayer = new ConstStringDisplayer(viewpointBonetype.name, typeof(BoneType), viewpointBonetype.stringValue);
         }
 
-        // Update is called once per frame
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(anchor);

@@ -160,7 +160,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="tool"> The ToolDto to be projected.</param>
         /// <see cref="Release(AbstractTool)"/>
-        public virtual void Project(AbstractTool tool, InteractionMappingReason reason)
+        public virtual void Project(AbstractTool tool, bool releasable, InteractionMappingReason reason, string hoveredObjectId)
         {
             if (!IsCompatibleWith(tool))
                 throw new System.Exception("Trying to project an uncompatible tool !");
@@ -173,7 +173,7 @@ namespace umi3d.cdk.interaction
             else
             {
                 AbstractInteractionDto[] interactions = tool.interactions.ToArray();
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id);
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id, hoveredObjectId);
                 associatedInputs.Add(tool.id, inputs);
             }
 

@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common.interaction;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -24,6 +26,51 @@ namespace umi3d.edk.interaction
     /// </summary>
     public abstract class AbstractInteraction : MonoBehaviour, UMI3DEntity
     {
+
+        /// <summary>
+        /// Class for event rising on Interaction. 
+        /// </summary>
+        [Serializable]
+        public class InteractionEvent : UnityEvent<InteractionEventContent> { }
+
+        /// <summary>
+        /// InteractionEvent Content. 
+        /// </summary>
+        [Serializable]
+        public class InteractionEventContent
+        {
+            /// <summary>
+            /// User who performed the interaction.
+            /// </summary>
+            public UMI3DUser user { get; private set; }
+            /// <summary>
+            /// Bonetype use to performe the interaction.
+            /// </summary>
+            public string boneType { get; private set; }
+            /// <summary>
+            /// The id of the currently hoverred object.
+            /// It will be always null for an Interaction inside a Tool.
+            /// For an Interaction inside an Interactable, it could be the Id of the Interactable associated object, or the Id of a sub-object if Interaction.notifyHoverPosition == true.
+            /// </summary>
+            public string hoveredId { get; private set; }
+            /// <summary>
+            /// Id of the tool.
+            /// </summary>
+            public string toolId { get; private set; }
+            /// <summary>
+            /// Id of the Interaction.
+            /// </summary>
+            public string interactionId { get; private set; }
+
+            public InteractionEventContent(UMI3DUser user, InteractionRequestDto dto)
+            {
+                this.user = user;
+                boneType = dto.boneType;
+                hoveredId = dto.hoveredObjectId;
+                toolId = dto.toolId;
+                interactionId = dto.id;
+            }
+        }
 
         #region properties
 

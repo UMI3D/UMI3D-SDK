@@ -25,6 +25,7 @@ namespace umi3d.edk
 
         public string entityId;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new DeleteEntityDto() { entityId = entityId };

@@ -79,7 +79,7 @@ namespace umi3d.cdk.interaction
         {
             var node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
             var interactable = UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as Interactable;
-            if(interactable == null)
+            if (interactable == null)
                 interactable = new Interactable(dto);
             node.gameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
         }

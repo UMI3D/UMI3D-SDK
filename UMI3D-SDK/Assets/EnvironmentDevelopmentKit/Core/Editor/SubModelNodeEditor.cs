@@ -16,10 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using umi3d.edk;
-using umi3d.common;
 
 namespace umi3d.edk.editor
 {
@@ -27,7 +24,7 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class SubModelNodeEditor : RenderedNodeEditor
     {
-
+        ///<inheritdoc/>
         protected override void InspectorForMeshCollider()
         {
             EditorGUILayout.PropertyField(isMeshCustom);

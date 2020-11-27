@@ -46,7 +46,7 @@ namespace umi3d.cdk.userCapture
         protected UserCameraPropertiesDto CameraPropertiesDto;
         protected bool hasCameraChanged;
 
-
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -90,7 +90,6 @@ namespace umi3d.cdk.userCapture
                 yield return null;
             }
 
-            Debug.LogWarning("DispatchCamera");
             UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
         }
 

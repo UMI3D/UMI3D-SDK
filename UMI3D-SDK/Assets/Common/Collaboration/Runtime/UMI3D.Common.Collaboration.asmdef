@@ -14,6 +14,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.webrtc",
+            "expression": "",
+            "define": "UNITY_WEBRTC"
+        }
+    ],
     "noEngineReferences": false
 }

@@ -43,7 +43,7 @@ namespace umi3d.cdk.menu.view
         /// <param name="newValue"></param>
         public void NotifyValueChange(string newValue)
         {
-            
+
             menuItem.NotifyValueChange(newValue);
             foreach (UnityAction<string> sub in subscribers)
             {

@@ -18,6 +18,6 @@ namespace umi3d.common.interaction
 {
     public class LinkOpened : InteractionRequestDto
     {
-        
+
     }
 }

@@ -23,7 +23,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader fot UMI3D Node
     /// </summary>
-    public class UMI3DNodeLoader: UMI3DAbstractNodeLoader
+    public class UMI3DNodeLoader : UMI3DAbstractNodeLoader
     {
         /// <summary>
         /// Load an umi3d node.
@@ -35,29 +35,29 @@ namespace umi3d.cdk
         public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
         {
 
-            base.ReadUMI3DExtension(dto, node,()=>
-            {
-                var nodeDto = dto as UMI3DNodeDto;
-                if (nodeDto != null)
-                {
-                    if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
-                    {
-                        SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
-                    }
+            base.ReadUMI3DExtension(dto, node, () =>
+             {
+                 var nodeDto = dto as UMI3DNodeDto;
+                 if (nodeDto != null)
+                 {
+                     if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
+                     {
+                         SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+                     }
 
-                    if (nodeDto.xBillboard || nodeDto.yBillboard)
-                    {
-                        var b = node.AddComponent<Billboard>();
-                        b.X = nodeDto.xBillboard;
-                        b.Y = nodeDto.yBillboard;
-                        node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
-                    }
+                     if (nodeDto.xBillboard || nodeDto.yBillboard)
+                     {
+                         var b = node.AddComponent<Billboard>();
+                         b.X = nodeDto.xBillboard;
+                         b.Y = nodeDto.yBillboard;
+                         node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
+                     }
 
-                    
-                    finished?.Invoke();
-                }
-                else failed?.Invoke("nodeDto should not be null");
-            }, failed);
+
+                     finished?.Invoke();
+                 }
+                 else failed?.Invoke("nodeDto should not be null");
+             }, failed);
         }
 
         /// <summary>
@@ -71,9 +71,27 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
 
-            if (!node.updatePose && property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation)
+            if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation || property.property == UMI3DPropertyKeys.Scale))
+            {
+                GlTFNodeDto gltfDto = (node.dto as GlTFNodeDto);
+                if (gltfDto == null) return false;
+                switch (property.property)
+                {
+                    case UMI3DPropertyKeys.Position:
+                        gltfDto.position = (SerializableVector3)property.value;
+                        break;
+                    case UMI3DPropertyKeys.Rotation:
+                        gltfDto.rotation = (SerializableVector4)property.value;
+                        break;
+                    case UMI3DPropertyKeys.Scale:
+                        gltfDto.scale = (SerializableVector3)property.value;
+                        break;
+                    default:
+                        break;
+                }
                 return true;
-            
+            }
+
             if (base.SetUMI3DProperty(entity, property)) return true;
 
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
@@ -380,7 +398,7 @@ namespace umi3d.cdk
                                 else
                                     Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
                                 Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
                             }

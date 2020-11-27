@@ -37,7 +37,7 @@ namespace umi3d.cdk.menu
 
 
         private bool pressedState = false;
-        
+
         /// <summary>
         /// Subscribers on value change
         /// </summary>
@@ -55,8 +55,8 @@ namespace umi3d.cdk.menu
             {
                 subscribers.Add(callback);
             }
-        }       
-        
+        }
+
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>

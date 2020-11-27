@@ -58,7 +58,7 @@ namespace umi3d.cdk.collaboration
         {
             var connection = UMI3DCollaborationClientServer.Media.connection as WebsocketConnectionDto;
             var socketUrl = connection.websocketUrl;// UMI3DClientServer.Media.connection;
-            
+
             socketUrl = socketUrl.Replace("http", "ws");
             ws = new WebSocket(socketUrl, UMI3DNetworkingKeys.websocketProtocol);
 
@@ -79,18 +79,20 @@ namespace umi3d.cdk.collaboration
 
             ws.OnError += (sender, e) =>
             {
-                UnityMainThreadDispatcher.Instance().Enqueue(onError("websocket error "+ e.Message));
+                UnityMainThreadDispatcher.Instance().Enqueue(onError("websocket error " + e.Message));
             };
 
             ws.OnClose += (sender, e) =>
             {
-                
-                UnityMainThreadDispatcher.Instance().Enqueue(onClosed("websocket close "+ e.Code + " " + e.Reason,e.Code));
+
+                UnityMainThreadDispatcher.Instance().Enqueue(onClosed("websocket close " + e.Code + " " + e.Reason, e.Code));
             };
 
-            if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous) {
+            if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous)
+            {
 
-                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login,password) => {
+                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login, password) =>
+                {
                     if (login == default || login == "")
                     {
                         login = "Default";
@@ -165,12 +167,13 @@ namespace umi3d.cdk.collaboration
         /// <param name="reason">Closure reason</param>
         /// <param name="code">Error code</param>
         /// <returns></returns>
-        protected IEnumerator onClosed(string reason,ushort code)
+        protected IEnumerator onClosed(string reason, ushort code)
         {
+            Debug.Log("close");
             if (reconnect && client.shouldReconnectWebsocket(code))
                 client.StartCoroutine(Reconnect());
             else
-                UMI3DCollaborationClientServer.Logout(null,null);
+                UMI3DCollaborationClientServer.Logout(null, null);
             yield return null;
         }
 
@@ -178,7 +181,7 @@ namespace umi3d.cdk.collaboration
         /// Send a UMI3DDto.
         /// </summary>
         /// <param name="obj"></param>
-        public void Send(UMI3DDto obj,Action<bool> MessageSendCallback = null)
+        public void Send(UMI3DDto obj, Action<bool> MessageSendCallback = null)
         {
             if (Connected() && obj != null)
             {

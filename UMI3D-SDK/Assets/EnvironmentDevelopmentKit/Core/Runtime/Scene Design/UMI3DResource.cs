@@ -27,7 +27,7 @@ namespace umi3d.edk
     {
         [SerializeField]
         public List<UMI3DResourceFile> variants = new List<UMI3DResourceFile>();
-        
+
         public ResourceDto ToDto()
         {
             var dto = new ResourceDto();

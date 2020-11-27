@@ -25,6 +25,7 @@ namespace umi3d.edk
 
         public UMI3DLoadableEntity entity;
 
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new LoadEntityDto()

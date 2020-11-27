@@ -16,13 +16,22 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+#if UNITY_WEBRTC
 using Unity.WebRTC;
+#endif
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
+    public enum ChannelState
+    {
+        Opening,
+        Open,
+        Close
+    }
+
     public class DataChannel
     {
-        public RTCDataChannel dataChannel;
         public string Label;
         public bool reliable;
         public DataType type;
@@ -31,34 +40,93 @@ namespace umi3d.common
         public Action OnCreated;
         public Action<byte[]> OnMessage;
         public List<byte[]> MessageNotSend = new List<byte[]>();
-        public bool IsOpen { get; private set; }
+        protected ChannelState state;
 
-        public DataChannel(string label, bool reliable, DataType type,Action onCreated = null, Action onOpen = null, Action onClose = null)
+        public ChannelState State
+        {
+            get {
+                CheckState();
+                return state;
+            }
+        }
+
+        protected virtual void CheckState() { }
+
+        public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
             Label = label;
             this.reliable = reliable;
             this.type = type;
-            IsOpen = false;
+            state = ChannelState.Opening;
             OnOpen = onOpen;
             OnClose = onClose;
         }
 
         public DataChannel(DataChannel channel)
         {
-            this.Label = channel.Label;
-            this.reliable = channel.reliable;
-            this.type = channel.type;
-            IsOpen = false;
+            Label = channel.Label;
+            reliable = channel.reliable;
+            type = channel.type;
+            state = ChannelState.Opening;
         }
 
-        public void Open() { OnOpen?.Invoke(); IsOpen = true; }
-        public void SendStack() {
-            foreach (byte[] msg in MessageNotSend) dataChannel.Send(msg);
+        public void Open() { OnOpen?.Invoke(); state = ChannelState.Open; }
+        public void SendStack()
+        {
+            foreach (byte[] msg in MessageNotSend) Send(msg);
             MessageNotSend.Clear();
         }
 
-        public void Close() { OnClose?.Invoke(); IsOpen = false; }
+        public virtual void Send(byte[] msg) { }
+
+        public virtual void Close() { }
+        public void Closed() { OnClose?.Invoke(); state = ChannelState.Close; }
         public void Created() { OnCreated?.Invoke(); }
-        public void Message(byte[] data) { OnMessage?.Invoke(data); }
+        public void Messaged(byte[] data) { OnMessage?.Invoke(data); }
+    }
+
+
+
+    public class WebRTCDataChannel : DataChannel
+    {
+#if UNITY_WEBRTC
+        public RTCDataChannel dataChannel;
+        ///<inheritdoc/>
+        protected override void CheckState()
+        {
+            if (dataChannel != null)
+            {
+                switch (dataChannel.ReadyState)
+                {
+                    case RTCDataChannelState.Connecting:
+                        state = ChannelState.Opening;
+                        break;
+                    case RTCDataChannelState.Open:
+                        state = ChannelState.Open;
+                        break;
+                    case RTCDataChannelState.Closing:
+                    case RTCDataChannelState.Closed:
+                        if (state != ChannelState.Close)
+                            Close();
+                        state = ChannelState.Close;
+                        break;
+                }
+            }
+        }
+#endif
+        public WebRTCDataChannel(DataChannel channel) : base(channel)
+        {
+        }
+
+        public WebRTCDataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        {
+        }
+
+#if UNITY_WEBRTC
+        ///<inheritdoc/>
+        public override void Send(byte[] msg) { dataChannel.Send(msg); }
+        ///<inheritdoc/>
+        public override void Close() { Debug.Log("close"); dataChannel.Close(); }
+#endif
     }
 }

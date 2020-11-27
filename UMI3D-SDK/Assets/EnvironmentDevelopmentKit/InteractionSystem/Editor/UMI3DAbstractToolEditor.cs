@@ -16,13 +16,11 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
-using System;
 using System.Linq;
 using umi3d.edk.interaction;
+using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -35,6 +33,10 @@ namespace umi3d.edk.editor
         SerializedProperty interactions;
         SerializedProperty display;
         ListDisplayer<AbstractInteraction> ListDisplayer;
+        SerializedProperty onProjection;
+        SerializedProperty onRelease;
+
+        static bool displayEvent = false;
 
         protected virtual void OnEnable()
         {
@@ -42,14 +44,17 @@ namespace umi3d.edk.editor
             _target = new SerializedObject(t);
             display = _target.FindProperty("Display");
             interactions = _target.FindProperty("Interactions");
+            onProjection = _target.FindProperty("onProjection");
+            onRelease = _target.FindProperty("onRelease");
             ListDisplayer = new ListDisplayer<AbstractInteraction>();
         }
 
         protected virtual void _OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(display);
-            ListDisplayer.Display(ref showList, interactions, t.Interactions, 
-                t => {
+            ListDisplayer.Display(ref showList, interactions, t.Interactions,
+                t =>
+                {
                     switch (t)
                     {
                         case AbstractInteraction i:
@@ -60,10 +65,18 @@ namespace umi3d.edk.editor
                             return null;
                     }
                 });
+
+            displayEvent = EditorGUILayout.Foldout(displayEvent, "Tool Events", true);
+            if (displayEvent)
+            {
+                EditorGUILayout.PropertyField(onProjection, true);
+                EditorGUILayout.PropertyField(onRelease, true);
+            }
         }
 
         static bool showList = true;
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             _target.Update();

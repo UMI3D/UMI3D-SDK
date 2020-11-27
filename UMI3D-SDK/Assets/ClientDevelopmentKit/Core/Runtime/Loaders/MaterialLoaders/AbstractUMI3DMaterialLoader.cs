@@ -15,7 +15,6 @@ limitations under the License.
 */
 using MrtkShader;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
@@ -131,10 +130,10 @@ namespace umi3d.cdk
                         var tex = (Texture2D)o;
                         if (tex != null)
                         {
-                        /*  if (textureDto is ScalableTextureDto)
-                          {
-                              tex.Resize((int)(tex.width * ((ScalableTextureDto)textureDto).scale), (int)(tex.height * ((ScalableTextureDto)textureDto).scale));
-                          }*/
+                            /*  if (textureDto is ScalableTextureDto)
+                              {
+                                  tex.Resize((int)(tex.width * ((ScalableTextureDto)textureDto).scale), (int)(tex.height * ((ScalableTextureDto)textureDto).scale));
+                              }*/
                             try
                             {
                                 mat.SetTexture(materialKey, tex);

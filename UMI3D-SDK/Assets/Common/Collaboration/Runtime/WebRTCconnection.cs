@@ -13,17 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+#if UNITY_WEBRTC
 using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.WebRTC;
 using UnityEngine;
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
-    public class WebRTCconnection
+    public class WebRTCconnection : IWebRTCconnection
     {
         enum Step { Null, LocalSet, RemoteSet, BothSet, IceChecked, Running };
         Step step = Step.Null;
@@ -34,9 +35,12 @@ namespace umi3d.common
         public Action<DataChannel> onDataChannelOpen;
         public Action<DataChannel> onDataChannelClose;
         public Action<RTCTrackEvent> onTrack;
-        public Action<byte[],DataChannel> onMessage;
+        public Action<byte[], DataChannel> onMessage;
+        public Action onDisconected;
         public RTCIceConnectionState connectionState = RTCIceConnectionState.New;
-        string name;
+        public string name { get; private set; }
+
+        public IceServer[] iceServers;
 
         /// <summary>
         /// Initialize the connection
@@ -44,7 +48,7 @@ namespace umi3d.common
         /// <param name="name"></param>
         /// <param name="audio"></param>
         /// <param name="video"></param>
-        public void Init(string name,bool instanciateChannel)
+        public void Init(string name, bool instanciateChannel)
         {
             this.name = name;
             Log("GetSelectedSdpSemantics");
@@ -52,11 +56,11 @@ namespace umi3d.common
             rtc = new RTCPeerConnection(ref configuration);
             rtc.OnIceCandidate = OnIceCandidate;
             rtc.OnIceConnectionChange = OnIceConnectionChange;
-            rtc.OnDataChannel = (c)=> {  OnDataChannel(c); };
+            rtc.OnDataChannel = (c) => { OnDataChannel(c); };
             rtc.OnNegotiationNeeded = OnNegotiationNeeded;
             rtc.OnTrack = OnTrack;
             Senders = new List<RTCRtpSender>();
-            if(instanciateChannel)
+            if (instanciateChannel)
                 foreach (var channel in channels)
                 {
                     CreateDataChannel(channel.reliable, channel.Label);
@@ -65,13 +69,14 @@ namespace umi3d.common
 
         public void Close()
         {
-            foreach(var c in channels)
+            foreach (var c in channels)
             {
-                c.Close();
+                c.Closed();
             }
         }
 
-        void OnNegotiationNeeded() {
+        void OnNegotiationNeeded()
+        {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnNegotiationNeeded());
         }
 
@@ -84,21 +89,6 @@ namespace umi3d.common
                 Log($"failed to create session: ${op.Error}");
             else
                 UnityMainThreadDispatcher.Instance().Enqueue(OnCreateOfferSuccess(op.Desc));
-        }
-
-        /// <summary>
-        /// Send a string message using the first Data channel found.
-        /// </summary>
-        /// <param name="text">Message to send.</param>
-        /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(string text, bool reliable)
-        {
-            var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
-            if (channel == null) throw new Exception("No suitable channel found.");
-            if (channel.IsOpen)
-                channel.dataChannel.Send(text);
-            else
-                throw new Exception($"Data Channel {channel.Label} is not open yet");
         }
 
 
@@ -120,18 +110,29 @@ namespace umi3d.common
         /// </summary>
         /// <param name="data">Message.</param>
         /// <param name="channel">Datachannel.</param>
-        public void Send(byte[] data, DataChannel channel)
+        public void Send(byte[] data, DataChannel channel, bool tryToSendAgain = true)
         {
             if (channel == null)
             {
                 if (connectionState != RTCIceConnectionState.Completed)
-                    Debug.LogError($"Channel should not be null");
+                    Debug.LogError($"Channel should not be null {connectionState}");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
-                channel.dataChannel.Send(data);
-            else
-                channel.MessageNotSend.Add(data);
+            if (connectionState == RTCIceConnectionState.Disconnected)
+                Debug.LogWarning($"Connection state is {connectionState}, should not try to send data");
+            switch (channel.State)
+            {
+                case ChannelState.Opening:
+                    if (tryToSendAgain)
+                        channel.MessageNotSend.Add(data);
+                    break;
+                case ChannelState.Open:
+                    channel.Send(data);
+                    break;
+                case ChannelState.Close:
+
+                    break;
+            }
         }
 
         /// <summary>
@@ -139,24 +140,17 @@ namespace umi3d.common
         /// </summary>
         /// <param name="data">Message to send.</param>
         /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(byte[] data, bool reliable)
+        public void Send(byte[] data, bool reliable, bool tryToSendAgain = true)
         {
-            
+
             var channel = channels.Find((c) => c.reliable == reliable && c.type == DataType.Data);
             if (channel == null)
             {
                 if (connectionState != RTCIceConnectionState.Completed)
-                    Debug.LogWarning($"No suitable channel found");
+                    Debug.LogWarning($"No suitable channel found {connectionState}");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open)
-            {
-                channel.dataChannel.Send(data);
-            }
-            else
-            {
-                channel.MessageNotSend.Add(data);
-            }
+            Send(data, channel, tryToSendAgain);
         }
 
         /// <summary>
@@ -164,18 +158,16 @@ namespace umi3d.common
         /// </summary>
         /// <param name="data">Message to send.</param>
         /// <param name="reliable">Should the dataChannel be reliable.</param>
-        public void Send(byte[] data, bool reliable, DataType dataType)
+        public void Send(byte[] data, bool reliable, DataType dataType, bool tryToSendAgain = true)
         {
             var channel = channels.Find((c) => c.reliable == reliable && c.type == dataType);
             if (channel == null)
             {
-                if (connectionState != RTCIceConnectionState.Completed) Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}");
+                if (connectionState != RTCIceConnectionState.Completed)
+                    Debug.LogWarning($"No suitable channel found for {reliable} && {dataType}  {connectionState}");
                 return;
             }
-            if (channel.IsOpen && channel.dataChannel.ReadyState == RTCDataChannelState.Open) 
-                channel.dataChannel.Send(data);
-            else
-                channel.MessageNotSend.Add(data);
+            Send(data, channel, tryToSendAgain);
         }
 
         #region offer
@@ -227,7 +219,7 @@ namespace umi3d.common
             else
             {
                 Log("SetLocalDescription complete");
-                step = (step == Step.RemoteSet) ? Step.BothSet : Step.LocalSet;
+                step = step == Step.RemoteSet ? Step.BothSet : Step.LocalSet;
             }
 
             if (onOfferCreated == null)
@@ -258,7 +250,7 @@ namespace umi3d.common
         public IEnumerator CreateAnswer(RTCSessionDescription description)
         {
             Log($"SetRemoteDescription start {description.type} {description.sdp}");
-            
+
             var op2 = rtc.SetRemoteDescription(ref description);
             yield return op2;
             if (op2.IsError)
@@ -291,7 +283,7 @@ namespace umi3d.common
             else
             {
                 Log("SetLocalDescription complete");
-                step = (step == Step.LocalSet) ? Step.BothSet : Step.RemoteSet;
+                step = step == Step.LocalSet ? Step.BothSet : Step.RemoteSet;
             }
 
             if (onAnswerCreated == null)
@@ -326,7 +318,7 @@ namespace umi3d.common
             else
             {
                 Log("SetRemoteDescription complete");
-                step = (step == Step.LocalSet) ? Step.BothSet : Step.RemoteSet;
+                step = step == Step.LocalSet ? Step.BothSet : Step.RemoteSet;
             }
         }
 
@@ -395,6 +387,7 @@ namespace umi3d.common
                     Log("IceConnectionState: Connected");
                     break;
                 case RTCIceConnectionState.Disconnected:
+                    onDisconected?.Invoke();
                     Log("IceConnectionState: Disconnected");
                     break;
                 case RTCIceConnectionState.Failed:
@@ -412,7 +405,21 @@ namespace umi3d.common
 
         #region data
 
-        private void CreateDataChannel(bool reliable,string dataChannelName)
+        public bool Any(Func<DataChannel, bool> predicate)
+        {
+            return channels.Any(predicate);
+        }
+
+        public DataChannel Find(Func<DataChannel, bool> predicate)
+        {
+            return channels.Find(c => predicate(c));
+        }
+        public DataChannel FirstOrDefault(Func<DataChannel, bool> predicate)
+        {
+            return channels.FirstOrDefault(predicate);
+        }
+
+        private void CreateDataChannel(bool reliable, string dataChannelName)
         {
             RTCDataChannelInit conf = new RTCDataChannelInit(reliable);
             OnDataChannel(rtc.CreateDataChannel(dataChannelName, ref conf));
@@ -422,11 +429,11 @@ namespace umi3d.common
         {
             Log($"new dataChannel {channel.Label}");
             bool reliable = false;
-            var dc = channels.Find((c) => c.Label == channel.Label);
+            var dc = channels.Find((c) => c.Label == channel.Label) as WebRTCDataChannel;
             bool isOpen = false;
             if (dc == null)
             {
-                dc = new DataChannel(channel.Label, false, DataType.Data);
+                dc = new WebRTCDataChannel(channel.Label, false, DataType.Data);
                 channels.Add(dc);
                 Log($"create new channel [{channel.Label}]");
             }
@@ -436,7 +443,7 @@ namespace umi3d.common
             }
             reliable = dc.reliable;
             dc.dataChannel = channel;
-            channel.OnMessage = (bytes) => OnDataChannelMessage(dc,bytes);
+            channel.OnMessage = (bytes) => OnDataChannelMessage(dc, bytes);
             channel.OnOpen = () => OnDataChannelOpen(dc);
             channel.OnClose = () => OnDataChannelClose(dc);
             dc.Created();
@@ -446,7 +453,7 @@ namespace umi3d.common
         private void OnDataChannelMessage(DataChannel channel, byte[] bytes)
         {
             Log($"message [{channel.Label}]");
-            channel.Message(bytes);
+            channel.Messaged(bytes);
             if (onMessage != null)
                 onMessage.Invoke(bytes, channel);
         }
@@ -454,7 +461,7 @@ namespace umi3d.common
         private void OnDataChannelClose(DataChannel channel)
         {
             Log("Data channel closed");
-            channel.Close();
+            channel.Closed();
             if (onDataChannelClose != null)
                 onDataChannelClose.Invoke(channel);
         }
@@ -512,12 +519,13 @@ namespace umi3d.common
         /// Add a DataChannel
         /// </summary>
         /// <param name="channel"></param>
-        public void AddDataChannel(DataChannel channel)
+        public void AddDataChannel(DataChannel channel, bool instanciateChannel = true)
         {
             if (!channels.Contains(channel))
             {
                 channels.Add(channel);
-                CreateDataChannel(channel.reliable, channel.Label);
+                if (instanciateChannel)
+                    CreateDataChannel(channel.reliable, channel.Label);
             }
         }
 
@@ -530,7 +538,7 @@ namespace umi3d.common
             if (channels.Contains(channel))
             {
                 channels.Remove(channel);
-                channel.dataChannel.Close();
+                channel.Close();
             }
         }
 
@@ -538,15 +546,40 @@ namespace umi3d.common
 
         #region configuration
 
-        public string[] iceServers = new string[] { "stun:stun.l.google.com:19302" };
+        public RTCIceServer[] ToRTCIceServers(common.IceServer[] servers)
+        {
+            return servers.Select(s =>
+            {
+                RTCIceCredentialType cred;
+                switch (s.credentialType)
+                {
+                    case IceCredentialType.Password:
+                        cred = RTCIceCredentialType.Password;
+                        break;
+                    case IceCredentialType.OAuth:
+                        cred = RTCIceCredentialType.OAuth;
+                        break;
+                    default:
+                        Debug.Log($"Credential type {s.credentialType}");
+                        cred = RTCIceCredentialType.Password;
+                        break;
+                }
+
+
+                return new RTCIceServer()
+                {
+                    credential = s.credential,
+                    credentialType = cred,
+                    urls = s.urls,
+                    username = s.username
+                };
+            }).ToArray();
+        }
 
         RTCConfiguration GetSelectedSdpSemantics()
         {
             RTCConfiguration config = default;
-            config.iceServers = new RTCIceServer[]
-            {
-            new RTCIceServer { urls = iceServers }
-            };
+            config.iceServers = ToRTCIceServers(iceServers);
             return config;
         }
 
@@ -558,12 +591,13 @@ namespace umi3d.common
 
         void Log(string message)
         {
-//#if UNITY_EDITOR
-//            Debug.Log($"[{logPrefix}]: " + message);
-//#endif
+            //#if UNITY_EDITOR
+            //            Debug.Log($"[{logPrefix}]: " + message);
+            //#endif
         }
 
         #endregion
 
     }
 }
+#endif

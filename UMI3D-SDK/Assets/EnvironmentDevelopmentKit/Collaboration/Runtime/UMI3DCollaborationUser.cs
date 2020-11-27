@@ -22,7 +22,7 @@ using umi3d.edk.userCapture;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DCollaborationUser :UMI3DTrackedUser
+    public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
         public UMI3DCollaborationUser(string login, UMI3DWebSocketConnection connection)
         {
@@ -40,7 +40,12 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// THe user token
+        /// Does the user have a devise compatible with webrtc
+        /// </summary>
+        public bool useWebrtc { get; set; }
+
+        /// <summary>
+        /// The user token
         /// </summary>
         public string token { get; private set; }
 
@@ -73,6 +78,7 @@ namespace umi3d.edk.collaboration
             return token;
         }
 
+        ///<inheritdoc/>
         public override void SetStatus(StatusType status)
         {
             base.SetStatus(status);

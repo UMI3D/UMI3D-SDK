@@ -28,6 +28,7 @@ namespace umi3d.edk.collaboration
         public Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
         public Dictionary<string, FormDto> idMap = new Dictionary<string, FormDto>();
 
+        ///<inheritdoc/>
         public override FormDto GetParameterDtosFor(string login)
         {
             if (!idMap.ContainsKey(login) || idMap[login] == null)
@@ -45,6 +46,7 @@ namespace umi3d.edk.collaboration
             return idMap[login];
         }
 
+        ///<inheritdoc/>
         public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
         {
             if (PasswordMap.ContainsKey(login))
@@ -53,6 +55,7 @@ namespace umi3d.edk.collaboration
             return null;
         }
 
+        ///<inheritdoc/>
         public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
             idMap[user.login] = identity.parameters;

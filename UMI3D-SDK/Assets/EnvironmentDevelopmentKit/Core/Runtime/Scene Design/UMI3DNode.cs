@@ -34,7 +34,7 @@ namespace umi3d.edk
         /// <summary>
         /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectXBillboard { get { Register();  return _objectXBillboard; } protected set => _objectXBillboard = value; }
+        public UMI3DAsyncProperty<bool> objectXBillboard { get { Register(); return _objectXBillboard; } protected set => _objectXBillboard = value; }
         /// <summary>
         /// Indicates if the object is permanently facing the users YBillboard
         /// </summary>
@@ -467,6 +467,7 @@ namespace umi3d.edk
             nodeDto.colliderDto = GetColliderDto();
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);

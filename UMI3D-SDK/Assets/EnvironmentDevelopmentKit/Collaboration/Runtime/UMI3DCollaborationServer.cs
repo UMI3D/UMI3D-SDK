@@ -33,8 +33,14 @@ namespace umi3d.edk.collaboration
     {
         public static new UMI3DCollaborationServer Instance { get { return UMI3DServer.Instance as UMI3DCollaborationServer; } set { UMI3DServer.Instance = value; } }
 
+        public IceServers iceServers;
+
         public bool isRunning { get; protected set; } = false;
 
+        [SerializeField]
+        bool useIp = false;
+
+        public EncoderType encoderType;
         UMI3DHttp http;
         UMI3DWebsocket websocket;
         UMI3DWebRTC webRTC;
@@ -57,6 +63,11 @@ namespace umi3d.edk.collaboration
         public bool useRandomHttpPort;
         public int httpPort;
 
+        public bool useRandomFakeRTCReliablePort;
+        public int fakeRTCReliablePort;
+        public bool useRandomFakeRTCUnreliablePort;
+        public int fakeRTCUnreliablePort;
+
         public AuthenticationType Authentication;
 
         /// <summary>
@@ -69,10 +80,12 @@ namespace umi3d.edk.collaboration
             return Instance.Authentication;
         }
 
+        ///<inheritdoc/>
         protected override string _GetWebsocketUrl()
         {
             return "http://" + ip + ":" + websocketPort;
         }
+        ///<inheritdoc/>
         protected override string _GetHttpUrl()
         {
             return "http://" + ip + ":" + httpPort;
@@ -85,11 +98,19 @@ namespace umi3d.edk.collaboration
         public override UMI3DDto ToDto()
         {
             var dto = new WebsocketConnectionDto();
-            dto.IP = ip;
-            dto.Port = httpPort;
-            dto.Postfix = UMI3DNetworkingKeys.websocket;
+            dto.iP = ip;
+            dto.port = httpPort;
+            dto.postfix = UMI3DNetworkingKeys.websocket;
             dto.websocketUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket;
+            dto.rtcUnreliableUrl = "ws://" + ip + ":" + fakeRTCUnreliablePort + UMI3DNetworkingKeys.websocket;
+            dto.rtcReliableUrl = "ws://" + ip + ":" + fakeRTCReliablePort + UMI3DNetworkingKeys.websocket;
+            dto.iceServers = iceServers?.iceServers;
             return dto;
+        }
+
+        internal void UpdateStatus(UMI3DCollaborationUser user, StatusDto dto)
+        {
+            user.SetStatus(dto.status);
         }
 
         /// <summary>
@@ -99,14 +120,18 @@ namespace umi3d.edk.collaboration
         {
             base.Init();
 
-            ip = GetLocalIPAddress();
+            if (!useIp)
+                ip = GetLocalIPAddress();
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
+            fakeRTCReliablePort = FreeTcpPort(useRandomFakeRTCReliablePort ? 0 : fakeRTCReliablePort);
+            fakeRTCUnreliablePort = FreeTcpPort(useRandomFakeRTCUnreliablePort ? 0 : fakeRTCUnreliablePort);
 
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
-            webRTC = new UMI3DWebRTC(this);
+            webRTC = new UMI3DWebRTC(this, encoderType);
+            webRTC.iceServers = iceServers?.iceServers;
 
             isRunning = true;
             OnServerStart.Invoke();
@@ -123,19 +148,10 @@ namespace umi3d.edk.collaboration
             Instance.webRTC.HandleMessage(dto);
         }
 
-        /// <summary>
-        /// Send a Message via The RTCServer to all peers.
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="reliable"></param>
-        public static void sendRTC(string message, bool reliable)
-        {
-            Instance.webRTC.Send(message, reliable);
-        }
-
         public static void sendRTC(UMI3DUser user, UMI3DDto dto, bool reliable)
         {
-            Instance.webRTC.Send(dto, reliable, user.Id());
+            var _user = user as UMI3DCollaborationUser;
+            Instance.webRTC.SendRTC(dto, reliable, user.Id(), _user?.useWebrtc ?? false);
         }
 
         /// <summary>
@@ -158,6 +174,19 @@ namespace umi3d.edk.collaboration
             OnUserJoin.Invoke(user);
             yield break;
         }
+
+        public void ClearIP()
+        {
+            ip = "localhost";
+            useIp = false;
+        }
+
+        public void SetIP(string ip)
+        {
+            this.ip = ip;
+            useIp = true;
+        }
+
 
         static string GetLocalIPAddress()
         {
@@ -287,6 +316,42 @@ namespace umi3d.edk.collaboration
             yield break;
         }
 
+
+        public float WaitTimeForPingAnswer = 1f;
+        public int MaxPingingTry = 3;
+
+        ///<inheritdoc/>
+        protected override void LookForMissing(UMI3DUser user)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
+        }
+
+        IEnumerator _lookForMissing(UMI3DCollaborationUser user)
+        {
+            if (user == null) yield break;
+            yield return new WaitForFixedUpdate();
+            int count = 0;
+            while (count++ < MaxPingingTry)
+            {
+                if (user.status == StatusType.MISSING)
+                {
+                    Ping(user);
+                }
+                else
+                    break;
+                yield return new WaitForSecondsRealtime(WaitTimeForPingAnswer);
+            }
+            Logout(user);
+        }
+
+        public virtual void Ping(UMI3DCollaborationUser user)
+        {
+            Debug.Log($"Ping {user.Id()}");
+            var sr = new StatusRequestDto { CurrentStatus = user.status };
+            user.connection.SendData(sr);
+        }
+
+        ///<inheritdoc/>
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
@@ -318,11 +383,11 @@ namespace umi3d.edk.collaboration
         Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
         private void Update()
         {
-            foreach(var kp in TransactionToBeSend.ToList())
+            foreach (var kp in TransactionToBeSend.ToList())
             {
                 var user = kp.Key;
                 var transaction = kp.Value;
-                if(user.status == StatusType.NONE)
+                if (user.status == StatusType.NONE)
                 {
                     TransactionToBeSend.Remove(user);
                     continue;
@@ -347,9 +412,11 @@ namespace umi3d.edk.collaboration
         /// <param name="status">new status</param>
         public override void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
+            base.NotifyUserStatusChanged(user, status);
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
+        ///<inheritdoc/>
         public override void NotifyUserChanged(UMI3DUser user)
         {
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);

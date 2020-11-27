@@ -36,7 +36,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<bool> _objectLooping;
         private UMI3DAsyncProperty<DateTime> _objectStartTime;
 
-        public UMI3DAsyncProperty<bool> objectPlaying { get { Register();  return _objectPlaying; } protected set => _objectPlaying = value; }
+        public UMI3DAsyncProperty<bool> objectPlaying { get { Register(); return _objectPlaying; } protected set => _objectPlaying = value; }
         public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
         public UMI3DAsyncProperty<DateTime> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
 
