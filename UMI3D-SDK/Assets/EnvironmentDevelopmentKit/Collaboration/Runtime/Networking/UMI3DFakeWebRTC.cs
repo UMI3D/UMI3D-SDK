@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -135,6 +137,12 @@ namespace umi3d.edk.collaboration
 
         public override void SetUpd(WebRTCDataChannel channels)
         {
+            UnityMainThreadDispatcher.Instance().Enqueue(_setup(channels));
+        }
+
+        IEnumerator _setup(WebRTCDataChannel channels)
+        {
+            yield return new WaitForFixedUpdate();
             if (websockets.ContainsKey(channels.id))
                 channels.socket = channels.reliable ? websockets[channels.id].Item1 : websockets[channels.id].Item2;
         }
