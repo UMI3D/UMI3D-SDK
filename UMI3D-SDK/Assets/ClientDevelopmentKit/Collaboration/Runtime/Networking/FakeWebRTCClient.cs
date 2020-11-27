@@ -24,7 +24,7 @@ using WebSocketSharp;
 
 namespace umi3d.cdk.collaboration
 {
-    public class FakeWebRTCClient :AbstractWebsocketRtc
+    public class FakeWebRTCClient : AbstractWebsocketRtc
     {
         public class WSContent : AbstractWebsocket
         {
@@ -206,6 +206,7 @@ namespace umi3d.cdk.collaboration
         {
             var ws = channels.reliable ? wsContentReliable : wsContentUnReliable;
             if (ws == null) Debug.LogWarning($"Websocket {channels.reliable} not opened yet. Workflow might need a review.");
+            Debug.Log(channels.Label);
             channels.socket = ws;
         }
 
@@ -215,7 +216,7 @@ namespace umi3d.cdk.collaboration
             {
                 sourceId = UMI3DCollaborationClientServer.Identity.userId,
                 content = content,
-                targetId = connection.Select(c=>c.targetId).ToList(),
+                targetId = connection.Select(c => c.targetId).ToList(),
                 dataType = type,
                 reliable = reliable
             };

@@ -33,7 +33,6 @@ namespace umi3d.common.collaboration
         enum Step { Null, LocalSet, RemoteSet, BothSet, IceChecked, Running };
         Step step = Step.Null;
 
-       
         public List<DataChannel> channels;
         //private List<RTCRtpSender> Senders;
         public Action<DataChannel> onDataChannelOpen;
@@ -50,11 +49,13 @@ namespace umi3d.common.collaboration
 
         public IceServer[] iceServers;
 
+        public bool useRTC = true;
+
         /// <summary>
         /// Initialize the connection
         /// </summary>
         /// <param name="targetId"></param>
-        public void Init(string id,string targetId, bool instanciateChannel)
+        public void Init(string id, string targetId, bool instanciateChannel)
         {
             this.id = id;
             this.targetId = targetId;
@@ -152,6 +153,7 @@ namespace umi3d.common.collaboration
                 if (connectionState != RTCIceConnectionState.Completed)
                     Debug.LogWarning($"No suitable channel found {connectionState}");
 #endif
+                Debug.Log("arf");
                 return;
             }
             Send(data, channel, tryToSendAgain);
@@ -241,7 +243,7 @@ namespace umi3d.common.collaboration
         }
 #endif
 
-#endregion
+        #endregion
 
         #region answer
 
@@ -421,7 +423,7 @@ namespace umi3d.common.collaboration
             }
         }
 #endif
-#endregion
+        #endregion
 
         #region data
 
@@ -446,7 +448,7 @@ namespace umi3d.common.collaboration
         /// <param name="predicate">predicate for suitable channel.</param>
         /// <param name="channel">First matching DataChannel.</param>
         /// <returns>True if a channel was found</returns>
-        public bool Find(Func<DataChannel, bool> predicate,out DataChannel channel)
+        public bool Find(Func<DataChannel, bool> predicate, out DataChannel channel)
         {
             channel = Find(predicate);
             return channel != default;
@@ -461,7 +463,7 @@ namespace umi3d.common.collaboration
         /// <returns>True if a channel was found</returns>
         public bool Find(bool reliable, DataType dataType, out DataChannel channel)
         {
-            return Find((c) => c.reliable == reliable && c.type == DataType.Data,out channel);
+            return Find((c) => c.reliable == reliable && c.type == DataType.Data, out channel);
         }
 
         private void CreateDataChannel(bool reliable, string dataChannelName)
@@ -469,6 +471,21 @@ namespace umi3d.common.collaboration
 #if UNITY_WEBRTC
             RTCDataChannelInit conf = new RTCDataChannelInit(reliable);
             OnDataChannel(rtc.CreateDataChannel(dataChannelName, ref conf));
+#else
+            var dc = channels.Find((c) => c.Label == dataChannelName) as WebRTCDataChannel;
+            bool isOpen = false;
+            if (dc == null)
+            {
+                dc = new WebRTCDataChannel(id, targetId, dataChannelName, reliable, DataType.Data);
+                channels.Add(dc);
+                Log($"create new channel [{dataChannelName}]");
+            }
+            else
+            {
+                isOpen = true;
+            }
+            reliable = dc.reliable;
+            dc.Created();
 #endif
         }
 
@@ -575,9 +592,10 @@ namespace umi3d.common.collaboration
             if (!channels.Contains(channel))
             {
                 channels.Add(channel);
+
                 if (instanciateChannel)
 #if UNITY_WEBRTC
-                    if(connectionState != RTCIceConnectionState.Failed)
+                    if (connectionState != RTCIceConnectionState.Failed && useRTC)
                         CreateDataChannel(channel.reliable, channel.Label);
                     else
 #endif
@@ -600,9 +618,9 @@ namespace umi3d.common.collaboration
             }
         }
 
-#endregion
+        #endregion
 
-#region configuration
+        #region configuration
 
 #if UNITY_WEBRTC
         public RTCIceServer[] ToRTCIceServers(common.IceServer[] servers)
@@ -642,9 +660,9 @@ namespace umi3d.common.collaboration
             return config;
         }
 #endif
-#endregion
+        #endregion
 
-#region logs
+        #region logs
 
         public string logPrefix = "WebRTC";
 
@@ -659,7 +677,7 @@ namespace umi3d.common.collaboration
             //#endif
         }
 
-#endregion
+        #endregion
 
     }
 }

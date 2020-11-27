@@ -205,6 +205,8 @@ namespace umi3d.edk.collaboration
                 else throw new Exception("A datachannel with this label already exist");
             }
             datachannel = Add(user.Id(), new WebRTCDataChannel(GetUID(),user.Id(), label, reliable, type));
+            if (user is UMI3DCollaborationUser cu && !cu.useWebrtc && datachannel is WebRTCDataChannel wdc)
+                wdc.Created();
             return datachannel;
         }
 
@@ -402,12 +404,14 @@ namespace umi3d.edk.collaboration
         protected override IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
         {
             var user = UMI3DCollaborationServer.Collaboration.GetUser(uid);
-            if (user.useWebrtc)
-                return base.CreateWebRtcConnection(uid, instanciateChannel);
-            UMI3DFakeRTCClient connection = new UMI3DFakeRTCClient(uid);
-            ChannelsToAddCreation(uid, connection);
-            connection.Init(GetUID(),uid, instanciateChannel);
-            return connection;
+            var co = base.CreateWebRtcConnection(uid, instanciateChannel || !user.useWebrtc);
+            if (co is WebRTCconnection Wco)
+            {
+                Wco.useRTC = user.useWebrtc;
+                Wco.channels.Cast<WebRTCDataChannel>().ForEach(c => { if (c != null) c.useWebrtc = user.useWebrtc; });
+            }
+
+            return  co;
         }
 
         ///<inheritdoc/>

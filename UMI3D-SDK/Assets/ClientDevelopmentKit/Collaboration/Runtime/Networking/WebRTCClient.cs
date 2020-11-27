@@ -170,5 +170,12 @@ namespace umi3d.cdk.collaboration
         {
             Debug.Log($"client connection lost {id}");
         }
+
+#if !UNITY_WEBRTC
+        protected override IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
+        {
+            return base.CreateWebRtcConnection(uid, true);
+        }
+#endif
     }
 }

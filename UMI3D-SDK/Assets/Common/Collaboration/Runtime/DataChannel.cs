@@ -125,10 +125,10 @@ namespace umi3d.common.collaboration
 #endif
             if (socket != null)
                     state = ChannelState.Open;
-            else state = ChannelState.Opening;
+                else state = ChannelState.Opening;
         }
 
-        public WebRTCDataChannel(string id,string target, DataChannel channel) : base(channel)
+        public WebRTCDataChannel(string id, string target, DataChannel channel) : base(channel)
         {
             this.id = id;
             this.target = new List<string>() { target };
@@ -142,19 +142,21 @@ namespace umi3d.common.collaboration
 
 
         ///<inheritdoc/>
-        public override void Send(byte[] msg) {
-            if(State == ChannelState.Open)
+        public override void Send(byte[] msg)
+        {
+            if (State == ChannelState.Open)
 #if UNITY_WEBRTC
-                if(useWebrtc)
+                if (useWebrtc)
                     dataChannel.Send(msg);
-            else
+                else
 #endif
                     socketSend(msg);
 
         }
 
         ///<inheritdoc/>
-        public override void Close() {
+        public override void Close()
+        {
 #if UNITY_WEBRTC
             Debug.Log("close"); dataChannel.Close();
 #endif

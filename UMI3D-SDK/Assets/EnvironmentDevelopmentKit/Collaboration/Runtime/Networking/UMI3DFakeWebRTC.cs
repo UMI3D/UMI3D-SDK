@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
+using UnityEngine;
 using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
@@ -99,6 +100,7 @@ namespace umi3d.edk.collaboration
 
         void OnIdentify(UMI3DFakeRTCConnection connection, IdentityDto id)
         {
+            Debug.Log($"open {id.login}");
             WSContent ws = new WSContent(connection);
             (WSContent, WSContent) t;
             var uid = id.userId;
@@ -113,7 +115,6 @@ namespace umi3d.edk.collaboration
 
             if (client.peers.Select(p => p.Value).FirstOrDefault((p) => p.targetId == id.userId) is WebRTCconnection peer)
             {
-
                 foreach(var c in peer.channels.Cast<WebRTCDataChannel>().Where(c=>c.reliable = connection.reliable))
                 {
                     c.socket =  ws;
