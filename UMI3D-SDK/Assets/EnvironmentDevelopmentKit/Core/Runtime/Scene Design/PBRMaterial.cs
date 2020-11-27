@@ -252,7 +252,7 @@ namespace umi3d.edk
                 metallicTexture = metallicTexture.ToDto(),
                 normalTexture = normalTexture.ToDto(),
                 occlusionTexture = occlusionTexture.ToDto(),
-                ChannelTexture = channelTexture.ToDto(),
+                channelTexture = channelTexture.ToDto(),
                 roughnessTexture = roughnessTexture.ToDto(),
             };
         }

@@ -85,9 +85,9 @@ namespace umi3d.cdk
                 LoadTextureInMaterial(ext.metallicRoughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
 
                 // TODO optimise combine chanel map 
-                if(ext.ChannelTexture != null)
+                if(ext.channelTexture != null)
                 {
-                    LoadTextureInMaterial(ext.ChannelTexture, MRTKShaderUtils.ChannelMap, newMat);
+                    LoadTextureInMaterial(ext.channelTexture, MRTKShaderUtils.ChannelMap, newMat);
                 }
 
                 else if (ext.emissiveTexture != null || ext.occlusionTexture != null || ext.metallicRoughnessTexture != null || ext.metallicTexture != null || ext.roughnessTexture != null)

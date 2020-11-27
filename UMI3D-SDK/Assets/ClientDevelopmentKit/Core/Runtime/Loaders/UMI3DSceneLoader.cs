@@ -201,7 +201,7 @@ namespace umi3d.cdk
                     
                     case UMI3DPropertyKeys.ChannelTexture:
                         AbstractUMI3DMaterialLoader.LoadTextureInMaterial((TextureDto)property.value, MRTKShaderUtils.ChannelMap, (Material)entity.Object);
-                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).ChannelTexture = (TextureDto)property.value;
+                        ((UMI3DMaterialDto)((GlTFMaterialDto)entity.dto).extensions.umi3d).channelTexture = (TextureDto)property.value;
                         break;
 
                     case UMI3DPropertyKeys.MetallicRoughnessTexture:
