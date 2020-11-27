@@ -91,7 +91,7 @@ namespace umi3d.cdk.collaboration
             webRTCClient = new WebRTCClient(this, encoderType == EncoderType.Software);
             WebRTCClient.iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
 #else
-            WebRTCClient = new FakeWebRTCClient(this);
+            webRTCClient = new WebRTCClient(this, false);
 #endif
         }
 

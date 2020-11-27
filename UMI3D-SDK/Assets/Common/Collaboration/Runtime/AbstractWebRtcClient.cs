@@ -338,9 +338,10 @@ namespace umi3d.common.collaboration
         /// <param name="channel">DataChannel used by this message</param>
         protected abstract void OnRtcMessage(string id, byte[] bytes, DataChannel channel);
 
+#if UNITY_WEBRTC
         void OnIceCandidate(RTCIceCandidate c, string uid)
         {
-#if UNITY_WEBRTC
+
             CandidateDto msg = new CandidateDto()
             {
                 candidate = c.candidate,
@@ -350,9 +351,9 @@ namespace umi3d.common.collaboration
                 sourceUser = GetUID(),
             };
             WebSocketSend(msg, uid);
-#endif
-        }
 
+        }
+#endif
         void OnRtcAnswer(string sdp, string uid)
         {
 #if UNITY_WEBRTC

@@ -13,12 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if UNITY_WEBRTC
+
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
-using Unity.WebRTC;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -173,4 +172,3 @@ namespace umi3d.cdk.collaboration
         }
     }
 }
-#endif
