@@ -121,7 +121,6 @@ namespace umi3d.common.collaboration
         /// <param name="uid"></param>
         protected virtual void OnDataChannelCreated(DataChannel dataChannel, string uid)
         {
-            //Debug.Log($"datachannel created {dataChannel.Label} {dataChannel.reliable} {dataChannel.type}");
             WebSocketSend(
                 new RTCDataChannelDto()
                 {
@@ -143,7 +142,6 @@ namespace umi3d.common.collaboration
         /// <param name="dto"></param>
         public virtual void HandleMessage(RTCDto dto)
         {
-
             switch (dto)
             {
                 case OfferDto offer:

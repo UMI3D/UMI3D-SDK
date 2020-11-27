@@ -186,7 +186,7 @@ namespace umi3d.common.collaboration
 #if UNITY_WEBRTC
         public RTCOfferOptions OfferOptions = new RTCOfferOptions
         {
-            iceRestart = false,
+            iceRestart = true,
             offerToReceiveAudio = false,
             offerToReceiveVideo = false
         };
@@ -410,6 +410,7 @@ namespace umi3d.common.collaboration
                     Log("IceConnectionState: Disconnected");
                     break;
                 case RTCIceConnectionState.Failed:
+                    channels.ForEach(d => { if (d is WebRTCDataChannel wd) wd.useWebrtc = false; });
                     Log("IceConnectionState: Failed");
                     break;
                 case RTCIceConnectionState.Max:
@@ -448,7 +449,7 @@ namespace umi3d.common.collaboration
         public bool Find(Func<DataChannel, bool> predicate,out DataChannel channel)
         {
             channel = Find(predicate);
-            return channel == default;
+            return channel != default;
         }
 
         /// <summary>
@@ -575,7 +576,14 @@ namespace umi3d.common.collaboration
             {
                 channels.Add(channel);
                 if (instanciateChannel)
-                    CreateDataChannel(channel.reliable, channel.Label);
+#if UNITY_WEBRTC
+                    if(connectionState != RTCIceConnectionState.Failed)
+                        CreateDataChannel(channel.reliable, channel.Label);
+                    else
+#endif
+                        if (channel is WebRTCDataChannel wChannel)
+                            wChannel.useWebrtc = false;
+
             }
         }
 
@@ -592,9 +600,9 @@ namespace umi3d.common.collaboration
             }
         }
 
-        #endregion
+#endregion
 
-        #region configuration
+#region configuration
 
 #if UNITY_WEBRTC
         public RTCIceServer[] ToRTCIceServers(common.IceServer[] servers)
@@ -636,7 +644,7 @@ namespace umi3d.common.collaboration
 #endif
 #endregion
 
-        #region logs
+#region logs
 
         public string logPrefix = "WebRTC";
 
@@ -651,7 +659,7 @@ namespace umi3d.common.collaboration
             //#endif
         }
 
-        #endregion
+#endregion
 
     }
 }

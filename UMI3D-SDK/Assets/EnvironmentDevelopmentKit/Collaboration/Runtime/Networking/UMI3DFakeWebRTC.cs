@@ -100,7 +100,10 @@ namespace umi3d.edk.collaboration
         void OnIdentify(UMI3DFakeRTCConnection connection, IdentityDto id)
         {
             WSContent ws = new WSContent(connection);
-            (WSContent, WSContent) t = websockets?[id.userId] ?? (null, null);
+            (WSContent, WSContent) t;
+            var uid = id.userId;
+            if (websockets.ContainsKey(uid)) t = websockets[uid];
+            else t = (null, null);
 
             if (connection.reliable)
                 t = (ws, t.Item2);

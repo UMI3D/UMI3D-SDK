@@ -93,7 +93,7 @@ namespace umi3d.common.collaboration
         public AbstractWebsocket socket;
         public string id;
         public List<string> target;
-        public bool useWebrtc;
+        public bool useWebrtc = true;
 
 #if UNITY_WEBRTC
         public RTCDataChannel dataChannel;
@@ -170,7 +170,7 @@ namespace umi3d.common.collaboration
                 sourceId = id,
                 targetId = target
             };
-            socket.Send(fake.ToBson());
+            socket?.Send(fake.ToBson());
         }
 
 
