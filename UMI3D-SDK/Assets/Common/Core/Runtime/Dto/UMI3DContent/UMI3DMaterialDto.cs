@@ -35,6 +35,8 @@ namespace umi3d.common
         public TextureDto roughnessTexture;
         public ScalableTextureDto heightTexture;
 
+        public TextureDto ChannelTexture;
+
         // Modified properties in the shader 
         public Dictionary<string, object> shaderProperties { get; set; }
     }
