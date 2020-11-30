@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*
+Copyright 2019 Gfi Informatique
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +31,13 @@ namespace MrtkShader
             public T defaultValue;
             public Action<Material, ShaderProperty<T>, T> action;
 
+            /// <summary>
+            /// Create a new ShaderProperty
+            /// </summary>
+            /// <param name="propertyName">The name used in the shader for this property</param>
+            /// <param name="defaultValue"></param>
+            /// <param name="keyword">The keyword in the shader (if needed) in order to use the propety </param>
+            /// <param name="action">if not null this action is called after active keyword and the action is called instead of applying the property in the shader</param>
             public ShaderProperty(string propertyName, T defaultValue, string keyword = null, Action<Material, ShaderProperty<T>, T> action = null)
             {
                 this.propertyName = propertyName;
@@ -28,7 +50,14 @@ namespace MrtkShader
 
         }
 
-        public static void ApplyShaderProperty<T>(this Material mat, ShaderProperty<T> shaderProperty, T value /*, Material mat*/)
+        /// <summary>
+        /// Apply the value in mat, the property to update is identified by the shaderProperty
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="mat"></param>
+        /// <param name="shaderProperty"></param>
+        /// <param name="value"></param>
+        public static void ApplyShaderProperty<T>(this Material mat, ShaderProperty<T> shaderProperty, T value)
         {
             if (shaderProperty.keyword != null)
                 mat.EnableKeyword(shaderProperty.keyword);

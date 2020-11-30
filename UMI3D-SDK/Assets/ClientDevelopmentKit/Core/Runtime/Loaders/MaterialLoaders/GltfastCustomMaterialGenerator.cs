@@ -26,7 +26,7 @@ namespace umi3d.cdk
 {
     public class GltfastCustomMaterialGenerator : DefaultMaterialGenerator
     {
-
+        ///<inheritdoc/>
         public override UnityEngine.Material GenerateMaterial(GLTFast.Schema.Material gltfMaterial, ref GLTFast.Schema.Texture[] textures, ref GLTFast.Schema.Image[] schemaImages, ref Dictionary<int, Texture2D>[] imageVariants, string url, int id)
         {
             UnityEngine.Material material;
@@ -110,6 +110,14 @@ namespace umi3d.cdk
             return material;
         }
 
+        /// <summary>
+        /// Apply the newValue texture in matToApply with the parameters in mapInfo and property
+        /// </summary>
+        /// <param name="matToApply"></param>
+        /// <param name="mapInfo"></param>
+        /// <param name="property"></param>
+        /// <param name="newValue"></param>
+        /// <param name="textures"></param>
         protected void ApplyTexture(UnityEngine.Material matToApply, TextureInfo mapInfo, MRTKShaderUtils.ShaderProperty<Texture2D> property, Texture2D newValue, ref GLTFast.Schema.Texture[] textures)
         {
             if (newValue != null)
@@ -128,6 +136,7 @@ namespace umi3d.cdk
             }
         }
 
+        ///<inheritdoc/>
         protected override void TrySetTextureTransform(
             GLTFast.Schema.TextureInfo textureInfo,
             UnityEngine.Material material,
@@ -184,6 +193,7 @@ namespace umi3d.cdk
             material.SetTextureScale(propertyId, scale);
         }
 
+        ///<inheritdoc/>
         public override UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided = false)
         {
             UnityEngine.Material res = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
@@ -239,6 +249,10 @@ namespace umi3d.cdk
 
         }
 
+        /// <summary>
+        /// used to switch between roughness map and smoothness map
+        /// </summary>
+        /// <param name="map"></param>
         private void InvertMap(Texture2D map)
         {
             if (map == null) return;

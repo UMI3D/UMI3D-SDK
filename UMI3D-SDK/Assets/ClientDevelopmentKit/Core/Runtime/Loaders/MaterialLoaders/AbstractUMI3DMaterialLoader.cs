@@ -28,6 +28,12 @@ namespace umi3d.cdk
 
         public abstract bool IsSuitableFor(GlTFMaterialDto gltfMatDto);
 
+        /// <summary>
+        /// Apply the tiling (scale and offset) in the material shader propety 
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="scale"></param>
+        /// <param name="newMat"></param>
         public static void ApplyTiling(Vector2 offset, Vector2 scale, Material newMat)
         {
             if (offset.magnitude > 0.0001 && (scale - Vector2.one).magnitude > 0.0001)
@@ -62,6 +68,13 @@ namespace umi3d.cdk
             LoadTextureInMaterial(textureDto, (MRTKShaderUtils.ShaderProperty<Texture> )materialKey, mat);
         }*/
 
+            /// <summary>
+            /// Load a texture from file or from cache and add it in the material
+            /// </summary>
+            /// <param name="textureDto">The texture dto with variants</param>
+            /// <param name="materialKey">The Shader property, it contains the id/name used to change the good texture in the material</param>
+            /// <param name="mat">the material to modify</param>
+            /// <param name="alternativeCallback">The basic callback is juste apply the new shader property in the shader but you can overide it to do some other action and then apply the property in the shader</param>
         public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat, Action<Texture2D> alternativeCallback = null)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1)
@@ -151,6 +164,11 @@ namespace umi3d.cdk
                     );
         }
 
+        /// <summary>
+        /// Set all properties of shaderAdditionalProperties in the material shader
+        /// </summary>
+        /// <param name="shaderAdditionalProperties">A dictionary containing in keys the name to identify the shader property and in value the new value to apply</param>
+        /// <param name="newMat">The material to modify</param>
         public static void ReadAdditionalShaderProperties(Dictionary<string, object> shaderAdditionalProperties, Material newMat)
         {
             if (shaderAdditionalProperties == null)

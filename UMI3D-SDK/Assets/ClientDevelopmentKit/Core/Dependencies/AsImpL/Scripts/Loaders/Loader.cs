@@ -146,6 +146,7 @@ namespace AsImpL
         /// <param name="objName">name of the GameObject, if empty use file name</param>
         /// <param name="absolutePath">absolute file path</param>
         /// <param name="parentObj">Transform to which attach the loaded object (null=scene)</param>
+        /// <param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         /// <returns>You can use StartCoroutine( loader.Load(...) )</returns>
         public IEnumerator Load(string objName, string absolutePath, Transform parentObj, Material baseMaterial)
         {
@@ -254,6 +255,7 @@ namespace AsImpL
         /// <param name="absolutePath">absolute file path</param>
         /// <param name="objName">Name of the main game object (model root)</param>
         /// <param name="parentTransform">transform to which the model root will be attached (if null it will be a root aobject)</param>
+        /// <param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         /// <remarks>This is called by Load() method</remarks>
         protected IEnumerator Build(string absolutePath, string objName, Transform parentTransform, Material baseMaterial)
         {

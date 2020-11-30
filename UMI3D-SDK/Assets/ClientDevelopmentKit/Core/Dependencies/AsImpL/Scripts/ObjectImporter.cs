@@ -178,6 +178,7 @@ namespace AsImpL
         /// </summary>
         /// <param name="absolutePath"></param>
         /// <param name="parentObject"></param>
+        /// <param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         /// TODO: refactor this method, it is too long.
         private IEnumerator ImportFileAsync(string absolutePath, Transform parentObject, Material baseMaterial = null)
         {
@@ -378,6 +379,7 @@ namespace AsImpL
         /// <param name="filePath"></param>
         /// <param name="parentObj"></param>
         /// <param name="options"></param>
+        ///<param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         public void ImportModelAsync(string objName, string filePath, Transform parentObj, ImportOptions options, Material baseMaterial = null)
         {
             if (loaderList == null)
