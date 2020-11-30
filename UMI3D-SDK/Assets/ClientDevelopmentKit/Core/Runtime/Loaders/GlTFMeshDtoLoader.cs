@@ -99,6 +99,7 @@ namespace umi3d.cdk
             //gltfComp.LoadAndRetry();
 
             IDeferAgent deferAgent = new MaxTimePerFrameDeferAgent(maxTimePerFrame); // new UninterruptedDeferAgent();
+            IMaterialGenerator materialGenerator = new GltfastCustomMaterialGenerator();
 
             if (authorization != null && authorization != "")
             {
@@ -112,11 +113,11 @@ namespace umi3d.cdk
 
                 HttpHeader[] headers = new HttpHeader[] { authorizationHeader };
                 CustomHeaderDownloadProvider customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
-                gltfComp.Load(url, customHeaderDownloadProvider, deferAgent);
+                gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator);
             }
             else
             {
-                gltfComp.Load(url, null, deferAgent);
+                gltfComp.Load(url, null, deferAgent, materialGenerator);
             }
         }
 

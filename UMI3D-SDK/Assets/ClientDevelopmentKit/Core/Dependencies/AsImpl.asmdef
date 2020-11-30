@@ -1,3 +1,15 @@
-﻿{
-	"name": "AsImpl"
+{
+    "name": "AsImpl",
+    "references": [
+        "GUID:b7e5df3ab8d2c5c43aae26836d504c61"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -182,6 +182,7 @@ namespace umi3d.common
         public const string MetallicTexture = "umi3D_material_metallic_texture";
         public const string RoughnessTexture = "umi3D_material_roughness_texture";
         public const string HeightTexture = "umi3D_material_height_texture";
+        public const string ChannelTexture = "umi3D_material_channel_texture";
 
         public const string TextureTilingOffset = "umi3D_material_texture_tiling_offset";
         public const string TextureTilingScale = "umi3D_material_texture_tiling_scale";

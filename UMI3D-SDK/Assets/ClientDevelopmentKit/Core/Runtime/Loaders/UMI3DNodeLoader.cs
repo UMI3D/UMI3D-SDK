@@ -69,6 +69,7 @@ namespace umi3d.cdk
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var node = entity as UMI3DNodeInstance;
+            if (node == null) return false;
 
             if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation || property.property == UMI3DPropertyKeys.Scale))
             {
@@ -93,7 +94,6 @@ namespace umi3d.cdk
 
             if (base.SetUMI3DProperty(entity, property)) return true;
 
-            if (node == null) return false;
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
             if (dto == null) return false;
             switch (property.property)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -104,8 +105,9 @@ namespace umi3d.cdk
         protected override void RevertToOriginalMaterial(UMI3DNodeInstance entity)
         {
 
-            Renderer[] renderers = entity.gameObject.GetComponentsInChildren<Renderer>();
-            if (renderers == null || renderers.Length == 0)
+            //     Renderer[] renderers = entity.gameObject.GetComponentsInChildren<Renderer>();
+            List<Renderer> renderers = GetChildRenderersWhithoutOtherModel(entity);
+            if (renderers == null || renderers.Count == 0)
                 return;
             SubModelDto subDto = (SubModelDto)((GlTFNodeDto)entity.dto).extensions.umi3d;
 
