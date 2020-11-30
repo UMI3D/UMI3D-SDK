@@ -412,7 +412,8 @@ namespace umi3d.common.collaboration
                     Log("IceConnectionState: Disconnected");
                     break;
                 case RTCIceConnectionState.Failed:
-                    channels.ForEach(d => { if (d is WebRTCDataChannel wd) wd.useWebrtc = false; });
+                    useRTC = false;
+                    channels.ForEach(d => { if (d is WebRTCDataChannel wd) wd.useWebrtc = false;});
                     Log("IceConnectionState: Failed");
                     break;
                 case RTCIceConnectionState.Max:
@@ -673,7 +674,7 @@ namespace umi3d.common.collaboration
         void Log(string message)
         {
             //#if UNITY_EDITOR
-            //            Debug.Log($"[{logPrefix}]: " + message);
+                        Debug.Log($"[{logPrefix}]: " + message);
             //#endif
         }
 

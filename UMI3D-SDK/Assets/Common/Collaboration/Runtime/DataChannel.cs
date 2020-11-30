@@ -51,7 +51,7 @@ namespace umi3d.common.collaboration
             }
         }
 
-        protected virtual void CheckState() { }
+        protected virtual void CheckState() { Debug.Log("should not be here"); }
 
         public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
@@ -103,6 +103,7 @@ namespace umi3d.common.collaboration
         {
 #if UNITY_WEBRTC
             if (useWebrtc)
+            {
                 if (dataChannel != null)
                 {
                     switch (dataChannel.ReadyState)
@@ -121,11 +122,12 @@ namespace umi3d.common.collaboration
                             break;
                     }
                 }
-                else
+            }
+            else
 #endif
             if (socket != null)
-                    state = ChannelState.Open;
-                else state = ChannelState.Opening;
+                state = ChannelState.Open;
+            else state = ChannelState.Opening;
         }
 
         public WebRTCDataChannel(string id, string target, DataChannel channel) : base(channel)
