@@ -145,6 +145,23 @@ namespace umi3d.cdk
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
 
+        /// <summary>
+        /// Basic material used to init a new material with the same properties
+        /// </summary>
+        [SerializeField]
+        private Material baseMaterial;
+
+        /// <summary>
+        /// return a copy of the baseMaterial. it can be modified 
+        /// </summary>
+        /// <returns></returns>
+        public Material GetBaseMaterial() { return new Material(baseMaterial); }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
+        public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material (newBaseMat); }
 
         ///<inheritdoc/>
         protected override void Awake()

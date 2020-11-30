@@ -16,7 +16,7 @@ namespace umi3d.cdk
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
             if (entity == null) return false;
-            var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
+            var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
             if (extension == null) return false;
             switch (property.property)
             {
@@ -284,7 +284,7 @@ namespace umi3d.cdk
         }
 
 
-        private List<Renderer> GetChildRenderersWhithoutOtherModel(UMI3DNodeInstance node)
+        protected List<Renderer> GetChildRenderersWhithoutOtherModel(UMI3DNodeInstance node)
         {
             if (((GlTFNodeDto)node.dto).extensions.umi3d is UMI3DMeshNodeDto)
                 return node.renderers;

@@ -3,6 +3,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
+using MrtkShader;
 
 namespace AsImpL
 {
@@ -79,7 +80,7 @@ namespace AsImpL
         /// </summary>
         /// <param name="info">Progress information to be updated</param>
         /// <returns>Return true if in progress, false otherwise.</returns>
-        public bool BuildMaterials(ProgressInfo info)
+        public bool BuildMaterials(ProgressInfo info, Material baseMaterial)
         {
             if (materialData == null)
             {
@@ -98,7 +99,7 @@ namespace AsImpL
             }
             else
             {
-                currMaterials.Add(matData.materialName, BuildMaterial(matData));
+                currMaterials.Add(matData.materialName, BuildMaterial(matData, baseMaterial));
             }
             return info.materialsLoaded < materialData.Count;
         }
@@ -625,7 +626,7 @@ namespace AsImpL
         /// </summary>
         /// <param name="md">material data</param>
         /// <returns>Unity material</returns>
-        private Material BuildMaterial(MaterialData md)
+        private Material BuildMaterial(MaterialData md, Material baseMaterial)
         {
             string shaderName = (md.illumType == 2) ? "Standard (Specular setup)" : "Standard";
             bool specularMode =  (md.specularTex != null);
@@ -636,6 +637,7 @@ namespace AsImpL
                 && md.bumpTex == null
                 && md.opacityTex == null
                 && md.specularTex == null
+                && md.emissiveTex == null
                 && !md.hasReflectionTex;
 
             bool? diffuseIsTransparent = null;
@@ -653,23 +655,35 @@ namespace AsImpL
             {
                 shaderName = (md.illumType == 2) ? "Standard (Specular setup)" : "Standard";
             }
-            Material newMaterial = new Material(Shader.Find(shaderName)); // "Standard (Specular setup)"
+            // UMI3D modification
+            //Material newMaterial = new Material(Shader.Find(shaderName)); // "Standard (Specular setup)"
+            Material newMaterial;
+            if (baseMaterial == null)
+                newMaterial = new Material(Shader.Find(shaderName));
+            else
+                newMaterial = new Material(baseMaterial);
+            //
             newMaterial.name = md.materialName;
 
             float shinLog = Mathf.Log(md.shininess, 2);
             // get the metallic value from the shininess
             float metallic = Mathf.Clamp01(shinLog / 10.0f);
+
+            metallic = md.specularColor.grayscale;// * 0.8f + 0.2f;
+
             // get the smoothness from the shininess
             float smoothness = Mathf.Clamp01(shinLog / 10.0f);
             if (specularMode)
             {
+                Debug.LogWarning("Specular mode could is not totaly supported cause of MRTK shader");
                 newMaterial.SetColor("_SpecColor", md.specularColor);
                 newMaterial.SetFloat("_Shininess", md.shininess / 1000.0f);
                 //m.color = new Color( md.diffuse.r, md.diffuse.g, md.diffuse.b, md.alpha);
             }
             else
             {
-                newMaterial.SetFloat("_Metallic", metallic);
+                //newMaterial.SetFloat("_Metallic", metallic);
+                newMaterial.ApplyShaderProperty<float>(MRTKShaderUtils.Metallic, metallic);
                 //m.SetFloat( "_Glossiness", md.shininess );
             }
 
@@ -711,7 +725,8 @@ namespace AsImpL
                         }
                     }
 #endif
-                    newMaterial.SetTexture("_MainTex", albedoTexture);
+                    //newMaterial.SetTexture("_MainTex", albedoTexture);
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.MainTex, albedoTexture);
                 }
                 else
                 {// md.opacityTex == null
@@ -721,10 +736,21 @@ namespace AsImpL
                     {
                         diffuseIsTransparent = ModelUtil.ScanTransparentPixels(md.diffuseTex, ref mode);
                     }
-                    newMaterial.SetTexture("_MainTex", md.diffuseTex);
+                    //newMaterial.SetTexture("_MainTex", md.diffuseTex);
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.MainTex, md.diffuseTex);
+
                 }
                 //Debug.LogFormat("Diffuse set for {0}",m.name);
             }
+
+
+            // add emissive
+            if (md.diffuseTex != null)
+            {
+                newMaterial.ApplyShaderProperty(MRTKShaderUtils.EmissionMap, md.emissiveTex);
+                Debug.Log("add emissive texure");
+            }
+
             else if (md.opacityTex != null)
             {
                 // opacity without diffuse
@@ -758,14 +784,23 @@ namespace AsImpL
                     }
                 }
 #endif
-                newMaterial.SetTexture("_MainTex", albedoTexture);
+                //newMaterial.SetTexture("_MainTex", albedoTexture);
+                newMaterial.ApplyShaderProperty(MRTKShaderUtils.MainTex, albedoTexture);
+
             }
 
             md.diffuseColor.a = md.overallAlpha;
-            newMaterial.SetColor("_Color", md.diffuseColor);
+            //newMaterial.SetColor("_Color", md.diffuseColor);
+            newMaterial.ApplyShaderProperty(MRTKShaderUtils.MainColor, md.diffuseColor);
+
 
             md.emissiveColor.a = md.overallAlpha;
-            newMaterial.SetColor("_EmissionColor", md.emissiveColor);
+
+            newMaterial.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, md.emissiveColor);
+
+            //newMaterial.SetColor("_EmissionColor", md.emissiveColor);
+            newMaterial.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, md.emissiveColor);
+
             if (md.emissiveColor.r > 0 || md.emissiveColor.g > 0 || md.emissiveColor.b > 0)
             {
                 newMaterial.EnableKeyword("_EMISSION");
@@ -783,8 +818,12 @@ namespace AsImpL
                 if (md.bumpTexPath.Contains("_normal_map"))
                 {
                     newMaterial.EnableKeyword("_NORMALMAP");
-                    newMaterial.SetFloat("_BumpScale", 0.25f); // lower the bump effect with the normal map
-                    newMaterial.SetTexture("_BumpMap", md.bumpTex);
+                    //newMaterial.SetFloat("_BumpScale", 0.25f); // lower the bump effect with the normal map
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.BumpScale, 0.25f);
+
+                    //newMaterial.SetTexture("_BumpMap", md.bumpTex);
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.BumpMap, md.bumpTex);
+
                 }
                 else
                 {
@@ -802,10 +841,14 @@ namespace AsImpL
                     else
 #endif
                     {
-                        newMaterial.SetTexture("_BumpMap", normalMap);
+                        //newMaterial.SetTexture("_BumpMap", normalMap);
+                        newMaterial.ApplyShaderProperty(MRTKShaderUtils.NormalMap, normalMap);
+
                         //newMaterial.SetTexture("_BumpMap", md.bumpTex);
                         newMaterial.EnableKeyword("_NORMALMAP");
-                        newMaterial.SetFloat("_BumpScale", 1.0f); // adjust the bump effect with the normal map
+                        //newMaterial.SetFloat("_BumpScale", 1.0f); // adjust the bump effect with the normal map
+                        newMaterial.ApplyShaderProperty(MRTKShaderUtils.BumpScale, 1.0f);
+
                     }
                 }
             }
@@ -852,11 +895,15 @@ namespace AsImpL
                 {
                     newMaterial.EnableKeyword("_SPECGLOSSMAP");
                     newMaterial.SetTexture("_SpecGlossMap", glossTexture);
+
                 }
                 else
                 {
                     newMaterial.EnableKeyword("_METALLICGLOSSMAP");
-                    newMaterial.SetTexture("_MetallicGlossMap", glossTexture);
+                    //newMaterial.SetTexture("_MetallicGlossMap", glossTexture);
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.ChannelMap, glossTexture);
+
+
                 }
 
                 //m.SetTexture( "_MetallicGlossMap", md.specularLevelTex );
@@ -869,13 +916,17 @@ namespace AsImpL
                 {
                     Color col = Color.white;
                     col.a = md.overallAlpha;
-                    newMaterial.SetColor("_Color", col);
+                    //newMaterial.SetColor("_Color", col);
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.MainColor, col);
+
                     mode = ModelUtil.MtlBlendMode.FADE;
                 }
                 // the "amount of" info is missing, using a default value
                 if (md.specularTex != null)
                 {
-                    newMaterial.SetFloat("_Metallic", metallic);// 1.0f);
+                    //newMaterial.SetFloat("_Metallic", metallic);// 1.0f);
+                    newMaterial.ApplyShaderProperty(MRTKShaderUtils.Metallic, metallic);
+
                 }
                 // usually the reflection texture is not blurred
                 newMaterial.SetFloat("_Glossiness", 1.0f);
