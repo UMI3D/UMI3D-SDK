@@ -33,7 +33,7 @@ namespace umi3d.edk.collaboration
             base.WriteProperties(_dto, user);
             if (_dto is UMI3DCollaborationEnvironmentDto dto)
             {
-                dto.userList = UMI3DCollaborationServer.Collaboration.Todo();
+                dto.userList = UMI3DCollaborationServer.Collaboration.ToDto();
             }
         }
     }

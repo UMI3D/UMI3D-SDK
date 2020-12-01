@@ -674,7 +674,7 @@ namespace umi3d.common.collaboration
         void Log(string message)
         {
             //#if UNITY_EDITOR
-                        Debug.Log($"[{logPrefix}]: " + message);
+            //Debug.Log($"[{logPrefix}]: " + message);
             //#endif
         }
 

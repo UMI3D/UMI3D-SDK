@@ -93,6 +93,7 @@ namespace umi3d.edk.collaboration
                 this.connection = connection;
             }
 
+            /// <inheritdoc/>
             public override void Send(byte[] content)
             {
                 connection.SendData(content);
@@ -135,6 +136,7 @@ namespace umi3d.edk.collaboration
                 wsUnreliable.Stop();
         }
 
+        /// <inheritdoc/>
         public override void SetUpd(WebRTCDataChannel channels)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_setup(channels));
@@ -147,6 +149,7 @@ namespace umi3d.edk.collaboration
                 channels.socket = channels.reliable ? websockets[channels.id].Item1 : websockets[channels.id].Item2;
         }
 
+        /// <inheritdoc/>
         public override void Send(byte[] content, DataType type, bool reliable, List<IWebRTCconnection> connection)
         {
             throw new Exception("Should not end up here");
