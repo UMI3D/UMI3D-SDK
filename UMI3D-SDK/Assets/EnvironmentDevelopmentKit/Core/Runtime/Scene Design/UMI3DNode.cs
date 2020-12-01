@@ -45,13 +45,13 @@ namespace umi3d.edk
         /// <summary>
         /// An editor field to modify default objectXBillboard value
         /// </summary>
-        [SerializeField]
-        public bool xBillboard = false;
+        [SerializeField,EditorReadOnly]
+        bool xBillboard = false;
         /// <summary>
         /// An editor field to modify default objectYBillboard value
         /// </summary>
-        [SerializeField]
-        public bool yBillboard = false;
+        [SerializeField,EditorReadOnly]
+        bool yBillboard = false;
 
 
         //public ColliderDto colliderDto = null;

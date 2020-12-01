@@ -96,8 +96,8 @@ namespace umi3d.edk
             setOperation(obj.objectPosition.SetValue(obj.transform.localPosition));
             setOperation(obj.objectRotation.SetValue(obj.transform.localRotation));
             setOperation(obj.objectScale.SetValue(obj.transform.localScale));
-            setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
-            setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
+            //setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
+            //setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
 
             UIUpdate(obj as UIRect);
 
