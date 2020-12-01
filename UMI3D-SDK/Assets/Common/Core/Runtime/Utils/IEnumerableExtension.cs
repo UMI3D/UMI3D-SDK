@@ -14,26 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common;
-using umi3d.common.collaboration;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.common
 {
-    public class UMI3DCollaborationEnvironment : UMI3DEnvironment
+    public static class IEnumerableExtension 
     {
-        ///<inheritdoc/>
-        protected override UMI3DEnvironementDto CreateDto()
+        public static void ForEach<A>(this IEnumerable<A> source,Action<A> action)
         {
-            return new UMI3DCollaborationEnvironmentDto();
-        }
-
-        ///<inheritdoc/>
-        protected override void WriteProperties(UMI3DEnvironementDto _dto, UMI3DUser user)
-        {
-            base.WriteProperties(_dto, user);
-            if (_dto is UMI3DCollaborationEnvironmentDto dto)
+            if (action == null)
+                throw new Exception("action should not be null");
+            var it = source.GetEnumerator();
+            while (it.MoveNext())
             {
-                dto.userList = UMI3DCollaborationServer.Collaboration.ToDto();
+                action.Invoke(it.Current);
             }
         }
     }

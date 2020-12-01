@@ -28,6 +28,12 @@ namespace umi3d.edk.collaboration
 
         Dictionary<string, bool> librariesUpdateStatus;
 
+        /// <summary>
+        /// Update a client status acording to a userconnectionDto
+        /// </summary>
+        /// <param name="user">User.</param>
+        /// <param name="identity">Identity Dto send by the user.</param>
+        /// <returns></returns>
         public virtual StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
@@ -35,11 +41,21 @@ namespace umi3d.edk.collaboration
             return librariesUpdateStatus[user.login] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
         }
 
+        /// <summary>
+        /// Get a Form Dto for a login.
+        /// </summary>
+        /// <param name="login">Login of the user.</param>
+        /// <returns></returns>
         public virtual FormDto GetParameterDtosFor(string login)
         {
             return null;
         }
 
+        /// <summary>
+        /// Should a user update has updataed its libraries.
+        /// </summary>
+        /// <param name="login">Login of the user.</param>
+        /// <returns></returns>
         public virtual bool getLibrariesUpdateSatus(string login)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
-
+#if UNITY_EDITOR
 using UnityEditor;
 
 #if UNITY_2019_3_OR_NEWER
@@ -94,3 +94,4 @@ namespace Microsoft.MixedReality.Toolkit.Utilities.Editor
 #endif // UNITY_2019_3_OR_NEWER
     }
 }
+#endif

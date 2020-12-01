@@ -13,12 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if UNITY_WEBRTC
+
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
-using Unity.WebRTC;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -30,14 +29,18 @@ namespace umi3d.cdk.collaboration
     public class WebRTCClient : AbstractWebRtcClient, IWebRTCClient
     {
         UMI3DCollaborationClientServer client;
+        FakeWebRTCClient FakeWebRTC;
+
+        public override AbstractWebsocketRtc websocketRtc => FakeWebRTC;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="client">a reference to the server.</param>
-        public WebRTCClient(UMI3DCollaborationClientServer client, EncoderType encoderType) : base(client, encoderType)
+        public WebRTCClient(UMI3DCollaborationClientServer client, bool useSoftware) : base(client, useSoftware)
         {
             this.client = client;
+            FakeWebRTC = new FakeWebRTCClient(client);
         }
 
         /// <summary>
@@ -167,6 +170,12 @@ namespace umi3d.cdk.collaboration
         {
             Debug.Log($"client connection lost {id}");
         }
+
+#if !UNITY_WEBRTC
+        protected override IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
+        {
+            return base.CreateWebRtcConnection(uid, true);
+        }
+#endif
     }
 }
-#endif
