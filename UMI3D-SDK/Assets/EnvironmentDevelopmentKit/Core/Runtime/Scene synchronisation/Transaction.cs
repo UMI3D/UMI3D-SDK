@@ -68,12 +68,14 @@ namespace umi3d.edk
                     case SetEntityListRemoveProperty rl:
                         newOperations.Add(op);
                         break;
+
                     case SetEntityListProperty sl:
                         foreach (var nop in newOperations.ToList())
                         {
-                            if (nop is SetEntityListProperty)
+                            if (nop is SetEntityListAddProperty || nop is SetEntityListRemoveProperty)
+                                break;
+                            else if (nop is SetEntityListProperty ne)
                             {
-                                var ne = nop as SetEntityListProperty;
                                 if (ne.entityId == sl.entityId && ne.property == sl.property && ne.index == sl.index)
                                 {
                                     ne -= sl.users;
@@ -82,12 +84,15 @@ namespace umi3d.edk
                                 }
                             }
                         }
+                        newOperations.Add(sl);
                         break;
-                    case SetEntityDictionaryProperty sd:
 
+                    case SetEntityDictionaryProperty sd:
                         foreach (var nop in newOperations.ToList())
                         {
-                            if (nop is SetEntityDictionaryProperty)
+                            if (nop is SetEntityDictionaryAddProperty || nop is SetEntityDictionaryRemoveProperty)
+                                break;
+                            else if(nop is SetEntityDictionaryProperty)
                             {
                                 var ne = nop as SetEntityDictionaryProperty;
                                 if (ne.entityId == sd.entityId && ne.property == sd.property && ne.key == sd.key)
@@ -98,7 +103,9 @@ namespace umi3d.edk
                                 }
                             }
                         }
+                        newOperations.Add(sd);
                         break;
+
                     case SetEntityProperty e:
                         foreach (var nop in newOperations.ToList())
                         {
@@ -115,6 +122,7 @@ namespace umi3d.edk
                         }
                         newOperations.Add(e);
                         break;
+
                     case DeleteEntity d:
                         bool add = true;
                         foreach (var nop in newOperations.ToList())
@@ -154,6 +162,7 @@ namespace umi3d.edk
                         if (add)
                             newOperations.Add(d);
                         break;
+
                     case LoadEntity l:
                         foreach (var nop in newOperations.ToList())
                         {
@@ -171,6 +180,7 @@ namespace umi3d.edk
                         }
                         newOperations.Add(l);
                         break;
+
                     default:
                         throw new System.Exception($"Missing type {op.GetType()}");
                 }
