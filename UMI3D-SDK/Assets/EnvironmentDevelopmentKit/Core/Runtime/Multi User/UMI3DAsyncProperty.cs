@@ -261,7 +261,7 @@ namespace umi3d.edk
 
             if (!isSync)
             {
-                asyncValues[user] = value;
+                asyncValues[user] = CopyOfValue(value);
             }
             else if (asyncValues.ContainsKey(user))
             {
@@ -307,6 +307,8 @@ namespace umi3d.edk
             }
             return operation;
         }
+
+        protected virtual T CopyOfValue(T value) { return value; }
 
     }
 

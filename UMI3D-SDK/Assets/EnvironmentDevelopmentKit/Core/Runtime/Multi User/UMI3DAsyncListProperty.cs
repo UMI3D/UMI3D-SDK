@@ -369,7 +369,6 @@ namespace umi3d.edk
             else
             {
                 Sync(user, false);
-                asyncValues[user] = Copier(GetValue());
                 GetValue(user).RemoveAt(index);
                 if (OnUserInnerValueRemoved != null)
                     OnUserInnerValueRemoved.Invoke(index, user, value);
@@ -380,5 +379,7 @@ namespace umi3d.edk
             }
         }
 
+
+        protected override List<T> CopyOfValue(List<T> value) { return Copier(value); }
     }
 }
