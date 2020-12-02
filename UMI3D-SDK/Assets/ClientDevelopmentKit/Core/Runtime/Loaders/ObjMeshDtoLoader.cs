@@ -42,26 +42,33 @@ namespace umi3d.cdk
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
             ImportOptions importOptions = CreateImportOption(authorization);
-  
-            objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions,UMI3DEnvironmentLoader.Instance.GetBaseMaterial());
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
+                UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
+                    (m)=>
+                    { 
+                        objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions, m);
 
 
-            objImporter.ImportingComplete += () =>
-            {
-                try
-                {
-                    HideModelRecursively(createdObj);
 
-                    Transform newModel = objImporter.transform.GetChild(0);
-                    newModel.SetParent(UMI3DResourcesManager.Instance.transform);
-                    callback.Invoke(newModel.gameObject);
-                }
-                catch
-                {
-                    failCallback("Importing failed with : " + url);
-                }
-                GameObject.Destroy(objImporter.gameObject, 1);
-            };
+                        objImporter.ImportingComplete += () =>
+                        {
+                            try
+                            {
+                                HideModelRecursively(createdObj);
+
+                                Transform newModel = objImporter.transform.GetChild(0);
+                                newModel.SetParent(UMI3DResourcesManager.Instance.transform);
+                                callback.Invoke(newModel.gameObject);
+                            }
+                            catch
+                            {
+                                failCallback("Importing failed with : " + url);
+                            }
+                            GameObject.Destroy(objImporter.gameObject, 1);
+                        };
+
+                    }));
+
 
         }
 

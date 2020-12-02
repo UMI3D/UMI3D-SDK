@@ -17,7 +17,7 @@ using System.Collections.Generic;
 
 namespace umi3d.common.collaboration
 {
-    public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironementDto
+    public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironmentDto
     {
         public List<UserDto> userList;
     }
