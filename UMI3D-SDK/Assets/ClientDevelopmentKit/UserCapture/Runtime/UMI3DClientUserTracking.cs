@@ -109,8 +109,8 @@ namespace umi3d.cdk.userCapture
             LastFrameDto = new UserTrackingFrameDto()
             {
                 bones = bonesList,
-                position = anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
-                rotation = anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
+                position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
+                rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
                 scale = anchor.localScale,
                 userId = UMI3DClientServer.Instance.GetId(),
                 refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
