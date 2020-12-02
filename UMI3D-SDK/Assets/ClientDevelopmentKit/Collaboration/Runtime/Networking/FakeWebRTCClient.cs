@@ -24,11 +24,29 @@ using WebSocketSharp;
 
 namespace umi3d.cdk.collaboration
 {
-    public class FakeWebRTCClient : IWebRTCClient
+    public class FakeWebRTCClient : AbstractWebsocketRtc
     {
+        public class WSContent : AbstractWebsocket
+        {
+            WebSocket ws;
+
+            public WSContent(WebSocket ws)
+            {
+                this.ws = ws;
+            }
+
+            public override void Send(byte[] content)
+            {
+                ws.Send(content);
+            }
+        }
+
         UMI3DCollaborationClientServer client;
         protected WebSocket wsReliable;
         protected WebSocket wsUnReliable;
+        WSContent wsContentReliable;
+        WSContent wsContentUnReliable;
+
         bool reconnect = true;
 
         /// <summary>
@@ -68,6 +86,9 @@ namespace umi3d.cdk.collaboration
             wsUnReliable = new WebSocket(UnreliableUrl, UMI3DNetworkingKeys.websocketProtocol);
             _Init(wsReliable, true);
             _Init(wsUnReliable, false);
+
+            wsContentReliable = new WSContent(wsReliable);
+            wsContentUnReliable = new WSContent(wsUnReliable);
         }
 
         void _Init(WebSocket ws, bool reliable)
@@ -180,121 +201,27 @@ namespace umi3d.cdk.collaboration
                 ws?.Connect();
         }
 
-        /// <summary>
-        /// Call when an RtcMessage is received.
-        /// </summary>
-        /// <param name="id">peer id.</param>
-        /// <param name="bytes">message as byte[].</param>
-        /// <param name="channel">Datachannel from which this message was received.</param>
-        protected void OnRtcMessage(string id, byte[] bytes, DataChannel channel)
+
+        public override void SetUpd(WebRTCDataChannel channels)
         {
-            var user = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == id);
-            if (channel.type == DataType.Audio)
-                AudioManager.Instance.Read(user, bytes, channel);
-            else
-                UMI3DCollaborationClientServer.OnRtcMessage(user, bytes, channel);
+            var ws = channels.reliable ? wsContentReliable : wsContentUnReliable;
+            if (ws == null) Debug.LogWarning($"Websocket {channels.reliable} not opened yet. Workflow might need a review.");
+            Debug.Log(channels.Label);
+            channels.socket = ws;
         }
 
-
-        public List<DataChannel> Add(DataChannel dataBase)
+        public override void Send(byte[] content, DataType type, bool reliable, List<IWebRTCconnection> connection)
         {
-            return null;
-        }
-
-        public DataChannel Add(string uid, DataChannel dataBase)
-        {
-            return null;
-        }
-
-        public void Clear()
-        {
-            reconnect = false;
-            if (wsReliable != null)
-            {
-                wsReliable.Close();
-            }
-            if (wsUnReliable != null)
-            {
-                wsUnReliable.Close();
-            }
-        }
-
-        public bool Exist(bool reliable, DataType dataType, out List<DataChannel> dataChannels, string peerId = null)
-        {
-            dataChannels = null;
-            return false;
-        }
-
-        public bool ExistServer(bool reliable, DataType dataType, out List<DataChannel> dataChannels)
-        {
-            dataChannels = null;
-            return false;
-        }
-
-        public void HandleMessage(RTCDto dto)
-        {
-            Debug.Log(dto);
-        }
-
-        public void Remove(DataChannel dataChannel)
-        {
-
-        }
-
-        public void Send(UMI3DDto dto, bool reliable, string peerId = null)
-        {
-            List<string> target = peerId != null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).Where(id => UMI3DCollaborationClientServer.Identity.userId != id).ToList();
-            target.Add(UMI3DGlobalID.ServerId);
-            Send(dto, target, DataType.Data, reliable);
-        }
-
-        public void Send(UMI3DDto dto, bool reliable, DataType dataType, string peerId = null)
-        {
-            List<string> target = peerId != null ? new List<string>() { peerId } : UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).Where(id => UMI3DCollaborationClientServer.Identity.userId != id).ToList();
-            target.Add(UMI3DGlobalID.ServerId);
-            Send(dto, target, dataType, reliable);
-        }
-
-        public void sendAudio(AudioDto dto)
-        {
-            Debug.Log("audio not send via fakeRtc");
-
-            //List<string> target = UMI3DCollaborationEnvironmentLoader.Instance.UserList.Select(u => u.id).ToList();
-            //target.Add(UMI3DGlobalID.ServerId);
-            //Send(dto, target, DataType.Audio, false);
-        }
-
-        public void sendAudio(List<DataChannel> channels, AudioDto dto)
-        {
-            Debug.Log("audio not send via fakeRtc");
-        }
-
-        public void SendServer(UMI3DDto dto, bool reliable)
-        {
-            List<string> target = new List<string>() { UMI3DGlobalID.ServerId };
-
-            Send(dto, target, DataType.Data, false);
-        }
-
-        void Send(UMI3DDto content, List<string> target, DataType dataType, bool reliable, bool useWebrtc = true)
-        {
-
             var dto = new FakeWebrtcMessageDto()
             {
                 sourceId = UMI3DCollaborationClientServer.Identity.userId,
-                content = content.ToBson(),
-                targetId = target,
-                dataType = dataType,
+                content = content,
+                targetId = connection.Select(c => c.targetId).ToList(),
+                dataType = type,
                 reliable = reliable
             };
             var ws = reliable ? wsReliable : wsUnReliable;
             ws?.Send(dto.ToBson());
-        }
-
-
-        public void Stop()
-        {
-            Clear();
         }
     }
 }

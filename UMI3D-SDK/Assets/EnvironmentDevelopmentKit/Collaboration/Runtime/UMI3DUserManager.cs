@@ -44,7 +44,11 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public List<UserDto> Todo()
+        /// <summary>
+        /// get all userDto collection
+        /// </summary>
+        /// <returns></returns>
+        public List<UserDto> ToDto()
         {
             return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
         }
@@ -82,8 +86,10 @@ namespace umi3d.edk.collaboration
             }
         }
 
-
-
+        /// <summary>
+        /// logout a user
+        /// </summary>
+        /// <param name="user"></param>
         public void Logout(UMI3DCollaborationUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
@@ -95,6 +101,11 @@ namespace umi3d.edk.collaboration
             user.Logout();
         }
 
+        /// <summary>
+        /// Mark a user as missing.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public IEnumerator ConnectionClose(string id)
         {
             Debug.Log($"connection close {id}");
@@ -107,6 +118,12 @@ namespace umi3d.edk.collaboration
             yield break;
         }
 
+        /// <summary>
+        /// Create a User.
+        /// </summary>
+        /// <param name="Login">Login of the user.</param>
+        /// <param name="connection">Websoket connection of the user.</param>
+        /// <param name="Callback">Callback called when the user has been created.</param>
         public void CreateUser(string Login, UMI3DWebSocketConnection connection, Action<UMI3DCollaborationUser, bool> Callback)
         {
             UMI3DCollaborationUser user;
@@ -126,11 +143,19 @@ namespace umi3d.edk.collaboration
             Callback.Invoke(user, reconnection);
         }
 
+        /// <summary>
+        /// Notify that a user ended connection and join.
+        /// </summary>
+        /// <param name="user"></param>
         public void UserJoin(UMI3DCollaborationUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(AddUserOnJoin(user));
         }
 
+        /// <summary>
+        /// Notify a user status change.
+        /// </summary>
+        /// <param name="user"></param>
         public void NotifyUserStatusChanged(UMI3DCollaborationUser user)
         {
             if (user != null)

@@ -30,7 +30,7 @@ namespace umi3d.edk.collaboration
 
     public class UMI3DFakeRTCConnection : WebSocketBehavior
     {
-        public string _id = null;
+        internal string _id = null;
         private static int _number = 0;
         private string _prefix;
         public bool reliable { get; private set; }
@@ -91,6 +91,11 @@ namespace umi3d.edk.collaboration
             Debug.Log("open");
         }
 
+        /// <summary>
+        /// Send Byte message.
+        /// </summary>
+        /// <param name="data">message to send</param>
+        /// <param name="callback">callback function</param>
         public void SendData(byte[] data, Action<bool> callback = null)
         {
             if (data != null && this.Context.WebSocket.IsConnected)
@@ -108,29 +113,13 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <summary>
+        /// det the id of the connection
+        /// </summary>
+        /// <returns></returns>
         public string GetId()
         {
             return _id;
-        }
-    }
-
-    public class FakeDataChannel : DataChannel
-    {
-        public UMI3DFakeRTCConnection ws;
-        public FakeDataChannel(DataChannel channel, UMI3DFakeRTCConnection fakeRTC) : base(channel)
-        {
-            ws = fakeRTC;
-        }
-
-        public FakeDataChannel(UMI3DFakeRTCConnection fakeRTC, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
-        {
-            ws = fakeRTC;
-        }
-
-        ///<inheritdoc/>
-        public override void Send(byte[] msg)
-        {
-            ws.SendData(msg);
         }
     }
 }

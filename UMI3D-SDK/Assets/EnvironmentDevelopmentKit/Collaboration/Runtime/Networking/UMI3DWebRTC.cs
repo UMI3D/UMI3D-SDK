@@ -58,15 +58,18 @@ namespace umi3d.edk.collaboration
         public class NewPeerListener : UnityEvent<string> { };
         public NewPeerListener onNewPeer = new NewPeerListener();
         public UMI3DFakeWebRTC fakeWebRTC;
+
+        public override AbstractWebsocketRtc websocketRtc => fakeWebRTC;
+
         /// <summary>
         /// Initialization of the WebrtcClient
         /// </summary>
         /// <param name="server">The server</param>
-        public UMI3DWebRTC(UMI3DCollaborationServer server, Unity.WebRTC.EncoderType encoderType) : base(server, encoderType)
+        public UMI3DWebRTC(UMI3DCollaborationServer server, bool useSoftware) : base(server, useSoftware)
         {
             this.server = server;
             peerMap = new List<bridge>();
-            fakeWebRTC = new UMI3DFakeWebRTC(this, OnFakeRtcMessage);
+             fakeWebRTC = new UMI3DFakeWebRTC(this, OnFakeRtcMessage);
         }
 
         /// <summary>
@@ -159,14 +162,14 @@ namespace umi3d.edk.collaboration
         public DataChannel GetChannel(UMI3DUser user, string label)
         {
             if (peers.ContainsKey(user.Id()))
-                return peers[user.Id()].FirstOrDefault(d => d.Label == label);
+                return peers[user.Id()].Find(d => d.Label == label);
             return null;
         }
 
         public DataChannel GetChannel(UMI3DUser user, DataType dataType, bool reliable)
         {
             if (peers.ContainsKey(user.Id()))
-                return peers[user.Id()].FirstOrDefault(d => d.type == dataType && d.reliable == reliable);
+                return peers[user.Id()].Find(d => d.type == dataType && d.reliable == reliable);
             return null;
         }
 
@@ -195,13 +198,15 @@ namespace umi3d.edk.collaboration
         public DataChannel OpenChannel(UMI3DUser user, string label, DataType type, bool reliable)
         {
             var connection = peers[user.Id()];
-            var datachannel = connection.FirstOrDefault(d => d.Label == label);
+            var datachannel = connection.Find(d => d.Label == label);
             if (datachannel != default)
             {
                 if (datachannel.type == type && datachannel.reliable == reliable) return datachannel;
                 else throw new Exception("A datachannel with this label already exist");
             }
-            datachannel = Add(user.Id(), new WebRTCDataChannel(label, reliable, type));
+            datachannel = Add(user.Id(), new WebRTCDataChannel(GetUID(),user.Id(), label, reliable, type));
+            if (user is UMI3DCollaborationUser cu && !cu.useWebrtc && datachannel is WebRTCDataChannel wdc)
+                wdc.Created();
             return datachannel;
         }
 
@@ -225,8 +230,8 @@ namespace umi3d.edk.collaboration
         public void CloseChannel(UMI3DUser user, string label)
         {
             var connection = peers[user.Id()];
-            var datachannel = connection.FirstOrDefault(d => d.Label == label);
-            if (datachannel != default)
+            DataChannel datachannel;
+            if (connection.Find(d => d.Label == label,out datachannel))
             {
                 connection.RemoveDataChannel(datachannel);
             }
@@ -357,7 +362,7 @@ namespace umi3d.edk.collaboration
         {
             base.ChannelsToAddCreation(uid, connection);
             foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                connection.AddDataChannel(new WebRTCDataChannel(channel), false);
+                connection.AddDataChannel(new WebRTCDataChannel(GetUID(),uid,channel), false);
         }
 
         ///<inheritdoc/>
@@ -399,12 +404,14 @@ namespace umi3d.edk.collaboration
         protected override IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
         {
             var user = UMI3DCollaborationServer.Collaboration.GetUser(uid);
-            if (user.useWebrtc)
-                return base.CreateWebRtcConnection(uid, instanciateChannel);
-            UMI3DFakeRTCClient connection = new UMI3DFakeRTCClient(uid);
-            ChannelsToAddCreation(uid, connection);
-            connection.Init(uid, instanciateChannel);
-            return connection;
+            var co = base.CreateWebRtcConnection(uid, instanciateChannel || !user.useWebrtc);
+            if (co is WebRTCconnection Wco)
+            {
+                Wco.useRTC = user.useWebrtc;
+                Wco.channels.Cast<WebRTCDataChannel>().ForEach(c => { if (c != null) c.useWebrtc = user.useWebrtc; });
+            }
+
+            return  co;
         }
 
         ///<inheritdoc/>

@@ -51,11 +51,11 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Set the http port.
         /// </summary>
-        public const string httpPortParam = Separator + "httpPort";
+        public const string httpPortParam = Separator + "httpport";
         /// <summary>
         /// Set the websocket port.
         /// </summary>
-        public const string wsPortParam = Separator + "wsPort";
+        public const string wsPortParam = Separator + "wsport";
         /// <summary>
         /// Set the fake reliable rtc port.
         /// </summary>

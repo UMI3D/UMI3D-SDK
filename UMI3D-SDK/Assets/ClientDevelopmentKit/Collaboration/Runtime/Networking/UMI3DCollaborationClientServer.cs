@@ -44,7 +44,7 @@ namespace umi3d.cdk.collaboration
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public WebSocketClient WebSocketClient { get; private set; }
-        public IWebRTCClient WebRTCClient { get; private set; }
+        public IWebRTCClient webRTCClient { get; private set; }
         static public IdentityDto Identity = new IdentityDto();
         static public UserConnectionDto UserDto = new UserConnectionDto();
 
@@ -88,10 +88,10 @@ namespace umi3d.cdk.collaboration
         {
             WebSocketClient = new WebSocketClient(this);
 #if UNITY_WEBRTC
-            WebRTCClient = new WebRTCClient(this, encoderType);
-            (WebRTCClient as WebRTCClient).iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
+            webRTCClient = new WebRTCClient(this, encoderType == EncoderType.Software);
+            WebRTCClient.iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
 #else
-            WebRTCClient = new FakeWebRTCClient(this);
+            webRTCClient = new WebRTCClient(this, false);
 #endif
         }
 
@@ -157,7 +157,7 @@ namespace umi3d.cdk.collaboration
             if (Connected())
                 HttpClient.SendPostLogout(() =>
                 {
-                    WebRTCClient.Stop();
+                    webRTCClient.Stop();
                     WebSocketClient.Close();
                     Start();
                     success?.Invoke();
@@ -238,8 +238,7 @@ namespace umi3d.cdk.collaboration
         void _setMedia()
         {
 #if UNITY_WEBRTC
-            if ((WebRTCClient as WebRTCClient) != null)
-                (WebRTCClient as WebRTCClient).iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
+            WebRTCClient.iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
 #endif
         }
 
@@ -276,7 +275,7 @@ namespace umi3d.cdk.collaboration
         protected override void _Send(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
-                Instance?.WebRTCClient?.SendServer(dto, reliable);
+                Instance?.webRTCClient?.SendServer(dto, reliable);
         }
 
         /// <summary>
@@ -287,7 +286,7 @@ namespace umi3d.cdk.collaboration
         protected override void _SendTracking(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
-                Instance?.WebRTCClient?.Send(dto, reliable, DataType.Tracking);
+                Instance?.webRTCClient?.Send(dto, reliable, DataType.Tracking);
         }
 
         /// <summary>
@@ -325,7 +324,7 @@ namespace umi3d.cdk.collaboration
                     }
                     break;
                 case RTCDto rTCDto:
-                    Instance.WebRTCClient.HandleMessage(rTCDto);
+                    Instance.webRTCClient.HandleMessage(rTCDto);
                     break;
                 case StatusRequestDto statusRequestDto:
                     Instance.HttpClient.SendPostUpdateStatus(null, null);
@@ -454,7 +453,7 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override void OnDestroy()
         {
-            WebRTCClient?.Clear();
+            webRTCClient?.Clear();
             base.OnDestroy();
         }
 
