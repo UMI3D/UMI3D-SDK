@@ -37,7 +37,7 @@ namespace umi3d.edk.collaboration
 
         public bool isRunning { get; protected set; } = false;
 
-        [SerializeField]
+        [SerializeField,ReadOnly]
         bool useIp = false;
 
         public EncoderType encoderType;

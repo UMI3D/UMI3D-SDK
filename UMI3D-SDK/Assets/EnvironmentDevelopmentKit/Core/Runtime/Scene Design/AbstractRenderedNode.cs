@@ -22,27 +22,24 @@ namespace umi3d.edk
 {
     public abstract class AbstractRenderedNode : UMI3DNode
     {
-        public bool overrideModelMaterials = false;
-        public List<MaterialOverrider> materialsOverrider = new List<MaterialOverrider>();
-
+        [SerializeField, EditorReadOnly]
+        protected bool overrideModelMaterials = false;
+        [SerializeField, EditorReadOnly]
+        protected List<MaterialOverrider> materialsOverrider = new List<MaterialOverrider>();
+        [SerializeField, EditorReadOnly]
+        protected bool castShadow = true;
+        [SerializeField, EditorReadOnly]
+        protected bool receiveShadow = true;
 
         public UMI3DAsyncProperty<bool> objectMaterialsOverrided { get { Register(); return _objectMaterialsOverrided; } protected set => _objectMaterialsOverrided = value; }
         public UMI3DAsyncListProperty<MaterialOverrider> objectMaterialOverriders { get { Register(); return _objectMaterialOverriders; } protected set => _objectMaterialOverriders = value; }
-
-        [SerializeField]
-        protected bool castShadow = true;
-        [SerializeField]
-        protected bool receiveShadow = true;
-
+        public UMI3DAsyncProperty<bool> objectCastShadow { get { Register(); return _objectCastShadow; } protected set => _objectCastShadow = value; }
+        public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
 
         protected UMI3DAsyncProperty<bool> _objectMaterialsOverrided;
         protected UMI3DAsyncListProperty<MaterialOverrider> _objectMaterialOverriders;
         protected UMI3DAsyncProperty<bool> _objectCastShadow;
         protected UMI3DAsyncProperty<bool> _objectReceiveShadow;
-
-
-        public UMI3DAsyncProperty<bool> objectCastShadow { get { Register(); return _objectCastShadow; } protected set => _objectCastShadow = value; }
-        public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
 
         ///<inheritdoc/>
         protected override void InitDefinition(string id)
@@ -54,18 +51,13 @@ namespace umi3d.edk
 
             objectMaterialOverriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverrider, (x, u) => x.ToDto(), (a, b) => { return a.GetHashCode().Equals(b.GetHashCode()); });
 
-
-
-            //     objectMaterialOverriders.OnInnerValueChanged += (int index, MaterialOverrider value) => materialsOverrider[index] = value;
-            //   objectMaterialOverriders.OnInnerValueRemoved += (int index, MaterialOverrider value) => materialsOverrider.RemoveAt(index);
-            objectMaterialOverriders.OnInnerValueAdded += (int index, MaterialOverrider value) => { Debug.Log("add inner value in matOverriders"); /* materialsOverrider.Add(value); */};
-            //     objectMaterialOverriders.OnValueChanged += (List<MaterialOverrider> value) => materialsOverrider = value;
-
-
-
+            objectMaterialOverriders.OnValueChanged += (List<MaterialOverrider> value) => materialsOverrider = value;
 
             objectCastShadow = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.CastShadow, castShadow);
+            objectCastShadow.OnValueChanged += v => castShadow = v;
+
             objectReceiveShadow = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ReceiveShadow, receiveShadow);
+            objectReceiveShadow.OnValueChanged += v => castShadow = v;
 
         }
 
@@ -73,7 +65,6 @@ namespace umi3d.edk
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DRenderedNodeDto();
-            // rajouter un abstract dto 
         }
 
         ///<inheritdoc/>
@@ -90,6 +81,4 @@ namespace umi3d.edk
         }
 
     }
-
-
 }

@@ -160,8 +160,8 @@ namespace umi3d.edk
             setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
             if (obj as AbstractRenderedNode)
             {
-                setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
-                setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
+                //setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
+                //setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
             }
             if (obj as UMI3DSubModel)
             {
