@@ -345,7 +345,6 @@ namespace umi3d.edk
         {
             if (index < 0 || index >= GetValue(user).Count) return null;
             T value = GetValue(user)[index];
-            GetValue(user).RemoveAt(index);
             var operation = new SetEntityListRemoveProperty()
             {
                 users = new HashSet<UMI3DUser>(),
