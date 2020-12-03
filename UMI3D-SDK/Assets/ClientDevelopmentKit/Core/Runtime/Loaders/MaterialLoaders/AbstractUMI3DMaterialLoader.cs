@@ -220,7 +220,16 @@ namespace umi3d.cdk
                             //newMat.SetTexture(item.Key, t);
                             LoadTextureInMaterial(t, item.Key, newMat);
                             //ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
-
+                            break;
+                        case bool b:
+                            if (b)
+                            {
+                                newMat.EnableKeyword(item.Key);
+                            }
+                            else
+                            {
+                                newMat.DisableKeyword(item.Key);
+                            }
                             break;
                         default:
                             Debug.LogWarning("unsupported type for shader property");
