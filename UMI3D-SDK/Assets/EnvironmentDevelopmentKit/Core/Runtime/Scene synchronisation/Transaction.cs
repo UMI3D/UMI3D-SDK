@@ -70,7 +70,9 @@ namespace umi3d.edk
                         break;
 
                     case SetEntityListProperty sl:
-                        foreach (var nop in newOperations.ToList())
+                        var inverted = newOperations.ToList();
+                        inverted.Reverse();
+                        foreach (var nop in inverted)
                         {
                             if (nop is SetEntityListAddProperty || nop is SetEntityListRemoveProperty)
                                 break;
@@ -88,7 +90,9 @@ namespace umi3d.edk
                         break;
 
                     case SetEntityDictionaryProperty sd:
-                        foreach (var nop in newOperations.ToList())
+                        var inverted2 = newOperations.ToList();
+                        inverted2.Reverse();
+                        foreach (var nop in inverted2)
                         {
                             if (nop is SetEntityDictionaryAddProperty || nop is SetEntityDictionaryRemoveProperty)
                                 break;
@@ -124,58 +128,90 @@ namespace umi3d.edk
                         break;
 
                     case DeleteEntity d:
-                        bool add = true;
                         foreach (var nop in newOperations.ToList())
                         {
-                            if (nop is DeleteEntity)
+                            switch (nop)
                             {
-                                var nd = nop as DeleteEntity;
-                                if (nd.entityId == d.entityId)
-                                {
-                                    nd -= d.users;
-                                    if (nd.users.Count == 0)
-                                        newOperations.Remove(nd);
-                                }
-                            }
-                            else if (nop is SetEntityProperty)
-                            {
-                                var ne = nop as SetEntityProperty;
-                                if (ne.entityId == d.entityId)
-                                {
-                                    ne -= d.users;
-                                    if (ne.users.Count == 0)
-                                        newOperations.Remove(ne);
-                                }
-                            }
-                            else if (nop is LoadEntity)
-                            {
-                                var nl = nop as LoadEntity;
-                                if (nl.entity.Id() == d.entityId)
-                                {
-                                    nl -= d.users;
-                                    if (nl.users.Count == 0)
-                                        newOperations.Remove(nl);
-                                    add = false;
-                                }
+                                case DeleteEntity nd:
+                                    {
+                                        if (nd.entityId == d.entityId)
+                                        {
+                                            nd -= d.users;
+                                            if (nd.users.Count == 0)
+                                                newOperations.Remove(nd);
+                                        }
+
+                                        break;
+                                    }
+
+                                case SetEntityProperty ne:
+                                    {
+                                        if (ne.entityId == d.entityId)
+                                        {
+                                            ne -= d.users;
+                                            if (ne.users.Count == 0)
+                                                newOperations.Remove(ne);
+                                        }
+
+                                        break;
+                                    }
+
+                                case LoadEntity nl:
+                                    {
+                                        if (nl.entity.Id() == d.entityId)
+                                        {
+                                            nl -= d.users;
+                                            if (nl.users.Count == 0)
+                                                newOperations.Remove(nl);
+                                        }
+
+                                        break;
+                                    }
                             }
                         }
-                        if (add)
-                            newOperations.Add(d);
+                        newOperations.Add(d);
                         break;
 
                     case LoadEntity l:
                         foreach (var nop in newOperations.ToList())
                         {
-                            if (nop is LoadEntity)
+                            switch (nop)
                             {
-                                var nl = nop as LoadEntity;
-                                if (nl.entity.Id() == l.entity.Id())
-                                {
-                                    nl -= l.users;
-                                    if (nl.users.Count == 0)
-                                        newOperations.Remove(nl);
-                                    add = false;
-                                }
+                                case DeleteEntity nd:
+                                    {
+                                        if (nd.entityId == l.entity.Id())
+                                        {
+                                            nd -= l.users;
+                                            if (nd.users.Count == 0)
+                                                newOperations.Remove(nd);
+                                        }
+
+                                        break;
+                                    }
+
+                                case SetEntityProperty ne:
+                                    {
+                                        if (ne.entityId == l.entity.Id())
+                                        {
+                                            ne -= l.users;
+                                            if (ne.users.Count == 0)
+                                                newOperations.Remove(ne);
+                                        }
+
+                                        break;
+                                    }
+
+                                case LoadEntity nl:
+                                    {
+                                        if (nl.entity.Id() == l.entity.Id())
+                                        {
+                                            nl -= l.users;
+                                            if (nl.users.Count == 0)
+                                                newOperations.Remove(nl);
+                                        }
+
+                                        break;
+                                    }
                             }
                         }
                         newOperations.Add(l);
