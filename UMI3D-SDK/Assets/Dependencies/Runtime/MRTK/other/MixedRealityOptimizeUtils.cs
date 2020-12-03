@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
-
+#if UNITY_EDITOR
 using System;
 using System.Reflection;
 using UnityEditor;
@@ -227,3 +227,4 @@ namespace Microsoft.MixedReality.Toolkit.Utilities
         }
     }
 }
+#endif

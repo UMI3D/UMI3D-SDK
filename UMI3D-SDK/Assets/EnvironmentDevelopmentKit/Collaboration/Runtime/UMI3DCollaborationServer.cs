@@ -138,8 +138,8 @@ namespace umi3d.edk.collaboration
 
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
-            webRTC = new UMI3DWebRTC(this, encoderType);
-            webRTC.iceServers = iceServers?.iceServers;
+            webRTC = new UMI3DWebRTC(this, encoderType == EncoderType.Software);
+            UMI3DWebRTC.iceServers = iceServers?.iceServers;
 
             isRunning = true;
             OnServerStart.Invoke();

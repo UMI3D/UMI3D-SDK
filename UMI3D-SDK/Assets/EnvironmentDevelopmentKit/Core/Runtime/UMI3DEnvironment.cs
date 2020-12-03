@@ -53,8 +53,6 @@ namespace umi3d.edk
         static public UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
         static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
 
-
-
         private void Start()
         {
             foreach (UMI3DAbstractNode node in GetComponentsInChildren<UMI3DAbstractNode>(true))
@@ -94,11 +92,11 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Write Properties on a UMI3DEnvironementDto.
+        /// Write Properties on a UMI3DEnvironmentDto.
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="user"></param>
-        protected virtual void WriteProperties(UMI3DEnvironementDto dto, UMI3DUser user)
+        protected virtual void WriteProperties(UMI3DEnvironmentDto dto, UMI3DUser user)
         {
             dto.LibrariesId = globalLibraries.Select(l => l.id).ToList();
             dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
@@ -108,15 +106,16 @@ namespace umi3d.edk
             dto.groundColor = objectGroundColor.GetValue(user);
             dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
             dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+            dto.defaultMaterial = defaultMaterial?.ToDto();
         }
 
         /// <summary>
-        /// Create a UMI3DEnvironementDto.
+        /// Create a UMI3DEnvironmentDto.
         /// </summary>
         /// <returns></returns>
-        protected virtual UMI3DEnvironementDto CreateDto()
+        protected virtual UMI3DEnvironmentDto CreateDto()
         {
-            return new UMI3DEnvironementDto();
+            return new UMI3DEnvironmentDto();
         }
 
         public static EnterDto ToEnterDto(UMI3DUser user)
@@ -154,6 +153,7 @@ namespace umi3d.edk
             objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, groundColor, (c, u) => (SerializableColor)c);
             objectAmbientIntensity = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientIntensity, ambientIntensity);
             objectAmbientSkyboxImage = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AmbientSkyboxImage, skyboxImage, (r, u) => r.ToDto());
+
         }
 
 
@@ -193,6 +193,11 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly]
         UMI3DResource skyboxImage = null;
         public UMI3DAsyncProperty<UMI3DResource> objectAmbientSkyboxImage;
+        /// <summary>
+        /// Properties of the default Material, it is used to initialise loaded materials in clients. 
+        /// </summary>
+        [SerializeField]
+        UMI3DResource defaultMaterial = null;
 
         #endregion
 

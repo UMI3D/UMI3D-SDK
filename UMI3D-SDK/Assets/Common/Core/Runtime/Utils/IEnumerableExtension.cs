@@ -14,10 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace umi3d.common
 {
-    public class GlTFEnvironmentExtensions : AbstractGlTFExtensions<UMI3DEnvironmentDto>
+    public static class IEnumerableExtension 
     {
-
+        public static void ForEach<A>(this IEnumerable<A> source,Action<A> action)
+        {
+            if (action == null)
+                throw new Exception("action should not be null");
+            var it = source.GetEnumerator();
+            while (it.MoveNext())
+            {
+                action.Invoke(it.Current);
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ namespace umi3d.cdk.collaboration
         public Action<AudioDto> AudioUpdate;
         public bool IsOn = true;
 
+        bool ok = true;
 
         /// <summary>
         /// Enable or disable the microphone listener.
@@ -29,20 +30,29 @@ namespace umi3d.cdk.collaboration
         // Use this for initialization
         void Start()
         {
-            mic = Microphone.Start(null, true, 10, FREQUENCY);
-            //Debug.Log(mic.channels);
-            AudioSource audio = GetComponent<AudioSource>();
-            audio.clip = AudioClip.Create("microphone", 10 * FREQUENCY, mic.channels, FREQUENCY, false);
-            audio.loop = true;
-            if (UMI3DCollaborationClientServer.Instance.WebRTCClient != null)
-                AudioUpdate = UMI3DCollaborationClientServer.Instance.WebRTCClient.sendAudio;
+            try
+            {
+                mic = Microphone.Start(null, true, 10, FREQUENCY);
+                //Debug.Log(mic.channels);
+                AudioSource audio = GetComponent<AudioSource>();
+                audio.clip = AudioClip.Create("microphone", 10 * FREQUENCY, mic.channels, FREQUENCY, false);
+                audio.loop = true;
+                if (UMI3DCollaborationClientServer.Instance.webRTCClient != null)
+                    AudioUpdate = UMI3DCollaborationClientServer.Instance.webRTCClient.sendAudio;
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e);
+                ok = false;
+            }
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (AudioUpdate == null && UMI3DCollaborationClientServer.Instance.WebRTCClient != null)
-                AudioUpdate = UMI3DCollaborationClientServer.Instance.WebRTCClient.sendAudio;
+            if (!ok) return;
+            if (AudioUpdate == null && UMI3DCollaborationClientServer.Instance.webRTCClient != null)
+                AudioUpdate = UMI3DCollaborationClientServer.Instance.webRTCClient.sendAudio;
             if ((pos = Microphone.GetPosition(null)) > 0)
             {
                 if (lastPos > pos) lastPos = 0;

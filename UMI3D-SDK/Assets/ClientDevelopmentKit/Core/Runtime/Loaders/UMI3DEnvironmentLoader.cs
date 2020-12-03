@@ -148,20 +148,37 @@ namespace umi3d.cdk
         /// <summary>
         /// Basic material used to init a new material with the same properties
         /// </summary>
-        [SerializeField]
-        private Material baseMaterial;
+        public Material baseMaterial;
 
         /// <summary>
         /// return a copy of the baseMaterial. it can be modified 
         /// </summary>
         /// <returns></returns>
-        public Material GetBaseMaterial() { return new Material(baseMaterial); }
+        public Material GetBaseMaterial() 
+        { 
+            //Debug.Log("GetBaseMaterial");
+            if (baseMaterial == null)
+                return null;
+            return new Material(baseMaterial); 
+        }
+
+        /// <summary>
+        /// wait initialization of baseMaterial then invoke callback
+        /// </summary>
+        /// <param name="callback">callback to invoke with the baseMaterial in argument</param>
+        /// <returns></returns>
+        public IEnumerator GetBaseMaterialBeforeAction(Action<Material> callback)
+        {
+            yield return new WaitWhile(()=> baseMaterial == null);
+           
+            callback.Invoke(new Material(baseMaterial));
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
-        public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material (newBaseMat); }
+            public void SetBaseMaterial(Material newBaseMat) { Debug.Log("SetBaseMaterial"); baseMaterial = new Material (newBaseMat); }
 
         ///<inheritdoc/>
         protected override void Awake()
@@ -423,6 +440,11 @@ namespace umi3d.cdk
             var extension = dto?.extensions?.umi3d;
             if (extension != null)
             {
+                if (extension.defaultMaterial != null && extension.defaultMaterial.variants != null && extension.defaultMaterial.variants.Count > 0)
+                {
+                    baseMaterial = null;
+                    LoadDefaultMaterial(extension.defaultMaterial);
+                }
                 foreach (var scene in extension.preloadedScenes)
                     Parameters.ReadUMI3DExtension(scene, node, null, null);
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
@@ -434,7 +456,33 @@ namespace umi3d.cdk
                 {
                     Parameters.loadSkybox(extension.skybox);
                 }
+
             }
+        }
+
+        /// <summary>
+        /// Load DefaultMaterial from matDto
+        /// </summary>
+        /// <param name="matDto"></param>
+        private void LoadDefaultMaterial(ResourceDto matDto)
+        {
+            FileDto fileToLoad = Parameters.ChooseVariante(matDto.variants);
+            if (fileToLoad == null) return;
+            string url = fileToLoad.url;
+            string ext = fileToLoad.extension;
+            string authorization = fileToLoad.authorization;
+            IResourcesLoader loader = Parameters.SelectLoader(ext);
+            if (loader != null)
+                UMI3DResourcesManager.LoadFile(
+                    UMI3DGlobalID.EnvironementId,
+                    fileToLoad,
+                    loader.UrlToObject,
+                    loader.ObjectFromCache,
+                    (mat) => SetBaseMaterial((Material)mat),
+                    Debug.LogWarning,
+                    loader.DeleteObject
+                    );
+
         }
 
         /// <summary>
