@@ -75,6 +75,9 @@ namespace umi3d.cdk.userCapture
                 BonesIterator();
         }
 
+        /// <summary>
+        /// Dispatch User Tracking data through Tracking Channel
+        /// </summary>
         protected virtual void DispatchTracking()
         {
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
@@ -83,6 +86,10 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <summary>
+        /// Dispatch Camera data through Tracking Channel
+        /// </summary>
+        /// <returns></returns>
         protected virtual IEnumerator DispatchCamera()
         {
             while (UMI3DClientServer.Instance.GetId() == null)
@@ -98,25 +105,28 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         protected void BonesIterator()
         {
-            List<BoneDto> bonesList = new List<BoneDto>();
-            foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
+            if (UMI3DEnvironmentLoader.Exists)
             {
-                BoneDto dto = bone.ToDto(anchor);
-                if (dto != null)
-                    bonesList.Add(dto);
+                List<BoneDto> bonesList = new List<BoneDto>();
+                foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
+                {
+                    BoneDto dto = bone.ToDto(anchor);
+                    if (dto != null)
+                        bonesList.Add(dto);
+                }
+
+                LastFrameDto = new UserTrackingFrameDto()
+                {
+                    bones = bonesList,
+                    position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
+                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
+                    scale = anchor.localScale,
+                    userId = UMI3DClientServer.Instance.GetId(),
+                    refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
+                };
+
+                skeletonParsedEvent.Invoke();
             }
-
-            LastFrameDto = new UserTrackingFrameDto()
-            {
-                bones = bonesList,
-                position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
-                rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
-                scale = anchor.localScale,
-                userId = UMI3DClientServer.Instance.GetId(),
-                refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
-            };
-
-            skeletonParsedEvent.Invoke();
         }
 
         bool iterationCooldown()
@@ -152,6 +162,12 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
+        /// <summary>
+        /// Register the UserAvatar instance of a user in the concerned dictionary
+        /// </summary>
+        /// <param name="id">the id of the user</param>
+        /// <param name="u">the UserAvatar instance to register</param>
+        /// <returns>A bool indicating if the UserAvatar has been registered</returns>
         public virtual bool RegisterEmbd(string id, UserAvatar u)
         {
             if (embodimentDict.ContainsKey(id))
@@ -163,11 +179,22 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <summary>
+        /// Unregister the UserAvatar instance of a user in the concerned dictionary
+        /// </summary>
+        /// <param name="id">the id of the user</param>
+        /// <returns>A bool indicating if the UserAvatar has been unregistered</returns>
         public virtual bool UnregisterEmbd(string id)
         {
             return embodimentDict.Remove(id);
         }
 
+        /// <summary>
+        /// Try to get the UserAvatar instance of a user from the concerned dictionary
+        /// </summary>
+        /// <param name="id">the id of the user</param>
+        /// <param name="embd">the UserAvatar instance if found</param>
+        /// <returns>A bool indicating if the UserAvatar has been found</returns>
         public virtual bool TryGetValue(string id, out UserAvatar embd)
         {
             return embodimentDict.TryGetValue(id, out embd);
