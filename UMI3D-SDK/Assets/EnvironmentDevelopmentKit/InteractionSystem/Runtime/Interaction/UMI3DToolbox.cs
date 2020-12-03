@@ -32,7 +32,7 @@ namespace umi3d.edk.interaction
             name = "new toolbox"
         };
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DScene Scene;
         public UMI3DAsyncProperty<UMI3DScene> objectScene { get { Register(); return _objectScene; } protected set => _objectScene = value; }
 

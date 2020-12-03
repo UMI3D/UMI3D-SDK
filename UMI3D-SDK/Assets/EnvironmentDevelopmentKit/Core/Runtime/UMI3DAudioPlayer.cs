@@ -21,17 +21,17 @@ namespace umi3d.edk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DNode node;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource audioResources;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float volume = 1;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float pitch = 1;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float spatialBlend;
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;

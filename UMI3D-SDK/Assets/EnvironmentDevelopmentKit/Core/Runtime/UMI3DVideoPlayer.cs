@@ -24,7 +24,7 @@ namespace umi3d.edk
 
         //[SerializeField]
         //UMI3DMAterial material;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource videoResources;
         private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
 

@@ -110,7 +110,7 @@ namespace umi3d.edk.editor
                 EditorGUILayout.PropertyField(colliderType);
 
                 EditorGUI.indentLevel++;
-                switch (Target.colliderType)
+                switch ((ColliderType)colliderType.enumValueIndex)
                 {
                     case ColliderType.Box:
                         //        EditorGUILayout.Vector3Field("Collider Center", colliderCenter.vector3Value);
@@ -156,7 +156,7 @@ namespace umi3d.edk.editor
 
         protected virtual void InspectorForMeshCollider()
         {
-            Target.isMeshCustom = true;
+            isMeshCustom.boolValue = true;
         }
     }
 }

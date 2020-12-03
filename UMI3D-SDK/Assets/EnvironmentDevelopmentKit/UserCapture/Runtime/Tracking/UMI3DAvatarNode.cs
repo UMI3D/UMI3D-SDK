@@ -27,7 +27,8 @@ namespace umi3d.edk.userCapture
         [SerializeField]
         public string userId;
 
-        public bool activeAvatarBindings_ = true;
+        [SerializeField, EditorReadOnly]
+        bool activeAvatarBindings_ = true;
 
         public Dictionary<string, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<string, UMI3DUserEmbodimentBone>();
 

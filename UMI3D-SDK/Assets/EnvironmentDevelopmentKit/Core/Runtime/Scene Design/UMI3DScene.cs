@@ -30,6 +30,7 @@ namespace umi3d.edk
     {
 
         #region properties
+        [EditorReadOnly]
         public List<AssetLibrary> libraries;
         #endregion
         List<UMI3DNode> nodes;
@@ -110,8 +111,10 @@ namespace umi3d.edk
         public List<string> materialIds = new List<string>();
         [HideInInspector]
         public List<string> animationIds = new List<string>();
-        //    [HideInInspector]
+
+        [EditorReadOnly]
         public List<MaterialSO> materialSOs = new List<MaterialSO>();
+        [EditorReadOnly]
         public List<MaterialSO> PreloadedMaterials = new List<MaterialSO>();
 
 

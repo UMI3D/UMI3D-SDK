@@ -54,55 +54,64 @@ namespace umi3d.edk
         bool yBillboard = false;
 
 
-        //public ColliderDto colliderDto = null;
-        public bool hasCollider = false;
+        [SerializeField, EditorReadOnly]
+        protected bool hasCollider = false;
 
         #region collider fields for editor
 
         /// <summary>
         /// Type of the collider generated in front end.
         /// </summary>
-        public ColliderType colliderType = ColliderType.Mesh;
+        [SerializeField, EditorReadOnly]
+        protected ColliderType colliderType = ColliderType.Mesh;
 
         /// <summary>
         /// In case of a mesh collider, should it be convex ?
         /// </summary>
-        public bool convex = false;
+        [SerializeField, EditorReadOnly]
+        protected bool convex = false;
 
         /// <summary>
         /// Center of the collider for box, sphere and capsule collider
         /// </summary>
-        public Vector3 colliderCenter;
+        [SerializeField, EditorReadOnly]
+        protected Vector3 colliderCenter;
 
         /// <summary>
         /// The radius for sphere and capsule collider
         /// </summary>
-        public float colliderRadius = 1f;
+        [SerializeField, EditorReadOnly]
+        protected float colliderRadius = 1f;
 
         /// <summary>
         /// The box scale for boxCollider
         /// </summary>
-        public Vector3 colliderBoxSize = Vector3.one;
+        [SerializeField, EditorReadOnly]
+        protected Vector3 colliderBoxSize = Vector3.one;
 
         /// <summary>
         /// The height of le collider for capsule collider
         /// </summary>
-        public float colliderHeight = 1f;
+        [SerializeField, EditorReadOnly]
+        protected float colliderHeight = 1f;
 
         /// <summary>
         /// The collider direction for capsule collider
         /// </summary>
-        public DirectionalType colliderDirection = DirectionalType.Y_Axis;
+        [SerializeField, EditorReadOnly]
+        protected DirectionalType colliderDirection = DirectionalType.Y_Axis;
 
         /// <summary>
         /// true if un custom mesh is used for the MeshCollider
         /// </summary>
-        public bool isMeshCustom = false;
+        [SerializeField, EditorReadOnly]
+        protected bool isMeshCustom = false;
 
         /// <summary>
         /// Custom MeshCollider used if isMeshCustom
         /// </summary>
-        public UMI3DResource customMeshCollider;
+        [SerializeField, EditorReadOnly]
+        protected UMI3DResource customMeshCollider;
 
 
         // UMI3DAsyncProperties for 

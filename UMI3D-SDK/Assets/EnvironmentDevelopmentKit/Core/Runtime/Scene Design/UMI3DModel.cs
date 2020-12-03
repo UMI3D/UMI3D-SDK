@@ -27,7 +27,7 @@ namespace umi3d.edk
         public bool lockColliders = false;
 
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource model = new UMI3DResource();
         public UMI3DAsyncProperty<UMI3DResource> objectModel { get { Register(); return _objectModel; } protected set => _objectModel = value; }
 

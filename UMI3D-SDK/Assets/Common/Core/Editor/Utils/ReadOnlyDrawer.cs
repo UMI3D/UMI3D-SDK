@@ -22,10 +22,18 @@ using UnityEditor;
 
 namespace umi3d.common.editor
 {
-
+    // <summary>Property will be editable only is the application isn't running.</summary>
     [CustomPropertyDrawer(typeof(EditorReadOnlyAttribute))]
     public class EditorReadOnlyDrawer : PropertyDrawer
     {
+        /// <inheritdoc/>
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property, true);
+        }
+
+        /// <summary>Property will be editable only is the application isn't running.</summary>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (Application.isPlaying)
@@ -36,9 +44,18 @@ namespace umi3d.common.editor
         }
     }
 
+    /// <summary>Property will not be editable.</summary>
     [CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer
     {
+        /// <inheritdoc/>
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            return EditorGUI.GetPropertyHeight(property,true);
+        }
+
+        /// <summary>Property will not be editable.</summary>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             GUI.enabled = false;
