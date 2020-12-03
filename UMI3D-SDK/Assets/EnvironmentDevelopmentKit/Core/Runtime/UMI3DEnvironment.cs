@@ -37,16 +37,18 @@ namespace umi3d.edk
         /// <summary>
         /// Environment's name.
         /// </summary>
+        [EditorReadOnly]
         public string environmentName = "test";
 
         [HideInInspector]
         public List<UMI3DScene> scenes;
 
+        [SerializeField, EditorReadOnly]
         public List<AssetLibrary> globalLibraries;
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         private Vector3 defaultStartOrentation = new Vector3(0, 0, 0);
         static public UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
         static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
@@ -155,7 +157,7 @@ namespace umi3d.edk
         }
 
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         List<UMI3DResource> preloadedScenes = new List<UMI3DResource>();
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
@@ -188,7 +190,7 @@ namespace umi3d.edk
         /// <summary>
         /// AsyncProperties of the Skybox Image
         /// </summary>
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource skyboxImage = null;
         public UMI3DAsyncProperty<UMI3DResource> objectAmbientSkyboxImage;
         /// <summary>

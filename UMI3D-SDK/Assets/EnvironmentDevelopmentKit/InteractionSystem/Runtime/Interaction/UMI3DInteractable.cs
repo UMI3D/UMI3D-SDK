@@ -25,11 +25,11 @@ namespace umi3d.edk.interaction
 {
     public class UMI3DInteractable : AbstractTool, UMI3DLoadableEntity
     {
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool NotifyHoverPosition;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool NotifySubObject;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DNode Node;
 
         ///<inheritdoc/>

@@ -36,9 +36,9 @@ namespace umi3d.edk
             }
         }
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         float duration = 10f;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         List<OperationChain> animationChain = null;
         private UMI3DAsyncProperty<float> objectDuration;
         private UMI3DAsyncListProperty<OperationChain> objectAnimationChain;

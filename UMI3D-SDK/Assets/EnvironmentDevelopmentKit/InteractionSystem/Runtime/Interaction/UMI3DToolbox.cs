@@ -32,11 +32,12 @@ namespace umi3d.edk.interaction
             name = "new toolbox"
         };
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DScene Scene;
         public UMI3DAsyncProperty<UMI3DScene> objectScene { get { Register(); return _objectScene; } protected set => _objectScene = value; }
 
-        public List<UMI3DTool> tools = new List<UMI3DTool>();
+        [SerializeField, EditorReadOnly]
+        protected List<UMI3DTool> tools = new List<UMI3DTool>();
         public UMI3DAsyncListProperty<UMI3DTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
 
 

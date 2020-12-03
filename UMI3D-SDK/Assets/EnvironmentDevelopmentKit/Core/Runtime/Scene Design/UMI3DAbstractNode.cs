@@ -72,7 +72,7 @@ namespace umi3d.edk
         /// <summary>
         /// False if the object is alowed to move during the application exectution.
         /// </summary>
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool isStatic = false;
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
@@ -83,22 +83,23 @@ namespace umi3d.edk
         /// <summary>
         /// False if the object is alowed to move during the application exectution.
         /// </summary>
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool active = true;
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
         /// </summary>
         public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
 
-
-        public UMI3DAnchor UMI3DAnchor;
+        [SerializeField, EditorReadOnly]
+        protected UMI3DAnchor UMI3DAnchor;
         public UMI3DAsyncProperty<UMI3DAnchorDto> objectAnchor { get { Register(); return _objectAnchor; } protected set => _objectAnchor = value; }
 
 
         /// <summary>
         /// An editor field to modify default objectImmersiveOnly value
         /// </summary>
-        public bool immersiveOnly = false;
+        [SerializeField, EditorReadOnly]
+        protected bool immersiveOnly = false;
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
         /// </summary>

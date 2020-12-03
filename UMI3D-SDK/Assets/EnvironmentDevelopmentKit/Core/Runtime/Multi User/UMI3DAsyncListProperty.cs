@@ -345,7 +345,6 @@ namespace umi3d.edk
         {
             if (index < 0 || index >= GetValue(user).Count) return null;
             T value = GetValue(user)[index];
-            GetValue(user).RemoveAt(index);
             var operation = new SetEntityListRemoveProperty()
             {
                 users = new HashSet<UMI3DUser>(),
@@ -369,7 +368,6 @@ namespace umi3d.edk
             else
             {
                 Sync(user, false);
-                asyncValues[user] = Copier(GetValue());
                 GetValue(user).RemoveAt(index);
                 if (OnUserInnerValueRemoved != null)
                     OnUserInnerValueRemoved.Invoke(index, user, value);
@@ -380,5 +378,7 @@ namespace umi3d.edk
             }
         }
 
+
+        protected override List<T> CopyOfValue(List<T> value) { return Copier(value); }
     }
 }

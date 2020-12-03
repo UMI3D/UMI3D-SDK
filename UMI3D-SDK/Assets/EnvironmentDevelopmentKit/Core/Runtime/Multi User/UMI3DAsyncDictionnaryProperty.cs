@@ -232,7 +232,6 @@ namespace umi3d.edk
             else
             {
                 Sync(user, false);
-                asyncValues[user] = Copier(GetValue());
                 GetValue(user)[key] = value;
                 if (OnUserInnerValueChanged != null)
                     OnUserInnerValueChanged.Invoke(key, user, value);
@@ -296,7 +295,6 @@ namespace umi3d.edk
             else
             {
                 Sync(user, false);
-                asyncValues[user] = Copier(GetValue());
                 GetValue(user).Add(key, value);
                 if (OnUserInnerValueAdded != null)
                     OnUserInnerValueAdded.Invoke(key, user, value);
@@ -366,7 +364,6 @@ namespace umi3d.edk
             else
             {
                 Sync(user, false);
-                asyncValues[user] = Copier(GetValue());
                 if (!GetValue(user).Remove(key)) return null;
                 if (OnUserInnerValueRemoved != null)
                     OnUserInnerValueRemoved.Invoke(key, user);
@@ -376,6 +373,8 @@ namespace umi3d.edk
                     return null;
             }
         }
+
+        protected override Dictionary<T,L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
 
     }
 }

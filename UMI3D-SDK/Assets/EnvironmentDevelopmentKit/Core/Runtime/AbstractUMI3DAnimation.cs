@@ -26,11 +26,11 @@ namespace umi3d.edk
     {
         string animationID;
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         bool playing;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         bool looping;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         DateTime startTime;
         private UMI3DAsyncProperty<bool> _objectPlaying;
         private UMI3DAsyncProperty<bool> _objectLooping;

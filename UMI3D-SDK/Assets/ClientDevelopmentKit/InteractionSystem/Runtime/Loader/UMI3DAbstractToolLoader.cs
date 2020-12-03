@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
+using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
@@ -77,6 +78,7 @@ namespace umi3d.cdk.interaction
                     dto.interactions = (List<AbstractInteractionDto>)property.value;
                     break;
             }
+            tool.Updated();
             return true;
         }
 

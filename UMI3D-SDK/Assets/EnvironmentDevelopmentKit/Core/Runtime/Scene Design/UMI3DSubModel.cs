@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -25,7 +26,8 @@ namespace umi3d.edk
 
         public UMI3DModel parentModel;
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
-        public bool ignoreModelMaterialOverride = false;
+        [SerializeField, EditorReadOnly]
+        protected bool ignoreModelMaterialOverride = false;
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
         ///<inheritdoc/>

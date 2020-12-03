@@ -37,7 +37,7 @@ namespace umi3d.edk.collaboration
 
         public bool isRunning { get; protected set; } = false;
 
-        [SerializeField]
+        [SerializeField,ReadOnly]
         bool useIp = false;
 
         public EncoderType encoderType;
@@ -57,15 +57,23 @@ namespace umi3d.edk.collaboration
             Audio.Update(data, data.Length);
         }
 
+        [EditorReadOnly]
         public bool useRandomWebsocketPort;
+        [EditorReadOnly]
         public int websocketPort;
 
+        [EditorReadOnly]
         public bool useRandomHttpPort;
+        [EditorReadOnly]
         public int httpPort;
 
+        [EditorReadOnly]
         public bool useRandomFakeRTCReliablePort;
+        [EditorReadOnly]
         public int fakeRTCReliablePort;
+        [EditorReadOnly]
         public bool useRandomFakeRTCUnreliablePort;
+        [EditorReadOnly]
         public int fakeRTCUnreliablePort;
 
         public AuthenticationType Authentication;

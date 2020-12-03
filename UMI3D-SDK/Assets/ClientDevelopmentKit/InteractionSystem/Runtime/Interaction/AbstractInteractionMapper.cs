@@ -87,7 +87,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Return true if the tool is currently projected on a controller.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id of the tool.</param>
         /// <returns></returns>
         public abstract bool IsToolSelected(string id);
 
@@ -146,21 +146,39 @@ namespace umi3d.cdk.interaction
         /// Be careful,this method could be called before the tool is added for async loading reasons.
         /// Returns true if the tool has been successfuly selected, false otherwise.
         /// </summary>
-        /// <param name="dto">The tool to be selected</param>
+        /// <param name="toolId">Id of the tool to release.</param>
+        /// <param name="releasable">The selected tool releasable.</param>
+        /// <param name="hoveredObjectId">The id of the hovered object.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
         public abstract bool SelectTool(string toolId, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be released.
         /// </summary>
-        /// <param name="dto">The tool to be released</param>
+        /// <param name="toolId">Id of the tool to release.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
         public abstract void ReleaseTool(string toolId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be replaced by another one.
         /// </summary>
-        /// <param name="selected">The tool to be selected</param>
-        /// <param name="released">The tool to be released</param>
+        /// <param name="selected">Id of the tool to select</param>
+        /// <param name="released">Id of the tool to release</param>
+        /// <param name="releasable">The selected tool releasable.</param>
+        /// <param name="hoveredObjectId">The id of the hovered object.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
         public abstract bool SwitchTools(string selected, string released, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null);
+
+        /// <summary>
+        /// Request a Tool to be updated.
+        /// </summary>
+        /// <param name="toolId">Id of the Tool.</param>
+        /// <param name="releasable">Is the tool releasable.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
+        public abstract bool UpdateTools(string toolId, bool releasable, InteractionMappingReason reason = null);
 
     }
 }

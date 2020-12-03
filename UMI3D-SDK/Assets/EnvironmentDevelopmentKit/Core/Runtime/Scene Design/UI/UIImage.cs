@@ -37,7 +37,8 @@ namespace umi3d.edk
 
         /// <summary>
         /// Image's sprite url
-        /// </summary>       
+        /// </summary>
+        [SerializeField, EditorReadOnly]
         public UMI3DResource sprite = new UMI3DResource();
 
         private UMI3DAsyncProperty<UMI3DResource> _sprite;
