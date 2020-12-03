@@ -180,6 +180,24 @@ namespace umi3d.cdk.interaction
             currentTool = tool;
         }
 
+
+        /// <summary>
+        /// Project a tool on this controller.
+        /// </summary>
+        /// <param name="tool"> The ToolDto to be projected.</param>
+        /// <see cref="Release(AbstractTool)"/>
+        public virtual void Update(AbstractTool tool, bool releasable, InteractionMappingReason reason)
+        {
+            if (currentTool != tool)
+                throw new System.Exception("Try to update wrong tool");
+
+            Release(tool, new ToolNeedToBeUpdated());
+            Project(tool, releasable, reason, GetCurrentHoveredId());
+        }
+
+        protected abstract string GetCurrentHoveredId();
+
+
         /// <summary>
         /// Release a projected tool from this controller.
         /// </summary>

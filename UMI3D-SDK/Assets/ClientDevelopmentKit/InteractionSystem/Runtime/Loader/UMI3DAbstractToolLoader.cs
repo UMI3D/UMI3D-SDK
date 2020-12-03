@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
+using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
@@ -64,6 +65,7 @@ namespace umi3d.cdk.interaction
                     dto.interactions.Add((AbstractInteractionDto)add.value);
                     break;
                 case SetEntityListRemovePropertyDto rem:
+                    Debug.Log($"remove {rem.index} {rem.value}");
                     if ((int)(Int64)rem.index < dto.interactions.Count)
                         dto.interactions.RemoveAt((int)(Int64)rem.index);
                     else return false;
@@ -77,6 +79,7 @@ namespace umi3d.cdk.interaction
                     dto.interactions = (List<AbstractInteractionDto>)property.value;
                     break;
             }
+            tool.Updated();
             return true;
         }
 

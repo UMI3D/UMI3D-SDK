@@ -52,7 +52,9 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions; } }
 
+        public UnityEvent OnUpdated = new UnityEvent();
 
+        public void Updated() { OnUpdated.Invoke(); }
 
         /// <summary>
         /// Event raised when the abstract tool is projected.
