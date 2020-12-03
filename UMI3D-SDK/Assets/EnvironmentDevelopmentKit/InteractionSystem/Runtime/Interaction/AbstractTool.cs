@@ -33,6 +33,7 @@ namespace umi3d.edk.interaction
             name = "new tool"
         };
 
+        [SerializeField, EditorReadOnly]
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
         public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
         UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
