@@ -169,8 +169,8 @@ namespace umi3d.cdk
         /// <returns></returns>
         public IEnumerator GetBaseMaterialBeforeAction(Action<Material> callback)
         {
-            while (baseMaterial == null)
-                yield return new WaitForEndOfFrame();
+            yield return new WaitWhile(()=> baseMaterial == null);
+           
             callback.Invoke(new Material(baseMaterial));
         }
 

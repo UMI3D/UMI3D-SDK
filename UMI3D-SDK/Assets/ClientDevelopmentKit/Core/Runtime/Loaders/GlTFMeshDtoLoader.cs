@@ -130,8 +130,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         private IEnumerator WaitBaseMaterial(Action callback)
         {
-            while (UMI3DEnvironmentLoader.Instance.baseMaterial == null)
-                yield return new WaitForEndOfFrame();
+            yield return new WaitWhile(() => UMI3DEnvironmentLoader.Instance.baseMaterial == null);
             callback.Invoke();
         }
 
