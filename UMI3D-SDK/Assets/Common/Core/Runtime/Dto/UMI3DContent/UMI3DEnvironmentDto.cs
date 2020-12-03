@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DEnvironementDto : UMI3DDto
+    public class UMI3DEnvironmentDto : UMI3DDto
     {
         public List<string> LibrariesId;
         public List<PreloadedSceneDto> preloadedScenes;
@@ -29,5 +29,6 @@ namespace umi3d.common
         public SerializableColor groundColor;
         public float ambientIntensity;
         public ResourceDto skybox;
+        public ResourceDto defaultMaterial;
     }
 }

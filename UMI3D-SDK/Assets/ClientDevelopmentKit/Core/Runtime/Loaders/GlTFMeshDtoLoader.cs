@@ -17,6 +17,7 @@ limitations under the License.
 using GLTFast;
 using GLTFast.Loading;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -113,12 +114,24 @@ namespace umi3d.cdk
 
                 HttpHeader[] headers = new HttpHeader[] { authorizationHeader };
                 CustomHeaderDownloadProvider customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
-                gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator);
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(() => gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator)));
             }
             else
             {
-                gltfComp.Load(url, null, deferAgent, materialGenerator);
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(() =>
+               gltfComp.Load(url, null, deferAgent, materialGenerator)));
             }
+        }
+
+        /// <summary>
+        /// wait in coroutine the initialization of DefaultMaterial, then invoke the callback
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        private IEnumerator WaitBaseMaterial(Action callback)
+        {
+            yield return new WaitWhile(() => UMI3DEnvironmentLoader.Instance.baseMaterial == null);
+            callback.Invoke();
         }
 
         ///<inheritdoc/>
