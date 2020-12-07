@@ -343,7 +343,7 @@ namespace umi3d.cdk
                 {
                     foreach (Transform subModel in item.Values)
                     {
-                        Destroy(subModel);
+                        Destroy(subModel.gameObject);
                     }
                 }
             }

@@ -49,9 +49,9 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly]
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
         [SerializeField, EditorReadOnly]
-        private Vector3 defaultStartOrentation = new Vector3(0, 0, 0);
+        private Vector3 defaultStartOrientation = new Vector3(0, 0, 0);
         static public UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
-        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
+        static public UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
 
         private void Start()
         {
@@ -120,7 +120,7 @@ namespace umi3d.edk
 
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartQuaternion.GetValue(user) };
+            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user) };
         }
 
 
@@ -144,7 +144,7 @@ namespace umi3d.edk
             var id = UMI3DGlobalID.EnvironementId;
 
             objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, null, defaultStartPosition);
-            objectStartQuaternion = new UMI3DAsyncProperty<Quaternion>(id, null, Quaternion.Euler(defaultStartOrentation));
+            objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, null, Quaternion.Euler(defaultStartOrientation));
 
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (AmbientType)mode);
