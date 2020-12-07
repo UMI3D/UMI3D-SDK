@@ -510,7 +510,6 @@ namespace umi3d.cdk
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
                     };
-                    Debug.Log(objectData.authorization);
                     urlToObject.Invoke(path, objectData.extension, objectData.authorization, sucess2, error2, null);
                 };
 
