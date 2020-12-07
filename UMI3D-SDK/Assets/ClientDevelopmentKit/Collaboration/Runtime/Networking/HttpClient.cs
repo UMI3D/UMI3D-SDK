@@ -29,7 +29,7 @@ namespace umi3d.cdk.collaboration
     public class HttpClient
     {
         UMI3DCollaborationClientServer client;
-        string ComputedToken;
+        internal string ComputedToken;
 
         /// <summary>
         /// Init HttpClient.

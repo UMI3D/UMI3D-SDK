@@ -25,6 +25,7 @@ using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
+using WebSocketSharp;
 using Path = umi3d.common.Path;
 
 namespace umi3d.cdk
@@ -145,6 +146,21 @@ namespace umi3d.cdk
             public string url;
 
             /// <summary>
+            /// field containing authorization string.
+            /// </summary>
+            public string authorization
+            {
+                get {
+                    if (useServerAuthorization)
+                        return UMI3DClientServer.getAuthorization();
+                    else return _authorization;
+                }
+                set { _authorization = value; }
+            }
+            string _authorization;
+            bool useServerAuthorization = false;
+
+            /// <summary>
             /// url of the object.
             /// </summary>
             public string extension;
@@ -186,10 +202,34 @@ namespace umi3d.cdk
                 Match a = rx.Match(this.url);
                 Match b = rx.Match(url);
                 if (a.Success && b.Success)
-                {
                     return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && entityIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == b.Groups[3].Captures[0].Value;
-                }
                 return false;
+            }
+
+            bool MatchServerUrl()
+            {
+                var url = UMI3DClientServer.Media.httpUrl + '/';
+
+                if (url == this.url) return true;
+
+                Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
+                Match a = rx.Match(this.url);
+                Match b = rx.Match(url);
+                if (a.Success && b.Success)
+                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
+                return false;
+            }
+
+            string ComputeAuthorization(string authorization)
+            {
+                if (MatchServerUrl())
+                {
+                    useServerAuthorization = true;
+                    return UMI3DClientServer.getAuthorization();
+                }
+                useServerAuthorization = false;
+                if (authorization.IsNullOrEmpty()) return null;
+                return "Basic" + System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
             }
 
 
@@ -215,7 +255,7 @@ namespace umi3d.cdk
                 this.url = url;
             }
 
-            public ObjectData(string url, string extension, HashSet<string> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
+            public ObjectData(string url, string extension, string authorization, HashSet<string> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
             {
                 value = null;
                 entityIds = entityId;
@@ -225,9 +265,10 @@ namespace umi3d.cdk
                 downloadedPath = null;
                 this.url = url;
                 this.extension = extension;
+                this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string entityId, Action<object> loadCallback, Action<string> loadFailCallback)
+            public ObjectData(string url, string extension, string authorization, string entityId, Action<object> loadCallback, Action<string> loadFailCallback)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -237,9 +278,10 @@ namespace umi3d.cdk
                 downloadedPath = null;
                 this.url = url;
                 this.extension = extension;
+                this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string entityId)
+            public ObjectData(string url, string extension, string authorization, string entityId)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -249,9 +291,10 @@ namespace umi3d.cdk
                 downloadedPath = null;
                 this.url = url;
                 this.extension = extension;
+                this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string entityId, string downloadedPath)
+            public ObjectData(string url, string extension, string entityId, string authorization, string downloadedPath)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -261,6 +304,7 @@ namespace umi3d.cdk
                 this.downloadedPath = downloadedPath;
                 this.url = url;
                 this.extension = extension;
+                this.authorization = authorization;
             }
 
         }
@@ -334,7 +378,7 @@ namespace umi3d.cdk
                         if (objectData != null)
                             objectData.downloadedPath = file.path;
                         else
-                            CacheCollection.Add(new ObjectData(file.url, null, data.key, file.path));
+                            CacheCollection.Add(new ObjectData(file.url, null, null, data.key, file.path));
                     }
                     libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<string>>(data, new HashSet<string>()));
                 }
@@ -466,7 +510,8 @@ namespace umi3d.cdk
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
                     };
-                    urlToObject.Invoke(path, objectData.extension, null, sucess2, error2, null);
+                    Debug.Log(objectData.authorization);
+                    urlToObject.Invoke(path, objectData.extension, objectData.authorization, sucess2, error2, null);
                 };
 
                 Action<string> error = (reason) =>
@@ -485,7 +530,7 @@ namespace umi3d.cdk
             ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(file.url, file.libraryKey); });
             if (objectData == null)
             {
-                objectData = new ObjectData(file.url, file.extension, id);
+                objectData = new ObjectData(file.url, file.extension, file.authorization, id);
                 CacheCollection.Add(objectData);
             }
             _LoadFile(id, objectData, urlToObject, objectFromCache, callback, failCallback, deleteAction, file.pathIfInBundle);
@@ -719,7 +764,7 @@ namespace umi3d.cdk
                 }
                 else objectData.downloadedPath = filePath;
             }
-            else CacheCollection.Add(new ObjectData(url, null, key, filePath));
+            else CacheCollection.Add(new ObjectData(url, null, null, key, filePath));
 
             UMI3DClientServer.GetFile(url, action, error2);
             yield return new WaitUntil(() => { return finished; });

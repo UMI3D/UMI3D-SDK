@@ -103,9 +103,6 @@ namespace umi3d.cdk
             if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-                authorization = "Basic " + authorization;
-
                 www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
             }
         }
