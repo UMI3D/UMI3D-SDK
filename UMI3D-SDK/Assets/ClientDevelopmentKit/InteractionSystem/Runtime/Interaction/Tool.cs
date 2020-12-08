@@ -35,6 +35,7 @@ namespace umi3d.cdk.interaction
 
         public ToolMenuItem Menu;
 
+        public Toolbox toolbox;
         /// <summary>
         /// ToolFix t dto describing this object.
         /// </summary>
@@ -45,7 +46,7 @@ namespace umi3d.cdk.interaction
 
         public Tool(ToolDto dto, Toolbox toolbox) : base(dto)
         {
-
+            this.toolbox = toolbox;
             Menu = new ToolMenuItem()
             {
                 tool = this,
