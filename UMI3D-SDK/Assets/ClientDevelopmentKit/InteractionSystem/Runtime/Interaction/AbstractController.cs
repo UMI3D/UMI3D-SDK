@@ -206,7 +206,7 @@ namespace umi3d.cdk.interaction
         public virtual void Release(AbstractTool tool, InteractionMappingReason reason)
         {
             if (currentTool == null)
-                throw new System.Exception("no tool is not currently projected on this controller");
+                throw new System.Exception("no tool is currently projected on this controller");
             if (currentTool.id != tool.id)
                 throw new System.Exception("This tool is not currently projected on this controller");
 
