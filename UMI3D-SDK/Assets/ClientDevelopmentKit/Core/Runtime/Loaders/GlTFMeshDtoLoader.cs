@@ -104,12 +104,10 @@ namespace umi3d.cdk
 
             if (authorization != null && authorization != "")
             {
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-
                 HttpHeader authorizationHeader = new HttpHeader
                 {
-                    Key = "AUTHORIZATION",
-                    Value = "Basic " + authorization
+                    Key = common.UMI3DNetworkingKeys.Authorization,
+                    Value = authorization
                 };
 
                 HttpHeader[] headers = new HttpHeader[] { authorizationHeader };

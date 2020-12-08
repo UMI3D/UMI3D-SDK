@@ -33,11 +33,9 @@ namespace umi3d.cdk.interaction
 
         public static ToolMenuItem IdToMenu(string id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Tool)?.Menu; }
 
-
         public ToolMenuItem Menu;
 
-
-
+        public Toolbox toolbox;
         /// <summary>
         /// ToolFix t dto describing this object.
         /// </summary>
@@ -48,7 +46,7 @@ namespace umi3d.cdk.interaction
 
         public Tool(ToolDto dto, Toolbox toolbox) : base(dto)
         {
-
+            this.toolbox = toolbox;
             Menu = new ToolMenuItem()
             {
                 tool = this,
@@ -75,23 +73,50 @@ namespace umi3d.cdk.interaction
                     break;
                 case EventDto eventDto:
                     var e = new EventMenuItem();
-                    e.Subscribe(() => Debug.Log("hellooo"));
+                    e.interaction = eventDto;
+                    e.toggle = eventDto.hold;
+                    e.Subscribe((x) =>
+                    {
+                        if (eventDto.hold)
+                        {
+                            var stateChangeDto = new EventStateChangedDto
+                            {
+                                active = x,
+                                boneType = "none",
+                                id = eventDto.id,
+                                toolId = dto.id,
+                                hoveredObjectId = null
+                            };
+                            UMI3DClientServer.Send(stateChangeDto, true);
+                        }
+                        else
+                        {
+                            var triggeredDto = new EventTriggeredDto
+                            {
+                                boneType = "none",
+                                id = eventDto.id,
+                                toolId = dto.id,
+                                hoveredObjectId = null
+                            };
+                            UMI3DClientServer.Send(triggeredDto, true);
+                        }
+                    });
                     result = e;
                     break;
                 case BooleanParameterDto booleanParameterDto:
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
                     b.Subscribe((x) =>
+                    {
+                        booleanParameterDto.value = x;
+                        var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            booleanParameterDto.value = x;
-                            var pararmeterDto = new ParameterSettingRequestDto()
-                            {
-                                toolId = dto.id,
-                                id = booleanParameterDto.id,
-                                parameter = booleanParameterDto,
-                                hoveredObjectId = null
-                            };
-                            UMI3DClientServer.Send(pararmeterDto, true);
-                        }
+                            toolId = dto.id,
+                            id = booleanParameterDto.id,
+                            parameter = booleanParameterDto,
+                            hoveredObjectId = null
+                        };
+                        UMI3DClientServer.Send(pararmeterDto, true);
+                    }
                     );
                     result = b;
                     break;

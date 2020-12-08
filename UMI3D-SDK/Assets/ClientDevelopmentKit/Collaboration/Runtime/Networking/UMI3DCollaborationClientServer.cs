@@ -465,5 +465,8 @@ namespace umi3d.cdk.collaboration
 
         ///<inheritdoc/>
         public override string GetId() { return Identity.userId; }
+
+
+        protected override string _getAuthorization() { return HttpClient.ComputedToken; }
     }
 }
