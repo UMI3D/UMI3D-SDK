@@ -26,7 +26,7 @@ namespace umi3d.edk.interaction
         public List<AbstractParameter> Fields = new List<AbstractParameter>();
 
         [System.Serializable]
-        public class FormListener : UnityEvent<UMI3DUser, FormDto> { }
+        public class FormListener : UnityEvent<FormEventContent> { }
 
         public class FormEventContent : InteractionEventContent
         {
@@ -65,7 +65,7 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case FormAnswer formAnswer:
-                    onFormCompleted.Invoke(user, formAnswer.form);
+                    onFormCompleted.Invoke(new FormEventContent(user, formAnswer));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

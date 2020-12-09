@@ -181,7 +181,7 @@ namespace umi3d.cdk.interaction
                 AbstractController controller = toolIdToController[toolId];
                 AbstractTool tool = GetTool(toolId);
                 if (tool.interactions.Count <= 0)
-                    controller.Release(tool, new ToolNeedToBeUpdated());
+                    ReleaseTool(tool.id, new ToolNeedToBeUpdated());
                 else
                     controller.Update(tool, releasable, reason);
                 return true;

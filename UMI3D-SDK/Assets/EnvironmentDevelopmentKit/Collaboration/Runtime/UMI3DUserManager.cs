@@ -72,7 +72,6 @@ namespace umi3d.edk.collaboration
                 if (UMI3DNetworkingKeys.bearer + u.token == authorization)
                     return u;
             }
-
             return null;
         }
 
