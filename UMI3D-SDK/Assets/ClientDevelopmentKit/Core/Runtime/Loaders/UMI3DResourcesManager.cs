@@ -294,7 +294,7 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string entityId, string authorization, string downloadedPath)
+            public ObjectData(string url, string extension, string authorization, string entityId,  string downloadedPath)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
