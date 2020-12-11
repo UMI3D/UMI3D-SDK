@@ -208,7 +208,7 @@ namespace umi3d.cdk
 
             bool MatchServerUrl()
             {
-                var url = UMI3DClientServer.Media.httpUrl + '/';
+                var url = UMI3DClientServer.Media?.httpUrl + '/';
 
                 if (url == this.url) return true;
 
@@ -294,7 +294,7 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string entityId, string authorization, string downloadedPath)
+            public ObjectData(string url, string extension, string authorization, string entityId,  string downloadedPath)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -665,7 +665,7 @@ namespace umi3d.cdk
                 var assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
                 var dto = UMI3DDto.FromBson(bytes);
                 if (dto is FileListDto)
-                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date, dto as FileListDto, (data) => { SetData(data, directoryPath); finished = true; }));
+                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
                 else
                     finished = true;
             };

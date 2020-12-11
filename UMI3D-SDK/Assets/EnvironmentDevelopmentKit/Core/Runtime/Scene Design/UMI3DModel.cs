@@ -50,6 +50,7 @@ namespace umi3d.edk
             }
 
             objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r, u) => r.ToDto());
+            objectModel.OnValueChanged += v => model = v;
         }
 
         public void SetSubHierarchy()
