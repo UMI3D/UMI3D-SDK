@@ -541,6 +541,47 @@ namespace umi3d.cdk
             }
         }
 
+        /// <summary>
+        /// Apply a setEntity to multiple entities
+        /// </summary>
+        /// <param name="dto">MultiSetEntityPropertyDto with the ids list to mofify</param>
+        /// <returns></returns>
+        public static bool SetMultiEntity (MultiSetEntityPropertyDto dto)
+        {
+            if (!Exists) return false;
+            foreach (string id in dto.entityIds)
+            {
+                try
+                {
+                    var node = UMI3DEnvironmentLoader.GetEntity(id);
+                    SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()
+                    {
+                        entityId = id,
+                        property = dto.property,
+                        value = dto.value
+                    };
+                    if (node == null)
+                    {
+                        Instance.StartCoroutine(Instance._SetEntity(entityPropertyDto));
+                    }
+                    else
+                    {
+                        if (SetUMI3DPorperty(node, entityPropertyDto)) break;
+                        if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, entityPropertyDto)) break;
+                        Parameters.SetUMI3DProperty(node, entityPropertyDto);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property);
+                    Debug.LogWarning(e);
+                }
+            }
+
+            return true;
+
+        }
+
         IEnumerator _SetEntity(SetEntityPropertyDto dto)
         {
             var wait = new WaitForFixedUpdate();
