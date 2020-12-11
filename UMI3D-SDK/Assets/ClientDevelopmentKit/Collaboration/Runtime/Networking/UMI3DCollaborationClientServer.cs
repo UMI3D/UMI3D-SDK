@@ -372,7 +372,7 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UserTrackingFrameDto trackingFrame:
                     if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
-                        userAvatar.UpdateBonePosition(trackingFrame);
+                        UnityMainThreadDispatcher.Instance().Enqueue(userAvatar.UpdateBonePosition(trackingFrame));
                     else
                         Debug.LogWarning("User Avatar not found.");
                     break;
