@@ -342,7 +342,7 @@ namespace umi3d.edk.collaboration
                     }
                 }
                 else
-                    Send(data, reliable, target);
+                    Send(data, reliable, dataType, target);
             }
         }
 
