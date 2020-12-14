@@ -306,7 +306,10 @@ namespace umi3d.edk.collaboration
             else if (channel.type == DataType.Data)
             {
                 var data = UMI3DDto.FromBson(bytes);
-                UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
+                if (data is FakeWebrtcMessageDto fake)
+                    OnFakeRtcMessage(fake.sourceId, fake.dataType, fake.reliable, fake.targetId, fake.content);
+                else
+                    UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
             }
             else
             {
@@ -333,7 +336,10 @@ namespace umi3d.edk.collaboration
                     }
                     else if (dataType == DataType.Data)
                     {
-                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
+                        if (data is FakeWebrtcMessageDto fake)
+                            OnFakeRtcMessage(fake.sourceId, fake.dataType, fake.reliable, fake.targetId, fake.content);
+                        else
+                            UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
                     }
                     else
                     {
@@ -342,7 +348,10 @@ namespace umi3d.edk.collaboration
                     }
                 }
                 else
-                    Send(data, reliable, dataType, target);
+                {
+                    var fake = new FakeWebrtcMessageDto() { content = _data, dataType = dataType, reliable = reliable, targetId = new List<string>() { target }, sourceId = id };
+                    Send(fake, reliable, target);
+                }
             }
         }
 
