@@ -357,11 +357,10 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Handle Rtc Message
         /// </summary>
-        /// <param name="bytes">Message to handle</param>
+        /// <param name="dto">Message to handle</param>
         /// <param name="channel">Channel from which the message was received</param>
-        static public void OnRtcMessage(UMI3DUser user, byte[] bytes, DataChannel channel)
+        static public void OnRtcMessage(UMI3DUser user, UMI3DDto dto, DataChannel channel)
         {
-            var dto = UMI3DDto.FromBson(bytes);
             switch (dto)
             {
                 case TransactionDto transaction:

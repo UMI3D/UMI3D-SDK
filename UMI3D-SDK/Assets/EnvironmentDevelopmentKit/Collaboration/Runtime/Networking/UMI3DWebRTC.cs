@@ -69,7 +69,7 @@ namespace umi3d.edk.collaboration
         {
             this.server = server;
             peerMap = new List<bridge>();
-             fakeWebRTC = new UMI3DFakeWebRTC(this, OnFakeRtcMessage);
+            fakeWebRTC = new UMI3DFakeWebRTC(this, OnFakeRtcMessage);
         }
 
         /// <summary>
@@ -105,17 +105,12 @@ namespace umi3d.edk.collaboration
                 {
 
                     var dcDto = dto as RTCDataChannelDto;
-                    //Debug.Log($"serveur {dcDto.Label} {dcDto.type} {dcDto.reliable} {dcDto.sourceUser}->{dcDto.targetUser}");
                     UMI3DCollaborationUser otherUser = UMI3DCollaborationServer.Collaboration.GetUser(dcDto.targetUser);
-                    if (!otherUser.useWebrtc) Debug.LogError("Should Not try to established peer connection with this peer");
-                    else
-                    {
-                        var bridge = peerMap.FirstOrDefault(b => b.Contain(dto.sourceUser, dto.targetUser));
-                        if (!bridge.Equals(default) && bridge.channel != null && !bridge.channel.Any(d => d.Label == dcDto.Label))
-                            bridge.channel.Add(dcDto);
-                        if (otherUser != null)
-                            otherUser.connection.SendData(dcDto);
-                    }
+                    var bridge = peerMap.FirstOrDefault(b => b.Contain(dto.sourceUser, dto.targetUser));
+                    if (!bridge.Equals(default) && bridge.channel != null && !bridge.channel.Any(d => d.Label == dcDto.Label))
+                        bridge.channel.Add(dcDto);
+                    if (otherUser != null)
+                        otherUser.connection.SendData(dcDto);
                 }
             }
             else
@@ -204,7 +199,7 @@ namespace umi3d.edk.collaboration
                 if (datachannel.type == type && datachannel.reliable == reliable) return datachannel;
                 else throw new Exception("A datachannel with this label already exist");
             }
-            datachannel = Add(user.Id(), new WebRTCDataChannel(GetUID(),user.Id(), label, reliable, type));
+            datachannel = Add(user.Id(), new WebRTCDataChannel(GetUID(), user.Id(), label, reliable, type));
             if (user is UMI3DCollaborationUser cu && !cu.useWebrtc && datachannel is WebRTCDataChannel wdc)
                 wdc.Created();
             return datachannel;
@@ -231,7 +226,7 @@ namespace umi3d.edk.collaboration
         {
             var connection = peers[user.Id()];
             DataChannel datachannel;
-            if (connection.Find(d => d.Label == label,out datachannel))
+            if (connection.Find(d => d.Label == label, out datachannel))
             {
                 connection.RemoveDataChannel(datachannel);
             }
@@ -249,22 +244,21 @@ namespace umi3d.edk.collaboration
                 peers[user.Id()] = rtc;
                 rtc.Offer();
             }
-            if (user.useWebrtc)
-                foreach (var u in UMI3DCollaborationServer.Collaboration.Users)
+            foreach (var u in UMI3DCollaborationServer.Collaboration.Users)
+            {
+                if (u != user)
                 {
-                    if (u != user && u.useWebrtc)
+                    if (peerMap.FindAll((b) => { return b.Contain(user.Id(), u.Id()); }).Count == 0)
                     {
-                        if (peerMap.FindAll((b) => { return b.Contain(user.Id(), u.Id()); }).Count == 0)
+                        peerMap.Add(new bridge(user.Id(), u.Id()));
+                        u.connection.SendData(new RTCConnectionDTO
                         {
-                            peerMap.Add(new bridge(user.Id(), u.Id()));
-                            u.connection.SendData(new RTCConnectionDTO
-                            {
-                                sourceUser = user.Id(),
-                                targetUser = u.Id(),
-                            });
-                        }
+                            sourceUser = user.Id(),
+                            targetUser = u.Id(),
+                        });
                     }
                 }
+            }
         }
 
         /// <summary>
@@ -312,7 +306,10 @@ namespace umi3d.edk.collaboration
             else if (channel.type == DataType.Data)
             {
                 var data = UMI3DDto.FromBson(bytes);
-                UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
+                if (data is FakeWebrtcMessageDto fake)
+                    OnFakeRtcMessage(fake.sourceId, fake.dataType, fake.reliable, fake.targetId, fake.content);
+                else
+                    UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
             }
             else
             {
@@ -339,7 +336,10 @@ namespace umi3d.edk.collaboration
                     }
                     else if (dataType == DataType.Data)
                     {
-                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
+                        if (data is FakeWebrtcMessageDto fake)
+                            OnFakeRtcMessage(fake.sourceId, fake.dataType, fake.reliable, fake.targetId, fake.content);
+                        else
+                            UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data);
                     }
                     else
                     {
@@ -348,7 +348,10 @@ namespace umi3d.edk.collaboration
                     }
                 }
                 else
-                    Debug.Log($"transfer message to {target}");
+                {
+                    var fake = new FakeWebrtcMessageDto() { content = _data, dataType = dataType, reliable = reliable, targetId = new List<string>() { target }, sourceId = id };
+                    Send(fake, reliable, target);
+                }
             }
         }
 
@@ -362,7 +365,7 @@ namespace umi3d.edk.collaboration
         {
             base.ChannelsToAddCreation(uid, connection);
             foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                connection.AddDataChannel(new WebRTCDataChannel(GetUID(),uid,channel), false);
+                connection.AddDataChannel(new WebRTCDataChannel(GetUID(), uid, channel), false);
         }
 
         ///<inheritdoc/>
@@ -411,7 +414,7 @@ namespace umi3d.edk.collaboration
                 Wco.channels.Cast<WebRTCDataChannel>().ForEach(c => { if (c != null) c.useWebrtc = user.useWebrtc; });
             }
 
-            return  co;
+            return co;
         }
 
         ///<inheritdoc/>

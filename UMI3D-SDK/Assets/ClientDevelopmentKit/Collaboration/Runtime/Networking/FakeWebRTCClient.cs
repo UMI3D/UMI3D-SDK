@@ -151,7 +151,13 @@ namespace umi3d.cdk.collaboration
             if (fake.dataType == DataType.Audio)
                 AudioManager.Instance.Read(user, fake.content, null);
             else
-                UMI3DCollaborationClientServer.OnRtcMessage(user, fake.content, null);
+            {
+                var dto = UMI3DDto.FromBson(fake.content);
+                if (dto is FakeWebrtcMessageDto fake2)
+                    UnityMainThreadDispatcher.Instance().Enqueue(onMessage(fake2, reliable));
+                else
+                    UMI3DCollaborationClientServer.OnRtcMessage(user, dto, null);
+            }
             yield return null;
         }
 

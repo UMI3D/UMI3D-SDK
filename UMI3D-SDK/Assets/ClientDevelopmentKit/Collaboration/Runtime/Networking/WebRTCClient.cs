@@ -79,7 +79,22 @@ namespace umi3d.cdk.collaboration
             if (channel.type == DataType.Audio)
                 AudioManager.Instance.Read(user, bytes, channel);
             else
-                UMI3DCollaborationClientServer.OnRtcMessage(user, bytes, channel);
+            {
+                var dto = UMI3DDto.FromBson(bytes);
+                if (dto is FakeWebrtcMessageDto fake)
+                {
+                    var user2 = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == fake.sourceId);
+                    if (fake.dataType == DataType.Audio)
+                        AudioManager.Instance.Read(user2, fake.content, null);
+                    else
+                    {
+                        var dto2 = UMI3DDto.FromBson(fake.content);
+                        UMI3DCollaborationClientServer.OnRtcMessage(user2, dto2, null);
+                    }
+                }
+                else
+                    UMI3DCollaborationClientServer.OnRtcMessage(user, dto, channel);
+            }
         }
 
         /// <summary>
