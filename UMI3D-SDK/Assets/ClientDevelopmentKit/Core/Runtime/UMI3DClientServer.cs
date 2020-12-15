@@ -27,7 +27,7 @@ namespace umi3d.cdk
         static public string getAuthorization()
         {
             if (Exists)
-                Instance._getAuthorization();
+                return Instance._getAuthorization();
             return null;
         }
         protected virtual string _getAuthorization() { return null; }

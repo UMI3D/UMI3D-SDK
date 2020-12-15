@@ -31,31 +31,14 @@ namespace umi3d.cdk
     {
 
         public float maxTimePerFrame = 0.02f;
-        private static GlTFMeshDtoLoader instance;// = new ObjMeshDtoLoader();
 
         /// <summary>
         /// Constructor.
         /// </summary>
         public GlTFMeshDtoLoader()
         {
-            if (instance == null)
-            {
-                instance = this;
-                instance.supportedFileExtentions = new List<string>() { ".gltf", ".glb" };
-                instance.ignoredFileExtentions = new List<string>() { ".bin" };
-            }
-        }
-
-        /// <summary>
-        /// Set Certificate for a webRequest
-        /// </summary>
-        /// <param name="www">web request</param>
-        /// <param name="authorization">Authorization</param>
-        public static void SetCertificateAuthorization(UnityWebRequest www, string authorization)
-        {
-            if (instance == null)
-                new GlTFMeshDtoLoader();
-            instance.SetCertificate(www, authorization);
+            supportedFileExtentions = new List<string>() { ".gltf", ".glb" };
+            ignoredFileExtentions = new List<string>() { ".bin" };
         }
 
 

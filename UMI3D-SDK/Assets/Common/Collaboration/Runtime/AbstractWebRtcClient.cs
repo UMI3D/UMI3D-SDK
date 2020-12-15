@@ -320,6 +320,9 @@ namespace umi3d.common.collaboration
             DataChannel dc = new WebRTCDataChannel(GetUID(), uid, Base);
             dc.OnCreated += () => OnDataChannelCreated(dc, uid);
             dc.OnOpen += () => UnityMainThreadDispatcher.Instance().Enqueue(SendStack(dc));
+#if !UNITY_WEBRTC
+            dc.Created();
+#endif
             return dc;
         }
 
