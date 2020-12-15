@@ -30,6 +30,7 @@ namespace umi3d.edk
     {
 
         #region properties
+        [EditorReadOnly]
         public List<AssetLibrary> libraries;
         #endregion
         List<UMI3DNode> nodes;
@@ -68,10 +69,11 @@ namespace umi3d.edk
             nodes = GetAllChildrenInThisScene(user);
             dto.extensions.umi3d = ToUMI3DSceneNodeDto(user);
             WriteCollections(dto, user);
+
             nodes.Clear();
             return dto;
         }
-        
+
         /// <summary>
         /// Convert to dto for a given user.
         /// </summary>
@@ -99,9 +101,22 @@ namespace umi3d.edk
             nodeDto.scale = objectScale.GetValue(user);
             nodeDto.rotation = objectRotation.GetValue(user);
             nodeDto.LibrariesId = libraries.Select(l => { return l.Id(); }).ToList();
-            nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e=>e.ToEntityDto(user)).ToList();
+            nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e => e.ToEntityDto(user)).ToList();
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
+
+
+        //Remember already added entities
+        [HideInInspector]
+        public List<string> materialIds = new List<string>();
+        [HideInInspector]
+        public List<string> animationIds = new List<string>();
+
+        [EditorReadOnly]
+        public List<MaterialSO> materialSOs = new List<MaterialSO>();
+        [EditorReadOnly]
+        public List<MaterialSO> PreloadedMaterials = new List<MaterialSO>();
+
 
         /// <summary>
         /// Writte the scene contents in a GlTFSceneDto.
@@ -111,29 +126,31 @@ namespace umi3d.edk
         /// <returns></returns>
         protected virtual void WriteCollections(GlTFSceneDto scene, UMI3DUser user)
         {
-            //Get all nodes
-            
+            //Clear materials lists
+            materialIds.Clear();
+            animationIds.Clear();
 
-            //Remember already added entities
-            List<string> materialIds = new List<string>();
-            List<string> animationIds = new List<string>();
+            materialIds.AddRange(PreloadedMaterials.Select(m => ((AbstractEntityDto)m.ToDto().extensions.umi3d).id));
+            materialSOs.AddRange(PreloadedMaterials);
+            scene.materials.AddRange(PreloadedMaterials.Select(m => m.ToDto()));
 
             //Fill arrays
-            foreach (UMI3DNode node in nodes) {
+            foreach (UMI3DNode node in nodes)
+            {
 
                 //Add nodes in the glTF scene
                 scene.nodes.Add(node.ToGlTFNodeDto(user));
 
                 //Get new materials
-                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m =>
-                {
-                    return !materialIds.Contains(m.extensions.umi3d.id);
-                });
+                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !(materialIds).Contains(((AbstractEntityDto)m.extensions.umi3d).id));
+
 
                 //Add them to the glTF scene
                 scene.materials.AddRange(materials);
+                materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
+
                 //remember their ids
-                materialIds.AddRange(materials.Select(m => m.extensions.umi3d.id));
+                materialIds.AddRange(materials.Select(m => ((AbstractEntityDto)m.extensions.umi3d).id));
 
                 //Get new animations
                 IEnumerable<UMI3DAbstractAnimationDto> animations = node.GetAnimationsFor(user).Where(a => !animationIds.Contains(a.id));
@@ -142,13 +159,10 @@ namespace umi3d.edk
                 //remember their ids
                 animationIds.AddRange(animations.Select(a => a.id));
             }
-         
-
-
 
         }
 
-
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);

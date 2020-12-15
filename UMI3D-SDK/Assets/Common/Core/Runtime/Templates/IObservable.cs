@@ -33,6 +33,7 @@ namespace umi3d.common
         /// Notify a value change.
         /// </summary>
         /// <param name="newValue">New value</param>
+        /// <param name="hoveredObjectId">Id of the </param>
         void NotifyValueChange(T newValue);
 
         /// <summary>
@@ -49,5 +50,4 @@ namespace umi3d.common
         /// <see cref="Subscribe(UnityAction{T})"/>
         void UnSubscribe(UnityAction<T> callback);
     }
-
 }

@@ -33,27 +33,26 @@ namespace umi3d.cdk.interaction
 
         public static ToolMenuItem IdToMenu(string id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Tool)?.Menu; }
 
-
         public ToolMenuItem Menu;
 
-
-
+        public Toolbox toolbox;
         /// <summary>
-        /// Interactable dto describing this object.
+        /// ToolFix t dto describing this object.
         /// </summary>
         public ToolDto dto;
 
+        ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolDto; }
 
         public Tool(ToolDto dto, Toolbox toolbox) : base(dto)
         {
-
+            this.toolbox = toolbox;
             Menu = new ToolMenuItem()
             {
                 tool = this,
                 Name = name,
             };
-            foreach(var interaction in dto.interactions)
+            foreach (var interaction in dto.interactions)
             {
                 var item = getInteractionItem(interaction);
                 Menu.Add(item);
@@ -74,33 +73,64 @@ namespace umi3d.cdk.interaction
                     break;
                 case EventDto eventDto:
                     var e = new EventMenuItem();
-                    e.Subscribe(() => Debug.Log("hellooo"));
+                    e.interaction = eventDto;
+                    e.toggle = eventDto.hold;
+                    e.Subscribe((x) =>
+                    {
+                        if (eventDto.hold)
+                        {
+                            var stateChangeDto = new EventStateChangedDto
+                            {
+                                active = x,
+                                boneType = "none",
+                                id = eventDto.id,
+                                toolId = dto.id,
+                                hoveredObjectId = null
+                            };
+                            UMI3DClientServer.Send(stateChangeDto, true);
+                        }
+                        else
+                        {
+                            var triggeredDto = new EventTriggeredDto
+                            {
+                                boneType = "none",
+                                id = eventDto.id,
+                                toolId = dto.id,
+                                hoveredObjectId = null
+                            };
+                            UMI3DClientServer.Send(triggeredDto, true);
+                        }
+                    });
                     result = e;
                     break;
                 case BooleanParameterDto booleanParameterDto:
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
                     b.Subscribe((x) =>
+                    {
+                        booleanParameterDto.value = x;
+                        var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            booleanParameterDto.value = x;
-                            var pararmeterDto = new ParameterSettingRequestDto()
-                            {
-                                entityId = booleanParameterDto.id,
-                                parameter = booleanParameterDto,
-                            };
-                            UMI3DClientServer.Send(pararmeterDto, true);
-                        }
+                            toolId = dto.id,
+                            id = booleanParameterDto.id,
+                            parameter = booleanParameterDto,
+                            hoveredObjectId = null
+                        };
+                        UMI3DClientServer.Send(pararmeterDto, true);
+                    }
                     );
                     result = b;
                     break;
                 case FloatRangeParameterDto floatRangeParameterDto:
-                    var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.Max, min = floatRangeParameterDto.Min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.Increment };
+                    var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
                     f.Subscribe((x) =>
                     {
                         floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = floatRangeParameterDto.id,
+                            toolId = dto.id,
+                            id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -108,14 +138,16 @@ namespace umi3d.cdk.interaction
                     result = f;
                     break;
                 case EnumParameterDto<string> enumParameterDto:
-                    var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.PossibleValues };
+                    var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
                     en.Subscribe((x) =>
                     {
                         enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = enumParameterDto.id,
+                            toolId = dto.id,
+                            id = enumParameterDto.id,
                             parameter = enumParameterDto,
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }
@@ -123,14 +155,16 @@ namespace umi3d.cdk.interaction
                     result = en;
                     break;
                 case StringParameterDto stringParameterDto:
-                    var s = new TextInputMenuItem() { dto = stringParameterDto};
+                    var s = new TextInputMenuItem() { dto = stringParameterDto };
                     s.Subscribe((x) =>
                     {
                         stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            entityId = stringParameterDto.id,
+                            toolId = dto.id,
+                            id = stringParameterDto.id,
                             parameter = stringParameterDto,
+                            hoveredObjectId = null
                         };
                         UMI3DClientServer.Send(pararmeterDto, true);
                     }

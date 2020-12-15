@@ -25,12 +25,47 @@ namespace umi3d.edk.interaction
 {
     public class UMI3DInteractable : AbstractTool, UMI3DLoadableEntity
     {
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool NotifyHoverPosition;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool NotifySubObject;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DNode Node;
+
+        ///<inheritdoc/>
+        public override LoadEntity Register()
+        {
+            base.Register();
+            return GetLoadEntity();
+        }
+
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
 
         /// <summary>
         /// Class for event rising on hover when <see cref="NotifyHoverPosition"/> is enabled. 
@@ -42,45 +77,42 @@ namespace umi3d.edk.interaction
         public class HoverEvent : UnityEvent<HoverEventContent> { }
 
         [Serializable]
-        public class HoverEventContent
+        public class HoverEventContent : AbstractInteraction.InteractionEventContent
         {
-            public UMI3DUser user { get; private set; }
-            public string boneType { get; private set; }
             public Vector3 position { get; private set; }
             public Vector3 normal { get; private set; }
             public Vector3 direction { get; private set; }
-            public string hoveredId { get; private set; }
 
-            public HoverEventContent(UMI3DUser user, HoveredDto dto)
+            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
-                this.user = user;
-                boneType = dto.boneType;
                 position = dto.position;
                 normal = dto.normal;
                 direction = dto.direction;
-                hoveredId = dto.hoveredObjectId;
             }
         }
 
         [SerializeField]
-        public UMI3DUserBoneEvent onHoverEnter = new UMI3DUserBoneEvent();
+        public HoverEvent onHoverEnter = new HoverEvent();
 
         [SerializeField]
         public HoverEvent onHovered = new HoverEvent();
 
         [SerializeField]
-        public UMI3DUserBoneEvent onHoverExit = new UMI3DUserBoneEvent();
+        public HoverEvent onHoverExit = new HoverEvent();
 
         /// <summary>
         /// List of bones hovering this object (if any).
         /// </summary>
         public List<string> hoveringBones = new List<string>();
+        private UMI3DAsyncProperty<bool> objectNotifyHoverPosition1;
+        private UMI3DAsyncProperty<bool> objectNotifySubObject1;
+        private UMI3DAsyncProperty<UMI3DNode> objectNodeId1;
 
         public bool isHovered { get { return hoveringBones.Count > 0; } }
 
-        public UMI3DAsyncProperty<bool> objectNotifyHoverPosition;
-        public UMI3DAsyncProperty<bool> objectNotifySubObject;
-        public UMI3DAsyncProperty<UMI3DNode> objectNodeId;
+        public UMI3DAsyncProperty<bool> objectNotifyHoverPosition { get { Register(); return objectNotifyHoverPosition1; } protected set => objectNotifyHoverPosition1 = value; }
+        public UMI3DAsyncProperty<bool> objectNotifySubObject { get { Register(); return objectNotifySubObject1; } protected set => objectNotifySubObject1 = value; }
+        public UMI3DAsyncProperty<UMI3DNode> objectNodeId { get { Register(); return objectNodeId1; } protected set => objectNodeId1 = value; }
 
         /// <summary>
         /// Create an empty Dto.
@@ -106,7 +138,7 @@ namespace umi3d.edk.interaction
             Idto.nodeId = objectNodeId.GetValue(user).Id();
         }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -126,8 +158,8 @@ namespace umi3d.edk.interaction
         }
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
-            if (dto.state) onHoverEnter.Invoke(user, dto.boneType);
-            else onHoverExit.Invoke(user, dto.boneType);
+            if (dto.state) onHoverEnter.Invoke(new HoverEventContent(user, dto));
+            else onHoverExit.Invoke(new HoverEventContent(user, dto));
         }
 
         public IEntity ToEntityDto(UMI3DUser user)

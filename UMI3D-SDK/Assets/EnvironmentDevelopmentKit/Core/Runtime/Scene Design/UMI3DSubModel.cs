@@ -15,16 +15,28 @@ limitations under the License.
 */
 
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk
 {
-    public class UMI3DSubModel : UMI3DNode
+    public class UMI3DSubModel : AbstractRenderedNode
+
 
     {
-        public UMI3DAsyncProperty<bool> objectMaterialOverrided;
 
         public UMI3DModel parentModel;
+        //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
+        [SerializeField, EditorReadOnly]
+        protected bool ignoreModelMaterialOverride = false;
+        public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
+        ///<inheritdoc/>
+        protected override void InitDefinition(string id)
+        {
+            base.InitDefinition(id);
+
+            objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.IgnoreModelMaterialOverride, ignoreModelMaterialOverride);
+        }
 
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
@@ -33,13 +45,13 @@ namespace umi3d.edk
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
-                objectId = parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id());
-
+                objectId = UMI3DEnvironment.Register(this, parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id()));
                 InitDefinition(objectId);
             }
             return GetLoadEntity();
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);
@@ -66,6 +78,7 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
+            subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
 
         }
 

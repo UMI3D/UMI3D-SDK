@@ -34,6 +34,7 @@ namespace umi3d.common.userCapture
         /// the projection matrix of the user's camera.
         /// </summary>
         public SerializableMatrix4x4 projectionMatrix;
+
         /// <summary>
         /// the bone corresponding to the camera's position
         /// </summary>

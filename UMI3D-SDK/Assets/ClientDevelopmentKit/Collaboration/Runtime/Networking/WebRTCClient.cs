@@ -26,17 +26,21 @@ namespace umi3d.cdk.collaboration
     /// AbstractWebRtcClient implementation for a client
     /// </summary>
     /// <see cref="AbstractWebRtcClient"/>
-    public class WebRTCClient : AbstractWebRtcClient
+    public class WebRTCClient : AbstractWebRtcClient, IWebRTCClient
     {
         UMI3DCollaborationClientServer client;
+        FakeWebRTCClient FakeWebRTC;
+
+        public override AbstractWebsocketRtc websocketRtc => FakeWebRTC;
 
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="client">a reference to the server.</param>
-        public WebRTCClient(UMI3DCollaborationClientServer client) : base(client)
+        public WebRTCClient(UMI3DCollaborationClientServer client, bool useSoftware) : base(client, useSoftware)
         {
             this.client = client;
+            FakeWebRTC = new FakeWebRTCClient(client);
         }
 
         /// <summary>
@@ -44,10 +48,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="channels">list of data channel.</param>
         /// <param name="dto">AudioDto.</param>
-        public void sendAudio(List<DataChannel> channels,AudioDto dto)
+        public void sendAudio(List<DataChannel> channels, AudioDto dto)
         {
             foreach (var c in channels)
-                c.dataChannel.Send(dto.ToBson());
+                c.Send(dto.ToBson());
         }
 
         /// <summary>
@@ -58,13 +62,7 @@ namespace umi3d.cdk.collaboration
         {
             foreach (var peer in peers.Values)
             {
-                foreach(var channel in peer.channels)
-                    if(channel.type == DataType.Audio)
-                    {
-                        Debug.Log($"Send via [{channel?.IsOpen}] {channel?.Label}:{channel?.dataChannel}" );
-                        channel?.dataChannel?.Send(dto.ToBson());
-                        break;
-                    }
+                peer.Send(dto.ToBson(), false, DataType.Audio);
             }
         }
 
@@ -77,10 +75,26 @@ namespace umi3d.cdk.collaboration
         /// <param name="channel">Datachannel from which this message was received.</param>
         protected override void OnRtcMessage(string id, byte[] bytes, DataChannel channel)
         {
+            var user = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == id);
             if (channel.type == DataType.Audio)
-                AudioManager.Instance.Read(bytes, channel);
+                AudioManager.Instance.Read(user, bytes, channel);
             else
-                UMI3DCollaborationClientServer.OnRtcMessage(bytes, channel);
+            {
+                var dto = UMI3DDto.FromBson(bytes);
+                if (dto is FakeWebrtcMessageDto fake)
+                {
+                    var user2 = UMI3DCollaborationEnvironmentLoader.Instance?.UserList?.FirstOrDefault(u => u.id == fake.sourceId);
+                    if (fake.dataType == DataType.Audio)
+                        AudioManager.Instance.Read(user2, fake.content, null);
+                    else
+                    {
+                        var dto2 = UMI3DDto.FromBson(fake.content);
+                        UMI3DCollaborationClientServer.OnRtcMessage(user2, dto2, null);
+                    }
+                }
+                else
+                    UMI3DCollaborationClientServer.OnRtcMessage(user, dto, channel);
+            }
         }
 
         /// <summary>
@@ -106,13 +120,13 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="uid"></param>
         /// <param name="connection"></param>
-        protected override void ChannelsToAddCreation(string uid, WebRTCconnection connection)
+        protected override void ChannelsToAddCreation(string uid, IWebRTCconnection connection)
         {
             base.ChannelsToAddCreation(uid, connection);
-            if(uid == UMI3DGlobalID.ServerId)
+            if (uid == UMI3DGlobalID.ServerId)
                 foreach (var channel in WebRtcChannels.defaultPeerToServerChannels)
-                    if(!connection.channels.Any(c => c.Label == channel.Label))
-                        connection.channels.Add(CreateDataChannel(channel, uid));
+                    if (!connection.Any(c => c.Label == channel.Label))
+                        connection.AddDataChannel(CreateDataChannel(channel, uid), false);
         }
 
         /// <summary>
@@ -122,7 +136,19 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">should the data channel be reliable or not</param>
         public void SendServer(UMI3DDto dto, bool reliable)
         {
-            peers[UMI3DGlobalID.ServerId].Send(dto.ToBson(),reliable);
+            peers[UMI3DGlobalID.ServerId].Send(dto.ToBson(), reliable);
+        }
+
+        /// <summary>
+        /// Find matching channel with the server. 
+        /// </summary>
+        /// <param name="reliable">should this channel be reliable.</param>
+        /// <param name="dataType">datatype of the channel.</param>
+        /// <param name="dataChannels">First matching DataChannels.</param>
+        /// <returns></returns>
+        public virtual bool ExistServer(bool reliable, DataType dataType, out List<DataChannel> dataChannels)
+        {
+            return Exist(reliable, dataType, out dataChannels, UMI3DGlobalID.ServerId);
         }
 
         /// <summary>
@@ -153,5 +179,18 @@ namespace umi3d.cdk.collaboration
         {
             client.Send(dto);
         }
+
+        ///<inheritdoc/>
+        protected override void OnConnectionDisconnected(string id)
+        {
+            Debug.Log($"client connection lost {id}");
+        }
+
+#if !UNITY_WEBRTC
+        protected override IWebRTCconnection CreateWebRtcConnection(string uid, bool instanciateChannel = false)
+        {
+            return base.CreateWebRtcConnection(uid, true);
+        }
+#endif
     }
 }

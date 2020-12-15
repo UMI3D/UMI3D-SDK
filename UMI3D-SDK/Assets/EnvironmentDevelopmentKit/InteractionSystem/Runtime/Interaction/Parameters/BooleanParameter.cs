@@ -15,11 +15,10 @@ limitations under the License.
 */
 
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public class BooleanParameter : AbstractInteraction
+    public class BooleanParameter : AbstractParameter
     {
         /// <summary>
         /// Current input value.
@@ -27,8 +26,7 @@ namespace umi3d.edk.interaction
         public bool value = false;
 
         [System.Serializable]
-        public class CheckboxListener : UnityEvent<UMI3DUser, bool> { }
-
+        public class CheckboxListener : ParameterEvent<bool> { }
 
         /// <summary>
         /// Event raised on value change.
@@ -38,12 +36,12 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Event raised when value changes to true.
         /// </summary>
-        public UMI3DUserEvent onChangeTrue = new UMI3DUserEvent();
+        public InteractionEvent onChangeTrue = new InteractionEvent();
 
         /// <summary>
         /// Event raised when value changes to false.
         /// </summary>
-        public UMI3DUserEvent onChangeFalse = new UMI3DUserEvent();
+        public InteractionEvent onChangeFalse = new InteractionEvent();
 
 
         /// <summary>
@@ -67,20 +65,20 @@ namespace umi3d.edk.interaction
             (dto as BooleanParameterDto).value = value;
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
             {
                 case ParameterSettingRequestDto settingRequestDto:
-                    if (settingRequestDto.parameter is BooleanParameterDto)
+                    if (settingRequestDto.parameter is BooleanParameterDto parameter)
                     {
-                        var parameter = settingRequestDto.parameter as BooleanParameterDto;
                         value = parameter.value;
-                        onChange.Invoke(user, parameter.value);
+                        onChange.Invoke(new ParameterEventContent<bool>(user, settingRequestDto, value));
                         if (parameter.value)
-                            onChangeTrue.Invoke(user);
+                            onChangeTrue.Invoke(new InteractionEventContent(user, interactionRequest));
                         else
-                            onChangeFalse.Invoke(user);
+                            onChangeFalse.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");

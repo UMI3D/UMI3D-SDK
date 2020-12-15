@@ -16,11 +16,12 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public static class UMI3DNetworkingKeys 
+    public static class UMI3DNetworkingKeys
     {
         //users
         public const string identity = "/me";
         public const string identity_update = "/me/update";
+        public const string status_update = "/me/status_update";
         public const string logout = "/logout";
 
         //MEDIA

@@ -20,7 +20,7 @@ namespace umi3d.common.interaction
 
     public class EnumParameterDto<T> : AbstractParameterDto<T>
     {
-        public List<T> PossibleValues = null;
+        public List<T> possibleValues = null;
 
         public EnumParameterDto() : base() { }
     }

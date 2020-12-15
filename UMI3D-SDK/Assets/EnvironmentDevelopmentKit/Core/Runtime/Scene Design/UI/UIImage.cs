@@ -37,23 +37,28 @@ namespace umi3d.edk
 
         /// <summary>
         /// Image's sprite url
-        /// </summary>       
-        public UMI3DResource sprite = new UMI3DResource() ;
+        /// </summary>
+        [SerializeField, EditorReadOnly]
+        public UMI3DResource sprite = new UMI3DResource();
+
+        private UMI3DAsyncProperty<UMI3DResource> _sprite;
+        private UMI3DAsyncProperty<Color> _color;
+        private UMI3DAsyncProperty<Image.Type> _imageType;
 
         /// <summary>
         /// Sprite url (if any).
         /// </summary>
-        public UMI3DAsyncProperty<UMI3DResource> Sprite;
+        public UMI3DAsyncProperty<UMI3DResource> Sprite { get { Register(); return _sprite; } protected set => _sprite = value; }
 
         /// <summary>
         /// Image's color.
         /// </summary>
-        public UMI3DAsyncProperty<Color> Color;
+        public UMI3DAsyncProperty<Color> Color { get { Register(); return _color; } protected set => _color = value; }
 
         /// <summary>
         /// Image's type.
         /// </summary>
-        public UMI3DAsyncProperty<Image.Type> ImageType;
+        public UMI3DAsyncProperty<Image.Type> ImageType { get { Register(); return _imageType; } protected set => _imageType = value; }
 
 
         /// <summary>
@@ -62,8 +67,8 @@ namespace umi3d.edk
         protected override void InitDefinition(string Id)
         {
             base.InitDefinition(Id);
-            Color = new UMI3DAsyncProperty<Color>(objectId,UMI3DPropertyKeys.ImageColor, color,ToUMI3DSerializable.ToSerializableColor);
-            ImageType = new UMI3DAsyncProperty<Image.Type>(objectId,UMI3DPropertyKeys.ImageType, type, (a,u) => a.Convert());
+            Color = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.ImageColor, color, ToUMI3DSerializable.ToSerializableColor);
+            ImageType = new UMI3DAsyncProperty<Image.Type>(objectId, UMI3DPropertyKeys.ImageType, type, (a, u) => a.Convert());
             Sprite = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Image, sprite, (s, u) => s.ToDto());
         }
 
@@ -76,6 +81,7 @@ namespace umi3d.edk
             return new UIImageDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

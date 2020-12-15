@@ -16,13 +16,14 @@ limitations under the License.
 
 using System;
 using umi3d.common;
+using umi3d.common.collaboration;
 using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
     public class UMI3DWebsocket
     {
-        HttpServer wssv;
+        public HttpServer wssv;
 
         public UMI3DWebsocket()
         {

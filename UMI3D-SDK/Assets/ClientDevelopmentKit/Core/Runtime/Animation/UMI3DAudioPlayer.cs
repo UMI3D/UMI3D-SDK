@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System.Collections;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class UMI3DAudioPlayer : UMI3DAbstractAnimation
+    public class UMI3DAudioPlayer : UMI3DAbstractAnimation, IAudioReader
     {
         new public static UMI3DAudioPlayer Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         AudioSource audioSource;
@@ -28,10 +29,23 @@ namespace umi3d.cdk
 
         public UMI3DAudioPlayer(UMI3DAudioPlayerDto dto) : base(dto)
         {
+            UnityMainThreadDispatcher.Instance().Enqueue(InitPlayer(dto));
+        }
+
+        IEnumerator InitPlayer(UMI3DAudioPlayerDto dto)
+        {
+            var wait = new WaitForFixedUpdate();
             var gameObject = UMI3DEnvironmentLoader.Instance.gameObject;
-            if(dto.nodeID != null)
+            if (dto.nodeID != null)
             {
-                gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID).gameObject;
+                gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID)?.gameObject;
+                while (gameObject == null)
+                {
+                    yield return wait;
+                    gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID).gameObject;
+                }
+
+
             }
             audioSource = gameObject.AddComponent<AudioSource>();
 
@@ -46,7 +60,7 @@ namespace umi3d.cdk
             if (dto.audioResource == null || dto.audioResource.variants == null || dto.audioResource.variants.Count < 1)
             {
                 dto.audioResource = null;
-                return;
+                yield break;
             }
 
             FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.audioResource.variants);
@@ -72,13 +86,16 @@ namespace umi3d.cdk
                     Debug.LogWarning,
                     loader.DeleteObject
                     );
+
         }
 
+        ///<inheritdoc/>
         public override float GetProgress()
         {
-            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0)? audioSource.time / audioSource.clip.length : -1;
+            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time / audioSource.clip.length : -1;
         }
 
+        ///<inheritdoc/>
         public override void Start()
         {
             audioSource?.Stop();
@@ -93,20 +110,22 @@ namespace umi3d.cdk
             OnEnd();
         }
 
-
+        ///<inheritdoc/>
         public override void Stop()
         {
             audioSource?.Stop();
             if (OnEndCoroutine != null) UMI3DAnimationManager.Instance.StopCoroutine(OnEndCoroutine);
         }
 
+        ///<inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
             var ADto = dto as UMI3DAudioPlayerDto;
             if (ADto == null) return false;
 
-            switch (property.property) {
+            switch (property.property)
+            {
                 case UMI3DPropertyKeys.AnimationVolume:
                     audioSource.volume = ADto.volume = (float)property.value;
                     break;
@@ -172,14 +191,51 @@ namespace umi3d.cdk
 
         }
 
+        ///<inheritdoc/>
         public override void Start(float atTime)
         {
             audioSource?.Stop();
-            if(audioSource)
+            if (audioSource)
                 audioSource.time = atTime;
             audioSource?.Play();
             OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
 
         }
+
+
+        AudioClip clip = null;
+        public int position = 0;
+        public int samplerate = 44100;
+
+        /// <summary>
+        /// Read an AudioDto and play it in an audioSource.
+        /// </summary>
+        /// <param name="sample">AudioDto  to play</param>
+        public void Read(AudioDto sample)
+        {
+            if (sample != null)
+            {
+                if (clip == null)
+                {
+                    audioSource.clip = AudioClip.Create("GlobalAudio", samplerate * 10, 1, samplerate, false, OnAudioRead, OnAudioSetPosition);
+                }
+
+                // Put the data in the audio source.
+                audioSource.clip.SetData(sample.sample, sample.pos);
+                if (!audioSource.isPlaying) audioSource.Play();
+            }
+        }
+
+
+        public void OnAudioRead(float[] data)
+        {
+
+        }
+
+        public void OnAudioSetPosition(int newPosition)
+        {
+            position = newPosition;
+        }
+
     }
 }

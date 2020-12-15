@@ -100,6 +100,9 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <summary>
+        /// Stop the http server.
+        /// </summary>
         public void Stop()
         {
             if (httpsv != null)

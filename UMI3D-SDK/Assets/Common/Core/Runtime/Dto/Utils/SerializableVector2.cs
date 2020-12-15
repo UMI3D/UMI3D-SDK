@@ -37,6 +37,7 @@ namespace umi3d.common
             Y = y;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Vector2)this).ToString();

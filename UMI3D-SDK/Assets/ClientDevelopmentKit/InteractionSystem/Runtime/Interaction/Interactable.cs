@@ -37,6 +37,7 @@ namespace umi3d.cdk.interaction
 
         public bool NotifySubObject { get => dto.notifySubObject; }
 
+        ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
 
         public Interactable(InteractableDto dto) : base(dto)
@@ -46,14 +47,17 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Notify the hovering of the object by the user (first frame only).
         /// </summary>
-        public void HoverEnter(string bone,string hoveredObjectId)
+        public void HoverEnter(string bone, string hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
             HoverStateChangedDto hoverDto = new HoverStateChangedDto()
             {
-                entityId = id,
+                toolId = id,
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
-                state = true
+                state = true,
+                normal = normal,
+                position = position,
+                direction = direction
             };
             UMI3DClientServer.Send(hoverDto, true);
         }
@@ -61,14 +65,17 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Notify the end of the object's hovering by the user (first frame only).
         /// </summary>
-        public void HoverExit(string bone, string hoveredObjectId)
+        public void HoverExit(string bone, string hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
             HoverStateChangedDto hoverDto = new HoverStateChangedDto()
             {
-                entityId = id,
+                toolId = id,
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
-                state = false
+                state = false,
+                normal = normal,
+                position = position,
+                direction = direction
             };
             UMI3DClientServer.Send(hoverDto, true);
         }
@@ -84,7 +91,7 @@ namespace umi3d.cdk.interaction
             {
                 HoveredDto hoverDto = new HoveredDto()
                 {
-                    entityId = id,
+                    toolId = id,
                     hoveredObjectId = hoveredObjectId,
                     boneType = bone,
                     normal = normal,
@@ -95,9 +102,10 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        ///<inheritdoc/>
         public override void Destroy()
         {
-            foreach (var container in InteractableContainer.containers.Where(c=> c.Interactable == this))
+            foreach (var container in InteractableContainer.containers.Where(c => c.Interactable == this))
                 GameObject.Destroy(container);
             base.Destroy();
         }

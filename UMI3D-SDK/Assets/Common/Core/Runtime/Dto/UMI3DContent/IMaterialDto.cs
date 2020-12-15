@@ -20,12 +20,8 @@ namespace umi3d.common
 {
     public interface IMaterialDto
     {
-        /// <summary>
-        /// The list of material ids that will be overrided.
-        /// Equal to "UMI3D_All_MAT" to overide all material 
-        /// </summary>
 
-        List<string> MaterialsToOveride { get; set; }
+        Dictionary<string, object> shaderProperties { get; set; }
 
     }
 }

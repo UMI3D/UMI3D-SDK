@@ -21,11 +21,6 @@ namespace umi3d.common.interaction
     /// </summary>
     public class HoveredDto : InteractionRequestDto
     {
-        /// <summary>
-        /// The id of the currently hoverred object.
-        /// It could be the Id of the Interactable associated object, or the Id of a sub-object if tool.notifyHoverPosition == true.
-        /// </summary>
-        public string hoveredObjectId;
 
         /// <summary>
         /// Hovered point position in the Interactable associated object's local frame.

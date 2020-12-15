@@ -56,8 +56,7 @@ namespace umi3d.edk
         /// <returns></returns>
         UMI3DAbstractNode Parent
         {
-            get
-            {
+            get {
                 if (transform.parent != null)
                 {
                     var p = transform.parent.gameObject.GetComponent<UMI3DAbstractNode>();
@@ -66,62 +65,73 @@ namespace umi3d.edk
                 return null;
             }
         }
-        public UMI3DAsyncProperty<UMI3DAbstractNode> objectParentId;
+
+
+        public UMI3DAsyncProperty<UMI3DAbstractNode> objectParentId { get { Register(); return _objectParentId; } protected set => _objectParentId = value; }
 
         /// <summary>
         /// False if the object is alowed to move during the application exectution.
         /// </summary>
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool isStatic = false;
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectIsStatic;
+        public UMI3DAsyncProperty<bool> objectIsStatic { get { Register(); return _objectIsStatic; } protected set => _objectIsStatic = value; }
 
 
         /// <summary>
         /// False if the object is alowed to move during the application exectution.
         /// </summary>
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool active = true;
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectActive;
+        public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
 
-
-        public UMI3DAnchor UMI3DAnchor;
-        public UMI3DAsyncProperty<UMI3DAnchorDto> objectAnchor;
+        [SerializeField, EditorReadOnly]
+        protected UMI3DAnchor UMI3DAnchor;
+        public UMI3DAsyncProperty<UMI3DAnchorDto> objectAnchor { get { Register(); return _objectAnchor; } protected set => _objectAnchor = value; }
 
 
         /// <summary>
         /// An editor field to modify default objectImmersiveOnly value
         /// </summary>
-        public bool immersiveOnly = false;
+        [SerializeField, EditorReadOnly]
+        protected bool immersiveOnly = false;
         /// <summary>
         /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
         /// </summary>
-        public UMI3DAsyncProperty<bool> objectImmersiveOnly;
+        public UMI3DAsyncProperty<bool> objectImmersiveOnly { get { Register(); return _objectImmersiveOnly; } protected set => _objectImmersiveOnly = value; }
 
 
-        //public AsyncPropertiesHandler PropertiesHandler { protected set; get; }
-        UMI3DAsyncPropertyEquality PropertyEquality;
-        
+
+
         /// <summary>
         /// The object local position in the scene graph.
         /// </summary>
-        public UMI3DAsyncProperty<Vector3> objectPosition;
+        public UMI3DAsyncProperty<Vector3> objectPosition { get { Register(); return _objectPosition; } protected set => _objectPosition = value; }
 
         /// <summary>
         /// The object local orientation in the scene graph.
         /// </summary>
-        public UMI3DAsyncProperty<Quaternion> objectRotation;
+        public UMI3DAsyncProperty<Quaternion> objectRotation { get { Register(); return _objectRotation; } protected set => _objectRotation = value; }
 
         /// <summary>
         /// The object local scale in the scene graph.
         /// </summary>
-        public UMI3DAsyncProperty<Vector3> objectScale;
-        
+        public UMI3DAsyncProperty<Vector3> objectScale { get { Register(); return _objectScale; } protected set => _objectScale = value; }
+
+        private UMI3DAsyncProperty<UMI3DAbstractNode> _objectParentId;
+        private UMI3DAsyncProperty<bool> _objectIsStatic;
+        private UMI3DAsyncProperty<bool> _objectActive;
+        private UMI3DAsyncProperty<UMI3DAnchorDto> _objectAnchor;
+        private UMI3DAsyncProperty<bool> _objectImmersiveOnly;
+        private UMI3DAsyncProperty<Vector3> _objectPosition;
+        private UMI3DAsyncProperty<Quaternion> _objectRotation;
+        private UMI3DAsyncProperty<Vector3> _objectScale;
+
         #endregion
 
 
@@ -141,12 +151,30 @@ namespace umi3d.edk
             return GetLoadEntity();
         }
 
-        protected virtual LoadEntity GetLoadEntity()
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
             };
             return operation;
         }
@@ -163,13 +191,13 @@ namespace umi3d.edk
             objectIsStatic.OnValueChanged += (bool s) => isStatic = s;
             objectActive.OnValueChanged += (bool a) => active = a;
 
-            objectParentId = new UMI3DAsyncProperty<UMI3DAbstractNode>(objectId, UMI3DPropertyKeys.ParentId, Parent,(UMI3DAbstractNode node,UMI3DUser user)=>node.Id());
+            objectParentId = new UMI3DAsyncProperty<UMI3DAbstractNode>(objectId, UMI3DPropertyKeys.ParentId, Parent, (UMI3DAbstractNode node, UMI3DUser user) => node.Id());
             objectParentId.OnValueChanged += (UMI3DAbstractNode node) => { if (transform.parent != node?.transform) transform.SetParent(node?.transform); };
 
-            PropertyEquality = new UMI3DAsyncPropertyEquality();
+            var PropertyEquality = new UMI3DAsyncPropertyEquality();
             PropertyEquality.epsilon = 0.000001f;
 
-            objectPosition = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.Position, transform.localPosition,ToUMI3DSerializable.ToSerializableVector3,  PropertyEquality.Vector3Equality);
+            objectPosition = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.Position, transform.localPosition, ToUMI3DSerializable.ToSerializableVector3, PropertyEquality.Vector3Equality);
             objectPosition.OnValueChanged += (Vector3 p) => transform.localPosition = p;
 
             objectRotation = new UMI3DAsyncProperty<Quaternion>(objectId, UMI3DPropertyKeys.Rotation, transform.localRotation, ToUMI3DSerializable.ToSerializableVector4, PropertyEquality.QuaternionEquality);
@@ -219,9 +247,10 @@ namespace umi3d.edk
                 {
                     if (child is UMI3DScene)
                         res.Add(child);
-                    else if (child is UMI3DNode) { 
+                    else if (child is UMI3DNode)
+                    {
                         UMI3DNode obj = child as UMI3DNode;
-                        if(obj.VisibleFor(user))
+                        if (obj.VisibleFor(user))
                             res.Add(child);
                     }
                 }
@@ -256,13 +285,13 @@ namespace umi3d.edk
             return res;
         }
 
-        public List<UMI3DLoadableEntity> GetAllLoadableEntityUnderThisNode(UMI3DUser user,Transform transform = null)
+        public List<UMI3DLoadableEntity> GetAllLoadableEntityUnderThisNode(UMI3DUser user, Transform transform = null)
         {
             var res = new List<UMI3DLoadableEntity>();
 
             if (transform == null) transform = this.transform;
             else if (transform.gameObject.GetComponent<UMI3DAbstractNode>() != null) return res;
-            
+
             var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode));
             if (others != null)
             {

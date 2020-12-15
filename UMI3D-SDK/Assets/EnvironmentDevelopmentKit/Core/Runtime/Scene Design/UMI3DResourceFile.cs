@@ -25,6 +25,7 @@ namespace umi3d.edk
         public bool isLocalFile = false;
         public string domain = "";
         public string path = "";
+        [ConstStringEnum(typeof(UMI3DAssetFormat))]
         public string format;
         public string extension;
         public bool isInBundle = false;
@@ -32,7 +33,7 @@ namespace umi3d.edk
         public AssetMetricDto metrics;
 
         public bool isInLibrary = false;
-        public string libraryKey = "";
+        public AssetLibrary libraryKey = null;
 
         public FileDto ToDto()
         {
@@ -42,7 +43,7 @@ namespace umi3d.edk
             dto.extension = extension;
             dto.metrics = metrics;
             dto.pathIfInBundle = isInBundle ? pathIfInBundle : null;
-            dto.libraryKey = isInLibrary ? libraryKey : null;
+            dto.libraryKey = isInLibrary ? libraryKey.id : null;
             return dto;
         }
         public string GetUrl()
@@ -53,10 +54,10 @@ namespace umi3d.edk
                 path = "/" + path;
             }
             if (isLocalFile)
-                return Path.Combine(UMI3DServer.GetHttpUrl(),UMI3DNetworkingKeys.files, path);
+                return Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path);
             else
-                return Path.Combine(domain,path);
+                return Path.Combine(domain, path);
         }
-        
+
     }
 }

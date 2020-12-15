@@ -16,19 +16,15 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using umi3d.edk;
-using UnityEngine;
-using System.IO;
 using System;
-using umi3d.common;
+using System.IO;
+using UnityEditor;
+using UnityEngine;
 using Path = umi3d.common.Path;
 
 namespace umi3d.edk.editor
 {
-    [CustomPropertyDrawer(typeof(UMI3DResourceFile),true)]
+    [CustomPropertyDrawer(typeof(UMI3DResourceFile), true)]
     [CanEditMultipleObjects]
     public class UMI3DResourceFilePropertyDrawer : PropertyDrawer
     {
@@ -46,14 +42,15 @@ namespace umi3d.edk.editor
         SerializedProperty libraryKey;
 
 
-        int _choiceIndex = 0;
-        List<string> choices = new List<string> { "standard","unity-standalone","unity-android"};
+        //int _choiceIndex = 0;
+        //string[] choices;
 
         public bool foldout;
         public bool foldoutMetrics;
         public float LineHeight;
         public float TitleLineHeight;
 
+        ///<inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             isLocalFile = property.FindPropertyRelative("isLocalFile");
@@ -67,6 +64,7 @@ namespace umi3d.edk.editor
             return height;
         }
 
+        ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginChangeCheck();
@@ -86,16 +84,13 @@ namespace umi3d.edk.editor
             pathIfInBundle = property.FindPropertyRelative("pathIfInBundle");
             libraryKey = property.FindPropertyRelative("libraryKey");
 
-            _choiceIndex = choices.Contains(format.stringValue) ? choices.IndexOf(format.stringValue) : 0;
             var RLine = new Rect(position.x, position.y, position.width, LineHeight);
-            foldout = EditorGUI.Foldout(RLine, foldout, format.stringValue + " [ Resolution " + resolution.intValue +" ]", true);
+            foldout = EditorGUI.Foldout(RLine, foldout, format.stringValue + " [ Resolution " + resolution.intValue + " ]", true);
             if (foldout)
             {
                 RLine.y += LineHeight;
                 var GFormat = new GUIContent("Format", "The file's format");
-                _choiceIndex = EditorGUI.Popup(RLine, _choiceIndex, choices.ToArray());
-                format.stringValue = choices[_choiceIndex];
-                //format.PropertyField(RLine, format, GFormat);
+                EditorGUI.PropertyField(RLine, format, GFormat);
 
                 RLine.y += 1.25f * LineHeight;
                 float metricsIndent = 10f;
@@ -127,7 +122,7 @@ namespace umi3d.edk.editor
                     EditorGUI.PropertyField(RLine, domain, GDomain);
 
 
-                    RLine.y += 1.25f*LineHeight;
+                    RLine.y += 1.25f * LineHeight;
                     var GPath = new GUIContent("Path", "The path to the file on the domain");
                     EditorGUI.PropertyField(RLine, path, GPath);
                 }
@@ -138,7 +133,7 @@ namespace umi3d.edk.editor
                     var RbrowseLine = new Rect(RLine);
                     RbrowseLine.width -= 55f;
                     var GPath = new GUIContent("Path", "The path to the file on your computer (relative to <Project Path>/Public/)");
-                   
+
                     EditorGUI.PropertyField(RbrowseLine, path, GPath);
                     RbrowseLine.x += RbrowseLine.width;
                     RbrowseLine.y -= 1;
@@ -163,18 +158,18 @@ namespace umi3d.edk.editor
 
                 }
 
-                RLine.y +=  LineHeight;
+                RLine.y += LineHeight;
                 var GExtension = new GUIContent("Extension", "The file's extension");
                 EditorGUI.PropertyField(RLine, extension, GExtension);
 
-                
+
                 var labelWidth = EditorGUIUtility.labelWidth;
                 EditorGUIUtility.labelWidth = 0;
                 int offset = 2;
 
                 RLine.y += LineHeight;
-                Rect BundleLabel = new Rect(RLine.x, RLine.y, labelWidth -20f, RLine.height);
-                
+                Rect BundleLabel = new Rect(RLine.x, RLine.y, labelWidth - 20f, RLine.height);
+
                 var GIsInBundleLabel = new GUIContent("Is in a bundle");
                 if (isInBundle.boolValue)
                 {
@@ -194,7 +189,7 @@ namespace umi3d.edk.editor
 
                 RLine.y += LineHeight;
 
-                Rect LibLabel = new Rect(RLine.x, RLine.y,labelWidth - 20f, RLine.height);
+                Rect LibLabel = new Rect(RLine.x, RLine.y, labelWidth - 20f, RLine.height);
                 EditorGUIUtility.labelWidth = 0;
                 var GisInLibraryLabel = new GUIContent("Is in a library");
                 if (isInLibrary.boolValue)
@@ -204,9 +199,9 @@ namespace umi3d.edk.editor
                 EditorGUI.indentLevel = indent;
                 EditorGUI.LabelField(LibLabel, GisInLibraryLabel);
                 EditorGUI.indentLevel = 0;
-                Rect libRect = new Rect(RLine.x + LibLabel.width + offset, RLine.y,20f,RLine.height);
+                Rect libRect = new Rect(RLine.x + LibLabel.width + offset, RLine.y, 20f, RLine.height);
                 Rect libRect2 = new Rect(libRect.x + libRect.width, RLine.y, RLine.width - libRect.width - LibLabel.width - offset, RLine.height);
-                var GisInLibrary = new GUIContent("","is this resource in a library ?");
+                var GisInLibrary = new GUIContent("", "is this resource in a library ?");
                 EditorGUI.PropertyField(libRect, isInLibrary, GisInLibrary);
                 if (isInLibrary.boolValue)
                 {
@@ -217,7 +212,7 @@ namespace umi3d.edk.editor
 
                 EditorGUI.indentLevel = indent;
             }
-            
+
             if (EditorGUI.EndChangeCheck())
             {
                 property.serializedObject.ApplyModifiedProperties();

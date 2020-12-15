@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -36,7 +37,7 @@ namespace umi3d.cdk
             {
                 bool performed = false;
                 PerformOperation(operation, () => performed = true);
-                if(performed != true)
+                if (performed != true)
                     yield return new WaitUntil(() => performed);
             }
         }
@@ -53,6 +54,10 @@ namespace umi3d.cdk
                     break;
                 case SetEntityPropertyDto set:
                     UMI3DEnvironmentLoader.SetEntity(set);
+                    performed.Invoke();
+                    break;
+                case MultiSetEntityPropertyDto multiSet:
+                    UMI3DEnvironmentLoader.SetMultiEntity(multiSet);
                     performed.Invoke();
                     break;
 

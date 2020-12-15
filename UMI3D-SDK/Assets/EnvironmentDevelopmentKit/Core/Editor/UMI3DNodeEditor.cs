@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(UMI3DNode), true)]
+    [CustomEditor(typeof(UMI3DNode), false)]
     [CanEditMultipleObjects]
     public class UMI3DNodeEditor : Editor
     {
@@ -68,6 +68,7 @@ namespace umi3d.edk.editor
             activeCollider = serializedObject.FindProperty("hasCollider");
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
 
@@ -99,7 +100,7 @@ namespace umi3d.edk.editor
 
 
             EditorGUILayout.PropertyField(activeCollider);
-            if (Target.hasCollider)
+            if (activeCollider.boolValue)
             {
                 EditorGUI.indentLevel++;
 
@@ -109,7 +110,7 @@ namespace umi3d.edk.editor
                 EditorGUILayout.PropertyField(colliderType);
 
                 EditorGUI.indentLevel++;
-                switch (Target.colliderType)
+                switch ((ColliderType)colliderType.enumValueIndex)
                 {
                     case ColliderType.Box:
                         //        EditorGUILayout.Vector3Field("Collider Center", colliderCenter.vector3Value);
@@ -155,7 +156,7 @@ namespace umi3d.edk.editor
 
         protected virtual void InspectorForMeshCollider()
         {
-            Target.isMeshCustom = true;
+            isMeshCustom.boolValue = true;
         }
     }
 }

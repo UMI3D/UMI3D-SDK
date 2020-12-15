@@ -104,6 +104,22 @@ namespace umi3d.cdk.interaction
         public abstract AbstractUMI3DInput FindInput(AbstractParameterDto param, bool unused = true);
 
         /// <summary>
+        /// Return an input for a given form. Return null if no input is available.
+        /// </summary>
+        /// <param name="form">Form to find an input for</param>
+        /// <param name="unused">Should the input be unused ?</param>
+        /// <returns></returns>
+        public abstract AbstractUMI3DInput FindInput(FormDto form, bool unused = true);
+
+        /// <summary>
+        /// Return an input for a given form. Return null if no input is available.
+        /// </summary>
+        /// <param name="link">Form to find an input for</param>
+        /// <param name="unused">Should the input be unused ?</param>
+        /// <returns></returns>
+        public abstract AbstractUMI3DInput FindInput(LinkDto link, bool unused = true);
+
+        /// <summary>
         /// Check if a tool can be projected on this controller.
         /// </summary>
         /// <param name="tool"> The tool to be projected.</param>
@@ -144,7 +160,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="tool"> The ToolDto to be projected.</param>
         /// <see cref="Release(AbstractTool)"/>
-        public virtual void Project(AbstractTool tool, InteractionMappingReason reason)
+        public virtual void Project(AbstractTool tool, bool releasable, InteractionMappingReason reason, string hoveredObjectId)
         {
             if (!IsCompatibleWith(tool))
                 throw new System.Exception("Trying to project an uncompatible tool !");
@@ -157,12 +173,30 @@ namespace umi3d.cdk.interaction
             else
             {
                 AbstractInteractionDto[] interactions = tool.interactions.ToArray();
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions);
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id, hoveredObjectId);
                 associatedInputs.Add(tool.id, inputs);
             }
 
             currentTool = tool;
         }
+
+
+        /// <summary>
+        /// Project a tool on this controller.
+        /// </summary>
+        /// <param name="tool"> The ToolDto to be projected.</param>
+        /// <see cref="Release(AbstractTool)"/>
+        public virtual void Update(AbstractTool tool, bool releasable, InteractionMappingReason reason)
+        {
+            if (currentTool != tool)
+                throw new System.Exception("Try to update wrong tool");
+
+            Release(tool, new ToolNeedToBeUpdated());
+            Project(tool, releasable, reason, GetCurrentHoveredId());
+        }
+
+        protected abstract string GetCurrentHoveredId();
+
 
         /// <summary>
         /// Release a projected tool from this controller.
@@ -172,7 +206,7 @@ namespace umi3d.cdk.interaction
         public virtual void Release(AbstractTool tool, InteractionMappingReason reason)
         {
             if (currentTool == null)
-                throw new System.Exception("no tool is not currently projected on this controller");
+                throw new System.Exception("no tool is currently projected on this controller");
             if (currentTool.id != tool.id)
                 throw new System.Exception("This tool is not currently projected on this controller");
 

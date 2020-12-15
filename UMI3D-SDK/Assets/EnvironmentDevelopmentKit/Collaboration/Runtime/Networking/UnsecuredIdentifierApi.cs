@@ -28,23 +28,25 @@ namespace umi3d.edk.collaboration
         public Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
         public Dictionary<string, FormDto> idMap = new Dictionary<string, FormDto>();
 
+        ///<inheritdoc/>
         public override FormDto GetParameterDtosFor(string login)
         {
             if (!idMap.ContainsKey(login) || idMap[login] == null)
             {
                 idMap[login] = new FormDto();
-                idMap[login].Fields = new List<AbstractParameterDto>();
+                idMap[login].fields = new List<AbstractParameterDto>();
                 StringParameterDto username = new StringParameterDto()
                 {
                     name = "username",
                     value = "",
                 };
-                idMap[login].Fields.Add(username);
+                idMap[login].fields.Add(username);
             }
 
             return idMap[login];
         }
 
+        ///<inheritdoc/>
         public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
         {
             if (PasswordMap.ContainsKey(login))
@@ -53,10 +55,11 @@ namespace umi3d.edk.collaboration
             return null;
         }
 
+        ///<inheritdoc/>
         public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
             idMap[user.login] = identity.parameters;
-            return (idMap[user.login] != null && (idMap[user.login].Fields[0] is StringParameterDto) && (idMap[user.login].Fields[0] as StringParameterDto).value != "") ? StatusType.READY : StatusType.CREATED;
+            return (idMap[user.login] != null && (idMap[user.login].fields[0] is StringParameterDto) && (idMap[user.login].fields[0] as StringParameterDto).value != "") ? StatusType.READY : StatusType.CREATED;
         }
     }
 }

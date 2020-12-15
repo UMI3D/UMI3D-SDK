@@ -25,7 +25,7 @@ namespace umi3d.edk
     /// </summary>
     public class SetEntityDictionaryRemoveProperty : SetEntityDictionaryProperty
     {
-
+        ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var setEntity = new SetEntityDictionaryRemovePropertyDto();

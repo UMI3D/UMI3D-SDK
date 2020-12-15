@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.interaction;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -28,11 +29,16 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+        [ConstStringEnum(typeof(UMI3DAssetFormat))]
+        public List<string> supportedformats = new List<string>();
+        public float maximumResolution;
+
         public virtual UMI3DNodeLoader nodeLoader { get; } = new UMI3DNodeLoader();
         public virtual UMI3DMeshNodeLoader meshLoader { get; } = new UMI3DMeshNodeLoader();
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
         public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
+        public virtual UMI3DSubMeshNodeLoader SubMeshLoader { get; } = new UMI3DSubMeshNodeLoader();
 
         public NotificationLoader notificationLoader;
 
@@ -41,6 +47,8 @@ namespace umi3d.cdk
         public Material skyboxMaterial { get { if (_skyboxMaterial == null) { _skyboxMaterial = new Material(RenderSettings.skybox); RenderSettings.skybox = _skyboxMaterial; } return _skyboxMaterial; } }
 
         public List<IResourcesLoader> ResourcesLoaders { get; } = new List<IResourcesLoader>() { new ObjMeshDtoLoader(), new ImageDtoLoader(), new GlTFMeshDtoLoader(), new BundleDtoLoader(), new AudioLoader() };
+
+        public List<AbstractUMI3DMaterialLoader> MaterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader() };
 
         /// <summary>
         /// Load an UMI3DObject.
@@ -61,13 +69,16 @@ namespace umi3d.cdk
                     PreloadedSceneLoader.ReadUMI3DExtension(ps, node, finished, failed);
                     break;
                 case InteractableDto i:
-                    UMI3DInteractableLoader.ReadUMI3DExtension(i,node,finished,failed);
+                    UMI3DInteractableLoader.ReadUMI3DExtension(i, node, finished, failed);
                     break;
                 case ToolboxDto t:
                     UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
                     break;
                 case UMI3DMeshNodeDto m:
                     meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    break;
+                case SubModelDto s:
+                    SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
                     break;
                 case UIRectDto r:
                     UILoader.ReadUMI3DExtension(dto, node, callback, failed);
@@ -82,7 +93,7 @@ namespace umi3d.cdk
                     nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
             }
-            
+
         }
 
         /// <summary>
@@ -107,7 +118,9 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity,property))
+            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, property))
+                return true;
+            if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -122,13 +135,22 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.ChooseVariant(AssetLibraryDto)"/>
+        ///<inheritdoc/>
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {
             UMI3DLocalAssetDirectory res = null;
             foreach (var assetDir in assetLibrary.variants)
             {
-                if ((res == null) || (assetDir.metrics.resolution > res.metrics.resolution))
+                bool ok = res == null;
+                if (!ok && !assetDir.formats.Any(f => !supportedformats.Contains(f)))
+                {
+                    if (res.formats.Any(f => !supportedformats.Contains(f)))
+                        ok = true;
+                    else
+                        ok = Compare(assetDir.metrics.resolution, res.metrics.resolution, maximumResolution);
+                }
+
+                if (ok)
                 {
                     res = assetDir;
                 }
@@ -136,13 +158,37 @@ namespace umi3d.cdk
             return res;
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.ChooseVariante(List{FileDto})"/>
+        /// <summary>
+        /// is "a" bigger than "b" and inferior than max
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="max">maximum, 0 mean no maximum</param>
+        /// <returns></returns>
+        bool Compare(float a, float b, float max)
+        {
+            if (max <= 0) return a > b;
+            if (b > max) return b > a;
+            if (a < max) return a > b;
+            return false;
+        }
+
+        ///<inheritdoc/>
         public override FileDto ChooseVariante(List<FileDto> files)
         {
             FileDto res = null;
             foreach (var file in files)
             {
-                if ((res == null) || (file.metrics.resolution > res.metrics.resolution))
+                bool ok = res == null;
+                if (!ok && supportedformats.Contains(file.format))
+                {
+                    if (!supportedformats.Contains(res.format))
+                        ok = true;
+                    else
+                        ok = Compare(file.metrics.resolution, res.metrics.resolution, maximumResolution);
+
+                }
+                if (ok)
                 {
                     res = file;
                 }
@@ -150,7 +196,7 @@ namespace umi3d.cdk
             return res;
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.SelectLoader(string)"/>
+        ///<inheritdoc/>
         public override IResourcesLoader SelectLoader(string extension)
         {
             foreach (IResourcesLoader loader in ResourcesLoaders)
@@ -164,7 +210,19 @@ namespace umi3d.cdk
             return null;
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.loadSkybox(ResourceDto)"/>
+        ///<inheritdoc/>
+        public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
+        {
+            foreach (AbstractUMI3DMaterialLoader loader in MaterialLoaders)
+            {
+                if (loader.IsSuitableFor(gltfMatDto))
+                    return loader;
+            }
+            Debug.LogError("there is no compatible material loader for this material.");
+            return null;
+        }
+
+        ///<inheritdoc/>
         public override void loadSkybox(ResourceDto skybox)
         {
             FileDto fileToLoad = ChooseVariante(skybox.variants);
@@ -236,17 +294,17 @@ namespace umi3d.cdk
                     );
         }
 
-        /// <see cref="AbstractUMI3DLoadingParameters.UnknownOperationHandler(AbstractOperationDto, Action)"/>
+        ///<inheritdoc/>
         public override void UnknownOperationHandler(AbstractOperationDto operation, Action performed)
         {
             switch (operation)
             {
                 case SwitchToolDto switchTool:
-                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.replacedToolId, switchTool.toolId, switchTool.releasable, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ProjectToolDto projection:
-                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, new interaction.RequestedByEnvironment());
+                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, projection.releasable, null, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case ReleaseToolDto release:

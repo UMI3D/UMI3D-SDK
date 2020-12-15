@@ -22,10 +22,11 @@ using UnityEngine.UI;
 
 namespace umi3d.edk
 {
-    [Obsolete("This class isn't mean to be use in production",false)]
+    [Obsolete("This class isn't mean to be use in production", false)]
     public partial class SimpleModificationListener : MonoBehaviour
     {
         UMI3DNode[] nodes;
+        UMI3DScene[] scenes;
         public float time = 0f;
         float timeTmp = 0;
         public int max = 0;
@@ -37,6 +38,7 @@ namespace umi3d.edk
         void Start()
         {
             nodes = GetComponentsInChildren<UMI3DNode>();
+            scenes = GetComponentsInChildren<UMI3DScene>();
         }
 
         // Update is called once per frame
@@ -46,7 +48,10 @@ namespace umi3d.edk
             {
                 foreach (var node in nodes)
                     Update(node);
-                
+
+                foreach (var scene in scenes)
+                    MaterialUpdate(scene);
+
                 Dispatch();
             }
         }
@@ -55,9 +60,9 @@ namespace umi3d.edk
         {
             if (checkTime() || checkMax())
             {
-                
+
                 var transaction = new Transaction();
-                transaction.Operations = sets.SelectMany(p => p.Value).Select(p=>(Operation)p.Value).ToList();
+                transaction.Operations = sets.SelectMany(p => p.Value).Select(p => (Operation)p.Value).ToList();
                 if (transaction.Operations.Count > 0)
                 {
                     transaction.reliable = false;
@@ -70,7 +75,7 @@ namespace umi3d.edk
         bool checkTime()
         {
             timeTmp -= Time.deltaTime;
-            if(time == 0 || timeTmp <= 0)
+            if (time == 0 || timeTmp <= 0)
             {
                 timeTmp = time;
                 return true;
@@ -80,7 +85,7 @@ namespace umi3d.edk
 
         bool checkMax()
         {
-            return (max != 0) && (sets.SelectMany(p=>p.Value).Count() > max);
+            return (max != 0) && (sets.SelectMany(p => p.Value).Count() > max);
         }
 
         private void Update(UMI3DNode obj)
@@ -91,31 +96,77 @@ namespace umi3d.edk
             setOperation(obj.objectPosition.SetValue(obj.transform.localPosition));
             setOperation(obj.objectRotation.SetValue(obj.transform.localRotation));
             setOperation(obj.objectScale.SetValue(obj.transform.localScale));
-            setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
-            setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
-            
+            //setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
+            //setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
+
             UIUpdate(obj as UIRect);
-            
+
             ModelUpdate(obj);
 
         }
 
+        private void MaterialUpdate(UMI3DScene scene)
+        {
+            if (sets == null) sets = new Dictionary<string, Dictionary<string, SetEntityProperty>>();
+
+
+            foreach (MaterialSO mat in scene.materialSOs)
+            {
+                if (!sets.ContainsKey(mat.Id())) sets[mat.Id()] = new Dictionary<string, SetEntityProperty>();
+                switch (mat)
+                {
+                    case PBRMaterial pbrmat:
+                        setOperation((pbrmat).objectBaseColorFactor.SetValue(pbrmat.baseColorFactor));
+                        setOperation((pbrmat).objectEmissiveFactor.SetValue(pbrmat.emissive));
+                        setOperation(pbrmat.objectEmissiveTexture.SetValue(pbrmat.textures.emissiveTexture));
+                        setOperation(pbrmat.objectHeightTexture.SetValue(pbrmat.textures.heightTexture));
+                        setOperation(pbrmat.objectHeightTextureScale.SetValue(pbrmat.textures.heightTexture.scale));
+                        setOperation(pbrmat.objectMaintexture.SetValue(pbrmat.textures.baseColorTexture));
+                        setOperation(pbrmat.objectMetallicFactor.SetValue(pbrmat.metallicFactor));
+                        setOperation(pbrmat.objectMetallicRoughnessTexture.SetValue(pbrmat.textures.metallicRoughnessTexture));
+                        setOperation(pbrmat.objectMetallicTexture.SetValue(pbrmat.textures.metallicTexture));
+                        setOperation(pbrmat.objectNormalTexture.SetValue(pbrmat.textures.normalTexture));
+                        setOperation(pbrmat.objectNormalTextureScale.SetValue(pbrmat.textures.normalTexture.scale));
+                        setOperation(pbrmat.objectOcclusionTexture.SetValue(pbrmat.textures.occlusionTexture));
+                        setOperation(pbrmat.objectRoughnessFactor.SetValue(pbrmat.roughnessFactor));
+                        setOperation(pbrmat.objectRoughnessTexture.SetValue(pbrmat.textures.roughnessTexture));
+                        setOperation(pbrmat.objectShaderProperties.SetValue(pbrmat.shaderProperties));
+                        setOperation(pbrmat.objectTextureTilingOffset.SetValue(pbrmat.tilingOffset));
+                        setOperation(pbrmat.objectTextureTilingScale.SetValue(pbrmat.tilingScale));
+                        break;
+                    case ExternalResourceMaterial extmat:
+                        break;
+                    default:
+                        Debug.LogWarning("unsupported material type");
+                        break;
+                }
+
+            }
+        }
+
         private void ModelUpdate(UMI3DNode obj)
         {
-            //setOperation(obj.hasCollider)
-            // setOperation(obj.objectColliderBoxSize.SetValue(o)
-            setOperation(obj.objectColliderRadius.SetValue(obj.colliderRadius));
-            setOperation(obj.objectColliderCenter.SetValue(obj.colliderCenter));
-            setOperation(obj.objectColliderBoxSize.SetValue(obj.colliderBoxSize));
-            setOperation(obj.objectColliderDirection.SetValue(obj.colliderDirection));
-            setOperation(obj.objectColliderHeight.SetValue(obj.colliderHeight));
-            setOperation(obj.objectColliderType.SetValue(obj.colliderType));
-            setOperation(obj.objectCustomMeshCollider.SetValue(obj.customMeshCollider));
-            setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
-            setOperation(obj.objectIsConvexe.SetValue(obj.convex));
-            setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-            
-
+            ////setOperation(obj.hasCollider)
+            //// setOperation(obj.objectColliderBoxSize.SetValue(o)
+            //setOperation(obj.objectColliderRadius.SetValue(obj.colliderRadius));
+            //setOperation(obj.objectColliderCenter.SetValue(obj.colliderCenter));
+            //setOperation(obj.objectColliderBoxSize.SetValue(obj.colliderBoxSize));
+            //setOperation(obj.objectColliderDirection.SetValue(obj.colliderDirection));
+            //setOperation(obj.objectColliderHeight.SetValue(obj.colliderHeight));
+            //setOperation(obj.objectColliderType.SetValue(obj.colliderType));
+            //setOperation(obj.objectCustomMeshCollider.SetValue(obj.customMeshCollider));
+            //setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
+            //setOperation(obj.objectIsConvexe.SetValue(obj.convex));
+            //setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
+            //if (obj as AbstractRenderedNode)
+            //{
+            //    //setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
+            //    //setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
+            //}
+            //if (obj as UMI3DSubModel)
+            //{
+            //    setOperation(((UMI3DSubModel)obj).objectIgnoreModelMaterialOverride.SetValue(((UMI3DSubModel)obj).ignoreModelMaterialOverride));
+            //}
         }
 
         private void UIUpdate(UIRect obj)
@@ -176,7 +227,19 @@ namespace umi3d.edk
         {
             if (operation != null)
             {
-                sets[operation.entityId][operation.property] = operation;
+
+                try
+                {
+                    sets[operation.entityId][operation.property] = operation;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    Debug.Log("entityid = " + operation.entityId);
+                    Debug.Log("property = " + operation.property);
+
+                }
+
             }
         }
 

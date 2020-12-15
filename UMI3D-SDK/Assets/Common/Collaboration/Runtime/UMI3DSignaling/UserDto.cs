@@ -26,5 +26,7 @@ namespace umi3d.common.collaboration
     {
         public StatusType status;
         public string avatarId;
+        public string audioSourceId;
+        public string videoSourceId;
     }
 }

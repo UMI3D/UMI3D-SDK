@@ -50,9 +50,11 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Contained tools.
         /// </summary>
-        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions;}}
+        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions; } }
 
+        public UnityEvent OnUpdated = new UnityEvent();
 
+        public void Updated() { OnUpdated.Invoke(); }
 
         /// <summary>
         /// Event raised when the abstract tool is projected.
@@ -63,6 +65,28 @@ namespace umi3d.cdk.interaction
         /// Event raised when the abstract tool is released.
         /// </summary>
         public UnityEvent onRelease = new UnityEvent();
+
+        public void onProjected(string boneType)
+        {
+            onProject.Invoke();
+            var projectedDto = new ToolProjectedDto
+            {
+                boneType = boneType,
+                toolId = id
+            };
+            UMI3DClientServer.Send(projectedDto, true);
+        }
+
+        public void onReleased(string boneType)
+        {
+            onRelease.Invoke();
+            var releasedDto = new ToolReleasedDto
+            {
+                boneType = boneType,
+                toolId = id
+            };
+            UMI3DClientServer.Send(releasedDto, true);
+        }
 
         protected AbstractTool(AbstractToolDto abstractDto)
         {

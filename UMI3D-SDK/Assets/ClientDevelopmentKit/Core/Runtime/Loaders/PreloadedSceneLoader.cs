@@ -85,43 +85,43 @@ namespace umi3d.cdk
             if (entity == null) return false;
             var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
             if (dto == null) return false;
-            if(property.property == UMI3DPropertyKeys.PreloadedScenes)
-            switch (property)
-            {
-                case SetEntityListAddPropertyDto add:
-                case SetEntityListRemovePropertyDto rem:
-                case SetEntityListPropertyDto set:
-                    Debug.Log($"Case not handled {property}");
-                    break;
-                default:
-                    var newList = (List<PreloadedSceneDto>)property.value;
-                    var oldList = dto.preloadedScenes;
-                    var scenesToUnload = new List<PreloadedSceneDto>();
-                    var scenesToLoad = new List<PreloadedSceneDto>();
+            if (property.property == UMI3DPropertyKeys.PreloadedScenes)
+                switch (property)
+                {
+                    case SetEntityListAddPropertyDto add:
+                    case SetEntityListRemovePropertyDto rem:
+                    case SetEntityListPropertyDto set:
+                        Debug.Log($"Case not handled {property}");
+                        break;
+                    default:
+                        var newList = (List<PreloadedSceneDto>)property.value;
+                        var oldList = dto.preloadedScenes;
+                        var scenesToUnload = new List<PreloadedSceneDto>();
+                        var scenesToLoad = new List<PreloadedSceneDto>();
 
-                    foreach (var newScene in newList)
-                    {
-                        if (!oldList.Contains(newScene))
+                        foreach (var newScene in newList)
                         {
-                            scenesToLoad.Add(newScene);
+                            if (!oldList.Contains(newScene))
+                            {
+                                scenesToLoad.Add(newScene);
+                            }
                         }
-                    }
-                    foreach (var oldScene in oldList)
-                    {
-                        if (!newList.Contains(oldScene))
+                        foreach (var oldScene in oldList)
                         {
-                            scenesToUnload.Add(oldScene);
+                            if (!newList.Contains(oldScene))
+                            {
+                                scenesToUnload.Add(oldScene);
+                            }
                         }
-                    }
 
-                    foreach (var scene in scenesToLoad)
-                        CreatePreloadedScene(scene, null);
+                        foreach (var scene in scenesToLoad)
+                            CreatePreloadedScene(scene, null);
 
-                    foreach (var scene in scenesToUnload)
-                        Unload(scene, null);
+                        foreach (var scene in scenesToUnload)
+                            Unload(scene, null);
 
-                    break;
-            }
+                        break;
+                }
             return true;
         }
     }

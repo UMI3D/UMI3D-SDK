@@ -19,17 +19,20 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
-    static public class UMI3DToolLoader 
+    static public class UMI3DToolLoader
     {
-        static public void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox) {
+        static public void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox)
+        {
             Tool tool = new Tool(dto, toolbox);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool);
             AbstractInteractionMapper.Instance.CreateTool(tool);
         }
 
 
 
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property) {
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
             if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property)) return true;
             return false;
         }

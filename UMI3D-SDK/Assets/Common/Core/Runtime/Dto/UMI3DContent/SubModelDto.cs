@@ -20,19 +20,17 @@ namespace umi3d.common
     /// Model Dto.
     /// </summary>
     [System.Serializable]
-    public class SubModelDto : UMI3DNodeDto 
+    public class SubModelDto : UMI3DRenderedNodeDto
     {
         /// <summary>
-        /// Should override model material ?
+        /// Id of the root object of the model 
         /// </summary>
-        public bool OverrideModelMaterial = false;
+        public string modelId;
 
         /// <summary>
-        /// Material to override to (if any).
+        /// subModel Loader should apply root model material overrider or ignore it
         /// </summary>
-        //public MaterialDto material = new MaterialDto();
-
-        public string modelId;
+        public bool ignoreModelMaterialOverride;
 
         public SubModelDto() : base() { }
 

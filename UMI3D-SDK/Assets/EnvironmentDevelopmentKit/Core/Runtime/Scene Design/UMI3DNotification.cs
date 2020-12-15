@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 
 namespace umi3d.edk
@@ -19,7 +18,7 @@ namespace umi3d.edk
             this.titleProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationTitle, title);
             this.contentProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationContent, content);
             this.durationProperty = new UMI3DAsyncProperty<float>(notificationId, UMI3DPropertyKeys.NotificationDuration, duration, null, PropertyEquality.FloatEquality);
-            this.icon2dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent,icon2d,(r,u)=>r.ToDto());
+            this.icon2dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon2d, (r, u) => r.ToDto());
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
 
@@ -63,42 +62,32 @@ namespace umi3d.edk
         }
 
 
-        public LoadEntity ToLoadEntity(UMI3DUser user)
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
-            return new LoadEntity() { entity = this, users = new HashSet<UMI3DUser>() { user } };
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
         }
 
-        public LoadEntity ToLoadEntity(IEnumerable<UMI3DUser> users)
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
-            var load = new LoadEntity() { entity = this, users = new HashSet<UMI3DUser>() };
-            load += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>((u) => users.Contains(u));
-            return load;
-        }
-
-        public LoadEntity ToLoadEntity()
-        {
-            var load = new LoadEntity() { entity = this, users = new HashSet<UMI3DUser>() };
-            load += UMI3DEnvironment.GetEntities<UMI3DUser>();
-            return load;
-        }
-
-        public DeleteEntity ToDeleteEntity(UMI3DUser user)
-        {
-            return new DeleteEntity() { entityId = Id(), users = new HashSet<UMI3DUser>() { user } };
-        }
-
-        public DeleteEntity ToDeleteEntity(IEnumerable<UMI3DUser> users)
-        {
-            var delete = new DeleteEntity() { entityId = Id(), users = new HashSet<UMI3DUser>() };
-            delete += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>((u) => users.Contains(u));
-            return delete;
-        }
-
-        public DeleteEntity ToDeleteEntity()
-        {
-            var delete = new DeleteEntity() { entityId = Id(), users = new HashSet<UMI3DUser>() };
-            delete += UMI3DEnvironment.GetEntities<UMI3DUser>();
-            return delete;
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
         }
 
 
@@ -109,16 +98,18 @@ namespace umi3d.edk
 
         public UMI3DAsyncProperty<UMI3DNode> objectIdProperty;
 
-        public UMI3DNotificationOnObject(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d, UMI3DNode objectId) : base(title, content,duration,icon2d,icon3d)
+        public UMI3DNotificationOnObject(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d, UMI3DNode objectId) : base(title, content, duration, icon2d, icon3d)
         {
             this.objectIdProperty = new UMI3DAsyncProperty<UMI3DNode>(Id(), UMI3DPropertyKeys.NotificationObjectId, objectId, (n, u) => n.Id());
         }
 
+        ///<inheritdoc/>
         protected override NotificationDto CreateDto()
         {
             return new NotificationOnObjectDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(NotificationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

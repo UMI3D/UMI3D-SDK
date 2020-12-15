@@ -27,9 +27,18 @@ namespace umi3d.cdk.collaboration
     public class PinClientIdentifierApi : ClientIdentifierApi
     {
         public string Pin = "defaultPin";
-        public override void GetPassword(Action<string> callback)
+        public string User = "defaultUser";
+
+        ///<inheritdoc/>
+        public override void GetIdentity(Action<string, string> callback)
         {
-            callback.Invoke(Pin);
+            callback.Invoke(User, Pin);
+        }
+
+        ///<inheritdoc/>
+        public override void GetIdentity(Action<string> callback)
+        {
+            callback.Invoke(User);
         }
     }
 }

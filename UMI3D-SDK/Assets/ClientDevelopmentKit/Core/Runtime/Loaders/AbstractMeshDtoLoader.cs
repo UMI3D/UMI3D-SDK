@@ -38,12 +38,9 @@ namespace umi3d.cdk
         /// <param name="fileAuthorization">Authorization</param>
         public virtual void SetCertificate(UnityWebRequest www, string fileAuthorization)
         {
-            if (fileAuthorization != null && fileAuthorization != "" )
+            if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-                authorization = "Basic " + authorization;
-
                 www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
             }
         }
@@ -67,7 +64,7 @@ namespace umi3d.cdk
         /// Spread recursively transform layer to all is childrens.
         /// </summary>
         /// <param name="transform">Transform</param>
-        private static void ApplyParentLayerInChildren( Transform transform)
+        public static void ApplyParentLayerInChildren(Transform transform)
         {
             int layer = transform.gameObject.layer;
             foreach (Transform child in transform)
@@ -81,7 +78,7 @@ namespace umi3d.cdk
         /// Hide Model Recursively
         /// </summary>
         /// <param name="go"></param>
-        protected static void HideModelRecursively(GameObject go)
+        public static void HideModelRecursively(GameObject go)
         {
             int invisibleLayer = LayerMask.NameToLayer("Invisible");
             if (invisibleLayer == -1)
@@ -125,5 +122,12 @@ namespace umi3d.cdk
         {
             GameObject.Destroy(objectLoaded as UnityEngine.Object);
         }
+
+        public virtual Vector3 GetRotationOffset()
+        {
+            return Vector3.one;
+        }
+
+
     }
 }

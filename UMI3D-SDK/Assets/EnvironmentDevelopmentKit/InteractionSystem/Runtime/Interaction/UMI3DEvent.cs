@@ -27,19 +27,19 @@ namespace umi3d.edk.interaction
         /// Called the first frame of hoverring.
         /// </summary>
         [SerializeField]
-        public UMI3DUserBoneEvent onHold = new UMI3DUserBoneEvent();
+        public InteractionEvent onHold = new InteractionEvent();
 
         /// <summary>
         /// Called the first frame after hoverring.
         /// </summary>
         [SerializeField]
-        public UMI3DUserBoneEvent onRelease = new UMI3DUserBoneEvent();
+        public InteractionEvent onRelease = new InteractionEvent();
 
         /// <summary>
         /// Called the first frame after hoverring.
         /// </summary>
         [SerializeField]
-        public UMI3DUserBoneEvent onTrigger = new UMI3DUserBoneEvent();
+        public InteractionEvent onTrigger = new InteractionEvent();
 
         /// <summary>
         /// Called by a user on interaction.
@@ -51,16 +51,16 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case EventTriggeredDto eventTriggered:
-                    onTrigger.Invoke(user, eventTriggered.boneType);
+                    onTrigger.Invoke(new InteractionEventContent(user, interactionRequest));
                     break;
                 case EventStateChangedDto eventStateChanged:
                     if (eventStateChanged.active)
                     {
-                        onHold.Invoke(user, eventStateChanged.boneType);
+                        onHold.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     else
                     {
-                        onRelease.Invoke(user, eventStateChanged.boneType);
+                        onRelease.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     break;
             }

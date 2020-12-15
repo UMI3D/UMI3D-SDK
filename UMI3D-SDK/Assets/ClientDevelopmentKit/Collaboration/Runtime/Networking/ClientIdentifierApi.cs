@@ -27,17 +27,23 @@ namespace umi3d.cdk.collaboration
     public abstract class ClientIdentifierApi : ScriptableObject
     {
         /// <summary>
-        /// Should return a password as a string for this client via the callback. 
+        /// Should return a login and a password as a string for this client via the callback. 
         /// </summary>
-        /// <param name="callback">Action to return the password.</param>
-        public abstract void GetPassword(Action<string> callback);
+        /// <param name="callback">Action to return the login and the password.</param>
+        public abstract void GetIdentity(Action<string, string> callback);
+
+        /// <summary>
+        /// Should return a login as a string for this client via the callback. 
+        /// </summary>
+        /// <param name="callback">Action to return the login.</param>
+        public abstract void GetIdentity(Action<string> callback);
 
         /// <summary>
         /// Should fill a formDto and return it via a callback.
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>
-        public virtual void GetParameterDtos(FormDto parameter,Action<FormDto> callback)
+        public virtual void GetParameterDtos(FormDto parameter, Action<FormDto> callback)
         {
             callback.Invoke(parameter);
         }
@@ -47,7 +53,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="LibrariesId">Ids of all library that need to be downloaded or updated</param>
         /// <param name="callback">Action to return the answer</param>
-        public virtual void ShouldDownloadLibraries(List<string> LibrariesId,Action<bool> callback)
+        public virtual void ShouldDownloadLibraries(List<string> LibrariesId, Action<bool> callback)
         {
             callback.Invoke(true);
         }

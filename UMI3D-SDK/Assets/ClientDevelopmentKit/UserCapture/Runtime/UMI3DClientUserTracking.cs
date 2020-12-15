@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -24,7 +25,10 @@ namespace umi3d.cdk.userCapture
 {
     public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
     {
-        public Transform Anchor;
+        public Transform anchor;
+        public Transform viewpoint;
+        [ConstStringEnum(typeof(BoneType))]
+        public string viewpointBonetype;
 
         public float skeletonParsingIterationCooldown = 0f;
         float cooldownTmp = 0f;
@@ -33,19 +37,36 @@ namespace umi3d.cdk.userCapture
         public int max = 0;
         int counter = 0;
 
-        public UserTrackingFrameDto LastFrameDto;
-
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
         public UnityEvent skeletonParsedEvent;
+        public UnityEvent cameraHasChanged;
 
+        protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
+        protected UserCameraPropertiesDto CameraPropertiesDto;
+        protected bool hasCameraChanged;
+
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
             skeletonParsedEvent = new UnityEvent();
+            CameraPropertiesDto = new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
+                boneType = viewpointBonetype,
+            };
+            hasCameraChanged = true;
         }
 
-        void Update()
+        protected virtual void Start()
+        {
+            cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
+            cameraHasChanged.Invoke();
+        }
+
+        protected virtual void Update()
         {
             if (UMI3DClientServer.Exists)
                 DispatchTracking();
@@ -54,7 +75,10 @@ namespace umi3d.cdk.userCapture
                 BonesIterator();
         }
 
-        void DispatchTracking()
+        /// <summary>
+        /// Dispatch User Tracking data through Tracking Channel
+        /// </summary>
+        protected virtual void DispatchTracking()
         {
             if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
             {
@@ -63,28 +87,46 @@ namespace umi3d.cdk.userCapture
         }
 
         /// <summary>
-        /// Iterate through the bones of the browser's skeleton to create BoneDto
+        /// Dispatch Camera data through Tracking Channel
         /// </summary>
-        public void BonesIterator()
+        /// <returns></returns>
+        protected virtual IEnumerator DispatchCamera()
         {
-            List<BoneDto> bonesList = new List<BoneDto>();
-            foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
+            while (UMI3DClientServer.Instance.GetId() == null)
             {
-                BoneDto dto = bone.ToDto(Anchor);
-                if (dto != null)
-                    bonesList.Add(dto);
+                yield return null;
             }
 
-            LastFrameDto = new UserTrackingFrameDto()
-            {
-                bones = bonesList,
-                position = Anchor.localPosition, //position relative to UMI3DEnvironmentLoader node
-                rotation = Anchor.localRotation, //rotation relative to UMI3DEnvironmentLoader node
-                scale = Anchor.localScale,
-                userId = UMI3DClientServer.Instance.GetId()
-            };
+            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+        }
 
-            skeletonParsedEvent.Invoke();
+        /// <summary>
+        /// Iterate through the bones of the browser's skeleton to create BoneDto
+        /// </summary>
+        protected void BonesIterator()
+        {
+            if (UMI3DEnvironmentLoader.Exists)
+            {
+                List<BoneDto> bonesList = new List<BoneDto>();
+                foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
+                {
+                    BoneDto dto = bone.ToDto(anchor);
+                    if (dto != null)
+                        bonesList.Add(dto);
+                }
+
+                LastFrameDto = new UserTrackingFrameDto()
+                {
+                    bones = bonesList,
+                    position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
+                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
+                    scale = anchor.localScale,
+                    userId = UMI3DClientServer.Instance.GetId(),
+                    refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
+                };
+
+                skeletonParsedEvent.Invoke();
+            }
         }
 
         bool iterationCooldown()
@@ -98,7 +140,7 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
-        bool checkTime()
+        protected bool checkTime()
         {
             timeTmp -= Time.deltaTime;
             if (time == 0 || timeTmp <= 0)
@@ -109,7 +151,7 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
-        bool checkMax()
+        protected bool checkMax()
         {
             if (max != 0 && counter > max)
             {
@@ -120,7 +162,13 @@ namespace umi3d.cdk.userCapture
             return false;
         }
 
-        public bool RegisterEmbd(string id, UserAvatar u)
+        /// <summary>
+        /// Register the UserAvatar instance of a user in the concerned dictionary
+        /// </summary>
+        /// <param name="id">the id of the user</param>
+        /// <param name="u">the UserAvatar instance to register</param>
+        /// <returns>A bool indicating if the UserAvatar has been registered</returns>
+        public virtual bool RegisterEmbd(string id, UserAvatar u)
         {
             if (embodimentDict.ContainsKey(id))
                 return false;
@@ -131,12 +179,23 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public bool UnregisterEmbd(string id)
+        /// <summary>
+        /// Unregister the UserAvatar instance of a user in the concerned dictionary
+        /// </summary>
+        /// <param name="id">the id of the user</param>
+        /// <returns>A bool indicating if the UserAvatar has been unregistered</returns>
+        public virtual bool UnregisterEmbd(string id)
         {
             return embodimentDict.Remove(id);
         }
 
-        public bool TryGetValue(string id, out UserAvatar embd)
+        /// <summary>
+        /// Try to get the UserAvatar instance of a user from the concerned dictionary
+        /// </summary>
+        /// <param name="id">the id of the user</param>
+        /// <param name="embd">the UserAvatar instance if found</param>
+        /// <returns>A bool indicating if the UserAvatar has been found</returns>
+        public virtual bool TryGetValue(string id, out UserAvatar embd)
         {
             return embodimentDict.TryGetValue(id, out embd);
         }

@@ -43,7 +43,7 @@ namespace umi3d.cdk.menu.view
         /// <param name="menu">Menu to display</param>
         /// <param name="depth">Depth of the menu to display</param>
         /// <returns></returns>
-        public AbstractMenuDisplayContainer ChooseContainer(AbstractMenu menu, int depth)
+        public virtual AbstractMenuDisplayContainer ChooseContainer(AbstractMenu menu, int depth)
         {
             AbstractMenuDisplayContainer exception;
 

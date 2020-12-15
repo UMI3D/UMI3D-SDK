@@ -16,13 +16,23 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+using WebSocketSharp;
+#if UNITY_WEBRTC
 using Unity.WebRTC;
+#endif
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
+    public enum ChannelState
+    {
+        Opening,
+        Open,
+        Close
+    }
+
     public class DataChannel
     {
-        public RTCDataChannel dataChannel;
         public string Label;
         public bool reliable;
         public DataType type;
@@ -31,34 +41,142 @@ namespace umi3d.common
         public Action OnCreated;
         public Action<byte[]> OnMessage;
         public List<byte[]> MessageNotSend = new List<byte[]>();
-        public bool IsOpen { get; private set; }
+        protected ChannelState state;
 
-        public DataChannel(string label, bool reliable, DataType type,Action onCreated = null, Action onOpen = null, Action onClose = null)
+        public ChannelState State
+        {
+            get {
+                CheckState();
+                return state;
+            }
+        }
+
+        protected virtual void CheckState() { Debug.Log("should not be here"); }
+
+        public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
             Label = label;
             this.reliable = reliable;
             this.type = type;
-            IsOpen = false;
+            state = ChannelState.Opening;
             OnOpen = onOpen;
             OnClose = onClose;
         }
 
         public DataChannel(DataChannel channel)
         {
-            this.Label = channel.Label;
-            this.reliable = channel.reliable;
-            this.type = channel.type;
-            IsOpen = false;
+            Label = channel.Label;
+            reliable = channel.reliable;
+            type = channel.type;
+            state = ChannelState.Opening;
         }
 
-        public void Open() { OnOpen?.Invoke(); IsOpen = true; }
-        public void SendStack() {
-            foreach (byte[] msg in MessageNotSend) dataChannel.Send(msg);
+        public void Open() { OnOpen?.Invoke(); state = ChannelState.Open; }
+        public void SendStack()
+        {
+            foreach (byte[] msg in MessageNotSend) Send(msg);
             MessageNotSend.Clear();
         }
 
-        public void Close() { OnClose?.Invoke(); IsOpen = false; }
+        public virtual void Send(byte[] msg) { }
+
+        public virtual void Close() { }
+        public void Closed() { OnClose?.Invoke(); state = ChannelState.Close; }
         public void Created() { OnCreated?.Invoke(); }
-        public void Message(byte[] data) { OnMessage?.Invoke(data); }
+        public void Messaged(byte[] data) { OnMessage?.Invoke(data); }
+    }
+
+
+
+    public class WebRTCDataChannel : DataChannel
+    {
+        public AbstractWebsocket socket;
+        public string id;
+        public List<string> target;
+        public bool useWebrtc = true;
+
+#if UNITY_WEBRTC
+        public RTCDataChannel dataChannel;
+#endif
+        ///<inheritdoc/>
+        protected override void CheckState()
+        {
+#if UNITY_WEBRTC
+            if (useWebrtc)
+            {
+                if (dataChannel != null)
+                {
+                    switch (dataChannel.ReadyState)
+                    {
+                        case RTCDataChannelState.Connecting:
+                            state = ChannelState.Opening;
+                            break;
+                        case RTCDataChannelState.Open:
+                            state = ChannelState.Open;
+                            break;
+                        case RTCDataChannelState.Closing:
+                        case RTCDataChannelState.Closed:
+                            if (state != ChannelState.Close)
+                                Close();
+                            state = ChannelState.Close;
+                            break;
+                    }
+                }
+            }
+            else
+#endif
+            if (socket != null)
+                state = ChannelState.Open;
+            else state = ChannelState.Opening;
+        }
+
+        public WebRTCDataChannel(string id, string target, DataChannel channel) : base(channel)
+        {
+            this.id = id;
+            this.target = new List<string>() { target };
+        }
+
+        public WebRTCDataChannel(string id, string target, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        {
+            this.id = id;
+            this.target = new List<string>() { target };
+        }
+
+
+        ///<inheritdoc/>
+        public override void Send(byte[] msg)
+        {
+            if (State == ChannelState.Open)
+#if UNITY_WEBRTC
+                if (useWebrtc)
+                    dataChannel.Send(msg);
+                else
+#endif
+                    socketSend(msg);
+
+        }
+
+        ///<inheritdoc/>
+        public override void Close()
+        {
+#if UNITY_WEBRTC
+            Debug.Log("close"); dataChannel.Close();
+#endif
+        }
+
+        void socketSend(byte[] msg)
+        {
+            var fake = new FakeWebrtcMessageDto
+            {
+                content = msg,
+                dataType = type,
+                reliable = reliable,
+                sourceId = id,
+                targetId = target
+            };
+            socket?.Send(fake.ToBson());
+        }
+
+
     }
 }

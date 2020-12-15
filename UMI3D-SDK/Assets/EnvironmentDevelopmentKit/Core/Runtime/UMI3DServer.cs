@@ -21,9 +21,8 @@ namespace umi3d.edk
 {
     public class UMI3DServer : Singleton<UMI3DServer>
     {
-
-
-        public string ip = "localhost";
+        [SerializeField]
+        protected string ip = "localhost";
 
         /// <summary>
         /// Initialize the server.
@@ -44,7 +43,7 @@ namespace umi3d.edk
         public static string dataPath = "../data/";
         public static string publicDataPath = "/public";
         public static string privateDataPath = "/private";
-        
+
         string publicDataFullPath;
         string privateDataFullPath;
         string dataFullPath;
@@ -82,7 +81,7 @@ namespace umi3d.edk
             return Instance._GetHttpUrl();
         }
 
-        protected virtual string  _GetHttpUrl()
+        protected virtual string _GetHttpUrl()
         {
             return ip;
         }
@@ -119,14 +118,29 @@ namespace umi3d.edk
             return null;
         }
 
+        public virtual UMI3DDto ToFakeRTCReliableDto()
+        {
+            return null;
+        }
+
+        public virtual UMI3DDto ToFakeRTCUnreliableDto()
+        {
+            return null;
+        }
+
+
+        public virtual void NotifyUserChanged(UMI3DUser user)
+        {
+        }
 
         /// <summary>
         /// Call To Notify a user status change.
         /// </summary>
         /// <param name="user">user that get its staus updated</param>
         /// <param name="status">new status</param>
-        public void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
+        public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
+            //Debug.Log($"{user.Id()}:{status}");
             switch (status)
             {
                 case StatusType.CREATED:
@@ -139,6 +153,7 @@ namespace umi3d.edk
                     OnUserAway.Invoke(user);
                     break;
                 case StatusType.MISSING:
+                    LookForMissing(user);
                     OnUserMissing.Invoke(user);
                     break;
                 case StatusType.ACTIVE:
@@ -147,10 +162,12 @@ namespace umi3d.edk
             }
         }
 
+        protected virtual void LookForMissing(UMI3DUser user) { }
+
 
         static public void Dispatch(Transaction transaction)
         {
-            if(Exists)Instance._Dispatch(transaction);
+            if (Exists) Instance._Dispatch(transaction);
         }
 
         protected virtual void _Dispatch(Transaction transaction)
@@ -166,6 +183,7 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserActive = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserLeave = new UMI3DUserEvent();
+
         #endregion
     }
 }

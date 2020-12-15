@@ -14,28 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DMeshNodeDto : UMI3DNodeDto
+    public class UMI3DMeshNodeDto : UMI3DRenderedNodeDto
     {
-        
+
         /// <summary>
         /// Model ressource.
         /// </summary>
         public ResourceDto mesh = new ResourceDto();
-
-        /// <summary>
-        /// An optional collider
-        /// </summary>
-        //public ColliderDto collider;
-
-        /// <summary>
-        /// Should some material be overrided
-        /// </summary>
-        public List<MaterialOverrideDto> overridedMaterials = null;
 
         /// <summary>
         /// Optional id generator for child objects. Can be used to animate sub objects without to split it in different assets.
@@ -51,17 +39,6 @@ namespace umi3d.common
         /// </summary>
         public bool areSubobjectsTracked;
 
-        /// <summary>
-        /// Should some material be averrided
-        /// </summary>
-        [System.Serializable]
-        public class MaterialOverrideDto : UMI3DDto
-        { 
-            public List<string> overridedMaterialsId; // List of names of mat or "ANY_mat" or "DEFAULT_mat"
-            public string newMaterialId;  // name of the umi3d entity (the id of the mat)
-        }
-        
-
     }
-    
+
 }

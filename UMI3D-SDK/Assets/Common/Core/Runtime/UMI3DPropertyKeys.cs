@@ -37,6 +37,7 @@ namespace umi3d.common
 
         #region environement
         public const string PreloadedScenes = "umi3d_preloadedScenes";
+        public const string UserList = "umi3d_userList";
         public const string AmbientType = "umi3d_ambient_type";
         public const string AmbientSkyColor = "umi3d_ambient_sky_color";
         public const string AmbientHorizontalColor = "umi3d_ambient_horizontal_color";
@@ -48,8 +49,11 @@ namespace umi3d.common
         #region Model
         public const string Model = "umi3d_model";
         //public const string OverrideMaterial = "umi3d_model_override_material";
-        public const string IsMaterialOverided = "umi3d_is_material_overided";
+        public const string ApplyCustomMaterial = "umi3d_is_custom_material_applied";
         public const string AreSubobjectsTracked = "umi3d_are_subobject_tracked";
+        public const string CastShadow = "umi3d_cast_shadow";
+        public const string ReceiveShadow = "umi3d_receive_shadow";
+        public const string IgnoreModelMaterialOverride = "umi3d_ignore_model_material_override";
         #endregion
 
         #region KHR_light
@@ -169,13 +173,28 @@ namespace umi3d.common
         public const string MetallicFactor = "umi3D_material_metallic_factor";
         public const string RoughnessFactor = "umi3D_material_roughness_factor";
         public const string EmissiveFactor = "umi3D_material_emissive_factor";
-        public const string Maintexture = "umi3D_material_main_texture";
 
-        public const string ShaderProperty = "umi3D_material_shader_property";
+        public const string Maintexture = "umi3D_material_main_texture";
+        public const string MetallicRoughnessTexture = "umi3D_material_metallic_roughness_texture";
+        public const string NormalTexture = "umi3D_material_normal_texture";
+        public const string EmissiveTexture = "umi3D_material_emissive_texture";
+        public const string OcclusionTexture = "umi3D_material_occlusion_texture";
+        public const string MetallicTexture = "umi3D_material_metallic_texture";
+        public const string RoughnessTexture = "umi3D_material_roughness_texture";
+        public const string HeightTexture = "umi3D_material_height_texture";
+        public const string ChannelTexture = "umi3D_material_channel_texture";
+
+        public const string TextureTilingOffset = "umi3D_material_texture_tiling_offset";
+        public const string TextureTilingScale = "umi3D_material_texture_tiling_scale";
+        public const string NormalTextureScale = "umi3D_material_normal_texture_scale";
+        public const string HeightTextureScale = "umi3D_material_height_texture_scale";
+
+        public const string ShaderProperties = "umi3D_material_shader_properties";
         public const string Shader = "umi3D_material_shader";
 
-        //Liste of overided material
+        //List of overided materials
         public const string OverideMaterialId = "umi3D_material_overrider";
+
 
         #endregion
     }

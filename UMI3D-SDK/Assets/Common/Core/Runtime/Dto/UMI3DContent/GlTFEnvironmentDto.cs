@@ -25,7 +25,7 @@ namespace umi3d.common
         public GlTFAsset asset = new GlTFAsset();
 
         public List<GlTFSceneDto> scenes = new List<GlTFSceneDto>();
-        
+
         public GlTFEnvironmentExtensions extensions = new GlTFEnvironmentExtensions();
 
         public bool ShouldSerializescenes()

@@ -32,12 +32,13 @@ namespace umi3d.edk.interaction
             name = "new toolbox"
         };
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DScene Scene;
-        public UMI3DAsyncProperty<UMI3DScene> objectScene;
+        public UMI3DAsyncProperty<UMI3DScene> objectScene { get { Register(); return _objectScene; } protected set => _objectScene = value; }
 
-        public List<UMI3DTool> tools = new List<UMI3DTool>();
-        public UMI3DAsyncListProperty<UMI3DTool> objectTools;
+        [SerializeField, EditorReadOnly]
+        protected List<UMI3DTool> tools = new List<UMI3DTool>();
+        public UMI3DAsyncListProperty<UMI3DTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
 
 
         #region properties
@@ -57,13 +58,46 @@ namespace umi3d.edk.interaction
             return toolboxId;
         }
 
-        void Register()
+        /// <summary>
+        /// Check if the Toolbox has been registered to the UMI3DScene and do it if not
+        /// </summary>
+        /// <returns>Return a LoadEntity</returns>
+        public virtual LoadEntity Register()
         {
             if (toolboxId == null && UMI3DEnvironment.Exists)
             {
                 toolboxId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolboxId);
             }
+            return GetLoadEntity();
+        }
+
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
         }
 
         /// <summary>
@@ -75,6 +109,8 @@ namespace umi3d.edk.interaction
         /// Indicates the availability state of a user for the last frame check of visibility.
         /// </summary>
         protected Dictionary<UMI3DUser, bool> availableLastFrame = new Dictionary<UMI3DUser, bool>();
+        private UMI3DAsyncProperty<UMI3DScene> _objectScene;
+        private UMI3DAsyncListProperty<UMI3DTool> _objectTools;
 
         #endregion
 

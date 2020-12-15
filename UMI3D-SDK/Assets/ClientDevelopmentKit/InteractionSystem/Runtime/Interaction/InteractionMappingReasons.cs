@@ -29,6 +29,12 @@ namespace umi3d.cdk.interaction
     /// <see cref="InteractionMappingReason"/>
     public class SwitchController : InteractionMappingReason { }
 
+    /// <summary>
+    /// Motivation behind a tool selection/release.
+    /// The controller have changed.
+    /// </summary>
+    /// <see cref="InteractionMappingReason"/>
+    public class ToolNeedToBeUpdated : InteractionMappingReason { }
 
     /// <summary>
     /// Motivation behind a tool selection/release.

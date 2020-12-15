@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
+using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
@@ -29,7 +30,8 @@ namespace umi3d.cdk.interaction
             tool.Destroy();
         }
 
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property) {
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
             var dto = (entity.dto as AbstractToolDto);
             if (dto == null) return false;
             var tool = entity.Object as AbstractTool;
@@ -76,6 +78,7 @@ namespace umi3d.cdk.interaction
                     dto.interactions = (List<AbstractInteractionDto>)property.value;
                     break;
             }
+            tool.Updated();
             return true;
         }
 

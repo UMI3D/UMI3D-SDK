@@ -26,20 +26,4 @@ namespace umi3d.common
         public List<GlTFMaterialDto> materials = new List<GlTFMaterialDto>();
         public GlTFSceneExtensions extensions = new GlTFSceneExtensions();
     }
-    /*
-    "nodes": [
-        {
-            "name": "singleNode"
-        }
-    ],
-    "scenes": [
-        {
-            "name": "singleScene",
-            "nodes": [
-                0
-            ]
-        }
-    ],
-    "scene": 0s
-     */
 }

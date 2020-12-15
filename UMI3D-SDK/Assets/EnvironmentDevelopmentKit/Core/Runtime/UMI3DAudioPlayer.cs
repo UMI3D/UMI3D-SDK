@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -23,35 +21,40 @@ namespace umi3d.edk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DNode node;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource audioResources;
-        [SerializeField]
-        [Range(0f,1f)]
+        [SerializeField, EditorReadOnly]
+        [Range(0f, 1f)]
         float volume = 1;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float pitch = 1;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float spatialBlend;
+        private UMI3DAsyncProperty<UMI3DNode> _objectNode;
+        private UMI3DAsyncProperty<UMI3DResource> _objectAudioResource;
+        private UMI3DAsyncProperty<float> _objectVolume;
+        private UMI3DAsyncProperty<float> _objectPitch;
+        private UMI3DAsyncProperty<float> _objectSpacialBlend;
 
+        public UMI3DAsyncProperty<UMI3DNode> ObjectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
+        public UMI3DAsyncProperty<UMI3DResource> ObjectAudioResource { get { Register(); return _objectAudioResource; } protected set => _objectAudioResource = value; }
+        public UMI3DAsyncProperty<float> ObjectVolume { get { Register(); return _objectVolume; } protected set => _objectVolume = value; }
+        public UMI3DAsyncProperty<float> ObjectPitch { get { Register(); return _objectPitch; } protected set => _objectPitch = value; }
+        public UMI3DAsyncProperty<float> ObjectSpacialBlend { get { Register(); return _objectSpacialBlend; } protected set => _objectSpacialBlend = value; }
 
-        public UMI3DAsyncProperty<UMI3DNode> ObjectNode;
-        public UMI3DAsyncProperty<UMI3DResource> ObjectAudioResource;
-        public UMI3DAsyncProperty<float> ObjectVolume;
-        public UMI3DAsyncProperty<float> ObjectPitch;
-        public UMI3DAsyncProperty<float> ObjectSpacialBlend;
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
 
             base.InitDefinition(id);
-            ObjectNode = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNode, node,(n,u)=>n?.Id());
-            ObjectAudioResource = new UMI3DAsyncProperty<UMI3DResource>(id,UMI3DPropertyKeys.AnimationResource,audioResources,(r,u)=>r?.ToDto());
-            ObjectVolume = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationVolume,volume, null, equality.FloatEquality);
+            ObjectNode = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNode, node, (n, u) => n?.Id());
+            ObjectAudioResource = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AnimationResource, audioResources, (r, u) => r?.ToDto());
+            ObjectVolume = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationVolume, volume, null, equality.FloatEquality);
             ObjectPitch = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationPitch, pitch, null, equality.FloatEquality);
             ObjectSpacialBlend = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationSpacialBlend, spatialBlend, null, equality.FloatEquality);
 
@@ -62,6 +65,7 @@ namespace umi3d.edk
             ObjectSpacialBlend.OnValueChanged += (f) => spatialBlend = f;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -73,6 +77,7 @@ namespace umi3d.edk
             Adto.spatialBlend = ObjectSpacialBlend.GetValue(user);
         }
 
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAudioPlayerDto();

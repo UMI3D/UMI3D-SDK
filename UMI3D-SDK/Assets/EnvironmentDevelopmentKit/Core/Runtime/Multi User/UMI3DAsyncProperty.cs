@@ -68,7 +68,7 @@ namespace umi3d.edk
         /// i.e if some user doesn't listen to change.
         /// </summary>
         public bool isDeSync { get => UserDesync != null && UserDesync.Count > 0; }
-        
+
 
         /// <summary>
         /// the function use to check the Equality between two T objects;
@@ -78,15 +78,14 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T,UMI3DUser, object> Serializer;
+        Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
         /// 
         /// </summary>
         public IEnumerable<UMI3DUser> AsynchronousUser
         {
-            get
-            {
+            get {
                 return asyncValues.Keys;
             }
         }
@@ -104,7 +103,7 @@ namespace umi3d.edk
         /// <param name="source">The object to which this property belongs.</param>
         /// <param name="value">The current default or synchronized value.</param>
         /// <param name="equal">Set the function use to check the equality between to value. If null the default object.Equals function will be use</param>
-        public UMI3DAsyncProperty(string entityId, string propertyId, T value, Func<T,UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
+        public UMI3DAsyncProperty(string entityId, string propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
         {
 
             if (equal == null)
@@ -114,7 +113,7 @@ namespace umi3d.edk
             Equal = equal;
             if (serializer == null)
             {
-                serializer = (T a,UMI3DUser u) => { return a; };
+                serializer = (T a, UMI3DUser u) => { return a; };
             }
             Serializer = serializer;
             this.entityId = entityId;
@@ -198,7 +197,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                value = Serializer(value,user)
+                value = Serializer(value, user)
             };
             operation.users.Add(user);
 
@@ -243,7 +242,7 @@ namespace umi3d.edk
                     users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>()),
                     entityId = entityId,
                     property = propertyId,
-                    value = Serializer(value,null) 
+                    value = Serializer(value, null)
                 };
             }
             asyncValues.Clear();
@@ -262,7 +261,7 @@ namespace umi3d.edk
 
             if (!isSync)
             {
-                asyncValues[user] = value;
+                asyncValues[user] = CopyOfValue(value);
             }
             else if (asyncValues.ContainsKey(user))
             {
@@ -273,7 +272,7 @@ namespace umi3d.edk
                         users = new HashSet<UMI3DUser>(),
                         entityId = entityId,
                         property = propertyId,
-                        value = Serializer(value,user)
+                        value = Serializer(value, user)
                     };
                     operation.users.Add(user);
                 }
@@ -308,6 +307,8 @@ namespace umi3d.edk
             }
             return operation;
         }
+
+        protected virtual T CopyOfValue(T value) { return value; }
 
     }
 
@@ -356,6 +357,18 @@ namespace umi3d.edk
         public bool Vector4Equality(Vector4 a, Vector4 b)
         {
             return InRange(a.x - b.x) && InRange(a.y - b.y) && InRange(a.z - b.z) && InRange(a.w - b.w);
+        }
+
+        /// <summary>
+        /// Color Equality test component by component using epsilon.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>True if all components are close enough.</returns>
+        /// <seealso cref="epsilon"/>
+        public bool ColorEquality(Color a, Color b)
+        {
+            return InRange(a.a - b.a) && InRange(a.r - b.r) && InRange(a.b - b.b) && InRange(a.g - b.g);
         }
 
         /// <summary>

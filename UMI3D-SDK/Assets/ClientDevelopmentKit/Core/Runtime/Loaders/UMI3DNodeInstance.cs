@@ -27,15 +27,43 @@ namespace umi3d.cdk
         public GameObject gameObject;
         public Transform transform { get { return gameObject.transform; } }
 
+        public bool updatePose = true;
+
+        private List<Renderer> _renderers;
+        public List<Renderer> renderers
+        {
+            get {
+                if (_renderers == null)
+                    _renderers = new List<Renderer>();
+                return _renderers;
+            }
+            set { _renderers = value; }
+        }
+
         private List<Collider> _colliders;
-        public List<Collider> colliders 
-        {  
-            get { 
-                if (_colliders == null) 
+        public List<Collider> colliders
+        {
+            get {
+                if (_colliders == null)
                     _colliders = new List<Collider>();
                 return _colliders;
             }
             set { _colliders = value; }
         }
+
+        /// <summary>
+        /// The list of Subnode intance when the model has tracked subMesh. Empty if sub Model are not tracked.
+        /// </summary>
+        private List<UMI3DNodeInstance> _subNodeInstances;
+        public List<UMI3DNodeInstance> subNodeInstances
+        {
+            get {
+                if (_subNodeInstances == null)
+                    _subNodeInstances = new List<UMI3DNodeInstance>();
+                return _subNodeInstances;
+            }
+            set { _subNodeInstances = value; }
+        }
+
     }
 }

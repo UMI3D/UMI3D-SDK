@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.edk.interaction.AbstractInteraction" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADgAAAQAAAAAEAAAAAARAAQAIBAAAABAAAAAAAAEA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractInteraction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.edk.interaction.AbstractParameter" Collapsed="true">
+    <Position X="4.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.AbstractTool" Collapsed="true">
+    <Position X="1.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABADAAAAQAAAAAACAAAAARAAQAABIAAABAAQAAAAAEA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractTool.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.edk.interaction.InteractionDisplay" Collapsed="true">
+    <Position X="17" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAIAAgAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionDisplay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.BooleanParameter" Collapsed="true">
+    <Position X="1" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABgAAAQQAAAAAAAAAAAgAAQAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\Parameters\BooleanParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.FloatRangeParameter" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABkAAAQAAQAAAAAAAAACAAQAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\Parameters\FloatRangeParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.FormParameter" Collapsed="true">
+    <Position X="12.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAgCA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\Parameters\FormParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.StringEnumParameter" Collapsed="true">
+    <Position X="7.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEABgAAAQAAAAAAAAAAAAAAAQAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\Parameters\StringEnumParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.StringParameter" Collapsed="true">
+    <Position X="3.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABgAAAQAAAAAAAAAAAAAAAQAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\Parameters\StringParameter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.UMI3DEvent" Collapsed="true">
+    <Position X="10" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAQAAEAAAAAAAAAAAAQAkAQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\UMI3DEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.UMI3DInteractable" Collapsed="true">
+    <Position X="2.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAEQAAMABIAgIAAABIgwAABAAIEAEAAAAEAAAQ=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\UMI3DInteractable.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.edk.interaction.UMI3DManipulation" Collapsed="true">
+    <Position X="14.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAQAAAAAAAAAAAAAABQAAAAAAAAAAEACAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\UMI3DManipulation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.UMI3DTool" Collapsed="true">
+    <Position X="0.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\UMI3DTool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.interaction.UMI3DToolbox" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAADAAAEAAgAAAAAgAAAABAAABFBIEAABAAAQACAAEQ=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\Interaction\UMI3DToolbox.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.interaction.UMI3DBrowserRequestDispatcher" Collapsed="true">
+    <Position X="18.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\EnvironmentDevelopmentKit\InteractionSystem\Runtime\UMI3DBrowserRequestDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

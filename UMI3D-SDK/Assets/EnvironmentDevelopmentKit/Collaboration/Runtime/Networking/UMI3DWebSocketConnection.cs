@@ -55,13 +55,14 @@ namespace umi3d.edk.collaboration
             return Interlocked.Increment(ref _number);
         }
 
-        //on user quit
+        ///<inheritdoc/>
         protected override void OnClose(CloseEventArgs e)
         {
+            Debug.Log($"onClose {_id}");
             UnityMainThreadDispatcher.Instance().Enqueue(UMI3DCollaborationServer.Collaboration.ConnectionClose(_id));
         }
 
-        //on user send message
+        ///<inheritdoc/>
         protected override void OnMessage(MessageEventArgs e)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_OnMessage(e));
@@ -94,27 +95,27 @@ namespace umi3d.edk.collaboration
         }
 
 
-        void onUserCreated(UMI3DCollaborationUser user,bool reconnection)
+        void onUserCreated(UMI3DCollaborationUser user, bool reconnection)
         {
             _id = user.Id();
             SendData(user.ToStatusDto());
         }
 
 
-        //on user connect
+        ///<inheritdoc/>
         protected override void OnOpen()
         {
             Debug.Log("open");
         }
 
-        public void SendData(UMI3DDto obj,Action<bool> callback = null)
+        public void SendData(UMI3DDto obj, Action<bool> callback = null)
         {
             if (obj != null && this.Context.WebSocket.IsConnected)
             {
                 var data = obj.ToBson();
                 try
                 {
-                    if(callback == null) callback = (b) => { };
+                    if (callback == null) callback = (b) => { };
                     SendAsync(data, callback);
                 }
                 catch (InvalidOperationException exp)

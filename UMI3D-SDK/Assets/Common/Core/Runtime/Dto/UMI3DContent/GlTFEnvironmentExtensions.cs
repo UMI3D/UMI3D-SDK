@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public class GlTFEnvironmentExtensions : AbstractGlTFExtensions<UMI3DEnvironementDto>
+    public class GlTFEnvironmentExtensions : AbstractGlTFExtensions<UMI3DEnvironmentDto>
     {
 
     }

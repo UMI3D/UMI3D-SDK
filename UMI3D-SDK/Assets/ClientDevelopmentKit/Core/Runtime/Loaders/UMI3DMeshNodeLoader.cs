@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -24,7 +25,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for UMI3D Mesh
     /// </summary>
-    public class UMI3DMeshNodeLoader : UMI3DNodeLoader
+    public class UMI3DMeshNodeLoader : AbstractRenderedNodeLoader
     {
         public List<string> ignoredPrimitiveNameForSubObjectsLoading = new List<string>() { "Gltf_Primitive" };
         public UMI3DMeshNodeLoader(List<string> ignoredPrimitiveNameForSubObjectsLoading)
@@ -61,6 +62,9 @@ namespace umi3d.cdk
                 string authorization = fileToLoad.authorization;
                 string pathIfInBundle = fileToLoad.pathIfInBundle;
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+                Vector3 offset = Vector3.zero;
+                if (loader is AbstractMeshDtoLoader)
+                    offset = ((AbstractMeshDtoLoader)loader).GetRotationOffset();
                 if (loader != null)
                     UMI3DResourcesManager.LoadFile(
                         nodeDto.id,
@@ -69,7 +73,7 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform);
+                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform, offset);
                             finished.Invoke();
                         },
                         failed,
@@ -85,7 +89,7 @@ namespace umi3d.cdk
         /// <param name="goInCache"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto)
+        private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
             string url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.mesh.variants).url;
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
@@ -98,6 +102,9 @@ namespace umi3d.cdk
                     {
                         child.SetParent(copy.transform.parent);
                         subObjectsReferences.Add(child.name, child);
+                        child.transform.localEulerAngles = rotationOffsetByLoader;
+                        child.transform.localPosition = Vector3.zero;
+                        child.transform.localScale = Vector3.one;
                     }
                 }
                 UMI3DResourcesManager.Instance.subModelsCache.Add(url, subObjectsReferences);
@@ -109,79 +116,40 @@ namespace umi3d.cdk
             }
         }
 
-        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent)
+        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
         {
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
-                root = SetSubObjectsReferences(go, dto);
+                root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
             }
             else
             {
                 root = go;
             }
             var instance = GameObject.Instantiate(root, parent, true);
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
+            var renderers = instance.GetComponentsInChildren<Renderer>();
+            nodeInstance.renderers = renderers.ToList();
+
+            foreach (var renderer in renderers)
+            {
+                renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.receiveShadows = dto.receiveShadow;
+            }
+
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
-            ColliderDto colliderDto = ((UMI3DNodeDto)dto).colliderDto;
+            ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
+            SetMaterialOverided(dto, nodeInstance);
 
-            if (dto.overridedMaterials != null && dto.overridedMaterials.Count > 0)
-            {
-                //TODO a améliorer 
-                foreach (UMI3DMeshNodeDto.MaterialOverrideDto mat in dto.overridedMaterials)
-                {
-                    var matEntity = UMI3DEnvironmentLoader.GetEntity(mat.newMaterialId);
-                    if (matEntity != null)
-                    {
-                        if (mat.overridedMaterialsId.Contains("ANY_mat"))
-                        {
-                            OverrideMaterial(instance, (Material)matEntity.Object, (s) => true);
-                        }
-                        else
-                        {
-                            foreach (string matKey in mat.overridedMaterialsId)
-                            {
-                                OverrideMaterial(instance, (Material)matEntity.Object,
-                                    (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")));
-
-                            }
-                        }
-                    }
-                    else
-                    {
-                        Debug.LogWarning("Material not found : " + mat.newMaterialId);
-                    }
-                }
-
-            }
         }
 
-        private void OverrideMaterial(GameObject go, Material newMat, Func<string, bool> filter)
-        {
-            foreach (Renderer renderer in go.GetComponentsInChildren<Renderer>())
-            {
 
-                Material[] mats = renderer.sharedMaterials;
-                bool modified = false;
-
-                for (int i = 0; i < renderer.sharedMaterials.Length; i++)
-                {
-                    if (filter(renderer.sharedMaterials[i].name))
-                    {
-                        renderer.sharedMaterials.SetValue(newMat, i);
-
-                        mats[i] = newMat;
-                        modified = true;
-                    }
-                }
-                if (modified)
-                    renderer.materials = mats;
-            }
-        }
 
     }
+
 }

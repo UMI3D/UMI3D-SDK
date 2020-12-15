@@ -35,23 +35,24 @@ namespace umi3d.edk
                 return new UMI3DNodeAnimationDto.OperationChainDto() { operation = Operation.ToOperationDto(user), startOnProgress = progress };
             }
         }
-        
-        [SerializeField]
+
+        [SerializeField, EditorReadOnly]
         float duration = 10f;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         List<OperationChain> animationChain = null;
+        private UMI3DAsyncProperty<float> objectDuration;
+        private UMI3DAsyncListProperty<OperationChain> objectAnimationChain;
 
+        public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return objectDuration; } protected set => objectDuration = value; }
+        public UMI3DAsyncListProperty<OperationChain> ObjectAnimationChain { get { Register(); return objectAnimationChain; } protected set => objectAnimationChain = value; }
 
-
-
-        public UMI3DAsyncProperty<float> ObjectDuration;
-        public UMI3DAsyncListProperty<OperationChain> ObjectAnimationChain;
-
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DNodeAnimationDto();
         }
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -63,6 +64,7 @@ namespace umi3d.edk
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

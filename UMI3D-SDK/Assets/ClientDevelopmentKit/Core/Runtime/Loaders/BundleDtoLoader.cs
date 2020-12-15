@@ -74,12 +74,22 @@ namespace umi3d.cdk
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
         {
+            /*     Usefull to find pathIfObjectInBundle in a bundle
+            Debug.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length);
+            Debug.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length);
+            Debug.Log(((AssetBundle)o).GetAllAssetNames()[0]);
+            */
             if (pathIfObjectInBundle != null && pathIfObjectInBundle != "")
             {
-
                 if (Array.Exists(((AssetBundle)o).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
                     var objectInBundle = ((AssetBundle)o).LoadAsset(pathIfObjectInBundle);
+                    if (objectInBundle is GameObject)
+                    {
+                        Debug.Log("load game object from bundle");
+                        AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                    }
+
                     callback.Invoke(objectInBundle);
                 }
                 else
@@ -114,9 +124,6 @@ namespace umi3d.cdk
             if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                authorization = Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-                authorization = "Basic " + authorization;
-
                 www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
             }
         }

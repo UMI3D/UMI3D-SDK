@@ -39,19 +39,23 @@ namespace umi3d.edk
         /// <summary>
         /// Dynamic pixels per unit.
         /// </summary>
-        public UMI3DAsyncProperty<float> DynamicPixelPerUnit;
+        public UMI3DAsyncProperty<float> DynamicPixelPerUnit { get { Register(); return dynamicPixelPerUnit; } protected set => dynamicPixelPerUnit = value; }
 
         /// <summary>
         /// Reference pixels per unit.
         /// </summary>
-        public UMI3DAsyncProperty<float> ReferencePixelPerUnit;
+        public UMI3DAsyncProperty<float> ReferencePixelPerUnit { get { Register(); return referencePixelPerUnit; } protected set => referencePixelPerUnit = value; }
 
         /// <summary>
         /// Order In Layer.
         /// </summary>
-        public UMI3DAsyncProperty<int> OrderInLayer;
+        public UMI3DAsyncProperty<int> OrderInLayer { get { Register(); return orderInLayer; } protected set => orderInLayer = value; }
 
         UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+        private UMI3DAsyncProperty<float> dynamicPixelPerUnit;
+        private UMI3DAsyncProperty<float> referencePixelPerUnit;
+        private UMI3DAsyncProperty<int> orderInLayer;
+
         /// <summary>
         /// Initialise component.
         /// </summary>
@@ -67,6 +71,7 @@ namespace umi3d.edk
             OrderInLayer = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.OrderInLayer, _orderInLayer);
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

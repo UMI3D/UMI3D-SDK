@@ -19,18 +19,12 @@ namespace umi3d.common.interaction
     /// <summary>
     /// Dto for hover stete update request from browser.
     /// </summary>
-    public class HoverStateChangedDto : InteractionRequestDto
+    public class HoverStateChangedDto : HoveredDto
     {
 
         /// <summary>
         /// Hover state.
         /// </summary>
         public bool state;
-
-        /// <summary>
-        /// The id of the currently hoverred object.
-        /// It could be the Id of the Interactable associated object, or the Id of a sub-object if tool.notifyHoverPosition == true.
-        /// </summary>
-        public string hoveredObjectId;
     }
 }

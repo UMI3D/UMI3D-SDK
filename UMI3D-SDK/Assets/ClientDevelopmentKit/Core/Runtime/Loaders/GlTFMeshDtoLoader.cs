@@ -17,6 +17,7 @@ limitations under the License.
 using GLTFast;
 using GLTFast.Loading;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -30,35 +31,18 @@ namespace umi3d.cdk
     {
 
         public float maxTimePerFrame = 0.02f;
-        private static GlTFMeshDtoLoader instance;// = new ObjMeshDtoLoader();
 
         /// <summary>
         /// Constructor.
         /// </summary>
         public GlTFMeshDtoLoader()
         {
-            if (instance == null)
-            {
-                instance = this;
-                instance.supportedFileExtentions = new List<string>() { ".gltf", ".glb" };
-                instance.ignoredFileExtentions = new List<string>() { ".bin" };
-            }
-        }
-
-        /// <summary>
-        /// Set Certificate for a webRequest
-        /// </summary>
-        /// <param name="www">web request</param>
-        /// <param name="authorization">Authorization</param>
-        public static void SetCertificateAuthorization(UnityWebRequest www, string authorization)
-        {
-            if (instance == null)
-                new GlTFMeshDtoLoader(); 
-            instance.SetCertificate(www, authorization);
+            supportedFileExtentions = new List<string>() { ".gltf", ".glb" };
+            ignoredFileExtentions = new List<string>() { ".bin" };
         }
 
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
+        ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();
@@ -76,7 +60,7 @@ namespace umi3d.cdk
                         Transform newModel = gltfComp.transform.GetChild(0);
                         newModel.SetParent(UMI3DResourcesManager.Instance.transform);
                         newModel.localPosition = Vector3.zero;
-                        newModel.localEulerAngles += rotOffset;
+                        newModel.localEulerAngles += GetRotationOffset();
                         newModel.gameObject.SetActive(true);
                         callback.Invoke(newModel.gameObject);
 
@@ -99,28 +83,44 @@ namespace umi3d.cdk
             //gltfComp.LoadAndRetry();
 
             IDeferAgent deferAgent = new MaxTimePerFrameDeferAgent(maxTimePerFrame); // new UninterruptedDeferAgent();
+            IMaterialGenerator materialGenerator = new GltfastCustomMaterialGenerator();
 
             if (authorization != null && authorization != "")
             {
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-
                 HttpHeader authorizationHeader = new HttpHeader
                 {
-                    Key = "AUTHORIZATION",
-                    Value = "Basic " + authorization
+                    Key = common.UMI3DNetworkingKeys.Authorization,
+                    Value = authorization
                 };
 
                 HttpHeader[] headers = new HttpHeader[] { authorizationHeader };
                 CustomHeaderDownloadProvider customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
-                gltfComp.Load(url, customHeaderDownloadProvider, deferAgent);
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(() => gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator)));
             }
             else
             {
-                gltfComp.Load(url, null, deferAgent);
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(() =>
+               gltfComp.Load(url, null, deferAgent, materialGenerator)));
             }
         }
-       
-        private Vector3 rotOffset = new Vector3(0, 180, 0);
+
+        /// <summary>
+        /// wait in coroutine the initialization of DefaultMaterial, then invoke the callback
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        private IEnumerator WaitBaseMaterial(Action callback)
+        {
+            yield return new WaitWhile(() => UMI3DEnvironmentLoader.Instance.baseMaterial == null);
+            callback.Invoke();
+        }
+
+        ///<inheritdoc/>
+        public override Vector3 GetRotationOffset()
+        {
+            return new Vector3(0, 180, 0);
+        }
+
     }
 }
 

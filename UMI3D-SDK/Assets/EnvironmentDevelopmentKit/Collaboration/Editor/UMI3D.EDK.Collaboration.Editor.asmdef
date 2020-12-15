@@ -1,0 +1,19 @@
+{
+    "name": "UMI3D.EDK.Collaboration.Editor",
+    "references": [
+        "GUID:d138a50c45267264083af6c9b49b8f23",
+        "GUID:86623230113704741b2575414446f181",
+        "GUID:6e34c4b4c3202a14eb95e0a784041765"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -27,18 +27,23 @@ namespace umi3d.edk.userCapture
         [SerializeField]
         public string userId;
 
-        public bool activeAvatarBindings_ = false;
+        [SerializeField, EditorReadOnly]
+        bool activeAvatarBindings_ = true;
 
         public Dictionary<string, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<string, UMI3DUserEmbodimentBone>();
 
-        public UMI3DAsyncListProperty<Binding> bindings;
+        public UserCameraPropertiesDto userCameraPropertiesDto;
 
-        public UMI3DAsyncProperty<bool> activeBindings;
+        public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
+        public UMI3DAsyncProperty<bool> activeBindings { get { Register(); return _activeBindings; } protected set => _activeBindings = value; }
 
         public class OnActivationValueChanged : UnityEvent<string, bool> { };
 
         public static OnActivationValueChanged onActivationValueChanged = new OnActivationValueChanged();
+        private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
+        private UMI3DAsyncProperty<bool> _activeBindings;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -49,7 +54,7 @@ namespace umi3d.edk.userCapture
                 activeAvatarBindings_ = b;
             };
 
-            bindings = new UMI3DAsyncListProperty<Binding>(Id(), UMI3DPropertyKeys.UserBindings, new List<Binding>(), (b, u) => b.ToDto(u));
+            bindings = new UMI3DAsyncListProperty<UMI3DBinding>(Id(), UMI3DPropertyKeys.UserBindings, new List<UMI3DBinding>(), (b, u) => b.ToDto(u));
         }
 
         #region UserTracking
@@ -124,15 +129,18 @@ namespace umi3d.edk.userCapture
                 localRotation = dto.rotation,
                 localScale = dto.scale
             };
+            embodimentBone.isTracked = dto.tracked;
         }
 
         #endregion
 
+        ///<inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DAvatarNodeDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

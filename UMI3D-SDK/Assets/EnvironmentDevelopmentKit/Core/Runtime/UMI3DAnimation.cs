@@ -36,19 +36,24 @@ namespace umi3d.edk
             }
         }
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         float duration = 10f;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         List<AnimationChain> animationChain = null;
 
-        public UMI3DAsyncProperty<float> ObjectDuration;
-        public UMI3DAsyncListProperty<AnimationChain> ObjectAnimationChain;
+        private UMI3DAsyncProperty<float> _objectDuration;
+        private UMI3DAsyncListProperty<AnimationChain> _objectAnimationChain;
 
+        public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return _objectDuration; } protected set => _objectDuration = value; }
+        public UMI3DAsyncListProperty<AnimationChain> ObjectAnimationChain { get { Register(); return _objectAnimationChain; } protected set => _objectAnimationChain = value; }
+
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAnimationDto();
         }
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -60,6 +65,7 @@ namespace umi3d.edk
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

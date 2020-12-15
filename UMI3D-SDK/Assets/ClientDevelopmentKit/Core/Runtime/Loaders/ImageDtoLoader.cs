@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// </summary>
         public ImageDtoLoader()
         {
-            this.supportedFileExtentions = new List<string>() { ".jpg",".bmp",".dib",".rle",".exr",".gif", ".hdr", ".iff",".jpg", ".jpeg",".pict",".pct",".png", ".psd",".tga",".tif",".tiff" };
+            this.supportedFileExtentions = new List<string>() { ".jpg", ".bmp", ".dib", ".rle", ".exr", ".gif", ".hdr", ".iff", ".jpg", ".jpeg", ".pict", ".pct", ".png", ".psd", ".tga", ".tif", ".tiff" };
             this.ignoredFileExtentions = new List<string>();
         }
 
@@ -68,7 +68,7 @@ namespace umi3d.cdk
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
-        {   
+        {
             callback.Invoke(o);
         }
 
@@ -82,9 +82,6 @@ namespace umi3d.cdk
             if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-                authorization = "Basic " + authorization;
-
                 www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
             }
         }

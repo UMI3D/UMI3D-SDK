@@ -16,12 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using System.Reflection;
-using UnityEditorInternal;
-using umi3d.edk;
-using umi3d.common;
 
 namespace umi3d.edk.editor
 {
@@ -32,12 +27,14 @@ namespace umi3d.edk.editor
 
         SerializedProperty variants;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
             variants = serializedObject.FindProperty("sprite.variants");
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -47,8 +44,6 @@ namespace umi3d.edk.editor
             serializedObject.ApplyModifiedProperties();
 
         }
-
-
     }
 }
 #endif

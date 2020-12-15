@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DMaterialDto : AbstractEntityDto
+    public class UMI3DMaterialDto : AbstractEntityDto, IMaterialDto
     {
         //glTF PBR Texture
         public TextureDto baseColorTexture;
@@ -35,6 +35,10 @@ namespace umi3d.common
         public TextureDto roughnessTexture;
         public ScalableTextureDto heightTexture;
 
+        public TextureDto channelTexture;
+
+        // Modified properties in the shader 
+        public Dictionary<string, object> shaderProperties { get; set; }
     }
 
 }
