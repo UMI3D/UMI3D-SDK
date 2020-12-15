@@ -251,6 +251,13 @@ namespace umi3d.edk.collaboration
                     if (peerMap.FindAll((b) => { return b.Contain(user.Id(), u.Id()); }).Count == 0)
                     {
                         peerMap.Add(new bridge(user.Id(), u.Id()));
+                        if (!u.useWebrtc || !user.useWebrtc)
+                            ///if one peer doesn't use webrtc the connection should be created on both side.
+                            user.connection.SendData(new RTCConnectionDTO
+                            {
+                                sourceUser = u.Id(),
+                                targetUser = user.Id(),
+                            });
                         u.connection.SendData(new RTCConnectionDTO
                         {
                             sourceUser = user.Id(),
