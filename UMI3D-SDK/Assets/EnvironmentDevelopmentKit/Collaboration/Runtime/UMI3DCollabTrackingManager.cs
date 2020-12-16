@@ -33,8 +33,10 @@ namespace umi3d.edk.collaboration
 
         void NewUser(UMI3DUser user)
         {
-            Debug.Log("Create Tracking channel with server");
             UMI3DCollaborationServer.WebRTC.OpenChannel(user, "Tracking", DataType.Tracking, false);
+            Debug.Log("Create non-reliable Tracking channel with server");
+            UMI3DCollaborationServer.WebRTC.OpenChannel(user, "Tracking", DataType.Tracking, true);
+            Debug.Log("Create reliable Tracking channel with server");
 
             foreach (var userA in UMI3DCollaborationServer.Collaboration.Users)
             {
@@ -42,8 +44,10 @@ namespace umi3d.edk.collaboration
                 Debug.Log($"Trying create Tracking {userA.Id()}->{user.Id()}");
                 if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "Tracking"))
                 {
-                    Debug.Log("Creating Tracking channel");
                     UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "Tracking", DataType.Tracking, false);
+                    Debug.Log($"Create non-reliable Tracking channel {userA.Id()}->{user.Id()}");
+                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "Tracking", DataType.Tracking, true);
+                    Debug.Log($"Create reliable Tracking channel {userA.Id()}->{user.Id()}");
                 }
 
             }
