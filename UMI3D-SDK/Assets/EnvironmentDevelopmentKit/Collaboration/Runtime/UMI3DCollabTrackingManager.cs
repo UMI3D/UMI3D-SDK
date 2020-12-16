@@ -39,19 +39,22 @@ namespace umi3d.edk.collaboration
             foreach (var userA in UMI3DCollaborationServer.Collaboration.Users)
             {
                 if (userA == user) continue;
-                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "Tracking"))
-                {
+                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "NonReliableTracking"))
                     UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "NonReliableTracking", DataType.Tracking, false);
+
+                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "ReliableTracking"))
                     UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "ReliableTracking", DataType.Tracking, true);
-                }
 
             }
         }
 
         void closeChannel(UMI3DUser user1, UMI3DUser user2)
         {
-            if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "Tracking"))
-                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "Tracking");
+            if (UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "NonReliableTracking"))
+                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "NonReliableTracking");
+
+            if (UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "ReliableTracking"))
+                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "ReliableTracking");
         }
     }
 }
