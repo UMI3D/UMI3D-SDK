@@ -60,9 +60,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto">AudioDto.</param>
         public void sendAudio(AudioDto dto)
         {
-            foreach (var peer in peers.Values)
+            var data = dto.ToBson();
+            foreach (var peer in peers.Values.ToList())
             {
-                peer.Send(dto.ToBson(), false, DataType.Audio);
+                peer.Send(data, false, DataType.Audio);
             }
         }
 
