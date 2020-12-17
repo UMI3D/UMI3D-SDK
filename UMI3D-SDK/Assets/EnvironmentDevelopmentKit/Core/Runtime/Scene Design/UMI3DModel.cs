@@ -73,6 +73,11 @@ namespace umi3d.edk
                         subModel.objectCastShadow.SetValue(this.castShadow);
                         subModel.objectReceiveShadow.SetValue(this.receiveShadow);
                     }
+                    else if (child.gameObject.GetComponent<ReflectionProbe>() != null)
+                    {
+                        UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
+                        subModel.parentModel = this;
+                    }
                     else
                     {
                         UMI3DNode node = child.gameObject.AddComponent<UMI3DNode>();
