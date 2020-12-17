@@ -179,6 +179,11 @@ Shader "Mixed Reality Toolkit/Standard"
             #pragma shader_feature _INSTANCED_COLOR
             #pragma shader_feature _IGNORE_Z_SCALE
 
+        // Add some clipping plane
+            #pragma multi_compile _ _CLIPPING_PLANE1
+            #pragma multi_compile _ _CLIPPING_PLANE2
+            #pragma multi_compile _ _CLIPPING_PLANE3
+
             #define IF(a, b, c) lerp(b, c, step((fixed) (a), 0.0)); 
 
             #include "UnityCG.cginc"
@@ -195,7 +200,7 @@ Shader "Mixed Reality Toolkit/Standard"
             #undef _NORMAL
 #endif
 
-#if defined(_CLIPPING_PLANE) || defined(_CLIPPING_SPHERE) || defined(_CLIPPING_BOX)
+#if defined(_CLIPPING_PLANE) || defined(_CLIPPING_SPHERE) || defined(_CLIPPING_BOX) || defined(_CLIPPING_PLANE1) || defined(_CLIPPING_PLANE2) || defined(_CLIPPING_PLANE3)
         #define _CLIPPING_PRIMITIVE
 #else
         #undef _CLIPPING_PRIMITIVE
@@ -389,6 +394,22 @@ Shader "Mixed Reality Toolkit/Standard"
             float4 _ClipBoxSize;
             float4x4 _ClipBoxInverseTransform;
 #endif
+
+#if defined(_CLIPPING_PLANE1)
+            fixed _ClipPlaneSide1;
+            float4 _ClipPlane1;
+#endif
+
+#if defined(_CLIPPING_PLANE2)
+            fixed _ClipPlaneSide2;
+            float4 _ClipPlane2;
+#endif
+
+#if defined(_CLIPPING_PLANE3)
+            fixed _ClipPlaneSide3;
+            float4 _ClipPlane3;
+#endif
+
 
 #if defined(_CLIPPING_PRIMITIVE)
             float _BlendedClippingWidth;
@@ -816,6 +837,17 @@ Shader "Mixed Reality Toolkit/Standard"
 #if defined(_CLIPPING_BOX)
                 primitiveDistance = min(primitiveDistance, PointVsBox(i.worldPosition.xyz, _ClipBoxSize.xyz, _ClipBoxInverseTransform) * _ClipBoxSide);
 #endif
+#if defined(_CLIPPING_PLANE1)
+                primitiveDistance = min(primitiveDistance, PointVsPlane(i.worldPosition.xyz, _ClipPlane1) * _ClipPlaneSide1);
+
+#endif
+#if defined(_CLIPPING_PLANE2)
+                primitiveDistance = min(primitiveDistance, PointVsPlane(i.worldPosition.xyz, _ClipPlane2) * _ClipPlaneSide2);
+#endif
+#if defined(_CLIPPING_PLANE3)
+                primitiveDistance = min(primitiveDistance, PointVsPlane(i.worldPosition.xyz, _ClipPlane3) * _ClipPlaneSide3);
+#endif
+
 #if defined(_CLIPPING_BORDER)
                 fixed3 primitiveBorderColor = lerp(_ClippingBorderColor, fixed3(0.0, 0.0, 0.0), primitiveDistance / _ClippingBorderWidth);
                 albedo.rgb += primitiveBorderColor * IF((primitiveDistance < _ClippingBorderWidth), 1.0, 0.0);
