@@ -154,8 +154,8 @@ namespace umi3d.edk.interaction
         public void Hovered(UMI3DUser user, HoveredDto dto)
         {
             onHovered?.Invoke(new HoverEventContent(user, dto));
-
         }
+
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
             if (dto.state) onHoverEnter.Invoke(new HoverEventContent(user, dto));

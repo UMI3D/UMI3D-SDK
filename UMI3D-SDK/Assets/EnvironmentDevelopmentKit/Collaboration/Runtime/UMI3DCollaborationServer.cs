@@ -195,7 +195,6 @@ namespace umi3d.edk.collaboration
             useIp = true;
         }
 
-
         static string GetLocalIPAddress()
         {
             var host = System.Net.Dns.GetHostEntry(System.Net.Dns.GetHostName());
