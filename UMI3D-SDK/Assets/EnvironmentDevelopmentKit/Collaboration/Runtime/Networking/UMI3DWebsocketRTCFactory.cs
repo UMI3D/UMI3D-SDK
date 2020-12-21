@@ -27,7 +27,7 @@ using UnityEngine.Rendering;
 namespace umi3d.edk.collaboration
 {
 
-    public partial class UMI3DWebsocketRTCFactory : AbstractWebsocketRtcFactory, IWebRTCServer
+    public class UMI3DWebsocketRTCFactory : AbstractWebsocketRtcFactory, IWebRTCServer
     {
         const string ReliableName = "Reliable";
         const string UnreliableName = "Unreliable";
@@ -43,16 +43,16 @@ namespace umi3d.edk.collaboration
             switch (dataType)
             {
                 case DataType.Data:
-                    dc.socket = reliable ? user.reliableData : user.unreliableData;
+                    dc.Socket = reliable ? user.reliableData : user.unreliableData;
                     break;
                 case DataType.Audio:
-                    dc.socket = user.audio;
+                    dc.Socket = user.audio;
                     break;
                 case DataType.Video:
-                    dc.socket = user.video;
+                    dc.Socket = user.video;
                     break;
                 case DataType.Tracking:
-                    dc.socket = reliable ? user.reliableTracking : user.unreliableTracking;
+                    dc.Socket = reliable ? user.reliableTracking : user.unreliableTracking;
                     break;
             }
             var dto = new RTCDataChannelDto() { reliable = reliable, sourceUser = UMI3DGlobalID.ServerId, targetUser = user.Id(), type = dataType };
@@ -76,6 +76,14 @@ namespace umi3d.edk.collaboration
                                     UMI3DEmbodimentManager.Instance.UserTrackingReception(frame);
                                 else if (trackingData is common.userCapture.UserCameraPropertiesDto camera)
                                     UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
+
+                                UMI3DCollaborationServer.Collaboration.Users
+                                .Where(u => u.Id() != fake.sourceId)
+                                .Select(u => u.dataChannels
+                                .FirstOrDefault(d => d.reliable == fake.reliable && d.type == fake.dataType))
+                                .Where(d => d != default)
+                                .ForEach(d => d.Send(fake.content));
+
                                 break;
 
                             case DataType.Data:
@@ -114,7 +122,7 @@ namespace umi3d.edk.collaboration
             var dto = new RTCDataChannelDto() { reliable = reliable, sourceUser = userA.Id(), targetUser = userB.Id(), type = dataType };
             Debug.Log(dto.reliable);
             SendWebsocket(userA, dto);
-            var dc = new BridgeChannel(userA,userB,$"{userA.Id()} - {userB.Id()} : {(reliable ? ReliableName : UnreliableName)}_{dataType} ", reliable, dataType);
+            var dc = new BridgeChannel(userA, userB, $"{userA.Id()} - {userB.Id()} : {(reliable ? ReliableName : UnreliableName)}_{dataType} ", reliable, dataType);
             return dc;
         }
 
@@ -144,7 +152,7 @@ namespace umi3d.edk.collaboration
 
         public override void HandleMessage(RTCDto dto)
         {
-            if(dto.targetUser == UMI3DGlobalID.ServerId || dto.sourceUser == UMI3DGlobalID.ServerId)
+            if (dto.targetUser == UMI3DGlobalID.ServerId || dto.sourceUser == UMI3DGlobalID.ServerId)
                 base.HandleMessage(dto);
             else
             {
@@ -164,7 +172,7 @@ namespace umi3d.edk.collaboration
                     case RTCCloseConnectionDto _:
                         break;
                     case RTCDataChannelDto dcDto:
-                        CreateChannel(dcDto.targetUser,dto.sourceUser, dcDto.reliable, dcDto.type);
+                        CreateChannel(dcDto.targetUser, dto.sourceUser, dcDto.reliable, dcDto.type);
                         break;
                     default:
                         Debug.LogError("other :" + dto);
@@ -174,7 +182,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        void SendWebsocket(UMI3DCollaborationUser user,RTCDto dto)
+        void SendWebsocket(UMI3DCollaborationUser user, RTCDto dto)
         {
             user.connection.SendData(dto);
         }

@@ -51,16 +51,16 @@ namespace umi3d.cdk.collaboration
             switch (dataType)
             {
                 case DataType.Data:
-                    dc.socket = reliable ? UMI3DCollaborationClientServer.Instance.WebSocketReliableDataClient : UMI3DCollaborationClientServer.Instance.WebSocketUnreliableDataClient;
+                    dc.Socket = reliable ? UMI3DCollaborationClientServer.Instance.WebSocketReliableDataClient : UMI3DCollaborationClientServer.Instance.WebSocketUnreliableDataClient;
                     break;
                 case DataType.Audio:
-                    dc.socket = UMI3DCollaborationClientServer.Instance.WebSocketAudioClient;
+                    dc.Socket = UMI3DCollaborationClientServer.Instance.WebSocketAudioClient;
                     break;
                 case DataType.Video:
-                    dc.socket = UMI3DCollaborationClientServer.Instance.WebSocketVideoClient;
+                    dc.Socket = UMI3DCollaborationClientServer.Instance.WebSocketVideoClient;
                     break;
                 case DataType.Tracking:
-                    dc.socket = reliable ? UMI3DCollaborationClientServer.Instance.WebSocketReliableTrackingClient : UMI3DCollaborationClientServer.Instance.WebSocketUnreliableTrackingClient;
+                    dc.Socket = reliable ? UMI3DCollaborationClientServer.Instance.WebSocketReliableTrackingClient : UMI3DCollaborationClientServer.Instance.WebSocketUnreliableTrackingClient;
                     break;
             }
             dataChannels.Add(dc);

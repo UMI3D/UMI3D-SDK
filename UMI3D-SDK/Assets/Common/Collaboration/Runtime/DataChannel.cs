@@ -84,15 +84,24 @@ namespace umi3d.common.collaboration
 
     public class WebsocketDataChannel : DataChannel
     {
-        public IWebsocket socket;
+        private IWebsocket _socket;
         public string id;
         public List<string> target;
         public bool useWebrtc = true;
 
+        public IWebsocket Socket
+        {
+            get => _socket; set {
+                _socket = value;
+                if (Socket != null)
+                    SendStack();
+            }
+        }
+
         ///<inheritdoc/>
         protected override void CheckState()
         {
-            if (socket != null)
+            if (Socket != null)
                 state = ChannelState.Open;
             else state = ChannelState.Opening;
         }
@@ -114,12 +123,20 @@ namespace umi3d.common.collaboration
         {
             if (State == ChannelState.Open)
                 socketSend(msg);
+            else if (reliable)
+                MessageNotSend.Add(msg);
+            else
+            {
+                MessageNotSend.Clear();
+                MessageNotSend.Add(msg);
+            }
+
         }
 
         ///<inheritdoc/>
         public override void Close()
         {
-            
+
         }
 
         void socketSend(byte[] msg)
@@ -132,7 +149,7 @@ namespace umi3d.common.collaboration
                 sourceId = id,
                 targetId = target
             };
-            socket?.Send(fake.ToBson());
+            Socket?.Send(fake.ToBson());
         }
     }
 }
