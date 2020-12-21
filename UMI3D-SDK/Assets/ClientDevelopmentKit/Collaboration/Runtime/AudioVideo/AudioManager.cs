@@ -45,9 +45,10 @@ namespace umi3d.cdk.collaboration
         {
             if (user != null)
             {
-                string id = user.id;
+                
                 if (UMI3DDto.FromBson(sample) is AudioDto dto)
                 {
+                    string id = dto.userId;
                     if (SpacialReader.ContainsKey(id))
                     {
                         SpacialReader[id].Read(dto);

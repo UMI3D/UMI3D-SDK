@@ -17,12 +17,14 @@ using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
-    public interface IWebRTCClient : IAbstractWebRtcClient
+    public interface IWebRTCServer : IAbstractWebRtcClient
     {
-        DataChannel CreateChannel(UMI3DUser user, DataChannel dataBase);
-        DataChannel CreateChannel(UMI3DUser user, bool reliable, DataType dataType);
+        DataChannel CreateChannel(UMI3DCollaborationUser user, DataChannel dataBase);
+        DataChannel CreateChannel(UMI3DCollaborationUser user, bool reliable, DataType dataType);
+        DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, DataChannel dataBase);
+        DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, bool reliable, DataType dataType);
 
         void OnMessage(UMI3DDto dto);
 

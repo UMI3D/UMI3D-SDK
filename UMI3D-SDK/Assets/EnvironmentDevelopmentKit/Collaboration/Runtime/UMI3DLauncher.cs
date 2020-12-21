@@ -57,14 +57,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public const string wsPortParam = Separator + "wsport";
         /// <summary>
-        /// Set the fake reliable rtc port.
-        /// </summary>
-        public const string fakeReliablePortParam = Separator + "fakertcreliableport";
-        /// <summary>
-        /// Set the fake unreliable rtc port.
-        /// </summary>
-        public const string fakeUnreliablePortParam = Separator + "fakertcunreliableport";
-        /// <summary>
         /// Set the ice servers.
         /// </summary>
         public const string iceParam = Separator + "iceconfig";
@@ -136,36 +128,6 @@ namespace umi3d.edk.collaboration
             }
             else
                 UMI3DCollaborationServer.Instance.useRandomWebsocketPort = true;
-        }
-
-        /// <summary>
-        /// method called when param <see cref="fakeReliablePortParam"/> is found
-        /// </summary>
-        /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetFakeReliable(string arg) {
-            int result;
-            if (int.TryParse(arg, out result))
-            {
-                UMI3DCollaborationServer.Instance.useRandomFakeRTCReliablePort = result == 0;
-                UMI3DCollaborationServer.Instance.fakeRTCReliablePort = result;
-            }
-            else
-                UMI3DCollaborationServer.Instance.useRandomFakeRTCReliablePort = true;
-        }
-
-        /// <summary>
-        /// method called when param <see cref="fakeUnreliablePortParam"/> is found
-        /// </summary>
-        /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetFakeUnreliable(string arg) {
-            int result;
-            if (int.TryParse(arg, out result))
-            {
-                UMI3DCollaborationServer.Instance.useRandomFakeRTCUnreliablePort = result == 0;
-                UMI3DCollaborationServer.Instance.fakeRTCUnreliablePort = result;
-            }
-            else
-                UMI3DCollaborationServer.Instance.useRandomFakeRTCUnreliablePort = true;
         }
 
         /// <summary>
@@ -250,16 +212,6 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetWsPort(args[i]);
-                }
-                else if (args[i].CompareTo(fakeReliablePortParam) == 0)
-                {
-                    if (++i < length)
-                        SetFakeReliable(args[i]);
-                }
-                else if (args[i].CompareTo(fakeUnreliablePortParam) == 0)
-                {
-                    if (++i < length)
-                        SetFakeUnreliable(args[i]);
                 }
                 else if (args[i].CompareTo(iceParam) == 0)
                 {

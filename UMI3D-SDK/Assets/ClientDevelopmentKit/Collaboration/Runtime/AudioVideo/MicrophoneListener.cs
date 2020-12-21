@@ -37,8 +37,8 @@ namespace umi3d.cdk.collaboration
                 AudioSource audio = GetComponent<AudioSource>();
                 audio.clip = AudioClip.Create("microphone", 10 * FREQUENCY, mic.channels, FREQUENCY, false);
                 audio.loop = true;
-                if (UMI3DCollaborationClientServer.Instance.webRTCClient != null)
-                    AudioUpdate = UMI3DCollaborationClientServer.Instance.webRTCClient.sendAudio;
+                if (UMI3DCollaborationClientServer.Exists)
+                    AudioUpdate = UMI3DCollaborationClientServer.Instance.SendAudio;
             }
             catch (Exception e)
             {
@@ -52,7 +52,7 @@ namespace umi3d.cdk.collaboration
         {
             if (!ok) return;
             if (AudioUpdate == null && UMI3DCollaborationClientServer.Instance.webRTCClient != null)
-                AudioUpdate = UMI3DCollaborationClientServer.Instance.webRTCClient.sendAudio;
+                AudioUpdate = UMI3DCollaborationClientServer.Instance.SendAudio;
             if ((pos = Microphone.GetPosition(null)) > 0)
             {
                 if (lastPos > pos) lastPos = 0;
@@ -65,7 +65,7 @@ namespace umi3d.cdk.collaboration
                     mic.GetData(sample, lastPos);
                     if (IsOn)
                     {
-                        AudioUpdate?.Invoke(new AudioDto() { sample = sample, pos = lastPos });
+                        AudioUpdate?.Invoke(new AudioDto() { userId = UMI3DCollaborationClientServer.Identity.userId, sample = sample, pos = lastPos });
                     }
 
                     lastPos = pos;
