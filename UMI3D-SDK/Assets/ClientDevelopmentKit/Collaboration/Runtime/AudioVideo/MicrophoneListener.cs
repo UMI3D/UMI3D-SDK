@@ -23,8 +23,17 @@ using UnityEngine;
 namespace umi3d.cdk.collaboration
 {
 	[RequireComponent(typeof(AudioSource))]
-	public class MicrophoneListener : MonoBehaviour
+	public class MicrophoneListener : Singleton<MicrophoneListener>
 	{
+		/// <summary>
+		/// Whether the microphone is running
+		/// </summary>
+		public static bool IsMute { get { return Exists ? Instance._IsMute : false; } set { if (Exists) Instance._IsMute = value; } }
+
+		[SerializeField]
+		bool _IsMute = false;
+
+
 		/// <summary>
 		/// Whether the microphone is running
 		/// </summary>
@@ -79,7 +88,7 @@ namespace umi3d.cdk.collaboration
 		/// </summary>
 		public event Action<AudioDto> OnSampleReady;
 
-		void Awake()
+		void Start()
 		{
 			AudioSource = GetComponent<AudioSource>();
 
@@ -178,7 +187,7 @@ namespace umi3d.cdk.collaboration
 
 						Sample = temp;
 						SampleCount++;
-						if (OnSampleReady != null && UMI3DCollaborationClientServer.Exists)
+						if (OnSampleReady != null && !_IsMute && UMI3DCollaborationClientServer.Exists)
 						{
 							var dto = new AudioDto()
 							{
