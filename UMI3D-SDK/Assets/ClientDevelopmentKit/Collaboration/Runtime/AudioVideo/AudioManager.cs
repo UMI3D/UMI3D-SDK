@@ -41,31 +41,28 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="sample"></param>
         /// <param name="channel"></param>
-        public void Read(UMI3DUser user, byte[] sample, DataChannel channel)
+        public void Read(byte[] sample)
         {
-            if (user != null)
+            if (UMI3DDto.FromBson(sample) is AudioDto dto)
             {
-                
-                if (UMI3DDto.FromBson(sample) is AudioDto dto)
+                string id = dto.userId;
+                if (SpacialReader.ContainsKey(id))
                 {
-                    string id = dto.userId;
-                    if (SpacialReader.ContainsKey(id))
+                    SpacialReader[id].Read(dto);
+                }
+                else
+                {
+                    if (!GlobalReader.ContainsKey(id))
                     {
-                        SpacialReader[id].Read(dto);
+                        var g = new GameObject();
+                        g.name = id;
+                        GlobalReader[id] = g.AddComponent<AudioReader>();
                     }
-                    else
-                    {
-                        if (!GlobalReader.ContainsKey(id))
-                        {
-                            var g = new GameObject();
-                            g.name = id;
-                            GlobalReader[id] = g.AddComponent<AudioReader>();
-                        }
-                        GlobalReader[id].Read(dto);
-                    }
+                    GlobalReader[id].Read(dto);
                 }
             }
         }
+        
 
         /// <summary>
         /// MAnage user update

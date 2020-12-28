@@ -88,6 +88,7 @@ namespace umi3d.cdk.collaboration
                         UMI3DCollaborationClientServer.OnRtcMessage(null, data, null);
                         break;
                     case DataType.Audio:
+                        AudioManager.Instance.Read(fake.content);
                         break;
                     case DataType.Video:
                         break;

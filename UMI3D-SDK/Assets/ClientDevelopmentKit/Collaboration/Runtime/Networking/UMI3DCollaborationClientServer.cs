@@ -305,6 +305,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         public void SendAudio(AudioDto dto)
         {
+            dto.userId = Identity.userId;
             var content = dto.ToBson();
             var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Audio);
             if (dc != default)
