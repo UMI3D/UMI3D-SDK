@@ -82,12 +82,6 @@ namespace umi3d.cdk.collaboration
 		AudioSource AudioSource;
 		int SampleCount = 0;
 
-		/// <summary>
-		/// Invoked when an audio frame is Ready.
-		/// Contain 
-		/// </summary>
-		public event Action<AudioDto> OnSampleReady;
-
 		protected override void Awake()
 		{
 			base.Awake();
@@ -188,7 +182,7 @@ namespace umi3d.cdk.collaboration
 
 						Sample = temp;
 						SampleCount++;
-						if (OnSampleReady != null && !_IsMute && UMI3DCollaborationClientServer.Exists)
+						if (!_IsMute && UMI3DCollaborationClientServer.Exists)
 						{
 							var dto = new AudioDto()
 							{
