@@ -46,7 +46,6 @@ namespace umi3d.cdk.collaboration
                 yield return null;
             }
 
-            UnityEngine.Debug.LogWarning("DispatchCamera");
             UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
         }
     }
