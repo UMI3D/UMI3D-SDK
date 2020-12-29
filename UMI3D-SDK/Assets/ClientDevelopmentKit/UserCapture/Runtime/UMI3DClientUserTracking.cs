@@ -30,17 +30,14 @@ namespace umi3d.cdk.userCapture
         [ConstStringEnum(typeof(BoneType))]
         public string viewpointBonetype;
 
-        public float skeletonParsingIterationCooldown = 0f;
-        float cooldownTmp = 0f;
-        public float time = 0f;
-        float timeTmp = 0;
-        public int max = 0;
-        int counter = 0;
+        public bool sendTracking = true;
+        public float targetTrackingFPS = 30;
 
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
         public UnityEvent skeletonParsedEvent;
         public UnityEvent cameraHasChanged;
+        public UnityEvent startingSendingTracking;
 
         protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
         protected UserCameraPropertiesDto CameraPropertiesDto;
@@ -64,25 +61,23 @@ namespace umi3d.cdk.userCapture
         {
             cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
             cameraHasChanged.Invoke();
-        }
-
-        protected virtual void Update()
-        {
-            if (UMI3DClientServer.Exists)
-                DispatchTracking();
-
-            if (iterationCooldown())
-                BonesIterator();
+            startingSendingTracking.AddListener(() => {if (sendTracking) StartCoroutine("DispatchTracking"); });
+            startingSendingTracking.Invoke();
         }
 
         /// <summary>
         /// Dispatch User Tracking data through Tracking Channel
         /// </summary>
-        protected virtual void DispatchTracking()
+        protected virtual IEnumerator DispatchTracking()
         {
-            if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
+            while (sendTracking)
             {
-                UMI3DClientServer.SendTracking(LastFrameDto, false);
+                BonesIterator();
+
+                if (UMI3DClientServer.Exists && LastFrameDto.userId != null)
+                    UMI3DClientServer.SendTracking(LastFrameDto, false);
+
+                yield return new WaitForSeconds(1f / targetTrackingFPS);
             }
         }
 
@@ -122,44 +117,10 @@ namespace umi3d.cdk.userCapture
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     scale = anchor.localScale,
                     userId = UMI3DClientServer.Instance.GetId(),
-                    refreshFrequency = skeletonParsingIterationCooldown // depends on Checktime() too.
                 };
 
                 skeletonParsedEvent.Invoke();
             }
-        }
-
-        bool iterationCooldown()
-        {
-            cooldownTmp -= Time.deltaTime;
-            if (skeletonParsingIterationCooldown == 0 || cooldownTmp <= 0)
-            {
-                cooldownTmp = skeletonParsingIterationCooldown;
-                return true;
-            }
-            return false;
-        }
-
-        protected bool checkTime()
-        {
-            timeTmp -= Time.deltaTime;
-            if (time == 0 || timeTmp <= 0)
-            {
-                timeTmp = time;
-                return true;
-            }
-            return false;
-        }
-
-        protected bool checkMax()
-        {
-            if (max != 0 && counter > max)
-            {
-                counter = 0;
-                return true;
-            }
-            counter += 1;
-            return false;
         }
 
         /// <summary>

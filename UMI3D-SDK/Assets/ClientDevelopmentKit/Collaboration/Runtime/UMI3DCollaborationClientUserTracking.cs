@@ -18,17 +18,23 @@ using System.Collections;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.common.collaboration;
+using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
         ///<inheritdoc/>
-        protected override void DispatchTracking()
+        protected override IEnumerator DispatchTracking()
         {
-            if ((checkTime() || checkMax()) && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            while (sendTracking)
             {
-                UMI3DClientServer.SendTracking(LastFrameDto, false);
+                BonesIterator();
+
+                if (UMI3DClientServer.Exists && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+                    UMI3DClientServer.SendTracking(LastFrameDto, false);
+
+                yield return new WaitForSeconds(1f / targetTrackingFPS);
             }
         }
 
