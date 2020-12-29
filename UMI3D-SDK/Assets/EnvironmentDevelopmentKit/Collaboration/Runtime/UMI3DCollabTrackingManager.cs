@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Linq;
+using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
 using UnityEngine;
@@ -33,29 +35,31 @@ namespace umi3d.edk.collaboration
 
         void NewUser(UMI3DUser user)
         {
-            Debug.Log("Create Tracking channel with server");
-            UMI3DCollaborationServer.WebRTC.OpenChannel(user, "Tracking", DataType.Tracking, false);
-
-            foreach (var userA in UMI3DCollaborationServer.Collaboration.Users)
-            {
-                if (userA == user) continue;
-                Debug.Log($"Trying create Tracking {userA.Id()}->{user.Id()}");
-                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "Tracking"))
-                {
-                    Debug.Log("Creating Tracking channel");
-                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "Tracking", DataType.Tracking, false);
-                }
-
-            }
+            if (user is UMI3DCollaborationUser _user) NewUser(_user);
         }
 
-        void closeChannel(UMI3DUser user1, UMI3DUser user2)
+        void NewUser(UMI3DCollaborationUser user)
         {
-            Debug.Log("Trying to close Tracking channel between two users");
-            if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "Tracking"))
+            Debug.Log("Create Tracking channel with server");
+            user.dataChannels.Add(UMI3DCollaborationServer.WebRTC.CreateChannel(user, false, DataType.Tracking));
+            UMI3DCollaborationServer.Collaboration.Users.Where(u => u != user)
+                .Where(u => u.dataChannels.FirstOrDefault(dc => dc is BridgeChannel bridge && bridge.Equals(u, user, false, DataType.Tracking)) == default)
+                .ForEach(u =>
+                {
+                    var dc = UMI3DCollaborationServer.WebRTC.CreateChannel(user, u, false, DataType.Tracking);
+                    user.dataChannels.Add(dc);
+                    u.dataChannels.Add(dc);
+                });
+        }
+
+        void closeChannel(UMI3DCollaborationUser user1, UMI3DCollaborationUser user2)
+        {
+
+            var dc = user1.dataChannels.FirstOrDefault(d => d is BridgeChannel bridge && bridge.Equals(user1, user2, false, DataType.Tracking));
+            if(dc != default)
             {
-                Debug.Log("Closing Tracking channel between two users");
-                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "Tracking");
+                user1.dataChannels.Remove(dc);
+                user2.dataChannels.Remove(dc);
             }
         }
     }

@@ -20,8 +20,6 @@ namespace umi3d.cdk
 {
     public interface IAudioReader
     {
-        void OnAudioRead(float[] data);
-        void OnAudioSetPosition(int newPosition);
         void Read(AudioDto sample);
     }
 }

@@ -15,122 +15,55 @@ limitations under the License.
 */
 
 using MainThreadDispatcher;
-using System;
-using System.Collections;
-using System.Threading;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
 using WebSocketSharp;
-using WebSocketSharp.Server;
-
 
 namespace umi3d.edk.collaboration
 {
 
-    public class UMI3DWebSocketConnection : WebSocketBehavior
+    public class UMI3DWebSocketConnection : UMI3DAbstractWebSocketConnection
     {
-        public string _id = null;
-        private static int _number = 0;
-        private string _prefix;
+        ///<inheritdoc/>
+        public UMI3DWebSocketConnection() : base()
+        {}
 
-        public UMI3DWebSocketConnection()
-            : this(null)
+        ///<inheritdoc/>
+        protected override void OnUserCreated(UMI3DCollaborationUser user, bool reconnection)
         {
+            base.OnUserCreated(user, reconnection);
+            user.InitConnection(this);
+            SendData(user.ToStatusDto());
+            Debug.Log($"<color=yellow>open {_id}</color>");
         }
 
-        public UMI3DWebSocketConnection(string prefix)
+        ///<inheritdoc/>
+        protected override void OnOpen()
         {
-            _prefix = !prefix.IsNullOrEmpty() ? prefix : "connection_";
-        }
-
-        private string genId()
-        {
-            var id = Context.QueryString["id"];
-            return !id.IsNullOrEmpty() ? id : _prefix + getNumber();
-        }
-
-        private static int getNumber()
-        {
-            return Interlocked.Increment(ref _number);
+            base.OnOpen();
         }
 
         ///<inheritdoc/>
         protected override void OnClose(CloseEventArgs e)
         {
-            Debug.Log($"onClose {_id}");
+            Debug.Log($"<color=orange>onClose {_id}</color>");
             UnityMainThreadDispatcher.Instance().Enqueue(UMI3DCollaborationServer.Collaboration.ConnectionClose(_id));
         }
 
         ///<inheritdoc/>
-        protected override void OnMessage(MessageEventArgs e)
+        protected override void HandleMessage(UMI3DDto dto)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(_OnMessage(e));
-        }
-
-        IEnumerator _OnMessage(MessageEventArgs e)
-        {
-            var res = UMI3DDto.FromBson(e.RawData);
-            if (res is IdentityDto)
+            base.HandleMessage(dto);
+            if (dto is StatusDto req)
             {
-                var req = res as IdentityDto;
-                _id = req.userId;
-                if (_id == null || _id == "") _id = genId();
-                UMI3DCollaborationServer.Collaboration.CreateUser(req.login, this, onUserCreated);
+                Debug.Log(req.status);
+                UMI3DCollaborationServer.Collaboration.OnStatusUpdate(_id, req.status);
             }
-            if (_id != null)
+            else if (dto is RTCDto rtc)
             {
-                if (res is StatusDto)
-                {
-                    var req = res as StatusDto;
-                    Debug.Log(req.status);
-                    UMI3DCollaborationServer.Collaboration.OnStatusUpdate(_id, req.status);
-                }
-                else if (res is RTCDto)
-                {
-                    UMI3DCollaborationServer.Instance.WebRtcMessage(_id, res as RTCDto);
-                }
-            }
-            yield break;
-        }
-
-
-        void onUserCreated(UMI3DCollaborationUser user, bool reconnection)
-        {
-            _id = user.Id();
-            SendData(user.ToStatusDto());
-        }
-
-
-        ///<inheritdoc/>
-        protected override void OnOpen()
-        {
-            Debug.Log("open");
-        }
-
-        public void SendData(UMI3DDto obj, Action<bool> callback = null)
-        {
-            if (obj != null && this.Context.WebSocket.IsConnected)
-            {
-                var data = obj.ToBson();
-                try
-                {
-                    if (callback == null) callback = (b) => { };
-                    SendAsync(data, callback);
-                }
-                catch (InvalidOperationException exp)
-                {
-                    Debug.LogWarning(exp);
-                    // todo UnityMainThreadDispatcher.Instance().Enqueue(UMI3D.UserManager.OnRealtimeConnectionClose(_id));
-                    return;
-                }
+                UMI3DCollaborationServer.Instance.WebRtcMessage(_id, rtc);
             }
         }
-
-        public string GetId()
-        {
-            return _id;
-        }
-
     }
 }
