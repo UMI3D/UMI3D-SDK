@@ -88,8 +88,9 @@ namespace umi3d.cdk.collaboration
 		/// </summary>
 		public event Action<AudioDto> OnSampleReady;
 
-		void Start()
+		protected override void Awake()
 		{
+			base.Awake();
 			AudioSource = GetComponent<AudioSource>();
 
 			Devices = new List<string>();
@@ -208,8 +209,9 @@ namespace umi3d.cdk.collaboration
 			}
 		}
 
-		void OnDestroy()
+		protected override void OnDestroy()
 		{
+			base.OnDestroy();
 			Microphone.End(null);
 		}
 	}
