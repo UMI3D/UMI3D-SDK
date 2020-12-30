@@ -123,8 +123,6 @@ namespace umi3d.cdk.userCapture
             userBindings.Insert(index, dto);
             if (activeUserBindings && dto.active)
                 UpdateBindingPosition(dto);
-
-            Debug.Log("Client Binding Created");
         }
 
         /// <summary>
@@ -136,8 +134,6 @@ namespace umi3d.cdk.userCapture
         {
             userBindings.RemoveAt(index);
             ResetObject(dto);
-
-            Debug.Log("Client Binding Removed");
         }
 
         /// <summary>
@@ -155,8 +151,6 @@ namespace umi3d.cdk.userCapture
                 else if (savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
                     ResetObject(dto);
             }
-
-            Debug.Log("Client Binding Updated");
         }
 
         void UpdateBindingPosition(BoneBindingDto dto)
@@ -198,19 +192,15 @@ namespace umi3d.cdk.userCapture
             if (node != null)
             {
                 Transform obj = null;
-                UnityEngine.Debug.Log($"wait for rig [{dto.rigName}]");
                 if (dto.rigName != "")
                 {
                     while ((obj = UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName)) == null && (obj = InspectBoundRigs(dto)) == null)
                     {
-                        UnityEngine.Debug.Log($"{UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.name}");
                         yield return wait;
                     }
 
                     if (!boundRigs.Contains(obj))
                         boundRigs.Add(obj);
-
-                    UnityEngine.Debug.Log($"rig found {dto.rigName}");
                 }
                 else
                     obj = node.transform;
@@ -226,9 +216,6 @@ namespace umi3d.cdk.userCapture
                     };
 
                     savedTransforms.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, savedTransform);
-                    UnityEngine.Debug.Log(dto.rigName);
-
-                    UnityEngine.Debug.Log($"set {obj.name} under {bone.transform.name}");
 
                     obj.transform.SetParent(bone.transform);
 
@@ -306,14 +293,12 @@ namespace umi3d.cdk.userCapture
                         {
                             while ((obj = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null && (obj = InspectBoundRigs(boneBindingDto)) == null)
                             {
-                                UnityEngine.Debug.LogWarning($"Waiting for {UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId).transform.name}'s rig");
                                 yield return wait;
                             }
 
                             if (!boundRigs.Contains(obj))
                                 boundRigs.Add(obj);
 
-                            UnityEngine.Debug.LogWarning($"moving {obj.name} from {trackingFrameDto.userId}");
                         }
                         else
                             obj = node.transform;
@@ -331,8 +316,6 @@ namespace umi3d.cdk.userCapture
                             savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
 
                             obj.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
-
-                            Debug.LogWarning("Changing Parent to scene");
 
                             if (boneBindingDto.rigName == "")
                                 node.updatePose = false;

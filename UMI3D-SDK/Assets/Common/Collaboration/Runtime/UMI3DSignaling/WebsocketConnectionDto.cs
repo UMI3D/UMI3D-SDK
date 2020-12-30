@@ -23,8 +23,12 @@ namespace umi3d.common.collaboration
         public string postfix;
         public int port;
         public string websocketUrl;
-        public string rtcReliableUrl;
-        public string rtcUnreliableUrl;
+        public string websocketReliableDataUrl;
+        public string websocketUnreliableDataUrl;
+        public string websocketReliableTrackingUrl;
+        public string websocketUnreliableTrackingUrl;
+        public string websocketAudio;
+        public string websocketVideo;
 
         public IceServer[] iceServers;
 

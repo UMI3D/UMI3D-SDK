@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -33,8 +34,9 @@ namespace umi3d.cdk.collaboration
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
-                        UMI3DClientServer.SendTracking(LastFrameDto, false);
+                    DataChannel dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking);
+                    if (dc != null)
+                        dc.Send(LastFrameDto.ToBson());
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
@@ -46,12 +48,12 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == null || !UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            DataChannel dc;
+            while ( !(UMI3DClientServer.Exists && UMI3DCollaborationClientServer.Exists) || UMI3DClientServer.Instance.GetId() == null || (dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking)) == default)
             {
                 yield return null;
             }
-
-            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+            dc.Send(CameraPropertiesDto.ToBson());
         }
     }
 }

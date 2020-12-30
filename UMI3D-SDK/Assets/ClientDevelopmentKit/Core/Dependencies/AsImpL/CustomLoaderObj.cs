@@ -75,7 +75,6 @@ public class CustomLoaderObj : LoaderObj
 
         if (!String.IsNullOrEmpty( buildOptions.authorization) )
         {
-            Debug.Log("authorization : " + buildOptions.authorization);
             www.certificateHandler = new AcceptAllCertificates();
 
             string authorization = buildOptions.authorization;

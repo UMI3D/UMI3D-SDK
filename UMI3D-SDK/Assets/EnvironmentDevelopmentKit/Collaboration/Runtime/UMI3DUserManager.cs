@@ -123,20 +123,19 @@ namespace umi3d.edk.collaboration
         /// <param name="Login">Login of the user.</param>
         /// <param name="connection">Websoket connection of the user.</param>
         /// <param name="Callback">Callback called when the user has been created.</param>
-        public void CreateUser(string Login, UMI3DWebSocketConnection connection, Action<UMI3DCollaborationUser, bool> Callback)
+        public void CreateUser(string Login, Action<UMI3DCollaborationUser, bool> Callback)
         {
             UMI3DCollaborationUser user;
             bool reconnection = false;
             if (loginMap.ContainsKey(Login) && users.ContainsKey(loginMap[Login]))
             {
                 user = users[loginMap[Login]];
-                user.connection = connection;
                 reconnection = true;
             }
             else
             {
-                user = new UMI3DCollaborationUser(Login, connection);
-
+                user = new UMI3DCollaborationUser(Login);
+                loginMap[Login] = user.Id();
                 users.Add(user.Id(), user);
             }
             Callback.Invoke(user, reconnection);

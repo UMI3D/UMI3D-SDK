@@ -17,10 +17,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using WebSocketSharp;
-#if UNITY_WEBRTC
-using Unity.WebRTC;
-#endif
 
 namespace umi3d.common.collaboration
 {
@@ -86,82 +82,61 @@ namespace umi3d.common.collaboration
         public void Messaged(byte[] data) { OnMessage?.Invoke(data); }
     }
 
-
-
-    public class WebRTCDataChannel : DataChannel
+    public class WebsocketDataChannel : DataChannel
     {
-        public AbstractWebsocket socket;
+        private IWebsocket _socket;
         public string id;
         public List<string> target;
         public bool useWebrtc = true;
 
-#if UNITY_WEBRTC
-        public RTCDataChannel dataChannel;
-#endif
+        public IWebsocket Socket
+        {
+            get => _socket; set {
+                _socket = value;
+                if (Socket != null)
+                    SendStack();
+            }
+        }
+
         ///<inheritdoc/>
         protected override void CheckState()
         {
-#if UNITY_WEBRTC
-            if (useWebrtc)
-            {
-                if (dataChannel != null)
-                {
-                    switch (dataChannel.ReadyState)
-                    {
-                        case RTCDataChannelState.Connecting:
-                            state = ChannelState.Opening;
-                            break;
-                        case RTCDataChannelState.Open:
-                            state = ChannelState.Open;
-                            break;
-                        case RTCDataChannelState.Closing:
-                        case RTCDataChannelState.Closed:
-                            if (state != ChannelState.Close)
-                                Close();
-                            state = ChannelState.Close;
-                            break;
-                    }
-                }
-            }
-            else
-#endif
-            if (socket != null)
+            if (Socket != null)
                 state = ChannelState.Open;
             else state = ChannelState.Opening;
         }
 
-        public WebRTCDataChannel(string id, string target, DataChannel channel) : base(channel)
+        public WebsocketDataChannel(string id, string target, DataChannel channel) : base(channel)
         {
             this.id = id;
             this.target = new List<string>() { target };
         }
 
-        public WebRTCDataChannel(string id, string target, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        public WebsocketDataChannel(string id, string target, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
         {
             this.id = id;
             this.target = new List<string>() { target };
         }
-
 
         ///<inheritdoc/>
         public override void Send(byte[] msg)
         {
             if (State == ChannelState.Open)
-#if UNITY_WEBRTC
-                if (useWebrtc)
-                    dataChannel.Send(msg);
-                else
-#endif
-                    socketSend(msg);
+                socketSend(msg);
+            else if (reliable)
+                MessageNotSend.Add(msg);
+            else
+            {
+                MessageNotSend.Clear();
+                MessageNotSend.Add(msg);
+            }
 
         }
 
         ///<inheritdoc/>
         public override void Close()
         {
-#if UNITY_WEBRTC
-            Debug.Log("close"); dataChannel.Close();
-#endif
+
         }
 
         void socketSend(byte[] msg)
@@ -174,9 +149,7 @@ namespace umi3d.common.collaboration
                 sourceId = id,
                 targetId = target
             };
-            socket?.Send(fake.ToBson());
+            Socket?.Send(fake.ToBson());
         }
-
-
     }
 }
