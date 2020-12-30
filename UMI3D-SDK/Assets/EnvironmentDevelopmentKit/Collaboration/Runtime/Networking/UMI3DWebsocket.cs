@@ -40,60 +40,7 @@ namespace umi3d.edk.collaboration
                         Protocol = UMI3DNetworkingKeys.websocketProtocol,
                     }
             );
-            wssv.AddWebSocketService<UMI3DFakeRTCConnection>(
-                UMI3DNetworkingKeys.websocket_reliable_data,
-                () =>
-                    new UMI3DFakeRTCConnection(DataType.Data,true,(dto)=> { UMI3DCollaborationServer.WebRTC.OnMessage(dto); })
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
-            wssv.AddWebSocketService<UMI3DFakeRTCConnection>(
-                UMI3DNetworkingKeys.websocket_unreliable_data,
-                () =>
-                    new UMI3DFakeRTCConnection(DataType.Data, false, (dto) => { UMI3DCollaborationServer.WebRTC.OnMessage(dto); })
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
-            wssv.AddWebSocketService<UMI3DFakeRTCConnection>(
-                UMI3DNetworkingKeys.websocket_reliable_tracking,
-                () =>
-                    new UMI3DFakeRTCConnection(DataType.Tracking, true, (dto) => { UMI3DCollaborationServer.WebRTC.OnMessage(dto); })
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
-            wssv.AddWebSocketService<UMI3DFakeRTCConnection>(
-                UMI3DNetworkingKeys.websocket_unreliable_tracking,
-                () =>
-                    new UMI3DFakeRTCConnection(DataType.Tracking, false, (dto) => { UMI3DCollaborationServer.WebRTC.OnMessage(dto); })
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
-            wssv.AddWebSocketService<UMI3DFakeRTCConnection>(
-                UMI3DNetworkingKeys.websocket_audio,
-                () =>
-                    new UMI3DFakeRTCConnection(DataType.Audio, (dto) => { UMI3DCollaborationServer.WebRTC.OnMessage(dto); })
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
-            wssv.AddWebSocketService<UMI3DFakeRTCConnection>(
-                UMI3DNetworkingKeys.websocket_video,
-                () =>
-                    new UMI3DFakeRTCConnection(DataType.Video, (dto) => { UMI3DCollaborationServer.WebRTC.OnMessage(dto); })
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
+            
 
             wssv.AuthenticationSchemes = UMI3DCollaborationServer.GetAuthentication().Convert();
             wssv.Realm = "UMI3D";

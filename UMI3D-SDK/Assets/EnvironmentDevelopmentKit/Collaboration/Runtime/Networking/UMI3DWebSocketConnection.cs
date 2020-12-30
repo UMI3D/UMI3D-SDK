@@ -64,6 +64,8 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DCollaborationServer.Instance.WebRtcMessage(_id, rtc);
             }
+            else
+                UMI3DCollaborationServer.WebRTC.OnMessage(dto);
         }
     }
 }

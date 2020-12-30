@@ -46,12 +46,6 @@ namespace umi3d.cdk.collaboration
         public HttpClient HttpClient { get; private set; }
 
         public WebSocketClient WebSocketClient { get; private set; }
-        public WebSocketClient WebSocketReliableDataClient { get; private set; }
-        public WebSocketClient WebSocketUnreliableDataClient { get; private set; }
-        public WebSocketClient WebSocketAudioClient { get; private set; }
-        public WebSocketClient WebSocketVideoClient { get; private set; }
-        public WebSocketClient WebSocketReliableTrackingClient { get; private set; }
-        public WebSocketClient WebSocketUnreliableTrackingClient { get; private set; }
 
 
         public IWebRTCClient webRTCClient { get; private set; }
@@ -97,12 +91,6 @@ namespace umi3d.cdk.collaboration
         public void Init()
         {
             WebSocketClient = new WebSocketClient(this);
-            WebSocketReliableDataClient = new WebSocketClient(this);
-            WebSocketUnreliableDataClient = new WebSocketClient(this);
-            WebSocketVideoClient = new WebSocketClient(this);
-            WebSocketAudioClient = new WebSocketClient(this);
-            WebSocketReliableTrackingClient = new WebSocketClient(this);
-            WebSocketUnreliableTrackingClient = new WebSocketClient(this);
             webRTCClient = new WebRTCClientFactory();
         }
 
@@ -155,12 +143,6 @@ namespace umi3d.cdk.collaboration
             if(UMI3DCollaborationClientServer.Media.connection is WebsocketConnectionDto connection)
             {
                 Instance.WebSocketClient.Init(connection.websocketUrl,OnMessage);
-                Instance.WebSocketReliableDataClient.Init(connection.websocketReliableDataUrl, Instance.webRTCClient.OnMessage);
-                Instance.WebSocketUnreliableDataClient.Init(connection.websocketUnreliableDataUrl, Instance.webRTCClient.OnMessage);
-                Instance.WebSocketVideoClient.Init(connection.websocketVideo, Instance.webRTCClient.OnMessage);
-                Instance.WebSocketAudioClient.Init(connection.websocketAudio, Instance.webRTCClient.OnMessage);
-                Instance.WebSocketReliableTrackingClient.Init(connection.websocketReliableTrackingUrl, Instance.webRTCClient.OnMessage);
-                Instance.WebSocketUnreliableTrackingClient.Init(connection.websocketUnreliableTrackingUrl, Instance.webRTCClient.OnMessage);
             }
         }
 
@@ -371,6 +353,9 @@ namespace umi3d.cdk.collaboration
                     break;
                 case StatusRequestDto statusRequestDto:
                     Instance.HttpClient.SendPostUpdateStatus(null, null);
+                    break;
+                case UMI3DDto dto:
+                    Instance.webRTCClient.OnMessage(dto);
                     break;
             }
         }
