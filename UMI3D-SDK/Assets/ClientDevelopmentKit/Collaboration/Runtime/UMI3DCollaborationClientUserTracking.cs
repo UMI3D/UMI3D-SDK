@@ -26,13 +26,22 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
         ///<inheritdoc/>
-        protected override void DispatchTracking()
+        protected override IEnumerator DispatchTracking()
         {
-            if ((checkTime() || checkMax()) && LastFrameDto.userId != null)
+            while (sendTracking)
             {
-                DataChannel dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking);
-                if (dc != null)
-                    dc.Send(LastFrameDto.ToBson());
+                if (targetTrackingFPS > 0)
+                {
+                    BonesIterator();
+
+                    DataChannel dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking);
+                    if (dc != null)
+                        dc.Send(LastFrameDto.ToBson());
+
+                    yield return new WaitForSeconds(1f / targetTrackingFPS);
+                }
+                else
+                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
             }
         }
 
@@ -40,11 +49,10 @@ namespace umi3d.cdk.collaboration
         protected override IEnumerator DispatchCamera()
         {
             DataChannel dc;
-            while ( !(UMI3DClientServer.Exists && UMI3DCollaborationClientServer.Exists) ||   UMI3DClientServer.Instance.GetId() == null || (dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking)) == default)
+            while ( !(UMI3DClientServer.Exists && UMI3DCollaborationClientServer.Exists) || UMI3DClientServer.Instance.GetId() == null || (dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking)) == default)
             {
                 yield return null;
             }
-            UnityEngine.Debug.LogWarning("DispatchCamera");
             dc.Send(CameraPropertiesDto.ToBson());
         }
     }
