@@ -29,12 +29,17 @@ namespace umi3d.cdk.collaboration
         {
             while (sendTracking)
             {
-                BonesIterator();
+                if (targetTrackingFPS > 0)
+                {
+                    BonesIterator();
 
-                if (UMI3DClientServer.Exists && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
-                    UMI3DClientServer.SendTracking(LastFrameDto, false);
+                    if (UMI3DClientServer.Exists && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+                        UMI3DClientServer.SendTracking(LastFrameDto, false);
 
-                yield return new WaitForSeconds(1f / targetTrackingFPS);
+                    yield return new WaitForSeconds(1f / targetTrackingFPS);
+                }
+                else
+                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
             }
         }
 

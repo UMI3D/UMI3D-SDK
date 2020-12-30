@@ -87,7 +87,7 @@ namespace umi3d.cdk.userCapture
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
                 else
-                    yield return null;
+                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
             }
         }
 
