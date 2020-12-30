@@ -35,8 +35,13 @@ namespace umi3d.cdk.userCapture
 
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
+        [Tooltip("This event is raised after each analysis of the skeleton.")]
         public UnityEvent skeletonParsedEvent;
+
+        [Tooltip("This event has to be raised to send a CameraPropertiesDto. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent cameraHasChanged;
+
+        [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
 
         protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
@@ -72,12 +77,17 @@ namespace umi3d.cdk.userCapture
         {
             while (sendTracking)
             {
-                BonesIterator();
+                if (targetTrackingFPS > 0)
+                {
+                    BonesIterator();
 
-                if (UMI3DClientServer.Exists && LastFrameDto.userId != null)
-                    UMI3DClientServer.SendTracking(LastFrameDto, false);
+                    if (UMI3DClientServer.Exists && LastFrameDto.userId != null)
+                        UMI3DClientServer.SendTracking(LastFrameDto, false);
 
-                yield return new WaitForSeconds(1f / targetTrackingFPS);
+                    yield return new WaitForSeconds(1f / targetTrackingFPS);
+                }
+                else
+                    yield return null;
             }
         }
 
