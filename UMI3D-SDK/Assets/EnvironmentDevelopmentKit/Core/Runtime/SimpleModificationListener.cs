@@ -136,6 +136,8 @@ namespace umi3d.edk
                         break;
                     case ExternalResourceMaterial extmat:
                         break;
+                    case OriginalMaterial extmat:
+                        break;
                     default:
                         Debug.LogWarning("unsupported material type");
                         break;

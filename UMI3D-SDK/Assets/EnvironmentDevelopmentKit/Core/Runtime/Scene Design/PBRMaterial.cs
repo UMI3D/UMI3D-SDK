@@ -32,8 +32,6 @@ namespace umi3d.edk
         //   public UMI3DMaterialDto textures;
         public CustomTextures textures = new CustomTextures();
 
-        // list of supported type for object: float, int, vector2-3-4, Color, TextureDto
-        public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
 
         public Vector2 tilingScale = Vector2.one;
         public Vector2 tilingOffset = Vector2.zero;
@@ -112,7 +110,6 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<Vector2> objectTextureTilingOffset { get { Id(); return _objectTextureTilingOffset; } protected set => _objectTextureTilingOffset = value; }
         public UMI3DAsyncProperty<float> objectNormalTextureScale { get { Id(); return _objectNormalTextureScale; } protected set => _objectNormalTextureScale = value; }
         public UMI3DAsyncProperty<float> objectHeightTextureScale { get { Id(); return _objectHeightTextureScale; } protected set => _objectHeightTextureScale = value; }
-        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; } // not totaly implemented
 
         private UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
 

@@ -177,7 +177,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter)
+        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string,object> additionalShaderProperties = null)
         {
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(node))
             {
@@ -193,7 +193,21 @@ namespace umi3d.cdk
                         if (oldMats.oldMats[i] == null)
                             oldMats.oldMats[i] = renderer.sharedMaterials[i];
 
-                        mats[i] = newMat;
+                        if(newMat != null)
+                            mats[i] = newMat;
+                        else
+                        {
+                            mats[i] = new Material(oldMats.oldMats[i]);
+                            if (additionalShaderProperties != null)
+                                AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(additionalShaderProperties, mats[i]);
+                            if (entity.Object == null)
+                                entity.Object = new List<Material>();
+                            var matList = entity.Object as List<Material>;
+                            if (matList != null)
+                            {
+                                matList.Add(mats[i]);
+                            }
+                        }
 
                         modified = true;
                     }
@@ -267,17 +281,26 @@ namespace umi3d.cdk
                 yield break;
             }
 
+            Material newMat = matEntity.Object as Material;
+            Dictionary<string, object> shaderProperties = null;
+            if (newMat == null)
+            {
+                // apply shader properties 
+                Debug.LogWarning("test");
+                shaderProperties = (matEntity.dto as GlTFMaterialDto)?.extensions.umi3d.shaderProperties;
+            }
             if (listToOverride.Contains("ANY_mat"))
             {
-                OverrideMaterial(node, (Material)matEntity.Object, (s) => true);
+                OverrideMaterial(node, newMat, (s) => true, matEntity, shaderProperties);
             }
             else
             {
                 foreach (string matKey in listToOverride)
                 {
-                    OverrideMaterial(node, (Material)matEntity.Object, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")));
+                    OverrideMaterial(node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")),matEntity, shaderProperties);
                 }
             }
+         
             if (callback != null)
                 callback.Invoke();
 

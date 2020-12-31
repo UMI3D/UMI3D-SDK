@@ -52,7 +52,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// The list of Subnode intance when the model has tracked subMesh. Empty if sub Model are not tracked.
+        /// The list of Subnode instance when the model has tracked subMeshs. Empty if sub Models are not tracked.
         /// </summary>
         private List<UMI3DNodeInstance> _subNodeInstances;
         public List<UMI3DNodeInstance> subNodeInstances
