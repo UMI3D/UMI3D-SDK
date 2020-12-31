@@ -33,30 +33,28 @@ namespace umi3d.edk.collaboration
 
         void NewUser(UMI3DUser user)
         {
-            Debug.Log("Create Tracking channel with server");
-            UMI3DCollaborationServer.WebRTC.OpenChannel(user, "Tracking", DataType.Tracking, false);
+            UMI3DCollaborationServer.WebRTC.OpenChannel(user, "NonReliableTracking", DataType.Tracking, false);
+            UMI3DCollaborationServer.WebRTC.OpenChannel(user, "ReliableTracking", DataType.Tracking, true);
 
             foreach (var userA in UMI3DCollaborationServer.Collaboration.Users)
             {
                 if (userA == user) continue;
-                Debug.Log($"Trying create Tracking {userA.Id()}->{user.Id()}");
-                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "Tracking"))
-                {
-                    Debug.Log("Creating Tracking channel");
-                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "Tracking", DataType.Tracking, false);
-                }
+                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "NonReliableTracking"))
+                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "NonReliableTracking", DataType.Tracking, false);
+
+                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, user, "ReliableTracking"))
+                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, user, "ReliableTracking", DataType.Tracking, true);
 
             }
         }
 
         void closeChannel(UMI3DUser user1, UMI3DUser user2)
         {
-            Debug.Log("Trying to close Tracking channel between two users");
-            if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "Tracking"))
-            {
-                Debug.Log("Closing Tracking channel between two users");
-                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "Tracking");
-            }
+            if (UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "NonReliableTracking"))
+                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "NonReliableTracking");
+
+            if (UMI3DCollaborationServer.WebRTC.ContainsChannel(user1, user2, "ReliableTracking"))
+                UMI3DCollaborationServer.WebRTC.CloseChannel(user1, user2, "ReliableTracking");
         }
     }
 }

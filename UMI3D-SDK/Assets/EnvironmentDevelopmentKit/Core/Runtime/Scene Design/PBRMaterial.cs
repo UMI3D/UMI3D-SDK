@@ -196,10 +196,10 @@ namespace umi3d.edk
             {
                 return new Dictionary<string, object>(d);
             });
-            objectShaderProperties.OnInnerValueChanged += (string s, object o) => { shaderProperties[s] = o; };
-            objectShaderProperties.OnInnerValueAdded += (string s, object o) => { shaderProperties.Add(s, o); };
-            objectShaderProperties.OnInnerValueRemoved += (string s) => { shaderProperties.Remove(s); };
-            objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
+            objectShaderProperties.OnInnerValueChanged += (string s, object o) => { /*shaderProperties[s] = o;*/ };
+            objectShaderProperties.OnInnerValueAdded += (string s, object o) => {/* shaderProperties.Add(s, o); */};
+            objectShaderProperties.OnInnerValueRemoved += (string s) => { /*shaderProperties.Remove(s);*/ };
+            objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { /*shaderProperties = d; */};
         }
 
         public static void UpdateTexture(UMI3DAsyncProperty<UMI3DTextureResource> objectTexture, UMI3DTextureResource newTexture)
