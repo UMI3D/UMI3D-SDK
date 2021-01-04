@@ -22,7 +22,7 @@ namespace umi3d.edk.editor
 {
     [CustomEditor(typeof(UMI3DModel), true)]
     [CanEditMultipleObjects]
-    public class CVEModelEditor : RenderedNodeEditor
+    public class UMI3DModelEditor : RenderedNodeEditor
     {
 
         SerializedProperty variants;
