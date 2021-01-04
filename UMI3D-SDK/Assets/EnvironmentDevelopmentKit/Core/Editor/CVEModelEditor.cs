@@ -27,6 +27,8 @@ namespace umi3d.edk.editor
 
         SerializedProperty variants;
         SerializedProperty areSubobjectsTracked;
+        SerializedProperty isPartOfNavmesh;
+        SerializedProperty isTraversable;
 
         private Editor _materialEditor = null;
 
@@ -39,6 +41,8 @@ namespace umi3d.edk.editor
 
             variants = serializedObject.FindProperty("model.variants");
             areSubobjectsTracked = serializedObject.FindProperty("areSubobjectsTracked");
+            isPartOfNavmesh = serializedObject.FindProperty("isPartOfNavmesh");
+            isTraversable = serializedObject.FindProperty("isTraversable");
         }
 
         void OnDisable()
@@ -56,6 +60,8 @@ namespace umi3d.edk.editor
 
             EditorGUILayout.PropertyField(variants, true);
             EditorGUILayout.PropertyField(areSubobjectsTracked);
+            EditorGUILayout.PropertyField(isTraversable);
+            EditorGUILayout.PropertyField(isPartOfNavmesh);
 
             serializedObject.ApplyModifiedProperties();
         }
