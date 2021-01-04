@@ -23,6 +23,12 @@ namespace umi3d.edk
     public abstract class MaterialSO : ScriptableObject, UMI3DLoadableEntity
     {
 
+
+        public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
+        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
+
+        private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
+
         public enum AlphaMode
         {
             OPAQUE, MASK, BLEND

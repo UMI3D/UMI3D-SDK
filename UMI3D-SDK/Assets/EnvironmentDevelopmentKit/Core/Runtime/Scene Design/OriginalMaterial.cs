@@ -19,25 +19,23 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-    [CreateAssetMenu(fileName = "Umi3D_External_Material", menuName = "UMI3D/Umi3D_External_Material")]
-    public class ExternalResourceMaterial : MaterialSO
+    [CreateAssetMenu(fileName = "Umi3D_Original_Material", menuName = "UMI3D/Umi3D_Original_Material")]
+    public class OriginalMaterial : MaterialSO
     {
 
         public string matId;
-        public UMI3DResource resource;
 
 
-        ///<inheritdoc/>
+        private bool registered = false;
+
         public override GlTFMaterialDto ToDto()
         {
             var res = new GlTFMaterialDto();
             res.extensions = new GlTFMaterialExtensions()
-            { umi3d = new ExternalMaterialDto() };
-            ((ExternalMaterialDto)res.extensions.umi3d).resource = resource.ToDto();
-            ((ExternalMaterialDto)res.extensions.umi3d).id = GetId();
-            ((ExternalMaterialDto)res.extensions.umi3d).shaderProperties = shaderProperties;
+            { umi3d = new UMI3DOriginalMaterialDto() };
+            ((UMI3DOriginalMaterialDto)res.extensions.umi3d).id = GetId();
 
-
+            ((UMI3DOriginalMaterialDto)res.extensions.umi3d).shaderProperties = shaderProperties;
             return res;
         }
 
@@ -47,17 +45,12 @@ namespace umi3d.edk
             return ToDto();
         }
 
-        private bool registered = false;
-
         ///<inheritdoc/>
         protected override string GetId()
         {
-            if (!registered)
+            if(!registered)
             {
-                ExternalMaterialDto matDto = new ExternalMaterialDto()
-                {
-                    resource = resource.ToDto(),
-                };
+                UMI3DOriginalMaterialDto matDto = new UMI3DOriginalMaterialDto();
                 RegisterMaterial(matDto);
             }
             return matId;
@@ -66,7 +59,7 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
-            Debug.Log("id external mat " + id);
+            Debug.Log("id original mat " + id);
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, null, null, (d) =>
             {
                 return new Dictionary<string, object>(d);
@@ -77,9 +70,9 @@ namespace umi3d.edk
             objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
         }
 
-        ///<inheritdoc/>
         protected override void OnEnable()
         {
+
             matId = null;
             registered = false;
         }
@@ -90,5 +83,7 @@ namespace umi3d.edk
             registered = true;
             matId = id;
         }
+
+
     }
 }
