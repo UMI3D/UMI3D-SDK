@@ -40,7 +40,7 @@ namespace umi3d.cdk.collaboration
         private void OnValidate()
         {
             if (frequency < 0) frequency = 1;
-            sampleDuration = 1000 / frequency * sampleDuration;
+            sampleDuration = 1000 / frequency * sampleLength;
         }
 
         private void Start()
@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
 
             if (frequency < 0) frequency = 1;
-            sampleDuration = 1000 / frequency * sampleDuration;
+            sampleDuration = 1000 / frequency * sampleLength;
 
             if (MicrophoneListener.Exists)
                 MicrophoneListener.Instance.StartRecording(frequency, sampleDuration);
