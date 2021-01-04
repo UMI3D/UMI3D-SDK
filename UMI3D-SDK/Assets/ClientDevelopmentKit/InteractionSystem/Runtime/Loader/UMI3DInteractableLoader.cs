@@ -25,21 +25,11 @@ namespace umi3d.cdk.interaction
     static public class UMI3DInteractableLoader
     {
 
-        public static void DeleteInteractable(InteractableContainer interactable)
-        {
-            if (InteractableContainer.containers.Where(i => { return i.Interactable == interactable.Interactable; }).Count() == 1)
-            {
-                UMI3DAbstractToolLoader.DeleteInteractable(interactable.Interactable);
-                UMI3DEnvironmentLoader.DeleteEntity(interactable.Interactable.dto.id, null);
-            }
-            GameObject.Destroy(interactable);
-        }
-
         public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<string> failed)
         {
             node = UMI3DEnvironmentLoader.GetNode(dto.nodeId).gameObject;
             var interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
             finished?.Invoke();
         }
 

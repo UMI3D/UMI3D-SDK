@@ -40,7 +40,13 @@ namespace umi3d.cdk
         public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> LoadedNodesCount)
         {
             GameObject go = new GameObject(dto.name);
-            UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
+            UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go,
+                () =>
+                    {
+                        var sceneDto = dto.extensions.umi3d;
+                        foreach (var library in sceneDto.LibrariesId)
+                            UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
+                    });
             go.transform.SetParent(EnvironementLoader.transform);
             //Load Materials
             LoadSceneMaterials(dto, () => { EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
