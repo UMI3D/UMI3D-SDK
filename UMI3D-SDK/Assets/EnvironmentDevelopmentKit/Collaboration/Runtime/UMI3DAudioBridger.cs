@@ -27,7 +27,7 @@ namespace umi3d.edk.collaboration
     {
         [SerializeField]
         bool _Spacialized = false;
-        bool Spacialized
+        public bool Spacialized
         {
             get => _Spacialized; set {
                 _Spacialized = value;

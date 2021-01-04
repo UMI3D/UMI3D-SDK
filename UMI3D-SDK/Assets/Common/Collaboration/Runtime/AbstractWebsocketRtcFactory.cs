@@ -41,8 +41,6 @@ namespace umi3d.common.collaboration
 
         public virtual void HandleMessage(RTCDto dto)
         {
-            Debug.Log($"<color=lightblue>received RtcDto {dto}</color>");
-
             switch (dto)
             {
                 case OfferDto offer:
