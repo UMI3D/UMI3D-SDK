@@ -63,12 +63,6 @@ namespace umi3d.edk.collaboration
         public string login;
 
         public UMI3DAbstractWebSocketConnection connection;
-        public UMI3DAbstractWebSocketConnection reliableData;
-        public UMI3DAbstractWebSocketConnection unreliableData;
-        public UMI3DAbstractWebSocketConnection reliableTracking;
-        public UMI3DAbstractWebSocketConnection unreliableTracking;
-        public UMI3DAbstractWebSocketConnection audio;
-        public UMI3DAbstractWebSocketConnection video;
 
         public UMI3DAudioPlayer audioPlayer;
         public UMI3DAudioPlayer videoPlayer;

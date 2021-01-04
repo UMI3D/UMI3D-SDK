@@ -40,21 +40,7 @@ namespace umi3d.edk.collaboration
         public DataChannel CreateChannel(UMI3DCollaborationUser user, bool reliable, DataType dataType)
         {
             var dc = new WebsocketDataChannel(UMI3DGlobalID.ServerId, user.Id(), $"{(reliable ? ReliableName : UnreliableName)}_{dataType}", reliable, dataType);
-            switch (dataType)
-            {
-                case DataType.Data:
-                    dc.Socket = reliable ? user.reliableData : user.unreliableData;
-                    break;
-                case DataType.Audio:
-                    dc.Socket = user.audio;
-                    break;
-                case DataType.Video:
-                    dc.Socket = user.video;
-                    break;
-                case DataType.Tracking:
-                    dc.Socket = reliable ? user.reliableTracking : user.unreliableTracking;
-                    break;
-            }
+            dc.Socket = user.connection;
             var dto = new RTCDataChannelDto() { reliable = reliable, sourceUser = UMI3DGlobalID.ServerId, targetUser = user.Id(), type = dataType };
             SendWebsocket(user, dto);
             return dc;

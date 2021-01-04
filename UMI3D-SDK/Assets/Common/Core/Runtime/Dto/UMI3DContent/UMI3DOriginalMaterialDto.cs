@@ -14,15 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d
-{
-    static public class UMI3DVersion
-    {
-        public static string version { get { return major + "." + minor + "." + status + "." + date; } }
-        public readonly static string major = "2";
-        public readonly static string minor = "1";
-        public readonly static string status = "b";
-        public readonly static string date = "210104";
+using System.Collections.Generic;
 
+namespace umi3d.common
+{
+    [System.Serializable]
+    public class UMI3DOriginalMaterialDto : AbstractEntityDto, IMaterialDto
+    {
+        public Dictionary<string, object> shaderProperties { get; set; }
     }
 }

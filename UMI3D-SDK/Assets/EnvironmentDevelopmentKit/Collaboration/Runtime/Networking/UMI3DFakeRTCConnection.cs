@@ -50,34 +50,6 @@ namespace umi3d.edk.collaboration
         protected override void OnUserCreated(UMI3DCollaborationUser user, bool reconnection)
         {
             base.OnUserCreated(user, reconnection);
-            switch (type)
-            {
-                case DataType.Data:
-                    if (reliable)
-                        user.reliableData = this;
-                    else
-                        user.unreliableData = this;
-                    break;
-
-                case DataType.Audio:
-                    user.audio = this;
-                    break;
-
-                case DataType.Video:
-                    user.video = this;
-                    break;
-
-                case DataType.Tracking:
-                    if (reliable)
-                        user.reliableTracking = this;
-                    else
-                        user.unreliableTracking = this;
-                    break;
-
-                default:
-                    Debug.LogWarning("Case not catch. Missing DataType case");
-                    break;
-            }
             Debug.Log($"<color=yellow>open {type} [reliable:{reliable}] {_id}</color>");
         }
 

@@ -48,21 +48,7 @@ namespace umi3d.cdk.collaboration
 
             var id = user == null ? UMI3DGlobalID.ServerId : user.id;
             var dc = new WebsocketDataChannel(UMI3DCollaborationClientServer.Identity.userId, id, $"{(reliable ? ReliableName : UnreliableName)}_{dataType}", reliable, dataType);
-            switch (dataType)
-            {
-                case DataType.Data:
-                    dc.Socket = reliable ? UMI3DCollaborationClientServer.Instance.WebSocketReliableDataClient : UMI3DCollaborationClientServer.Instance.WebSocketUnreliableDataClient;
-                    break;
-                case DataType.Audio:
-                    dc.Socket = UMI3DCollaborationClientServer.Instance.WebSocketAudioClient;
-                    break;
-                case DataType.Video:
-                    dc.Socket = UMI3DCollaborationClientServer.Instance.WebSocketVideoClient;
-                    break;
-                case DataType.Tracking:
-                    dc.Socket = reliable ? UMI3DCollaborationClientServer.Instance.WebSocketReliableTrackingClient : UMI3DCollaborationClientServer.Instance.WebSocketUnreliableTrackingClient;
-                    break;
-            }
+            dc.Socket = UMI3DCollaborationClientServer.Instance.WebSocketClient;
             dataChannels.Add(dc);
             var dto = new RTCDataChannelDto() { reliable = reliable, sourceUser = UMI3DCollaborationClientServer.Identity.userId, targetUser = id, type = dataType };
             UMI3DCollaborationClientServer.Instance.WebSocketClient.Send(dto);
