@@ -369,7 +369,7 @@ namespace umi3d.cdk
                     Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
                     {
 
-                        if (matDto.name != null && matDto.name.Length > 0)
+                        if (matDto.name != null && matDto.name.Length > 0 && m != null)
                             m.name = matDto.name;
                         //register the material
                         RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);

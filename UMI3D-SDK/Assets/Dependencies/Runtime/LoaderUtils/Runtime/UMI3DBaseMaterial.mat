@@ -73,7 +73,7 @@ Material:
     - _AlbedoAlphaMode: 0
     - _AlbedoAssignedAtRuntime: 0
     - _BlendOp: 0
-    - _BlendedClippingWidth: 1
+    - _BlendedClippingWidth: 0.2
     - _BorderLight: 0
     - _BorderLightOpaque: 0
     - _BorderLightOpaqueAlpha: 1
