@@ -251,7 +251,7 @@ namespace umi3d.cdk.collaboration
         {
             if (Exists)
             {
-                Debug.Log($"<color=magenta> new token { token}</color>");
+                //Debug.Log($"<color=magenta> new token { token}</color>");
                 lastTokenUpdate = DateTime.UtcNow;
                 Instance?.HttpClient?.SetToken(token);
                 Instance?.OnNewToken?.Invoke();
@@ -319,7 +319,6 @@ namespace umi3d.cdk.collaboration
         /// <param name="message"></param>
         static public void OnMessage(object message)
         {
-            Debug.Log(message);
             switch (message)
             {
                 case TokenDto tokenDto:

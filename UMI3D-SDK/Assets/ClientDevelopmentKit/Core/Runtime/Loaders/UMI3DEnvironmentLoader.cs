@@ -584,7 +584,7 @@ namespace umi3d.cdk
             while ((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
             {
                 yield return wait;
-                Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
+                //Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
             }
             if (SetUMI3DPorperty(node, dto)) yield break;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) yield break;

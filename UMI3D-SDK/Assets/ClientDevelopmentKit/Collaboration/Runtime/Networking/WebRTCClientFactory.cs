@@ -57,7 +57,7 @@ namespace umi3d.cdk.collaboration
 
         public override DataChannel CreateChannel(string userId, bool reliable, DataType dataType)
         {
-            Debug.Log($"</color=purple>{userId} {reliable} {dataType}");
+            //Debug.Log($"<color=purple>{userId} {reliable} {dataType}<color>");
             var user = UMI3DCollaborationEnvironmentLoader.Instance.UserList.FirstOrDefault(u => u.id == userId);
             return CreateChannel(user,reliable,dataType);
         }
