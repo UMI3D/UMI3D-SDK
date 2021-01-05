@@ -26,7 +26,7 @@ namespace umi3d.edk
         /// <summary>
         /// The identifiers list of the entities
         /// </summary>
-        public List<string> entityIds;
+        public List<UMI3DEntity> entityIds;
 
         /// <summary>
         /// The name of the modified property
@@ -45,7 +45,7 @@ namespace umi3d.edk
             {
                 property = property,
                 value = value,
-                entityIds = entityIds
+                entityIds = entityIds.Select(e => e.Id())
             };
 
         }

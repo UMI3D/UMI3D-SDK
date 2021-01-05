@@ -14,30 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of an entity's property changed.
+    /// Data Tranfert Object for UMI3D media
     /// </summary>
-    [Serializable]
-    public class MultiSetEntityPropertyDto : AbstractOperationDto
+    [System.Serializable]
+    public class EntityGroupDto : UMI3DDto,IEntity
     {
-        /// <summary>
-        /// The identifiers list of the entities
-        /// </summary>
-        public IEnumerable<string> entityIds;
-
-        /// <summary>
-        /// The name of the modified property
-        /// </summary>
-        public string property;
-
-        /// <summary>
-        /// The new value for the property
-        /// </summary>
-        public object value;
+        public string id;
+        public IEnumerable<string> entitiesId;
     }
 }
