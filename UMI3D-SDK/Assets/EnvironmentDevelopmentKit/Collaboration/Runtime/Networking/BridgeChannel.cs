@@ -22,7 +22,7 @@ namespace umi3d.edk.collaboration
     public class BridgeChannel : DataChannel
     {
         public UMI3DCollaborationUser userA, userB;
-        public BridgeChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        public BridgeChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, string label, bool reliable, DataChannelTypes type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
         {
             this.userA = userA;
             this.userB = userB;
@@ -33,7 +33,7 @@ namespace umi3d.edk.collaboration
             return (this.userA == userA && this.userB == userB) || (this.userA == userB && this.userB == userA);
         }
 
-        public bool Equals(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB,bool reliable,DataType type)
+        public bool Equals(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB,bool reliable,DataChannelTypes type)
         {
             return Contain(userA,userB) && type == this.type && reliable == this.reliable;
         }

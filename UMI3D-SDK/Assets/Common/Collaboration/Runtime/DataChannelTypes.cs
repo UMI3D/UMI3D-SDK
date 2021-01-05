@@ -14,13 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
+
 namespace umi3d.common.collaboration
 {
-    public enum DataType
+    public enum DataChannelTypes
     {
-        Data,
-        Audio,
-        Video,
-        Tracking
+        Signaling = MessageGroupIds.START_OF_GENERIC_IDS + 1,
+        Tracking = MessageGroupIds.START_OF_GENERIC_IDS + 2,
+        Data = MessageGroupIds.START_OF_GENERIC_IDS + 3,
+        Video = MessageGroupIds.START_OF_GENERIC_IDS + 4,
+        VoIP = MessageGroupIds.VOIP
     }
 }

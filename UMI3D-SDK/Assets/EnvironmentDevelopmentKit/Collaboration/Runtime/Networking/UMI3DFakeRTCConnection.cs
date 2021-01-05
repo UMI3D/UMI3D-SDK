@@ -30,20 +30,20 @@ namespace umi3d.edk.collaboration
 
     public class UMI3DFakeRTCConnection : UMI3DAbstractWebSocketConnection
     {
-        public DataType type { get; }
+        public DataChannelTypes type { get; }
         public bool reliable { get; }
 
         Action<UMI3DDto> messageAction { get; }
 
         ///<inheritdoc/>
-        public UMI3DFakeRTCConnection(DataType type, bool reliable, Action<UMI3DDto> messageAction) : base()
+        public UMI3DFakeRTCConnection(DataChannelTypes type, bool reliable, Action<UMI3DDto> messageAction) : base()
         {
             this.type = type;
             this.reliable = reliable;
             this.messageAction = messageAction;
         }
 
-        public UMI3DFakeRTCConnection(DataType type, Action<UMI3DDto> messageAction) : this(type, false, messageAction)
+        public UMI3DFakeRTCConnection(DataChannelTypes type, Action<UMI3DDto> messageAction) : this(type, false, messageAction)
         { }
 
         ///<inheritdoc/>

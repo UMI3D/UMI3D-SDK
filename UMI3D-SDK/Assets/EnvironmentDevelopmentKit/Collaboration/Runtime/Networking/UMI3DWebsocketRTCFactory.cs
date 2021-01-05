@@ -37,7 +37,7 @@ namespace umi3d.edk.collaboration
             return CreateChannel(user, dataBase.reliable, dataBase.type);
         }
 
-        public DataChannel CreateChannel(UMI3DCollaborationUser user, bool reliable, DataType dataType)
+        public DataChannel CreateChannel(UMI3DCollaborationUser user, bool reliable, DataChannelTypes dataType)
         {
             var dc = new WebsocketDataChannel(UMI3DGlobalID.ServerId, user.Id(), $"{(reliable ? ReliableName : UnreliableName)}_{dataType}", reliable, dataType);
             dc.Socket = user.connection;
@@ -56,7 +56,7 @@ namespace umi3d.edk.collaboration
                         var user = UMI3DCollaborationServer.Collaboration.GetUser(fake.sourceId);
                         switch (fake.dataType)
                         {
-                            case DataType.Tracking:
+                            case DataChannelTypes.Tracking:
                                 var trackingData = UMI3DDto.FromBson(fake.content);
                                 if (trackingData is common.userCapture.UserTrackingFrameDto frame)
                                     UMI3DEmbodimentManager.Instance.UserTrackingReception(frame);
@@ -72,19 +72,19 @@ namespace umi3d.edk.collaboration
 
                                 break;
 
-                            case DataType.Data:
+                            case DataChannelTypes.Data:
                                 var data2 = UMI3DDto.FromBson(fake.content);
                                 UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, data2);
                                 break;
-                            case DataType.Audio:
+                            case DataChannelTypes.VoIP:
                                 UMI3DCollaborationServer.Collaboration.Users
                                     .Where(u => u.Id() != fake.sourceId)
                                     .Select(u => u.dataChannels
-                                    .FirstOrDefault(d => d.reliable == false && d.type == DataType.Audio))
+                                    .FirstOrDefault(d => d.reliable == false && d.type == DataChannelTypes.VoIP))
                                     .Where(d => d != default)
                                     .ForEach(d => d.Send(fake.content));
                                 break;
-                            case DataType.Video:
+                            case DataChannelTypes.Video:
                                 break;
                         }
                     }
@@ -103,7 +103,7 @@ namespace umi3d.edk.collaboration
             return CreateChannel(userA, userB, dataBase.reliable, dataBase.type);
         }
 
-        public DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, bool reliable, DataType dataType)
+        public DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, bool reliable, DataChannelTypes dataType)
         {
             var dto = new RTCDataChannelDto() { reliable = reliable, sourceUser = userA.Id(), targetUser = userB.Id(), type = dataType };
             Debug.Log(dto.reliable);
@@ -112,7 +112,7 @@ namespace umi3d.edk.collaboration
             return dc;
         }
 
-        public DataChannel CreateChannel(string userA, string userB, bool reliable, DataType dataType)
+        public DataChannel CreateChannel(string userA, string userB, bool reliable, DataChannelTypes dataType)
         {
             if (userA == UMI3DGlobalID.ServerId) return CreateChannel(userB, reliable, dataType);
             else if (userB == UMI3DGlobalID.ServerId) return CreateChannel(userA, reliable, dataType);
@@ -124,7 +124,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public override DataChannel CreateChannel(string user, bool reliable, DataType dataType)
+        public override DataChannel CreateChannel(string user, bool reliable, DataChannelTypes dataType)
         {
             var u = UMI3DCollaborationServer.Collaboration.GetUser(user);
             return CreateChannel(u, reliable, dataType);

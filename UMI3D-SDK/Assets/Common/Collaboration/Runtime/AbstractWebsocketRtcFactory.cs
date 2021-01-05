@@ -64,7 +64,7 @@ namespace umi3d.common.collaboration
             }
         }
 
-        public abstract DataChannel CreateChannel(string user, bool reliable, DataType dataType);
+        public abstract DataChannel CreateChannel(string user, bool reliable, DataChannelTypes dataType);
 
         public void Init()
         {

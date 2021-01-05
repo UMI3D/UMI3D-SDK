@@ -22,7 +22,7 @@ namespace umi3d.cdk.collaboration
     public interface IWebRTCClient : IAbstractWebRtcClient
     {
         DataChannel CreateChannel(UMI3DUser user, DataChannel dataBase);
-        DataChannel CreateChannel(UMI3DUser user, bool reliable, DataType dataType);
+        DataChannel CreateChannel(UMI3DUser user, bool reliable, DataChannelTypes dataType);
 
         void OnMessage(UMI3DDto dto);
 

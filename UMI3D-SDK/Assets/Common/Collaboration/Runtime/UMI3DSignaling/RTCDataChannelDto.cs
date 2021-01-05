@@ -20,6 +20,6 @@ namespace umi3d.common.collaboration
     {
         public string Label;
         public bool reliable;
-        public DataType type;
+        public DataChannelTypes type;
     }
 }

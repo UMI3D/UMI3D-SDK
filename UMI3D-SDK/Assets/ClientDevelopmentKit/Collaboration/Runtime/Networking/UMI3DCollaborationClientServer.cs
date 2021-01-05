@@ -275,7 +275,7 @@ namespace umi3d.cdk.collaboration
         protected override void _Send(AbstractBrowserRequestDto dto, bool reliable)
         {
             var content = dto.ToBson();
-            var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Data && d.reliable == reliable);
+            var dc = dataChannels.FirstOrDefault(d => d.type == DataChannelTypes.Data && d.reliable == reliable);
             if (dc != default)
                 dc.Send(content);
         }
@@ -289,7 +289,7 @@ namespace umi3d.cdk.collaboration
         {
             dto.userId = Identity.userId;
             var content = dto.ToBson();
-            var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Audio);
+            var dc = dataChannels.FirstOrDefault(d => d.type == DataChannelTypes.VoIP);
             if (dc != default)
                 dc.Send(content);
             //UMI3DCollaborationEnvironmentLoader.Instance.UserList.ForEach(u =>
@@ -308,7 +308,7 @@ namespace umi3d.cdk.collaboration
         protected override void _SendTracking(AbstractBrowserRequestDto dto, bool reliable)
         {
             var content = dto.ToBson();
-            var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Tracking && d.reliable == reliable);
+            var dc = dataChannels.FirstOrDefault(d => d.type == DataChannelTypes.Tracking && d.reliable == reliable);
             if (dc != default)
                 dc.Send(content);
         }

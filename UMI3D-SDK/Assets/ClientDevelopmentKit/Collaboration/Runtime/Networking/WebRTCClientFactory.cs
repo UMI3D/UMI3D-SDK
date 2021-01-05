@@ -36,7 +36,7 @@ namespace umi3d.cdk.collaboration
             throw new System.NotImplementedException();
         }
 
-        public DataChannel CreateChannel(UMI3DUser user, bool reliable, DataType dataType)
+        public DataChannel CreateChannel(UMI3DUser user, bool reliable, DataChannelTypes dataType)
         {
 
             var dataChannels = user == null ? UMI3DCollaborationClientServer.dataChannels : user.dataChannels;
@@ -55,7 +55,7 @@ namespace umi3d.cdk.collaboration
             return dc;
         }
 
-        public override DataChannel CreateChannel(string userId, bool reliable, DataType dataType)
+        public override DataChannel CreateChannel(string userId, bool reliable, DataChannelTypes dataType)
         {
             //Debug.Log($"<color=purple>{userId} {reliable} {dataType}<color>");
             var user = UMI3DCollaborationEnvironmentLoader.Instance.UserList.FirstOrDefault(u => u.id == userId);
@@ -68,15 +68,15 @@ namespace umi3d.cdk.collaboration
             {
                 switch (fake.dataType)
                 {
-                    case DataType.Tracking:
-                    case DataType.Data:
+                    case DataChannelTypes.Tracking:
+                    case DataChannelTypes.Data:
                         var data = UMI3DDto.FromBson(fake.content);
                         UMI3DCollaborationClientServer.OnRtcMessage(null, data, null);
                         break;
-                    case DataType.Audio:
+                    case DataChannelTypes.VoIP:
                         AudioManager.Instance.Read(fake.content);
                         break;
-                    case DataType.Video:
+                    case DataChannelTypes.Video:
                         break;
                 }
                 

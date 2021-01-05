@@ -25,8 +25,8 @@ namespace umi3d.common.collaboration
         /// </summary>
         public static List<DataChannel> defaultPeerToPeerChannels = new List<DataChannel>()
         {
-            new DataChannel("Reliable",true,DataType.Data),
-            new DataChannel("Unreliable",false,DataType.Data),
+            new DataChannel("Reliable",true,DataChannelTypes.Data),
+            new DataChannel("Unreliable",false,DataChannelTypes.Data),
             //new DataChannel("Tracking",false,DataType.Tracking), // TO COMMENT
         };
 

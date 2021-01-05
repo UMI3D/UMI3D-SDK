@@ -22,9 +22,9 @@ namespace umi3d.edk.collaboration
     public interface IWebRTCServer : IAbstractWebRtcClient
     {
         DataChannel CreateChannel(UMI3DCollaborationUser user, DataChannel dataBase);
-        DataChannel CreateChannel(UMI3DCollaborationUser user, bool reliable, DataType dataType);
+        DataChannel CreateChannel(UMI3DCollaborationUser user, bool reliable, DataChannelTypes dataType);
         DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, DataChannel dataBase);
-        DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, bool reliable, DataType dataType);
+        DataChannel CreateChannel(UMI3DCollaborationUser userA, UMI3DCollaborationUser userB, bool reliable, DataChannelTypes dataType);
 
         void OnMessage(UMI3DDto dto);
 

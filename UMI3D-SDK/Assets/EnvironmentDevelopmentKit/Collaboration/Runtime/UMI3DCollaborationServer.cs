@@ -151,7 +151,7 @@ namespace umi3d.edk.collaboration
         public static void sendRTC(UMI3DUser user, UMI3DDto dto, bool reliable)
         {
             var _user = user as UMI3DCollaborationUser;
-            var dc = _user.dataChannels.FirstOrDefault(d => d.type == DataType.Data && d.reliable == reliable);
+            var dc = _user.dataChannels.FirstOrDefault(d => d.type == DataChannelTypes.Data && d.reliable == reliable);
             if (dc != default)
                 dc.Send(dto.ToBson());
         }

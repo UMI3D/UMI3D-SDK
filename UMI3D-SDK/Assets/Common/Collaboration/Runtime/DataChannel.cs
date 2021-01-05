@@ -31,7 +31,7 @@ namespace umi3d.common.collaboration
     {
         public string Label;
         public bool reliable;
-        public DataType type;
+        public DataChannelTypes type;
         public Action OnOpen;
         public Action OnClose;
         public Action OnCreated;
@@ -49,7 +49,7 @@ namespace umi3d.common.collaboration
 
         protected virtual void CheckState() { Debug.Log("should not be here"); }
 
-        public DataChannel(string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null)
+        public DataChannel(string label, bool reliable, DataChannelTypes type, Action onCreated = null, Action onOpen = null, Action onClose = null)
         {
             Label = label;
             this.reliable = reliable;
@@ -112,7 +112,7 @@ namespace umi3d.common.collaboration
             this.target = new List<string>() { target };
         }
 
-        public WebsocketDataChannel(string id, string target, string label, bool reliable, DataType type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
+        public WebsocketDataChannel(string id, string target, string label, bool reliable, DataChannelTypes type, Action onCreated = null, Action onOpen = null, Action onClose = null) : base(label, reliable, type, onCreated, onOpen, onClose)
         {
             this.id = id;
             this.target = new List<string>() { target };

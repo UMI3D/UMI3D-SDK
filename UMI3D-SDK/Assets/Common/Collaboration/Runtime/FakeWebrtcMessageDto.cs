@@ -22,7 +22,7 @@ namespace umi3d.common.collaboration
     {
         public string sourceId;
         public List<string> targetId;
-        public DataType dataType;
+        public DataChannelTypes dataType;
         public bool reliable;
         public byte[] content;
     }
