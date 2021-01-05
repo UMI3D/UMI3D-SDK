@@ -182,22 +182,23 @@ namespace umi3d.cdk
         public override FileDto ChooseVariante(List<FileDto> files)
         {
             FileDto res = null;
-            foreach (var file in files)
-            {
-                bool ok = res == null;
-                if (!ok && supportedformats.Contains(file.format))
+            if (files != null)
+                foreach (var file in files)
                 {
-                    if (!supportedformats.Contains(res.format))
-                        ok = true;
-                    else
-                        ok = Compare(file.metrics.resolution, res.metrics.resolution, maximumResolution);
+                    bool ok = res == null;
+                    if (!ok && supportedformats.Contains(file.format))
+                    {
+                        if (!supportedformats.Contains(res.format))
+                            ok = true;
+                        else
+                            ok = Compare(file.metrics.resolution, res.metrics.resolution, maximumResolution);
 
+                    }
+                    if (ok)
+                    {
+                        res = file;
+                    }
                 }
-                if (ok)
-                {
-                    res = file;
-                }
-            }
             return res;
         }
 
