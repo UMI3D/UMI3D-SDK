@@ -375,7 +375,6 @@ namespace umi3d.cdk
                         RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
                         performed.Invoke();
                     });
-
                     break;
                 default:
                     Debug.Log($"load entity fail missing case {entity.GetType()}");

@@ -22,9 +22,8 @@ namespace umi3d.common
     /// Data Tranfert Object for UMI3D media
     /// </summary>
     [System.Serializable]
-    public class EntityGroupDto : UMI3DDto,IEntity
+    public class EntityGroupDto : AbstractEntityDto, IEntity
     {
-        public string id;
-        public IEnumerable<string> entitiesId;
+        public List<string> entitiesId;
     }
 }

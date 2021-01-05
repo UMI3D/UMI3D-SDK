@@ -24,15 +24,15 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class EntityGroupLoader
+    static public class EntityGroupLoader
     {
-        public virtual void ReadUMI3DExtension(EntityGroupDto groupDto)
+        static public void ReadUMI3DExtension(EntityGroupDto groupDto)
         {
             groupDto.entitiesId = groupDto.entitiesId.ToList();
             UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto,null);
         }
 
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity != null && entity.dto is EntityGroupDto groupDto)
             {
@@ -55,9 +55,9 @@ namespace umi3d.cdk
             return false;
         }
 
-        protected virtual void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
+        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
         {
-            var list = groupDto.entitiesId as List<string>;
+            var list = groupDto.entitiesId;
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId = property.value as IEnumerable<string>;
+                    groupDto.entitiesId = property.value as List<string>;
                     break;
             }
         }

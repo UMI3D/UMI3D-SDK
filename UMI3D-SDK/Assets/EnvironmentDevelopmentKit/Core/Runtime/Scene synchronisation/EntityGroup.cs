@@ -73,7 +73,7 @@ namespace umi3d.edk
 
         public IEntity ToEntityDto(UMI3DUser user)
         {
-            return new EntityGroupDto() { id = Id(), entitiesId = entities.GetValue(user).Select(e => e.Id()) };
+            return new EntityGroupDto() { id = Id(), entitiesId = entities.GetValue(user).Select(e => e.Id()).ToList() };
         }
 
         public void Destroy()

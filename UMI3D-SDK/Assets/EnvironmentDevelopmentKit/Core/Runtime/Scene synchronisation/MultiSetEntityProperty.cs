@@ -45,7 +45,7 @@ namespace umi3d.edk
             {
                 property = property,
                 value = value,
-                entityIds = entityIds.Select(e => e.Id())
+                entityIds = entityIds.Select(e => e.Id()).ToList()
             };
 
         }
