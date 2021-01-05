@@ -21,9 +21,10 @@ namespace umi3d.cdk.collaboration
 {
     public interface IWebRTCClient : IAbstractWebRtcClient
     {
-        bool ExistServer(bool reliable, DataType dataType, out List<DataChannel> dataChannels);
-        void sendAudio(AudioDto dto);
-        void sendAudio(List<DataChannel> channels, AudioDto dto);
-        void SendServer(UMI3DDto dto, bool reliable);
+        DataChannel CreateChannel(UMI3DUser user, DataChannel dataBase);
+        DataChannel CreateChannel(UMI3DUser user, bool reliable, DataType dataType);
+
+        void OnMessage(UMI3DDto dto);
+
     }
 }

@@ -28,98 +28,49 @@ using WebSocketSharp.Server;
 namespace umi3d.edk.collaboration
 {
 
-    public class UMI3DFakeRTCConnection : WebSocketBehavior
+    public class UMI3DFakeRTCConnection : UMI3DAbstractWebSocketConnection
     {
-        internal string _id = null;
-        private static int _number = 0;
-        private string _prefix;
-        public bool reliable { get; private set; }
+        public DataType type { get; }
+        public bool reliable { get; }
 
-        Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction;
-        Action<UMI3DFakeRTCConnection> closeAction;
-        Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction;
+        Action<UMI3DDto> messageAction { get; }
 
-        public UMI3DFakeRTCConnection(bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction) : this(null, reliable, messageAction, closeAction, identifyAction)
+        ///<inheritdoc/>
+        public UMI3DFakeRTCConnection(DataType type, bool reliable, Action<UMI3DDto> messageAction) : base()
         {
-        }
-
-        public UMI3DFakeRTCConnection(string prefix, bool reliable, Action<UMI3DFakeRTCConnection, UMI3DDto> messageAction, Action<UMI3DFakeRTCConnection> closeAction, Action<UMI3DFakeRTCConnection, IdentityDto> identifyAction)
-        {
-            _prefix = !prefix.IsNullOrEmpty() ? prefix : "fakeRTCconnection_";
+            this.type = type;
             this.reliable = reliable;
             this.messageAction = messageAction;
-            this.closeAction = closeAction;
-            this.identifyAction = identifyAction;
         }
 
-        private static int getNumber()
-        {
-            return Interlocked.Increment(ref _number);
-        }
+        public UMI3DFakeRTCConnection(DataType type, Action<UMI3DDto> messageAction) : this(type, false, messageAction)
+        { }
 
         ///<inheritdoc/>
-        protected override void OnClose(CloseEventArgs e)
+        protected override void OnUserCreated(UMI3DCollaborationUser user, bool reconnection)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(_OnClose(e));
-        }
-
-        ///<inheritdoc/>
-        protected override void OnMessage(MessageEventArgs e)
-        {
-            UnityMainThreadDispatcher.Instance().Enqueue(_OnMessage(e));
-        }
-
-        IEnumerator _OnMessage(MessageEventArgs e)
-        {
-            var data = UMI3DDto.FromBson(e.RawData);
-            if (data is IdentityDto id)
-                identifyAction?.Invoke(this, id);
-            else
-                messageAction?.Invoke(this, data);
-            yield break;
-        }
-
-        IEnumerator _OnClose(CloseEventArgs e)
-        {
-            closeAction?.Invoke(this);
-            yield break;
+            base.OnUserCreated(user, reconnection);
+            Debug.Log($"<color=yellow>open {type} [reliable:{reliable}] {_id}</color>");
         }
 
         ///<inheritdoc/>
         protected override void OnOpen()
         {
-            Debug.Log("open");
+            base.OnOpen();
         }
 
-        /// <summary>
-        /// Send Byte message.
-        /// </summary>
-        /// <param name="data">message to send</param>
-        /// <param name="callback">callback function</param>
-        public void SendData(byte[] data, Action<bool> callback = null)
+        ///<inheritdoc/>
+        protected override void OnClose(CloseEventArgs e)
         {
-            if (data != null && this.Context.WebSocket.IsConnected)
-            {
-                try
-                {
-                    if (callback == null) callback = (b) => { };
-                    SendAsync(data, callback);
-                }
-                catch (InvalidOperationException exp)
-                {
-                    Debug.LogWarning(exp);
-                    return;
-                }
-            }
+            Debug.Log($"<color=orange>onClose {type} [reliable:{reliable}] {_id}</color>");
+            UnityMainThreadDispatcher.Instance().Enqueue(UMI3DCollaborationServer.Collaboration.ConnectionClose(_id));
         }
 
-        /// <summary>
-        /// det the id of the connection
-        /// </summary>
-        /// <returns></returns>
-        public string GetId()
+        ///<inheritdoc/>
+        protected override void HandleMessage(UMI3DDto dto)
         {
-            return _id;
+            base.HandleMessage(dto);
+            messageAction?.Invoke(dto);
         }
     }
 }

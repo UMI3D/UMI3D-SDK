@@ -72,23 +72,19 @@ namespace umi3d.cdk
                             {
                                 if (property is SetEntityListAddPropertyDto)
                                 {
-                                    Debug.Log("Client Adding " + embd.userId + " index " + (property as SetEntityListAddPropertyDto).index + " " + (property.value as BoneBindingDto).boneType);
                                     embd.AddBinding((property as SetEntityListAddPropertyDto).index, (property.value as BoneBindingDto));
                                 }
                                 else if (property is SetEntityListRemovePropertyDto)
                                 {
-                                    Debug.Log("Client Removing " + embd.userId + " index " + (property as SetEntityListRemovePropertyDto).index + " " + (property.value as BoneBindingDto).boneType);
                                     embd.RemoveBinding((property as SetEntityListRemovePropertyDto).index, (property.value as BoneBindingDto));
                                 }
                                 else
                                 {
-                                    Debug.Log("Client Updating " + embd.userId + " index " + (property as SetEntityListPropertyDto).index + " " + (property.value as BoneBindingDto).boneType);
                                     embd.UpdateBinding((property as SetEntityListPropertyDto).index, (property.value as BoneBindingDto));
                                 }
                             }
                             else
                             {
-                                Debug.Log("Client Update " + embd.userId + " Binding List");
                                 embd.SetBindings(property.value as List<BoneBindingDto>);
                             }
                         }

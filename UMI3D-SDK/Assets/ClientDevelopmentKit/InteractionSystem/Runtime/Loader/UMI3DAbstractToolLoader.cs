@@ -18,17 +18,11 @@ using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
     public static class UMI3DAbstractToolLoader
     {
-
-        public static void DeleteInteractable(AbstractTool tool)
-        {
-            tool.Destroy();
-        }
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {

@@ -27,9 +27,8 @@ namespace umi3d.cdk.collaboration
     public class AudioReader : MonoBehaviour, IAudioReader
     {
         AudioSource _audio;
-        public int position = 0;
-        public int samplerate = 44100;
-
+        [SerializeField, ReadOnly]
+        int sampleLength;
 
         /// <summary>
         /// Read an AudioDto and play it in an audioSource.
@@ -37,16 +36,12 @@ namespace umi3d.cdk.collaboration
         /// <param name="sample">AudioDto  to play</param>
         public void Read(AudioDto sample)
         {
+            if (_audio == null)
+                SetUp(sample);
+            var index = sample.pos % sampleLength;
             if (sample != null)
             {
-                if (_audio == null)
-                {
-                    _audio = GetComponent<AudioSource>();
-                    _audio.clip = AudioClip.Create("GlobalAudio", samplerate * 10, 1, samplerate, false, OnAudioRead, OnAudioSetPosition);
-                }
-
-                // Put the data in the audio source.
-                _audio.clip.SetData(sample.sample, sample.pos);
+                _audio.clip.SetData(sample.sample, index);
                 if (!_audio.isPlaying) _audio.Play();
             }
         }
@@ -59,8 +54,13 @@ namespace umi3d.cdk.collaboration
 
         public void OnAudioSetPosition(int newPosition)
         {
-            position = newPosition;
+        }
+
+        public void SetUp(AudioDto sample)
+        {
+            sampleLength = sample.sample.Length;
+            _audio = GetComponent<AudioSource>();
+            _audio.clip = AudioClip.Create("GlobalAudio", sampleLength, 1, sample.frequency, false, OnAudioRead, OnAudioSetPosition);
         }
     }
-
 }

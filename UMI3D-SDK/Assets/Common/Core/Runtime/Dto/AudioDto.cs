@@ -18,6 +18,8 @@ namespace umi3d.common
 {
     public class AudioDto : UMI3DDto
     {
+        public string userId;
+        public int frequency;
         public float[] sample;
         public int pos;
     }

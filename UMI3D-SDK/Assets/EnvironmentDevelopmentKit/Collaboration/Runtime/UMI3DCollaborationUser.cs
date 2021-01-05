@@ -15,18 +15,25 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
+using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
     public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
-        public UMI3DCollaborationUser(string login, UMI3DWebSocketConnection connection)
+        public UMI3DCollaborationUser(string login)
         {
             this.login = login;
+            Debug.Log($"<color=magenta>new User {Id()}</color>");
+        }
+
+        public void InitConnection(UMI3DWebSocketConnection connection)
+        {
             this.connection = connection;
             UserConnectionDto ucDto = new UserConnectionDto(ToUserDto());
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
@@ -48,16 +55,19 @@ namespace umi3d.edk.collaboration
         /// The user token
         /// </summary>
         public string token { get; private set; }
+        
 
         /// <summary>
         /// The unique user login.
         /// </summary>
         public string login;
 
-        public UMI3DWebSocketConnection connection;
+        public UMI3DAbstractWebSocketConnection connection;
+
         public UMI3DAudioPlayer audioPlayer;
         public UMI3DAudioPlayer videoPlayer;
 
+        public List<DataChannel> dataChannels = new List<DataChannel>();
 
         public string RenewToken()
         {

@@ -43,10 +43,10 @@ namespace umi3d.edk.collaboration
         public EncoderType encoderType;
         UMI3DHttp http;
         UMI3DWebsocket websocket;
-        UMI3DWebRTC webRTC;
+        IWebRTCServer webRTC;
 
         static public UMI3DWebsocket Websocket { get => Exists ? Instance.websocket : null; }
-        static public UMI3DWebRTC WebRTC { get => Exists ? Instance.webRTC : null; }
+        static public IWebRTCServer WebRTC { get => Exists ? Instance.webRTC : null; }
 
         public float tokenLifeTime = 10f;
 
@@ -66,15 +66,6 @@ namespace umi3d.edk.collaboration
         public bool useRandomHttpPort;
         [EditorReadOnly]
         public int httpPort;
-
-        [EditorReadOnly]
-        public bool useRandomFakeRTCReliablePort;
-        [EditorReadOnly]
-        public int fakeRTCReliablePort;
-        [EditorReadOnly]
-        public bool useRandomFakeRTCUnreliablePort;
-        [EditorReadOnly]
-        public int fakeRTCUnreliablePort;
 
         public AuthenticationType Authentication;
 
@@ -110,8 +101,12 @@ namespace umi3d.edk.collaboration
             dto.port = httpPort;
             dto.postfix = UMI3DNetworkingKeys.websocket;
             dto.websocketUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket;
-            dto.rtcUnreliableUrl = "ws://" + ip + ":" + fakeRTCUnreliablePort + UMI3DNetworkingKeys.websocket;
-            dto.rtcReliableUrl = "ws://" + ip + ":" + fakeRTCReliablePort + UMI3DNetworkingKeys.websocket;
+            dto.websocketReliableDataUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket_reliable_data;
+            dto.websocketUnreliableDataUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket_unreliable_data;
+            dto.websocketAudio = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket_audio;
+            dto.websocketVideo = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket_video;
+            dto.websocketReliableTrackingUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket_reliable_tracking;
+            dto.websocketUnreliableTrackingUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket_unreliable_tracking;
             dto.iceServers = iceServers?.iceServers;
             return dto;
         }
@@ -133,13 +128,10 @@ namespace umi3d.edk.collaboration
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
-            fakeRTCReliablePort = FreeTcpPort(useRandomFakeRTCReliablePort ? 0 : fakeRTCReliablePort);
-            fakeRTCUnreliablePort = FreeTcpPort(useRandomFakeRTCUnreliablePort ? 0 : fakeRTCUnreliablePort);
 
             http = new UMI3DHttp();
             websocket = new UMI3DWebsocket();
-            webRTC = new UMI3DWebRTC(this, encoderType == EncoderType.Software);
-            UMI3DWebRTC.iceServers = iceServers?.iceServers;
+            webRTC = new UMI3DWebsocketRTCFactory();
 
             isRunning = true;
             OnServerStart.Invoke();
@@ -159,7 +151,9 @@ namespace umi3d.edk.collaboration
         public static void sendRTC(UMI3DUser user, UMI3DDto dto, bool reliable)
         {
             var _user = user as UMI3DCollaborationUser;
-            Instance.webRTC.SendRTC(dto, reliable, user.Id(), _user?.useWebrtc ?? false);
+            var dc = _user.dataChannels.FirstOrDefault(d => d.type == DataType.Data && d.reliable == reliable);
+            if (dc != default)
+                dc.Send(dto.ToBson());
         }
 
         /// <summary>
@@ -168,7 +162,23 @@ namespace umi3d.edk.collaboration
         /// <param name="user"></param>
         public static void newUser(UMI3DCollaborationUser user)
         {
-            Instance.webRTC.newUser(user);
+            Debug.Log($"new user [{user.Id()}]");
+            foreach(var c in WebRtcChannels.defaultPeerToPeerChannels)
+            {
+                user.dataChannels.Add(WebRTC.CreateChannel(user, c));
+                foreach(var u in Collaboration.Users)
+                {
+                    if (u == user) continue;
+                    var dc = WebRTC.CreateChannel(user, u, c);
+                    user.dataChannels.Add(dc);
+                    u.dataChannels.Add(dc);
+                }    
+            }
+            foreach (var c in WebRtcChannels.defaultPeerToServerChannels)
+            {
+                user.dataChannels.Add(WebRTC.CreateChannel(user, c));
+            }
+
             Collaboration.UserJoin(user);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(Instance.NotifyUserJoin(user));
         }
@@ -194,7 +204,6 @@ namespace umi3d.edk.collaboration
             this.ip = ip;
             useIp = true;
         }
-
 
         static string GetLocalIPAddress()
         {
@@ -319,7 +328,18 @@ namespace umi3d.edk.collaboration
         IEnumerator _Logout(UMI3DCollaborationUser user)
         {
             Collaboration.Logout(user);
-            Instance.webRTC.UserLeave(user);
+            foreach (var c in user.dataChannels)
+            {
+                webRTC.DeleteChannel(c);
+                if(c is BridgeChannel bridge)
+                {
+                    if (bridge.userA == user)
+                        bridge.userB.dataChannels.Remove(bridge);
+                    else
+                        bridge.userA.dataChannels.Remove(bridge);
+                }
+            }
+
             OnUserLeave.Invoke(user);
             yield break;
         }

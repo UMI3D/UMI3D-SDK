@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using umi3d.common;
 using umi3d.common.collaboration;
+using UnityEngine;
 using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
@@ -39,6 +40,8 @@ namespace umi3d.edk.collaboration
                         Protocol = UMI3DNetworkingKeys.websocketProtocol,
                     }
             );
+            
+
             wssv.AuthenticationSchemes = UMI3DCollaborationServer.GetAuthentication().Convert();
             wssv.Realm = "UMI3D";
             wssv.UserCredentialsFinder = id =>

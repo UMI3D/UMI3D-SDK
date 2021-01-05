@@ -50,7 +50,7 @@ namespace GLTFast
             gLTFastInstance.onLoadComplete += OnLoadComplete;
             gLTFastInstance.onLoadComplete += (b) =>
             {
-                Debug.Log("Loading time = " + (Time.time - startTime).ToString() + "seconds");
+                //Debug.Log("Loading time = " + (Time.time - startTime).ToString() + "seconds");
             };
             gLTFastInstance.Load(url);
         }

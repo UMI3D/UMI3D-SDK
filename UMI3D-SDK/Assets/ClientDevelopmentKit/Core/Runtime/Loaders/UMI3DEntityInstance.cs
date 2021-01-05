@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common;
 
 namespace umi3d.cdk
@@ -25,5 +26,6 @@ namespace umi3d.cdk
     {
         public UMI3DDto dto;
         public object Object;
+        public Action Delete;
     }
 }
