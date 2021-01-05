@@ -19,7 +19,7 @@ using System;
 namespace umi3d.common.userCapture
 {
     /// <summary>
-    /// Class to associate a bone to its representation.
+    /// Class to associate a bone to a node.
     /// </summary>
     [Serializable]
     public class BoneBindingDto : UMI3DDto

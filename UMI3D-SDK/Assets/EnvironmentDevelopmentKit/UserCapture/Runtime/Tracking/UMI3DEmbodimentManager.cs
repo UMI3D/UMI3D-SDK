@@ -27,9 +27,11 @@ namespace umi3d.edk.userCapture
 {
     public class UMI3DEmbodimentManager : PersistentSingleton<UMI3DEmbodimentManager>
     {
-        public float time = 0f;
-        float timeTmp = 0;
-        public int max = 0;
+        public bool dispatchTrackingData = true;
+        public bool reliableTransaction = false;
+        public float targetDispatchFPS = 30;
+
+        public UMI3DScene embodimentsScene;
 
         Transaction transaction = new Transaction();
 
@@ -44,7 +46,7 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
-        public UMI3DScene embodimentsScene;
+        public UnityEvent startingDispatchingTrackingData;
 
         ///<inheritdoc/>
         protected override void Awake()
@@ -62,13 +64,32 @@ namespace umi3d.edk.userCapture
         {
             UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
             UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
+            startingDispatchingTrackingData.AddListener(() => { if (dispatchTrackingData) StartCoroutine("DispatchTrackingData"); });
+            startingDispatchingTrackingData.Invoke();
         }
 
-        //Update is called once per frame
-        void Update()
+        /// <summary>
+        /// Dispatch Users Tracking data through Tracking Channel to connected users
+        /// </summary>
+        protected virtual IEnumerator DispatchTrackingData()
         {
-            if (UMI3DServer.Exists)
-                Dispatch();
+            while (dispatchTrackingData)
+            {
+                if (targetDispatchFPS > 0)
+                {
+                    if (UMI3DServer.Exists)
+                        if (transaction.Operations.Count > 0)
+                        {
+                            transaction.reliable = reliableTransaction;
+                            UMI3DServer.Dispatch(transaction);
+                            transaction.Operations.Clear();
+                        }
+
+                    yield return new WaitForSeconds(1f / targetDispatchFPS);
+                }
+                else
+                    yield return new WaitUntil(() => targetDispatchFPS > 0 || !dispatchTrackingData);
+            }
         }
 
         /// <summary>
@@ -330,18 +351,15 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
-        /// <returns>The list of associated SetEntityProperty</returns>
-        public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, Transform newparent = null)
+        /// <param name="newparent">a transform intended to be the new parent. If keepWorldPosition is true, newparent must be specified.</param>
+        /// <returns>The list of associated SetEntityProperty.</returns>
+        public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
             List<SetEntityProperty> operations = new List<SetEntityProperty>();
 
-            if (keepWorldPosition)
+            if (keepWorldPosition && newparent != null)
             {
-                if (newparent.GetComponent<UMI3DAbstractNode>() == null)
-                    newparent = UMI3DEnvironment.Instance.transform;
-
-                binding.node.transform.SetParent(newparent, true);
+                binding.node.transform.SetParent(newparent.transform, true);
                 operations.Add(binding.node.objectParentId.SetValue(newparent.GetComponent<UMI3DAbstractNode>()));
 
                 operations.Add(binding.node.objectPosition.SetValue(binding.node.transform.localPosition));
@@ -359,18 +377,15 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
+        /// <param name="newparent">a transform intended to be the new parent. If keepWorldPosition is true, newparent must be specified.</param>
         /// <returns>The list of associated SetEntityProperty</returns>
-        public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, Transform newparent = null)
+        public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
             List<SetEntityProperty> operations = new List<SetEntityProperty>();
 
-            if (keepWorldPosition)
+            if (keepWorldPosition && newparent != null)
             {
-                if (newparent.GetComponent<UMI3DAbstractNode>() == null)
-                    newparent = UMI3DEnvironment.Instance.transform;
-
-                binding.node.transform.SetParent(newparent, true);
+                binding.node.transform.SetParent(newparent.transform, true);
                 operations.Add(binding.node.objectParentId.SetValue(user, newparent.GetComponent<UMI3DAbstractNode>()));
 
                 operations.Add(binding.node.objectPosition.SetValue(user, binding.node.transform.localPosition));
@@ -387,20 +402,17 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="index">the given index</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
+        /// <param name="newparent">a transform intended to be the new parent. If keepWorldPosition is true, newparent must be specified.</param>
         /// <returns>The list of associated SetEntityProperty</returns>
-        public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, Transform newparent = null)
+        public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
             List<SetEntityProperty> operations = new List<SetEntityProperty>();
 
-            if (keepWorldPosition)
+            if (keepWorldPosition && newparent != null)
             {
-                if (newparent.GetComponent<UMI3DAbstractNode>() == null)
-                    newparent = UMI3DEnvironment.Instance.transform;
-
                 UMI3DBinding binding = obj.bindings.GetValue(index);
 
-                binding.node.transform.SetParent(newparent, true);
+                binding.node.transform.SetParent(newparent.transform, true);
                 var op = binding.node.objectParentId.SetValue(newparent.GetComponent<UMI3DAbstractNode>());
 
                 operations.Add(op);
@@ -420,20 +432,17 @@ namespace umi3d.edk.userCapture
         /// <param name="obj">the avatar node</param>
         /// <param name="index">the given index</param>
         /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
-        /// <param name="newparent">a transform intended to be the new parent. If null, the parent will be the UMI3DEnvironment node</param>
+        /// <param name="newparent">a transform intended to be the new parent. If keepWorldPosition is true, newparent must be specified.</param>
         /// <returns>The list of associated SetEntityProperty</returns>
-        public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, Transform newparent = null)
+        public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
             List<SetEntityProperty> operations = new List<SetEntityProperty>();
 
-            if (keepWorldPosition)
+            if (keepWorldPosition && newparent != null)
             {
-                if (newparent.GetComponent<UMI3DAbstractNode>() == null)
-                    newparent = UMI3DEnvironment.Instance.transform;
-
                 UMI3DBinding binding = obj.bindings.GetValue(index);
 
-                binding.node.transform.SetParent(newparent, true);
+                binding.node.transform.SetParent(newparent.transform, true);
                 operations.Add(binding.node.objectParentId.SetValue(user, newparent.GetComponent<UMI3DAbstractNode>()));
 
                 operations.Add(binding.node.objectPosition.SetValue(user, binding.node.transform.localPosition));
@@ -453,36 +462,6 @@ namespace umi3d.edk.userCapture
             if (operation != null)
             {
                 transaction.Operations.Add(operation);
-            }
-        }
-
-        bool checkTime()
-        {
-            timeTmp -= Time.deltaTime;
-            if (time == 0 || timeTmp <= 0)
-            {
-                timeTmp = time;
-                return true;
-            }
-            return false;
-        }
-
-        bool checkMax()
-        {
-            return max != 0 && transaction.Operations.Count() > max;
-        }
-
-        void Dispatch()
-        {
-            if (checkTime() || checkMax())
-            {
-                if (transaction.Operations.Count > 0)
-                {
-                    transaction.reliable = false;
-                    UMI3DServer.Dispatch(transaction);
-                    transaction.Operations.Clear();
-                }
-
             }
         }
     }
