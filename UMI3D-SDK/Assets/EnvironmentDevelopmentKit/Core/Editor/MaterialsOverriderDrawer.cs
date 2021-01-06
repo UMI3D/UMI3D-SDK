@@ -44,7 +44,7 @@ namespace umi3d.edk.editor
                 if (overrideAllMaterial.boolValue)
                     lineCount = 1;
                 else
-                    lineCount = 2 + overrideMaterials.CountInProperty();
+                    lineCount = 3 + overrideMaterials.CountInProperty();
             }
 
             return EditorGUIUtility.singleLineHeight * lineCount + EditorGUIUtility.standardVerticalSpacing * (lineCount - 1);
