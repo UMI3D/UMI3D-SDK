@@ -34,9 +34,7 @@ namespace umi3d.cdk.collaboration
                 {
                     BonesIterator();
 
-                    DataChannel dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataChannelTypes.Tracking);
-                    if (dc != null)
-                        dc.Send(LastFrameDto.ToBson());
+                    UMI3DCollaborationClientServer.Instance.ForgeClient.SendTrackingFrame(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
@@ -48,12 +46,11 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
-            DataChannel dc;
-            while ( !(UMI3DClientServer.Exists && UMI3DCollaborationClientServer.Exists) || UMI3DClientServer.Instance.GetId() == null || (dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataChannelTypes.Tracking)) == default)
-            {
-                yield return null;
-            }
-            dc.Send(CameraPropertiesDto.ToBson());
+            Debug.Log("is connected ?");
+
+            yield return 0;
+
+            UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);
         }
     }
 }

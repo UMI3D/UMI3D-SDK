@@ -435,7 +435,7 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override void OnDestroy()
         {
-            webRTCClient?.Clear();
+            Debug.Log("clear forge ?");
             base.OnDestroy();
         }
 

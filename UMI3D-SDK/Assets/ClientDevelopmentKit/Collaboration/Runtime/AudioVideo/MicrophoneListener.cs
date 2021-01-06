@@ -190,7 +190,8 @@ namespace umi3d.cdk.collaboration
 								pos = SampleCount,
 								sample = Sample
 							};
-							UMI3DCollaborationClientServer.Instance.SendAudio(dto);
+							Debug.Log("Send Audio");
+							//UMI3DCollaborationClientServer.Instance.SendAudio(dto);
 						}
 
 						readAbsPos = nextReadAbsPos;
