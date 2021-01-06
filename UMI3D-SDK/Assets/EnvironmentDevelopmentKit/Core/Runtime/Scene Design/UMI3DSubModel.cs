@@ -30,6 +30,18 @@ namespace umi3d.edk
         protected bool ignoreModelMaterialOverride = false;
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
+
+
         ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
@@ -79,7 +91,8 @@ namespace umi3d.edk
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
-
+            subDto.isTraversable = isTraversable;
+            subDto.isPartOfNavmesh = isPartOfNavmesh;
         }
 
     }

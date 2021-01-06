@@ -19,14 +19,10 @@ namespace umi3d.common.collaboration
 {
     public interface IAbstractWebRtcClient
     {
-        List<DataChannel> Add(DataChannel dataBase);
-        DataChannel Add(string uid, DataChannel dataBase);
-        void Clear();
-        bool Exist(bool reliable, DataType dataType, out List<DataChannel> dataChannels, string peerId = null);
         void HandleMessage(RTCDto dto);
-        void Remove(DataChannel dataChannel);
-        void Send(UMI3DDto dto, bool reliable, string peerId = null);
-        void Send(UMI3DDto dto, bool reliable, DataType dataType, string peerId = null);
+        void DeleteChannel(DataChannel dataChannel);
+        void Init();
+        void Clear();
         void Stop();
     }
 }

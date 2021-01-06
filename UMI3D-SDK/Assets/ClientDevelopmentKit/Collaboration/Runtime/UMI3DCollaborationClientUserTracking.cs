@@ -16,32 +16,44 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common.collaboration;
+using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
         ///<inheritdoc/>
-        protected override void DispatchTracking()
+        protected override IEnumerator DispatchTracking()
         {
-            if ((checkTime() || checkMax()) && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            while (sendTracking)
             {
-                UMI3DClientServer.SendTracking(LastFrameDto, false);
+                if (targetTrackingFPS > 0)
+                {
+                    BonesIterator();
+
+                    DataChannel dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking);
+                    if (dc != null)
+                        dc.Send(LastFrameDto.ToBson());
+
+                    yield return new WaitForSeconds(1f / targetTrackingFPS);
+                }
+                else
+                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
             }
         }
 
         ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == null || !UMI3DCollaborationClientServer.Instance.webRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            DataChannel dc;
+            while ( !(UMI3DClientServer.Exists && UMI3DCollaborationClientServer.Exists) || UMI3DClientServer.Instance.GetId() == null || (dc = UMI3DCollaborationClientServer.dataChannels.FirstOrDefault(d => d.reliable == false && d.type == DataType.Tracking)) == default)
             {
                 yield return null;
             }
-
-            UnityEngine.Debug.LogWarning("DispatchCamera");
-            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+            dc.Send(CameraPropertiesDto.ToBson());
         }
     }
 }

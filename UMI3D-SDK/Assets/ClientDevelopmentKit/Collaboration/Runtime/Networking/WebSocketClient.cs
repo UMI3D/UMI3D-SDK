@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Websocket client.
     /// </summary>
-    public class WebSocketClient
+    public class WebSocketClient : IWebsocket
     {
 
         protected WebSocket ws;
@@ -51,14 +51,14 @@ namespace umi3d.cdk.collaboration
             return ws != null && ws.IsConnected;
         }
 
+        Action<UMI3DDto> _onMessage;
+
         /// <summary>
         /// Setup the client.
         /// </summary>
-        public void Init()
+        public void Init(string socketUrl,Action<UMI3DDto> onMessage)
         {
-            var connection = UMI3DCollaborationClientServer.Media.connection as WebsocketConnectionDto;
-            var socketUrl = connection.websocketUrl;// UMI3DClientServer.Media.connection;
-
+            this._onMessage = onMessage;
             socketUrl = socketUrl.Replace("http", "ws");
             ws = new WebSocket(socketUrl, UMI3DNetworkingKeys.websocketProtocol);
 
@@ -73,7 +73,7 @@ namespace umi3d.cdk.collaboration
                 if (e == null)
                     return;
                 var res = UMI3DDto.FromBson(e.RawData);
-                UnityMainThreadDispatcher.Instance().Enqueue(onMessage(res));
+                UnityMainThreadDispatcher.Instance().Enqueue(this.onMessage(res));
 
             };
 
@@ -143,11 +143,11 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Call when a Message is received
         /// </summary>
-        /// <param name="obj">message</param>
+        /// <param name="dto">message</param>
         /// <returns></returns>
-        protected IEnumerator onMessage(object obj)
+        protected IEnumerator onMessage(UMI3DDto dto)
         {
-            UMI3DCollaborationClientServer.OnMessage(obj);
+           _onMessage?.Invoke(dto);
             yield return null;
         }
 
@@ -208,6 +208,11 @@ namespace umi3d.cdk.collaboration
         protected void OnDestroy()
         {
             Close();
+        }
+
+        public void Send(byte[] content)
+        {
+            ws.SendAsync(content, b => { });
         }
     }
 }

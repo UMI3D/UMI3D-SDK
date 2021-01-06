@@ -40,7 +40,13 @@ namespace umi3d.cdk
         public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> LoadedNodesCount)
         {
             GameObject go = new GameObject(dto.name);
-            UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
+            UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go,
+                () =>
+                    {
+                        var sceneDto = dto.extensions.umi3d;
+                        foreach (var library in sceneDto.LibrariesId)
+                            UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
+                    });
             go.transform.SetParent(EnvironementLoader.transform);
             //Load Materials
             LoadSceneMaterials(dto, () => { EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
@@ -99,13 +105,19 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Position:
-                    node.transform.localPosition = dto.position = (SerializableVector3)property.value;
+                    dto.position = (SerializableVector3)property.value;
+                    if (node.updatePose)
+                        node.transform.localPosition = dto.position;
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = (SerializableVector4)property.value;
+                    dto.rotation = (SerializableVector4)property.value;
+                    if (node.updatePose)
+                        node.transform.localRotation = dto.rotation;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    node.transform.localScale = dto.scale = (SerializableVector3)property.value;
+                    dto.scale = (SerializableVector3)property.value;
+                    if (node.updatePose)
+                        node.transform.localScale = dto.scale;
                     break;
                 default:
                     return false;

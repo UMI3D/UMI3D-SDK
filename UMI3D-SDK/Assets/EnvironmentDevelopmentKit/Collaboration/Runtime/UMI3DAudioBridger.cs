@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace umi3d.edk.collaboration
     {
         [SerializeField]
         bool _Spacialized = false;
-        bool Spacialized
+        public bool Spacialized
         {
             get => _Spacialized; set {
                 _Spacialized = value;
@@ -41,16 +42,18 @@ namespace umi3d.edk.collaboration
 
         void newUser(UMI3DUser _user)
         {
-            foreach (var userA in UMI3DCollaborationServer.Collaboration.Users)
-            {
-                if (userA == _user) continue;
-                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, _user, "Audio"))
-                {
-                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, _user, "Audio", DataType.Audio, false);
-                }
-            }
             if (_user is UMI3DCollaborationUser user)
             {
+                user.dataChannels.Add(UMI3DCollaborationServer.WebRTC.CreateChannel(user, false, DataType.Audio));
+                UMI3DCollaborationServer.Collaboration.Users.Where(u => u != user)
+                    .Where(u => u.dataChannels.FirstOrDefault(dc => dc is BridgeChannel bridge && bridge.Equals(u, user, false, DataType.Audio)) == default)
+                    .ForEach(u =>
+                    {
+                        var dc = UMI3DCollaborationServer.WebRTC.CreateChannel(user, u, false, DataType.Tracking);
+                        user.dataChannels.Add(dc);
+                        u.dataChannels.Add(dc);
+                    });
+
                 if (user.audioPlayer == null)
                 {
                     StartCoroutine(SetAudioSource(user));

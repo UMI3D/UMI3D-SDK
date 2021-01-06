@@ -41,7 +41,7 @@ namespace umi3d.cdk.interaction
             tools = new List<Tool>();
 
             this.dto = dto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this,Destroy);
             sub = new ToolboxSubMenu()
             {
                 Name = dto.name,
@@ -51,7 +51,10 @@ namespace umi3d.cdk.interaction
 
         public void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
+            foreach (Tool t in tools)
+            {
+                UMI3DEnvironmentLoader.DeleteEntity(t.dto.id, null);
+            }
         }
 
     }

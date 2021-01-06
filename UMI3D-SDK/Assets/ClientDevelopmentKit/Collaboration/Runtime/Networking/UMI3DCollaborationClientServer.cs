@@ -17,6 +17,7 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
@@ -43,7 +44,10 @@ namespace umi3d.cdk.collaboration
 
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
+
         public WebSocketClient WebSocketClient { get; private set; }
+
+
         public IWebRTCClient webRTCClient { get; private set; }
         static public IdentityDto Identity = new IdentityDto();
         static public UserConnectionDto UserDto = new UserConnectionDto();
@@ -69,7 +73,7 @@ namespace umi3d.cdk.collaboration
         static bool connected = false;
 
 
-
+        static public List<DataChannel> dataChannels = new List<DataChannel>();
 
 
         private void Start()
@@ -87,12 +91,7 @@ namespace umi3d.cdk.collaboration
         public void Init()
         {
             WebSocketClient = new WebSocketClient(this);
-#if UNITY_WEBRTC
-            webRTCClient = new WebRTCClient(this, encoderType == EncoderType.Software);
-            WebRTCClient.iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
-#else
-            webRTCClient = new WebRTCClient(this, false);
-#endif
+            webRTCClient = new WebRTCClientFactory();
         }
 
         //public Texture2D GetStreamTexture2D()
@@ -141,7 +140,10 @@ namespace umi3d.cdk.collaboration
         static public void Connect()
         {
             Instance.Init();
-            Instance.WebSocketClient.Init();
+            if(UMI3DCollaborationClientServer.Media.connection is WebsocketConnectionDto connection)
+            {
+                Instance.WebSocketClient.Init(connection.websocketUrl,OnMessage);
+            }
         }
 
         /// <summary>
@@ -237,9 +239,7 @@ namespace umi3d.cdk.collaboration
 
         void _setMedia()
         {
-#if UNITY_WEBRTC
-            WebRTCClient.iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
-#endif
+
         }
 
 
@@ -251,7 +251,7 @@ namespace umi3d.cdk.collaboration
         {
             if (Exists)
             {
-                //Debug.Log("new token " + token);
+                //Debug.Log($"<color=magenta> new token { token}</color>");
                 lastTokenUpdate = DateTime.UtcNow;
                 Instance?.HttpClient?.SetToken(token);
                 Instance?.OnNewToken?.Invoke();
@@ -274,8 +274,30 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         protected override void _Send(AbstractBrowserRequestDto dto, bool reliable)
         {
-            if (Exists)
-                Instance?.webRTCClient?.SendServer(dto, reliable);
+            var content = dto.ToBson();
+            var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Data && d.reliable == reliable);
+            if (dc != default)
+                dc.Send(content);
+        }
+
+        /// <summary>
+        /// Send a BrowserRequestDto on a RTC
+        /// </summary>
+        /// <param name="dto">Dto to send</param>
+        /// <param name="reliable">is the data channel used reliable</param>
+        public void SendAudio(AudioDto dto)
+        {
+            dto.userId = Identity.userId;
+            var content = dto.ToBson();
+            var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Audio);
+            if (dc != default)
+                dc.Send(content);
+            //UMI3DCollaborationEnvironmentLoader.Instance.UserList.ForEach(u =>
+            //{
+            //    dc = dataChannels.FirstOrDefault(d => d.type == DataType.Audio);
+            //    if (dc != default)
+            //        dc.Send(content);
+            //});
         }
 
         /// <summary>
@@ -285,8 +307,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         protected override void _SendTracking(AbstractBrowserRequestDto dto, bool reliable)
         {
-            if (Exists)
-                Instance?.webRTCClient?.Send(dto, reliable, DataType.Tracking);
+            var content = dto.ToBson();
+            var dc = dataChannels.FirstOrDefault(d => d.type == DataType.Tracking && d.reliable == reliable);
+            if (dc != default)
+                dc.Send(content);
         }
 
         /// <summary>
@@ -328,6 +352,9 @@ namespace umi3d.cdk.collaboration
                     break;
                 case StatusRequestDto statusRequestDto:
                     Instance.HttpClient.SendPostUpdateStatus(null, null);
+                    break;
+                case UMI3DDto dto:
+                    Instance.webRTCClient.OnMessage(dto);
                     break;
             }
         }
