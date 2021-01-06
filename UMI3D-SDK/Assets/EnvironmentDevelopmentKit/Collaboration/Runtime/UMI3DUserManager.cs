@@ -71,7 +71,7 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser GetUserByNetworkId(uint id)
         {
             string uid = forgeMap.ContainsKey(id) ? forgeMap[id] : null;
-            return users.ContainsKey(uid) ? users[uid] : null;
+            return (uid != null && users.ContainsKey(uid)) ? users[uid] : null;
         }
 
         /// <summary>
