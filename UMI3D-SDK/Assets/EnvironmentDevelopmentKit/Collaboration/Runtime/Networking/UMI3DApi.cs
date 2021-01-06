@@ -154,6 +154,7 @@ namespace umi3d.edk.collaboration
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.publicFiles.Length);
             file = common.Path.Combine(
                 UMI3DServer.publicRepository, file);
+            file = System.Uri.UnescapeDataString(file);
             //Validate url.
             var res = e.Response;
             if (UMI3DServer.IsInPublicRepository(file))
@@ -180,6 +181,7 @@ namespace umi3d.edk.collaboration
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.privateFiles.Length);
             file = common.Path.Combine(UMI3DServer.privateRepository, file);
+            file = System.Uri.UnescapeDataString(file);
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInPrivateRepository(file) || UMI3DServer.IsInPublicRepository(file))
@@ -207,6 +209,8 @@ namespace umi3d.edk.collaboration
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
             string directory = common.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
+            directory = System.Uri.UnescapeDataString(directory);
+
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInDataRepository(directory))
@@ -215,8 +219,8 @@ namespace umi3d.edk.collaboration
                 {
                     FileListDto dto = new FileListDto()
                     {
-                        files = GetDir(directory),
-                        baseUrl = common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory)
+                        files = GetDir(directory).Select(f=>System.Uri.EscapeUriString(f)).ToList(),
+                        baseUrl = System.Uri.EscapeUriString(common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 
                     res.WriteContent(dto.ToBson());
@@ -245,6 +249,8 @@ namespace umi3d.edk.collaboration
         {
             string directory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory_zip.Length);
             directory = common.Path.Combine(UMI3DServer.dataRepository, directory);
+            directory = System.Uri.UnescapeDataString(directory);
+
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInDataRepository(directory))
