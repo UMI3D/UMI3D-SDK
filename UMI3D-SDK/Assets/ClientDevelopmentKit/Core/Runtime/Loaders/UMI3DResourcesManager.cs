@@ -208,7 +208,7 @@ namespace umi3d.cdk
 
             bool MatchServerUrl()
             {
-                var url = UMI3DClientServer.Media?.httpUrl + '/';
+                var url = UMI3DClientServer.Media.connection.httpUrl + '/';
 
                 if (url == this.url) return true;
 

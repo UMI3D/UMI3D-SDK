@@ -67,9 +67,6 @@ namespace umi3d.edk
         public MediaDto ToDto()
         {
             var res = new MediaDto();
-            res.websocketUrl = UMI3DServer.GetWebsocketUrl();
-            res.websocketUrl = UMI3DServer.GetWebsocketUrl();
-            res.httpUrl = UMI3DServer.GetHttpUrl();
             res.Authentication = UMI3DServer.GetAuthentication();
             res.name = environmentName;
             res.connection = UMI3DServer.Instance.ToDto();

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using MainThreadDispatcher;
 using System;
 using System.Collections;
@@ -33,6 +34,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         Dictionary<string, UMI3DCollaborationUser> users = new Dictionary<string, UMI3DCollaborationUser>();
         Dictionary<string, string> loginMap = new Dictionary<string, string>();
+        Dictionary<uint, string> forgeMap = new Dictionary<uint, string>();
 
         UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
 
@@ -60,6 +62,16 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser GetUser(string id)
         {
             return users.ContainsKey(id) ? users[id] : null;
+        }
+
+
+        /// <summary>
+        /// Return the UMI3D user associated with a ForgeNetworkingRemastered Id.
+        /// </summary>
+        public UMI3DCollaborationUser GetUserByNetworkId(uint id)
+        {
+            string uid = forgeMap.ContainsKey(id) ? forgeMap[id] : null;
+            return users.ContainsKey(uid) ? users[uid] : null;
         }
 
         /// <summary>
@@ -92,10 +104,9 @@ namespace umi3d.edk.collaboration
         public void Logout(UMI3DCollaborationUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
-            if (users.ContainsKey(user.Id()))
-                users.Remove(user.Id());
-            if (loginMap.ContainsKey(user.login))
-                loginMap.Remove(user.login);
+            users.Remove(user.Id());
+            loginMap.Remove(user.login);
+            forgeMap.Remove(user.networkPlayer.NetworkId);
             user.SetStatus(StatusType.NONE);
             user.Logout();
         }
@@ -123,13 +134,14 @@ namespace umi3d.edk.collaboration
         /// <param name="Login">Login of the user.</param>
         /// <param name="connection">Websoket connection of the user.</param>
         /// <param name="Callback">Callback called when the user has been created.</param>
-        public void CreateUser(string Login, Action<UMI3DCollaborationUser, bool> Callback)
+        public void CreateUser(NetworkingPlayer player, string Login, Action<UMI3DCollaborationUser, bool> Callback)
         {
             UMI3DCollaborationUser user;
             bool reconnection = false;
             if (loginMap.ContainsKey(Login) && users.ContainsKey(loginMap[Login]))
             {
                 user = users[loginMap[Login]];
+                forgeMap.Remove(user.networkPlayer.NetworkId);
                 reconnection = true;
             }
             else
@@ -138,6 +150,8 @@ namespace umi3d.edk.collaboration
                 loginMap[Login] = user.Id();
                 users.Add(user.Id(), user);
             }
+            user.networkPlayer = player;
+            forgeMap.Add(player.NetworkId, user.Id());
             Callback.Invoke(user, reconnection);
         }
 

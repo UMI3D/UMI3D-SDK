@@ -27,8 +27,8 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
-        Dictionary<string, IAudioReader> GlobalReader = new Dictionary<string, IAudioReader>();
-        Dictionary<string, IAudioReader> SpacialReader = new Dictionary<string, IAudioReader>();
+        Dictionary<string, AudioReader> GlobalReader = new Dictionary<string, AudioReader>();
+        Dictionary<string, AudioReader> SpacialReader = new Dictionary<string, AudioReader>();
 
         [SerializeField,EditorReadOnly]
         int frequency = 8000;
@@ -56,29 +56,25 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Read an Audio Dto and dispatched it in the right audioSource.
+        /// Read a Voice Dto and dispatched it in the right audioSource.
         /// </summary>
-        /// <param name="sample"></param>
-        /// <param name="channel"></param>
-        public void Read(byte[] sample)
+        /// <param name="userId"> the speaking user</param>
+        /// <param name="dto"> the voice dto</param>
+        public void Read(string userId, VoiceDto dto)
         {
-            if (UMI3DDto.FromBson(sample) is AudioDto dto)
+            if (SpacialReader.ContainsKey(userId))
             {
-                string id = dto.userId;
-                if (SpacialReader.ContainsKey(id))
+                SpacialReader[userId].Read(dto);
+            }
+            else
+            {
+                if (!GlobalReader.ContainsKey(userId))
                 {
-                    SpacialReader[id].Read(dto);
+                    var g = new GameObject();
+                    g.name = userId;
+                    GlobalReader[userId] = g.AddComponent<AudioReader>();
                 }
-                else
-                {
-                    if (!GlobalReader.ContainsKey(id))
-                    {
-                        var g = new GameObject();
-                        g.name = id;
-                        GlobalReader[id] = g.AddComponent<AudioReader>();
-                    }
-                    GlobalReader[id].Read(dto);
-                }
+                GlobalReader[userId].Read(dto);
             }
         }
         
@@ -89,9 +85,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="user"></param>
         void OnAudioChanged(UMI3DUser user)
         {
-            var reader = user.audioplayer;
-            if (reader != null)
+            var audioPlayer = user.audioplayer;
+            if (audioPlayer != null)
             {
+                var reader = audioPlayer.audioSource.gameObject.GetOrAddComponent<AudioReader>();
                 SpacialReader[user.id] = reader;
             }
             else

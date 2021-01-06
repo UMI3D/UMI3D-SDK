@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Websocket client.
     /// </summary>
-    public class WebSocketClient : IWebsocket
+    public class WebSocketClient
     {
 
         protected WebSocket ws;

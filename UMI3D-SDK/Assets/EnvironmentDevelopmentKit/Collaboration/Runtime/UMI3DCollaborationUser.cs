@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,9 +33,9 @@ namespace umi3d.edk.collaboration
             Debug.Log($"<color=magenta>new User {Id()}</color>");
         }
 
-        public void InitConnection(UMI3DWebSocketConnection connection)
+        public void InitConnection(UMI3DForgeServer connection)
         {
-            this.connection = connection;
+            this.forgeServer = connection;
             UserConnectionDto ucDto = new UserConnectionDto(ToUserDto());
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
             RenewToken();
@@ -45,6 +46,11 @@ namespace umi3d.edk.collaboration
         {
             UMI3DEnvironment.Remove(this);
         }
+
+        /// <summary>
+        /// Current id for ForgeNetworkingRemastered
+        /// </summary>
+        public NetworkingPlayer networkPlayer { get; set; }
 
         /// <summary>
         /// Does the user have a devise compatible with webrtc
@@ -62,12 +68,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string login;
 
-        public UMI3DAbstractWebSocketConnection connection;
+        public UMI3DForgeServer forgeServer;
 
         public UMI3DAudioPlayer audioPlayer;
         public UMI3DAudioPlayer videoPlayer;
-
-        public List<DataChannel> dataChannels = new List<DataChannel>();
 
         public string RenewToken()
         {
@@ -77,7 +81,7 @@ namespace umi3d.edk.collaboration
             byte[] key = Guid.NewGuid().ToByteArray();
             string token = Convert.ToBase64String(time.Concat(key).ToArray());
             this.token = token;
-            connection.SendData(ToTokenDto());
+            forgeServer.SendSignalingMessage(networkPlayer, ToTokenDto());
             return token;
         }
 

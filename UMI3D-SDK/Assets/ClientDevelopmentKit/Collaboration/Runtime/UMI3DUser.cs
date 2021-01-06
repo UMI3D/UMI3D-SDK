@@ -29,17 +29,17 @@ namespace umi3d.cdk.collaboration
         UserDto dto;
 
         public string id;
+        public uint networkId;
         public StatusType status;
         public UMI3DAudioPlayer audioplayer { get => UMI3DAudioPlayer.Get(dto.audioSourceId); }
         public UMI3DVideoPlayer videoPlayer { get => UMI3DVideoPlayer.Get(dto.videoSourceId); }
         public UserAvatar avatar { get => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar; }
 
-        public List<DataChannel> dataChannels = new List<DataChannel>();
-
         public UMI3DUser(UserDto user)
         {
             dto = user;
             id = user.id;
+            networkId = user.networkId;
             status = user.status;
             OnNewUser.Invoke(this);
         }

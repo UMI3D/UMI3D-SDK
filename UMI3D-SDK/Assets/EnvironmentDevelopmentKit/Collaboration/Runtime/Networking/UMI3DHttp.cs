@@ -80,17 +80,6 @@ namespace umi3d.edk.collaboration
                 }
             };
 
-            // Add the WebSocket services.
-            //todo look if working
-            httpsv.AddWebSocketService<UMI3DWebSocketConnection>(
-                UMI3DNetworkingKeys.websocket,
-                () =>
-                    new UMI3DWebSocketConnection()
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
             httpsv.Start();
             if (httpsv.IsListening)
             {
