@@ -32,6 +32,8 @@ namespace umi3d.cdk.collaboration
     {
         uint Me { get { return UMI3DCollaborationClientServer.UserDto.networkId; } }
 
+        public bool IsConnected { get; private set; }
+
         UMI3DUser GetUserByNetWorkId(uint nid)
         {
             return UMI3DCollaborationEnvironmentLoader.Instance.UserList.Find(u => u.networkId == nid);
@@ -156,6 +158,7 @@ namespace umi3d.cdk.collaboration
         {
             //TODO
             Debug.Log("AUTH SUCCESS !");
+            IsConnected = true;
             StartVOIP();
         }
 
@@ -166,10 +169,11 @@ namespace umi3d.cdk.collaboration
         private void DisconnectedFromServer(NetWorker sender)
         {
             NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
-
+            IsConnected = false;
             MainThreadManager.Run(() =>
             {
                 NetworkManager.Instance.Disconnect();
+                
                 Debug.Log("DisconnectedFromServer !");
                 //TODO
             });
