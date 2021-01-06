@@ -38,5 +38,37 @@ namespace umi3d.common
         /// The new value for the property
         /// </summary>
         public object value;
+
+        /// <summary>
+        /// Make a Copy of a SetEntityPropertyDto or a class inheriting it.
+        /// </summary>
+        /// <returns></returns>
+        public SetEntityPropertyDto Copy()
+        {
+            var dto = CreateDto();
+            CopyProperties(dto);
+            return dto;
+        }
+
+        /// <summary>
+        /// Create an empty Dto.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual SetEntityPropertyDto CreateDto()
+        {
+            return new SetEntityPropertyDto();
+        }
+
+        /// <summary>
+        /// Copy the properties in a given SetEntityPropertyDto  or a class inheriting it.
+        /// </summary>
+        /// <param name="dto">The SetEntityPropertyDt to be completed</param>
+        /// <returns></returns>
+        protected virtual void CopyProperties(SetEntityPropertyDto dto)
+        {
+            dto.entityId = entityId;
+            dto.property = property;
+            dto.value = value;
+        }
     }
 }
