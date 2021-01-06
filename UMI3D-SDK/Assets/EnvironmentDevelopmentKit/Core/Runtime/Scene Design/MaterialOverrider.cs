@@ -30,12 +30,15 @@ namespace umi3d.edk
 
         public bool overrideAllMaterial { get => materialListToOverride.overrideAllMaterial; set => materialListToOverride.overrideAllMaterial = value; }
 
+        public bool addMaterialIfNotExists { get => materialListToOverride.addMaterialIfNotExists; set => materialListToOverride.addMaterialIfNotExists = value; }
+
         public List<string> overidedMaterials { get => materialListToOverride.overidedMaterials; set => materialListToOverride.overidedMaterials = value; }
 
         [Serializable]
         public class OverridedMaterialList
         {
             public bool overrideAllMaterial = false;
+            public bool addMaterialIfNotExists = false;
             public List<string> overidedMaterials = new List<string>();
         }
 
@@ -47,14 +50,15 @@ namespace umi3d.edk
                 return new UMI3DRenderedNodeDto.MaterialOverrideDto()
                 {
                     newMaterialId = newMaterial.Id(),
-                    overridedMaterialsId = ANY_mat
-
+                    overridedMaterialsId = ANY_mat,
+                    addMaterialIfNotExists = addMaterialIfNotExists
                 };
 
             return new UMI3DRenderedNodeDto.MaterialOverrideDto()
             {
                 newMaterialId = newMaterial.Id(),
-                overridedMaterialsId = overidedMaterials
+                overridedMaterialsId = overidedMaterials,
+                addMaterialIfNotExists = addMaterialIfNotExists                
             };
         }
 

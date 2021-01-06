@@ -59,7 +59,8 @@ namespace umi3d.cdk
                                 {
                                     var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
                                     string newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
-                                    UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node));
+                                    bool shouldAdd = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).addMaterialIfNotExists;
+                                    UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node, null, shouldAdd));
 
                                 }
                                 extension.overridedMaterials.Add((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value);
@@ -101,15 +102,18 @@ namespace umi3d.cdk
                                 //Change overriders list
                                 extension.overridedMaterials[changeProperty.index] = propertValue;
 
+                                bool shouldAdd = ((UMI3DRenderedNodeDto.MaterialOverrideDto)changeProperty.value).addMaterialIfNotExists;
+
                                 //Apply new overrider (Apply again the list from the new element to then end of the list)
                                 UMI3DNodeInstance node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
                                 UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(propertValue.newMaterialId, propertValue.overridedMaterialsId, node, () =>
                                 {
                                     for (int i = changeProperty.index + 1; i < extension.overridedMaterials.Count; i++)
                                     {
-                                        ApplyMaterialOverrider(extension.overridedMaterials[i].newMaterialId, extension.overridedMaterials[i].overridedMaterialsId, node);
+                                        ApplyMaterialOverrider(extension.overridedMaterials[i].newMaterialId, extension.overridedMaterials[i].overridedMaterialsId, node, null, shouldAdd);
                                     };
-                                }));
+                                },
+                                shouldAdd));
                             }
                             else
                             {
@@ -171,13 +175,13 @@ namespace umi3d.cdk
                 //TODO a améliorer 
                 foreach (UMI3DRenderedNodeDto.MaterialOverrideDto mat in dto.overridedMaterials)
                 {
-                    UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(mat.newMaterialId, mat.overridedMaterialsId, instance));
+                    UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(mat.newMaterialId, mat.overridedMaterialsId, instance, null, mat.addMaterialIfNotExists));
 
                 }
             }
         }
 
-        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string,object> additionalShaderProperties = null)
+        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string,object> additionalShaderProperties = null, bool addIfNotExists = false)
         {
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(node))
             {
@@ -217,6 +221,16 @@ namespace umi3d.cdk
                 {
                     renderer.materials = mats;
                 }
+                else
+                {
+                    if (addIfNotExists)
+                    {
+                        Material[] matTab = renderer.sharedMaterials;
+                        
+                        renderer.materials = matTab.Concat(new Material[] { newMat }).ToArray();
+
+                    }
+                }
             }
         }
 
@@ -229,20 +243,24 @@ namespace umi3d.cdk
                 {
                     Material[] oldMats = oldMaterialContainer.oldMats;
                     Material[] matsToApply = renderer.sharedMaterials;
-                    for (int i = 0; i < renderer.sharedMaterials.Length; i++)
+                    for (int i = 0; i < oldMats.Length; i++)
                     {
                         if (oldMats[i] != null)
                         {
-                            matsToApply[i] = (oldMats[i]);
+                            matsToApply[i] = oldMats[i];
                         }
                     }
-                    renderer.materials = matsToApply;
+                    if (oldMats.Length != matsToApply.Length)
+                        renderer.materials = ((IEnumerable<Material>)matsToApply).Take(oldMats.Length).ToArray();
+                    else
+                        renderer.materials = matsToApply;
                 }
             }
         }
 
-        protected virtual void RevertOneOverrider(UMI3DNodeInstance entity, UMI3DRenderedNodeDto.MaterialOverrideDto matToRemove)
+        protected virtual void RevertOneOverrider(UMI3DNodeInstance entity, UMI3DRenderedNodeDto.MaterialOverrideDto matToRemoveDto)
         {
+            Material matToRemove = (Material)UMI3DEnvironmentLoader.GetEntity(matToRemoveDto.newMaterialId).Object;
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(entity))
             {
                 OldMaterialContainer oldMaterialContainer = renderer.gameObject.GetComponent<OldMaterialContainer>();
@@ -250,20 +268,34 @@ namespace umi3d.cdk
                 {
                     Material[] oldMats = oldMaterialContainer.oldMats;
                     Material[] matsToApply = renderer.sharedMaterials;
+                    bool removed = false;
                     for (int i = 0; i < renderer.sharedMaterials.Length; i++)
                     {
-                        if (matsToApply[i] == (Material)UMI3DEnvironmentLoader.GetEntity(matToRemove.newMaterialId).Object)
+                        if (matsToApply[i] == matToRemove)
                         {
-                            matsToApply[i] = (oldMats[i]);
+                            if (i < oldMats.Length)
+                                matsToApply[i] = (oldMats[i]);
+                            else
+                            {
+                                matsToApply[i] = null;
+                                removed = true;
+                            }
                         }
                     }
-                    renderer.materials = matsToApply;
+                    if (removed) // remove null element in materials
+                    {
+                        renderer.materials = matsToApply.Where((m) => m != null).ToArray();
+                    }
+                    else 
+                    {
+                        renderer.materials = matsToApply;
+                    }
                 }
             }
         }
 
 
-        protected IEnumerator ApplyMaterialOverrider(string newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null)
+        protected IEnumerator ApplyMaterialOverrider(string newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
         {
             UMI3DEntityInstance matEntity = UMI3DEnvironmentLoader.GetEntity(newMatId);
             if (matEntity == null) Debug.LogWarning("Material not found : " + newMatId + " , that should not append");
@@ -297,7 +329,7 @@ namespace umi3d.cdk
             {
                 foreach (string matKey in listToOverride)
                 {
-                    OverrideMaterial(node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")),matEntity, shaderProperties);
+                    OverrideMaterial(node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")),matEntity, shaderProperties,addIfNotExists);
                 }
             }
          
