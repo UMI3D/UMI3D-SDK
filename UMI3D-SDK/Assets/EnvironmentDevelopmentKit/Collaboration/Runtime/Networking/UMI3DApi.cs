@@ -88,7 +88,7 @@ namespace umi3d.edk.collaboration
         IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
-            user.connection.SendData(user.ToStatusDto());
+            user.forgeServer.SendSignalingMessage(user.networkPlayer,user.ToStatusDto());
             yield break;
         }
 

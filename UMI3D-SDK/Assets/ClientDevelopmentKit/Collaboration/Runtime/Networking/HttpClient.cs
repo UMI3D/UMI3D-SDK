@@ -31,6 +31,8 @@ namespace umi3d.cdk.collaboration
         UMI3DCollaborationClientServer client;
         internal string ComputedToken;
 
+        private string httpUrl { get { return UMI3DCollaborationClientServer.Media.connection.httpUrl; } }
+
         /// <summary>
         /// Init HttpClient.
         /// </summary>
@@ -63,7 +65,7 @@ namespace umi3d.cdk.collaboration
                 UserConnectionDto user = UMI3DDto.FromBson(res) as UserConnectionDto;
                 callback.Invoke(user);
             };
-            client.StartCoroutine(_GetRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.identity, action, onError, true));
+            client.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.identity, action, onError, true));
         }
 
         /// <summary>
@@ -78,7 +80,7 @@ namespace umi3d.cdk.collaboration
                 //res ?
                 callback?.Invoke();
             };
-            client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.identity_update, UMI3DCollaborationClientServer.UserDto.ToBson(), action, onError, true));
+            client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.identity_update, UMI3DCollaborationClientServer.UserDto.ToBson(), action, onError, true));
         }
 
         /// <summary>
@@ -93,7 +95,7 @@ namespace umi3d.cdk.collaboration
                 //res ?
                 callback?.Invoke();
             };
-            client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.status_update, new StatusDto() { status = UMI3DCollaborationClientServer.UserDto.status }.ToBson(), action, onError, true));
+            client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.status_update, new StatusDto() { status = UMI3DCollaborationClientServer.UserDto.status }.ToBson(), action, onError, true));
         }
 
         /// <summary>
@@ -108,7 +110,7 @@ namespace umi3d.cdk.collaboration
                 //res ?
                 callback.Invoke();
             };
-            client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.logout, new UMI3DDto().ToBson(), action, onError, true));
+            client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.logout, new UMI3DDto().ToBson(), action, onError, true));
         }
         #endregion
 
@@ -120,7 +122,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public void SendGetMedia(Action<MediaDto> callback, Action<string> onError)
         {
-            SendGetMedia(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.media, callback, onError);
+            SendGetMedia(httpUrl + UMI3DNetworkingKeys.media, callback, onError);
         }
 
         /// <summary>
@@ -156,7 +158,7 @@ namespace umi3d.cdk.collaboration
                 var res = UMI3DDto.FromBson(uwr.downloadHandler.data) as LibrariesDto;
                 callback.Invoke(res);
             };
-            client.StartCoroutine(_GetRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.libraries, action, onError, true));
+            client.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.libraries, action, onError, true));
         }
 
         /// <summary>
@@ -206,7 +208,7 @@ namespace umi3d.cdk.collaboration
                 GlTFEnvironmentDto user = UMI3DDto.FromBson(res) as GlTFEnvironmentDto;
                 callback.Invoke(user);
             };
-            client.StartCoroutine(_GetRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.environment, action, onError, true));
+            client.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.environment, action, onError, true));
         }
 
         /// <summary>
@@ -222,7 +224,7 @@ namespace umi3d.cdk.collaboration
                 EnterDto enter = UMI3DDto.FromBson(res) as EnterDto;
                 callback.Invoke(enter);
             };
-            client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.join, join.ToBson(), action, onError, true));
+            client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.join, join.ToBson(), action, onError, true));
         }
 
         /// <summary>
@@ -236,7 +238,7 @@ namespace umi3d.cdk.collaboration
             {
                 callback.Invoke();
             };
-            client.StartCoroutine(_PostRequest(UMI3DCollaborationClientServer.Media.httpUrl + UMI3DNetworkingKeys.scene, null, action, onError, true));
+            client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.scene, null, action, onError, true));
         }
         #endregion
 

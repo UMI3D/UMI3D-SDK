@@ -14,9 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
-    public class LeaveDto : RTCDto
+    [System.Serializable]
+    public class ForgeConnectionDto : UMI3DDto
     {
+        public string httpUrl;
+        public string host;
+        public string forgeMasterServerHost;
+        public string forgeNatServerHost;
+        public ushort forgeServerPort;
+        public ushort forgeMasterServerPort;
+        public ushort forgeNatServerPort;
+
+        public ForgeConnectionDto() : base() { }
+
     }
 }

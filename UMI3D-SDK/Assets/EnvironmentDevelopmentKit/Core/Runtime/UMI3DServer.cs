@@ -86,6 +86,7 @@ namespace umi3d.edk
             return ip;
         }
 
+        /*
         /// <summary>
         /// Return the Url of the websocket server.
         /// </summary>
@@ -98,7 +99,7 @@ namespace umi3d.edk
         protected virtual string _GetWebsocketUrl()
         {
             return ip;
-        }
+        }*/
 
         /// <summary>
         /// Return the Authentication type.
@@ -113,21 +114,10 @@ namespace umi3d.edk
             return AuthenticationType.Anonymous;
         }
 
-        public virtual UMI3DDto ToDto()
+        public virtual ForgeConnectionDto ToDto()
         {
             return null;
         }
-
-        public virtual UMI3DDto ToFakeRTCReliableDto()
-        {
-            return null;
-        }
-
-        public virtual UMI3DDto ToFakeRTCUnreliableDto()
-        {
-            return null;
-        }
-
 
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
@@ -183,7 +173,6 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserActive = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserLeave = new UMI3DUserEvent();
-
         #endregion
     }
 }

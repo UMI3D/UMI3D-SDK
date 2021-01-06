@@ -55,11 +55,27 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Set the websocket port.
         /// </summary>
-        public const string wsPortParam = Separator + "wsport";
+        public const string forgePortParam = Separator + "udpport";
         /// <summary>
-        /// Set the ice servers.
+        /// Set the public ip of the master server.
         /// </summary>
-        public const string iceParam = Separator + "iceconfig";
+        public const string masterIpParam = Separator + "masterip";
+        /// <summary>
+        /// Set the port of the master server.
+        /// </summary>
+        public const string masterPortParam = Separator + "masterport";
+        /// <summary>
+        /// Set the public ip of the master server.
+        /// </summary>
+        public const string natIpParam = Separator + "natip";
+        /// <summary>
+        /// Set the port of the master server.
+        /// </summary>
+        public const string natPortParam = Separator + "natport";
+        /// <summary>
+        /// Set the max number of player.
+        /// </summary>
+        public const string maxNbPlayerParam = Separator + "players";
 
         /// <summary>
         /// Should the server be launch at start.
@@ -116,39 +132,68 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="wsPortParam"/> is found
+        /// method called when param <see cref="forgePortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetWsPort(string arg) {
-            int result;
-            if (int.TryParse(arg, out result))
+        protected virtual void SetUdpPort(string arg) {
+            ushort result;
+            if (ushort.TryParse(arg, out result))
             {
-                UMI3DCollaborationServer.Instance.useRandomWebsocketPort = result == 0;
-                UMI3DCollaborationServer.Instance.websocketPort = result;
+                UMI3DCollaborationServer.Instance.useRandomForgePort = result == 0;
+                UMI3DCollaborationServer.Instance.forgePort = result;
             }
             else
-                UMI3DCollaborationServer.Instance.useRandomWebsocketPort = true;
+                UMI3DCollaborationServer.Instance.useRandomForgePort = true;
         }
 
         /// <summary>
-        /// method called when param <see cref="iceParam"/> is found
+        /// method called when param <see cref="masterIpParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetIceServer(string arg) {
-            try
+        protected virtual void SetMasterServerIp(string arg) { UMI3DCollaborationServer.Instance.forgeMasterServerHost = arg; }
+
+        /// <summary>
+        /// method called when param <see cref="forgePortParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetMasterServerPort(string arg)
+        {
+            ushort result;
+            if (ushort.TryParse(arg, out result))
             {
-                string file = File.ReadAllText(arg);
-                var serv = JsonConvert.DeserializeObject<IceServer[]>(file, new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.None
-                });
-                var ice = ScriptableObject.CreateInstance<IceServers>();
-                ice.iceServers = serv;
-                UMI3DCollaborationServer.Instance.iceServers = ice;
+                UMI3DCollaborationServer.Instance.forgeMasterServerPort = result;
             }
-            catch (Exception e)
+        }
+
+        /// <summary>
+        /// method called when param <see cref="natIpParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetNatServerIp(string arg) { UMI3DCollaborationServer.Instance.forgeNatServerHost = arg; }
+
+        /// <summary>
+        /// method called when param <see cref="forgePortParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetNatServerPort(string arg)
+        {
+            ushort result;
+            if (ushort.TryParse(arg, out result))
             {
-                Debug.Log("Error on reading Ice Server file "+e);
+                UMI3DCollaborationServer.Instance.forgeNatServerPort = result;
+            }
+        }
+
+        /// <summary>
+        /// method called when param <see cref="maxNbPlayerParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetMaxNbPlayers(string arg)
+        {
+            int result;
+            if (int.TryParse(arg, out result))
+            {
+                UMI3DCollaborationServer.Instance.forgeMaxNbPlayer = result;
             }
         }
 
@@ -208,15 +253,35 @@ namespace umi3d.edk.collaboration
                     if (++i < length)
                         SetHttpPort(args[i]);
                 }
-                else if (args[i].CompareTo(wsPortParam) == 0)
+                else if (args[i].CompareTo(forgePortParam) == 0)
                 {
                     if (++i < length)
-                        SetWsPort(args[i]);
+                        SetUdpPort(args[i]);
                 }
-                else if (args[i].CompareTo(iceParam) == 0)
+                else if (args[i].CompareTo(masterIpParam) == 0)
                 {
                     if (++i < length)
-                        SetIceServer(args[i]);
+                        SetMasterServerIp(args[i]);
+                }
+                else if (args[i].CompareTo(masterPortParam) == 0)
+                {
+                    if (++i < length)
+                        SetMasterServerPort(args[i]);
+                }
+                else if (args[i].CompareTo(natIpParam) == 0)
+                {
+                    if (++i < length)
+                        SetNatServerIp(args[i]);
+                }
+                else if (args[i].CompareTo(natPortParam) == 0)
+                {
+                    if (++i < length)
+                        SetNatServerPort(args[i]);
+                }
+                else if (args[i].CompareTo(maxNbPlayerParam) == 0)
+                {
+                    if (++i < length)
+                        SetMaxNbPlayers(args[i]);
                 }
                 else
                     OtherParam(ref i, args);

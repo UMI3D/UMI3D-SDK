@@ -44,22 +44,11 @@ namespace umi3d.edk.collaboration
         {
             if (_user is UMI3DCollaborationUser user)
             {
-                user.dataChannels.Add(UMI3DCollaborationServer.WebRTC.CreateChannel(user, false, DataChannelTypes.VoIP));
-                UMI3DCollaborationServer.Collaboration.Users.Where(u => u != user)
-                    .Where(u => u.dataChannels.FirstOrDefault(dc => dc is BridgeChannel bridge && bridge.Equals(u, user, false, DataChannelTypes.VoIP)) == default)
-                    .ForEach(u =>
-                    {
-                        var dc = UMI3DCollaborationServer.WebRTC.CreateChannel(user, u, false, DataChannelTypes.Tracking);
-                        user.dataChannels.Add(dc);
-                        u.dataChannels.Add(dc);
-                    });
-
                 if (user.audioPlayer == null)
                 {
                     StartCoroutine(SetAudioSource(user));
                 }
                 StartCoroutine(SetSpacialBlend(user));
-
             }
         }
 
