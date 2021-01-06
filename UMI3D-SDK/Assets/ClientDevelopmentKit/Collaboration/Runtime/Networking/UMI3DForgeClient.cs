@@ -32,8 +32,6 @@ namespace umi3d.cdk.collaboration
     {
         uint Me { get { return UMI3DCollaborationClientServer.UserDto.networkId; } }
 
-        public bool IsConnected { get; private set; }
-
         UMI3DUser GetUserByNetWorkId(uint nid)
         {
             return UMI3DCollaborationEnvironmentLoader.Instance.UserList.Find(u => u.networkId == nid);
@@ -43,6 +41,9 @@ namespace umi3d.cdk.collaboration
         /// 
         /// </summary>
         private UDPClient client;
+
+
+        public bool IsConnected { get => client != null && client.IsConnected; }
 
         /// <summary>
         /// 
@@ -131,7 +132,7 @@ namespace umi3d.cdk.collaboration
         }
 
         #region signaling
-        
+
 
 
         /// <summary>
@@ -145,8 +146,8 @@ namespace umi3d.cdk.collaboration
             //TODO
             MainThreadManager.Run(() =>
             {
-                
-            Debug.Log("AUTH FAILED !");
+
+                Debug.Log("AUTH FAILED !");
             });
         }
 
@@ -157,8 +158,10 @@ namespace umi3d.cdk.collaboration
         private void AcceptedByServer(NetWorker sender)
         {
             //TODO
-            Debug.Log("AUTH SUCCESS !");
-            IsConnected = true;
+            MainThreadManager.Run(() =>
+            {
+                UMI3DCollaborationClientServer.Instance.ConnectedToTheServer();
+            });
             StartVOIP();
         }
 
@@ -169,11 +172,10 @@ namespace umi3d.cdk.collaboration
         private void DisconnectedFromServer(NetWorker sender)
         {
             NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
-            IsConnected = false;
             MainThreadManager.Run(() =>
             {
                 NetworkManager.Instance.Disconnect();
-                
+
                 Debug.Log("DisconnectedFromServer !");
                 //TODO
             });
@@ -189,10 +191,16 @@ namespace umi3d.cdk.collaboration
                     UMI3DCollaborationClientServer.SetToken(tokenDto.token);
                     break;
                 case StatusDto statusDto:
-                    UMI3DCollaborationClientServer.OnStatusChanged(statusDto);
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DCollaborationClientServer.OnStatusChanged(statusDto);
+                    });
                     break;
                 case StatusRequestDto statusRequestDto:
-                    UMI3DCollaborationClientServer.Instance.HttpClient.SendPostUpdateStatus(null, null);
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DCollaborationClientServer.Instance.HttpClient.SendPostUpdateStatus(null, null);
+                    });
                     break;
             }
         }
@@ -200,6 +208,11 @@ namespace umi3d.cdk.collaboration
         #endregion
 
         #region data
+
+        public void SendSignalingData(UMI3DDto dto)
+        {
+            SendBinaryData((int)DataChannelTypes.Signaling, dto.ToBson(), true);
+        }
 
         public void SendBrowserRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
@@ -209,11 +222,13 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
+            
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+            Debug.Log(dto);
             switch (dto)
             {
                 case TransactionDto transaction:
-                    MainThreadManager.Run(()=> {
+                    MainThreadManager.Run(() => {
                         StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
                     });
                     break;
@@ -270,7 +285,7 @@ namespace umi3d.cdk.collaboration
         {
             VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
             UMI3DUser source = GetUserByNetWorkId(dto.senderId);
-            if(source != null)
+            if (source != null)
                 AudioManager.Instance.Read(source.id, dto);
         }
 

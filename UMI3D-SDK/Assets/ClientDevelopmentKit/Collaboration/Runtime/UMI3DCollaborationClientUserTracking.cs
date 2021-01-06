@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
                 if (targetTrackingFPS > 0)
                 {
                     BonesIterator();
-                    if(UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Instance.ForgeClient.IsConnected)
+                    if(UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected())
                         UMI3DCollaborationClientServer.Instance.ForgeClient.SendTrackingFrame(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
@@ -48,7 +48,7 @@ namespace umi3d.cdk.collaboration
         {
             Debug.Log("is connected ?");
 
-            yield return new WaitUntil(()=> UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Instance.ForgeClient.IsConnected);
+            yield return new WaitUntil(()=> UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
 
             UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);
         }

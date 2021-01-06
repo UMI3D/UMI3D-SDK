@@ -249,15 +249,18 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            Debug.LogError("User Tracking not implemented!");
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+            Debug.Log(dto);
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
             
             if (dto is common.userCapture.UserCameraPropertiesDto camera)
             {
-                UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
+                MainThreadManager.Run(() =>
+                {
+                    UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
+                });
             }
             else
                 UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
@@ -269,7 +272,6 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            Debug.LogError("User Tracking not implemented!");
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
 
             if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)

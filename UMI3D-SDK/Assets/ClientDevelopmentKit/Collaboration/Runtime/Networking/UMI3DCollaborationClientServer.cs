@@ -14,18 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using MainThreadDispatcher;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.userCapture;
-#if UNITY_WEBRTC
-using Unity.WebRTC;
-#endif
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -51,15 +45,6 @@ namespace umi3d.cdk.collaboration
         int tryCount = 0;
         int maxTryCount = 10;
 
-        //public CameraDisplayer cameraDisplayer;
-        //public RectTransform TextureContainer;
-        //List<RawImage> images = new List<RawImage>();
-        //List<Texture2D> textures = new List<Texture2D>();
-
-
-        //public Camera cam;
-        //public RawImage image;
-
         public ClientIdentifierApi Identifier;
 
 
@@ -70,47 +55,13 @@ namespace umi3d.cdk.collaboration
         {
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
-            //WebRTCClient.audio = Audio.CaptureStream();
-            //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
-            //image.texture = cam.targetTexture;
             connected = false;
             joinning = false;
-            //cameraDisplayer.Play();
         }
 
         public void Init()
         {
             ForgeClient = UMI3DForgeClient.Create();
-        }
-
-        //public Texture2D GetStreamTexture2D()
-        //{
-        //    return cameraDisplayer.texture;
-        //}
-        //public Texture2D GetReceivedTexture2D()
-        //{
-        //    GameObject g = new GameObject();
-        //    g.transform.SetParent(TextureContainer);
-
-        //    RawImage image = g.AddComponent<RawImage>();
-        //    images.Add(image);
-        //    var texture = new Texture2D(0, 0);
-        //    textures.Add(texture);
-        //    return texture;
-        //}
-
-        //public void Update()
-        //{
-        //    for (int i = 0; i < images.Count; i++)
-        //        images[i].texture = textures[i];
-        //}
-
-
-        private void OnAudioFilterRead(float[] data, int channels)
-        {
-#if UNITY_WEBRTC
-            Audio.Update(data, data.Length);
-#endif
         }
 
         /// <summary>
@@ -119,7 +70,7 @@ namespace umi3d.cdk.collaboration
         /// <returns>True if the client is connected.</returns>
         public static bool Connected()
         {
-            return Exists && Instance?.ForgeClient != null ? Instance.ForgeClient.GetNetWorker().IsConnected && connected : false;
+            return Exists && Instance?.ForgeClient != null ? Instance.ForgeClient.IsConnected && connected : false;
         }
 
         /// <summary>
@@ -137,7 +88,37 @@ namespace umi3d.cdk.collaboration
                 Instance.ForgeClient.masterServerPort = connection.forgeMasterServerPort;
                 Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
                 Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
-                Instance.ForgeClient.Join();
+
+                if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous)
+                {
+
+                    UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login, password) =>
+                    {
+                        if (login == default || login == "")
+                        {
+                            login = "Default";
+                            Debug.LogWarning("Login should always have a value. Login set to 'Default'");
+                        }
+                        if (password == default) password = "";
+                        UMI3DCollaborationClientServer.Identity.login = login;
+                        Instance.ForgeClient.Join();
+                    });
+                }
+                else
+                {
+                    UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((login) =>
+                    {
+                        if (login == default || login == "")
+                        {
+                            login = "Default";
+                            Debug.LogWarning("Login should always have a value. Login set to 'Default'");
+                        }
+                        UMI3DCollaborationClientServer.Identity.login = login;
+                        Instance.ForgeClient.Join();
+                    });
+                }
+
+
             }
         }
 
@@ -278,7 +259,10 @@ namespace umi3d.cdk.collaboration
                 //Debug.Log($"<color=magenta> new token { token}</color>");
                 lastTokenUpdate = DateTime.UtcNow;
                 Instance?.HttpClient?.SetToken(token);
-                Instance?.OnNewToken?.Invoke();
+                BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+                {
+                    Instance?.OnNewToken?.Invoke();
+                });
             }
         }
 
@@ -340,6 +324,11 @@ namespace umi3d.cdk.collaboration
                     Instance.HttpClient.SendPostUpdateStatus(null, null);
                     break;
             }
+        }
+
+        public void ConnectedToTheServer()
+        {
+            ForgeClient.SendSignalingData(Identity);
         }
 
         bool joinning;

@@ -138,6 +138,10 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user;
             bool reconnection = false;
+            if (Login == null)
+            {
+                Debug.LogWarning("user try to use empty login");
+            }
             if (loginMap.ContainsKey(Login) && users.ContainsKey(loginMap[Login]))
             {
                 user = users[loginMap[Login]];
