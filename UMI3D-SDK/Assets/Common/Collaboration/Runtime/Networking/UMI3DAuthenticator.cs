@@ -22,15 +22,15 @@ namespace umi3d.common.collaboration
     public sealed class UMI3DAuthenticator : IUserAuthenticator
     {
         const string sepparator = ":";
-        private readonly Func<string> getPin;
-        private readonly Func<(string, string)> getLoginPassword;
-        private readonly Func<string, bool> getAuthorized;
+        private readonly Action<Action<string>> getPin;
+        private readonly Action<Action<(string, string)>> getLoginPassword;
+        private readonly Action<string, Action<bool>> getAuthorized;
         private readonly string pin;
         private readonly AuthenticationType authenticationType;
 
         public Action<string> LoginSet;
 
-        public UMI3DAuthenticator(Func<string> getPin, Func<(string, string)> getLoginPassword)
+        public UMI3DAuthenticator(Action<Action<string>> getPin, Action<Action<(string, string)>> getLoginPassword)
         {
             this.getPin = getPin;
             this.getLoginPassword = getLoginPassword;
@@ -43,7 +43,7 @@ namespace umi3d.common.collaboration
             authenticationType = AuthenticationType.Pin;
         }
 
-        public UMI3DAuthenticator(Func<string,bool> getAuthorized)
+        public UMI3DAuthenticator(Action<string, Action<bool>> getAuthorized)
         {
             this.getAuthorized = getAuthorized;
             authenticationType = AuthenticationType.Basic;
@@ -63,10 +63,10 @@ namespace umi3d.common.collaboration
                     authServerAction(new BMSByte());
                     break;
                 case AuthenticationType.Basic:
-                    authServerAction(ObjectMapper.BMSByte(getAuthLoginPassword()));
+                    getAuthLoginPassword((auth)=> authServerAction(ObjectMapper.BMSByte(auth)));
                     break;
                 case AuthenticationType.Pin:
-                    authServerAction(ObjectMapper.BMSByte(getAuthPin()));
+                    getAuthPin((auth) => authServerAction(ObjectMapper.BMSByte(auth)));
                     break;
                 default:
                     Debug.LogWarning($"Unknow AuthenticationType [{type}]");
@@ -83,23 +83,30 @@ namespace umi3d.common.collaboration
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
             string basicString = response.GetBasicType<string>();
+            Debug.LogError($" ->{basicString}<- ");
             switch (authenticationType)
             {
                 case AuthenticationType.None:
                     authUserAction(player);
                     break;
+
                 case AuthenticationType.Basic:
-                    if (getAuthorized(basicString))
-                        authUserAction(player);
-                    else
-                        rejectUserAction(player);
+                    getAuthorized(basicString, (answer) =>
+                    {
+                        if (answer)
+                            authUserAction(player);
+                        else
+                            rejectUserAction(player);
+                    });
                     break;
+
                 case AuthenticationType.Pin:
                     if (basicString == pin)
                         authUserAction(player);
                     else
                         rejectUserAction(player);
                     break;
+
                 default:
                     Debug.LogWarning($"Unknow AuthenticationType [{authenticationType}]");
                     rejectUserAction(player);
@@ -107,17 +114,25 @@ namespace umi3d.common.collaboration
             }
         }
 
-        string getAuthLoginPassword()
+        void getAuthLoginPassword(Action<string> callback)
         {
             if (getLoginPassword == null)
-                return "";
-            (string login, string password) = getLoginPassword();
-            LoginSet?.Invoke(login);
-            return login + sepparator + password;
+                callback?.Invoke("");
+            else
+                getLoginPassword.Invoke((k) => {
+                    var (login, password) = k;
+                    LoginSet?.Invoke(login);
+                    callback.Invoke(login + sepparator + password);
+                });
         }
-        string getAuthPin()
+        void getAuthPin(Action<string> callback)
         {
-            return getPin?.Invoke();
+            if (getPin == null)
+                callback?.Invoke("");
+            else
+                getPin.Invoke((pin) => {
+                    callback.Invoke(pin);
+                });
         }
 
 

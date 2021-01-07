@@ -198,10 +198,11 @@ namespace umi3d.edk.collaboration
             Debug.Log("Player " + player.NetworkId + " disconnected");
             playerCount = server.Players.Count;
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-            MainThreadManager.Run(() =>
-            {
-                UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
-            });
+            if(user != null)
+                MainThreadManager.Run(() =>
+                {
+                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
+                });
         }
 
 
@@ -211,10 +212,7 @@ namespace umi3d.edk.collaboration
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
             if (dto is IdentityDto req)
             {
-                var uid = req.userId;
-                var nid = player.NetworkId;
-                if (uid == null || uid == "") uid = nid.ToString();
-                UMI3DCollaborationServer.Collaboration.CreateUser(player, req.login, OnUserCreated);
+                UMI3DCollaborationServer.Collaboration.CreateUser(player, req, OnUserCreated);
             }
             else
             {
@@ -538,7 +536,6 @@ namespace umi3d.edk.collaboration
         }
 
         #endregion
-
     }
 
 }

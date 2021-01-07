@@ -123,42 +123,40 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IEnumerator ConnectionClose(string id)
+        public void ConnectionClose(string id)
         {
-            Debug.Log($"connection close {id}");
             if (users.ContainsKey(id))
             {
                 var user = users[id];
                 user.SetStatus(StatusType.MISSING);
             }
             else Debug.Log($"{id} not found");
-            yield break;
         }
 
         /// <summary>
         /// Create a User.
         /// </summary>
-        /// <param name="Login">Login of the user.</param>
+        /// <param name="LoginDto">Login of the user.</param>
         /// <param name="connection">Websoket connection of the user.</param>
         /// <param name="Callback">Callback called when the user has been created.</param>
-        public void CreateUser(NetworkingPlayer player, string Login, Action<UMI3DCollaborationUser, bool> Callback)
+        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<UMI3DCollaborationUser, bool> Callback)
         {
             UMI3DCollaborationUser user;
             bool reconnection = false;
-            if (Login == null)
+            if (LoginDto == null)
             {
                 Debug.LogWarning("user try to use empty login");
             }
-            if (loginMap.ContainsKey(Login) && users.ContainsKey(loginMap[Login]))
+            if (loginMap.ContainsKey(LoginDto.login) && loginMap[LoginDto.login] == LoginDto.userId && users.ContainsKey(LoginDto.userId))
             {
-                user = users[loginMap[Login]];
+                user = users[LoginDto.userId];
                 forgeMap.Remove(user.networkPlayer.NetworkId);
                 reconnection = true;
             }
             else
             {
-                user = new UMI3DCollaborationUser(Login);
-                loginMap[Login] = user.Id();
+                user = new UMI3DCollaborationUser(LoginDto.login);
+                loginMap[LoginDto.login] = user.Id();
                 users.Add(user.Id(), user);
             }
             user.networkPlayer = player;
