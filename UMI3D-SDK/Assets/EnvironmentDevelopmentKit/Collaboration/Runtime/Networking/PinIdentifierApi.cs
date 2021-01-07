@@ -14,7 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using System.Collections.Generic;
+using umi3d.common;
+using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -23,14 +26,30 @@ namespace umi3d.edk.collaboration
     public class PinIdentifierApi : IdentifierApi
     {
         Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
-        public string Pin = "defaultPin";
+        [SerializeField, EditorReadOnly]
+        string _pin = "0000";
+        /// <summary>
+        /// Pin used to connect to this server.
+        /// </summary>
+        public string Pin
+        {
+            get {
+                if (Authenticator == null) Authenticator = new PinAuthenticator(_pin);
+                return Authenticator.pin; }
+            set {
+                _pin = value;
+                if (Authenticator == null) Authenticator = new PinAuthenticator(value);
+                Authenticator.pin = value;
+            }
+        }
+        PinAuthenticator Authenticator;
 
         ///<inheritdoc/>
-        public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
+        public override IUserAuthenticator GetAuthenticator()
         {
-            if (!PasswordMap.ContainsKey(login))
-                PasswordMap[login] = new WebSocketSharp.Net.NetworkCredential(login, Pin);
-            return PasswordMap[login];
+            if (Authenticator == null) 
+                Authenticator = new PinAuthenticator(_pin);
+            return Authenticator;
         }
     }
 }

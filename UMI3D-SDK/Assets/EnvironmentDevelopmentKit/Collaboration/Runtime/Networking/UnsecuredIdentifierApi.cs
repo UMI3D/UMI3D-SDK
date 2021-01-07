@@ -47,15 +47,6 @@ namespace umi3d.edk.collaboration
         }
 
         ///<inheritdoc/>
-        public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
-        {
-            if (PasswordMap.ContainsKey(login))
-                return PasswordMap[login];
-            Debug.Log("no pw found for " + login);
-            return null;
-        }
-
-        ///<inheritdoc/>
         public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
             idMap[user.login] = identity.parameters;

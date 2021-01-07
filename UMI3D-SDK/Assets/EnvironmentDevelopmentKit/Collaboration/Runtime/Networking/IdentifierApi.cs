@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios;
+using BeardedManStudios.Forge.Networking;
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -24,9 +27,10 @@ namespace umi3d.edk.collaboration
 {
     public abstract class IdentifierApi : ScriptableObject
     {
-        public abstract WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login);
 
         Dictionary<string, bool> librariesUpdateStatus;
+
+        public virtual IUserAuthenticator GetAuthenticator() { return null; }
 
         /// <summary>
         /// Update a client status acording to a userconnectionDto
@@ -61,6 +65,5 @@ namespace umi3d.edk.collaboration
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
             return librariesUpdateStatus.ContainsKey(login) ? librariesUpdateStatus[login] : false;
         }
-
     }
 }
