@@ -16,6 +16,7 @@ limitations under the License.
 
 using BeardedManStudios.Forge.Networking;
 using System;
+using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -28,18 +29,11 @@ namespace umi3d.cdk.collaboration
     public class PinClientIdentifierApi : ClientIdentifierApi
     {
         public string Pin = "defaultPin";
-        public string User = "defaultUser";
 
         ///<inheritdoc/>
-        public override void GetIdentity(Action<string, IUserAuthenticator> callback)
+        public override void GetIdentity(Action<UMI3DAuthenticator> callback)
         {
-            callback.Invoke(User, new common.collaboration.PinAuthenticator(Pin));
-        }
-
-        ///<inheritdoc/>
-        public override void GetIdentity(Action<string> callback)
-        {
-            callback.Invoke(User);
+            callback?.Invoke(new common.collaboration.UMI3DAuthenticator(Pin));
         }
     }
 }

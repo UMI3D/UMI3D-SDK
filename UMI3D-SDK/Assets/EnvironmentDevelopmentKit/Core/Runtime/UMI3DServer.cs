@@ -101,19 +101,6 @@ namespace umi3d.edk
             return ip;
         }*/
 
-        /// <summary>
-        /// Return the Authentication type.
-        /// </summary>
-        /// <returns></returns>
-        static public AuthenticationType GetAuthentication()
-        {
-            return Instance._GetAuthentication();
-        }
-        protected virtual AuthenticationType _GetAuthentication()
-        {
-            return AuthenticationType.Anonymous;
-        }
-
         public virtual ForgeConnectionDto ToDto()
         {
             return null;

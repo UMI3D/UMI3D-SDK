@@ -67,7 +67,6 @@ namespace umi3d.edk
         public MediaDto ToDto()
         {
             var res = new MediaDto();
-            res.Authentication = UMI3DServer.GetAuthentication();
             res.name = environmentName;
             res.connection = UMI3DServer.Instance.ToDto();
             res.versionMajor = UMI3DVersion.major;

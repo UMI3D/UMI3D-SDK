@@ -52,11 +52,6 @@ namespace umi3d.common
         public string versionStatus;
         public string versionDate;
 
-        /// <summary>
-        /// Authentification type of the media
-        /// </summary>
-        public AuthenticationType Authentication;
-
         public ForgeConnectionDto connection;
 
         public MediaDto() : base() { }

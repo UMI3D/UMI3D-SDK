@@ -30,7 +30,7 @@ namespace umi3d.edk.collaboration
 
         Dictionary<string, bool> librariesUpdateStatus;
 
-        public virtual IUserAuthenticator GetAuthenticator() { return null; }
+        public virtual UMI3DAuthenticator GetAuthenticator(AuthenticationType type) { return null; }
 
         /// <summary>
         /// Update a client status acording to a userconnectionDto

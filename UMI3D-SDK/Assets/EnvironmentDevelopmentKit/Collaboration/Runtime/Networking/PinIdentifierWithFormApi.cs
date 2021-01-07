@@ -18,20 +18,25 @@ using BeardedManStudios.Forge.Networking;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.interaction;
+using umi3d.edk.interaction;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
     [CreateAssetMenu(fileName = "PinIdentifierApi", menuName = "UMI3D/Pin Identifier")]
-    public class PinIdentifierApi : IdentifierApi
+    public class PinIdentifierWithFormApi : PinIdentifierApi
     {
-        public string pin = "0000";
+        public UMI3DForm form;
 
-        ///<inheritdoc/>
-        public override UMI3DAuthenticator GetAuthenticator(AuthenticationType type)
+        public override FormDto GetParameterDtosFor(string login)
         {
-            if (type != AuthenticationType.Pin) Debug.LogWarning($"PinIdentifierApi does not handle other AuthenticationType than PIN [ignored type : {type}]");
-            return new UMI3DAuthenticator(pin);
+            return form?.ToDto(UMI3DCollaborationServer.Collaboration.GetUserByLogin(login)) as FormDto;
+        }
+
+        public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
+        {
+            return base.UpdateIdentity(user, identity);
         }
     }
 }

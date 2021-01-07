@@ -71,37 +71,12 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly]
         public int forgeMaxNbPlayer = 32;
 
-        /*
-        [EditorReadOnly]
-        public bool useRandomWebsocketPort;
-        [EditorReadOnly]
-        public int websocketPort;
-        */
-
         [EditorReadOnly]
         public bool useRandomHttpPort;
         [EditorReadOnly]
         public int httpPort;
 
         public AuthenticationType Authentication;
-
-        /// <summary>
-        /// Return the Authentication type.
-        /// </summary>
-        /// <returns></returns>
-
-        protected override AuthenticationType _GetAuthentication()
-        {
-            return Instance.Authentication;
-        }
-
-        /*
-        ///<inheritdoc/>
-        protected override string _GetWebsocketUrl()
-        {
-            return "http://" + ip + ":" + websocketPort;
-        }
-        */
 
         ///<inheritdoc/>
         protected override string _GetHttpUrl()
@@ -153,7 +128,8 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
                 );
-            forgeServer.Host();
+            
+            forgeServer.Host(Identifier?.GetAuthenticator(Authentication));
 
             isRunning = true;
             OnServerStart.Invoke();

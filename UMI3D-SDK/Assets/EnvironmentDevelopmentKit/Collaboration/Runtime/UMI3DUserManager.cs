@@ -61,9 +61,16 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public UMI3DCollaborationUser GetUser(string id)
         {
-            return users.ContainsKey(id) ? users[id] : null;
+            return id != null && users.ContainsKey(id) ? users[id] : null;
         }
 
+        /// <summary>
+        /// Return the UMI3D user associated with an identifier.
+        /// </summary>
+        public UMI3DCollaborationUser GetUserByLogin(string login)
+        {
+            return GetUser(login != null && loginMap.ContainsKey(login) ? loginMap[login] : null);
+        }
 
         /// <summary>
         /// Return the UMI3D user associated with a ForgeNetworkingRemastered Id.
