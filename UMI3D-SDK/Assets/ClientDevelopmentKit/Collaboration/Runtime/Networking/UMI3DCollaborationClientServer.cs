@@ -89,6 +89,7 @@ namespace umi3d.cdk.collaboration
                 Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
                 Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
 
+                Debug.Log("Need to use Credential");
                 if (UMI3DCollaborationClientServer.Media.Authentication != AuthenticationType.Anonymous)
                 {
 

@@ -98,6 +98,7 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned UMI3DUser</param>
         protected void CreateEmbodiment(UMI3DUser user)
         {
+            Debug.Log($"<color=magenta>Create Embodiment for {user.Id()}</color>");
             UMI3DTrackedUser trackedUser = user as UMI3DTrackedUser;
             if (embodimentInstances.ContainsKey(user.Id()))
                 throw new Exception("Internal error : the user is already registered");

@@ -40,6 +40,7 @@ namespace umi3d.edk.collaboration
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
             RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
+            Debug.Log($"To status {status}");
         }
 
         public void Logout()

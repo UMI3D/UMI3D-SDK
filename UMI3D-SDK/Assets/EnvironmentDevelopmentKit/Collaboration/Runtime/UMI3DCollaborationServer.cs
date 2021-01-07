@@ -163,9 +163,9 @@ namespace umi3d.edk.collaboration
         /// Create new peers connection for a new user
         /// </summary>
         /// <param name="user"></param>
-        public static void newUser(UMI3DCollaborationUser user)
+        public static void NotifyUserJoin(UMI3DCollaborationUser user)
         {
-            Debug.Log($"new user [{user.Id()}]");
+            Debug.Log($"User Join [{user.Id()}]");
             Collaboration.UserJoin(user);
             MainThreadManager.Run(() =>
             {
@@ -177,10 +177,9 @@ namespace umi3d.edk.collaboration
         /// Call To Notify a user join.
         /// </summary>
         /// <param name="user">user that join</param>
-        public IEnumerator NotifyUserJoin(UMI3DUser user)
+        public void NotifyUserJoin(UMI3DUser user)
         {
             OnUserJoin.Invoke(user);
-            yield break;
         }
 
         public void ClearIP()

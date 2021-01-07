@@ -162,7 +162,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerAuthenticated(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log("Player " + player.NetworkId + " authenticated");
+            Debug.Log($"Player { player.NetworkId } {player.Name} authenticated");
             //TODO
         }
 
@@ -254,7 +254,7 @@ namespace umi3d.edk.collaboration
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
-            
+
             if (dto is common.userCapture.UserCameraPropertiesDto camera)
             {
                 MainThreadManager.Run(() =>
@@ -263,7 +263,10 @@ namespace umi3d.edk.collaboration
                 });
             }
             else
-                UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
+                MainThreadManager.Run(() =>
+                {
+                    UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
+                });
         }
 
         #endregion
@@ -276,7 +279,10 @@ namespace umi3d.edk.collaboration
 
             if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
             {
-                UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
+                MainThreadManager.Run(() =>
+                {
+                    UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
+                });
                 RelayMessage(player, frame,Receivers.OthersProximity);
             }
         }
