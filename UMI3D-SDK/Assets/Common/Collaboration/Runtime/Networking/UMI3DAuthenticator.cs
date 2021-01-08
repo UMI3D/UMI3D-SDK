@@ -133,7 +133,6 @@ namespace umi3d.common.collaboration
 
         void AcceptPlayer(IdentityDto identity,NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
         {
-            Debug.Log("hello");
             if (shouldAccdeptPlayer == null)
                 authServerAction();
             else

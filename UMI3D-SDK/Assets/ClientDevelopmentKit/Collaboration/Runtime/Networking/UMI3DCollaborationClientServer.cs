@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public UMI3DForgeClient ForgeClient { get; private set; }
-        
+
         static public IdentityDto Identity = new IdentityDto();
         static public UserConnectionDto UserDto = new UserConnectionDto();
 
@@ -80,7 +80,7 @@ namespace umi3d.cdk.collaboration
         static public void Connect()
         {
             Instance.Init();
-            if(UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
+            if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
             {
                 Instance.ForgeClient.ip = connection.host;
                 Instance.ForgeClient.port = connection.forgeServerPort;
@@ -91,8 +91,12 @@ namespace umi3d.cdk.collaboration
 
                 UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((Auth) =>
                 {
-                    UMI3DCollaborationClientServer.Identity.login = "_";
-                    Auth.LoginSet = (s) => { UMI3DCollaborationClientServer.Identity.login = s; Auth.LoginSet = null; };
+                    UMI3DCollaborationClientServer.Identity.login = "";
+                    Auth.LoginSet = (s) =>
+                    {
+                        UMI3DCollaborationClientServer.Identity.login = s;
+                        Auth.LoginSet = null;
+                    };
                     Instance.ForgeClient.Join(Auth);
                 });
             }

@@ -289,6 +289,10 @@ namespace umi3d.edk.collaboration
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             //TODO: Audio rooms, Min distance for spatialized audio conf.
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log($"audio Frame from {player.NetworkId}");
+            });
             RelayMessage(player, frame);
         }
 

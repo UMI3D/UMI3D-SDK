@@ -279,10 +279,13 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
-            UMI3DUser source = GetUserByNetWorkId(dto.senderId);
-            if (source != null)
-                AudioManager.Instance.Read(source.id, dto);
+            MainThreadManager.Run(() =>
+            {
+                VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
+                UMI3DUser source = GetUserByNetWorkId(dto.senderId);
+                if (source != null)
+                    AudioManager.Instance.Read(source.id, dto);
+            });
         }
 
         /// <summary>
