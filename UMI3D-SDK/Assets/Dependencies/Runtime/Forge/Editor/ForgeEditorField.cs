@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using System;
-
+#if UNITY_EDITOR
 namespace BeardedManStudios.Forge.Networking.UnityEditor
 {
 	/// <summary>
@@ -94,3 +94,4 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 	}
 }
+#endif

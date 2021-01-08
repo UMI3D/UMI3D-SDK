@@ -1,5 +1,5 @@
 ﻿//#define FORGE_EDITOR_DEBUGGING
-
+#if UNITY_EDITOR
 using BeardedManStudios.Forge.Networking.Generated;
 using BeardedManStudios.Templating;
 using SimpleJSONEditor;
@@ -197,3 +197,4 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		}
 	}
 }
+#endif

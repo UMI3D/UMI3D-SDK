@@ -83,7 +83,6 @@ namespace umi3d.common.collaboration
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
             string basicString = response.GetBasicType<string>();
-            Debug.LogError($" ->{basicString}<- ");
             switch (authenticationType)
             {
                 case AuthenticationType.None:

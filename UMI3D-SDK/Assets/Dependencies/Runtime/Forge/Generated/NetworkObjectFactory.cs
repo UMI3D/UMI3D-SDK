@@ -21,9 +21,9 @@ namespace BeardedManStudios.Forge.Networking.Generated
 			NetworkObject obj = null;
 			MainThreadManager.Run(() =>
 			{
-				switch (identity)
-				{
-				}
+				//switch (identity)
+				//{
+				//}
 
 				if (!availableCallback)
 					base.NetworkCreateObject(networker, identity, id, frame, callback);
