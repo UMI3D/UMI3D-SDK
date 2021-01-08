@@ -1,25 +1,59 @@
-# UMI3D-SDK
+# UMI3D-SDK (Unity)
 UMI3D is a web protocol that enables the creation of 3D media in which users of any AR/VR device can collaborate in real time. The 3D media is created once and hosted on a server or on a local computer. Any AR/VR device can display and interact with it remotely thanks to a dedicated UMI3D browser. 
 
-For more information about UMI3D, visit the UMI3D Consortium's website: https://umi3d-consortium.org
+For more information about UMI3D, visit the [UMI3D Consortium's website](https://umi3d-consortium.org)
 
-The Current UMI3D-SDK version is the 1.3.b.200318.
-The documentation can be found in the Documentation folder. open the ./Documentation/html/index file with a web browser.
+### Version And Documentation
 
-The Git contain two unity projects.
-The first one, "UMI3D-Desktop-Browser", is an example of a UMI3D desktop browser with only the CDK part of the SDK.
-The second one, "UMI3D-SDK-Unity", is a Unity project with the complet SDK (EDK and SDK) with an example scene.
+The Current UMI3D-SDK version is 2.1
+The documentation can be found [here](https://umi3d.github.io/UMI3D-SDK/index.html)
 
-To have a quick view on UMI3D unity sdk:
-	The recomanded Unity version is 2019.1.14f1 (This should be working with other version but why tempting fate):
-	
-	- Launch the UMI3D-SDK-Unity project.
-	- Open the example scene in UMI3D which can be find at "[Assets]/TestRooms/Interactions/Scenes/TestNewInteractionSystem.unity".
-	- Start the scene by clicking on the play button.
-	- Note the Ip and Port which can be found on the "WebSocketUMI3DServer" script on the "UMI3D" node.
-	
-	- Launch the UMI3D-Desktop-Browser project.
-	- Open the Connection scene which can be found at "[Assets]/Project/Scenes/Connection.unity".
-	- Start the scene by clicking on the play button.
-	- Fill the Ip and Port fields.
-	- Click on "Connection".
+### UMI3D Browser & Samples
+
+* [Virtual Worlds Samples](https://github.com/UMI3D/UMI3D-Samples)
+* [UMI3D desktop browser](https://github.com/UMI3D/UMI3D-Desktop-Browser)
+* UMI3D SteamVR browser (Coming soon)
+
+### Installation through .unitypackage
+
+* [UMI3D Virtual World Development Kit](/Packages/edk.unitypackage)
+* [UMI3D Browser Development Kit](/Packages/cdk.unitypackage)
+
+### Installation through Unity's Package Manager
+
+The minimum required unity version is (LTS) 2019.4 
+
+Open Your project manifest ('.\Packages\manifest.json')
+
+For the UMI3D Virtual World Development Kit add the following lines at the top of the 'dependencies' array:
+>	"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/InteractionSystem#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.edk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/Core#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.edk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/InteractionSystem#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.edk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/UserCapture#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.edk.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/Collaboration#2.1.b.210104",
+
+For the UMI3D Browser Development Kit add the following lines at the top of the 'dependencies' array:
+>	"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/InteractionSystem#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.cdk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/Core#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.cdk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/InteractionSystem#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.cdk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/UserCapture#2.1.b.210104",
+>	"com.gfi-innovaton.umi3d.cdk.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/Collaboration#2.1.b.210104",
+
+The tag (#2.1.b.210104) can be set to any branch or tag on the sdk repo. Example: '#master', '#development', '#2.1.b.210104'
+
+To activate the intelsence of UMI3D-SDK in Visual Studio 2019, navigate to the menu 'Edit > Preferences > External Tools' and check the option 'Git packages'. It will be necesary to regenerate the project files.
+
+### Unity Project Settings
+
+'File > Build Settings':
+>	The architecture for Windows Standalone is x86_64.
+'Edit > Project Settings > Player > Other Settings':
+>	Api compatibility Level is .NET 4.x

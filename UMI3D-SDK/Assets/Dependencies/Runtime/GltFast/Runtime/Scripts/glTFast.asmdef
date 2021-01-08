@@ -1,0 +1,30 @@
+{
+    "name": "glTFast",
+    "references": [
+        "Draco",
+        "glTFastSchema",
+        "glTFastFakeSchema",
+        "Ktx",
+        "LoaderUtils"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.atteneder.draco",
+            "expression": "1.1.2",
+            "define": "DRACO_UNITY"
+        },
+        {
+            "name": "com.atteneder.ktx",
+            "expression": "0.7.0",
+            "define": "KTX_UNITY"
+        }
+    ],
+    "noEngineReferences": false
+}

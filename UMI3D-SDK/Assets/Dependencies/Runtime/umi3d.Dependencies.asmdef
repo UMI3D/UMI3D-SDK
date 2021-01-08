@@ -1,0 +1,21 @@
+{
+    "name": "UMI3D.Dependencies",
+    "references": [
+        "GUID:339cc51f8f5f946a99be775bcfa83f2e",
+        "GUID:78ba3e6dc442744aaacd544bcb0f0d6f",
+        "GUID:a42927d1d4a3b4cda9b076a7adecb9cc",
+        "GUID:1a0324566af4ed544918d6837a1f4e11",
+        "GUID:18d18f811ba286c49814567a3cfba688"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [
+        "LinuxStandalone64"
+    ],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

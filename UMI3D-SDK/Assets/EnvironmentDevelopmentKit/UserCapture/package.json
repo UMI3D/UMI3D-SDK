@@ -1,0 +1,12 @@
+{
+	"name": "com.gfi-innovaton.umi3d.edk.user-capture",
+	"version": "2.1.0",
+	"displayName": "UMI3D EDK UserCapture",
+	"unity": "2019.4",
+	"author": "Gfi Innovation",
+	"description": "UMI3D Environment Devlopment Kit User Capture.",
+	"dependencies": {
+		"com.gfi-innovaton.umi3d.edk.core":"2.1.0",
+		"com.gfi-innovaton.umi3d.common.user-capture":"2.1.0"
+	}
+}

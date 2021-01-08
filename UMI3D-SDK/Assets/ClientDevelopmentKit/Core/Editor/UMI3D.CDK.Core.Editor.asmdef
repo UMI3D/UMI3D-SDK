@@ -1,0 +1,17 @@
+{
+    "name": "UMI3D.CDK.Core.Editor",
+    "references": [
+        "GUID:29a403b1410bc9e44b9b0cbcfde58e71"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

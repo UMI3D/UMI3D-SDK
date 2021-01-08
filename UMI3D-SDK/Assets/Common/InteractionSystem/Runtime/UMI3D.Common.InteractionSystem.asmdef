@@ -1,0 +1,15 @@
+{
+    "name": "UMI3D.Common.InteractionSystem",
+    "references": [
+        "GUID:6e34c4b4c3202a14eb95e0a784041765"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

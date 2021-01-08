@@ -1,0 +1,17 @@
+{
+    "name": "AsImpL.Editor",
+    "references": [
+        "GUID:b1a706ea5d8ecfd4aa97f6b9462b80a0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

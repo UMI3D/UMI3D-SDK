@@ -1,0 +1,10 @@
+{
+	"name": "com.gfi-innovaton.umi3d.dependencies",
+	"version": "2.1.0",
+	"displayName": "UMI3D Dependencies",
+	"unity": "2019.4",
+	"author": "Gfi Innovation",
+	"description": "UMI3D dependencies. This package is only temporary and will be switch for dependencies references as much as possible",
+	"dependencies": {
+	}
+}
