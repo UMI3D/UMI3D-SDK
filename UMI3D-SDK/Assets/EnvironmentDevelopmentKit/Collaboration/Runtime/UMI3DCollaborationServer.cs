@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using MainThreadDispatcher;
 using System;
@@ -128,12 +129,27 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
                 );
-            
-            forgeServer.Host(Identifier?.GetAuthenticator(Authentication));
+            var auth = Identifier?.GetAuthenticator(Authentication);
+            if (auth != null)
+                auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
+            forgeServer.Host(auth);
 
             isRunning = true;
             OnServerStart.Invoke();
         }
+
+        void ShouldAcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action<bool> action)
+        {
+            UMI3DCollaborationServer.Collaboration.CreateUser(player, identity, action, UserCreatedCallback);
+        }
+
+        protected void UserCreatedCallback( UMI3DCollaborationUser user, bool reconnection)
+        {
+            user.InitConnection(forgeServer);
+            forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
+            Debug.Log($"<color=yellow>open {user.Id()}</color>");
+        }
+
 
         /// <summary>
         /// Create new peers connection for a new user

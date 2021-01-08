@@ -137,21 +137,36 @@ namespace umi3d.edk.collaboration
         /// Create a User.
         /// </summary>
         /// <param name="LoginDto">Login of the user.</param>
-        /// <param name="connection">Websoket connection of the user.</param>
-        /// <param name="Callback">Callback called when the user has been created.</param>
-        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<UMI3DCollaborationUser, bool> Callback)
+        /// <param name="onUserCreated">Callback called when the user has been created.</param>
+        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<bool> acceptUser ,Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
             UMI3DCollaborationUser user;
             bool reconnection = false;
             if (LoginDto == null)
             {
                 Debug.LogWarning("user try to use empty login");
+                acceptUser(false);
+                return;
             }
-            if (loginMap.ContainsKey(LoginDto.login) && loginMap[LoginDto.login] == LoginDto.userId && users.ContainsKey(LoginDto.userId))
+            if(LoginDto.login == null || LoginDto.login == "")
             {
-                user = users[LoginDto.userId];
-                forgeMap.Remove(user.networkPlayer.NetworkId);
-                reconnection = true;
+                LoginDto.login = player.NetworkId.ToString();
+            }
+
+            if (loginMap.ContainsKey(LoginDto.login))
+            {
+                if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != null && users.ContainsKey(LoginDto.userId))
+                {
+                    Debug.LogWarning($"Login [{LoginDto.login}] already us by an other user");
+                    acceptUser(false);
+                    return;
+                }
+                else
+                {
+                    user = users[LoginDto.userId];
+                    forgeMap.Remove(user.networkPlayer.NetworkId);
+                    reconnection = true;
+                }
             }
             else
             {
@@ -161,7 +176,8 @@ namespace umi3d.edk.collaboration
             }
             user.networkPlayer = player;
             forgeMap.Add(player.NetworkId, user.Id());
-            Callback.Invoke(user, reconnection);
+            acceptUser(true);
+            onUserCreated.Invoke(user, reconnection);
         }
 
         /// <summary>

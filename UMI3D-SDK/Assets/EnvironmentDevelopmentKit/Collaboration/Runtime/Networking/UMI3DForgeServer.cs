@@ -210,26 +210,12 @@ namespace umi3d.edk.collaboration
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-            if (dto is IdentityDto req)
+            var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            if (dto is StatusDto sts)
             {
-                UMI3DCollaborationServer.Collaboration.CreateUser(player, req, OnUserCreated);
+                Debug.Log(sts.status);
+                UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
             }
-            else
-            {
-                var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-                if (dto is StatusDto sts)
-                {
-                    Debug.Log(sts.status);
-                    UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
-                }
-            }
-        }
-
-        protected void OnUserCreated(UMI3DCollaborationUser user, bool reconnection)
-        {
-            user.InitConnection(this);
-            SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
-            Debug.Log($"<color=yellow>open {user.Id()}</color>");
         }
 
 

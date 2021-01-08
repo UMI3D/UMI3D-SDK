@@ -33,7 +33,22 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         public override void GetIdentity(Action<UMI3DAuthenticator> callback)
         {
-            callback?.Invoke(new common.collaboration.UMI3DAuthenticator(Pin));
+            callback?.Invoke(new common.collaboration.UMI3DAuthenticator(GetPin, GetLoginPassword,GetIdentity));
         }
+
+        void GetPin(Action<string> callback)
+        {
+            callback?.Invoke(Pin);
+        }
+        void GetLoginPassword(Action<(string, string)> callback)
+        {
+            callback?.Invoke((null, Pin));
+        }
+
+        void GetIdentity(Action<IdentityDto> callback)
+        {
+            callback?.Invoke(UMI3DCollaborationClientServer.Identity);
+        }
+
     }
 }

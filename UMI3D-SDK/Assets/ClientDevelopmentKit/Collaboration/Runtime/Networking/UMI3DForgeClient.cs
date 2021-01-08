@@ -158,10 +158,6 @@ namespace umi3d.cdk.collaboration
         private void AcceptedByServer(NetWorker sender)
         {
             //TODO
-            MainThreadManager.Run(() =>
-            {
-                UMI3DCollaborationClientServer.Instance.ConnectedToTheServer();
-            });
             StartVOIP();
         }
 

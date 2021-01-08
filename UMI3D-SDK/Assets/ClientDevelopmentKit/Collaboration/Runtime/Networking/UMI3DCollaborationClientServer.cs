@@ -302,11 +302,6 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public void ConnectedToTheServer()
-        {
-            ForgeClient.SendSignalingData(Identity);
-        }
-
         bool joinning;
         void Join()
         {

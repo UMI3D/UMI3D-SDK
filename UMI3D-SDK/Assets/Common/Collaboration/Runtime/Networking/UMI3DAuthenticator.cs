@@ -13,6 +13,7 @@ limitations under the License.
 
 using BeardedManStudios;
 using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Unity;
 using System;
 using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
@@ -24,14 +25,17 @@ namespace umi3d.common.collaboration
         const string sepparator = ":";
         private readonly Action<Action<string>> getPin;
         private readonly Action<Action<(string, string)>> getLoginPassword;
+        private readonly Action<Action<IdentityDto>> getIdentity;
         private readonly Action<string, Action<bool>> getAuthorized;
+        public Action<IdentityDto, NetworkingPlayer, Action<bool>> shouldAccdeptPlayer;
         private readonly string pin;
         private readonly AuthenticationType authenticationType;
 
         public Action<string> LoginSet;
 
-        public UMI3DAuthenticator(Action<Action<string>> getPin, Action<Action<(string, string)>> getLoginPassword)
+        public UMI3DAuthenticator(Action<Action<string>> getPin, Action<Action<(string, string)>> getLoginPassword, Action<Action<IdentityDto>> getIdentity)
         {
+            this.getIdentity = getIdentity;
             this.getPin = getPin;
             this.getLoginPassword = getLoginPassword;
             authenticationType = AuthenticationType.None;
@@ -60,17 +64,26 @@ namespace umi3d.common.collaboration
             switch (type)
             {
                 case AuthenticationType.None:
-                    authServerAction(new BMSByte());
+                    MainThreadManager.Run(() =>
+                    {
+                        sendAuthServerAction("", authServerAction);
+                    });
                     break;
                 case AuthenticationType.Basic:
-                    getAuthLoginPassword((auth)=> authServerAction(ObjectMapper.BMSByte(auth)));
+                    MainThreadManager.Run(() =>
+                    {
+                        getAuthLoginPassword((auth) => sendAuthServerAction(auth, authServerAction));
+                    });
                     break;
                 case AuthenticationType.Pin:
-                    getAuthPin((auth) => authServerAction(ObjectMapper.BMSByte(auth)));
+                    MainThreadManager.Run(() =>
+                    {
+                        getAuthPin((auth) => sendAuthServerAction(auth, authServerAction));
+                    });
                     break;
                 default:
                     Debug.LogWarning($"Unknow AuthenticationType [{type}]");
-                    authServerAction(new BMSByte());
+                    rejectServerAction();
                     break;
             }
         }
@@ -83,35 +96,67 @@ namespace umi3d.common.collaboration
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
             string basicString = response.GetBasicType<string>();
-            switch (authenticationType)
-            {
-                case AuthenticationType.None:
-                    authUserAction(player);
-                    break;
+            IdentityDto identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
 
-                case AuthenticationType.Basic:
-                    getAuthorized(basicString, (answer) =>
-                    {
-                        if (answer)
-                            authUserAction(player);
+            MainThreadManager.Run(() =>
+            {
+                switch (authenticationType)
+                {
+                    case AuthenticationType.None:
+                        AcceptPlayer(identity, player, () => authUserAction(player), () => rejectUserAction(player));
+                        break;
+
+                    case AuthenticationType.Basic:
+
+                        getAuthorized(basicString, (answer) =>
+                            {
+                                if (answer)
+                                    AcceptPlayer(identity, player, () => authUserAction(player), () => rejectUserAction(player));
+                                else
+                                    rejectUserAction(player);
+                            });
+                        break;
+
+                    case AuthenticationType.Pin:
+                        if (basicString == pin)
+                            AcceptPlayer(identity, player, () => authUserAction(player), () => rejectUserAction(player));
                         else
                             rejectUserAction(player);
-                    });
-                    break;
-
-                case AuthenticationType.Pin:
-                    if (basicString == pin)
-                        authUserAction(player);
-                    else
+                        break;
+                    default:
+                        Debug.LogWarning($"Unknow AuthenticationType [{authenticationType}]");
                         rejectUserAction(player);
-                    break;
+                        break;
+                }
+            });
+        }
 
-                default:
-                    Debug.LogWarning($"Unknow AuthenticationType [{authenticationType}]");
-                    rejectUserAction(player);
-                    break;
+        void AcceptPlayer(IdentityDto identity,NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
+        {
+            Debug.Log("hello");
+            if (shouldAccdeptPlayer == null)
+                authServerAction();
+            else
+            {
+                shouldAccdeptPlayer(identity, player, (b) =>
+                {
+                    if (b)
+                        authServerAction();
+                    else
+                        rejectServerAction();
+                });
+
             }
         }
+
+        void sendAuthServerAction(string auth, Action<BMSByte> authServerAction)
+        {
+            getIdentity((id) =>
+            {
+                authServerAction(ObjectMapper.BMSByte(auth, id.ToBson()));
+            });
+        }
+
 
         void getAuthLoginPassword(Action<string> callback)
         {
