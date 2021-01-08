@@ -294,7 +294,7 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string authorization, string entityId,  string downloadedPath)
+            public ObjectData(string url, string extension, string authorization, string entityId, string downloadedPath)
             {
                 value = null;
                 entityIds = new HashSet<string>() { entityId };
@@ -727,6 +727,7 @@ namespace umi3d.cdk
             foreach (var name in list.files)
             {
                 string path = Path.Combine(directoryPath, name);
+                path = System.Uri.UnescapeDataString(path);
                 string dicPath = System.IO.Path.GetDirectoryName(path);
                 string url = Path.Combine(list.baseUrl, name);
                 Action callback = () => { data.files.Add(new Data(url, path)); };

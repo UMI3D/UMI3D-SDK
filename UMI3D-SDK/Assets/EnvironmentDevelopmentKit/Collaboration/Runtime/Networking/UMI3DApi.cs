@@ -208,9 +208,8 @@ namespace umi3d.edk.collaboration
         public void GetDirectory(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
+            rawDirectory = System.Uri.UnescapeDataString(rawDirectory);
             string directory = common.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
-            directory = System.Uri.UnescapeDataString(directory);
-
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInDataRepository(directory))
