@@ -203,13 +203,17 @@ namespace umi3d.edk.collaboration
         IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Add(user) } });
+            var op = objectUserList.Add(user);
+            op.users.Remove(user);
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }
 
         IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Remove(user) } });
+            var op = objectUserList.Remove(user);
+            op.users.Remove(user);
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() {op } });
         }
 
         IEnumerator UpdateUser(UMI3DCollaborationUser user)

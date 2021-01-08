@@ -127,22 +127,17 @@ namespace umi3d.cdk.collaboration
             tryCount = 0;
         }
 
-        /// <summary>
-        /// Should The websocket connection try to reconnect
-        /// </summary>
-        /// <param name="code">error code</param>
-        /// <returns></returns>
-        public bool shouldReconnectWebsocket(ushort code)
-        {
-            tryCount++;
-            if (code.Equals(1006) || tryCount >= maxTryCount)
-            {
-                OnConnectionLost.Invoke();
-                return false;
-            }
 
-            return true;
+        /// <summary>
+        /// Notify that the connection with the server was lost.
+        /// </summary>
+        public void ConnectionLost()
+        {
+            UMI3DCollaborationClientServer.Logout(null,null);
+
+            OnConnectionLost.Invoke();
         }
+
 
         /// <summary>
         /// Retry a failed http request

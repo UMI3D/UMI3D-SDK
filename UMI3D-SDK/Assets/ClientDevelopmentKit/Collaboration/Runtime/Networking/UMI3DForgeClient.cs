@@ -16,6 +16,7 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Threading;
+using System.Collections;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.common;
@@ -129,6 +130,7 @@ namespace umi3d.cdk.collaboration
         {
             StopVoip();
             if (client != null) client.Disconnect(true);
+            client = null;
         }
 
         #region signaling
@@ -171,11 +173,12 @@ namespace umi3d.cdk.collaboration
             MainThreadManager.Run(() =>
             {
                 NetworkManager.Instance.Disconnect();
-
-                Debug.Log("DisconnectedFromServer !");
-                //TODO
+                if (client != null)
+                    UMI3DCollaborationClientServer.Instance.ConnectionLost();
             });
         }
+
+
 
         /// <inheritdoc/>
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
@@ -218,9 +221,8 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            
+
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-            Debug.Log(dto);
             switch (dto)
             {
                 case TransactionDto transaction:
@@ -285,6 +287,8 @@ namespace umi3d.cdk.collaboration
                 UMI3DUser source = GetUserByNetWorkId(dto.senderId);
                 if (source != null)
                     AudioManager.Instance.Read(source.id, dto);
+
+                Debug.Log($"audio message from {dto.senderId} {source != null}");
             });
         }
 
@@ -371,6 +375,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void VOIPWorker()
         {
+            Debug.Log($"Start voip {client.IsConnected}");
             while (client.IsConnected)
             {
                 if (writeFlushTimer >= WRITE_FLUSH_TIME && writeSamples.Count > 0)
@@ -393,6 +398,7 @@ namespace umi3d.cdk.collaboration
                         Binary voice = new Binary(client.Time.Timestep, false, dto.ToBson(), Receivers.All, MessageGroupIds.VOIP, false);
                         client.Send(voice);
                     }
+
 
                 }
                 MainThreadManager.ThreadSleep(10);
@@ -488,6 +494,20 @@ namespace umi3d.cdk.collaboration
         private void OnApplicationQuit()
         {
             Stop();
+        }
+
+        private void OnDestroy()
+        {
+            Stop();
+            destroyed = true;
+        }
+
+        bool destroyed = false;
+        new Coroutine StartCoroutine(IEnumerator enumerator)
+        {
+            if (!destroyed)
+                return base.StartCoroutine(enumerator);
+            return null;
         }
 
         #endregion

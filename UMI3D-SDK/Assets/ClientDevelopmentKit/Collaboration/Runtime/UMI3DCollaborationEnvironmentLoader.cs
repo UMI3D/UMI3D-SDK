@@ -66,8 +66,8 @@ namespace umi3d.cdk.collaboration
             {
                 case SetEntityListAddPropertyDto add:
                     var user = add.value as UserDto;
-                    UserList.Add(new UMI3DUser(user));
-                    dto.userList.Add(user);
+                    UserList.Insert(add.index,new UMI3DUser(user));
+                    dto.userList.Insert(add.index, user);
                     break;
                 case SetEntityListRemovePropertyDto rem:
                     UserList.RemoveAt(rem.index);
