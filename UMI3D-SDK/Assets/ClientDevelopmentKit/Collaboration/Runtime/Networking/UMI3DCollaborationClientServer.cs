@@ -140,9 +140,9 @@ namespace umi3d.cdk.collaboration
         static public void Connect()
         {
             Instance.Init();
-            if(UMI3DCollaborationClientServer.Media.connection is WebsocketConnectionDto connection)
+            if (UMI3DCollaborationClientServer.Media.connection is WebsocketConnectionDto connection)
             {
-                Instance.WebSocketClient.Init(connection.websocketUrl,OnMessage);
+                Instance.WebSocketClient.Init(connection.websocketUrl, OnMessage);
             }
         }
 
