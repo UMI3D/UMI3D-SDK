@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -119,14 +120,17 @@ namespace umi3d.cdk
                 {
                     Material[] oldMats = oldMaterialContainer.oldMats;
                     Material[] matsToApply = renderer.sharedMaterials;
-                    for (int i = 0; i < renderer.sharedMaterials.Length; i++)
+                    for (int i = 0; i < oldMats.Length; i++)
                     {
                         if (oldMats[i] != null)
                         {
                             matsToApply[i] = (oldMats[i]);
                         }
                     }
-                    renderer.materials = matsToApply;
+                    if (oldMats.Length != matsToApply.Length)
+                        renderer.materials = ((IEnumerable<Material>)matsToApply).Take(oldMats.Length).ToArray();
+                    else
+                        renderer.materials = matsToApply;
                 }
 
             }
