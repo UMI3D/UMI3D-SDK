@@ -1,6 +1,5 @@
 var NAVTREEINDEX1 =
 {
-"d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#abc189a86879e098ce22dcd86a82e61e9":[2,0,0,0,2,12,6],
 "d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#ac959d912593596c1597bcb05338e37c1":[2,0,0,0,2,12,0],
 "d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#ae96b13ab6cc7cc9ded30dbcaa34511ef":[2,0,0,0,2,12,5],
 "d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#af00c64fea81436e6ec7232badbaca169":[2,0,0,0,2,12,2],
@@ -48,9 +47,6 @@ var NAVTREEINDEX1 =
 "d2/d22/classumi3d_1_1common_1_1_p_b_r_material_dto.html#a3a521c22decbd6e811e29e8d03e8a83f":[2,0,0,1,53,0],
 "d2/d22/classumi3d_1_1common_1_1_p_b_r_material_dto.html#a8691568a89091ab3768b51ea8c84ed24":[2,0,0,1,53,1],
 "d2/d22/classumi3d_1_1common_1_1_p_b_r_material_dto.html#aceac3f14f5af5c69d64e73c16d11d1d7":[2,0,0,1,53,2],
-"d2/d45/class_test_add_remove_interaction.html":[2,0,4],
-"d2/d45/class_test_add_remove_interaction.html#a3f777f92fa4d4607fdf7461964ff008c":[2,0,4,1],
-"d2/d45/class_test_add_remove_interaction.html#a6cfdefb209d97dc3192cf6d06ead4cb5":[2,0,4,0],
 "d2/d52/classumi3d_1_1common_1_1_abstract_operation_dto.html":[2,0,0,1,6],
 "d2/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_embodiment_manager.html":[2,0,0,2,3,2],
 "d2/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_embodiment_manager.html#a0240190ec6eabb85ef62d7427cf27662":[2,0,0,2,3,2,7],
@@ -249,5 +245,9 @@ var NAVTREEINDEX1 =
 "d3/d13/interfaceumi3d_1_1common_1_1collaboration_1_1_i_abstract_web_rtc_client.html#a9c72ebb296b9d0079c8a009aac204e2f":[2,0,0,1,0,5,2],
 "d3/d13/interfaceumi3d_1_1common_1_1collaboration_1_1_i_abstract_web_rtc_client.html#aae4c9bfb6ca0b24c82778e61310a5f4d":[2,0,0,1,0,5,3],
 "d3/d15/classumi3d_1_1edk_1_1_asset_library.html":[2,0,0,2,5],
-"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#a3a15dfadba2a92d8bab6bcf31f19b5bd":[2,0,0,2,5,2]
+"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#a3a15dfadba2a92d8bab6bcf31f19b5bd":[2,0,0,2,5,2],
+"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#a64cbffa72238645dec7793ad02fdf6d8":[2,0,0,2,5,3],
+"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#a7deb6b3429f814fa837930388c07d794":[2,0,0,2,5,4],
+"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#aa799d3f23782bbde432f93337240e03d":[2,0,0,2,5,7],
+"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#ac1856944d3329403e949892a69e77521":[2,0,0,2,5,6]
 };
