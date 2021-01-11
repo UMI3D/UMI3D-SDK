@@ -15,7 +15,6 @@ using BeardedManStudios;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using System;
-using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
 
 namespace umi3d.common.collaboration
@@ -90,16 +89,22 @@ namespace umi3d.common.collaboration
 
         public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
         {
-            issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log("Issue Challenge");
+                issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
+            });
         }
 
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
-            string basicString = response.GetBasicType<string>();
-            IdentityDto identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
-
             MainThreadManager.Run(() =>
             {
+                Debug.Log("Verify Response");
+                string basicString = response.GetBasicType<string>();
+            IdentityDto identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
+
+
                 switch (authenticationType)
                 {
                     case AuthenticationType.None:

@@ -61,15 +61,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public UMI3DCollaborationUser GetUser(string id)
         {
-            return id != null && users.ContainsKey(id) ? users[id] : null;
-        }
-
-        /// <summary>
-        /// Return the UMI3D user associated with an identifier.
-        /// </summary>
-        public UMI3DCollaborationUser GetUserByLogin(string login)
-        {
-            return GetUser(login != null && loginMap.ContainsKey(login) ? loginMap[login] : null);
+            lock (users)
+            {
+                return id != null && users.ContainsKey(id) ? users[id] : null;
+            }
         }
 
         /// <summary>
@@ -77,8 +72,14 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public UMI3DCollaborationUser GetUserByNetworkId(uint id)
         {
-            string uid = forgeMap.ContainsKey(id) ? forgeMap[id] : null;
-            return (uid != null && users.ContainsKey(uid)) ? users[uid] : null;
+            lock (forgeMap)
+            {
+                string uid = forgeMap.ContainsKey(id) ? forgeMap[id] : null;
+                lock (users)
+                {
+                    return (uid != null && users.ContainsKey(uid)) ? users[uid] : null;
+                }
+            }
         }
 
         /// <summary>
@@ -86,10 +87,13 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public UMI3DCollaborationUser GetUserByToken(string authorization)
         {
-            foreach (UMI3DCollaborationUser u in users.Values)
+            lock (users)
             {
-                if (UMI3DNetworkingKeys.bearer + u.token == authorization)
-                    return u;
+                foreach (UMI3DCollaborationUser u in users.Values)
+                {
+                    if (UMI3DNetworkingKeys.bearer + u.token == authorization)
+                        return u;
+                }
             }
             return null;
         }

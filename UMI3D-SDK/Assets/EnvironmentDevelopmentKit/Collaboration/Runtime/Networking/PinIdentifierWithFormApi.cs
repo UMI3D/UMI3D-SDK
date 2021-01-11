@@ -29,9 +29,9 @@ namespace umi3d.edk.collaboration
     {
         public UMI3DForm form;
 
-        public override FormDto GetParameterDtosFor(string login)
+        public override FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
-            return form.ToDto(UMI3DCollaborationServer.Collaboration.GetUserByLogin(login)) as FormDto;
+            return form.ToDto(user) as FormDto;
         }
 
         public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)

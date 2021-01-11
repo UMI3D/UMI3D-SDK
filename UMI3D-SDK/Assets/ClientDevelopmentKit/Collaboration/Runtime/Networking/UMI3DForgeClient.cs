@@ -35,7 +35,12 @@ namespace umi3d.cdk.collaboration
 
         UMI3DUser GetUserByNetWorkId(uint nid)
         {
-            return UMI3DCollaborationEnvironmentLoader.Instance.UserList.Find(u => u.networkId == nid);
+            if (UMI3DCollaborationEnvironmentLoader.Exists && UMI3DCollaborationEnvironmentLoader.Instance.UserList != null)
+                lock (UMI3DCollaborationEnvironmentLoader.Instance.UserList)
+                {
+                    return UMI3DCollaborationEnvironmentLoader.Instance.UserList?.Find(u => u?.networkId == nid);
+                }
+            return null;
         }
 
         /// <summary>
@@ -172,6 +177,7 @@ namespace umi3d.cdk.collaboration
             NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
             MainThreadManager.Run(() =>
             {
+                Debug.Log("disconected");
                 NetworkManager.Instance.Disconnect();
                 if (client != null)
                     UMI3DCollaborationClientServer.Instance.ConnectionLost();
@@ -223,22 +229,23 @@ namespace umi3d.cdk.collaboration
         {
 
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-            switch (dto)
+            MainThreadManager.Run(() =>
             {
-                case TransactionDto transaction:
-                    MainThreadManager.Run(() => {
+                switch (dto)
+                {
+                    case TransactionDto transaction:
                         StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
-                    });
-                    break;
-                case NavigateDto navigate:
-                    MainThreadManager.Run(() => {
+
+                        break;
+                    case NavigateDto navigate:
                         StartCoroutine(UMI3DNavigation.Navigate(navigate));
-                    });
-                    break;
-                default:
-                    Debug.Log($"Type not catch {dto.GetType()}");
-                    break;
-            }
+
+                        break;
+                    default:
+                        Debug.Log($"Type not catch {dto.GetType()}");
+                        break;
+                }
+            });
         }
 
         #endregion
@@ -256,11 +263,15 @@ namespace umi3d.cdk.collaboration
             if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
             {
                 if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
-                    MainThreadManager.Run(() => {
+                    MainThreadManager.Run(() =>
+                    {
                         StartCoroutine(userAvatar.UpdateBonePosition(trackingFrame));
                     });
                 else
-                    Debug.LogWarning("User Avatar not found.");
+                    MainThreadManager.Run(() =>
+                    {
+                        Debug.LogWarning("User Avatar not found.");
+                    });
             }
         }
 
@@ -271,7 +282,10 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnVideoFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            Debug.LogError("Video channels not implemented!");
+            MainThreadManager.Run(() =>
+            {
+                Debug.LogError("Video channels not implemented!");
+            });
         }
 
         #endregion
@@ -287,8 +301,6 @@ namespace umi3d.cdk.collaboration
                 UMI3DUser source = GetUserByNetWorkId(dto.senderId);
                 if (source != null)
                     AudioManager.Instance.Read(source.id, dto);
-
-                Debug.Log($"audio message from {dto.senderId} {source != null}");
             });
         }
 
@@ -375,7 +387,6 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void VOIPWorker()
         {
-            Debug.Log($"Start voip {client.IsConnected}");
             while (client.IsConnected)
             {
                 if (writeFlushTimer >= WRITE_FLUSH_TIME && writeSamples.Count > 0)

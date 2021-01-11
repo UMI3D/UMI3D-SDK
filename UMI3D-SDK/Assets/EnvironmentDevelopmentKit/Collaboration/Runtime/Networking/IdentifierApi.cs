@@ -30,7 +30,7 @@ namespace umi3d.edk.collaboration
 
         Dictionary<string, bool> librariesUpdateStatus;
 
-        public virtual UMI3DAuthenticator GetAuthenticator(AuthenticationType type) { return null; }
+        public virtual UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type) { return null; }
 
         /// <summary>
         /// Update a client status acording to a userconnectionDto
@@ -50,7 +50,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="login">Login of the user.</param>
         /// <returns></returns>
-        public virtual FormDto GetParameterDtosFor(string login)
+        public virtual FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
             return null;
         }
@@ -60,10 +60,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="login">Login of the user.</param>
         /// <returns></returns>
-        public virtual bool getLibrariesUpdateSatus(string login)
+        public virtual bool getLibrariesUpdateSatus(UMI3DCollaborationUser user)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
-            return librariesUpdateStatus.ContainsKey(login) ? librariesUpdateStatus[login] : false;
+            return librariesUpdateStatus.ContainsKey(user.Id()) ? librariesUpdateStatus[user.Id()] : false;
         }
     }
 }

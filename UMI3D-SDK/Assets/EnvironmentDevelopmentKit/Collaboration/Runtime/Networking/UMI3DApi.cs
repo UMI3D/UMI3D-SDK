@@ -44,9 +44,9 @@ namespace umi3d.edk.collaboration
         {
             var user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UserConnectionDto identity = new UserConnectionDto(user.ToUserDto());
-            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user.login);
+            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user);
             //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user.login);
+            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user);
             e.Response.WriteContent(identity.ToBson());
         }
 
@@ -124,7 +124,10 @@ namespace umi3d.edk.collaboration
             {
                 message = UMI3DEnvironment.Instance.ToDto().ToBson();
             }
-
+            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+            {
+                UnityEngine.Debug.Log("get media");
+            });
             res.WriteContent(message);
         }
         #endregion

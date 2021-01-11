@@ -28,9 +28,10 @@ namespace umi3d.edk.collaboration
         public string pin = "0000";
 
         ///<inheritdoc/>
-        public override UMI3DAuthenticator GetAuthenticator(AuthenticationType type)
+        public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
         {
             if (type != AuthenticationType.Pin) Debug.LogWarning($"PinIdentifierApi does not handle other AuthenticationType than PIN [ignored type : {type}]");
+            type = AuthenticationType.Pin;
             return new UMI3DAuthenticator(pin);
         }
     }

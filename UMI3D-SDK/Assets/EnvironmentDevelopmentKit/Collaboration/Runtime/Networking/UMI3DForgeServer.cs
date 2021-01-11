@@ -195,7 +195,10 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerDisconnected(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log("Player " + player.NetworkId + " disconnected");
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log("Player " + player.NetworkId + " disconnected");
+            });
             playerCount = server.Players.Count;
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if(user != null)
@@ -217,8 +220,6 @@ namespace umi3d.edk.collaboration
                 UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
             }
         }
-
-
         #endregion
 
         #region data
@@ -234,7 +235,6 @@ namespace umi3d.edk.collaboration
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-            Debug.Log(dto);
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
@@ -288,11 +288,6 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            //TODO: Audio rooms, Min distance for spatialized audio conf.
-            MainThreadManager.Run(() =>
-            {
-                Debug.Log($"audio Frame from {player.NetworkId}");
-            });
             RelayMessage(player, frame);
         }
 
@@ -358,15 +353,16 @@ namespace umi3d.edk.collaboration
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
             Binary message = new Binary(time, false, frame.StreamData, Receivers.Target, frame.GroupId, frame.IsReliable);
-            lock (server.Players)
-            {
-                foreach (NetworkingPlayer p in server.Players)
-                    if (ShouldRelay(frame.GroupId, player, p, time, strategy))
-                    {
-                        RememberRelay(player, p, frame.GroupId, time);
-                        server.Send(p, message, frame.IsReliable);
-                    }
-            }
+            if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
+                lock (server.Players)
+                {
+                    foreach (NetworkingPlayer p in server.Players)
+                        if (ShouldRelay(frame.GroupId, player, p, time, strategy))
+                        {
+                            RememberRelay(player, p, frame.GroupId, time);
+                            server.Send(p, message, frame.IsReliable);
+                        }
+                }
         }
 
         /// <summary>
@@ -380,7 +376,7 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         protected bool ShouldRelay(int groupId, NetworkingPlayer from, NetworkingPlayer to, ulong timestep, Receivers strategy)
         {
-            if (to.IsHost || from == to)
+            if (to.IsHost || from == to || UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(to.NetworkId)?.status != StatusType.ACTIVE)
                 return false;
             if (Proximity.Contains(strategy))
             {
@@ -487,7 +483,18 @@ namespace umi3d.edk.collaboration
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
             Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Target, channel, isTcp);
-            server.Send(player, bin, isReliable);
+
+                try
+                {
+                    server.Send(player, bin, isReliable);
+                }
+                catch(Exception e)
+                {
+                MainThreadManager.Run(() =>
+                {
+                    Debug.Log($"Error on send binary to {player.NetworkId} on channel {channel} [{e}]");
+                });
+            }
         }
 
         /// <summary>

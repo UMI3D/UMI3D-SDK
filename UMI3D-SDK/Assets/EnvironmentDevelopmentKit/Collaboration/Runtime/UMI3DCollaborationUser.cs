@@ -30,7 +30,7 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser(string login)
         {
             this.login = login;
-            Debug.Log($"<color=magenta>new User {Id()}</color>");
+            Debug.Log($"<color=magenta>new User {Id()} {login}</color>");
         }
 
         public void InitConnection(UMI3DForgeServer connection)
@@ -96,8 +96,10 @@ namespace umi3d.edk.collaboration
         ///<inheritdoc/>
         public override void SetStatus(StatusType status)
         {
+            bool isSame = status == this.status;
             base.SetStatus(status);
-            UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);
+            if (!isSame)
+                UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);
         }
 
 

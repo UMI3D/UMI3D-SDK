@@ -129,7 +129,7 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
                 );
-            var auth = Identifier?.GetAuthenticator(Authentication);
+            var auth = Identifier?.GetAuthenticator(ref Authentication);
             if (auth != null)
                 auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
             forgeServer.Host(auth);
@@ -147,7 +147,9 @@ namespace umi3d.edk.collaboration
         {
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
-            Debug.Log($"<color=yellow>open {user.Id()}</color>");
+
+                Debug.Log($"<color=yellow>open {user.Id()} {user.login}</color>");
+
         }
 
 
@@ -157,10 +159,10 @@ namespace umi3d.edk.collaboration
         /// <param name="user"></param>
         public static void NotifyUserJoin(UMI3DCollaborationUser user)
         {
-            Debug.Log($"User Join [{user.Id()}]");
             Collaboration.UserJoin(user);
             MainThreadManager.Run(() =>
             {
+                Debug.Log($"User Join [{user.Id()} {user.login}]");
                 Instance.NotifyUserJoin(user);
             });
         }
@@ -301,18 +303,22 @@ namespace umi3d.edk.collaboration
 
         public static void Logout(UMI3DCollaborationUser user)
         {
+            if (user == null)
+                return;
+            user.networkPlayer.Networker.Disconnect(true);
+            Collaboration.Logout(user);
             MainThreadManager.Run(() => Instance._Logout(user));
         }
 
         void _Logout(UMI3DCollaborationUser user)
         {
-            Collaboration.Logout(user);
+            Debug.Log($"Logout {user.login} {user.Id()}");
             OnUserLeave.Invoke(user);
         }
 
 
-        public float WaitTimeForPingAnswer = 1f;
-        public int MaxPingingTry = 3;
+        public float WaitTimeForPingAnswer = 3f;
+        public int MaxPingingTry = 5;
 
         ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
@@ -340,7 +346,8 @@ namespace umi3d.edk.collaboration
 
         public virtual void Ping(UMI3DCollaborationUser user)
         {
-            Debug.Log($"Ping {user.Id()}");
+            Debug.Log($"Ping {user.Id()} {user.login}");
+            user.networkPlayer.Ping();
             var sr = new StatusRequestDto { CurrentStatus = user.status };
             ForgeServer.SendSignalingMessage(user.networkPlayer,sr);
         }
