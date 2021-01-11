@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -90,6 +90,7 @@ $(document).ready(function(){initNavTree('d7/d24/classumi3d_1_1cdk_1_1user_captu
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="../../d9/d9b/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">umi3d.cdk.userCapture.UMI3DClientUserTracking Class Reference</div>  </div>
@@ -103,47 +104,73 @@ $(document).ready(function(){initNavTree('d7/d24/classumi3d_1_1cdk_1_1user_captu
  <div class="center">
   <img src="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.png" usemap="#umi3d.cdk.userCapture.UMI3DClientUserTracking_map" alt=""/>
   <map id="umi3d.cdk.userCapture.UMI3DClientUserTracking_map" name="umi3d.cdk.userCapture.UMI3DClientUserTracking_map">
-<area href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html" alt="umi3d.common.Singleton&lt; UMI3DClientUserTracking &gt;" shape="rect" coords="0,0,320,24"/>
+<area href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html" alt="umi3d.common.Singleton&lt; UMI3DClientUserTracking &gt;" shape="rect" coords="0,0,370,24"/>
+<area href="../../d7/d91/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_user_tracking.html" alt="umi3d.cdk.collaboration.UMI3DCollaborationClientUserTracking" shape="rect" coords="0,112,370,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a47ba5c3dc23711847d577c74fb25ff6c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a47ba5c3dc23711847d577c74fb25ff6c">BonesIterator</a> ()</td></tr>
-<tr class="memdesc:a47ba5c3dc23711847d577c74fb25ff6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterate through the bones of the browser's skeleton to create BoneDto  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a47ba5c3dc23711847d577c74fb25ff6c">More...</a><br /></td></tr>
-<tr class="separator:a47ba5c3dc23711847d577c74fb25ff6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae27dc4f8542df8c7c39b084f60db52b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#ae27dc4f8542df8c7c39b084f60db52b0">RegisterEmbd</a> (string id, <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> u)</td></tr>
-<tr class="separator:ae27dc4f8542df8c7c39b084f60db52b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5400fd13431064a62ad4111893de1c58"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a5400fd13431064a62ad4111893de1c58">UnregisterEmbd</a> (string id)</td></tr>
-<tr class="separator:a5400fd13431064a62ad4111893de1c58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7d182db89df2a60ec4d308cd5e8571c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#ad7d182db89df2a60ec4d308cd5e8571c">TryGetValue</a> (string id, out <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> embd)</td></tr>
-<tr class="separator:ad7d182db89df2a60ec4d308cd5e8571c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc1c103b21bc4526b2746f210e54fd05"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#afc1c103b21bc4526b2746f210e54fd05">RegisterEmbd</a> (string id, <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> u)</td></tr>
+<tr class="memdesc:afc1c103b21bc4526b2746f210e54fd05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance of a user in the concerned dictionary  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#afc1c103b21bc4526b2746f210e54fd05">More...</a><br /></td></tr>
+<tr class="separator:afc1c103b21bc4526b2746f210e54fd05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9af1887fc48b1515be9a79fe9e36b654"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a9af1887fc48b1515be9a79fe9e36b654">UnregisterEmbd</a> (string id)</td></tr>
+<tr class="memdesc:a9af1887fc48b1515be9a79fe9e36b654"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unregister the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance of a user in the concerned dictionary  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a9af1887fc48b1515be9a79fe9e36b654">More...</a><br /></td></tr>
+<tr class="separator:a9af1887fc48b1515be9a79fe9e36b654"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa22a937b614e0bc5c70c94eead3ff1e8"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aa22a937b614e0bc5c70c94eead3ff1e8">TryGetValue</a> (string id, out <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> embd)</td></tr>
+<tr class="memdesc:aa22a937b614e0bc5c70c94eead3ff1e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Try to get the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance of a user from the concerned dictionary  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aa22a937b614e0bc5c70c94eead3ff1e8">More...</a><br /></td></tr>
+<tr class="separator:aa22a937b614e0bc5c70c94eead3ff1e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:adc08b8562f1d6e7e900f84187a8e4e67"><td class="memItemLeft" align="right" valign="top">Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#adc08b8562f1d6e7e900f84187a8e4e67">Anchor</a></td></tr>
-<tr class="separator:adc08b8562f1d6e7e900f84187a8e4e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa526e1bcf710eb406b288b540640a31"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aaa526e1bcf710eb406b288b540640a31">skeletonParsingIterationCooldown</a> = 0f</td></tr>
-<tr class="separator:aaa526e1bcf710eb406b288b540640a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab81d46a8307b4ce2ead421ae0783edbd"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#ab81d46a8307b4ce2ead421ae0783edbd">time</a> = 0f</td></tr>
-<tr class="separator:ab81d46a8307b4ce2ead421ae0783edbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a463434c66ab79675d12a06758a5b629a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a463434c66ab79675d12a06758a5b629a">max</a> = 0</td></tr>
-<tr class="separator:a463434c66ab79675d12a06758a5b629a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22ebfd9d1b9b199d3cb83d5508b08dc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a22ebfd9d1b9b199d3cb83d5508b08dc3">LastFrameDto</a></td></tr>
-<tr class="separator:a22ebfd9d1b9b199d3cb83d5508b08dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4534f98de66aadfeac366410825715c3"><td class="memItemLeft" align="right" valign="top">Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a4534f98de66aadfeac366410825715c3">anchor</a></td></tr>
+<tr class="separator:a4534f98de66aadfeac366410825715c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bf8f5242683071f843679d68d28d38d"><td class="memItemLeft" align="right" valign="top">Transform&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a7bf8f5242683071f843679d68d28d38d">viewpoint</a></td></tr>
+<tr class="separator:a7bf8f5242683071f843679d68d28d38d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97924e33bf61d6f6c4eea73ee01d1952"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a97924e33bf61d6f6c4eea73ee01d1952">viewpointBonetype</a></td></tr>
+<tr class="separator:a97924e33bf61d6f6c4eea73ee01d1952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb3ee2b9c53995f1ff1dba3035820589"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#adb3ee2b9c53995f1ff1dba3035820589">sendTracking</a> = true</td></tr>
+<tr class="separator:adb3ee2b9c53995f1ff1dba3035820589"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a832b0fac04317146c4ebca0fac1b15b0"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a832b0fac04317146c4ebca0fac1b15b0">targetTrackingFPS</a> = 30</td></tr>
+<tr class="separator:a832b0fac04317146c4ebca0fac1b15b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebd5c71a07788b7de204291c92854c62"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; string, <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aebd5c71a07788b7de204291c92854c62">embodimentDict</a> = new Dictionary&lt;string, <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a>&gt;()</td></tr>
 <tr class="separator:aebd5c71a07788b7de204291c92854c62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7daefeb262911375ea9b15c454e4ca16"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a7daefeb262911375ea9b15c454e4ca16">skeletonParsedEvent</a></td></tr>
 <tr class="separator:a7daefeb262911375ea9b15c454e4ca16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a25d9e76c6bcfd1e9a7ab8e0d3e0f49f7"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a25d9e76c6bcfd1e9a7ab8e0d3e0f49f7">cameraHasChanged</a></td></tr>
+<tr class="separator:a25d9e76c6bcfd1e9a7ab8e0d3e0f49f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b19ed3717d1f3b2ff45b5dd5d432de8"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a5b19ed3717d1f3b2ff45b5dd5d432de8">startingSendingTracking</a></td></tr>
+<tr class="separator:a5b19ed3717d1f3b2ff45b5dd5d432de8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:aa9a7e82cc4417c7944a28ee4ba658129"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aa9a7e82cc4417c7944a28ee4ba658129">Awake</a> ()</td></tr>
 <tr class="memdesc:aa9a7e82cc4417c7944a28ee4ba658129"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unity function call when a MonoBehaviour is created. Make sure to always call base.Awake() when overriding.  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aa9a7e82cc4417c7944a28ee4ba658129">More...</a><br /></td></tr>
 <tr class="separator:aa9a7e82cc4417c7944a28ee4ba658129"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4866446f7c0ae7271b3784e63d03afd5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a4866446f7c0ae7271b3784e63d03afd5">Start</a> ()</td></tr>
+<tr class="separator:a4866446f7c0ae7271b3784e63d03afd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3df36a8c74f04c7d277ae4b87005b191"><td class="memItemLeft" align="right" valign="top">virtual IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a3df36a8c74f04c7d277ae4b87005b191">DispatchTracking</a> ()</td></tr>
+<tr class="memdesc:a3df36a8c74f04c7d277ae4b87005b191"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatch User Tracking data through Tracking Channel  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a3df36a8c74f04c7d277ae4b87005b191">More...</a><br /></td></tr>
+<tr class="separator:a3df36a8c74f04c7d277ae4b87005b191"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb77f067e6e422ace5fe21a62f097937"><td class="memItemLeft" align="right" valign="top">virtual IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#abb77f067e6e422ace5fe21a62f097937">DispatchCamera</a> ()</td></tr>
+<tr class="memdesc:abb77f067e6e422ace5fe21a62f097937"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatch Camera data through Tracking Channel  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#abb77f067e6e422ace5fe21a62f097937">More...</a><br /></td></tr>
+<tr class="separator:abb77f067e6e422ace5fe21a62f097937"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47ba5c3dc23711847d577c74fb25ff6c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a47ba5c3dc23711847d577c74fb25ff6c">BonesIterator</a> ()</td></tr>
+<tr class="memdesc:a47ba5c3dc23711847d577c74fb25ff6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Iterate through the bones of the browser's skeleton to create BoneDto  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a47ba5c3dc23711847d577c74fb25ff6c">More...</a><br /></td></tr>
+<tr class="separator:a47ba5c3dc23711847d577c74fb25ff6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classumi3d_1_1common_1_1_singleton"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classumi3d_1_1common_1_1_singleton')"><img src="../../closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html">umi3d.common.Singleton&lt; UMI3DClientUserTracking &gt;</a></td></tr>
 <tr class="memitem:a25a4315101e20787d56f04a1e4d4afd6 inherit pro_methods_classumi3d_1_1common_1_1_singleton"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html#a25a4315101e20787d56f04a1e4d4afd6">OnDestroy</a> ()</td></tr>
 <tr class="separator:a25a4315101e20787d56f04a1e4d4afd6 inherit pro_methods_classumi3d_1_1common_1_1_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a22ebfd9d1b9b199d3cb83d5508b08dc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a22ebfd9d1b9b199d3cb83d5508b08dc3">LastFrameDto</a> = new <a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a>()</td></tr>
+<tr class="separator:a22ebfd9d1b9b199d3cb83d5508b08dc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca67d5d5da4a477d56394631111fd93c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/d8d/classumi3d_1_1common_1_1user_capture_1_1_user_camera_properties_dto.html">UserCameraPropertiesDto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aca67d5d5da4a477d56394631111fd93c">CameraPropertiesDto</a></td></tr>
+<tr class="separator:aca67d5d5da4a477d56394631111fd93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae24c87825a6cb268c8e52d59ef099de6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#ae24c87825a6cb268c8e52d59ef099de6">hasCameraChanged</a></td></tr>
+<tr class="memdesc:ae24c87825a6cb268c8e52d59ef099de6"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#ae24c87825a6cb268c8e52d59ef099de6">More...</a><br /></td></tr>
+<tr class="separator:ae24c87825a6cb268c8e52d59ef099de6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -190,6 +217,9 @@ Additional Inherited Members</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void umi3d.cdk.userCapture.UMI3DClientUserTracking.BonesIterator </td>
@@ -198,20 +228,87 @@ Additional Inherited Members</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Iterate through the bones of the browser's skeleton to create BoneDto </p>
 
 </div>
 </div>
-<a id="ae27dc4f8542df8c7c39b084f60db52b0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae27dc4f8542df8c7c39b084f60db52b0">&#9670;&nbsp;</a></span>RegisterEmbd()</h2>
+<a id="abb77f067e6e422ace5fe21a62f097937"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb77f067e6e422ace5fe21a62f097937">&#9670;&nbsp;</a></span>DispatchCamera()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool umi3d.cdk.userCapture.UMI3DClientUserTracking.RegisterEmbd </td>
+          <td class="memname">virtual IEnumerator umi3d.cdk.userCapture.UMI3DClientUserTracking.DispatchCamera </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Dispatch Camera data through Tracking Channel </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Reimplemented in <a class="el" href="../../d7/d91/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_user_tracking.html#a936502dec8f4cacfd1bd02c78b2b910d">umi3d.cdk.collaboration.UMI3DCollaborationClientUserTracking</a>.</p>
+
+</div>
+</div>
+<a id="a3df36a8c74f04c7d277ae4b87005b191"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3df36a8c74f04c7d277ae4b87005b191">&#9670;&nbsp;</a></span>DispatchTracking()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual IEnumerator umi3d.cdk.userCapture.UMI3DClientUserTracking.DispatchTracking </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Dispatch User Tracking data through Tracking Channel </p>
+
+<p>Reimplemented in <a class="el" href="../../d7/d91/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_user_tracking.html#ae2ad9fe5b4174b43a07c607ba0d79e4e">umi3d.cdk.collaboration.UMI3DCollaborationClientUserTracking</a>.</p>
+
+</div>
+</div>
+<a id="afc1c103b21bc4526b2746f210e54fd05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc1c103b21bc4526b2746f210e54fd05">&#9670;&nbsp;</a></span>RegisterEmbd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool umi3d.cdk.userCapture.UMI3DClientUserTracking.RegisterEmbd </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -228,18 +325,61 @@ Additional Inherited Members</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Register the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance of a user in the concerned dictionary </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the id of the user</td></tr>
+    <tr><td class="paramname">u</td><td>the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance to register</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool indicating if the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> has been registered</dd></dl>
+
+</div>
+</div>
+<a id="a4866446f7c0ae7271b3784e63d03afd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4866446f7c0ae7271b3784e63d03afd5">&#9670;&nbsp;</a></span>Start()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void umi3d.cdk.userCapture.UMI3DClientUserTracking.Start </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ad7d182db89df2a60ec4d308cd5e8571c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad7d182db89df2a60ec4d308cd5e8571c">&#9670;&nbsp;</a></span>TryGetValue()</h2>
+<a id="aa22a937b614e0bc5c70c94eead3ff1e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa22a937b614e0bc5c70c94eead3ff1e8">&#9670;&nbsp;</a></span>TryGetValue()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool umi3d.cdk.userCapture.UMI3DClientUserTracking.TryGetValue </td>
+          <td class="memname">virtual bool umi3d.cdk.userCapture.UMI3DClientUserTracking.TryGetValue </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -256,39 +396,107 @@ Additional Inherited Members</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+<p>Try to get the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance of a user from the concerned dictionary </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the id of the user</td></tr>
+    <tr><td class="paramname">embd</td><td>the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance if found</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool indicating if the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> has been found</dd></dl>
 
 </div>
 </div>
-<a id="a5400fd13431064a62ad4111893de1c58"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5400fd13431064a62ad4111893de1c58">&#9670;&nbsp;</a></span>UnregisterEmbd()</h2>
+<a id="a9af1887fc48b1515be9a79fe9e36b654"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9af1887fc48b1515be9a79fe9e36b654">&#9670;&nbsp;</a></span>UnregisterEmbd()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool umi3d.cdk.userCapture.UMI3DClientUserTracking.UnregisterEmbd </td>
+          <td class="memname">virtual bool umi3d.cdk.userCapture.UMI3DClientUserTracking.UnregisterEmbd </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
+
+<p>Unregister the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> instance of a user in the concerned dictionary </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>the id of the user</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool indicating if the <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> has been unregistered</dd></dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="adc08b8562f1d6e7e900f84187a8e4e67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc08b8562f1d6e7e900f84187a8e4e67">&#9670;&nbsp;</a></span>Anchor</h2>
+<a id="a4534f98de66aadfeac366410825715c3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4534f98de66aadfeac366410825715c3">&#9670;&nbsp;</a></span>anchor</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Transform umi3d.cdk.userCapture.UMI3DClientUserTracking.Anchor</td>
+          <td class="memname">Transform umi3d.cdk.userCapture.UMI3DClientUserTracking.anchor</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a25d9e76c6bcfd1e9a7ab8e0d3e0f49f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25d9e76c6bcfd1e9a7ab8e0d3e0f49f7">&#9670;&nbsp;</a></span>cameraHasChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UnityEvent umi3d.cdk.userCapture.UMI3DClientUserTracking.cameraHasChanged</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aca67d5d5da4a477d56394631111fd93c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca67d5d5da4a477d56394631111fd93c">&#9670;&nbsp;</a></span>CameraPropertiesDto</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../db/d8d/classumi3d_1_1common_1_1user_capture_1_1_user_camera_properties_dto.html">UserCameraPropertiesDto</a> umi3d.cdk.userCapture.UMI3DClientUserTracking.CameraPropertiesDto</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -307,28 +515,60 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="ae24c87825a6cb268c8e52d59ef099de6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae24c87825a6cb268c8e52d59ef099de6">&#9670;&nbsp;</a></span>hasCameraChanged</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool umi3d.cdk.userCapture.UMI3DClientUserTracking.hasCameraChanged</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>inheritdoc/&gt; </p>
+
+</div>
+</div>
 <a id="a22ebfd9d1b9b199d3cb83d5508b08dc3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a22ebfd9d1b9b199d3cb83d5508b08dc3">&#9670;&nbsp;</a></span>LastFrameDto</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a> umi3d.cdk.userCapture.UMI3DClientUserTracking.LastFrameDto</td>
+          <td class="memname"><a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a> umi3d.cdk.userCapture.UMI3DClientUserTracking.LastFrameDto = new <a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a>()</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="a463434c66ab79675d12a06758a5b629a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a463434c66ab79675d12a06758a5b629a">&#9670;&nbsp;</a></span>max</h2>
+<a id="adb3ee2b9c53995f1ff1dba3035820589"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb3ee2b9c53995f1ff1dba3035820589">&#9670;&nbsp;</a></span>sendTracking</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int umi3d.cdk.userCapture.UMI3DClientUserTracking.max = 0</td>
+          <td class="memname">bool umi3d.cdk.userCapture.UMI3DClientUserTracking.sendTracking = true</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -349,28 +589,56 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="aaa526e1bcf710eb406b288b540640a31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa526e1bcf710eb406b288b540640a31">&#9670;&nbsp;</a></span>skeletonParsingIterationCooldown</h2>
+<a id="a5b19ed3717d1f3b2ff45b5dd5d432de8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b19ed3717d1f3b2ff45b5dd5d432de8">&#9670;&nbsp;</a></span>startingSendingTracking</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float umi3d.cdk.userCapture.UMI3DClientUserTracking.skeletonParsingIterationCooldown = 0f</td>
+          <td class="memname">UnityEvent umi3d.cdk.userCapture.UMI3DClientUserTracking.startingSendingTracking</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 </div>
 </div>
-<a id="ab81d46a8307b4ce2ead421ae0783edbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab81d46a8307b4ce2ead421ae0783edbd">&#9670;&nbsp;</a></span>time</h2>
+<a id="a832b0fac04317146c4ebca0fac1b15b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a832b0fac04317146c4ebca0fac1b15b0">&#9670;&nbsp;</a></span>targetTrackingFPS</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">float umi3d.cdk.userCapture.UMI3DClientUserTracking.time = 0f</td>
+          <td class="memname">float umi3d.cdk.userCapture.UMI3DClientUserTracking.targetTrackingFPS = 30</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7bf8f5242683071f843679d68d28d38d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bf8f5242683071f843679d68d28d38d">&#9670;&nbsp;</a></span>viewpoint</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Transform umi3d.cdk.userCapture.UMI3DClientUserTracking.viewpoint</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a97924e33bf61d6f6c4eea73ee01d1952"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97924e33bf61d6f6c4eea73ee01d1952">&#9670;&nbsp;</a></span>viewpointBonetype</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string umi3d.cdk.userCapture.UMI3DClientUserTracking.viewpointBonetype</td>
         </tr>
       </table>
 </div><div class="memdoc">

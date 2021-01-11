@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -101,14 +101,22 @@ $(document).ready(function(){initNavTree('functions_vars_c.html',''); initResiza
 <li>c3
 : <a class="el" href="d7/d3a/classumi3d_1_1common_1_1_serializable_matrix4x4.html#a0b74096bad081068094d70d4a35f0c19">umi3d.common.SerializableMatrix4x4</a>
 </li>
+<li>cameraHasChanged
+: <a class="el" href="d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a25d9e76c6bcfd1e9a7ab8e0d3e0f49f7">umi3d.cdk.userCapture.UMI3DClientUserTracking</a>
+</li>
+<li>CameraPropertiesDto
+: <a class="el" href="d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#aca67d5d5da4a477d56394631111fd93c">umi3d.cdk.userCapture.UMI3DClientUserTracking</a>
+</li>
 <li>candidate
 : <a class="el" href="d2/d6b/classumi3d_1_1common_1_1collaboration_1_1_candidate_dto.html#ad2a28a94031b740fd368c8588e147c2a">umi3d.common.collaboration.CandidateDto</a>
 </li>
-<li>channel
-: <a class="el" href="d8/dc0/structumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_web_r_t_c_1_1bridge.html#a87796fee93facc5c2cb7e00d3d79958e">umi3d.edk.collaboration.UMI3DWebRTC.bridge</a>
+<li>castShadow
+: <a class="el" href="d1/d90/classumi3d_1_1common_1_1_u_m_i3_d_rendered_node_dto.html#accac2e0ee81b22010640fe177ca7202a">umi3d.common.UMI3DRenderedNodeDto</a>
+, <a class="el" href="d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a0ebc82640753c1d7d0c59a9ad08ef5fc">umi3d.edk.AbstractRenderedNode</a>
 </li>
-<li>channels
-: <a class="el" href="db/dcb/classumi3d_1_1common_1_1_web_r_t_cconnection.html#ae45471f8740d3d8d07cf43d7661aca95">umi3d.common.WebRTCconnection</a>
+<li>channelTexture
+: <a class="el" href="d2/d5b/classumi3d_1_1common_1_1_u_m_i3_d_material_dto.html#a73b30e8c69fd4e074a71f8178d61995d">umi3d.common.UMI3DMaterialDto</a>
+, <a class="el" href="dd/df5/classumi3d_1_1edk_1_1_custom_textures.html#a9f1cc227f23411301d851bff93380a0a">umi3d.edk.CustomTextures</a>
 </li>
 <li>children
 : <a class="el" href="dc/d1f/classumi3d_1_1common_1_1_gl_t_f_node_dto.html#a61332a3f01ac322019047f19235f77f3">umi3d.common.GlTFNodeDto</a>
@@ -156,15 +164,12 @@ $(document).ready(function(){initNavTree('functions_vars_c.html',''); initResiza
 : <a class="el" href="da/dcd/classumi3d_1_1common_1_1_u_i_image_dto.html#a27208f92dddc4a685b63f66cd11c5afb">umi3d.common.UIImageDto</a>
 , <a class="el" href="dd/dc3/classumi3d_1_1common_1_1_u_i_text_dto.html#a63fe64320f659d34a3bdc687266724dc">umi3d.common.UITextDto</a>
 </li>
-<li>Color
-: <a class="el" href="d7/de9/classumi3d_1_1edk_1_1_u_i_image.html#a16ffd03ec872a958cad2e980e94de93c">umi3d.edk.UIImage</a>
+<li>connectClient
+: <a class="el" href="d5/de6/class_launcher.html#ab2422e008ff8d79adc4206ddfa54102d">Launcher</a>
 </li>
 <li>connection
 : <a class="el" href="d5/d5d/classumi3d_1_1common_1_1_media_dto.html#a9d6170b8b6c746a66de5f8754275fc7a">umi3d.common.MediaDto</a>
-, <a class="el" href="dd/d17/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_user.html#a1ac7c1fc068a8ab84455d76b2851669e">umi3d.edk.collaboration.UMI3DCollaborationUser</a>
-</li>
-<li>connectionState
-: <a class="el" href="db/dcb/classumi3d_1_1common_1_1_web_r_t_cconnection.html#a256e5217c3ba6dee2bca8496204015a1">umi3d.common.WebRTCconnection</a>
+, <a class="el" href="dd/d17/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_user.html#abac97f9125060816366037bb373890d9">umi3d.edk.collaboration.UMI3DCollaborationUser</a>
 </li>
 <li>containerPrefabs
 : <a class="el" href="d3/d03/classumi3d_1_1cdk_1_1menu_1_1view_1_1_container_selector.html#a6f39c7b8a60a4248c1526067e67644d3">umi3d.cdk.menu.view.ContainerSelector</a>
@@ -176,7 +181,8 @@ $(document).ready(function(){initNavTree('functions_vars_c.html',''); initResiza
 : <a class="el" href="de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ab9736b5a3abc5f184e3ebf2baaf7968f">umi3d.cdk.menu.view.MenuDisplayManager</a>
 </li>
 <li>content
-: <a class="el" href="df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a8bae00f1800d7f7773fcb39367c7ce52">umi3d.common.NotificationDto</a>
+: <a class="el" href="d1/db5/classumi3d_1_1common_1_1collaboration_1_1_fake_webrtc_message_dto.html#a15d862c3ce9298708789a05de4ef5282">umi3d.common.collaboration.FakeWebrtcMessageDto</a>
+, <a class="el" href="df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a8bae00f1800d7f7773fcb39367c7ce52">umi3d.common.NotificationDto</a>
 </li>
 <li>contentProperty
 : <a class="el" href="d1/d88/classumi3d_1_1edk_1_1_u_m_i3_d_notification.html#aabeb2e2cff2ef2008a547a2a36f9e64b">umi3d.edk.UMI3DNotification</a>
@@ -194,8 +200,20 @@ $(document).ready(function(){initNavTree('functions_vars_c.html',''); initResiza
 <li>copyright
 : <a class="el" href="d8/dfb/classumi3d_1_1common_1_1_gl_t_f_asset.html#a76730d73e4561ffcc33473f706e1a91f">umi3d.common.GlTFAsset</a>
 </li>
+<li>createGroup
+: <a class="el" href="d6/df1/class_test_entity.html#a6519df0496396b349ea7207f8e0b0829">TestEntity</a>
+</li>
 <li>CreationEvent
 : <a class="el" href="d2/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_embodiment_manager.html#a8ccfe0fbaa486812759d9ddeff1a9a21">umi3d.edk.userCapture.UMI3DEmbodimentManager</a>
+</li>
+<li>credential
+: <a class="el" href="d9/dfd/classumi3d_1_1common_1_1_ice_server.html#a0958c8a2c5071fa2c0f0cafe99ae7fb4">umi3d.common.IceServer</a>
+</li>
+<li>credentialType
+: <a class="el" href="d9/dfd/classumi3d_1_1common_1_1_ice_server.html#aba5c9d36530ce1803b21d6a092e91f85">umi3d.common.IceServer</a>
+</li>
+<li>CurrentStatus
+: <a class="el" href="de/de0/classumi3d_1_1common_1_1collaboration_1_1_status_request_dto.html#a45c6b2b8d8d87d4af1954897a037360a">umi3d.common.collaboration.StatusRequestDto</a>
 </li>
 <li>currentTool
 : <a class="el" href="de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#ae30ccfb55d9b80dcb27aede36fd5520f">umi3d.cdk.interaction.AbstractController</a>

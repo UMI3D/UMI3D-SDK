@@ -42,7 +42,7 @@ var NAVTREE =
         [ "Functions", "functions_func.html", "functions_func" ],
         [ "Variables", "functions_vars.html", "functions_vars" ],
         [ "Enumerations", "functions_enum.html", null ],
-        [ "Properties", "functions_prop.html", null ]
+        [ "Properties", "functions_prop.html", "functions_prop" ]
       ] ]
     ] ]
   ] ]
@@ -51,15 +51,16 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d2/d5b/classumi3d_1_1common_1_1_u_m_i3_d_material_dto.html#a43613c3480d65372edc5e0363403e18d",
-"d3/dea/classumi3d_1_1cdk_1_1_abstract_navigation.html#a4a0221fad062803ca43aaa6b0ced4fa6",
-"d5/d8a/classumi3d_1_1common_1_1interaction_1_1_interactable_dto.html#a9e41718d3b3cfccef5bf3c95ccc9e561",
-"d7/d55/classumi3d_1_1common_1_1_data_channel.html#a670ac87ab8fb1739c608aa4e0b0e98ff",
-"d8/dca/classumi3d_1_1common_1_1_set_entity_dictionary_remove_property_dto.html",
-"da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#abceb3dc76b278c924cfb674c88ff3e0e",
-"dc/d94/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_toolbox_sub_menu.html",
-"de/d5c/classumi3d_1_1edk_1_1interaction_1_1_boolean_parameter.html#a391cb9aab6e601e728b3487d84fd501d",
-"functions_enum.html"
+"d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#abc189a86879e098ce22dcd86a82e61e9",
+"d3/d15/classumi3d_1_1edk_1_1_asset_library.html#a64cbffa72238645dec7793ad02fdf6d8",
+"d4/daf/classumi3d_1_1edk_1_1_u_i_rect.html#aeb4c07b10d83c93bb94da52da145f350",
+"d5/de6/interfaceumi3d_1_1common_1_1collaboration_1_1_i_websocket.html#a0eaa351cff1ddbedb171380cc7400836",
+"d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a8c31b48070902124e2fba539776dbdcc",
+"d8/dbc/classumi3d_1_1cdk_1_1_u_m_i3_d_abstract_node_loader.html#a064313ef32f4ae2c6cde5d09d44e0f0a",
+"da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html",
+"dc/daf/classumi3d_1_1common_1_1_u_m_i3_d_local_asset_directory.html",
+"de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a28b33620ab1947cc2a7700f00fa2a766",
+"df/da8/classumi3d_1_1common_1_1_abstract_gl_t_f_extensions.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

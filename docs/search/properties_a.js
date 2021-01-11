@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['name_3090',['name',['../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#a5ebc66f1220fe9eb8aefb4a19883d05d',1,'umi3d::cdk::interaction::AbstractTool']]],
-  ['navigating_3091',['Navigating',['../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#aff973b8ddec275bd31e502bf047854d3',1,'umi3d::cdk::interaction::AbstractController']]],
-  ['nodeloader_3092',['nodeLoader',['../d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ab82fccd2c1e2fc012ecf97045a005cc7',1,'umi3d.cdk.UMI3DLoadingParameters.nodeLoader()'],['../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#aa0bd9aa0bc3c872115dbe95577ea13eb',1,'umi3d.cdk.UMI3DEnvironmentLoader.nodeLoader()']]],
-  ['normal_3093',['normal',['../d6/d84/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable_1_1_hover_event_content.html#a2684ee6cf0d1efd573ae1091fd21ed7f',1,'umi3d::edk::interaction::UMI3DInteractable::HoverEventContent']]],
-  ['notifysubobject_3094',['NotifySubObject',['../d9/db8/classumi3d_1_1cdk_1_1interaction_1_1_interactable.html#a61747cfd390d10b8c67c6977c91a438c',1,'umi3d::cdk::interaction::Interactable']]]
+  ['manipulationmenuitem_3448',['manipulationMenuItem',['../d3/ded/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_manipulation_menu_item_displayer.html#a4294fbf3705c1a5ebd4c1abe3cd5c2d7',1,'umi3d::cdk::menu::view::AbstractManipulationMenuItemDisplayer']]],
+  ['materialloaders_3449',['MaterialLoaders',['../d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a3a9309caa84bbbf52041e1b78fbba02e',1,'umi3d::cdk::UMI3DLoadingParameters']]],
+  ['media_3450',['Media',['../d5/d74/classumi3d_1_1cdk_1_1_u_m_i3_d_client_server.html#a8fd80eeaf506965a9fce735b8c0006c5',1,'umi3d::cdk::UMI3DClientServer']]],
+  ['mediamenuitem_3451',['mediaMenuItem',['../dd/d00/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_media_menu_item_displayer.html#aafe05cd6c17fd346dfccc4cc508fe72f',1,'umi3d::cdk::menu::view::AbstractMediaMenuItemDisplayer']]],
+  ['menu_3452',['menu',['../de/d2b/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_displayer.html#a594c9c212c186d2af3b5d00014080a3d',1,'umi3d.cdk.menu.view.AbstractDisplayer.menu()'],['../de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ad5e5b9876626587916fe1b2bf4f76ffc',1,'umi3d.cdk.menu.view.MenuDisplayManager.menu()']]],
+  ['meshloader_3453',['meshLoader',['../d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a0d326e05115e6c0a76672c91962e52b4',1,'umi3d::cdk::UMI3DLoadingParameters']]]
 ];

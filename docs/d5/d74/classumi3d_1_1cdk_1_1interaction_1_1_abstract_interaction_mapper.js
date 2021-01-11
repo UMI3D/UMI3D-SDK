@@ -17,9 +17,10 @@ var classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper =
     [ "IsToolSelected", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a6b5f62603086addd2e030f241a48533b", null ],
     [ "ReleaseTool", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a19cbce5c517009a5ec3f3d3f4f2898b6", null ],
     [ "ResetModule", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ab81460ba7de70599df7aecb9973645cb", null ],
-    [ "SelectTool", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a9fab756e0c33d6ba3a9a8af821830bc5", null ],
-    [ "SwitchTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac81ce2dced58f08f79101c51ce249167", null ],
+    [ "SelectTool", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a549e2445a2f8ad4990fbba900e2d535c", null ],
+    [ "SwitchTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac5a607c967dd144b072a632e320ef0dc", null ],
     [ "ToolboxExists", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a565e1a53cc44d4a45de1bf839fe1fa9b", null ],
     [ "ToolExists", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#aebc7d58b991c514b214f70cc62f6207f", null ],
+    [ "UpdateTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a594e8c176171fb766ef22c4b686ee45c", null ],
     [ "Controllers", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a624f461a2d5eb76916a349dcc923f3de", null ]
 ];

@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -105,13 +105,16 @@ $(document).ready(function(){initNavTree('d5/d74/classumi3d_1_1cdk_1_1interactio
 </div>
 <div id="dynsection-0-content" class="dyncontent" style="display:none;">
  <div class="center">
-  <img src="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.png" alt=""/>
- </div></div>
+  <img src="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.png" usemap="#umi3d.cdk.interaction.AbstractInteractionMapper_map" alt=""/>
+  <map id="umi3d.cdk.interaction.AbstractInteractionMapper_map" name="umi3d.cdk.interaction.AbstractInteractionMapper_map">
+<area href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html" alt="umi3d.cdk.interaction.InteractionMapper" shape="rect" coords="0,112,286,136"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab81460ba7de70599df7aecb9973645cb"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ab81460ba7de70599df7aecb9973645cb">ResetModule</a> ()</td></tr>
-<tr class="memdesc:ab81460ba7de70599df7aecb9973645cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the InteractionMapper module.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ab81460ba7de70599df7aecb9973645cb">More...</a><br /></td></tr>
+<tr class="memdesc:ab81460ba7de70599df7aecb9973645cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html">InteractionMapper</a> module.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ab81460ba7de70599df7aecb9973645cb">More...</a><br /></td></tr>
 <tr class="separator:ab81460ba7de70599df7aecb9973645cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a565e1a53cc44d4a45de1bf839fe1fa9b"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a565e1a53cc44d4a45de1bf839fe1fa9b">ToolboxExists</a> (string id)</td></tr>
 <tr class="memdesc:a565e1a53cc44d4a45de1bf839fe1fa9b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a toolbox with the given id exists.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a565e1a53cc44d4a45de1bf839fe1fa9b">More...</a><br /></td></tr>
@@ -159,15 +162,18 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6e5b2ff5d51d94cf4c4c79b79c7c1c85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6a001a335409d80cc447829ee979d5f"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ae6a001a335409d80cc447829ee979d5f">CreateTool</a> (<a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html">Tool</a> tool)</td></tr>
 <tr class="separator:ae6a001a335409d80cc447829ee979d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fab756e0c33d6ba3a9a8af821830bc5"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a9fab756e0c33d6ba3a9a8af821830bc5">SelectTool</a> (string toolId, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
-<tr class="memdesc:a9fab756e0c33d6ba3a9a8af821830bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the selection of a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a>. Be careful,this method could be called before the tool is added for async loading reasons. Returns true if the tool has been successfuly selected, false otherwise.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a9fab756e0c33d6ba3a9a8af821830bc5">More...</a><br /></td></tr>
-<tr class="separator:a9fab756e0c33d6ba3a9a8af821830bc5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a549e2445a2f8ad4990fbba900e2d535c"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a549e2445a2f8ad4990fbba900e2d535c">SelectTool</a> (string toolId, bool releasable, string hoveredObjectId, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
+<tr class="memdesc:a549e2445a2f8ad4990fbba900e2d535c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request the selection of a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a>. Be careful,this method could be called before the tool is added for async loading reasons. Returns true if the tool has been successfuly selected, false otherwise.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a549e2445a2f8ad4990fbba900e2d535c">More...</a><br /></td></tr>
+<tr class="separator:a549e2445a2f8ad4990fbba900e2d535c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19cbce5c517009a5ec3f3d3f4f2898b6"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a19cbce5c517009a5ec3f3d3f4f2898b6">ReleaseTool</a> (string toolId, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
 <tr class="memdesc:a19cbce5c517009a5ec3f3d3f4f2898b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be released.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a19cbce5c517009a5ec3f3d3f4f2898b6">More...</a><br /></td></tr>
 <tr class="separator:a19cbce5c517009a5ec3f3d3f4f2898b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac81ce2dced58f08f79101c51ce249167"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac81ce2dced58f08f79101c51ce249167">SwitchTools</a> (string selected, string released, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
-<tr class="memdesc:ac81ce2dced58f08f79101c51ce249167"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be replaced by another one.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac81ce2dced58f08f79101c51ce249167">More...</a><br /></td></tr>
-<tr class="separator:ac81ce2dced58f08f79101c51ce249167"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5a607c967dd144b072a632e320ef0dc"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac5a607c967dd144b072a632e320ef0dc">SwitchTools</a> (string selected, string released, bool releasable, string hoveredObjectId, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
+<tr class="memdesc:ac5a607c967dd144b072a632e320ef0dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be replaced by another one.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac5a607c967dd144b072a632e320ef0dc">More...</a><br /></td></tr>
+<tr class="separator:ac5a607c967dd144b072a632e320ef0dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a594e8c176171fb766ef22c4b686ee45c"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a594e8c176171fb766ef22c4b686ee45c">UpdateTools</a> (string toolId, bool releasable, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
+<tr class="memdesc:a594e8c176171fb766ef22c4b686ee45c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a594e8c176171fb766ef22c4b686ee45c">More...</a><br /></td></tr>
+<tr class="separator:a594e8c176171fb766ef22c4b686ee45c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -238,6 +244,8 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#ada0d353a5aa32af96f1105fcaaaea3bf">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="a6e5b2ff5d51d94cf4c4c79b79c7c1c85"></a>
@@ -263,6 +271,8 @@ Protected Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a3554732c0e848cbf438d7a64b975882f">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -299,6 +309,8 @@ Protected Attributes</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a8abb1cd42895a2e3b8f833c2fa3e8e05">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="af602e0946f34a7f3bd2f4b71adfc4847"></a>
@@ -326,6 +338,8 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get the interaction with the given id (if any). </p>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#af1956c9f1b50b3e960af82bc0eca99c4">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -383,6 +397,8 @@ Protected Attributes</h2></td></tr>
 
 <p>Return the interactions matching a given condition. </p>
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a78f041439cc9c9ecd69d197c1faf1e39">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="ab3bd4fb3ecc9f03189f4f4ba50869671"></a>
@@ -411,6 +427,8 @@ Protected Attributes</h2></td></tr>
 
 <p>Get the tool with the given id (if any). </p>
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a016740fd7f9fd15e5ebc70da49e8d31f">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="a45c20cec697eca343ae3920ab38062a8"></a>
@@ -438,6 +456,8 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Get the toolbox with the given id (if any). </p>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a4796e05d5819dd28323008bbec0baf44">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -495,6 +515,8 @@ Protected Attributes</h2></td></tr>
 
 <p>Return the toolboxes matching a given condition. </p>
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a47234c954da0335ac60a1c774532dbf7">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="ab419118ccc1000ef8e128307f56d508a"></a>
@@ -551,6 +573,8 @@ Protected Attributes</h2></td></tr>
 
 <p>Return the tools matching a given condition. </p>
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a2d5cbcc9ea41e9a839f068e05f1dbdc8">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="a9c2b4a1cc85cd1286e6b38f48ca47e1c"></a>
@@ -578,6 +602,8 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Check if an interaction with the given id exists. </p>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a845d0f20837522690400b063ca609b3f">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -608,11 +634,13 @@ Protected Attributes</h2></td></tr>
 <p>Return true if the tool is currently projected on a controller. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">id</td><td></td></tr>
+    <tr><td class="paramname">id</td><td>Id of the tool.</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#af4586b662e2d3761c026ec2beffe062b">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -653,10 +681,13 @@ Protected Attributes</h2></td></tr>
 <p>Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be released. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dto</td><td>The tool to be released</td></tr>
+    <tr><td class="paramname">toolId</td><td>Id of the tool to release.</td></tr>
+    <tr><td class="paramname">reason</td><td>Interaction mapping reason.</td></tr>
   </table>
   </dd>
 </dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a859a1a662b48d97d8512dfc37685ff9a">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -683,12 +714,14 @@ Protected Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reset the InteractionMapper module. </p>
+<p>Reset the <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html">InteractionMapper</a> module. </p>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a6617eb69ee47d4b94d8d8db57f59c459">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
-<a id="a9fab756e0c33d6ba3a9a8af821830bc5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fab756e0c33d6ba3a9a8af821830bc5">&#9670;&nbsp;</a></span>SelectTool()</h2>
+<a id="a549e2445a2f8ad4990fbba900e2d535c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a549e2445a2f8ad4990fbba900e2d535c">&#9670;&nbsp;</a></span>SelectTool()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -701,6 +734,18 @@ Protected Attributes</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>toolId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>hoveredObjectId</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -724,15 +769,21 @@ Protected Attributes</h2></td></tr>
 <p>Request the selection of a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a>. Be careful,this method could be called before the tool is added for async loading reasons. Returns true if the tool has been successfuly selected, false otherwise. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dto</td><td>The tool to be selected</td></tr>
+    <tr><td class="paramname">toolId</td><td>Id of the tool to release.</td></tr>
+    <tr><td class="paramname">releasable</td><td>The selected tool releasable.</td></tr>
+    <tr><td class="paramname">hoveredObjectId</td><td>The id of the hovered object.</td></tr>
+    <tr><td class="paramname">reason</td><td>Interaction mapping reason.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#af619e461ee6d54b67d0e4c9889063680">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
-<a id="ac81ce2dced58f08f79101c51ce249167"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac81ce2dced58f08f79101c51ce249167">&#9670;&nbsp;</a></span>SwitchTools()</h2>
+<a id="ac5a607c967dd144b072a632e320ef0dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5a607c967dd144b072a632e320ef0dc">&#9670;&nbsp;</a></span>SwitchTools()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -751,6 +802,18 @@ Protected Attributes</h2></td></tr>
           <td></td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>released</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>hoveredObjectId</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -774,11 +837,17 @@ Protected Attributes</h2></td></tr>
 <p>Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be replaced by another one. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">selected</td><td>The tool to be selected</td></tr>
-    <tr><td class="paramname">released</td><td>The tool to be released</td></tr>
+    <tr><td class="paramname">selected</td><td>Id of the tool to select</td></tr>
+    <tr><td class="paramname">released</td><td>Id of the tool to release</td></tr>
+    <tr><td class="paramname">releasable</td><td>The selected tool releasable.</td></tr>
+    <tr><td class="paramname">hoveredObjectId</td><td>The id of the hovered object.</td></tr>
+    <tr><td class="paramname">reason</td><td>Interaction mapping reason.</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a53bebb2d2c24f8576da824ee3ef9c713">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
@@ -808,6 +877,8 @@ Protected Attributes</h2></td></tr>
 
 <p>Check if a toolbox with the given id exists. </p>
 
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a082a00e49c69fd6c1229e317e34f6e19">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
 </div>
 </div>
 <a id="aebc7d58b991c514b214f70cc62f6207f"></a>
@@ -835,6 +906,63 @@ Protected Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Check if a tool with the given id exists. </p>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#ab536cd47e7e749871eda34a05dfa1645">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
+</div>
+</div>
+<a id="a594e8c176171fb766ef22c4b686ee45c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a594e8c176171fb766ef22c4b686ee45c">&#9670;&nbsp;</a></span>UpdateTools()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract bool umi3d.cdk.interaction.AbstractInteractionMapper.UpdateTools </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>toolId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a>&#160;</td>
+          <td class="paramname"><em>reason</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">toolId</td><td>Id of the <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a>.</td></tr>
+    <tr><td class="paramname">releasable</td><td>Is the tool releasable.</td></tr>
+    <tr><td class="paramname">reason</td><td>Interaction mapping reason.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a13ede577428b05133cfb1c3218613e81">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>
