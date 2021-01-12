@@ -36,6 +36,16 @@ namespace umi3d.edk
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
 
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
+
 
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
 
@@ -140,8 +150,8 @@ namespace umi3d.edk
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
             meshDto.idGenerator = idGenerator;
-
-
+            meshDto.isPartOfNavmesh = isPartOfNavmesh;
+            meshDto.isTraversable = isTraversable;
         }
 
         ///<inheritdoc/>

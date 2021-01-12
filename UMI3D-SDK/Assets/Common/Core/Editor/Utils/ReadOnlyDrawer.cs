@@ -15,10 +15,8 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.common.editor
 {
@@ -51,7 +49,7 @@ namespace umi3d.common.editor
         /// <inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property,true);
+            return EditorGUI.GetPropertyHeight(property, true);
         }
 
         /// <summary>Property will not be editable.</summary>

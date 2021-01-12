@@ -44,8 +44,8 @@ namespace umi3d.cdk
             ImportOptions importOptions = CreateImportOption(authorization);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
                 UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
-                    (m)=>
-                    { 
+                    (m) =>
+                    {
                         objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions, m);
 
 
@@ -85,6 +85,7 @@ namespace umi3d.cdk
                 localEulerAngles = UMI3DResourcesManager.Instance.transform.eulerAngles + rotOffset,
                 localScale = UMI3DResourcesManager.Instance.transform.lossyScale,
                 authorization = authorization,
+                authorizationName = common.UMI3DNetworkingKeys.Authorization,
                 zUp = false,
                 hideWhileLoading = true,
 

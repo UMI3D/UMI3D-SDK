@@ -96,7 +96,7 @@ namespace umi3d.edk
                         {
                             if (nop is SetEntityDictionaryAddProperty || nop is SetEntityDictionaryRemoveProperty)
                                 break;
-                            else if(nop is SetEntityDictionaryProperty)
+                            else if (nop is SetEntityDictionaryProperty)
                             {
                                 var ne = nop as SetEntityDictionaryProperty;
                                 if (ne.entityId == sd.entityId && ne.property == sd.property && ne.key == sd.key)

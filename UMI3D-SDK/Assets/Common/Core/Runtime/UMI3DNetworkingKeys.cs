@@ -42,6 +42,7 @@ namespace umi3d.common
         public const string scene = "/environment/scene/:id";
 
         //Prefix
+        /*
         public const string websocket = "/socket";
         public const string websocket_reliable_data = "/reliabledata";
         public const string websocket_unreliable_data = "/unreliabledata";
@@ -49,6 +50,7 @@ namespace umi3d.common
         public const string websocket_unreliable_tracking = "/unreliabletracking";
         public const string websocket_audio = "/audio";
         public const string websocket_video = "/video";
+        */
         public const string websocketProtocol = "echo-protocol";//"access_token";
         public const string Authorization = "AUTHORIZATION";
         public const string bearer = "BEARER";

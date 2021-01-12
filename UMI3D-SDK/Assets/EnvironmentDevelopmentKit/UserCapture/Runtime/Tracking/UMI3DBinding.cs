@@ -24,7 +24,7 @@ namespace umi3d.edk.userCapture
     {
         public string boneType;
         public bool isBinded = true;
-        public UMI3DNode node;
+        public UMI3DAbstractNode node;
         public string rigName = "";
         public Vector3 offsetPosition = Vector3.zero;
         public Quaternion offsetRotation = Quaternion.identity;
@@ -58,9 +58,9 @@ namespace umi3d.edk.userCapture
                 dto.objectId = "";
 
             if (user != null)
-                dto.bindingId = user.Id() + "binding" + rigName + dto.objectId;
+                dto.bindingId = user.Id() + "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
             else
-                dto.bindingId = "binding" + rigName + dto.objectId;
+                dto.bindingId = "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
 
             return dto;
         }

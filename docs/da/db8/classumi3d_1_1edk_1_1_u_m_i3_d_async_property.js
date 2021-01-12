@@ -1,6 +1,7 @@
 var classumi3d_1_1edk_1_1_u_m_i3_d_async_property =
 [
     [ "UMI3DAsyncProperty", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a7c84964270ae4e05a9e59691c2044a87", null ],
+    [ "CopyOfValue", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a33db8ff695aa1a177b31ac74fbdfef64", null ],
     [ "DeSync", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#afe4c7571523cda58c98724846f9d1559", null ],
     [ "GetValue", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a60f5d02aa5cc949454a6385b764af5c3", null ],
     [ "GetValue", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a25e0c9d0b4470e50235f58c77efdf808", null ],

@@ -19,8 +19,8 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.common.userCapture;
 using umi3d.common;
+using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -119,6 +119,19 @@ namespace umi3d.cdk.userCapture
         /// <param name="index">the index in the list of bindings</param>
         /// <param name="dto"></param>
         public void AddBinding(int index, BoneBindingDto dto)
+        {
+            if (index <= userBindings.Count - 1)
+            {
+                BoneBindingDto dtoAtIndex = userBindings[index];
+
+                if (!dto.bindingId.Contains(dtoAtIndex.bindingId) && !dtoAtIndex.bindingId.Contains(dto.bindingId))
+                    AddBinding_(index, dto);
+            }
+            else
+                AddBinding_(index, dto);
+        }
+
+        void AddBinding_(int index, BoneBindingDto dto)
         {
             userBindings.Insert(index, dto);
             if (activeUserBindings && dto.active)
@@ -242,10 +255,17 @@ namespace umi3d.cdk.userCapture
 
                         if (dto.rigName == "")
                         {
-                            savedTransform.obj.localPosition = (node.dto as GlTFNodeDto).position;
-                            savedTransform.obj.localRotation = (node.dto as GlTFNodeDto).rotation;
+                            if (node.dto is GlTFNodeDto)
+                            {
+                                savedTransform.obj.localPosition = (node.dto as GlTFNodeDto).position;
+                                savedTransform.obj.localRotation = (node.dto as GlTFNodeDto).rotation;
+                            }
+                            else if (node.dto is GlTFSceneDto)
+                            {
+                                savedTransform.obj.localPosition = (node.dto as GlTFSceneDto).extensions.umi3d.position;
+                                savedTransform.obj.localRotation = (node.dto as GlTFSceneDto).extensions.umi3d.rotation;
+                            }
                         }
-
                         else
                         {
                             savedTransform.obj.localPosition = savedTransform.savedPosition;
@@ -298,7 +318,6 @@ namespace umi3d.cdk.userCapture
 
                             if (!boundRigs.Contains(obj))
                                 boundRigs.Add(obj);
-
                         }
                         else
                             obj = node.transform;
@@ -334,7 +353,5 @@ namespace umi3d.cdk.userCapture
                 }
             }
         }
-
-
     }
 }

@@ -52,22 +52,7 @@ namespace umi3d.common
         public string versionStatus;
         public string versionDate;
 
-        /// <summary>
-        /// Url of the media
-        /// </summary>
-        public string websocketUrl;
-
-        /// <summary>
-        /// public Url of the media
-        /// </summary>
-        public string httpUrl;
-
-        /// <summary>
-        /// Authentification type of the media
-        /// </summary>
-        public AuthenticationType Authentication;
-
-        public UMI3DDto connection;
+        public ForgeConnectionDto connection;
 
         public MediaDto() : base() { }
 

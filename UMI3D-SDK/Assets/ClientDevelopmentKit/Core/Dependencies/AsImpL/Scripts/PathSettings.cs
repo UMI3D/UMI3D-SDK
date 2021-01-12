@@ -29,8 +29,7 @@ namespace AsImpL
 
         public string RootPath
         {
-            get
-            {
+            get {
 #if UNITY_EDITOR
                 switch (editorRootPath)
 #elif UNITY_STANDALONE
@@ -69,12 +68,12 @@ namespace AsImpL
         public string FullPath(string path)
         {
             string fullPath = path;
-            if(!Path.IsPathRooted(path))
+            if (!Path.IsPathRooted(path))
             {
                 fullPath = RootPath + path;
             }
             return fullPath;
         }
-    
+
     }
 }

@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;

@@ -63,5 +63,8 @@ namespace AsImpL
 
         [Tooltip("Header of the webRequest for private securised files ")]
         public string authorization = "";
+
+        [Tooltip("Header of the webRequest for private securised files ")]
+        public string authorizationName = "";
     }
 }

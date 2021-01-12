@@ -48,7 +48,7 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override string GetId()
         {
-            if(!registered)
+            if (!registered)
             {
                 UMI3DOriginalMaterialDto matDto = new UMI3DOriginalMaterialDto();
                 RegisterMaterial(matDto);

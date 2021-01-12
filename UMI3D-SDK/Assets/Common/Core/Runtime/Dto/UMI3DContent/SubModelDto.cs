@@ -32,6 +32,16 @@ namespace umi3d.common
         /// </summary>
         public bool ignoreModelMaterialOverride;
 
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
+
         public SubModelDto() : base() { }
 
     }

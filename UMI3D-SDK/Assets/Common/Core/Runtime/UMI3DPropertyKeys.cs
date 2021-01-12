@@ -30,6 +30,8 @@ namespace umi3d.common
         public const string Rotation = "rotation";
         public const string Scale = "scale";
 
+        public const string EntityGroupIds = "entity_group_ids";
+
         #region Node
         public const string XBillboard = "umi3d_billboard_x";
         public const string YBillboard = "umi3d_billboard_y";
@@ -164,7 +166,6 @@ namespace umi3d.common
         public const string AnimationChain = "umi3d_animation_chain";
 
         #endregion
-
 
         #region Material
 

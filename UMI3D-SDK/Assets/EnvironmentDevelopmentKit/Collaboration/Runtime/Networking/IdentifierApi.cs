@@ -24,9 +24,10 @@ namespace umi3d.edk.collaboration
 {
     public abstract class IdentifierApi : ScriptableObject
     {
-        public abstract WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login);
 
         Dictionary<string, bool> librariesUpdateStatus;
+
+        public virtual UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type) { return null; }
 
         /// <summary>
         /// Update a client status acording to a userconnectionDto
@@ -46,7 +47,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="login">Login of the user.</param>
         /// <returns></returns>
-        public virtual FormDto GetParameterDtosFor(string login)
+        public virtual FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
             return null;
         }
@@ -56,11 +57,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="login">Login of the user.</param>
         /// <returns></returns>
-        public virtual bool getLibrariesUpdateSatus(string login)
+        public virtual bool getLibrariesUpdateSatus(UMI3DCollaborationUser user)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
-            return librariesUpdateStatus.ContainsKey(login) ? librariesUpdateStatus[login] : false;
+            return librariesUpdateStatus.ContainsKey(user.Id()) ? librariesUpdateStatus[user.Id()] : false;
         }
-
     }
 }

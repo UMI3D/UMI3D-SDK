@@ -13,5 +13,6 @@ var classumi3d_1_1cdk_1_1collaboration_1_1_http_client =
     [ "SendPostLogout", "dd/d2c/classumi3d_1_1cdk_1_1collaboration_1_1_http_client.html#a5d44939c271a17e2ed449ce76cff730d", null ],
     [ "SendPostSceneRequest", "dd/d2c/classumi3d_1_1cdk_1_1collaboration_1_1_http_client.html#aae9d6ef067469cca2a7e7ace1ec22087", null ],
     [ "SendPostUpdateIdentity", "dd/d2c/classumi3d_1_1cdk_1_1collaboration_1_1_http_client.html#a90a7c6a32732353b54f7d9edb1c31951", null ],
+    [ "SendPostUpdateStatus", "dd/d2c/classumi3d_1_1cdk_1_1collaboration_1_1_http_client.html#a89c91efaf7377a23cbe7344d8ee47eec", null ],
     [ "SetToken", "dd/d2c/classumi3d_1_1cdk_1_1collaboration_1_1_http_client.html#ab51a9adfad44a479000dc558528c2aa0", null ]
 ];
