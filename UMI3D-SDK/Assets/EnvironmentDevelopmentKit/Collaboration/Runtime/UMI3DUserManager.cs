@@ -148,7 +148,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="LoginDto">Login of the user.</param>
         /// <param name="onUserCreated">Callback called when the user has been created.</param>
-        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<bool> acceptUser ,Action<UMI3DCollaborationUser, bool> onUserCreated)
+        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
             lock (users)
             {
@@ -226,7 +226,7 @@ namespace umi3d.edk.collaboration
             yield return new WaitForFixedUpdate();
             var op = objectUserList.Remove(user);
             op.users.Remove(user);
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() {op } });
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }
 
         IEnumerator UpdateUser(UMI3DCollaborationUser user)

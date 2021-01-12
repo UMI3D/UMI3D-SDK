@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
@@ -100,7 +99,7 @@ namespace umi3d.edk.userCapture
             UMI3DTrackedUser trackedUser = user as UMI3DTrackedUser;
             if (embodimentInstances.ContainsKey(user.Id()))
             {
-               Debug.LogWarning("Internal error : the user is already registered");
+                Debug.LogWarning("Internal error : the user is already registered");
                 return;
             }
 

@@ -108,7 +108,7 @@ namespace umi3d.common.collaboration
             //Dispatches the frame to the appropriated listener
             switch (frame.GroupId)
             {
-                case (int) DataChannelTypes.Signaling:
+                case (int)DataChannelTypes.Signaling:
                     OnSignalingFrame(player, frame, sender);
                     break;
                 case (int)DataChannelTypes.Tracking:

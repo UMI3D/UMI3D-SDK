@@ -44,8 +44,8 @@ namespace umi3d.cdk
             ImportOptions importOptions = CreateImportOption(authorization);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
                 UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
-                    (m)=>
-                    { 
+                    (m) =>
+                    {
                         objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions, m);
 
 

@@ -58,7 +58,7 @@ namespace umi3d.edk
             {
                 newMaterialId = newMaterial.Id(),
                 overridedMaterialsId = overidedMaterials,
-                addMaterialIfNotExists = addMaterialIfNotExists                
+                addMaterialIfNotExists = addMaterialIfNotExists
             };
         }
 

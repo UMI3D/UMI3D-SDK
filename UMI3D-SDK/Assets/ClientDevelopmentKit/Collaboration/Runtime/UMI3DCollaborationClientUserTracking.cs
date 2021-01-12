@@ -15,10 +15,7 @@ limitations under the License.
 */
 
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.cdk.userCapture;
-using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -33,7 +30,7 @@ namespace umi3d.cdk.collaboration
                 if (targetTrackingFPS > 0)
                 {
                     BonesIterator();
-                    if(UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected())
+                    if (UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected())
                         UMI3DCollaborationClientServer.Instance.ForgeClient.SendTrackingFrame(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
@@ -46,7 +43,7 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
-            yield return new WaitUntil(()=> UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
+            yield return new WaitUntil(() => UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
 
             UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);
         }

@@ -198,7 +198,7 @@ namespace umi3d.edk.collaboration
             });
             playerCount = server.Players.Count;
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-            if(user != null)
+            if (user != null)
                 MainThreadManager.Run(() =>
                 {
                     UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
@@ -264,7 +264,7 @@ namespace umi3d.edk.collaboration
                 {
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
                 });
-                RelayMessage(player, frame,Receivers.OthersProximity);
+                RelayMessage(player, frame, Receivers.OthersProximity);
             }
         }
 
@@ -481,12 +481,12 @@ namespace umi3d.edk.collaboration
 
             Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Target, channel, isTcp);
 
-                try
-                {
-                    server.Send(player, bin, isReliable);
-                }
-                catch(Exception e)
-                {
+            try
+            {
+                server.Send(player, bin, isReliable);
+            }
+            catch (Exception e)
+            {
                 MainThreadManager.Run(() =>
                 {
                     Debug.Log($"Error on send binary to {player.NetworkId} on channel {channel} [{e}]");

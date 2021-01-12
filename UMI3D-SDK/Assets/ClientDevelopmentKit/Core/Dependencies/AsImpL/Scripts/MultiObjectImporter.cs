@@ -22,8 +22,7 @@ namespace AsImpL
 
         public string RootPath
         {
-            get
-            {
+            get {
                 return pathSettings != null ? pathSettings.RootPath : "";
             }
         }

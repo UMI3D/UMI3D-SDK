@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using umi3d.common;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;

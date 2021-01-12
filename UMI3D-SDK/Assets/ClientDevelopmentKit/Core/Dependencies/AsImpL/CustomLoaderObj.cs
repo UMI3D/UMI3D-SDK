@@ -72,7 +72,7 @@ public class CustomLoaderObj : LoaderObj
     protected void SetCertificate(UnityWebRequest www)
     {
 
-        if (!String.IsNullOrEmpty( buildOptions.authorization) )
+        if (!String.IsNullOrEmpty(buildOptions.authorization))
         {
             www.certificateHandler = new AcceptAllCertificates();
 

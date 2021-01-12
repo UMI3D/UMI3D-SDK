@@ -199,6 +199,6 @@ namespace umi3d.cdk
             OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
 
         }
-        
+
     }
 }

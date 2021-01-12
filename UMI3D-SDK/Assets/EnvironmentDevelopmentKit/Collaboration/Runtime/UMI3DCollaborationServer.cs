@@ -37,7 +37,7 @@ namespace umi3d.edk.collaboration
 
         public bool isRunning { get; protected set; } = false;
 
-        [SerializeField,ReadOnly]
+        [SerializeField, ReadOnly]
         bool useIp = false;
 
         public EncoderType encoderType;
@@ -118,7 +118,7 @@ namespace umi3d.edk.collaboration
                 ip = GetLocalIPAddress();
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
-            forgePort = (ushort) FreeTcpPort(useRandomForgePort ? 0 : forgePort);
+            forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
             http = new UMI3DHttp();
@@ -143,7 +143,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Collaboration.CreateUser(player, identity, action, UserCreatedCallback);
         }
 
-        protected void UserCreatedCallback( UMI3DCollaborationUser user, bool reconnection)
+        protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
@@ -346,7 +346,7 @@ namespace umi3d.edk.collaboration
             Debug.Log($"Ping {user.Id()} {user.login}");
             user.networkPlayer.Ping();
             var sr = new StatusRequestDto { CurrentStatus = user.status };
-            ForgeServer.SendSignalingMessage(user.networkPlayer,sr);
+            ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
 
         ///<inheritdoc/>

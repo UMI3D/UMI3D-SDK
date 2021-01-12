@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using BeardedManStudios.Forge.Networking;
 using System;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -33,7 +32,7 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         public override void GetIdentity(Action<UMI3DAuthenticator> callback)
         {
-            callback?.Invoke(new common.collaboration.UMI3DAuthenticator(GetPin, GetLoginPassword,GetIdentity));
+            callback?.Invoke(new common.collaboration.UMI3DAuthenticator(GetPin, GetLoginPassword, GetIdentity));
         }
 
         void GetPin(Action<string> callback)

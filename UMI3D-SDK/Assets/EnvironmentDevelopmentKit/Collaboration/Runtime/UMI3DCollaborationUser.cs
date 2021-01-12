@@ -16,7 +16,6 @@ limitations under the License.
 
 using BeardedManStudios.Forge.Networking;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -61,7 +60,7 @@ namespace umi3d.edk.collaboration
         /// The user token
         /// </summary>
         public string token { get; private set; }
-        
+
 
         /// <summary>
         /// The unique user login.

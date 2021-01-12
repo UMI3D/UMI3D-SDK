@@ -49,8 +49,7 @@ namespace AsImpL
         /// </summary>
         public string CurrGroupName
         {
-            get
-            {
+            get {
                 return currGroup != null ? currGroup.name : "";
             }
         }
@@ -60,8 +59,7 @@ namespace AsImpL
         /// </summary>
         public bool IsEmpty
         {
-            get
-            {
+            get {
                 return vertList.Count == 0;
             }
         }

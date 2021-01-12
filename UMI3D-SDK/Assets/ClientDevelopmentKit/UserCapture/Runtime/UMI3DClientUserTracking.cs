@@ -66,7 +66,7 @@ namespace umi3d.cdk.userCapture
         {
             cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
             cameraHasChanged.Invoke();
-            startingSendingTracking.AddListener(() => {if (sendTracking) StartCoroutine("DispatchTracking"); });
+            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine("DispatchTracking"); });
             startingSendingTracking.Invoke();
         }
 

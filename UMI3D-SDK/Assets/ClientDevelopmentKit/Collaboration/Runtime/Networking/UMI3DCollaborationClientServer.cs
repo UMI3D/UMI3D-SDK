@@ -125,7 +125,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void ConnectionLost()
         {
-            UMI3DCollaborationClientServer.Logout(null,null);
+            UMI3DCollaborationClientServer.Logout(null, null);
 
             OnConnectionLost.Invoke();
         }

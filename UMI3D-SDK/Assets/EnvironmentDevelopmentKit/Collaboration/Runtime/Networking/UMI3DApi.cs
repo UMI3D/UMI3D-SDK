@@ -88,7 +88,7 @@ namespace umi3d.edk.collaboration
         IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
-            user.forgeServer.SendSignalingMessage(user.networkPlayer,user.ToStatusDto());
+            user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
             yield break;
         }
 
@@ -217,7 +217,7 @@ namespace umi3d.edk.collaboration
                 {
                     FileListDto dto = new FileListDto()
                     {
-                        files = GetDir(directory).Select(f=>System.Uri.EscapeUriString(f)).ToList(),
+                        files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
                         baseUrl = System.Uri.EscapeUriString(common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 

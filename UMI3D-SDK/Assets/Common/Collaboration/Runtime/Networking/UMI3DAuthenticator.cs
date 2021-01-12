@@ -89,7 +89,7 @@ namespace umi3d.common.collaboration
 
         public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
         {
-                issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
+            issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
         }
 
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
@@ -130,7 +130,7 @@ namespace umi3d.common.collaboration
             });
         }
 
-        void AcceptPlayer(IdentityDto identity,NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
+        void AcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
         {
             if (shouldAccdeptPlayer == null)
                 authServerAction();
@@ -161,7 +161,8 @@ namespace umi3d.common.collaboration
             if (getLoginPassword == null)
                 callback?.Invoke("");
             else
-                getLoginPassword.Invoke((k) => {
+                getLoginPassword.Invoke((k) =>
+                {
                     var (login, password) = k;
                     LoginSet?.Invoke(login);
                     callback.Invoke(login + sepparator + password);
@@ -172,7 +173,8 @@ namespace umi3d.common.collaboration
             if (getPin == null)
                 callback?.Invoke("");
             else
-                getPin.Invoke((pin) => {
+                getPin.Invoke((pin) =>
+                {
                     callback.Invoke(pin);
                 });
         }

@@ -13,13 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using Newtonsoft.Json;
 using System;
 using System.Collections;
-using System.IO;
-using umi3d.common;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace umi3d.edk.collaboration
 {
@@ -110,7 +106,8 @@ namespace umi3d.edk.collaboration
         /// method called when param <see cref="tokenParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetTokenLife(string arg) {
+        protected virtual void SetTokenLife(string arg)
+        {
             float result;
             if (float.TryParse(arg, out result))
                 UMI3DCollaborationServer.Instance.tokenLifeTime = result;
@@ -120,14 +117,15 @@ namespace umi3d.edk.collaboration
         /// method called when param <see cref="httpPortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetHttpPort(string arg) {
+        protected virtual void SetHttpPort(string arg)
+        {
             int result;
             if (int.TryParse(arg, out result))
             {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = result == 0;
                 UMI3DCollaborationServer.Instance.httpPort = result;
             }
-            else 
+            else
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = true;
         }
 
@@ -135,7 +133,8 @@ namespace umi3d.edk.collaboration
         /// method called when param <see cref="forgePortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetUdpPort(string arg) {
+        protected virtual void SetUdpPort(string arg)
+        {
             ushort result;
             if (ushort.TryParse(arg, out result))
             {

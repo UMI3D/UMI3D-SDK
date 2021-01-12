@@ -45,12 +45,12 @@ namespace umi3d.edk
         /// <summary>
         /// An editor field to modify default objectXBillboard value
         /// </summary>
-        [SerializeField,EditorReadOnly]
+        [SerializeField, EditorReadOnly]
         bool xBillboard = false;
         /// <summary>
         /// An editor field to modify default objectYBillboard value
         /// </summary>
-        [SerializeField,EditorReadOnly]
+        [SerializeField, EditorReadOnly]
         bool yBillboard = false;
 
 

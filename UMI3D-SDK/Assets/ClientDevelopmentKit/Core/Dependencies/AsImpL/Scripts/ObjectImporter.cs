@@ -84,8 +84,7 @@ namespace AsImpL
 #if UNITY_EDITOR
         public bool AllImported
         {
-            get
-            {
+            get {
                 return importAssets ? importPhase == ImportPhase.Done : allLoaded;
             }
         }
@@ -96,8 +95,7 @@ namespace AsImpL
         /// </summary>
         public float ImportProgress
         {
-            get
-            {
+            get {
                 if (Loader.totalProgress.singleProgress.Count > 0)
                 {
                     if (importAssets)
@@ -130,8 +128,7 @@ namespace AsImpL
         /// </summary>
         public string ImportMessage
         {
-            get
-            {
+            get {
                 if (Loader.totalProgress.singleProgress.Count > 0)
                 {
                     if (importAssets)
@@ -349,7 +346,7 @@ namespace AsImpL
                     Debug.LogError("Unable to detect file format in " + ext);
                     return null;
                 }
-                loader = gameObject.AddComponent<CustomLoaderObj>(); 
+                loader = gameObject.AddComponent<CustomLoaderObj>();
             }
             else
             {
