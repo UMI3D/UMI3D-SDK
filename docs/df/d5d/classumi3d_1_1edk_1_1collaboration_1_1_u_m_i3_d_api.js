@@ -11,5 +11,6 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api =
     [ "JoinEnvironment", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#ae7a2e472e65b99176eef93d6ade50f61", null ],
     [ "Logout", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a0b16fff15c94499e6671b2d8b516afdd", null ],
     [ "MediaRequest", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#acee9b0b92008d4539fbeaa74968d85dd", null ],
-    [ "UpdateIdentity", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a5900a7154b3d8c706503f765ee09d6e7", null ]
+    [ "UpdateIdentity", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a5900a7154b3d8c706503f765ee09d6e7", null ],
+    [ "UpdateStatus", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#abcb220dde942c055adc93e833424e243", null ]
 ];

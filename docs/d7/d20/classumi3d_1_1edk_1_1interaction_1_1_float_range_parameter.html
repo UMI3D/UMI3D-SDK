@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -104,6 +104,7 @@ $(document).ready(function(){initNavTree('d7/d20/classumi3d_1_1edk_1_1interactio
  <div class="center">
   <img src="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.png" usemap="#umi3d.edk.interaction.FloatRangeParameter_map" alt=""/>
   <map id="umi3d.edk.interaction.FloatRangeParameter_map" name="umi3d.edk.interaction.FloatRangeParameter_map">
+<area href="../../d3/d79/classumi3d_1_1edk_1_1interaction_1_1_abstract_parameter.html" alt="umi3d.edk.interaction.AbstractParameter" shape="rect" coords="134,112,392,136"/>
 <area href="../../dd/d35/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction.html" title="Abstract UMI3D interaction." alt="umi3d.edk.interaction.AbstractInteraction" shape="rect" coords="134,56,392,80"/>
 <area href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html" title="Interface for UMI3D entities." alt="umi3d.edk.UMI3DEntity" shape="rect" coords="268,0,526,24"/>
   </map>
@@ -138,6 +139,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:ad3bc1f53824705d798a21ff70abd849a"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#ad3bc1f53824705d798a21ff70abd849a">max</a> = 1</td></tr>
 <tr class="memdesc:ad3bc1f53824705d798a21ff70abd849a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Range's maximum value.  <a href="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#ad3bc1f53824705d798a21ff70abd849a">More...</a><br /></td></tr>
 <tr class="separator:ad3bc1f53824705d798a21ff70abd849a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e3f78e54487677a5af3af30bd95a5ed"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#a4e3f78e54487677a5af3af30bd95a5ed">increment</a> = 0</td></tr>
+<tr class="memdesc:a4e3f78e54487677a5af3af30bd95a5ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Range's increment value.  <a href="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#a4e3f78e54487677a5af3af30bd95a5ed">More...</a><br /></td></tr>
+<tr class="separator:a4e3f78e54487677a5af3af30bd95a5ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc9889b0cde4bd22994866109c985d2f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d2b/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter_1_1_float_range_listener.html">FloatRangeListener</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#afc9889b0cde4bd22994866109c985d2f">onChange</a> = new <a class="el" href="../../d9/d2b/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter_1_1_float_range_listener.html">FloatRangeListener</a>()</td></tr>
 <tr class="memdesc:afc9889b0cde4bd22994866109c985d2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event raised on value change.  <a href="../../d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#afc9889b0cde4bd22994866109c985d2f">More...</a><br /></td></tr>
 <tr class="separator:afc9889b0cde4bd22994866109c985d2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -292,12 +296,29 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+<p>inheritdoc/&gt; </p>
 
 <p>Reimplemented from <a class="el" href="../../dd/d35/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction.html#af67aa4dcfb72deabbc756d5e04b6fa5f">umi3d.edk.interaction.AbstractInteraction</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a4e3f78e54487677a5af3af30bd95a5ed"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e3f78e54487677a5af3af30bd95a5ed">&#9670;&nbsp;</a></span>increment</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int umi3d.edk.interaction.FloatRangeParameter.increment = 0</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Range's increment value. </p>
+
+</div>
+</div>
 <a id="ad3bc1f53824705d798a21ff70abd849a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad3bc1f53824705d798a21ff70abd849a">&#9670;&nbsp;</a></span>max</h2>
 

@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -109,7 +109,8 @@ $(document).ready(function(){initNavTree('df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_
  <div class="center">
   <img src="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.png" usemap="#umi3d.cdk.UMI3DEnvironmentLoader_map" alt=""/>
   <map id="umi3d.cdk.UMI3DEnvironmentLoader_map" name="umi3d.cdk.UMI3DEnvironmentLoader_map">
-<area href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html" alt="umi3d.common.Singleton&lt; UMI3DEnvironmentLoader &gt;" shape="rect" coords="0,0,323,24"/>
+<area href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html" alt="umi3d.common.Singleton&lt; UMI3DEnvironmentLoader &gt;" shape="rect" coords="0,0,373,24"/>
+<area href="../../dc/da2/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_environment_loader.html" alt="umi3d.cdk.collaboration.UMI3DCollaborationEnvironmentLoader" shape="rect" coords="0,112,373,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -120,6 +121,14 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a64b7f59fe15ea24a7ff2f8b6ffac6670"><td class="memItemLeft" align="right" valign="top">Material&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a64b7f59fe15ea24a7ff2f8b6ffac6670">GetBaseMaterial</a> ()</td></tr>
+<tr class="memdesc:a64b7f59fe15ea24a7ff2f8b6ffac6670"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a copy of the baseMaterial. it can be modified  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a64b7f59fe15ea24a7ff2f8b6ffac6670">More...</a><br /></td></tr>
+<tr class="separator:a64b7f59fe15ea24a7ff2f8b6ffac6670"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a690becee1a6147382c6493234161df"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a1a690becee1a6147382c6493234161df">GetBaseMaterialBeforeAction</a> (Action&lt; Material &gt; callback)</td></tr>
+<tr class="memdesc:a1a690becee1a6147382c6493234161df"><td class="mdescLeft">&#160;</td><td class="mdescRight">wait initialization of baseMaterial then invoke callback  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a1a690becee1a6147382c6493234161df">More...</a><br /></td></tr>
+<tr class="separator:a1a690becee1a6147382c6493234161df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb4303557778978cfd935b6af5cac518"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#abb4303557778978cfd935b6af5cac518">SetBaseMaterial</a> (Material newBaseMat)</td></tr>
+<tr class="separator:abb4303557778978cfd935b6af5cac518"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a343bc952fa237856aff23d455ca5126d"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a343bc952fa237856aff23d455ca5126d">Load</a> (<a class="el" href="../../d5/deb/classumi3d_1_1common_1_1_gl_t_f_environment_dto.html">GlTFEnvironmentDto</a> dto, Action onSuccess, Action&lt; string &gt; onError)</td></tr>
 <tr class="memdesc:a343bc952fa237856aff23d455ca5126d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the Environment.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a343bc952fa237856aff23d455ca5126d">More...</a><br /></td></tr>
 <tr class="separator:a343bc952fa237856aff23d455ca5126d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -141,12 +150,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ab2deb6b6b96e717e18def1068deaab23"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ab2deb6b6b96e717e18def1068deaab23">GetNodeID</a> (Collider collider)</td></tr>
 <tr class="memdesc:ab2deb6b6b96e717e18def1068deaab23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a node id with a collider.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ab2deb6b6b96e717e18def1068deaab23">More...</a><br /></td></tr>
 <tr class="separator:ab2deb6b6b96e717e18def1068deaab23"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a17f4bb9dcd05e616f064f9a7b198ec84"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../dd/d7d/classumi3d_1_1cdk_1_1_u_m_i3_d_node_instance.html">UMI3DNodeInstance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a17f4bb9dcd05e616f064f9a7b198ec84">RegisterNodeInstance</a> (string id, <a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> dto, GameObject instance, bool issubObject=false)</td></tr>
-<tr class="memdesc:a17f4bb9dcd05e616f064f9a7b198ec84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a node instance.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a17f4bb9dcd05e616f064f9a7b198ec84">More...</a><br /></td></tr>
-<tr class="separator:a17f4bb9dcd05e616f064f9a7b198ec84"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d19e95a7a65cd1d57574b75bc3c2b86"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d6/d84/classumi3d_1_1cdk_1_1_u_m_i3_d_entity_instance.html">UMI3DEntityInstance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a9d19e95a7a65cd1d57574b75bc3c2b86">RegisterEntityInstance</a> (string id, <a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> dto, object Object)</td></tr>
-<tr class="memdesc:a9d19e95a7a65cd1d57574b75bc3c2b86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register an entity without a gameobject.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a9d19e95a7a65cd1d57574b75bc3c2b86">More...</a><br /></td></tr>
-<tr class="separator:a9d19e95a7a65cd1d57574b75bc3c2b86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a502ee409576e8257b3a32948b7eb2ead"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../dd/d7d/classumi3d_1_1cdk_1_1_u_m_i3_d_node_instance.html">UMI3DNodeInstance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a502ee409576e8257b3a32948b7eb2ead">RegisterNodeInstance</a> (string id, <a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> dto, GameObject instance, Action delete=null)</td></tr>
+<tr class="memdesc:a502ee409576e8257b3a32948b7eb2ead"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register a node instance.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a502ee409576e8257b3a32948b7eb2ead">More...</a><br /></td></tr>
+<tr class="separator:a502ee409576e8257b3a32948b7eb2ead"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fd46bf8ec518a5722576b99e49965fa"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="../../d6/d84/classumi3d_1_1cdk_1_1_u_m_i3_d_entity_instance.html">UMI3DEntityInstance</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a8fd46bf8ec518a5722576b99e49965fa">RegisterEntityInstance</a> (string id, <a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> dto, object Object, Action delete=null)</td></tr>
+<tr class="memdesc:a8fd46bf8ec518a5722576b99e49965fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Register an entity without a gameobject.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a8fd46bf8ec518a5722576b99e49965fa">More...</a><br /></td></tr>
+<tr class="separator:a8fd46bf8ec518a5722576b99e49965fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4dd5dd7e9342f75a100643c669b68469"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a4dd5dd7e9342f75a100643c669b68469">LoadEntity</a> (<a class="el" href="../../d9/d53/interfaceumi3d_1_1common_1_1_i_entity.html">IEntity</a> entity, Action performed)</td></tr>
 <tr class="memdesc:a4dd5dd7e9342f75a100643c669b68469"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load IEntity.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a4dd5dd7e9342f75a100643c669b68469">More...</a><br /></td></tr>
 <tr class="separator:a4dd5dd7e9342f75a100643c669b68469"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -162,23 +171,30 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ae551f33aabde29a56a0cc157644193b6"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ae551f33aabde29a56a0cc157644193b6">SetEntity</a> (<a class="el" href="../../dc/d00/classumi3d_1_1common_1_1_set_entity_property_dto.html">SetEntityPropertyDto</a> dto)</td></tr>
 <tr class="memdesc:ae551f33aabde29a56a0cc157644193b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle SetEntityPropertyDto operation.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ae551f33aabde29a56a0cc157644193b6">More...</a><br /></td></tr>
 <tr class="separator:ae551f33aabde29a56a0cc157644193b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4f55a0424cf85f40274bc0370c02e45"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ac4f55a0424cf85f40274bc0370c02e45">SetMultiEntity</a> (<a class="el" href="../../d2/d1f/classumi3d_1_1common_1_1_multi_set_entity_property_dto.html">MultiSetEntityPropertyDto</a> dto)</td></tr>
+<tr class="memdesc:ac4f55a0424cf85f40274bc0370c02e45"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply a setEntity to multiple entities  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ac4f55a0424cf85f40274bc0370c02e45">More...</a><br /></td></tr>
+<tr class="separator:ac4f55a0424cf85f40274bc0370c02e45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a18da30f811ebfd22a6ebf7f5e60636ab"><td class="memItemLeft" align="right" valign="top">Material&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a18da30f811ebfd22a6ebf7f5e60636ab">baseMaterial</a></td></tr>
+<tr class="memdesc:a18da30f811ebfd22a6ebf7f5e60636ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic material used to init a new material with the same properties  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a18da30f811ebfd22a6ebf7f5e60636ab">More...</a><br /></td></tr>
+<tr class="separator:a18da30f811ebfd22a6ebf7f5e60636ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40e68cea4c7d7c759bbdeee109371fa4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../de/d52/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader_1_1_progress_listener.html">ProgressListener</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a40e68cea4c7d7c759bbdeee109371fa4">onProgressChange</a> = new <a class="el" href="../../de/d52/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader_1_1_progress_listener.html">ProgressListener</a>()</td></tr>
 <tr class="separator:a40e68cea4c7d7c759bbdeee109371fa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac6c4d89c9a6f7d4fe639236cba018e10"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ac6c4d89c9a6f7d4fe639236cba018e10">onResourcesLoaded</a> = new UnityEvent()</td></tr>
 <tr class="separator:ac6c4d89c9a6f7d4fe639236cba018e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a435eaa3867f2925f6e0bb5a8f313d82d"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a435eaa3867f2925f6e0bb5a8f313d82d">onEnvironmentLoaded</a> = new UnityEvent()</td></tr>
 <tr class="separator:a435eaa3867f2925f6e0bb5a8f313d82d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae92e0b425058e6bec0fd93b607e60311"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html">AbstractUMI3DLoadingParameters</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ae92e0b425058e6bec0fd93b607e60311">parameters</a></td></tr>
-<tr class="separator:ae92e0b425058e6bec0fd93b607e60311"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:afbe8abcb6844cc2530c92aaa149f4b55"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#afbe8abcb6844cc2530c92aaa149f4b55">Awake</a> ()</td></tr>
 <tr class="memdesc:afbe8abcb6844cc2530c92aaa149f4b55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unity function call when a MonoBehaviour is created. Make sure to always call base.Awake() when overriding.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#afbe8abcb6844cc2530c92aaa149f4b55">More...</a><br /></td></tr>
 <tr class="separator:afbe8abcb6844cc2530c92aaa149f4b55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae73636798177f979eaeaa54dcf3e746f"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ae73636798177f979eaeaa54dcf3e746f">_SetUMI3DPorperty</a> (<a class="el" href="../../d6/d84/classumi3d_1_1cdk_1_1_u_m_i3_d_entity_instance.html">UMI3DEntityInstance</a> entity, <a class="el" href="../../dc/d00/classumi3d_1_1common_1_1_set_entity_property_dto.html">SetEntityPropertyDto</a> property)</td></tr>
+<tr class="memdesc:ae73636798177f979eaeaa54dcf3e746f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update a property.  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ae73636798177f979eaeaa54dcf3e746f">More...</a><br /></td></tr>
+<tr class="separator:ae73636798177f979eaeaa54dcf3e746f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classumi3d_1_1common_1_1_singleton"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classumi3d_1_1common_1_1_singleton')"><img src="../../closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html">umi3d.common.Singleton&lt; UMI3DEnvironmentLoader &gt;</a></td></tr>
 <tr class="memitem:a25a4315101e20787d56f04a1e4d4afd6 inherit pro_methods_classumi3d_1_1common_1_1_singleton"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d5d/classumi3d_1_1common_1_1_singleton.html#a25a4315101e20787d56f04a1e4d4afd6">OnDestroy</a> ()</td></tr>
 <tr class="separator:a25a4315101e20787d56f04a1e4d4afd6 inherit pro_methods_classumi3d_1_1common_1_1_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -189,8 +205,6 @@ Properties</h2></td></tr>
 <tr class="separator:af7b518efeb887eaf115f6af9ffcfbd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0bd9aa0bc3c872115dbe95577ea13eb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/d2f/classumi3d_1_1cdk_1_1_gl_t_f_node_loader.html">GlTFNodeLoader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#aa0bd9aa0bc3c872115dbe95577ea13eb">nodeLoader</a><code> [get]</code></td></tr>
 <tr class="separator:aa0bd9aa0bc3c872115dbe95577ea13eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af68fb4c396fe9b40dd26af0352f7cce4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/d9e/classumi3d_1_1cdk_1_1_u_m_i3_d_pbr_material_loader.html">UMI3DPbrMaterialLoader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#af68fb4c396fe9b40dd26af0352f7cce4">materialLoader</a><code> [get]</code></td></tr>
-<tr class="separator:af68fb4c396fe9b40dd26af0352f7cce4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9f7137c0f5c607da040539045e57cae"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ab9f7137c0f5c607da040539045e57cae">started</a> = false<code> [get]</code></td></tr>
 <tr class="memdesc:ab9f7137c0f5c607da040539045e57cae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if a UMI3D environment has been loaded  <a href="../../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#ab9f7137c0f5c607da040539045e57cae">More...</a><br /></td></tr>
 <tr class="separator:ab9f7137c0f5c607da040539045e57cae"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -212,6 +226,54 @@ Properties</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"></div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae73636798177f979eaeaa54dcf3e746f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae73636798177f979eaeaa54dcf3e746f">&#9670;&nbsp;</a></span>_SetUMI3DPorperty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool umi3d.cdk.UMI3DEnvironmentLoader._SetUMI3DPorperty </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d6/d84/classumi3d_1_1cdk_1_1_u_m_i3_d_entity_instance.html">UMI3DEntityInstance</a>&#160;</td>
+          <td class="paramname"><em>entity</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../dc/d00/classumi3d_1_1common_1_1_set_entity_property_dto.html">SetEntityPropertyDto</a>&#160;</td>
+          <td class="paramname"><em>property</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Update a property. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">entity</td><td>Entity to update.</td></tr>
+    <tr><td class="paramname">property</td><td>Property containing the new value.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Reimplemented in <a class="el" href="../../dc/da2/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_environment_loader.html#a5b6c14a61823e1d5834b310f7529e7c9">umi3d.cdk.collaboration.UMI3DCollaborationEnvironmentLoader</a>.</p>
+
+</div>
+</div>
 <a id="afbe8abcb6844cc2530c92aaa149f4b55"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afbe8abcb6844cc2530c92aaa149f4b55">&#9670;&nbsp;</a></span>Awake()</h2>
 
@@ -337,6 +399,53 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Return a list of all registered entities. </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a64b7f59fe15ea24a7ff2f8b6ffac6670"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64b7f59fe15ea24a7ff2f8b6ffac6670">&#9670;&nbsp;</a></span>GetBaseMaterial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Material umi3d.cdk.UMI3DEnvironmentLoader.GetBaseMaterial </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>return a copy of the baseMaterial. it can be modified </p>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a1a690becee1a6147382c6493234161df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a690becee1a6147382c6493234161df">&#9670;&nbsp;</a></span>GetBaseMaterialBeforeAction()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IEnumerator umi3d.cdk.UMI3DEnvironmentLoader.GetBaseMaterialBeforeAction </td>
+          <td>(</td>
+          <td class="paramtype">Action&lt; Material &gt;&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>wait initialization of baseMaterial then invoke callback </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>callback to invoke with the baseMaterial in argument</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
@@ -579,10 +688,12 @@ Properties</h2></td></tr>
   </dd>
 </dl>
 
+<p>Reimplemented in <a class="el" href="../../dc/da2/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_environment_loader.html#adf8fa0bc311589ccd95ee01011f31b91">umi3d.cdk.collaboration.UMI3DCollaborationEnvironmentLoader</a>.</p>
+
 </div>
 </div>
-<a id="a9d19e95a7a65cd1d57574b75bc3c2b86"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d19e95a7a65cd1d57574b75bc3c2b86">&#9670;&nbsp;</a></span>RegisterEntityInstance()</h2>
+<a id="a8fd46bf8ec518a5722576b99e49965fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fd46bf8ec518a5722576b99e49965fa">&#9670;&nbsp;</a></span>RegisterEntityInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -606,7 +717,13 @@ Properties</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">object&#160;</td>
-          <td class="paramname"><em>Object</em>&#160;</td>
+          <td class="paramname"><em>Object</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&#160;</td>
+          <td class="paramname"><em>delete</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -633,8 +750,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a17f4bb9dcd05e616f064f9a7b198ec84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a17f4bb9dcd05e616f064f9a7b198ec84">&#9670;&nbsp;</a></span>RegisterNodeInstance()</h2>
+<a id="a502ee409576e8257b3a32948b7eb2ead"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a502ee409576e8257b3a32948b7eb2ead">&#9670;&nbsp;</a></span>RegisterNodeInstance()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -663,8 +780,8 @@ Properties</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>issubObject</em> = <code>false</code>&#160;</td>
+          <td class="paramtype">Action&#160;</td>
+          <td class="paramname"><em>delete</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -690,6 +807,33 @@ Properties</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="abb4303557778978cfd935b6af5cac518"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb4303557778978cfd935b6af5cac518">&#9670;&nbsp;</a></span>SetBaseMaterial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.cdk.UMI3DEnvironmentLoader.SetBaseMaterial </td>
+          <td>(</td>
+          <td class="paramtype">Material&#160;</td>
+          <td class="paramname"><em>newBaseMat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newBaseMat</td><td>A new material to override the baseMaterial used to initialise all materials</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>inheritdoc/&gt; </p>
 
 </div>
 </div>
@@ -721,6 +865,41 @@ Properties</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dto</td><td>set operation to handle.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="ac4f55a0424cf85f40274bc0370c02e45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4f55a0424cf85f40274bc0370c02e45">&#9670;&nbsp;</a></span>SetMultiEntity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool umi3d.cdk.UMI3DEnvironmentLoader.SetMultiEntity </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d1f/classumi3d_1_1common_1_1_multi_set_entity_property_dto.html">MultiSetEntityPropertyDto</a>&#160;</td>
+          <td class="paramname"><em>dto</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Apply a setEntity to multiple entities </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dto</td><td>MultiSetEntityPropertyDto with the ids list to mofify</td></tr>
   </table>
   </dd>
 </dl>
@@ -775,6 +954,22 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a18da30f811ebfd22a6ebf7f5e60636ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18da30f811ebfd22a6ebf7f5e60636ab">&#9670;&nbsp;</a></span>baseMaterial</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Material umi3d.cdk.UMI3DEnvironmentLoader.baseMaterial</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Basic material used to init a new material with the same properties </p>
+
+</div>
+</div>
 <a id="a435eaa3867f2925f6e0bb5a8f313d82d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a435eaa3867f2925f6e0bb5a8f313d82d">&#9670;&nbsp;</a></span>onEnvironmentLoaded</h2>
 
@@ -811,20 +1006,6 @@ Properties</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">UnityEvent umi3d.cdk.UMI3DEnvironmentLoader.onResourcesLoaded = new UnityEvent()</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="ae92e0b425058e6bec0fd93b607e60311"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae92e0b425058e6bec0fd93b607e60311">&#9670;&nbsp;</a></span>parameters</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html">AbstractUMI3DLoadingParameters</a> umi3d.cdk.UMI3DEnvironmentLoader.parameters</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -877,28 +1058,6 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Indicates if the UMI3D environment has been fully loaded </p>
-
-</div>
-</div>
-<a id="af68fb4c396fe9b40dd26af0352f7cce4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af68fb4c396fe9b40dd26af0352f7cce4">&#9670;&nbsp;</a></span>materialLoader</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="../../d3/d9e/classumi3d_1_1cdk_1_1_u_m_i3_d_pbr_material_loader.html">UMI3DPbrMaterialLoader</a> umi3d.cdk.UMI3DEnvironmentLoader.materialLoader</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
 
 </div>
 </div>

@@ -16,7 +16,6 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -30,11 +29,11 @@ namespace umi3d.cdk.collaboration
         Dictionary<string, AudioReader> GlobalReader = new Dictionary<string, AudioReader>();
         Dictionary<string, AudioReader> SpacialReader = new Dictionary<string, AudioReader>();
 
-        [SerializeField,EditorReadOnly]
+        [SerializeField, EditorReadOnly]
         int frequency = 8000;
-        [SerializeField,EditorReadOnly, Tooltip("Length of the sample array to be send for one channel")]
+        [SerializeField, EditorReadOnly, Tooltip("Length of the sample array to be send for one channel")]
         int sampleLength = 800;
-        [SerializeField,ReadOnly, Tooltip("length in ms of a sample")]
+        [SerializeField, ReadOnly, Tooltip("length in ms of a sample")]
         int sampleDuration = 100;
 
         private void OnValidate()
@@ -77,7 +76,7 @@ namespace umi3d.cdk.collaboration
                 GlobalReader[userId].Read(dto);
             }
         }
-        
+
 
         /// <summary>
         /// MAnage user update
