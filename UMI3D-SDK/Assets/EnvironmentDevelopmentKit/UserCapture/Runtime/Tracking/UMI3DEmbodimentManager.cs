@@ -169,7 +169,10 @@ namespace umi3d.edk.userCapture
         protected void DeleteEmbodiment(UMI3DUser user)
         {
             if (!embodimentInstances.ContainsKey(user.Id()))
-                throw new Exception($"Internal error : the user is [{user.Id()}] not registered");
+            {
+                Debug.LogWarning($"Internal error : the user is [{user.Id()}] not registered");
+                return;
+            }
 
             UMI3DAvatarNode embd = embodimentInstances[user.Id()];
 

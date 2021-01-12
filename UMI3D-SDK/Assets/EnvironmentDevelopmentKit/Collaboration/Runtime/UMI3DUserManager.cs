@@ -104,7 +104,10 @@ namespace umi3d.edk.collaboration
         public IEnumerable<UMI3DCollaborationUser> Users
         {
             get {
-                return users.Values;
+                lock (users)
+                {
+                    return users.Values.ToList();
+                }
             }
         }
 
@@ -115,7 +118,10 @@ namespace umi3d.edk.collaboration
         public void Logout(UMI3DCollaborationUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
-            users.Remove(user.Id());
+            lock (users)
+            {
+                users.Remove(user.Id());
+            }
             loginMap.Remove(user.login);
             forgeMap.Remove(user.networkPlayer.NetworkId);
             user.SetStatus(StatusType.NONE);
@@ -144,44 +150,47 @@ namespace umi3d.edk.collaboration
         /// <param name="onUserCreated">Callback called when the user has been created.</param>
         public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<bool> acceptUser ,Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            UMI3DCollaborationUser user;
-            bool reconnection = false;
-            if (LoginDto == null)
+            lock (users)
             {
-                Debug.LogWarning("user try to use empty login");
-                acceptUser(false);
-                return;
-            }
-            if(LoginDto.login == null || LoginDto.login == "")
-            {
-                LoginDto.login = player.NetworkId.ToString();
-            }
-
-            if (loginMap.ContainsKey(LoginDto.login))
-            {
-                if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != null && users.ContainsKey(LoginDto.userId))
+                UMI3DCollaborationUser user;
+                bool reconnection = false;
+                if (LoginDto == null)
                 {
-                    Debug.LogWarning($"Login [{LoginDto.login}] already us by an other user");
+                    Debug.LogWarning("user try to use empty login");
                     acceptUser(false);
                     return;
                 }
+                if (LoginDto.login == null || LoginDto.login == "")
+                {
+                    LoginDto.login = player.NetworkId.ToString();
+                }
+
+                if (loginMap.ContainsKey(LoginDto.login))
+                {
+                    if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != null && users.ContainsKey(LoginDto.userId))
+                    {
+                        Debug.LogWarning($"Login [{LoginDto.login}] already us by an other user");
+                        acceptUser(false);
+                        return;
+                    }
+                    else
+                    {
+                        user = users[LoginDto.userId];
+                        forgeMap.Remove(user.networkPlayer.NetworkId);
+                        reconnection = true;
+                    }
+                }
                 else
                 {
-                    user = users[LoginDto.userId];
-                    forgeMap.Remove(user.networkPlayer.NetworkId);
-                    reconnection = true;
+                    user = new UMI3DCollaborationUser(LoginDto.login);
+                    loginMap[LoginDto.login] = user.Id();
+                    users.Add(user.Id(), user);
                 }
+                user.networkPlayer = player;
+                forgeMap.Add(player.NetworkId, user.Id());
+                acceptUser(true);
+                onUserCreated.Invoke(user, reconnection);
             }
-            else
-            {
-                user = new UMI3DCollaborationUser(LoginDto.login);
-                loginMap[LoginDto.login] = user.Id();
-                users.Add(user.Id(), user);
-            }
-            user.networkPlayer = player;
-            forgeMap.Add(player.NetworkId, user.Id());
-            acceptUser(true);
-            onUserCreated.Invoke(user, reconnection);
         }
 
         /// <summary>

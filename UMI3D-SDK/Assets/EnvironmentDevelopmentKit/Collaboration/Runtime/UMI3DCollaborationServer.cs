@@ -305,7 +305,7 @@ namespace umi3d.edk.collaboration
         {
             if (user == null)
                 return;
-            user.networkPlayer.Networker.Disconnect(true);
+            (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
             Collaboration.Logout(user);
             MainThreadManager.Run(() => Instance._Logout(user));
         }
