@@ -19,6 +19,8 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_node =
     [ "hasCollider", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#aa90fd343111f72689ecaaae12f17fb78", null ],
     [ "hasVisibilityBeenChecked", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3447c8acfa459a851e6f46475ae44af4", null ],
     [ "isMeshCustom", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ac5c705b469e2bf7584dc2361ce7e29c0", null ],
+    [ "visibilityOnFrame", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a7e92ed4e2768b2aedfa2d71f0b586b98", null ],
+    [ "visibleLastFrame", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#acf4516055e49b5da26a666675ca73c5b", null ],
     [ "objectColliderBoxSize", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a404051209bb94bcd9f270c748316e5f6", null ],
     [ "objectColliderCenter", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a5c6ec5b8d0a77bf719a16dc55328acfb", null ],
     [ "objectColliderDirection", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a8632cfa494369ae735a8ca0f81243a3f", null ],
@@ -31,10 +33,5 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_node =
     [ "objectIsMeshCustom", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a7a151178aa4e41f8edff94478d5cd607", null ],
     [ "objectLight", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a286215c80e4825b601fc9d5f0275723e", null ],
     [ "objectXBillboard", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ad12210d1dedecaa5cca648fe098f7a4d", null ],
-    [ "objectYBillboard", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3d7f264b37919b130c2c38dbcdfb592a", null ],
-    [ "preview", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3db4611bb264fc066114bb65872b2dd7", null ],
-    [ "visibilityOnFrame", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a7e92ed4e2768b2aedfa2d71f0b586b98", null ],
-    [ "visibleLastFrame", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#acf4516055e49b5da26a666675ca73c5b", null ],
-    [ "xBillboard", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a95bf93b434662dba72727638654afa2f", null ],
-    [ "yBillboard", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a18146e94be1e23eff4206c4d7596a696", null ]
+    [ "objectYBillboard", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3d7f264b37919b130c2c38dbcdfb592a", null ]
 ];

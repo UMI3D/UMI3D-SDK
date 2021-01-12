@@ -177,7 +177,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string,object> additionalShaderProperties = null)
+        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string, object> additionalShaderProperties = null)
         {
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(node))
             {
@@ -193,7 +193,7 @@ namespace umi3d.cdk
                         if (oldMats.oldMats[i] == null)
                             oldMats.oldMats[i] = renderer.sharedMaterials[i];
 
-                        if(newMat != null)
+                        if (newMat != null)
                             mats[i] = newMat;
                         else
                         {
@@ -297,10 +297,10 @@ namespace umi3d.cdk
             {
                 foreach (string matKey in listToOverride)
                 {
-                    OverrideMaterial(node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")),matEntity, shaderProperties);
+                    OverrideMaterial(node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")), matEntity, shaderProperties);
                 }
             }
-         
+
             if (callback != null)
                 callback.Invoke();
 

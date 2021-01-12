@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -99,6 +99,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8390a3f96c4de00bdf32d633e197ff5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a8390a3f96c4de00bdf32d633e197ff5c">GetIdentity</a> (object sender, HttpRequestEventArgs e, Dictionary&lt; string, string &gt; uriparam)</td></tr>
 <tr class="memdesc:a8390a3f96c4de00bdf32d633e197ff5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">GET "/me" Get the user's information.  <a href="../../df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a8390a3f96c4de00bdf32d633e197ff5c">More...</a><br /></td></tr>
 <tr class="separator:a8390a3f96c4de00bdf32d633e197ff5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcb220dde942c055adc93e833424e243"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#abcb220dde942c055adc93e833424e243">UpdateStatus</a> (object sender, HttpRequestEventArgs e, Dictionary&lt; string, string &gt; uriparam)</td></tr>
+<tr class="memdesc:abcb220dde942c055adc93e833424e243"><td class="mdescLeft">&#160;</td><td class="mdescRight">POST "/me/status" Updates the user's information.  <a href="../../df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#abcb220dde942c055adc93e833424e243">More...</a><br /></td></tr>
+<tr class="separator:abcb220dde942c055adc93e833424e243"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5900a7154b3d8c706503f765ee09d6e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a5900a7154b3d8c706503f765ee09d6e7">UpdateIdentity</a> (object sender, HttpRequestEventArgs e, Dictionary&lt; string, string &gt; uriparam)</td></tr>
 <tr class="memdesc:a5900a7154b3d8c706503f765ee09d6e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">POST "/me/update" Updates the user's information.  <a href="../../df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a5900a7154b3d8c706503f765ee09d6e7">More...</a><br /></td></tr>
 <tr class="separator:a5900a7154b3d8c706503f765ee09d6e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -640,6 +643,49 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>POST "/me/update" Updates the user's information. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sender</td><td></td></tr>
+    <tr><td class="paramname">e</td><td>Represents the event data for the HTTP request event</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abcb220dde942c055adc93e833424e243"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcb220dde942c055adc93e833424e243">&#9670;&nbsp;</a></span>UpdateStatus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.edk.collaboration.UMI3DApi.UpdateStatus </td>
+          <td>(</td>
+          <td class="paramtype">object&#160;</td>
+          <td class="paramname"><em>sender</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">HttpRequestEventArgs&#160;</td>
+          <td class="paramname"><em>e</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Dictionary&lt; string, string &gt;&#160;</td>
+          <td class="paramname"><em>uriparam</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>POST "/me/status" Updates the user's information. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sender</td><td></td></tr>

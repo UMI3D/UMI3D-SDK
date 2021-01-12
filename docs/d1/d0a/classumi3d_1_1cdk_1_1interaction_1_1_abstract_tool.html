@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -111,11 +111,19 @@ $(document).ready(function(){initNavTree('d1/d0a/classumi3d_1_1cdk_1_1interactio
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a22818b661583c18db5e8b2d79169f7a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#a22818b661583c18db5e8b2d79169f7a2">Updated</a> ()</td></tr>
+<tr class="separator:a22818b661583c18db5e8b2d79169f7a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa48d6f82c16dc9570ddb66954c48a5b9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#aa48d6f82c16dc9570ddb66954c48a5b9">onProjected</a> (string boneType)</td></tr>
+<tr class="separator:aa48d6f82c16dc9570ddb66954c48a5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5762fabe78919fedeac5d9c007b0ca87"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#a5762fabe78919fedeac5d9c007b0ca87">onReleased</a> (string boneType)</td></tr>
+<tr class="separator:a5762fabe78919fedeac5d9c007b0ca87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa900220309c836eaa88ad08d634d2951"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#aa900220309c836eaa88ad08d634d2951">Destroy</a> ()</td></tr>
 <tr class="separator:aa900220309c836eaa88ad08d634d2951"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:ad3a2fafc016052e0b1f7fb5e902f7d08"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#ad3a2fafc016052e0b1f7fb5e902f7d08">OnUpdated</a> = new UnityEvent()</td></tr>
+<tr class="separator:ad3a2fafc016052e0b1f7fb5e902f7d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff5e681936c85e4bc46328e503c75be0"><td class="memItemLeft" align="right" valign="top">UnityEvent&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#aff5e681936c85e4bc46328e503c75be0">onProject</a> = new UnityEvent()</td></tr>
 <tr class="memdesc:aff5e681936c85e4bc46328e503c75be0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event raised when the abstract tool is projected.  <a href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#aff5e681936c85e4bc46328e503c75be0">More...</a><br /></td></tr>
 <tr class="separator:aff5e681936c85e4bc46328e503c75be0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,6 +214,59 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a id="aa48d6f82c16dc9570ddb66954c48a5b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa48d6f82c16dc9570ddb66954c48a5b9">&#9670;&nbsp;</a></span>onProjected()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.cdk.interaction.AbstractTool.onProjected </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>boneType</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5762fabe78919fedeac5d9c007b0ca87"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5762fabe78919fedeac5d9c007b0ca87">&#9670;&nbsp;</a></span>onReleased()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.cdk.interaction.AbstractTool.onReleased </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>boneType</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a22818b661583c18db5e8b2d79169f7a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22818b661583c18db5e8b2d79169f7a2">&#9670;&nbsp;</a></span>Updated()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.cdk.interaction.AbstractTool.Updated </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="aff5e681936c85e4bc46328e503c75be0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aff5e681936c85e4bc46328e503c75be0">&#9670;&nbsp;</a></span>onProject</h2>
@@ -236,6 +297,20 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Event raised when the abstract tool is released. </p>
+
+</div>
+</div>
+<a id="ad3a2fafc016052e0b1f7fb5e902f7d08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3a2fafc016052e0b1f7fb5e902f7d08">&#9670;&nbsp;</a></span>OnUpdated</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">UnityEvent umi3d.cdk.interaction.AbstractTool.OnUpdated = new UnityEvent()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>
