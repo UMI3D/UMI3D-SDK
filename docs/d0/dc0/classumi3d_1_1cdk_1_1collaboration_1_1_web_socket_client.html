@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -98,6 +98,17 @@ $(document).ready(function(){initNavTree('d0/dc0/classumi3d_1_1cdk_1_1collaborat
 
 <p>Websocket client.  
  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#details">More...</a></p>
+<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Inheritance diagram for umi3d.cdk.collaboration.WebSocketClient:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
+ <div class="center">
+  <img src="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.png" usemap="#umi3d.cdk.collaboration.WebSocketClient_map" alt=""/>
+  <map id="umi3d.cdk.collaboration.WebSocketClient_map" name="umi3d.cdk.collaboration.WebSocketClient_map">
+<area href="../../d5/de6/interfaceumi3d_1_1common_1_1collaboration_1_1_i_websocket.html" alt="umi3d.common.collaboration.IWebsocket" shape="rect" coords="0,0,245,24"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -107,24 +118,26 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ab757064a6b08d86fb4a2093f4051bcfd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ab757064a6b08d86fb4a2093f4051bcfd">Connected</a> ()</td></tr>
 <tr class="memdesc:ab757064a6b08d86fb4a2093f4051bcfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">State if the Client is connected.  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ab757064a6b08d86fb4a2093f4051bcfd">More...</a><br /></td></tr>
 <tr class="separator:ab757064a6b08d86fb4a2093f4051bcfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8935035563e97008a2e8a5bad9d5758d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a8935035563e97008a2e8a5bad9d5758d">Init</a> ()</td></tr>
-<tr class="memdesc:a8935035563e97008a2e8a5bad9d5758d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the client.  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a8935035563e97008a2e8a5bad9d5758d">More...</a><br /></td></tr>
-<tr class="separator:a8935035563e97008a2e8a5bad9d5758d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04d62d0937a2935e9394bbc5dbec34b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a04d62d0937a2935e9394bbc5dbec34b7">Init</a> (string socketUrl, Action&lt; <a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> &gt; <a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ab681bb514955611dc65d0249865cb483">onMessage</a>)</td></tr>
+<tr class="memdesc:a04d62d0937a2935e9394bbc5dbec34b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Setup the client.  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a04d62d0937a2935e9394bbc5dbec34b7">More...</a><br /></td></tr>
+<tr class="separator:a04d62d0937a2935e9394bbc5dbec34b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9d4648d982d1ffdcf066ac774e662e90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a9d4648d982d1ffdcf066ac774e662e90">Send</a> (<a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> obj, Action&lt; bool &gt; MessageSendCallback=null)</td></tr>
 <tr class="memdesc:a9d4648d982d1ffdcf066ac774e662e90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a UMI3DDto.  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a9d4648d982d1ffdcf066ac774e662e90">More...</a><br /></td></tr>
 <tr class="separator:a9d4648d982d1ffdcf066ac774e662e90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae473002a376472bf548394f0b266b099"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ae473002a376472bf548394f0b266b099">Close</a> ()</td></tr>
 <tr class="memdesc:ae473002a376472bf548394f0b266b099"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminate connection.  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ae473002a376472bf548394f0b266b099">More...</a><br /></td></tr>
 <tr class="separator:ae473002a376472bf548394f0b266b099"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e6d8935596976d073ef364b616f9e29"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a9e6d8935596976d073ef364b616f9e29">Send</a> (byte[] content)</td></tr>
+<tr class="separator:a9e6d8935596976d073ef364b616f9e29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a7d966729cf3f5af7de68bbdf83c1eb14"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a7d966729cf3f5af7de68bbdf83c1eb14">onOpen</a> ()</td></tr>
 <tr class="memdesc:a7d966729cf3f5af7de68bbdf83c1eb14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call when a Connection is opened  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a7d966729cf3f5af7de68bbdf83c1eb14">More...</a><br /></td></tr>
 <tr class="separator:a7d966729cf3f5af7de68bbdf83c1eb14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c9a3ef942968864f63995336173321f"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a3c9a3ef942968864f63995336173321f">onMessage</a> (object obj)</td></tr>
-<tr class="memdesc:a3c9a3ef942968864f63995336173321f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call when a Message is received  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#a3c9a3ef942968864f63995336173321f">More...</a><br /></td></tr>
-<tr class="separator:a3c9a3ef942968864f63995336173321f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab681bb514955611dc65d0249865cb483"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ab681bb514955611dc65d0249865cb483">onMessage</a> (<a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> dto)</td></tr>
+<tr class="memdesc:ab681bb514955611dc65d0249865cb483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call when a Message is received  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ab681bb514955611dc65d0249865cb483">More...</a><br /></td></tr>
+<tr class="separator:ab681bb514955611dc65d0249865cb483"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac3a3c68527e3ec835068e20679f7b70d"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ac3a3c68527e3ec835068e20679f7b70d">onError</a> (string err)</td></tr>
 <tr class="memdesc:ac3a3c68527e3ec835068e20679f7b70d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call when an error is raised  <a href="../../d0/dc0/classumi3d_1_1cdk_1_1collaboration_1_1_web_socket_client.html#ac3a3c68527e3ec835068e20679f7b70d">More...</a><br /></td></tr>
 <tr class="separator:ac3a3c68527e3ec835068e20679f7b70d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -209,8 +222,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a8935035563e97008a2e8a5bad9d5758d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8935035563e97008a2e8a5bad9d5758d">&#9670;&nbsp;</a></span>Init()</h2>
+<a id="a04d62d0937a2935e9394bbc5dbec34b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04d62d0937a2935e9394bbc5dbec34b7">&#9670;&nbsp;</a></span>Init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -218,8 +231,19 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">void umi3d.cdk.collaboration.WebSocketClient.Init </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>socketUrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">Action&lt; <a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a> &gt;&#160;</td>
+          <td class="paramname"><em>onMessage</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -334,8 +358,8 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a3c9a3ef942968864f63995336173321f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c9a3ef942968864f63995336173321f">&#9670;&nbsp;</a></span>onMessage()</h2>
+<a id="ab681bb514955611dc65d0249865cb483"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab681bb514955611dc65d0249865cb483">&#9670;&nbsp;</a></span>onMessage()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -346,8 +370,8 @@ Protected Attributes</h2></td></tr>
         <tr>
           <td class="memname">IEnumerator umi3d.cdk.collaboration.WebSocketClient.onMessage </td>
           <td>(</td>
-          <td class="paramtype">object&#160;</td>
-          <td class="paramname"><em>obj</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="../../d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html">UMI3DDto</a>&#160;</td>
+          <td class="paramname"><em>dto</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -361,7 +385,7 @@ Protected Attributes</h2></td></tr>
 <p>Call when a Message is received </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">obj</td><td>message</td></tr>
+    <tr><td class="paramname">dto</td><td>message</td></tr>
   </table>
   </dd>
 </dl>
@@ -397,8 +421,28 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a9e6d8935596976d073ef364b616f9e29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e6d8935596976d073ef364b616f9e29">&#9670;&nbsp;</a></span>Send() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.cdk.collaboration.WebSocketClient.Send </td>
+          <td>(</td>
+          <td class="paramtype">byte[]&#160;</td>
+          <td class="paramname"><em>content</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d5/de6/interfaceumi3d_1_1common_1_1collaboration_1_1_i_websocket.html#a0eaa351cff1ddbedb171380cc7400836">umi3d.common.collaboration.IWebsocket</a>.</p>
+
+</div>
+</div>
 <a id="a9d4648d982d1ffdcf066ac774e662e90"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9d4648d982d1ffdcf066ac774e662e90">&#9670;&nbsp;</a></span>Send()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d4648d982d1ffdcf066ac774e662e90">&#9670;&nbsp;</a></span>Send() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

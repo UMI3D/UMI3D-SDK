@@ -78,12 +78,12 @@ namespace AsImpL
                     {
                         mtlTexPathList.Add(mtl.opacityTexPath);
                     }
-                    
+
                     if (!string.IsNullOrEmpty(mtl.emissiveTexPath))
                     {
                         mtlTexPathList.Add(mtl.emissiveTexPath);
                     }
-                    
+
                 }
             }
 
@@ -98,7 +98,7 @@ namespace AsImpL
 
             if (string.IsNullOrEmpty(loadedText))
             {
-                Debug.LogError("Failed to load: empty path. "+ absolutePath + "   lt: " + loadedText );
+                Debug.LogError("Failed to load: empty path. " + absolutePath + "   lt: " + loadedText);
                 // remove this progress to let complete the total loading process
                 totalProgress.singleProgress.Remove(objLoadingProgress);
                 yield break;
@@ -130,7 +130,7 @@ namespace AsImpL
             }
             else
             {
-                if(Path.IsPathRooted(mtlLib))
+                if (Path.IsPathRooted(mtlLib))
                 {
                     mtlPath = "file:///" + mtlLib;
                 }
@@ -139,7 +139,7 @@ namespace AsImpL
                     mtlPath = "file:///" + basePath + mtlLib;
                 }
             }
-            yield return LoadOrDownloadText(mtlPath,false);
+            yield return LoadOrDownloadText(mtlPath, false);
             if (loadedText == null)
             {
                 mtlLib = Path.GetFileName(mtlLib);
@@ -395,8 +395,7 @@ namespace AsImpL
         /// </summary>
         protected override bool HasMaterialLibrary
         {
-            get
-            {
+            get {
                 return mtlLib != null;
             }
         }

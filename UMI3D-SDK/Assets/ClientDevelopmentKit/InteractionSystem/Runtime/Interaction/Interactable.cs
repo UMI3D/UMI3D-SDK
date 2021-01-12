@@ -59,7 +59,7 @@ namespace umi3d.cdk.interaction
                 position = position,
                 direction = direction
             };
-            UMI3DClientServer.Send(hoverDto, true);
+            UMI3DClientServer.SendData(hoverDto, true);
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace umi3d.cdk.interaction
                 position = position,
                 direction = direction
             };
-            UMI3DClientServer.Send(hoverDto, true);
+            UMI3DClientServer.SendData(hoverDto, true);
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace umi3d.cdk.interaction
                     position = position,
                     direction = direction
                 };
-                UMI3DClientServer.Send(hoverDto, false);
+                UMI3DClientServer.SendData(hoverDto, false);
             }
         }
 

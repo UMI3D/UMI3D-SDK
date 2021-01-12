@@ -44,9 +44,9 @@ namespace umi3d.edk.collaboration
         {
             var user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UserConnectionDto identity = new UserConnectionDto(user.ToUserDto());
-            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user.login);
+            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user);
             //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user.login);
+            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user);
             e.Response.WriteContent(identity.ToBson());
         }
 
@@ -88,7 +88,7 @@ namespace umi3d.edk.collaboration
         IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
-            user.connection.SendData(user.ToStatusDto());
+            user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
             yield break;
         }
 
@@ -124,7 +124,6 @@ namespace umi3d.edk.collaboration
             {
                 message = UMI3DEnvironment.Instance.ToDto().ToBson();
             }
-
             res.WriteContent(message);
         }
         #endregion
@@ -208,9 +207,8 @@ namespace umi3d.edk.collaboration
         public void GetDirectory(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
+            rawDirectory = System.Uri.UnescapeDataString(rawDirectory);
             string directory = common.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
-            directory = System.Uri.UnescapeDataString(directory);
-
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInDataRepository(directory))
@@ -219,7 +217,7 @@ namespace umi3d.edk.collaboration
                 {
                     FileListDto dto = new FileListDto()
                     {
-                        files = GetDir(directory).Select(f=>System.Uri.EscapeUriString(f)).ToList(),
+                        files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
                         baseUrl = System.Uri.EscapeUriString(common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 
@@ -375,7 +373,7 @@ namespace umi3d.edk.collaboration
             JoinDto dto = ReadDto(e.Request) as JoinDto;
             user.useWebrtc = dto.useWebrtc;
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
-            UMI3DCollaborationServer.newUser(user);
+            UMI3DCollaborationServer.NotifyUserJoin(user);
         }
 
         /// <summary>

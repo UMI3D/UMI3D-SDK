@@ -19,16 +19,16 @@ namespace umi3d.common
     public enum AuthenticationType
     {
         /// <summary>
-        /// Specifies digest authentication.
+        /// No Authentication.
         /// </summary>
-        Digest,
+        None,
         /// <summary>
-        /// Specifies basic authentication.
+        /// Basic authentication.
         /// </summary>
         Basic,
         /// <summary>
-        /// Specifies anonymous authentication.
+        /// Pin authentication.
         /// </summary>
-        Anonymous,
+        Pin,
     }
 }

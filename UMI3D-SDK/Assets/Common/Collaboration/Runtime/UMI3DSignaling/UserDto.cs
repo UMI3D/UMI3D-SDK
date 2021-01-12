@@ -28,5 +28,6 @@ namespace umi3d.common.collaboration
         public string avatarId;
         public string audioSourceId;
         public string videoSourceId;
+        public uint networkId;
     }
 }

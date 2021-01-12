@@ -13,14 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.IO;
 using GLTFast;
 using GLTFast.Materials;
-using MrtkShader;
 using GLTFast.Schema;
+using MrtkShader;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
 
 namespace umi3d.cdk
 {
@@ -100,7 +99,7 @@ namespace umi3d.cdk
             {
                 ApplyTexture(material, gltfMaterial.pbrMetallicRoughness.baseColorTexture, MRTKShaderUtils.MainTex, baseColorTexture, ref textures);
 
-                if(emissiveTexture != null || occlusionTexture != null || metallicRoughnessTexture != null)
+                if (emissiveTexture != null || occlusionTexture != null || metallicRoughnessTexture != null)
                 {
                     Texture2D chanelMap = TextureCombiner.CombineFromGltfStandard(metallicRoughnessTexture, occlusionTexture, emissiveTexture);
                     ApplyTexture(material, gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture, MRTKShaderUtils.ChannelMap, chanelMap, ref textures);
@@ -129,7 +128,7 @@ namespace umi3d.cdk
                 if (propertyId > -1 && property == MRTKShaderUtils.MainTex)
                 {
                     bool isKtx = false;
-                   if(mapInfo.index < textures.Length && mapInfo.index > -1 && textures[mapInfo.index] != null)
+                    if (mapInfo.index < textures.Length && mapInfo.index > -1 && textures[mapInfo.index] != null)
                         isKtx = textures[mapInfo.index].isKtx;
                     TrySetTextureTransform(mapInfo, matToApply, propertyId, isKtx);
                 }

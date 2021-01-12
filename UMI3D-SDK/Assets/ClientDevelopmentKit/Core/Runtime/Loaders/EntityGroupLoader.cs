@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using MainThreadDispatcher;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -29,7 +26,7 @@ namespace umi3d.cdk
         static public void ReadUMI3DExtension(EntityGroupDto groupDto)
         {
             groupDto.entitiesId = groupDto.entitiesId.ToList();
-            UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto,null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto, null);
         }
 
         static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

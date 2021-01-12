@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -100,7 +98,10 @@ namespace umi3d.edk.userCapture
         {
             UMI3DTrackedUser trackedUser = user as UMI3DTrackedUser;
             if (embodimentInstances.ContainsKey(user.Id()))
-                throw new Exception("Internal error : the user is already registered");
+            {
+                Debug.LogWarning("Internal error : the user is already registered");
+                return;
+            }
 
             GameObject embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
             embd.transform.SetParent(embodimentsScene.transform);
@@ -158,8 +159,6 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
             userEmbd.userCameraPropertiesDto = dto;
-
-            Debug.LogWarning("bonetype : " + dto.boneType);
         }
 
         /// <summary>
@@ -169,7 +168,10 @@ namespace umi3d.edk.userCapture
         protected void DeleteEmbodiment(UMI3DUser user)
         {
             if (!embodimentInstances.ContainsKey(user.Id()))
-                throw new Exception("Internal error : the user is not registered");
+            {
+                Debug.LogWarning($"Internal error : the user is [{user.Id()}] not registered");
+                return;
+            }
 
             UMI3DAvatarNode embd = embodimentInstances[user.Id()];
 
