@@ -30,8 +30,8 @@ namespace umi3d.cdk.collaboration
 		/// </summary>
 		public static bool IsMute { get { return umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Exists && umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance?.ForgeClient != null ? umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance.ForgeClient.muted : false; } set { if (umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Exists && umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance?.ForgeClient != null) umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance.ForgeClient.muted = value; } }
 
-		[SerializeField]
-		bool _IsMute = false;
+		//[SerializeField]
+		//bool _IsMute = false;
 
 
 		///// <summary>

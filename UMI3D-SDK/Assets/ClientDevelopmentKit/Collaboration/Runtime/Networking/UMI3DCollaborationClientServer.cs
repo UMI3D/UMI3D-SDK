@@ -42,9 +42,6 @@ namespace umi3d.cdk.collaboration
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
 
-        int tryCount = 0;
-        int maxTryCount = 10;
-
         public ClientIdentifierApi Identifier;
 
 
@@ -120,11 +117,6 @@ namespace umi3d.cdk.collaboration
                     success?.Invoke();
                 },
                 (error) => { failled.Invoke(error); });
-        }
-
-        public void onOpen()
-        {
-            tryCount = 0;
         }
 
 
