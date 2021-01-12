@@ -150,10 +150,8 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         protected override void OnAuthenticationFailure(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            //TODO
             MainThreadManager.Run(() =>
             {
-
                 Debug.Log("AUTH FAILED !");
             });
         }
@@ -164,7 +162,6 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void AcceptedByServer(NetWorker sender)
         {
-            //TODO
             StartVOIP();
         }
 
@@ -177,7 +174,6 @@ namespace umi3d.cdk.collaboration
             NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
             MainThreadManager.Run(() =>
             {
-                Debug.Log("disconected");
                 NetworkManager.Instance.Disconnect();
                 if (client != null)
                     UMI3DCollaborationClientServer.Instance.ConnectionLost();

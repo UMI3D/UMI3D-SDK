@@ -97,10 +97,12 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned UMI3DUser</param>
         protected void CreateEmbodiment(UMI3DUser user)
         {
-            Debug.Log($"<color=magenta>Create Embodiment for {user.Id()}</color>");
             UMI3DTrackedUser trackedUser = user as UMI3DTrackedUser;
             if (embodimentInstances.ContainsKey(user.Id()))
-                throw new Exception("Internal error : the user is already registered");
+            {
+               Debug.LogWarning("Internal error : the user is already registered");
+                return;
+            }
 
             GameObject embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
             embd.transform.SetParent(embodimentsScene.transform);
@@ -158,8 +160,6 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
             userEmbd.userCameraPropertiesDto = dto;
-
-            Debug.LogWarning("bonetype : " + dto.boneType);
         }
 
         /// <summary>

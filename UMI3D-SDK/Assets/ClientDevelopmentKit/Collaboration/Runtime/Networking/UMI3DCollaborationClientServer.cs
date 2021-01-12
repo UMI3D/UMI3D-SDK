@@ -394,7 +394,6 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override void OnDestroy()
         {
-            Debug.Log("clear forge ?");
             base.OnDestroy();
         }
 

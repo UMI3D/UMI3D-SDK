@@ -152,7 +152,6 @@ namespace umi3d.edk.collaboration
         private void PlayerTimeout(NetworkingPlayer player, NetWorker sender)
         {
             Debug.Log("Player " + player.NetworkId + " timed out");
-            //TODO
         }
 
         /// <summary>
@@ -162,8 +161,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerAuthenticated(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log($"Player { player.NetworkId } {player.Name} authenticated");
-            //TODO
+            //Debug.Log($"Player { player.NetworkId } {player.Name} authenticated");
         }
 
         /// <summary>
@@ -174,7 +172,6 @@ namespace umi3d.edk.collaboration
         private void PlayerAccepted(NetworkingPlayer player, NetWorker sender)
         {
             playerCount = server.Players.Count;
-            //TODO
         }
 
         /// <summary>

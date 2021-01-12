@@ -46,8 +46,6 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
-            Debug.Log("is connected ?");
-
             yield return new WaitUntil(()=> UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
 
             UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);

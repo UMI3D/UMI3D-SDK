@@ -89,22 +89,16 @@ namespace umi3d.common.collaboration
 
         public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
         {
-            MainThreadManager.Run(() =>
-            {
-                Debug.Log("Issue Challenge");
                 issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
-            });
         }
 
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
-            MainThreadManager.Run(() =>
-            {
-                Debug.Log("Verify Response");
-                string basicString = response.GetBasicType<string>();
+            string basicString = response.GetBasicType<string>();
             IdentityDto identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
 
-
+            MainThreadManager.Run(() =>
+            {
                 switch (authenticationType)
                 {
                     case AuthenticationType.None:

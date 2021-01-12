@@ -147,9 +147,6 @@ namespace umi3d.edk.collaboration
         {
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
-
-                Debug.Log($"<color=yellow>open {user.Id()} {user.login}</color>");
-
         }
 
 
@@ -162,7 +159,7 @@ namespace umi3d.edk.collaboration
             Collaboration.UserJoin(user);
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"User Join [{user.Id()} {user.login}]");
+                Debug.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>");
                 Instance.NotifyUserJoin(user);
             });
         }

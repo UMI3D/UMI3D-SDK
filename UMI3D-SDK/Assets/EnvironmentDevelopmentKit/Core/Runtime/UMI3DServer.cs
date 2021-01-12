@@ -117,7 +117,6 @@ namespace umi3d.edk
         /// <param name="status">new status</param>
         public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
-            Debug.Log($"{user.Id()}:{status}");
             switch (status)
             {
                 case StatusType.CREATED:

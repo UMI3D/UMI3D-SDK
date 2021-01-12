@@ -124,10 +124,6 @@ namespace umi3d.edk.collaboration
             {
                 message = UMI3DEnvironment.Instance.ToDto().ToBson();
             }
-            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
-            {
-                UnityEngine.Debug.Log("get media");
-            });
             res.WriteContent(message);
         }
         #endregion
