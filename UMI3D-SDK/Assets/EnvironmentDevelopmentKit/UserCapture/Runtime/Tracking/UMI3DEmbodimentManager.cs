@@ -54,7 +54,7 @@ namespace umi3d.edk.userCapture
             CreationEvent = new EmbodimentBoneEvent();
             UpdateEvent = new EmbodimentBoneEvent();
             DeletionEvent = new EmbodimentBoneEvent();
-
+            startingDispatchingTrackingData = new UnityEvent();
         }
 
         ///<inheritdoc/>
