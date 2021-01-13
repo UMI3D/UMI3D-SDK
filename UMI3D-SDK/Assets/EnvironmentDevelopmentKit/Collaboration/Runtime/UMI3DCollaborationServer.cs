@@ -25,7 +25,6 @@ using System.Net;
 using System.Net.Sockets;
 using umi3d.common;
 using umi3d.common.collaboration;
-using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -40,8 +39,9 @@ namespace umi3d.edk.collaboration
         [SerializeField, ReadOnly]
         bool useIp = false;
 
-        public EncoderType encoderType;
         UMI3DHttp http;
+
+        static public UMI3DHttp HttpServer { get => Exists ? Instance.http : null; }
 
         UMI3DForgeServer forgeServer;
 
@@ -50,11 +50,6 @@ namespace umi3d.edk.collaboration
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
-
-        private void OnAudioFilterRead(float[] data, int channels)
-        {
-            Audio.Update(data, data.Length);
-        }
 
 
         [EditorReadOnly]
