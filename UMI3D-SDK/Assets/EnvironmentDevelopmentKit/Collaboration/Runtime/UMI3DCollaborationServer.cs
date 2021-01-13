@@ -230,7 +230,7 @@ namespace umi3d.edk.collaboration
         }
 
 
-        static int FreeTcpPort(int port = 0)
+        public static int FreeTcpPort(int port = 0)
         {
             try
             {
