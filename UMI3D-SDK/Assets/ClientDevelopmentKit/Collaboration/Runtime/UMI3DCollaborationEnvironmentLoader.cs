@@ -85,6 +85,8 @@ namespace umi3d.cdk.collaboration
                     }
                 case SetEntityListPropertyDto set:
                     {
+                        if (0 > set.index)
+                            break;
                         var user2 = set.value as UserDto;
                         if (UserList.Count > set.index)
                         {
