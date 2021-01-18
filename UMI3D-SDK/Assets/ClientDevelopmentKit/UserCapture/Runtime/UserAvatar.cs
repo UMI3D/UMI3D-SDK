@@ -27,7 +27,7 @@ namespace umi3d.cdk.userCapture
 {
     public class UserAvatar : MonoBehaviour
     {
-        private struct SavedTransform
+        protected struct SavedTransform
         {
             public Transform obj;
             public Transform savedParent;
@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
             public Quaternion savedRotation;
         }
 
-        private struct BoundObject
+        protected struct BoundObject
         {
             public string objectId;
             public string rigname;
@@ -47,7 +47,7 @@ namespace umi3d.cdk.userCapture
         public bool activeUserBindings { get; protected set; }
         public List<BoneBindingDto> userBindings { get; protected set; }
 
-        Dictionary<BoundObject, SavedTransform> savedTransforms = new Dictionary<BoundObject, SavedTransform>();
+        protected Dictionary<BoundObject, SavedTransform> savedTransforms = new Dictionary<BoundObject, SavedTransform>();
 
         /// <summary>
         /// Set a new UserAvatar from an UMI3DAvatarNodeDto.
@@ -131,7 +131,7 @@ namespace umi3d.cdk.userCapture
                 AddBinding_(index, dto);
         }
 
-        void AddBinding_(int index, BoneBindingDto dto)
+        protected void AddBinding_(int index, BoneBindingDto dto)
         {
             userBindings.Insert(index, dto);
             if (activeUserBindings && dto.active)
@@ -166,7 +166,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        void UpdateBindingPosition(BoneBindingDto dto)
+        protected void UpdateBindingPosition(BoneBindingDto dto)
         {
             if (userId == UMI3DClientServer.Instance.GetId())
             {
@@ -181,7 +181,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        Transform InspectBoundRigs(BoneBindingDto dto)
+        protected Transform InspectBoundRigs(BoneBindingDto dto)
         {
             Transform obj = null;
             foreach (Transform rig in boundRigs)
@@ -192,7 +192,7 @@ namespace umi3d.cdk.userCapture
             return obj;
         }
 
-        IEnumerator WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        protected IEnumerator WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
         {
             UMI3DNodeInstance node;
             var wait = new WaitForFixedUpdate();
@@ -241,7 +241,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        void ResetObject(BoneBindingDto dto)
+        protected void ResetObject(BoneBindingDto dto)
         {
             UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
 
