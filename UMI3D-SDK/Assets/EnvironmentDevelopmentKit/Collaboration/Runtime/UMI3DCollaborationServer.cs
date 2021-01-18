@@ -140,6 +140,7 @@ namespace umi3d.edk.collaboration
 
         protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
+            OnUserCreated.Invoke(user);
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }

@@ -225,7 +225,10 @@ namespace umi3d.edk.collaboration
         {
             yield return new WaitForFixedUpdate();
             var op = objectUserList.Remove(user);
-            op.users.Remove(user);
+            if (op == null)
+                yield break;
+            if(user != null)
+                op.users.Remove(user);
             UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }
 
