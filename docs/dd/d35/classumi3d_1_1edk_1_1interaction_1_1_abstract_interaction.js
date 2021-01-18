@@ -1,5 +1,7 @@
 var classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction =
 [
+    [ "InteractionEvent", "da/d92/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction_1_1_interaction_event.html", null ],
+    [ "InteractionEventContent", "d2/d9c/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction_1_1_interaction_event_content.html", "d2/d9c/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction_1_1_interaction_event_content" ],
     [ "CreateDto", "dd/d35/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction.html#a29dbc7302f987edeaef2aa3b707fdb9a", null ],
     [ "Id", "dd/d35/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction.html#a146faf3920094789131a6b67ec108e7b", null ],
     [ "InitDefinition", "dd/d35/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction.html#ab02f717ef3e1d34c0e6b92f96dd6978d", null ],

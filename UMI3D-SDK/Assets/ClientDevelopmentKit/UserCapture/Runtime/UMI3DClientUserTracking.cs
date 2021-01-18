@@ -66,7 +66,7 @@ namespace umi3d.cdk.userCapture
         {
             cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
             cameraHasChanged.Invoke();
-            startingSendingTracking.AddListener(() => {if (sendTracking) StartCoroutine("DispatchTracking"); });
+            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine("DispatchTracking"); });
             startingSendingTracking.Invoke();
         }
 
@@ -82,7 +82,7 @@ namespace umi3d.cdk.userCapture
                     BonesIterator();
 
                     if (UMI3DClientServer.Exists && LastFrameDto.userId != null)
-                        UMI3DClientServer.SendTracking(LastFrameDto, false);
+                        UMI3DClientServer.SendTracking(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
@@ -102,7 +102,7 @@ namespace umi3d.cdk.userCapture
                 yield return null;
             }
 
-            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+            UMI3DClientServer.SendData(CameraPropertiesDto, true);
         }
 
         /// <summary>

@@ -2,9 +2,11 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_environment =
 [
     [ "DictionaryGenerator", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator" ],
     [ "Awake", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a4448081803cad3a064e005b89700f760", null ],
+    [ "CreateDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a6fc17d2bb317b032af70e04e8ec3e2ed", null ],
     [ "ToDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a209e4f3613ff35b3c991a356331ed6c5", null ],
-    [ "ToDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a71c46fc7a66c5f05061b866a4a58f5ce", null ],
+    [ "ToDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a59eff8f8ec7ef79b78dabaef73e76a32", null ],
     [ "ToLibrariesDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#acbe29a01c74816b8921fd80909d196ab", null ],
+    [ "WriteProperties", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a1448d6aba77c6a349b9fc0b84cb059c7", null ],
     [ "environmentName", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#ad77036ab83c84960a86fd51cea5ca6b7", null ],
     [ "globalLibraries", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a8ada5f768741b837df12ce0af3ea6898", null ],
     [ "objectAmbientIntensity", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#ab9fca8e9fccad13b390f8cb952b3c1f3", null ],

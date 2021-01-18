@@ -74,7 +74,7 @@ namespace umi3d.cdk.interaction
                 boneType = boneType,
                 toolId = id
             };
-            UMI3DClientServer.Send(projectedDto, true);
+            UMI3DClientServer.SendData(projectedDto, true);
         }
 
         public void onReleased(string boneType)
@@ -85,7 +85,7 @@ namespace umi3d.cdk.interaction
                 boneType = boneType,
                 toolId = id
             };
-            UMI3DClientServer.Send(releasedDto, true);
+            UMI3DClientServer.SendData(releasedDto, true);
         }
 
         protected AbstractTool(AbstractToolDto abstractDto)

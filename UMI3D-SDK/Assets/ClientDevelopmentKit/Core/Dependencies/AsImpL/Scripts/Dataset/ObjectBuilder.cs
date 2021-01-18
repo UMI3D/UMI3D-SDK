@@ -629,7 +629,7 @@ namespace AsImpL
         private Material BuildMaterial(MaterialData md, Material baseMaterial)
         {
             string shaderName = (md.illumType == 2) ? "Standard (Specular setup)" : "Standard";
-            bool specularMode =  (md.specularTex != null);
+            bool specularMode = (md.specularTex != null);
             ModelUtil.MtlBlendMode mode = md.overallAlpha < 1.0f ? ModelUtil.MtlBlendMode.TRANSPARENT : ModelUtil.MtlBlendMode.OPAQUE;
 
             bool useUnlit = buildOptions != null && buildOptions.litDiffuse

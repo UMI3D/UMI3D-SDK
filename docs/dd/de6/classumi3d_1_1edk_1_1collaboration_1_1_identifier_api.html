@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0.b.200914</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -111,10 +111,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad64849ca64b466e6c920ccf59728ae82"><td class="memItemLeft" align="right" valign="top">abstract WebSocketSharp.Net.NetworkCredential&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#ad64849ca64b466e6c920ccf59728ae82">GetPasswordFor</a> (string login)</td></tr>
 <tr class="separator:ad64849ca64b466e6c920ccf59728ae82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fe97f2ffae1f5d150f0416c9513d65c"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60">StatusType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a5fe97f2ffae1f5d150f0416c9513d65c">UpdateIdentity</a> (<a class="el" href="../../dd/d17/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_user.html">UMI3DCollaborationUser</a> user, <a class="el" href="../../d5/d1d/classumi3d_1_1common_1_1collaboration_1_1_user_connection_dto.html">UserConnectionDto</a> identity)</td></tr>
+<tr class="memdesc:a5fe97f2ffae1f5d150f0416c9513d65c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update a client status acording to a userconnectionDto  <a href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a5fe97f2ffae1f5d150f0416c9513d65c">More...</a><br /></td></tr>
 <tr class="separator:a5fe97f2ffae1f5d150f0416c9513d65c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a81567079b680d2e38754bbd5d5bae53a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../db/ddb/classumi3d_1_1common_1_1interaction_1_1_form_dto.html">FormDto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a81567079b680d2e38754bbd5d5bae53a">GetParameterDtosFor</a> (string login)</td></tr>
+<tr class="memdesc:a81567079b680d2e38754bbd5d5bae53a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a Form Dto for a login.  <a href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a81567079b680d2e38754bbd5d5bae53a">More...</a><br /></td></tr>
 <tr class="separator:a81567079b680d2e38754bbd5d5bae53a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc70edf2b48d69ad3bc996d6b2d09c02"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#adc70edf2b48d69ad3bc996d6b2d09c02">getLibrariesUpdateSatus</a> (string login)</td></tr>
+<tr class="memdesc:adc70edf2b48d69ad3bc996d6b2d09c02"><td class="mdescLeft">&#160;</td><td class="mdescRight">Should a user update has updataed its libraries.  <a href="../../dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#adc70edf2b48d69ad3bc996d6b2d09c02">More...</a><br /></td></tr>
 <tr class="separator:adc70edf2b48d69ad3bc996d6b2d09c02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -142,6 +145,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Should a user update has updataed its libraries. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>Login of the user.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
 </div>
 </div>
 <a id="a81567079b680d2e38754bbd5d5bae53a"></a>
@@ -167,6 +179,15 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Get a Form Dto for a login. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">login</td><td>Login of the user.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Reimplemented in <a class="el" href="../../d5/da9/classumi3d_1_1edk_1_1collaboration_1_1_unsecured_identifier_api.html#aa3fed2ead4dc4f5790e23a1af9fe11e3">umi3d.edk.collaboration.UnsecuredIdentifierApi</a>.</p>
 
@@ -233,6 +254,16 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Update a client status acording to a userconnectionDto </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">user</td><td>User.</td></tr>
+    <tr><td class="paramname">identity</td><td>Identity Dto send by the user.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Reimplemented in <a class="el" href="../../d5/da9/classumi3d_1_1edk_1_1collaboration_1_1_unsecured_identifier_api.html#aca34f01faece43a1464916dae45520c3">umi3d.edk.collaboration.UnsecuredIdentifierApi</a>.</p>
 

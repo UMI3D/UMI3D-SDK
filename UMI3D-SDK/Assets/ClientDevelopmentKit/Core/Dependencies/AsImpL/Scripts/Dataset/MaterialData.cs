@@ -27,7 +27,7 @@ namespace AsImpL
         public Texture2D specularTex;
         public string opacityTexPath;
         public Texture2D opacityTex;
-        
+
         public string emissiveTexPath;
         public Texture2D emissiveTex;
     }

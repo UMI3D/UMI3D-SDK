@@ -374,7 +374,7 @@ namespace umi3d.edk
             }
         }
 
-        protected override Dictionary<T,L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
+        protected override Dictionary<T, L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
 
     }
 }

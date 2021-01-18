@@ -62,6 +62,9 @@ namespace umi3d.cdk
             Action callback = () => { if (AnchorLoader != null) AnchorLoader.ReadUMI3DExtension(dto, node, finished, failed); else finished.Invoke(); };
             switch (dto)
             {
+                case EntityGroupDto e:
+                    EntityGroupLoader.ReadUMI3DExtension(e);
+                    break;
                 case UMI3DAbstractAnimationDto a:
                     UMI3DAnimationLoader.ReadUMI3DExtension(a, node, finished, failed);
                     break;
@@ -106,6 +109,8 @@ namespace umi3d.cdk
         {
             if (entity == null)
                 throw new Exception($"no entity found for {property} [{property.entityId}]");
+            if (EntityGroupLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (UMI3DAnimationLoader.SetUMI3DProperty(entity, property))
@@ -177,22 +182,23 @@ namespace umi3d.cdk
         public override FileDto ChooseVariante(List<FileDto> files)
         {
             FileDto res = null;
-            foreach (var file in files)
-            {
-                bool ok = res == null;
-                if (!ok && supportedformats.Contains(file.format))
+            if (files != null)
+                foreach (var file in files)
                 {
-                    if (!supportedformats.Contains(res.format))
-                        ok = true;
-                    else
-                        ok = Compare(file.metrics.resolution, res.metrics.resolution, maximumResolution);
+                    bool ok = res == null;
+                    if (!ok && supportedformats.Contains(file.format))
+                    {
+                        if (!supportedformats.Contains(res.format))
+                            ok = true;
+                        else
+                            ok = Compare(file.metrics.resolution, res.metrics.resolution, maximumResolution);
 
+                    }
+                    if (ok)
+                    {
+                        res = file;
+                    }
                 }
-                if (ok)
-                {
-                    res = file;
-                }
-            }
             return res;
         }
 

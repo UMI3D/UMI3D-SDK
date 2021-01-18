@@ -29,30 +29,21 @@ namespace umi3d.edk.collaboration
         public Dictionary<string, FormDto> idMap = new Dictionary<string, FormDto>();
 
         ///<inheritdoc/>
-        public override FormDto GetParameterDtosFor(string login)
+        public override FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
-            if (!idMap.ContainsKey(login) || idMap[login] == null)
+            if (!idMap.ContainsKey(user.Id()) || idMap[user.Id()] == null)
             {
-                idMap[login] = new FormDto();
-                idMap[login].fields = new List<AbstractParameterDto>();
+                idMap[user.Id()] = new FormDto();
+                idMap[user.Id()].fields = new List<AbstractParameterDto>();
                 StringParameterDto username = new StringParameterDto()
                 {
                     name = "username",
                     value = "",
                 };
-                idMap[login].fields.Add(username);
+                idMap[user.Id()].fields.Add(username);
             }
 
-            return idMap[login];
-        }
-
-        ///<inheritdoc/>
-        public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
-        {
-            if (PasswordMap.ContainsKey(login))
-                return PasswordMap[login];
-            Debug.Log("no pw found for " + login);
-            return null;
+            return idMap[user.Id()];
         }
 
         ///<inheritdoc/>

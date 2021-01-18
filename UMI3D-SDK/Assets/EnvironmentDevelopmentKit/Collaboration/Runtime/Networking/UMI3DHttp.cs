@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using umi3d.common;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -80,17 +79,6 @@ namespace umi3d.edk.collaboration
                 }
             };
 
-            // Add the WebSocket services.
-            //todo look if working
-            httpsv.AddWebSocketService<UMI3DWebSocketConnection>(
-                UMI3DNetworkingKeys.websocket,
-                () =>
-                    new UMI3DWebSocketConnection()
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
             httpsv.Start();
             if (httpsv.IsListening)
             {

@@ -62,12 +62,10 @@ namespace AsImpL
         /// </summary>
         public bool ConvertVertAxis
         {
-            get
-            {
+            get {
                 return buildOptions != null ? buildOptions.zUp : false;
             }
-            set
-            {
+            set {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -82,12 +80,10 @@ namespace AsImpL
         /// </summary>
         public float Scaling
         {
-            get
-            {
+            get {
                 return buildOptions != null ? buildOptions.modelScaling : 1f;
             }
-            set
-            {
+            set {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -178,7 +174,7 @@ namespace AsImpL
                 }
 
 
-                GameObject newObj = Instantiate(loadedModels[absolutePath],parentObj == null ? null : parentObj.transform);
+                GameObject newObj = Instantiate(loadedModels[absolutePath], parentObj == null ? null : parentObj.transform);
 
                 yield return newObj;
                 OnCreated(newObj, absolutePath);
@@ -512,7 +508,7 @@ namespace AsImpL
         /// <param name="basePath">base texture path</param>
         /// <param name="texturePath">relative texture path</param>
         /// <returns>URL of the texture</returns>
-        protected string GetTextureUrl(string basePath, string texturePath)  
+        protected string GetTextureUrl(string basePath, string texturePath)
         {
             string texPath = texturePath.Replace("\\", "/").Replace("//", "/");
             if (!Path.IsPathRooted(texPath))
