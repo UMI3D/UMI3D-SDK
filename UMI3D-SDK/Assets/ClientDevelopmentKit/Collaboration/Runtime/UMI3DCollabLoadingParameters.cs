@@ -25,7 +25,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
+    [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Collab Loading Parameters")]
     public class UMI3DCollabLoadingParameters : UMI3DLoadingParameters
     {
         public override UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DCollabAvatarNodeLoader();
