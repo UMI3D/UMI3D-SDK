@@ -65,7 +65,6 @@ namespace umi3d.cdk.collaboration
 
         float lastMessageTime = 0f;
 
-        // ICI déplacer les bindings
         private void Update()
         {
             RegressionPosition(nodePositionFilter);
