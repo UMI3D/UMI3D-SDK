@@ -28,7 +28,7 @@ namespace umi3d.edk.collaboration
         ///<inheritdoc/>
         public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
         {
-            if (type != AuthenticationType.None) Debug.LogWarning($"PinIdentifierApi does not handle other AuthenticationType than None [ignored type : {type}]");
+            if (type != AuthenticationType.None) Debug.LogWarning($"UnsecuredIdentifierApi does not handle other AuthenticationType than None [ignored type : {type}]");
             type = AuthenticationType.None;
             return new UMI3DAuthenticator();
         }
