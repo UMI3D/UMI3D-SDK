@@ -38,8 +38,8 @@ namespace umi3d.edk.collaboration
         public virtual StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
-            librariesUpdateStatus[user.login] = identity.librariesUpdated;
-            return librariesUpdateStatus[user.login] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
+            librariesUpdateStatus[user.Id()] = identity.librariesUpdated;
+            return librariesUpdateStatus[user.Id()] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
         }
 
         /// <summary>
