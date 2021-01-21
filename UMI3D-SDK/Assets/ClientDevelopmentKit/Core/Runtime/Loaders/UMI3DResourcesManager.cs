@@ -213,6 +213,8 @@ namespace umi3d.cdk
 
             bool MatchServerUrl()
             {
+                if (UMI3DClientServer.Media == null)
+                    return false;
                 var url = UMI3DClientServer.Media.connection.httpUrl + '/';
 
                 if (url == this.url) return true;

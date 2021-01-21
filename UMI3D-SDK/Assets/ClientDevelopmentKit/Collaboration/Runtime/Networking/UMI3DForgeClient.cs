@@ -133,7 +133,6 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void Stop()
         {
-            StopVoip();
             if (client != null) client.Disconnect(true);
             client = null;
         }
@@ -162,7 +161,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void AcceptedByServer(NetWorker sender)
         {
-            StartVOIP();
+
         }
 
         /// <summary>
@@ -218,6 +217,18 @@ namespace umi3d.cdk.collaboration
         public void SendBrowserRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
             SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
+        }
+
+        public void SendVOIP(int length,byte[] sample)
+        {
+            var dto = new VoiceDto()
+            {
+                length = length,
+                data = sample,
+                senderId = client.Me.NetworkId
+            };
+            Binary voice = new Binary(client.Time.Timestep, false, dto.ToBson(), Receivers.All, MessageGroupIds.VOIP, false);
+            client.Send(voice);
         }
 
         /// <inheritdoc/>
@@ -291,172 +302,13 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            MainThreadManager.Run(() =>
-            {
                 VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
                 UMI3DUser source = GetUserByNetWorkId(dto.senderId);
                 if (source != null)
                     AudioManager.Instance.Read(source.id, dto);
-            });
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private int lastSample = 0;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private AudioClip mic = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private int channels = 1;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private int frequency = 8000;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private float[] samples = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private List<float> writeSamples = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private float WRITE_FLUSH_TIME = 0.5f;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private float writeFlushTimer = 0.0f;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool muted = false;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void StartVOIP()
-        {
-            writeSamples = new List<float>(1024);
-            MainThreadManager.Run(() =>
-            {
-                mic = Microphone.Start(null, true, 100, frequency);
-                channels = mic.channels;
-                if (mic == null)
-                {
-                    Debug.LogError("A default microphone was not found or plugged into the system");
-                    return;
-                }
-                Task.Queue(VOIPWorker);
-            });
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void StopVoip()
-        {
-            Microphone.End(null);
-            mic = null;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        BMSByte writeBuffer = new BMSByte();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void VOIPWorker()
-        {
-            while (client.IsConnected)
-            {
-                if (writeFlushTimer >= WRITE_FLUSH_TIME && writeSamples.Count > 0)
-                {
-                    writeFlushTimer = 0.0f;
-                    lock (writeSamples)
-                    {
-                        writeBuffer.Clone(ToByteArray(writeSamples));
-                        writeSamples.Clear();
-                    }
-
-                    if (!muted)
-                    {
-                        var dto = new VoiceDto()
-                        {
-                            length = writeBuffer.Size,
-                            data = writeBuffer.byteArr,
-                            senderId = client.Me.NetworkId
-                        };
-                        Binary voice = new Binary(client.Time.Timestep, false, dto.ToBson(), Receivers.All, MessageGroupIds.VOIP, false);
-                        client.Send(voice);
-                    }
-
-
-                }
-                MainThreadManager.ThreadSleep(10);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ReadMic()
-        {
-            if (mic != null)
-            {
-                writeFlushTimer += Time.deltaTime;
-                int pos = Microphone.GetPosition(null);
-                int diff = pos - lastSample;
-
-                if (diff > 0)
-                {
-                    samples = new float[diff * channels];
-                    mic.GetData(samples, lastSample);
-
-                    lock (writeSamples)
-                    {
-                        writeSamples.AddRange(samples);
-                    }
-                }
-                lastSample = pos;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sampleList"></param>
-        /// <returns></returns>
-        private byte[] ToByteArray(List<float> sampleList)
-        {
-            int len = sampleList.Count * 4;
-            byte[] byteArray = new byte[len];
-            int pos = 0;
-
-            for (int i = 0; i < sampleList.Count; i++)
-            {
-                byte[] data = System.BitConverter.GetBytes(sampleList[i]);
-                System.Array.Copy(data, 0, byteArray, pos, 4);
-                pos += 4;
-            }
-
-            return byteArray;
-        }
+        
 
         #endregion
         /// <summary>
@@ -485,14 +337,6 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void FixedUpdate()
-        {
-            ReadMic();
         }
 
         /// <summary>

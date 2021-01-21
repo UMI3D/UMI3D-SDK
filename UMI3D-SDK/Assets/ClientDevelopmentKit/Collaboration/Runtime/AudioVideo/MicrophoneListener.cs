@@ -14,7 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios;
+using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Unity;
+using BeardedManStudios.Threading;
+using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -25,186 +32,187 @@ namespace umi3d.cdk.collaboration
 		/// <summary>
 		/// Whether the microphone is running
 		/// </summary>
-		public static bool IsMute { get { return umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Exists && umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance?.ForgeClient != null ? umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance.ForgeClient.muted : false; } set { if (umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Exists && umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance?.ForgeClient != null) umi3d.cdk.collaboration.UMI3DCollaborationClientServer.Instance.ForgeClient.muted = value; } }
+		public static bool IsMute { get { return Exists ? Instance.muted : false; } set { if (Exists) Instance.muted = value; } }
 
-		//[SerializeField]
-		//bool _IsMute = false;
-
-
-		///// <summary>
-		///// Whether the microphone is running
-		///// </summary>
-		//public bool IsRecording { get; private set; }
-
-		///// <summary>
-		///// The frequency at which the mic is operating
-		///// </summary>
-		//public int Frequency { get; private set; }
-
-		///// <summary>
-		///// Last populated audio sample
-		///// </summary>
-		//public float[] Sample { get; private set; }
-
-		///// <summary>
-		///// Sample duration/length in milliseconds
-		///// </summary>
-		//public int SampleDurationMS { get; private set; }
-
-		///// <summary>
-		///// The length of the sample float array
-		///// </summary>
-		//public int SampleLength
-		//{
-		//	get { return Frequency * SampleDurationMS / 1000; }
-		//}
-
-		//AudioClip Clip;
-
-		///// <summary>
-		///// List of all the available Mic devices
-		///// </summary>
-		//public List<string> Devices { get; private set; }
-
-		//int CurrentDeviceIndex;
-
-		///// <summary>
-		///// Gets the name of the Mic device currently in use
-		///// </summary>
-		//public string CurrentDeviceName
-		//{
-		//	get { return Devices[CurrentDeviceIndex]; }
-		//}
-
-		//AudioSource AudioSource;
-		//int SampleCount = 0;
-
-		//protected override void Awake()
-		//{
-		//	base.Awake();
-		//	AudioSource = GetComponent<AudioSource>();
-
-		//	Devices = new List<string>();
-		//	foreach (var device in Microphone.devices)
-		//		Devices.Add(device);
-		//	CurrentDeviceIndex = 0;
-		//}
-
-		//void Update()
-		//{
-		//	if (AudioSource == null)
-		//		AudioSource = gameObject.AddComponent<AudioSource>();
-
-		//	AudioSource.mute = true;
-		//	AudioSource.loop = true;
-		//	AudioSource.maxDistance = AudioSource.minDistance = 0;
-		//	AudioSource.spatialBlend = 0;
-
-		//	if (IsRecording && !AudioSource.isPlaying)
-		//		AudioSource.Play();
-		//}
-
-		///// <summary>
-		///// Changes to a Mic device for Recording
-		///// </summary>
-		///// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/></param>
-		//public void ChangeDevice(int index)
-		//{
-		//	Microphone.End(CurrentDeviceName);
-		//	CurrentDeviceIndex = index;
-		//	Microphone.Start(CurrentDeviceName, true, 1, Frequency);
-		//}
+		
 
 		/// <summary>
 		/// Starts to stream the input of the current Mic device
 		/// </summary>
 		public void StartRecording(int frequency = 16000, int sampleLen = 10)
 		{
-			//StopRecording();
-			//IsRecording = true;
-
-			//Frequency = frequency;
-			//SampleDurationMS = sampleLen;
-
-			//Clip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
-			//Debug.Log(Clip.channels);
-			//Sample = new float[Frequency / 1000 * SampleDurationMS * Clip.channels];
-
-			//AudioSource.clip = Clip;
-
-			//StartCoroutine(ReadRawAudio());
-		}
+            StartVOIP();
+        }
 
 		/// <summary>
 		/// Ends the Mic stream.
 		/// </summary>
 		public void StopRecording()
 		{
-			//if (!Microphone.IsRecording(CurrentDeviceName)) return;
-
-			//IsRecording = false;
-
-			//Microphone.End(CurrentDeviceName);
-			//Destroy(Clip);
-			//Clip = null;
-			//AudioSource.Stop();
-
-			//StopCoroutine(ReadRawAudio());
+            StopVoip();
 		}
 
-		//IEnumerator ReadRawAudio()
-		//{
-		//	int loops = 0;
-		//	int readAbsPos = 0;
-		//	int prevPos = 0;
-		//	float[] temp = new float[Sample.Length];
+        /// <summary>
+        /// 
+        /// </summary>
+        private int lastSample = 0;
 
-		//	while (Clip != null && Microphone.IsRecording(CurrentDeviceName))
-		//	{
-		//		bool isNewDataAvailable = true;
+        /// <summary>
+        /// 
+        /// </summary>
+        private AudioClip mic = null;
 
-		//		while (isNewDataAvailable)
-		//		{
-		//			int currPos = Microphone.GetPosition(CurrentDeviceName);
-		//			if (currPos < prevPos)
-		//				loops++;
-		//			prevPos = currPos;
+        /// <summary>
+        /// 
+        /// </summary>
+        private int channels = 1;
 
-		//			var currAbsPos = loops * Clip.samples + currPos;
-		//			var nextReadAbsPos = readAbsPos + temp.Length;
+        /// <summary>
+        /// 
+        /// </summary>
+        private int frequency = 8000;
 
-		//			if (nextReadAbsPos < currAbsPos)
-		//			{
-		//				Clip.GetData(temp, readAbsPos % Clip.samples);
+        /// <summary>
+        /// 
+        /// </summary>
+        private float[] samples = null;
 
-		//				Sample = temp;
-		//				SampleCount++;
-		//				if (!_IsMute && UMI3DCollaborationClientServer.Exists)
-		//				{
-		//					var dto = new AudioDto()
-		//					{
-		//						frequency = Frequency,
-		//						pos = SampleCount,
-		//						sample = Sample
-		//					};
-		//					Debug.Log("Send Audio");
-		//					//UMI3DCollaborationClientServer.Instance.SendAudio(dto);
-		//				}
+        /// <summary>
+        /// 
+        /// </summary>
+        private List<float> writeSamples = null;
 
-		//				readAbsPos = nextReadAbsPos;
-		//				isNewDataAvailable = true;
-		//			}
-		//			else
-		//				isNewDataAvailable = false;
-		//		}
-		//		yield return null;
-		//	}
-		//}
+        /// <summary>
+        /// 
+        /// </summary>
+        private float WRITE_FLUSH_TIME = 0.5f;
 
-		//protected override void OnDestroy()
-		//{
-		//	base.OnDestroy();
-		//	Microphone.End(null);
-		//}
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        private float writeFlushTimer = 0.0f;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [SerializeField,EditorReadOnly]
+        bool muted = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void StartVOIP()
+        {
+            writeSamples = new List<float>(1024);
+            MainThreadManager.Run(() =>
+            {
+                mic = Microphone.Start(null, true, 100, frequency);
+                channels = mic.channels;
+                if (mic == null)
+                {
+                    Debug.LogError("A default microphone was not found or plugged into the system");
+                    return;
+                }
+                Task.Queue(VOIPWorker);
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void StopVoip()
+        {
+            Microphone.End(null);
+            mic = null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        BMSByte writeBuffer = new BMSByte();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void VOIPWorker()
+        {
+            while (!UMI3DCollaborationClientServer.Connected())
+            {
+                MainThreadManager.ThreadSleep(1000);
+            }
+            while (UMI3DCollaborationClientServer.Connected())
+            {
+                if (writeFlushTimer >= WRITE_FLUSH_TIME && writeSamples.Count > 0)
+                {
+                    writeFlushTimer = 0.0f;
+                    lock (writeSamples)
+                    {
+                        writeBuffer.Clone(ToByteArray(writeSamples));
+                        writeSamples.Clear();
+                    }
+                    if (!muted)
+                    {
+                        UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(writeBuffer.Size, writeBuffer.byteArr);
+                    }
+                }
+                MainThreadManager.ThreadSleep(10);
+            }
+            StopVoip();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ReadMic()
+        {
+            if (mic != null && UMI3DCollaborationClientServer.Connected())
+            {
+                writeFlushTimer += Time.deltaTime;
+                int pos = Microphone.GetPosition(null);
+                int diff = pos - lastSample;
+
+                if (diff > 0)
+                {
+                    samples = new float[diff * channels];
+                    mic.GetData(samples, lastSample);
+
+                    lock (writeSamples)
+                    {
+                        writeSamples.AddRange(samples);
+                    }
+                }
+                lastSample = pos;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sampleList"></param>
+        /// <returns></returns>
+        private byte[] ToByteArray(List<float> sampleList)
+        {
+            int len = sampleList.Count * 4;
+            byte[] byteArray = new byte[len];
+            int pos = 0;
+
+            for (int i = 0; i < sampleList.Count; i++)
+            {
+                byte[] data = System.BitConverter.GetBytes(sampleList[i]);
+                System.Array.Copy(data, 0, byteArray, pos, 4);
+                pos += 4;
+            }
+
+            return byteArray;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void FixedUpdate()
+        {
+            ReadMic();
+        }
+
+    }
 }

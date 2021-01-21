@@ -171,9 +171,26 @@ namespace umi3d.cdk.interaction
                     );
                     result = s;
                     break;
+                case FormDto formDto:
+                    var form = new FormMenuItem() { dto = formDto };
+                    form.Subscribe((x) =>
+                    {
+                        var FormAnswer = new FormAnswer()
+                        {
+                            toolId = dto.id,
+                            id = formDto.id,
+                            form = x,
+                            hoveredObjectId = null
+                        };
+                        UMI3DClientServer.SendData(FormAnswer, true);
+                    }
+                    );
+                    result = form;
+                    break;
                 default:
+                    Debug.LogWarning($"Unknown Menu Item for {dto}");
                     result = new MenuItem();
-                    result.Subscribe(() => Debug.Log("hellooo 2"));
+                    result.Subscribe(() => Debug.Log("Unknown case."));
                     break;
             }
             result.Name = dto.name;

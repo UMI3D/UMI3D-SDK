@@ -21,6 +21,7 @@ namespace umi3d.common.interaction
     /// <summary>
     /// 
     /// </summary>
+    [System.Serializable]
     public class FormDto : AbstractInteractionDto
     {
         public List<AbstractParameterDto> fields = new List<AbstractParameterDto>();
