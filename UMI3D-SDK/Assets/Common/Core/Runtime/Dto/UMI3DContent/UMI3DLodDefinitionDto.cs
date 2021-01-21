@@ -14,15 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DNodeDto : UMI3DAbstractNodeDto
-    {
-        public bool xBillboard = false;
-        public bool yBillboard = false;
-        public ColliderDto colliderDto = null;
-        public UMI3DLodDto lodDto;
-    }
 
+    public class UMI3DLodDefinitionDto : UMI3DDto
+    {
+        public List<string> nodes;
+        public float screenSize;
+        public float fadeTransition;
+    }
 }
