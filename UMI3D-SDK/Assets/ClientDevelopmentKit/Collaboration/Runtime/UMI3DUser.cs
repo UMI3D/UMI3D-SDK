@@ -43,6 +43,11 @@ namespace umi3d.cdk.collaboration
             OnNewUser.Invoke(this);
         }
 
+        public void Destroy()
+        {
+            OnRemoveUser.Invoke(this);
+        }
+
         /// <summary>
         /// Update user with a dto
         /// </summary>
@@ -68,6 +73,7 @@ namespace umi3d.cdk.collaboration
         public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
 
         static public UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
+        static public UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
