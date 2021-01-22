@@ -18,13 +18,12 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
-    public class AssetLibraryDto : UMI3DDto, IEntity
+    [System.Serializable]
+
+    public class UMI3DLodDefinitionDto : UMI3DDto
     {
-        public string id;
-        public string baseUrl;
-        public string date;
-        public string culture;
-        public string format;
-        public List<UMI3DLocalAssetDirectory> variants;
+        public List<string> nodes;
+        public float screenSize;
+        public float fadeTransition;
     }
 }

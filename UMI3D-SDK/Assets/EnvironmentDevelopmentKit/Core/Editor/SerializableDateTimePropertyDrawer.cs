@@ -12,6 +12,7 @@ namespace umi3d.edk.editor
         const int space = 5;
         const int nowButtonSize = 40;
         const int twoDigitField = 20;
+        const int fourDigitField = 40;
 
         ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -28,7 +29,7 @@ namespace umi3d.edk.editor
             EditorGUI.indentLevel = 0;
 
             // Calculate rects
-            Rect year = new Rect(position.x, position.y, twoDigitField, position.height);
+            Rect year = new Rect(position.x, position.y, fourDigitField, position.height);
             Rect labelRect = new Rect(position.x, position.y, twoDigitField, position.height);
             Rect month = new Rect(year.size.x + space + year.position.x, position.y, twoDigitField, position.height);
             Rect day = new Rect(month.size.x + space + month.position.x, position.y, twoDigitField, position.height);
