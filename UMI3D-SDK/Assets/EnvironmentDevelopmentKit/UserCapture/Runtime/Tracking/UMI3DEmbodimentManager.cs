@@ -44,7 +44,7 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
-        public UnityEvent startingDispatchingTrackingData;
+        public UnityEvent startingDispatchingTrackingData = new UnityEvent();
 
         ///<inheritdoc/>
         protected override void Awake()

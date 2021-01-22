@@ -43,14 +43,13 @@ namespace umi3d.cdk.collaboration
             }
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                UserAvatar ua;
-                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
-                    ua = node.GetOrAddComponent<UserAvatar>();
-                else
-                    ua = node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
-
-                ua.Set(dto as UMI3DAvatarNodeDto);
-                UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+                if (!(dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
+                {
+                    Debug.Log("Different " + (dto as UMI3DAvatarNodeDto).userId + " | " + UMI3DClientServer.Instance.GetId());
+                    UserAvatar ua = node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
+                    ua.Set(dto as UMI3DAvatarNodeDto);
+                    UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+                }
                 finished.Invoke();
             }, (s) => failed.Invoke(s));
         }

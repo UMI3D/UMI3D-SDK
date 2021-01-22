@@ -2,54 +2,55 @@
 using MathNet.Numerics.LinearAlgebra.Double;
 using MathNet.Numerics.LinearAlgebra.Factorization;
 using System;
+using UnityEngine;
 
 namespace UnscentedKalmanFilter
 {
-	public class UKF
-	{
-		/// <summary>
-		/// States number
-		/// </summary>
-		private int L;  
+    public class UKF
+    {
+        /// <summary>
+        /// States number
+        /// </summary>
+        private int L;
 
-		/// <summary>
-		/// Measurements number
-		/// </summary>
-		private int m;  
+        /// <summary>
+        /// Measurements number
+        /// </summary>
+        private int m;
 
-		/// <summary>
-		/// The alpha coefficient, characterize sigma-points dispersion around mean
-		/// </summary>
-		private double alpha;  
+        /// <summary>
+        /// The alpha coefficient, characterize sigma-points dispersion around mean
+        /// </summary>
+        private double alpha;
 
-		/// <summary>
-		/// The ki.
-		/// </summary>
-		private double ki;
+        /// <summary>
+        /// The ki.
+        /// </summary>
+        private double ki;
 
-		/// <summary>
+        /// <summary>
         /// The beta coefficient, characterize type of distribution (2 for normal one) 
-		/// </summary>
-		private double beta;
+        /// </summary>
+        private double beta;
 
-		/// <summary>
-		/// Scale factor
-		/// </summary>
-		private double lambda;
+        /// <summary>
+        /// Scale factor
+        /// </summary>
+        private double lambda;
 
-		/// <summary>
-		/// Scale factor
-		/// </summary>
-		private double c; 
+        /// <summary>
+        /// Scale factor
+        /// </summary>
+        private double c;
 
-		/// <summary>
-		/// Means weights
-		/// </summary>
-		private Matrix<double> Wm; 
+        /// <summary>
+        /// Means weights
+        /// </summary>
+        private Matrix<double> Wm;
 
-		/// <summary>
-		/// Covariance weights
-		/// </summary>
+        /// <summary>
+        /// Covariance weights
+        /// </summary>
         private Matrix<double> Wc;
 
         /// <summary>
@@ -88,14 +89,22 @@ namespace UnscentedKalmanFilter
         /// <param name="L">States number</param>
         /// <param name="m">Measurements number</param>
         public UKF(int L = 0)
-		{
+        {
             this.L = L;
-		}
+        }
+
+        public UKF(double q, double r, int L = 0)
+        {
+            this.q = q;
+            this.r = r;
+            this.L = L;
+        }
+
 
         private void init()
         {
-            q = 0.05;
-            r = 0.3; 
+            //q = 50;
+            //r = 0.5;
 
             x = q * Matrix.Build.Random(L, 1); //initial state with noise
             P = Matrix.Build.Diagonal(L, L, 1); //initial state covraiance
@@ -198,10 +207,10 @@ namespace UnscentedKalmanFilter
             {
                 row_in_X = X.SubMatrix(0, X.RowCount, k, 1);
                 Y.SetSubMatrix(0, Y.RowCount, k, 1, row_in_X);
-                y = y.Add(Y.SubMatrix(0, Y.RowCount, k, 1).Multiply(Wm[0,k]));
+                y = y.Add(Y.SubMatrix(0, Y.RowCount, k, 1).Multiply(Wm[0, k]));
             }
 
-            Matrix<double> Y1 = Y.Subtract(y.Multiply(Matrix.Build.Dense(1,L,1)));
+            Matrix<double> Y1 = Y.Subtract(y.Multiply(Matrix.Build.Dense(1, L, 1)));
             Matrix<double> P = Y1.Multiply(Matrix.Build.Diagonal(Wc.Row(0).ToArray()));
             P = P.Multiply(Y1.Transpose());
             P = P.Add(R);
@@ -217,32 +226,32 @@ namespace UnscentedKalmanFilter
         /// <param name="P">covariance</param>
         /// <param name="c">coefficient</param>
         /// <returns>Sigma points</returns>
-        private Matrix<double> GetSigmaPoints(Matrix<double> x, Matrix<double> P, double c) 
-	    {
+        private Matrix<double> GetSigmaPoints(Matrix<double> x, Matrix<double> P, double c)
+        {
             Matrix<double> A = P.Cholesky().Factor;
 
-	    	A = A.Multiply(c);
-	    	A = A.Transpose();
+            A = A.Multiply(c);
+            A = A.Transpose();
 
-	    	int n = x.RowCount;
+            int n = x.RowCount;
 
-	    	Matrix<double> Y = Matrix.Build.Dense(n, n, 1);
-	    	for (int j=0; j<n; j++)  
-	    	{
-	    		Y.SetSubMatrix(0, n, j, 1, x);
-	    	}
+            Matrix<double> Y = Matrix.Build.Dense(n, n, 1);
+            for (int j = 0; j < n; j++)
+            {
+                Y.SetSubMatrix(0, n, j, 1, x);
+            }
 
-	    	Matrix<double> X = Matrix.Build.Dense(n,(2*n+1));
-	    	X.SetSubMatrix(0, n, 0, 1, x);
+            Matrix<double> X = Matrix.Build.Dense(n, (2 * n + 1));
+            X.SetSubMatrix(0, n, 0, 1, x);
 
-	    	Matrix<double> Y_plus_A = Y.Add(A);	
-	    	X.SetSubMatrix(0, n, 1, n, Y_plus_A);
-	    	
-	    	Matrix<double> Y_minus_A = Y.Subtract(A);
-	    	X.SetSubMatrix(0, n, n+1, n, Y_minus_A);
-	    	
-	    	return X;
-	    }
-	}
+            Matrix<double> Y_plus_A = Y.Add(A);
+            X.SetSubMatrix(0, n, 1, n, Y_plus_A);
+
+            Matrix<double> Y_minus_A = Y.Subtract(A);
+            X.SetSubMatrix(0, n, n + 1, n, Y_minus_A);
+
+            return X;
+        }
+    }
 }
 
