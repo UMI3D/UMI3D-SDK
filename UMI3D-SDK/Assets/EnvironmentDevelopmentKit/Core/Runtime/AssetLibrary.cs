@@ -25,6 +25,7 @@ namespace umi3d.edk
     public class AssetLibrary : ScriptableObject, UMI3DLoadableEntity
     {
         public string id = "com.compagny.application";
+        [SerializeField]
         public SerializableDateTime date;
         [SerializeField]
         public List<UMI3DLocalAssetDirectory> variants = new List<UMI3DLocalAssetDirectory>();
@@ -33,6 +34,8 @@ namespace umi3d.edk
         {
             AssetLibraryDto dto = new AssetLibraryDto();
             dto.id = id;
+            dto.format = date.Format();
+            dto.culture = date.Culture();
             dto.date = date.ToString();
             dto.variants = new List<UMI3DLocalAssetDirectory>();
             foreach (var variant in variants)
