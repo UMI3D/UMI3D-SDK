@@ -192,13 +192,28 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override bool SwitchTools(string select, string release, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null)
         {
-            ReleaseTool(release);
-            if (!SelectTool(select, releasable, hoveredObjectId, reason))
+            if (toolIdToController.ContainsKey(release))
             {
-                if (SelectTool(release, releasable, hoveredObjectId))
-                    return false;
-                else
-                    throw new Exception("Internal error");
+                AbstractController controller = toolIdToController[release];
+                ReleaseTool(release);
+                if (!SelectTool(select, releasable, controller, hoveredObjectId, reason))
+                {
+                    if (SelectTool(release, releasable, controller, hoveredObjectId))
+                        return false;
+                    else
+                        throw new Exception("Internal error");
+                }
+            }
+            else
+            {
+                ReleaseTool(release);
+                if (!SelectTool(select, releasable, hoveredObjectId, reason))
+                {
+                    if (SelectTool(release, releasable, hoveredObjectId))
+                        return false;
+                    else
+                        throw new Exception("Internal error");
+                }
             }
             return true;
         }

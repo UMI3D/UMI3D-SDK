@@ -122,8 +122,10 @@ namespace umi3d.edk
 
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
-            List<AssetLibraryDto> libraries = globalLibraries.Select(l => l.ToDto()).ToList();
-            libraries.AddRange(scenes.SelectMany(s => s.libraries).GroupBy(l => l.id).Select(l => l.First().ToDto()));
+            List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
+            var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.id == l.Key))?.Select(l => l.First().ToDto());
+            if(sceneLib != null)
+                libraries.AddRange(sceneLib);
             return new LibrariesDto() { libraries = libraries };
         }
 
