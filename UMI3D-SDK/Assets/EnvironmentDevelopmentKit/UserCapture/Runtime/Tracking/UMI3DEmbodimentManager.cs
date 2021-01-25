@@ -25,13 +25,7 @@ namespace umi3d.edk.userCapture
 {
     public class UMI3DEmbodimentManager : PersistentSingleton<UMI3DEmbodimentManager>
     {
-        public bool dispatchTrackingData = true;
-        public bool reliableTransaction = false;
-        public float targetDispatchFPS = 30;
-
         public UMI3DScene embodimentsScene;
-
-        Transaction transaction = new Transaction();
 
         public Dictionary<string, UMI3DAvatarNode> embodimentInstances = new Dictionary<string, UMI3DAvatarNode>();
 
@@ -44,8 +38,6 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
-        public UnityEvent startingDispatchingTrackingData;
-
         ///<inheritdoc/>
         protected override void Awake()
         {
@@ -54,7 +46,6 @@ namespace umi3d.edk.userCapture
             CreationEvent = new EmbodimentBoneEvent();
             UpdateEvent = new EmbodimentBoneEvent();
             DeletionEvent = new EmbodimentBoneEvent();
-            startingDispatchingTrackingData = new UnityEvent();
         }
 
         ///<inheritdoc/>
@@ -62,32 +53,6 @@ namespace umi3d.edk.userCapture
         {
             UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
             UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
-            startingDispatchingTrackingData.AddListener(() => { if (dispatchTrackingData) StartCoroutine("DispatchTrackingData"); });
-            startingDispatchingTrackingData.Invoke();
-        }
-
-        /// <summary>
-        /// Dispatch Users Tracking data through Tracking Channel to connected users
-        /// </summary>
-        protected virtual IEnumerator DispatchTrackingData()
-        {
-            while (dispatchTrackingData)
-            {
-                if (targetDispatchFPS > 0)
-                {
-                    if (UMI3DServer.Exists)
-                        if (transaction.Operations.Count > 0)
-                        {
-                            transaction.reliable = reliableTransaction;
-                            UMI3DServer.Dispatch(transaction);
-                            transaction.Operations.Clear();
-                        }
-
-                    yield return new WaitForSeconds(1f / targetDispatchFPS);
-                }
-                else
-                    yield return new WaitUntil(() => targetDispatchFPS > 0 || !dispatchTrackingData);
-            }
         }
 
         /// <summary>
@@ -201,16 +166,6 @@ namespace umi3d.edk.userCapture
         /// <param name="id"></param>
         protected void DeleteEmbodimentObj(UMI3DAvatarNode node)
         {
-            transaction.Operations.RemoveAll(o =>
-            {
-                if (o is SetEntityProperty)
-                {
-                    return (o as SetEntityProperty).entityId == node.Id();
-                }
-                return false;
-
-            });
-
             UMI3DServer.Dispatch(new Transaction
             {
                 Operations = new List<Operation> { node.GetDeleteEntity() },
@@ -219,36 +174,14 @@ namespace umi3d.edk.userCapture
         }
 
         /// <summary>
-        /// Update an Avatar Node for a given user.
-        /// </summary>
-        /// <param name="user">the user</param>
-        /// <param name="obj">the avatar node to update.</param>
-        public void UpdateUserEmbodiment(UMI3DUser user, UMI3DAvatarNode obj)
-        {
-            UpdateNodeTransform(user, obj);
-        }
-
-        /// <summary>
         /// Update a Node.
         /// </summary>
         /// <param name="obj">the node to update</param>
         public void UpdateNodeTransform(UMI3DNode obj)
         {
-            setOperation(obj.objectPosition.SetValue(obj.transform.localPosition));
-            setOperation(obj.objectRotation.SetValue(obj.transform.localRotation));
-            setOperation(obj.objectScale.SetValue(obj.transform.localScale));
-        }
-
-        /// <summary>
-        /// Update a Node for a given user.
-        /// </summary>
-        /// <param name="user">the user</param>
-        /// <param name="obj">the node to update</param>
-        public void UpdateNodeTransform(UMI3DUser user, UMI3DNode obj)
-        {
-            setOperation(obj.objectPosition.SetValue(user, obj.transform.localPosition));
-            setOperation(obj.objectRotation.SetValue(user, obj.transform.localRotation));
-            setOperation(obj.objectScale.SetValue(user, obj.transform.localScale));
+            obj.objectPosition.SetValue(obj.transform.localPosition);
+            obj.objectRotation.SetValue(obj.transform.localRotation);
+            obj.objectScale.SetValue(obj.transform.localScale);
         }
 
         /// <summary>
@@ -453,18 +386,6 @@ namespace umi3d.edk.userCapture
 
             operations.Insert(0, obj.bindings.RemoveAt(user, index));
             return operations;
-        }
-
-        /// <summary>
-        /// Add an operation  to the unsigned transaction flow
-        /// </summary>
-        /// <param name="operation"></param>
-        public void setOperation(SetEntityProperty operation)
-        {
-            if (operation != null)
-            {
-                transaction.Operations.Add(operation);
-            }
         }
     }
 }
