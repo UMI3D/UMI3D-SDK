@@ -21,7 +21,6 @@ using umi3d.cdk.userCapture;
 using umi3d.cdk.collaboration;
 using umi3d.common.userCapture;
 using UnityEngine;
-using UnscentedKalmanFilter;
 
 namespace umi3d.cdk.collaboration
 {
