@@ -141,7 +141,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public bool TryAgainOnHttpFail(HttpClient.RequestFailedArgument argument)
         {
-            if (argument.count < 3)
+            if (argument.ShouldTryAgain(argument))
             {
                 StartCoroutine(TryAgain(argument));
                 return true;
@@ -174,12 +174,12 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="url">Url used for the get request.</param>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null)
+        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<HttpClient.RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
             {
                 Media = media; Instance._setMedia(); callback?.Invoke(media);
-            }, failback);
+            }, failback, shouldTryAgain);
         }
 
         void _setMedia()
