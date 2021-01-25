@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollabAvatarNodeLoader : UMI3DAvatarNodeLoader
     {
         /// <summary>
-        /// Load an avatar node.
+        /// Load an avatar node for collaborative user.
         /// </summary>
         /// <param name="dto">dto.</param>
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
@@ -45,7 +45,6 @@ namespace umi3d.cdk.collaboration
             {
                 if (!(dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
                 {
-                    Debug.Log("Different " + (dto as UMI3DAvatarNodeDto).userId + " | " + UMI3DClientServer.Instance.GetId());
                     UserAvatar ua = node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
                     ua.Set(dto as UMI3DAvatarNodeDto);
                     UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);

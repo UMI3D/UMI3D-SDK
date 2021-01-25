@@ -45,6 +45,7 @@ namespace umi3d.cdk.collaboration
                 prediction = new double[3];
             }
         }
+
         private class KalmanRotation
         {
             public UKF KalmanFilter = new UKF();
@@ -107,6 +108,10 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        /// <summary>
+        /// Applies linear regression to the filtered position of an object
+        /// </summary>
+        /// <param name="tools"></param>
         void RegressionPosition(KalmanPosition tools)
         {
             if (tools.previous_prediction.Length > 0)
@@ -125,6 +130,10 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        /// <summary>
+        /// Applies linear regression to the filtered rotation of an object
+        /// </summary>
+        /// <param name="tools"></param>
         void RegressionRotation(KalmanRotation tools)
         {
             if (tools.previous_prediction.Length > 0)
@@ -143,6 +152,10 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        /// <summary>
+        /// Filtering a boneDto position
+        /// </summary>
+        /// <param name="dto"></param>
         void BoneKalmanUpdate(BoneDto dto)
         {
             KalmanPosition bonePositionKalman = bonePositionFilters[dto];
@@ -175,6 +188,12 @@ namespace umi3d.cdk.collaboration
                 boneRotationKalman.previous_prediction = boneRotationMeasurement;
         }
 
+        /// <summary>
+        /// Filtering a user AvatarNode position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="scale"></param>
         void NodeKalmanUpdate(Vector3 position, Quaternion rotation, Vector3 scale)
         {
             double[] positionMeasurement = new double[] { position.x, position.y, position.z };

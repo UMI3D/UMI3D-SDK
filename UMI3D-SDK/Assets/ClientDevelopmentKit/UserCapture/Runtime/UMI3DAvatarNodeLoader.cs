@@ -47,7 +47,6 @@ namespace umi3d.cdk
             {
                 if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
                 {
-                    Debug.Log("Same " + (dto as UMI3DAvatarNodeDto).userId + " | " + UMI3DClientServer.Instance.GetId());
                     UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
                     ua.Set(dto as UMI3DAvatarNodeDto);
                     UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
