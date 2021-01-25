@@ -232,7 +232,7 @@ namespace umi3d.cdk.collaboration
         public IEnumerator UpdateBonePosition(UserTrackingFrameDto trackingFrameDto)
         {
             float now = Time.time;
-            MeasuresPerSecond = 1 / (now - lastMessageTime);
+            MeasuresPerSecond = Mathf.Min(10, 1 / (now - lastMessageTime));
             lastMessageTime = now;
 
             NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation, trackingFrameDto.scale);
@@ -287,7 +287,7 @@ namespace umi3d.cdk.collaboration
 
                             savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
 
-                            obj.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
+                            obj.transform.SetParent(this.transform);
 
                             if (boneBindingDto.rigName == "")
                                 node.updatePose = false;
