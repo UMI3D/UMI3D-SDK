@@ -474,7 +474,30 @@ namespace umi3d.edk
             nodeDto.xBillboard = objectXBillboard.GetValue(user);
             nodeDto.yBillboard = objectYBillboard.GetValue(user);
             nodeDto.colliderDto = GetColliderDto();
+            nodeDto.lodDto = GetLod();
         }
+
+        /// <summary>
+        /// Compute UMI3DLodDto with LogGroup component on the node.
+        /// </summary>
+        /// <returns>null if not component</returns>
+        UMI3DLodDto GetLod()
+        {
+            var lod = GetComponent<LODGroup>();
+            if (lod == null) return null;
+            var lodg = new UMI3DLodDto();
+            lodg.lods = new List<UMI3DLodDefinitionDto>();
+            foreach (var lofd in lod.GetLODs()) {
+                var loddef = new UMI3DLodDefinitionDto();
+                var renderers = lofd.renderers;
+                loddef.nodes = transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s=>s.GetComponent<UMI3DNode>()).Where(s=>s!=null).Select(s=>s.Id()).ToList();
+                loddef.screenSize = lofd.screenRelativeTransitionHeight;
+                loddef.fadeTransition = lofd.fadeTransitionWidth;
+                lodg.lods.Add(loddef);
+            }
+            return lodg;
+        }
+
 
         ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)

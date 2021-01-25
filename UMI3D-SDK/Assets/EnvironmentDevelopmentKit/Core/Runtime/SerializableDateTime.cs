@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Globalization;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -36,6 +37,9 @@ namespace umi3d.edk
 
         [HideInInspector] [SerializeField] private bool setNow;
 
+        [HideInInspector] [SerializeField] private string culture = "en-US";
+        [HideInInspector] [SerializeField] private string format  = "dd/MM/yyyy  HH:mm:ss";
+
         public void OnAfterDeserialize()
         {
             if (setNow)
@@ -46,6 +50,7 @@ namespace umi3d.edk
             {
                 _dateTime = $"{day}/{month}/{year} {hours}:{minutes}:{seconds}";
                 DateTime tmp;
+                CultureInfo info = new CultureInfo(culture);
                 if (DateTime.TryParse(_dateTime, out tmp)) dateTime = tmp;
             }
         }
@@ -65,9 +70,10 @@ namespace umi3d.edk
         ///<inheritdoc/>
         public override string ToString()
         {
-            return dateTime.ToString();
+            return dateTime.ToString(format);
         }
-
+        public string Format() { return format; }
+        public string Culture() { return culture; }
         public static implicit operator DateTime(SerializableDateTime date)
         {
             return (date.dateTime);

@@ -90,7 +90,7 @@ namespace umi3d.edk.userCapture
         {
             if (!embodimentInstances.ContainsKey(dto.userId))
             {
-                Debug.LogWarning("Internal error : the user is not registered");
+                Debug.LogWarning($"Internal error : the user [{dto.userId}] is not registered");
                 return;
             }
 
@@ -118,7 +118,7 @@ namespace umi3d.edk.userCapture
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
             {
-                Debug.LogWarning("Internal error : the user is not registered");
+                Debug.LogWarning($"Internal error : the user [{user.Id()}] is not registered");
                 yield return new WaitForFixedUpdate();
             }
 
@@ -134,7 +134,7 @@ namespace umi3d.edk.userCapture
         {
             if (!embodimentInstances.ContainsKey(user.Id()))
             {
-                Debug.LogWarning($"Internal error : the user is [{user.Id()}] not registered");
+                Debug.LogWarning($"Internal error : the user [{user.Id()}] is  not registered");
                 return;
             }
 

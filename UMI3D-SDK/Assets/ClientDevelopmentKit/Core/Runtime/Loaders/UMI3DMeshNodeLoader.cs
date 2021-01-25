@@ -95,6 +95,8 @@ namespace umi3d.cdk
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
                 GameObject copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
+                foreach(var lodgroup in copy.GetComponentsInChildren<LODGroup>())
+                    GameObject.Destroy(lodgroup);
                 Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())
                 {

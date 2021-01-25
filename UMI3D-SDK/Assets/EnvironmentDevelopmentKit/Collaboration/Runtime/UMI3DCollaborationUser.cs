@@ -29,6 +29,7 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser(string login)
         {
             this.login = login;
+            status = StatusType.CREATED;
             Debug.Log($"<color=magenta>new User {Id()} {login}</color>");
         }
 

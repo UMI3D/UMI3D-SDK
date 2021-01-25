@@ -57,8 +57,11 @@ namespace umi3d.cdk
         {
 
             // add bundle in the cache
+#if UNITY_ANDROID
+            UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
+#else
             UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
-
+#endif
             SetCertificate(www, authorization);
             UMI3DResourcesManager.DownloadObject(www,
                 () =>

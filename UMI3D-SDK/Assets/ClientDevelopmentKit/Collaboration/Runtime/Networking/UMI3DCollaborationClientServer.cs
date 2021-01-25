@@ -115,8 +115,11 @@ namespace umi3d.cdk.collaboration
                     ForgeClient.Stop();
                     Start();
                     success?.Invoke();
+                    Identity = new IdentityDto();
                 },
-                (error) => { failled.Invoke(error); });
+                (error) => { failled.Invoke(error); Identity = new IdentityDto(); });
+            else
+                Identity = new IdentityDto();
         }
 
 

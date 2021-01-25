@@ -25,32 +25,12 @@ namespace umi3d.edk.collaboration
     [CreateAssetMenu(fileName = "UnsecuredIdentifierApi", menuName = "UMI3D/Unsecured Identifier")]
     public class UnsecuredIdentifierApi : IdentifierApi
     {
-        public Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
-        public Dictionary<string, FormDto> idMap = new Dictionary<string, FormDto>();
-
         ///<inheritdoc/>
-        public override FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
+        public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
         {
-            if (!idMap.ContainsKey(user.Id()) || idMap[user.Id()] == null)
-            {
-                idMap[user.Id()] = new FormDto();
-                idMap[user.Id()].fields = new List<AbstractParameterDto>();
-                StringParameterDto username = new StringParameterDto()
-                {
-                    name = "username",
-                    value = "",
-                };
-                idMap[user.Id()].fields.Add(username);
-            }
-
-            return idMap[user.Id()];
-        }
-
-        ///<inheritdoc/>
-        public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
-        {
-            idMap[user.login] = identity.parameters;
-            return (idMap[user.login] != null && (idMap[user.login].fields[0] is StringParameterDto) && (idMap[user.login].fields[0] as StringParameterDto).value != "") ? StatusType.READY : StatusType.CREATED;
+            if (type != AuthenticationType.None) Debug.LogWarning($"UnsecuredIdentifierApi does not handle other AuthenticationType than None [ignored type : {type}]");
+            type = AuthenticationType.None;
+            return new UMI3DAuthenticator();
         }
     }
 }
