@@ -100,7 +100,8 @@ namespace umi3d.cdk.collaboration
                     if (boneBindingDto.active && savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                     {
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
-                        st.obj.position = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneDto].regressed_position + (Vector3)boneBindingDto.position * boneDto.scale.X);
+                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneDto].regressed_position);
+                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneDto].RegressedQuaternion(), boneDto.scale).MultiplyPoint3x4((Vector3)boneBindingDto.position);
                         st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneDto].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
                     }
                 }
