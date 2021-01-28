@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -48,14 +49,18 @@ namespace umi3d.cdk
             public string path;
             public string key;
             public string date;
+            public string culture;
+            public string dateformat;
             public List<string> applications = new List<string>();
 
 
-            public DataFile(string key, string path, List<string> applications, string date)
+            public DataFile(string key, string path, List<string> applications, string date,string format,string culture)
             {
                 this.path = path;
                 this.key = key;
                 this.date = date;
+                this.dateformat = format;
+                this.culture = culture;
                 files = new List<Data>();
                 this.applications = applications;
             }
@@ -353,7 +358,7 @@ namespace umi3d.cdk
             CacheCollection = new List<ObjectData>();
             StopAllCoroutines();
             libraries = new Dictionary<string, KeyValuePair<DataFile, HashSet<string>>>();
-            loadLocalLib();
+            LoadLocalLib();
         }
 
         void HardReset()
@@ -366,7 +371,7 @@ namespace umi3d.cdk
             ClearCache();
         }
 
-        void loadLocalLib()
+        void LoadLocalLib()
         {
             string path = Application.persistentDataPath;
             foreach (var directory in Directory.GetDirectories(path).ToList())
@@ -508,7 +513,7 @@ namespace umi3d.cdk
                     };
                     Action<string> error2 = (reason) =>
                     {
-                        Debug.LogError($"error {reason}");
+                        Debug.LogWarning($"error {reason}");
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
                     };
@@ -517,7 +522,7 @@ namespace umi3d.cdk
 
                 Action<string> error = (reason) =>
                 {
-                    Debug.LogError($"error {reason}");
+                    Debug.LogWarning($"error {reason}");
                     foreach (var back in objectData.loadFailCallback)
                         back.Invoke(reason);
                 };
@@ -577,20 +582,26 @@ namespace umi3d.cdk
             return Instance._LibrariesToDownload(libraries.libraries);
         }
 
-        public List<string> _LibrariesToDownload(List<AssetLibraryDto> assetlibraries)
+        public List<string> _LibrariesToDownload(List<AssetLibraryDto> assetLibraries)
         {
             List<string> toDownload = new List<string>();
-            if (assetlibraries != null && assetlibraries.Count > 0)
+            if (assetLibraries != null && assetLibraries.Count > 0)
             {
                 DateTime local, server;
-                foreach (var assetlibrary in assetlibraries)
+                foreach (var assetLibrary in assetLibraries)
                 {
-                    if (libraries.ContainsKey(assetlibrary.id) && DateTime.TryParse(libraries[assetlibrary.id].Key.date, out local) && DateTime.TryParse(assetlibrary.date, out server))
-                    {
-                        if (local.Ticks >= server.Ticks)
-                            continue;
+                    
+                    if (libraries.ContainsKey(assetLibrary.id)){
+                        var dt = libraries[assetLibrary.id].Key;
+                        CultureInfo info = new CultureInfo(assetLibrary.culture);
+                        CultureInfo dtInfo = new CultureInfo(dt.culture);
+                        if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out server))
+                        {
+                            if (local.Ticks >= server.Ticks)
+                                continue;
+                        }
                     }
-                    toDownload.Add(assetlibrary.id);
+                    toDownload.Add(assetLibrary.id);
                 }
             }
             return toDownload;
@@ -640,9 +651,11 @@ namespace umi3d.cdk
             {
                 DataFile dt = Instance.libraries[assetLibrary.id].Key;
                 DateTime local, server;
-
-                if (DateTime.TryParse(dt.date, out local) && DateTime.TryParse(assetLibrary.date, out server))
+                CultureInfo info = new CultureInfo(assetLibrary.culture);
+                CultureInfo dtInfo = new CultureInfo(dt.culture);
+                if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out server))
                 {
+                    
                     if (dt.applications == null)
                         dt.applications = new List<string>();
                     if (local.Ticks >= server.Ticks)
@@ -667,7 +680,7 @@ namespace umi3d.cdk
                 var assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
                 var dto = UMI3DDto.FromBson(bytes);
                 if (dto is FileListDto)
-                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
+                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date,assetLibrary.format,assetLibrary.culture, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
                 else
                     finished = true;
             };
@@ -723,9 +736,9 @@ namespace umi3d.cdk
 
         #endregion
         #region file downloading
-        IEnumerator DownloadFiles(string key, string rootDirectoryPath, string directoryPath, List<string> applications, string date, FileListDto list, Action<DataFile> finished)
+        IEnumerator DownloadFiles(string key, string rootDirectoryPath, string directoryPath, List<string> applications, string date,string format,string culture, FileListDto list, Action<DataFile> finished)
         {
-            var data = new DataFile(key, rootDirectoryPath, applications, date);
+            var data = new DataFile(key, rootDirectoryPath, applications, date,format,culture);
             foreach (var name in list.files)
             {
                 string path = Path.Combine(directoryPath, name);

@@ -45,9 +45,13 @@ namespace umi3d.cdk
             }
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
-                ua.Set(dto as UMI3DAvatarNodeDto);
-                UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
+                {
+                    UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
+                    ua.Set(dto as UMI3DAvatarNodeDto);
+                    UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+                }
+
                 finished.Invoke();
             }, (s) => failed.Invoke(s));
         }

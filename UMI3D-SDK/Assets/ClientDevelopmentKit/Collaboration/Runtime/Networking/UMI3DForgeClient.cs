@@ -272,7 +272,7 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                     MainThreadManager.Run(() =>
                     {
-                        StartCoroutine(userAvatar.UpdateBonePosition(trackingFrame));
+                        StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame));
                     });
                 else
                     MainThreadManager.Run(() =>

@@ -14,17 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using umi3d.cdk.interaction;
+using umi3d.common;
+using umi3d.common.interaction;
+using umi3d.common.userCapture;
+using UnityEngine;
 
-namespace umi3d.common
+namespace umi3d.cdk.collaboration
 {
-    public class AssetLibraryDto : UMI3DDto, IEntity
+    [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Collab Loading Parameters")]
+    public class UMI3DCollabLoadingParameters : UMI3DLoadingParameters
     {
-        public string id;
-        public string baseUrl;
-        public string date;
-        public string culture;
-        public string format;
-        public List<UMI3DLocalAssetDirectory> variants;
+        public override UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DCollabAvatarNodeLoader();
     }
 }
