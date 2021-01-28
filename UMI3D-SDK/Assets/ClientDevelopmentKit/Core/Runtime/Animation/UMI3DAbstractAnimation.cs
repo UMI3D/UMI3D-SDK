@@ -37,10 +37,11 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-
+            Debug.Log("set animation property " + property.property);
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
+                    Debug.Log("play animation");
                     bool old = dto.playing;
                     dto.playing = (bool)property.value;
                     if (old != dto.playing)
@@ -63,6 +64,8 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnimationStartTime:
                     dto.startTime = (DateTime)property.value;
                     break;
+                default:
+                    return false;
             }
             return true;
         }
