@@ -188,8 +188,6 @@ namespace umi3d.cdk.collaboration
             //state update
             x = x1.Add(K.Multiply(z.Subtract(z1)));
 
-            Debug.Log("<color=cyan>" + X.ToColumnArrays().Length + "</color>");
-
             //covariance update 
             P = P1.Subtract(K.Multiply(P12.Transpose()));
         }
