@@ -145,7 +145,7 @@ namespace umi3d.cdk.collaboration
             c = Math.Sqrt(c);
         }
 
-        public void Update(double[] measurements, int maxSize)
+        public void Update(double[] measurements)
         {
             if (m == 0)
             {
