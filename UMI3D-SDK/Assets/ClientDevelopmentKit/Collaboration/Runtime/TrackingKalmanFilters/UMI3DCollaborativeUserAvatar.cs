@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration
             public double[] estimations;
             public double[] previous_prediction;
             public double[] prediction;
-            public Vector4 regressed_rotation;
+            public Vector3 regressed_rotation;
 
             public KalmanRotation(double q, double r)
             {
@@ -70,8 +70,9 @@ namespace umi3d.cdk.collaboration
         KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
         Vector3 scale = Vector3.one;
 
-        Dictionary<BoneDto, KalmanPosition> bonePositionFilters = new Dictionary<BoneDto, KalmanPosition>();
-        Dictionary<BoneDto, KalmanRotation> boneRotationFilters = new Dictionary<BoneDto, KalmanRotation>();
+        Dictionary<string, KalmanPosition> bonePositionFilters = new Dictionary<string, KalmanPosition>();
+        Dictionary<string, KalmanRotation> boneRotationFilters = new Dictionary<string, KalmanRotation>();
+        Dictionary<string, Vector3> boneScales = new Dictionary<string, Vector3>();
 
         public float MeasuresPerSecond = 0;
 
@@ -86,20 +87,20 @@ namespace umi3d.cdk.collaboration
             this.transform.localPosition = nodePositionFilter.regressed_position;
             this.transform.localRotation = nodeRotationFilter.RegressedQuaternion();
 
-            foreach (BoneDto boneDto in bonePositionFilters.Keys)
+            foreach (string boneType in bonePositionFilters.Keys)
             {
-                RegressionPosition(bonePositionFilters[boneDto]);
-                RegressionRotation(boneRotationFilters[boneDto]);
+                RegressionPosition(bonePositionFilters[boneType]);
+                RegressionRotation(boneRotationFilters[boneType]);
 
-                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
+                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
                 foreach (BoneBindingDto boneBindingDto in bindings)
                 {
                     if (boneBindingDto.active && savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                     {
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
-                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneDto].regressed_position);
-                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneDto].RegressedQuaternion(), boneDto.scale).MultiplyPoint3x4((Vector3)boneBindingDto.position);
-                        st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneDto].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
+                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneType].regressed_position);
+                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion(), boneScales[boneType]).MultiplyPoint3x4((Vector3)boneBindingDto.position);
+                        st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
                     }
                 }
             }
@@ -147,7 +148,7 @@ namespace umi3d.cdk.collaboration
 
                 tools.estimations = new double[] { value_x, value_y, value_z };
 
-                tools.regressed_rotation = new Vector4((float)value_x, (float)value_y, (float)value_z);
+                tools.regressed_rotation = new Vector3((float)value_x, (float)value_y, (float)value_z);
             }
         }
 
@@ -157,8 +158,8 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         void BoneKalmanUpdate(BoneDto dto)
         {
-            KalmanPosition bonePositionKalman = bonePositionFilters[dto];
-            KalmanRotation boneRotationKalman = boneRotationFilters[dto];
+            KalmanPosition bonePositionKalman = bonePositionFilters[dto.boneType];
+            KalmanRotation boneRotationKalman = boneRotationFilters[dto.boneType];
 
             double[] bonePositionMeasurement = new double[] { dto.position.X, dto.position.Y, dto.position.Z };
             bonePositionKalman.KalmanFilter.Update(bonePositionMeasurement);
@@ -236,11 +237,14 @@ namespace umi3d.cdk.collaboration
 
             foreach (BoneDto boneDto in trackingFrameDto.bones)
             {
-                if (!bonePositionFilters.ContainsKey(boneDto))
-                    bonePositionFilters.Add(boneDto, new KalmanPosition(0.001f, 0.001f));
+                if (!bonePositionFilters.ContainsKey(boneDto.boneType))
+                    bonePositionFilters.Add(boneDto.boneType, new KalmanPosition(0.001f, 0.001f));
 
-                if (!boneRotationFilters.ContainsKey(boneDto))
-                    boneRotationFilters.Add(boneDto, new KalmanRotation(0.001f, 0.001f));
+                if (!boneRotationFilters.ContainsKey(boneDto.boneType))
+                    boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(0.001f, 0.001f));
+
+                if (!boneScales.ContainsKey(boneDto.boneType))
+                    boneScales.Add(boneDto.boneType, boneDto.scale);
 
                 BoneKalmanUpdate(boneDto);
 
@@ -288,7 +292,6 @@ namespace umi3d.cdk.collaboration
 
                             if (boneBindingDto.rigName == "")
                                 node.updatePose = false;
-
                         }
 
                         if (boneBindingDto.rigName == "")
