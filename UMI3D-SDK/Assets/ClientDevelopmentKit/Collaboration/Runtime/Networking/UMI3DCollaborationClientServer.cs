@@ -401,6 +401,11 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         public override string GetId() { return Identity.userId; }
 
+        ///<inheritdoc/>
+        public override ulong GetTime()
+        {
+            return ForgeClient.GetNetWorker().Time.Timestep;
+        }
 
         protected override string _getAuthorization() { return HttpClient.ComputedToken; }
     }

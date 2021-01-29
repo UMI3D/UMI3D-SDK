@@ -37,11 +37,9 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            Debug.Log("set animation property " + property.property);
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
-                    Debug.Log("play animation");
                     bool old = dto.playing;
                     dto.playing = (bool)property.value;
                     if (old != dto.playing)
@@ -52,7 +50,7 @@ namespace umi3d.cdk
                                 (entity.Object as UMI3DAbstractAnimation).Start();
                             else
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start((float)(DateTime.Now - dto.startTime).TotalMilliseconds);
+                                (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
                         else (entity.Object as UMI3DAbstractAnimation).Stop();
@@ -62,7 +60,7 @@ namespace umi3d.cdk
                     dto.looping = (bool)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    dto.startTime = (DateTime)property.value;
+                    dto.startTime = (ulong)(long)property.value;
                     break;
                 default:
                     return false;

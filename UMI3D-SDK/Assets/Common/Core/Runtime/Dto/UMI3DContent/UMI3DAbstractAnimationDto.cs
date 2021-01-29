@@ -23,6 +23,6 @@ namespace umi3d.common
     {
         public bool playing = false;
         public bool looping = false;
-        public DateTime startTime;
+        public ulong startTime;
     }
 }

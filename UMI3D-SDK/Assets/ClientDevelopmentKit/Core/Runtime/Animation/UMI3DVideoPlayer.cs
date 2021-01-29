@@ -36,8 +36,6 @@ namespace umi3d.cdk
             renderTexture = new RenderTexture(1024, 1024, 16, RenderTextureFormat.ARGB32);
             renderTexture.Create();
             renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
-            //renderTexture.ResolveAntiAliasedSurface();
-            //renderTexture.wrapMode = TextureWrapMode.Clamp;
             Debug.Log(renderTexture.isReadable);
             Debug.Log("mat id : " + dto.materialId);
             mat = UMI3DEnvironmentLoader.GetEntity(dto.materialId).Object as Material;
@@ -56,30 +54,33 @@ namespace umi3d.cdk
             videoPlayer.targetTexture = renderTexture;
             videoPlayer.renderMode = VideoRenderMode.RenderTexture;
             videoPlayer.playOnAwake = dto.playing;
+            videoPlayer.skipOnDrop = true;
+            videoPlayer.waitForFirstFrame = false;
             videoPlayer.isLooping = dto.looping;
+            //videoPlayer.prepareCompleted += (v) => Debug.LogWarning("PREPARED !");
+            videoPlayer.Prepare();
+            videoPlayer.Play();
+            videoPlayer.Pause();
+
             if (dto.playing)
             {
-                UMI3DAnimationManager.Instance.StartCoroutine(StartAfterLoading(dto.startTime));
+                UMI3DAnimationManager.Instance.StartCoroutine(StartAfterLoading());
             }
             else
             {
-                videoPlayer.Stop();
+                videoPlayer.Pause(); // Don't call Stop because it cansel videoPlayer.Prepare()
             }
         }
 
-        private IEnumerator StartAfterLoading(DateTime startTime)
+        private IEnumerator StartAfterLoading()
         {
             while (!videoPlayer.isPrepared)
             {
-                Debug.Log("wait video loading");
+                //Debug.Log("wait video loading");
                 yield return new WaitForEndOfFrame();
             }
-            Start((float)(DateTime.Now - dto.startTime).TotalMilliseconds);
-            Debug.Log(videoPlayer.isPlaying);
-            Debug.Log("Date time now : " + DateTime.Now);
-            Debug.Log("Date time dto : " + dto.startTime);
-            Debug.Log("time offset : " + (DateTime.Now - dto.startTime).TotalMilliseconds);
-
+            ulong now = UMI3DClientServer.Instance.GetTime();
+            Start((float)(now - dto.startTime));
 
         }
 
@@ -113,11 +114,23 @@ namespace umi3d.cdk
         {
             if (videoPlayer != null)
             {
-                videoPlayer.frame = (int)(atTime * videoPlayer.frameRate / 1000);
-                videoPlayer.Play();
-                started = true;
+                if (videoPlayer.isPrepared)
+                {
+                    videoPlayer.frame = (int)(Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000));
+                    videoPlayer.Play();
+                }
+                else
+                {
+                    Debug.Log("not prepared");
+                    videoPlayer.Prepare();
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
+
+                }
+            //    Debug.Log("start client video " + UMI3DClientServer.Instance.GetTime() + "  at : " + videoPlayer.frame);
             }
         }
+
+     
 
     }
 }
