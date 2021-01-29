@@ -389,8 +389,8 @@ namespace umi3d.cdk
                     }
                     libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<string>>(data, new HashSet<string>()));
                 }
-                else
-                    Directory.Delete(directory, true);
+                //else
+                //    Directory.Delete(directory, true);
             }
         }
         #endregion
