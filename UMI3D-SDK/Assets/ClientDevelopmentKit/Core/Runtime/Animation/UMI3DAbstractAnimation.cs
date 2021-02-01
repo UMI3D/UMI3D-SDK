@@ -62,6 +62,10 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnimationStartTime:
                     dto.startTime = (ulong)(long)property.value;
                     break;
+                case UMI3DPropertyKeys.AnimationPauseFrame:
+                    dto.pauseFrame = (long)property.value;
+                    SetProgress(dto.pauseFrame);
+                    break;
                 default:
                     return false;
             }
@@ -95,6 +99,8 @@ namespace umi3d.cdk
         }
 
         public abstract float GetProgress();
+
+        public abstract void SetProgress(long frame);
 
         public abstract void Start();
 

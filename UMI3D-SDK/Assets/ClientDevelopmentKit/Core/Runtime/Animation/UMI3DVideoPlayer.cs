@@ -59,8 +59,8 @@ namespace umi3d.cdk
             videoPlayer.isLooping = dto.looping;
             //videoPlayer.prepareCompleted += (v) => Debug.LogWarning("PREPARED !");
             videoPlayer.Prepare();
-            videoPlayer.Play();
-            videoPlayer.Pause();
+        //    videoPlayer.Play();
+          //  videoPlayer.Pause();
 
             if (dto.playing)
             {
@@ -68,7 +68,10 @@ namespace umi3d.cdk
             }
             else
             {
-                videoPlayer.Pause(); // Don't call Stop because it cansel videoPlayer.Prepare()
+                videoPlayer.Pause(); // Don't call Stop() because it cansel videoPlayer.Prepare()
+                
+                UMI3DAnimationManager.Instance.StartCoroutine(SetFrame());
+
             }
         }
 
@@ -82,6 +85,26 @@ namespace umi3d.cdk
             ulong now = UMI3DClientServer.Instance.GetTime();
             Start((float)(now - dto.startTime));
 
+        }
+
+        private IEnumerator SetFrame(long frame)
+        {
+            dto.pauseFrame = frame;
+            yield return SetFrame();
+        }
+
+        private IEnumerator SetFrame()
+        {
+            while (!videoPlayer.isPrepared)
+            {
+                //Debug.Log("wait video loading");
+                yield return new WaitForEndOfFrame();
+            }
+            if (!dto.playing)
+            {
+                videoPlayer.frame = (dto as UMI3DVideoPlayerDto).pauseFrame;
+                Debug.Log(dto.pauseFrame + "   " + videoPlayer.frame);
+            }
         }
 
         ///<inheritdoc/>
@@ -130,7 +153,10 @@ namespace umi3d.cdk
             }
         }
 
-     
+        public override void SetProgress(long frame)
+        {
 
+            UMI3DAnimationManager.Instance.StartCoroutine(SetFrame());
+        }
     }
 }

@@ -151,5 +151,9 @@ namespace umi3d.cdk
 
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
+
+        public override void SetProgress(long frame)
+        {
+        }
     }
 }

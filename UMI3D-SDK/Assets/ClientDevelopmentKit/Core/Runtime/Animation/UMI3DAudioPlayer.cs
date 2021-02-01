@@ -200,5 +200,10 @@ namespace umi3d.cdk
 
         }
 
+        public override void SetProgress(long frame)
+        {
+            audioSource.timeSamples = (int)frame;
+
+        }
     }
 }
