@@ -116,7 +116,6 @@ namespace umi3d.cdk.collaboration
             this.L = L;
         }
 
-
         private void init()
         {
             //q = 50;
@@ -188,6 +187,7 @@ namespace umi3d.cdk.collaboration
 
             //state update
             x = x1.Add(K.Multiply(z.Subtract(z1)));
+
             //covariance update 
             P = P1.Subtract(K.Multiply(P12.Transpose()));
         }

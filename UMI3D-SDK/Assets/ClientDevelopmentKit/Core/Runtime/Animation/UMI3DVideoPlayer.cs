@@ -15,42 +15,148 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using umi3d.common;
+using UnityEngine;
+using UnityEngine.Video;
 
 namespace umi3d.cdk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
-
+        VideoPlayer videoPlayer;
+        Material mat;
+        RenderTexture renderTexture;
+        bool started = false;
         new public static UMI3DVideoPlayer Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
+            //init material
+            renderTexture = new RenderTexture(1024, 1024, 16, RenderTextureFormat.ARGB32);
+            renderTexture.Create();
+            renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
+            Debug.Log(renderTexture.isReadable);
+            Debug.Log("mat id : " + dto.materialId);
+            mat = UMI3DEnvironmentLoader.GetEntity(dto.materialId).Object as Material;
+            if (mat == null)
+            {
+                Debug.LogWarning("Material not found to display video");
+                return;
+            }
+            mat.mainTexture = renderTexture;
 
+            // create unity VideoPlayer
+            GameObject videoPlayerGameObject = new GameObject("video");
+            videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
+            videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
+            videoPlayer.url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.videoResource.variants).url;
+            videoPlayer.targetTexture = renderTexture;
+            videoPlayer.renderMode = VideoRenderMode.RenderTexture;
+            videoPlayer.playOnAwake = dto.playing;
+            videoPlayer.skipOnDrop = true;
+            videoPlayer.waitForFirstFrame = false;
+            videoPlayer.isLooping = dto.looping;
+            //videoPlayer.prepareCompleted += (v) => Debug.LogWarning("PREPARED !");
+            videoPlayer.Prepare();
+        //    videoPlayer.Play();
+          //  videoPlayer.Pause();
+
+            if (dto.playing)
+            {
+                UMI3DAnimationManager.Instance.StartCoroutine(StartAfterLoading());
+            }
+            else
+            {
+                videoPlayer.Pause(); // Don't call Stop() because it cansel videoPlayer.Prepare()
+                
+                UMI3DAnimationManager.Instance.StartCoroutine(SetFrame());
+
+            }
+        }
+
+        private IEnumerator StartAfterLoading()
+        {
+            while (!videoPlayer.isPrepared)
+            {
+                //Debug.Log("wait video loading");
+                yield return new WaitForEndOfFrame();
+            }
+            ulong now = UMI3DClientServer.Instance.GetTime();
+            Start((float)(now - dto.startTime));
+
+        }
+
+        private IEnumerator SetFrame(long frame)
+        {
+            dto.pauseFrame = frame;
+            yield return SetFrame();
+        }
+
+        private IEnumerator SetFrame()
+        {
+            while (!videoPlayer.isPrepared)
+            {
+                //Debug.Log("wait video loading");
+                yield return new WaitForEndOfFrame();
+            }
+            if (!dto.playing)
+            {
+                videoPlayer.frame = (dto as UMI3DVideoPlayerDto).pauseFrame;
+                Debug.Log(dto.pauseFrame + "   " + videoPlayer.frame);
+            }
         }
 
         ///<inheritdoc/>
         public override float GetProgress()
         {
-            throw new NotImplementedException();
+            float res = 0;
+            if (videoPlayer != null)
+                res = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+            return res;
         }
 
         ///<inheritdoc/>
         public override void Start()
         {
-            throw new NotImplementedException();
+            Start(0);
         }
 
         ///<inheritdoc/>
         public override void Stop()
         {
-            throw new NotImplementedException();
+            if (videoPlayer != null)
+            {
+                videoPlayer.Pause();
+                started = false;
+            }
         }
 
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
-            throw new NotImplementedException();
+            if (videoPlayer != null)
+            {
+                if (videoPlayer.isPrepared)
+                {
+                    videoPlayer.frame = (int)(Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000));
+                    videoPlayer.Play();
+                }
+                else
+                {
+                    Debug.Log("not prepared");
+                    videoPlayer.Prepare();
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
+
+                }
+            //    Debug.Log("start client video " + UMI3DClientServer.Instance.GetTime() + "  at : " + videoPlayer.frame);
+            }
+        }
+
+        public override void SetProgress(long frame)
+        {
+
+            UMI3DAnimationManager.Instance.StartCoroutine(SetFrame());
         }
     }
 }
