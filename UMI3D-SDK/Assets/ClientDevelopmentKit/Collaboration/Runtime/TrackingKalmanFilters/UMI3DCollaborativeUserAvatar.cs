@@ -29,8 +29,7 @@ namespace umi3d.cdk.collaboration
         private class KalmanPosition
         {
             public UKF KalmanFilter;
-            public List<double[]> Measurements;
-            public List<double[]> Estimations;
+            public double[] estimations;
             public double[] previous_prediction;
             public double[] prediction;
             public Vector3 regressed_position;
@@ -38,29 +37,26 @@ namespace umi3d.cdk.collaboration
             public KalmanPosition(double q, double r)
             {
                 KalmanFilter = new UKF(q, r);
-                Measurements = new List<double[]>();
-                Estimations = new List<double[]>();
-                previous_prediction = new double[3];
-                prediction = new double[3];
+                estimations = new double[] { };
+                previous_prediction = new double[] { };
+                prediction = new double[] { };
             }
         }
 
         private class KalmanRotation
         {
             public UKF KalmanFilter = new UKF();
-            public List<double[]> Measurements = new List<double[]>();
-            public List<double[]> Estimations = new List<double[]>();
-            public double[] previous_prediction = new double[3];
-            public double[] prediction = new double[3];
-            public Vector4 regressed_rotation;
+            public double[] estimations;
+            public double[] previous_prediction;
+            public double[] prediction;
+            public Vector3 regressed_rotation;
 
             public KalmanRotation(double q, double r)
             {
                 KalmanFilter = new UKF(q, r);
-                Measurements = new List<double[]>();
-                Estimations = new List<double[]>();
-                previous_prediction = new double[3];
-                prediction = new double[3];
+                estimations = new double[] { };
+                previous_prediction = new double[] { };
+                prediction = new double[] { };
             }
 
             public Quaternion RegressedQuaternion()
@@ -74,12 +70,14 @@ namespace umi3d.cdk.collaboration
         KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
         Vector3 scale = Vector3.one;
 
-        Dictionary<BoneDto, KalmanPosition> bonePositionFilters = new Dictionary<BoneDto, KalmanPosition>();
-        Dictionary<BoneDto, KalmanRotation> boneRotationFilters = new Dictionary<BoneDto, KalmanRotation>();
+        Dictionary<string, KalmanPosition> bonePositionFilters = new Dictionary<string, KalmanPosition>();
+        Dictionary<string, KalmanRotation> boneRotationFilters = new Dictionary<string, KalmanRotation>();
+        Dictionary<string, Vector3> boneScales = new Dictionary<string, Vector3>();
 
-        public float MeasuresPerSecond = 5;
+        public float MeasuresPerSecond = 0;
 
-        float lastMessageTime = 0f;
+        float lastFrameTime = 0;
+        float lastMessageTime = 0;
 
         private void Update()
         {
@@ -89,20 +87,20 @@ namespace umi3d.cdk.collaboration
             this.transform.localPosition = nodePositionFilter.regressed_position;
             this.transform.localRotation = nodeRotationFilter.RegressedQuaternion();
 
-            foreach (BoneDto boneDto in bonePositionFilters.Keys)
+            foreach (string boneType in bonePositionFilters.Keys)
             {
-                RegressionPosition(bonePositionFilters[boneDto]);
-                RegressionRotation(boneRotationFilters[boneDto]);
+                RegressionPosition(bonePositionFilters[boneType]);
+                RegressionRotation(boneRotationFilters[boneType]);
 
-                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
+                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
                 foreach (BoneBindingDto boneBindingDto in bindings)
                 {
                     if (boneBindingDto.active && savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                     {
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
-                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneDto].regressed_position);
-                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneDto].RegressedQuaternion(), boneDto.scale).MultiplyPoint3x4((Vector3)boneBindingDto.position);
-                        st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneDto].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
+                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneType].regressed_position);
+                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion(), boneScales[boneType]).MultiplyPoint3x4((Vector3)boneBindingDto.position);
+                        st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
                     }
                 }
             }
@@ -125,7 +123,8 @@ namespace umi3d.cdk.collaboration
                 var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
                 var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
 
-                tools.Estimations.Add(new double[] { value_x, value_y, value_z });
+                tools.estimations = new double[] { value_x, value_y, value_z };
+
                 tools.regressed_position = new Vector3((float)value_x, (float)value_y, (float)value_z);
             }
         }
@@ -147,8 +146,9 @@ namespace umi3d.cdk.collaboration
                 var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
                 var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
 
-                tools.Estimations.Add(new double[] { value_x, value_y, value_z });
-                tools.regressed_rotation = new Vector4((float)value_x, (float)value_y, (float)value_z);
+                tools.estimations = new double[] { value_x, value_y, value_z };
+
+                tools.regressed_rotation = new Vector3((float)value_x, (float)value_y, (float)value_z);
             }
         }
 
@@ -158,32 +158,29 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         void BoneKalmanUpdate(BoneDto dto)
         {
-            KalmanPosition bonePositionKalman = bonePositionFilters[dto];
-            KalmanRotation boneRotationKalman = boneRotationFilters[dto];
+            KalmanPosition bonePositionKalman = bonePositionFilters[dto.boneType];
+            KalmanRotation boneRotationKalman = boneRotationFilters[dto.boneType];
 
             double[] bonePositionMeasurement = new double[] { dto.position.X, dto.position.Y, dto.position.Z };
             bonePositionKalman.KalmanFilter.Update(bonePositionMeasurement);
-            bonePositionKalman.Measurements.Add(bonePositionMeasurement);
 
             double[] newPositionState = bonePositionKalman.KalmanFilter.getState();
             bonePositionKalman.prediction = new double[] { newPositionState[0], newPositionState[1], newPositionState[2] };
 
-            if (bonePositionKalman.Estimations.Count > 0)
-                bonePositionKalman.previous_prediction = bonePositionKalman.Estimations[bonePositionKalman.Estimations.Count - 1];
+            if (bonePositionKalman.estimations.Length > 0)
+                bonePositionKalman.previous_prediction = bonePositionKalman.estimations;
             else
                 bonePositionKalman.previous_prediction = bonePositionMeasurement;
-
 
             Vector3 eulerRotation = (new Quaternion(dto.rotation.X, dto.rotation.Y, dto.rotation.Z, dto.rotation.W)).eulerAngles;
             double[] boneRotationMeasurement = new double[] { eulerRotation.x, eulerRotation.y, eulerRotation.z };
             boneRotationKalman.KalmanFilter.Update(boneRotationMeasurement);
-            boneRotationKalman.Measurements.Add(boneRotationMeasurement);
 
             double[] newRotationState = boneRotationKalman.KalmanFilter.getState();
             boneRotationKalman.prediction = new double[] { newRotationState[0], newRotationState[1], newRotationState[2] };
 
-            if (boneRotationKalman.Estimations.Count > 0)
-                boneRotationKalman.previous_prediction = boneRotationKalman.Estimations[boneRotationKalman.Estimations.Count - 1];
+            if (boneRotationKalman.estimations.Length > 0)
+                boneRotationKalman.previous_prediction = boneRotationKalman.estimations;
             else
                 boneRotationKalman.previous_prediction = boneRotationMeasurement;
         }
@@ -197,28 +194,27 @@ namespace umi3d.cdk.collaboration
         void NodeKalmanUpdate(Vector3 position, Quaternion rotation, Vector3 scale)
         {
             double[] positionMeasurement = new double[] { position.x, position.y, position.z };
+
             nodePositionFilter.KalmanFilter.Update(positionMeasurement);
-            nodePositionFilter.Measurements.Add(positionMeasurement);
 
             double[] newPositionState = nodePositionFilter.KalmanFilter.getState();
             nodePositionFilter.prediction = new double[] { newPositionState[0], newPositionState[1], newPositionState[2] };
 
-            if (nodePositionFilter.Estimations.Count > 0)
-                nodePositionFilter.previous_prediction = nodePositionFilter.Estimations[nodePositionFilter.Estimations.Count - 1];
+            if (nodePositionFilter.estimations.Length > 0)
+                nodePositionFilter.previous_prediction = nodePositionFilter.estimations;
             else
                 nodePositionFilter.previous_prediction = positionMeasurement;
 
             Vector3 eulerRotation = rotation.eulerAngles;
             double[] rotationMeasurement = new double[] { eulerRotation.x, eulerRotation.y, eulerRotation.z };
             nodeRotationFilter.KalmanFilter.Update(rotationMeasurement);
-            nodeRotationFilter.Measurements.Add(rotationMeasurement);
 
             double[] newRotationState = nodeRotationFilter.KalmanFilter.getState();
 
             nodeRotationFilter.prediction = new double[] { newRotationState[0], newRotationState[1], newRotationState[2] };
 
-            if (nodeRotationFilter.Estimations.Count > 0)
-                nodeRotationFilter.previous_prediction = nodeRotationFilter.Estimations[nodeRotationFilter.Estimations.Count - 1];
+            if (nodeRotationFilter.estimations.Length > 0)
+                nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
             else
                 nodeRotationFilter.previous_prediction = rotationMeasurement;
 
@@ -230,21 +226,25 @@ namespace umi3d.cdk.collaboration
         /// Update the a UserAvatar directly sent by another client.
         /// </summary>
         /// <param name="trackingFrameDto">a dto containing the tracking data</param>
-        public IEnumerator UpdateBonePosition(UserTrackingFrameDto trackingFrameDto)
+        /// <param name="timeFrame">sending time in ms</param>
+        public IEnumerator UpdateBonePosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            float now = Time.time;
-            MeasuresPerSecond = Mathf.Min(10, 1 / (now - lastMessageTime));
-            lastMessageTime = now;
+            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+            lastFrameTime = timeFrame;
+            lastMessageTime = Time.time;
 
             NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation, trackingFrameDto.scale);
 
             foreach (BoneDto boneDto in trackingFrameDto.bones)
             {
-                if (!bonePositionFilters.ContainsKey(boneDto))
-                    bonePositionFilters.Add(boneDto, new KalmanPosition(0.001f, 0.001f));
+                if (!bonePositionFilters.ContainsKey(boneDto.boneType))
+                    bonePositionFilters.Add(boneDto.boneType, new KalmanPosition(0.001f, 0.001f));
 
-                if (!boneRotationFilters.ContainsKey(boneDto))
-                    boneRotationFilters.Add(boneDto, new KalmanRotation(0.001f, 0.001f));
+                if (!boneRotationFilters.ContainsKey(boneDto.boneType))
+                    boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(0.001f, 0.001f));
+
+                if (!boneScales.ContainsKey(boneDto.boneType))
+                    boneScales.Add(boneDto.boneType, boneDto.scale);
 
                 BoneKalmanUpdate(boneDto);
 
@@ -292,7 +292,6 @@ namespace umi3d.cdk.collaboration
 
                             if (boneBindingDto.rigName == "")
                                 node.updatePose = false;
-
                         }
 
                         if (boneBindingDto.rigName == "")

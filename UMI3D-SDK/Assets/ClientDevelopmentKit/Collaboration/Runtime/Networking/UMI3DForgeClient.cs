@@ -219,7 +219,7 @@ namespace umi3d.cdk.collaboration
             SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
         }
 
-        public void SendVOIP(int length,byte[] sample)
+        public void SendVOIP(int length, byte[] sample)
         {
             var dto = new VoiceDto()
             {
@@ -272,7 +272,8 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                     MainThreadManager.Run(() =>
                     {
-                        StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame));
+                        if (client.Time.Timestep - frame.TimeStep < 500)
+                            StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
                     });
                 else
                     MainThreadManager.Run(() =>
@@ -302,13 +303,13 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-                VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
-                UMI3DUser source = GetUserByNetWorkId(dto.senderId);
-                if (source != null)
-                    AudioManager.Instance.Read(source.id, dto);
+            VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
+            UMI3DUser source = GetUserByNetWorkId(dto.senderId);
+            if (source != null)
+                AudioManager.Instance.Read(source.id, dto);
         }
 
-        
+
 
         #endregion
         /// <summary>
