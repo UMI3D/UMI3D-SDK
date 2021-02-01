@@ -389,8 +389,8 @@ namespace umi3d.cdk
                     }
                     libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<string>>(data, new HashSet<string>()));
                 }
-                else
-                    Directory.Delete(directory, true);
+                //else
+                //    Directory.Delete(directory, true);
             }
         }
         #endregion
@@ -582,21 +582,30 @@ namespace umi3d.cdk
             return Instance._LibrariesToDownload(libraries.libraries);
         }
 
-        public List<string> _LibrariesToDownload(List<AssetLibraryDto> assetlibraries)
+        public List<string> _LibrariesToDownload(List<AssetLibraryDto> assetLibraries)
         {
             List<string> toDownload = new List<string>();
-            if (assetlibraries != null && assetlibraries.Count > 0)
+            if (assetLibraries != null && assetLibraries.Count > 0)
             {
                 DateTime local, server;
-                foreach (var assetlibrary in assetlibraries)
+                foreach (var assetLibrary in assetLibraries)
                 {
-                    CultureInfo info = new CultureInfo(assetlibrary.culture);
-                    if (libraries.ContainsKey(assetlibrary.id) && DateTime.TryParseExact(libraries[assetlibrary.id].Key.date, libraries[assetlibrary.id].Key.dateformat, info, DateTimeStyles.None, out local) && DateTime.TryParseExact(assetlibrary.date, assetlibrary.format, info, DateTimeStyles.None, out server))
+                    try
                     {
-                        if (local.Ticks >= server.Ticks)
-                            continue;
+                        if (libraries.ContainsKey(assetLibrary.id))
+                        {
+                            var dt = libraries[assetLibrary.id].Key;
+                            CultureInfo info = new CultureInfo(assetLibrary.culture);
+                            CultureInfo dtInfo = new CultureInfo(dt.culture);
+                            if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out server))
+                            {
+                                if (local.Ticks >= server.Ticks)
+                                    continue;
+                            }
+                        }
                     }
-                    toDownload.Add(assetlibrary.id);
+                    catch { };
+                    toDownload.Add(assetLibrary.id);
                 }
             }
             return toDownload;
@@ -644,27 +653,33 @@ namespace umi3d.cdk
             string directoryPath = Path.Combine(Application.persistentDataPath, assetLibrary.id);
             if (Directory.Exists(directoryPath))
             {
-                DataFile dt = Instance.libraries[assetLibrary.id].Key;
-                DateTime local, server;
-
-                if (DateTime.TryParse(dt.date, out local) && DateTime.TryParse(assetLibrary.date, out server))
+                try
                 {
-                    if (dt.applications == null)
-                        dt.applications = new List<string>();
-                    if (local.Ticks >= server.Ticks)
+                    DataFile dt = Instance.libraries[assetLibrary.id].Key;
+                    DateTime local, server;
+                    CultureInfo info = new CultureInfo(assetLibrary.culture);
+                    CultureInfo dtInfo = new CultureInfo(dt.culture);
+                    if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out server))
                     {
-                        if (!dt.applications.Contains(application))
+
+                        if (dt.applications == null)
+                            dt.applications = new List<string>();
+                        if (local.Ticks >= server.Ticks)
                         {
-                            dt.applications.Add(application);
-                            SetData(dt, directoryPath);
+                            if (!dt.applications.Contains(application))
+                            {
+                                dt.applications.Add(application);
+                                SetData(dt, directoryPath);
+                            }
+                            yield break;
                         }
-                        yield break;
+                        applications = dt.applications;
+                        if (!applications.Contains(application))
+                            applications.Add(application);
                     }
-                    applications = dt.applications;
-                    if (!applications.Contains(application))
-                        applications.Add(application);
                 }
-                RemoveLibrary(dt.key);
+                catch { }
+                RemoveLibrary(assetLibrary.id);
             }
 
             bool finished = false;
