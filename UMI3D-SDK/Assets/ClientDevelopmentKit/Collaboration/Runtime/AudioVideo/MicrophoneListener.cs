@@ -19,10 +19,12 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.Threading;
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
+using UnityOpus;
 
 namespace umi3d.cdk.collaboration
 {
@@ -34,14 +36,12 @@ namespace umi3d.cdk.collaboration
 		/// </summary>
 		public static bool IsMute { get { return Exists ? Instance.muted : false; } set { if (Exists) Instance.muted = value; } }
 
-		
-
 		/// <summary>
 		/// Starts to stream the input of the current Mic device
 		/// </summary>
 		public void StartRecording(int frequency = 16000, int sampleLen = 10)
 		{
-            StartVOIP();
+            //StartVOIP();
         }
 
 		/// <summary>
@@ -49,48 +49,10 @@ namespace umi3d.cdk.collaboration
 		/// </summary>
 		public void StopRecording()
 		{
-            StopVoip();
+            //StopVoip();
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private int lastSample = 0;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private AudioClip mic = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private int channels = 1;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private int frequency = 8000;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private float[] samples = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private List<float> writeSamples = null;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private float WRITE_FLUSH_TIME = 0.5f;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private float writeFlushTimer = 0.0f;
+        #region ReadMicrophone
 
         /// <summary>
         /// 
@@ -103,18 +65,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void StartVOIP()
         {
-            writeSamples = new List<float>(1024);
-            MainThreadManager.Run(() =>
-            {
-                mic = Microphone.Start(null, true, 100, frequency);
-                channels = mic.channels;
-                if (mic == null)
-                {
-                    Debug.LogError("A default microphone was not found or plugged into the system");
-                    return;
-                }
-                Task.Queue(VOIPWorker);
-            });
+            
         }
 
         /// <summary>
@@ -122,97 +73,130 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void StopVoip()
         {
-            Microphone.End(null);
-            mic = null;
+            
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        BMSByte writeBuffer = new BMSByte();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void VOIPWorker()
+        const int samplingFrequency = 48000;
+        const int lengthSeconds = 1;
+
+        AudioClip clip;
+        int head = 0;
+        float[] processBuffer = new float[512];
+        float[] microphoneBuffer = new float[lengthSeconds * samplingFrequency];
+
+        public float GetRMS()
         {
-            while (!UMI3DCollaborationClientServer.Connected())
+            float sum = 0.0f;
+            foreach (var sample in processBuffer)
             {
-                MainThreadManager.ThreadSleep(1000);
+                sum += sample * sample;
             }
-            while (UMI3DCollaborationClientServer.Connected())
+            return Mathf.Sqrt(sum / processBuffer.Length);
+        }
+
+        void Start()
+        {
+            clip = Microphone.Start(null, true, lengthSeconds, samplingFrequency);
+        }
+
+        void Update()
+        {
+            var position = Microphone.GetPosition(null);
+            if (position < 0 || head == position)
             {
-                if (writeFlushTimer >= WRITE_FLUSH_TIME && writeSamples.Count > 0)
+                return;
+            }
+
+            clip.GetData(microphoneBuffer, 0);
+            while (GetDataLength(microphoneBuffer.Length, head, position) > processBuffer.Length)
+            {
+                var remain = microphoneBuffer.Length - head;
+                if (remain < processBuffer.Length)
                 {
-                    writeFlushTimer = 0.0f;
-                    lock (writeSamples)
-                    {
-                        writeBuffer.Clone(ToByteArray(writeSamples));
-                        writeSamples.Clear();
-                    }
-                    if (!muted)
-                    {
-                        UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(writeBuffer.Size, writeBuffer.byteArr);
-                    }
+                    Array.Copy(microphoneBuffer, head, processBuffer, 0, remain);
+                    Array.Copy(microphoneBuffer, 0, processBuffer, remain, processBuffer.Length - remain);
                 }
-                MainThreadManager.ThreadSleep(10);
-            }
-            StopVoip();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ReadMic()
-        {
-            if (mic != null && UMI3DCollaborationClientServer.Connected())
-            {
-                writeFlushTimer += Time.deltaTime;
-                int pos = Microphone.GetPosition(null);
-                int diff = pos - lastSample;
-
-                if (diff > 0)
+                else
                 {
-                    samples = new float[diff * channels];
-                    mic.GetData(samples, lastSample);
-
-                    lock (writeSamples)
-                    {
-                        writeSamples.AddRange(samples);
-                    }
+                    Array.Copy(microphoneBuffer, head, processBuffer, 0, processBuffer.Length);
                 }
-                lastSample = pos;
+
+                if (!muted)
+                {
+                    OnAudioReady(processBuffer);
+                }
+
+                    head += processBuffer.Length;
+                if (head > microphoneBuffer.Length)
+                {
+                    head -= microphoneBuffer.Length;
+                }
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sampleList"></param>
-        /// <returns></returns>
-        private byte[] ToByteArray(List<float> sampleList)
+        static int GetDataLength(int bufferLength, int head, int tail)
         {
-            int len = sampleList.Count * 4;
-            byte[] byteArray = new byte[len];
-            int pos = 0;
-
-            for (int i = 0; i < sampleList.Count; i++)
+            if (head < tail)
             {
-                byte[] data = System.BitConverter.GetBytes(sampleList[i]);
-                System.Array.Copy(data, 0, byteArray, pos, 4);
-                pos += 4;
+                return tail - head;
             }
-
-            return byteArray;
+            else
+            {
+                return bufferLength - head + tail;
+            }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void FixedUpdate()
+        #endregion
+
+        #region Encoder
+
+        const int bitrate = 96000;
+        const int frameSize = 120;
+        const int outputBufferSize = frameSize * 4; // at least frameSize * sizeof(float)
+
+        Encoder encoder;
+        Queue<float> pcmQueue = new Queue<float>();
+        readonly float[] frameBuffer = new float[frameSize];
+        readonly byte[] outputBuffer = new byte[outputBufferSize];
+
+        void OnEnable()
         {
-            ReadMic();
+            encoder = new Encoder(
+                SamplingFrequency.Frequency_48000,
+                NumChannels.Mono,
+                OpusApplication.Audio)
+            {
+                Bitrate = bitrate,
+                Complexity = 10,
+                Signal = OpusSignal.Music
+            };
         }
 
+        void OnDisable()
+        {
+            encoder.Dispose();
+            encoder = null;
+            pcmQueue.Clear();
+        }
+
+        void OnAudioReady(float[] data)
+        {
+            foreach (var sample in data)
+            {
+                pcmQueue.Enqueue(sample);
+            }
+            while (pcmQueue.Count > frameSize)
+            {
+                for (int i = 0; i < frameSize; i++)
+                {
+                    frameBuffer[i] = pcmQueue.Dequeue();
+                }
+                var encodedLength = encoder.Encode(frameBuffer, outputBuffer);
+                UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
+            }
+        }
+
+        #endregion
     }
 }
