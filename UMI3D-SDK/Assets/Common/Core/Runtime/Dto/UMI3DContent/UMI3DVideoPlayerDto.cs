@@ -21,8 +21,7 @@ namespace umi3d.common
         public ResourceDto videoResource;
         public string materialId;
 
-        // add audio volume 
-        // add audio id animation
+        public string audioId;
 
     }
 }
