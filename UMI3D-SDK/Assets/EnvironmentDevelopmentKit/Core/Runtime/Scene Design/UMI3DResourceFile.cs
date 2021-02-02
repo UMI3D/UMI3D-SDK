@@ -43,7 +43,7 @@ namespace umi3d.edk
             dto.extension = extension;
             dto.metrics = metrics;
             dto.pathIfInBundle = isInBundle ? pathIfInBundle : null;
-            dto.libraryKey = isInLibrary ? libraryKey.id : null;
+            dto.libraryKey = isInLibrary ? libraryKey?.id : null;
             return dto;
         }
         public string GetUrl()
