@@ -44,6 +44,7 @@ namespace umi3d.cdk
                 Debug.LogWarning("Material not found to display video");
                 return;
             }
+            mat.DisableKeyword("_DISABLE_ALBEDO_MAP");
             mat.mainTexture = renderTexture;
 
             // create unity VideoPlayer
@@ -59,8 +60,7 @@ namespace umi3d.cdk
             videoPlayer.isLooping = dto.looping;
             //videoPlayer.prepareCompleted += (v) => Debug.LogWarning("PREPARED !");
             videoPlayer.Prepare();
-        //    videoPlayer.Play();
-          //  videoPlayer.Pause();
+
 
             if (dto.playing)
             {
@@ -68,11 +68,28 @@ namespace umi3d.cdk
             }
             else
             {
-                videoPlayer.Pause(); // Don't call Stop() because it cansel videoPlayer.Prepare()
+                videoPlayer.Pause(); // Don't call Stop() because it cancel videoPlayer.Prepare()
                 
-                UMI3DAnimationManager.Instance.StartCoroutine(SetFrame());
-
+                UMI3DAnimationManager.Instance.StartCoroutine(SetFrame(dto.pauseFrame));
             }
+
+            //audio
+            if (!String.IsNullOrEmpty(dto.audioId))
+            {
+                videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+                UMI3DAnimationManager.Instance.StartCoroutine(SetAudioSource(dto.audioId));
+            }
+        }
+
+        private IEnumerator SetAudioSource(string audioId)
+        {
+            var delay = new WaitForSeconds(1f);
+            while (UMI3DEnvironmentLoader.GetEntity(audioId) == null)
+            {
+                yield return delay;
+            }
+           
+            videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)UMI3DEnvironmentLoader.GetEntity(audioId).Object).audioSource);
         }
 
         private IEnumerator StartAfterLoading()
@@ -102,8 +119,7 @@ namespace umi3d.cdk
             }
             if (!dto.playing)
             {
-                videoPlayer.frame = (dto as UMI3DVideoPlayerDto).pauseFrame;
-                Debug.Log(dto.pauseFrame + "   " + videoPlayer.frame);
+                videoPlayer.frame = dto.pauseFrame ;
             }
         }
 

@@ -28,6 +28,7 @@ namespace umi3d.edk
         MaterialSO material;
         [SerializeField, EditorReadOnly]
         UMI3DResource videoResources;
+        public UMI3DAudioPlayer audioPlayer;
         private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
 
         public UMI3DAsyncProperty<MaterialSO> ObjectMaterial;
@@ -52,6 +53,10 @@ namespace umi3d.edk
             Adto.materialId = ObjectMaterial.GetValue(user)?.Id();
             //Debug.Log(" env : " + Adto.materialId);
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
+            if(audioPlayer != null)
+            {
+                Adto.audioId = audioPlayer.Id();
+            }
         }
 
         ///<inheritdoc/>
