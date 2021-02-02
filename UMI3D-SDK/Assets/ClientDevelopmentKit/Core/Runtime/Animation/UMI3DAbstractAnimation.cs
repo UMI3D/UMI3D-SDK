@@ -37,7 +37,6 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
@@ -51,7 +50,7 @@ namespace umi3d.cdk
                                 (entity.Object as UMI3DAbstractAnimation).Start();
                             else
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start((float)(DateTime.Now - dto.startTime).TotalMilliseconds);
+                                (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
                         else (entity.Object as UMI3DAbstractAnimation).Stop();
@@ -61,8 +60,14 @@ namespace umi3d.cdk
                     dto.looping = (bool)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    dto.startTime = (DateTime)property.value;
+                    dto.startTime = (ulong)(long)property.value;
                     break;
+                case UMI3DPropertyKeys.AnimationPauseFrame:
+                    dto.pauseFrame = (long)property.value;
+                    SetProgress(dto.pauseFrame);
+                    break;
+                default:
+                    return false;
             }
             return true;
         }
@@ -94,6 +99,8 @@ namespace umi3d.cdk
         }
 
         public abstract float GetProgress();
+
+        public abstract void SetProgress(long frame);
 
         public abstract void Start();
 

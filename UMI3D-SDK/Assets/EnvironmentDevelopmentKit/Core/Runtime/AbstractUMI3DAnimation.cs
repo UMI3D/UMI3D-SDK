@@ -31,14 +31,18 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly]
         bool looping;
         [SerializeField, EditorReadOnly]
-        DateTime startTime;
+        ulong startTime;
+        [SerializeField, EditorReadOnly]
+        long pauseFrame;
         private UMI3DAsyncProperty<bool> _objectPlaying;
         private UMI3DAsyncProperty<bool> _objectLooping;
-        private UMI3DAsyncProperty<DateTime> _objectStartTime;
+        private UMI3DAsyncProperty<ulong> _objectStartTime;
+        private UMI3DAsyncProperty<long> _objectPauseFrame;
 
         public UMI3DAsyncProperty<bool> objectPlaying { get { Register(); return _objectPlaying; } protected set => _objectPlaying = value; }
         public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
-        public UMI3DAsyncProperty<DateTime> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
+        public UMI3DAsyncProperty<ulong> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
+        public UMI3DAsyncProperty<long> objectPauseFrame { get { Register(); return _objectPauseFrame; } protected set => _objectPauseFrame = value; }
 
         /// <summary>
         /// Get the Id of the animation.
@@ -72,11 +76,13 @@ namespace umi3d.edk
         {
             objectPlaying = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationPlaying, playing);
             objectLooping = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationLooping, looping);
-            objectStartTime = new UMI3DAsyncProperty<DateTime>(id, UMI3DPropertyKeys.AnimationStartTime, startTime);
+            objectStartTime = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.AnimationStartTime, startTime);
+            objectPauseFrame = new UMI3DAsyncProperty<long>(id, UMI3DPropertyKeys.AnimationPauseFrame, pauseFrame);
 
             objectPlaying.OnValueChanged += (b) => playing = b;
             objectLooping.OnValueChanged += (b) => looping = b;
             objectStartTime.OnValueChanged += (d) => startTime = d;
+            objectPauseFrame.OnValueChanged += (v) => pauseFrame = v;
         }
 
         /// <summary>
@@ -118,6 +124,7 @@ namespace umi3d.edk
             dto.playing = objectPlaying.GetValue(user);
             dto.looping = objectLooping.GetValue(user);
             dto.startTime = objectStartTime.GetValue(user);
+            dto.pauseFrame = objectPauseFrame.GetValue(user);
         }
 
         /// <summary>

@@ -154,6 +154,7 @@ namespace umi3d.common
         public const string AnimationPlaying = "umi3d_animation_playing";
         public const string AnimationLooping = "umi3d_animation_looping";
         public const string AnimationStartTime = "umi3d_animation_start_time";
+        public const string AnimationPauseFrame = "umi3d_animation_pause_frame";
 
         public const string AnimationNode = "umi3d_animation_node";
         public const string AnimationResource = "umi3d_animation_resource";

@@ -59,5 +59,11 @@ namespace umi3d.cdk
 
         public virtual string GetId() { return null; }
 
+        /// <summary>
+        /// return time server in millisecond, use synchronised time in collaborative cases.
+        /// </summary>
+        /// <returns></returns>
+        public virtual ulong GetTime() { return (ulong)DateTime.Now.Millisecond; }
+
     }
 }

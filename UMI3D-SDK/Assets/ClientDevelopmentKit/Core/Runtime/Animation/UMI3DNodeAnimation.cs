@@ -145,5 +145,9 @@ namespace umi3d.cdk
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
+
+        public override void SetProgress(long frame)
+        {
+        }
     }
 }
