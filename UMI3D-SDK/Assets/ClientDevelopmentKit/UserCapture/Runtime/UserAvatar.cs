@@ -60,10 +60,8 @@ namespace umi3d.cdk.userCapture
 
         private void Update()
         {
-            Debug.Log("<color=cyan>" + bounds.Count + "</color>");
             foreach (var item in bounds)
             {
-                Debug.Log("<color=cyan>" + item.obj.name + "</color>");
                 item.obj.position = item.bone.TransformPoint(item.offsetPosition);
                 item.obj.rotation = item.bone.rotation * item.offsetRotation;
             }
