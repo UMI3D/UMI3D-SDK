@@ -75,6 +75,46 @@ namespace umi3d.common.collaboration
         /// </summary>
         public double RoundTripLatency { get; private set; }
 
+        /// <summary>
+        /// Time since the connection started.
+        /// </summary>
+        public ulong Timestep
+        {
+            get {
+                if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
+                    return 0;
+                return NetworkManager.Instance.Networker.Time.Timestep;
+            }
+        }
+
+        /// <summary>
+        /// Used to determine how much bandwidth (in bytes) hass been read
+        /// </summary>
+        public ulong BandwidthIn
+        {
+            get {
+                if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
+                    return 0;
+                return NetworkManager.Instance.Networker.BandwidthIn;
+            }
+        }
+
+        /// <summary>
+        /// Used to determine how much bandwidth (in bytes) hass been written
+        /// </summary>
+        public ulong BandwidthOut
+        {
+            get {
+                if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
+                    return 0;
+                return NetworkManager.Instance.Networker.BandwidthOut;
+            }
+        }
+
+        /// <summary>
+        /// Should info pannel should be displyed in top left corner.
+        /// </summary>
+        public bool DisplayForgeInfo = false;
 
         /// <summary>
         /// Getter for the Forge NetWorker
@@ -194,12 +234,9 @@ namespace umi3d.common.collaboration
             GUI.Label(rect, message);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
         private void OnGUI()
         {
-            if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
+            if (!DisplayForgeInfo || NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
                 return;
 
             // If there are no players, then the scene is currently being loaded, otherwise
