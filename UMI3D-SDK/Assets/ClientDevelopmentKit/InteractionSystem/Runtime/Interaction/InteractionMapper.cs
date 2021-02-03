@@ -206,13 +206,9 @@ namespace umi3d.cdk.interaction
             }
             else
             {
-                ReleaseTool(release);
                 if (!SelectTool(select, releasable, hoveredObjectId, reason))
                 {
-                    if (SelectTool(release, releasable, hoveredObjectId))
-                        return false;
-                    else
-                        throw new Exception("Internal error");
+                    throw new Exception("Internal error");
                 }
             }
             return true;
