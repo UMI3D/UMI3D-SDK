@@ -30,30 +30,14 @@ namespace umi3d.cdk.collaboration
         Dictionary<string, AudioReader> GlobalReader = new Dictionary<string, AudioReader>();
         Dictionary<string, AudioReader> SpacialReader = new Dictionary<string, AudioReader>();
 
-        [SerializeField, EditorReadOnly]
-        int frequency = 8000;
-        [SerializeField, EditorReadOnly, Tooltip("Length of the sample array to be send for one channel")]
-        int sampleLength = 800;
-        [SerializeField, ReadOnly, Tooltip("length in ms of a sample")]
-        int sampleDuration = 100;
-
-        private void OnValidate()
-        {
-            if (frequency < 0) frequency = 1;
-            sampleDuration = (int)(1000f / frequency * sampleLength);
-        }
-
         private void Start()
         {
             UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.AddListener(OnUserDisconected);
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
 
-            if (frequency < 0) frequency = 1;
-            sampleDuration = (int)(1000f / frequency * sampleLength);
-
             if (MicrophoneListener.Exists)
-                MicrophoneListener.Instance.StartRecording(frequency, sampleDuration);
+                MicrophoneListener.Instance.StartRecording();
         }
 
     /// <summary>

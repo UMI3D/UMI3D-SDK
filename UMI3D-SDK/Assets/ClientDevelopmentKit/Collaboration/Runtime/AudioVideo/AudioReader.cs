@@ -11,9 +11,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#if !UNITY_WEBGL && !WINDOWS_UWP
+using BeardedManStudios.Forge.Networking.Unity;
 using System;
-using System.Collections.Generic;
 using umi3d.common.collaboration;
 using UnityEngine;
 using UnityOpus;
@@ -33,7 +32,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         public void Read(VoiceDto dto)
         {
-            OnEncoded(dto.data, dto.length);
+            MainThreadManager.Run(()=>OnEncoded(dto.data, dto.length));
         }
 
         #region Read
@@ -96,4 +95,3 @@ namespace umi3d.cdk.collaboration
     }
 
 }
-#endif

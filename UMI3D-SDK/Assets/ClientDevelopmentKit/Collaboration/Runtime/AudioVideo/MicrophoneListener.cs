@@ -39,18 +39,19 @@ namespace umi3d.cdk.collaboration
 		/// <summary>
 		/// Starts to stream the input of the current Mic device
 		/// </summary>
-		public void StartRecording(int frequency = 16000, int sampleLen = 10)
+		public void StartRecording()
 		{
-            //StartVOIP();
+            reading = true;
+            clip = Microphone.Start(null, true, lengthSeconds, samplingFrequency);
         }
 
-		/// <summary>
-		/// Ends the Mic stream.
-		/// </summary>
-		public void StopRecording()
+        /// <summary>
+        /// Ends the Mic stream.
+        /// </summary>
+        public void StopRecording()
 		{
-            //StopVoip();
-		}
+            reading = false;
+        }
 
         #region ReadMicrophone
 
@@ -59,23 +60,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         [SerializeField,EditorReadOnly]
         bool muted = false;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void StartVOIP()
-        {
-            
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void StopVoip()
-        {
-            
-        }
-
+        bool reading = false;
 
         const int samplingFrequency = 48000;
         const int lengthSeconds = 1;
@@ -95,13 +80,10 @@ namespace umi3d.cdk.collaboration
             return Mathf.Sqrt(sum / processBuffer.Length);
         }
 
-        void Start()
-        {
-            clip = Microphone.Start(null, true, lengthSeconds, samplingFrequency);
-        }
-
         void Update()
         {
+            if (!reading) return;
+
             var position = Microphone.GetPosition(null);
             if (position < 0 || head == position)
             {
@@ -193,6 +175,9 @@ namespace umi3d.cdk.collaboration
                     frameBuffer[i] = pcmQueue.Dequeue();
                 }
                 var encodedLength = encoder.Encode(frameBuffer, outputBuffer);
+                if(UMI3DCollaborationClientServer.Exists 
+                    && UMI3DCollaborationClientServer.Instance?.ForgeClient != null 
+                    && UMI3DCollaborationClientServer.UserDto.status == StatusType.ACTIVE)
                 UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
             }
         }
