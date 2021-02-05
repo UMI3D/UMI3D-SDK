@@ -275,8 +275,10 @@ namespace umi3d.cdk.userCapture
                 {
                     if (savedTransform.obj != null)
                     {
-                        var c = bounds.Find(b => b.obj == savedTransform.obj);
+                        var parent = savedTransform.savedParent ?? UMI3DEnvironmentLoader.Instance.transform;
+                        savedTransform.obj.SetParent(parent);
 
+                        var c = bounds.Find(b => b.obj == savedTransform.obj);
                         bounds.Remove(c);
 
                         if (dto.rigName == "")
