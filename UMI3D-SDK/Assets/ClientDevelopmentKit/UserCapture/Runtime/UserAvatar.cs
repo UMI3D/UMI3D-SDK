@@ -62,8 +62,11 @@ namespace umi3d.cdk.userCapture
         {
             foreach (var item in bounds)
             {
-                item.obj.position = item.bone.TransformPoint(item.offsetPosition);
-                item.obj.rotation = item.bone.rotation * item.offsetRotation;
+                if (item.obj != null)
+                {
+                    item.obj.position = item.bone.TransformPoint(item.offsetPosition);
+                    item.obj.rotation = item.bone.rotation * item.offsetRotation;
+                }
             }
         }
 
