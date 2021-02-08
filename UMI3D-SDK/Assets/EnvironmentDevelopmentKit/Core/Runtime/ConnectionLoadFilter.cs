@@ -21,10 +21,10 @@ namespace umi3d.edk
     /// Filter to restrain UMI3D scene object's visibility.
     /// </summary>
     [RequireComponent(typeof(UMI3DNode))]
-    public abstract class VisibilityFilter : MonoBehaviour, UMI3DUserFilter
+    public abstract class ConnectionLoadFilter : MonoBehaviour, UMI3DUserFilter
     {
 
-        private void OnEnable()
+        protected virtual void OnEnable()
         {
             foreach(var e in GetComponents<UMI3DEntity>())
             {
@@ -32,7 +32,7 @@ namespace umi3d.edk
             }
         }
 
-        private void OnDisable()
+        protected virtual void OnDisable()
         {
             foreach (var e in GetComponents<UMI3DEntity>())
             {
