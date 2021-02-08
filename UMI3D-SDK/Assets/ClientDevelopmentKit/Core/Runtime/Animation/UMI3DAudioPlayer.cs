@@ -79,7 +79,7 @@ namespace umi3d.cdk
                         if (clip != null)
                             audioSource.clip = clip;
                         else
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}");
                     },
                     Debug.LogWarning,
                     loader.DeleteObject

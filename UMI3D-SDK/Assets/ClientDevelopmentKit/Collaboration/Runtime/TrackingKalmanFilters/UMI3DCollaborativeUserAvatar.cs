@@ -326,8 +326,6 @@ namespace umi3d.cdk.collaboration
 
                             savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
 
-                            obj.transform.SetParent(this.transform);
-
                             if (boneBindingDto.rigName == "")
                                 node.updatePose = false;
                         }
