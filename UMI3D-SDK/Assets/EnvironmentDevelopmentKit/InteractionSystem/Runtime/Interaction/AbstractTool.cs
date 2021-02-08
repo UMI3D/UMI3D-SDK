@@ -89,6 +89,9 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            foreach (var f in GetComponents<UMI3DUserFilter>())
+                AddConnectionFilter(f);
+
             toolId = id;
             objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => i.ToDto(u));
             inited = true;
@@ -231,5 +234,24 @@ namespace umi3d.edk.interaction
             WriteProperties(dto, user);
             return dto;
         }
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

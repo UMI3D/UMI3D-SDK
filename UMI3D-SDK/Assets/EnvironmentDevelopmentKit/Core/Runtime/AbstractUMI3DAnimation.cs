@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -74,6 +75,9 @@ namespace umi3d.edk
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            foreach (var f in GetComponents<UMI3DUserFilter>())
+                AddConnectionFilter(f);
+
             objectPlaying = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationPlaying, playing);
             objectLooping = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationLooping, looping);
             objectStartTime = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.AnimationStartTime, startTime);
@@ -153,5 +157,25 @@ namespace umi3d.edk
         {
             return ToAnimationDto(user);
         }
+
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

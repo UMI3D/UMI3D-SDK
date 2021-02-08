@@ -81,7 +81,7 @@ namespace umi3d.edk
         {
             GlTFEnvironmentDto env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
-            env.scenes.AddRange(scenes.Select(s => s.ToGlTFNodeDto(user)));
+            env.scenes.AddRange(scenes.Where(s=>s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
             WriteProperties(env.extensions.umi3d, user);
             return env;

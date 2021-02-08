@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 
 namespace umi3d.edk
@@ -90,7 +92,24 @@ namespace umi3d.edk
             return operation;
         }
 
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 
     public class UMI3DNotificationOnObject : UMI3DNotification

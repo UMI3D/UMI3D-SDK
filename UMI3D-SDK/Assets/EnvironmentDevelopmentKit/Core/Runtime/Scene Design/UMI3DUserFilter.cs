@@ -13,21 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
+
+using System;
 
 namespace umi3d.edk
 {
     /// <summary>
-    /// Filter to restrain UMI3D scene object's visibility.
+    /// Interface for UMI3D entities.
     /// </summary>
-    [RequireComponent(typeof(UMI3DNode))]
-    public abstract class VisibilityFilter : MonoBehaviour
+    public interface UMI3DUserFilter
     {
-        /// <summary>
-        /// Restrains the visibility of the UMI3D scene object for this gameObject.
-        /// </summary>
-        /// <param name="user">the user</param>
-        /// <returns>return true if this filter accept the object to be visible for the user.</returns>
-        public abstract bool Accept(UMI3DUser user);
+        bool Accept(UMI3DUser user);
     }
+
 }
+
