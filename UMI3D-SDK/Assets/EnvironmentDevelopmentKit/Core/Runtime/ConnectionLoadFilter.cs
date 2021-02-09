@@ -20,7 +20,6 @@ namespace umi3d.edk
     /// <summary>
     /// Filter to restrain UMI3D scene object's visibility.
     /// </summary>
-    [RequireComponent(typeof(UMI3DNode))]
     public abstract class ConnectionLoadFilter : MonoBehaviour, UMI3DUserFilter
     {
 
