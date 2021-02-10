@@ -28,7 +28,12 @@ namespace umi3d.cdk.interaction
             AbstractInteractionMapper.Instance.CreateTool(tool);
         }
 
-
+        static public void ReadUMI3DExtension(ToolDto dto)
+        {
+            Tool tool = new Tool(dto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
+            AbstractInteractionMapper.Instance.CreateTool(tool);
+        }
 
 
         static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

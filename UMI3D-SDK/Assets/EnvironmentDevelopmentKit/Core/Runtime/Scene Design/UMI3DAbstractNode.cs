@@ -290,7 +290,7 @@ namespace umi3d.edk
             if (transform == null) transform = this.transform;
             else if (transform.gameObject.GetComponent<UMI3DAbstractNode>() != null) return res;
 
-            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode));
+            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode) && i.LoadOnConnection(user));
             if (others != null)
             {
                 res.AddRange(others);

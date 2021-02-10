@@ -58,8 +58,8 @@ namespace umi3d.cdk.interaction
                 Menu.Add(item);
             }
 
-            toolbox.tools.Add(this);
-            toolbox.sub.Add(Menu);
+            toolbox?.tools.Add(this);
+            toolbox?.sub.Add(Menu);
         }
 
 
