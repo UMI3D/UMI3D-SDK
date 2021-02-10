@@ -47,7 +47,7 @@ namespace umi3d.cdk.collaboration
         {
             source = GetComponent<AudioSource>();
             source.clip = AudioClip.Create("Loopback", audioClipLength, (int)channels, (int)frequency, false);
-            source.loop = true;
+            source.loop = false;
             decoder = new Decoder(
                 SamplingFrequency.Frequency_48000,
                 NumChannels.Mono);
