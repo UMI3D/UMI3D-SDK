@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -126,9 +127,11 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
-            foreach (var f in GetComponents<UMI3DUserFilter>())
-                AddConnectionFilter(f);
-
+            MainThreadManager.Run(() =>
+            {
+                foreach (var f in GetComponents<UMI3DUserFilter>())
+                    AddConnectionFilter(f);
+            });
             interactionId = id;
             inited = true;
         }
