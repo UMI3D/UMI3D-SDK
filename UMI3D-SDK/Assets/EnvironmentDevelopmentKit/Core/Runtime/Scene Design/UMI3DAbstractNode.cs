@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -184,6 +185,9 @@ namespace umi3d.edk
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            foreach (var f in GetComponents<UMI3DUserFilter>())
+                AddConnectionFilter(f);
+
             objectId = id;
 
             objectIsStatic = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.Static, this.isStatic);
@@ -249,9 +253,7 @@ namespace umi3d.edk
                         res.Add(child);
                     else if (child is UMI3DNode)
                     {
-                        UMI3DNode obj = child as UMI3DNode;
-                        if (obj.VisibleFor(user))
-                            res.Add(child);
+                        res.Add(child);
                     }
                 }
             }
@@ -271,14 +273,10 @@ namespace umi3d.edk
                 var child = ct.gameObject.GetComponent<UMI3DAbstractNode>();
                 if (child != null)
                 {
-                    if (child is UMI3DNode)
+                    if (child.LoadOnConnection(user) && child is UMI3DNode obj)
                     {
-                        UMI3DNode obj = child as UMI3DNode;
-                        if (obj.VisibleFor(user))
-                        {
-                            res.Add(obj);
-                            res.AddRange(child.GetAllChildrenInThisScene(user));
-                        }
+                        res.Add(obj);
+                        res.AddRange(child.GetAllChildrenInThisScene(user));
                     }
                 }
             }
@@ -292,7 +290,7 @@ namespace umi3d.edk
             if (transform == null) transform = this.transform;
             else if (transform.gameObject.GetComponent<UMI3DAbstractNode>() != null) return res;
 
-            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode));
+            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode) && i.LoadOnConnection(user));
             if (others != null)
             {
                 res.AddRange(others);
@@ -307,6 +305,25 @@ namespace umi3d.edk
 
         public abstract IEntity ToEntityDto(UMI3DUser user);
 
+        #endregion
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
         #endregion
 
     }
