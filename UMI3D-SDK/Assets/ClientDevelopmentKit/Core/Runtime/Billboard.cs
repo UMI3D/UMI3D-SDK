@@ -29,15 +29,15 @@ namespace umi3d.cdk
 
         void Start()
         {
-            ComputeOriantation();
+            ComputeOrientation();
         }
 
-        void Update()
+        void LateUpdate()
         {
-            ComputeOriantation();
+            ComputeOrientation();
         }
 
-        void ComputeOriantation()
+        void ComputeOrientation()
         {
             Vector3 pos = (Camera.main.transform.position - transform.position);
 

@@ -119,13 +119,16 @@ namespace umi3d.cdk.collaboration
 
                 var delta = now - check;
 
-                var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * MeasuresPerSecond * delta + tools.previous_prediction[0];
-                var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
-                var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
+                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
 
-                tools.estimations = new double[] { value_x, value_y, value_z };
+                    tools.estimations = new double[] { value_x, value_y, value_z };
 
-                tools.regressed_position = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                    tools.regressed_position = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                }
             }
         }
 
@@ -142,13 +145,16 @@ namespace umi3d.cdk.collaboration
 
                 var delta = now - check;
 
-                var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * MeasuresPerSecond * delta + tools.previous_prediction[0];
-                var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
-                var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * MeasuresPerSecond * delta + tools.previous_prediction[0];
+                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
+                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
 
-                tools.estimations = new double[] { value_x, value_y, value_z };
+                    tools.estimations = new double[] { value_x, value_y, value_z };
 
-                tools.regressed_rotation = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                    tools.regressed_rotation = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                }
             }
         }
 
@@ -173,7 +179,23 @@ namespace umi3d.cdk.collaboration
                 bonePositionKalman.previous_prediction = bonePositionMeasurement;
 
             Vector3 eulerRotation = (new Quaternion(dto.rotation.X, dto.rotation.Y, dto.rotation.Z, dto.rotation.W)).eulerAngles;
-            double[] boneRotationMeasurement = new double[] { eulerRotation.x, eulerRotation.y, eulerRotation.z };
+
+            float x_euler; float y_euler; float z_euler;
+
+            if (boneRotationKalman.estimations.Length > 0)
+            {
+                x_euler = Mathf.Abs(eulerRotation.x - (float)boneRotationKalman.estimations[0]) <= 180 ? eulerRotation.x : (eulerRotation.x > (float)boneRotationKalman.estimations[0] ? eulerRotation.x - 360 : eulerRotation.x + 360);
+                y_euler = Mathf.Abs(eulerRotation.y - (float)boneRotationKalman.estimations[1]) <= 180 ? eulerRotation.y : (eulerRotation.y > (float)boneRotationKalman.estimations[1] ? eulerRotation.y - 360 : eulerRotation.y + 360);
+                z_euler = Mathf.Abs(eulerRotation.z - (float)boneRotationKalman.estimations[2]) <= 180 ? eulerRotation.z : (eulerRotation.z > (float)boneRotationKalman.estimations[2] ? eulerRotation.z - 360 : eulerRotation.z + 360);
+            }
+            else
+            {
+                x_euler = eulerRotation.x;
+                y_euler = eulerRotation.y;
+                z_euler = eulerRotation.z;
+            }
+
+            double[] boneRotationMeasurement = new double[] { x_euler, y_euler, z_euler };
             boneRotationKalman.KalmanFilter.Update(boneRotationMeasurement);
 
             double[] newRotationState = boneRotationKalman.KalmanFilter.getState();
@@ -206,7 +228,23 @@ namespace umi3d.cdk.collaboration
                 nodePositionFilter.previous_prediction = positionMeasurement;
 
             Vector3 eulerRotation = rotation.eulerAngles;
-            double[] rotationMeasurement = new double[] { eulerRotation.x, eulerRotation.y, eulerRotation.z };
+
+            float x_euler; float y_euler; float z_euler;
+
+            if (nodeRotationFilter.estimations.Length > 0)
+            {
+                x_euler = Mathf.Abs(eulerRotation.x - (float)nodeRotationFilter.estimations[0]) <= 180 ? eulerRotation.x : (eulerRotation.x > (float)nodeRotationFilter.estimations[0] ? eulerRotation.x - 360 : eulerRotation.x + 360);
+                y_euler = Mathf.Abs(eulerRotation.y - (float)nodeRotationFilter.estimations[1]) <= 180 ? eulerRotation.y : (eulerRotation.y > (float)nodeRotationFilter.estimations[1] ? eulerRotation.y - 360 : eulerRotation.y + 360);
+                z_euler = Mathf.Abs(eulerRotation.z - (float)nodeRotationFilter.estimations[2]) <= 180 ? eulerRotation.z : (eulerRotation.z > (float)nodeRotationFilter.estimations[2] ? eulerRotation.z - 360 : eulerRotation.z + 360);
+            }
+            else
+            {
+                x_euler = eulerRotation.x;
+                y_euler = eulerRotation.y;
+                z_euler = eulerRotation.z;
+            }
+
+            double[] rotationMeasurement = new double[] { x_euler, y_euler, z_euler };
             nodeRotationFilter.KalmanFilter.Update(rotationMeasurement);
 
             double[] newRotationState = nodeRotationFilter.KalmanFilter.getState();
@@ -238,10 +276,10 @@ namespace umi3d.cdk.collaboration
             foreach (BoneDto boneDto in trackingFrameDto.bones)
             {
                 if (!bonePositionFilters.ContainsKey(boneDto.boneType))
-                    bonePositionFilters.Add(boneDto.boneType, new KalmanPosition(0.001f, 0.001f));
+                    bonePositionFilters.Add(boneDto.boneType, new KalmanPosition(50f, 0.001f));
 
                 if (!boneRotationFilters.ContainsKey(boneDto.boneType))
-                    boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(0.001f, 0.001f));
+                    boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
 
                 if (!boneScales.ContainsKey(boneDto.boneType))
                     boneScales.Add(boneDto.boneType, boneDto.scale);
@@ -287,8 +325,6 @@ namespace umi3d.cdk.collaboration
                             };
 
                             savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
-
-                            obj.transform.SetParent(this.transform);
 
                             if (boneBindingDto.rigName == "")
                                 node.updatePose = false;

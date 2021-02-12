@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.edk
 {
     /// <summary>
@@ -22,6 +24,11 @@ namespace umi3d.edk
     public interface UMI3DEntity
     {
         string Id();
+
+        bool LoadOnConnection(UMI3DUser user);
+        bool AddConnectionFilter(UMI3DUserFilter filter);
+        bool RemoveConnectionFilter(UMI3DUserFilter filter);
+
     }
 
 }

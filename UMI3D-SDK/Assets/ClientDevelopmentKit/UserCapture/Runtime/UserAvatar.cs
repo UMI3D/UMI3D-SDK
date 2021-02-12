@@ -41,13 +41,34 @@ namespace umi3d.cdk.userCapture
             public string rigname;
         }
 
-        public List<Transform> boundRigs = new List<Transform>();
+        protected struct Bound
+        {
+            public Transform bone;
+            public Transform obj;
+            public Vector3 offsetPosition;
+            public Quaternion offsetRotation;
+        }
 
+        public List<Transform> boundRigs = new List<Transform>();
         public string userId { get; protected set; }
         public bool activeUserBindings { get; protected set; }
         public List<BoneBindingDto> userBindings { get; protected set; }
 
         protected Dictionary<BoundObject, SavedTransform> savedTransforms = new Dictionary<BoundObject, SavedTransform>();
+
+        private List<Bound> bounds = new List<Bound>();
+
+        private void Update()
+        {
+            foreach (var item in bounds)
+            {
+                if (item.obj != null)
+                {
+                    item.obj.position = item.bone.TransformPoint(item.offsetPosition);
+                    item.obj.rotation = item.bone.rotation * item.offsetRotation;
+                }
+            }
+        }
 
         /// <summary>
         /// Set a new UserAvatar from an UMI3DAvatarNodeDto.
@@ -230,14 +251,17 @@ namespace umi3d.cdk.userCapture
 
                     savedTransforms.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, savedTransform);
 
-                    obj.transform.SetParent(bone.transform);
+                    bounds.Add(new Bound()
+                    {
+                        bone = bone.transform,
+                        obj = obj,
+                        offsetPosition = dto.position,
+                        offsetRotation = dto.rotation
+                    });
 
                     if (dto.rigName == "")
                         node.updatePose = false;
                 }
-
-                obj.localPosition = dto.position;
-                obj.localRotation = dto.rotation;
             }
         }
 
@@ -251,7 +275,8 @@ namespace umi3d.cdk.userCapture
                 {
                     if (savedTransform.obj != null)
                     {
-                        savedTransform.obj.SetParent(savedTransform.savedParent);
+                        var c = bounds.Find(b => b.obj == savedTransform.obj);
+                        bounds.Remove(c);
 
                         if (dto.rigName == "")
                         {

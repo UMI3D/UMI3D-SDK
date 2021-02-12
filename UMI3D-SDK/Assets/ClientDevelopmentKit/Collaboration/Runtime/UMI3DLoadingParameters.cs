@@ -64,6 +64,7 @@ namespace umi3d.cdk
             {
                 case EntityGroupDto e:
                     EntityGroupLoader.ReadUMI3DExtension(e);
+                    finished?.Invoke();
                     break;
                 case UMI3DAbstractAnimationDto a:
                     UMI3DAnimationLoader.ReadUMI3DExtension(a, node, finished, failed);
@@ -76,6 +77,10 @@ namespace umi3d.cdk
                     break;
                 case ToolboxDto t:
                     UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
+                    break;
+                case ToolDto t:
+                    UMI3DToolLoader.ReadUMI3DExtension(t);
+                    finished?.Invoke();
                     break;
                 case UMI3DMeshNodeDto m:
                     meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
@@ -91,6 +96,7 @@ namespace umi3d.cdk
                     break;
                 case NotificationDto n:
                     notificationLoader.Load(n);
+                    finished?.Invoke();
                     break;
                 default:
                     nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);

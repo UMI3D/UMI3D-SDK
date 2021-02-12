@@ -14,7 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking.Unity;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -124,6 +127,11 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            MainThreadManager.Run(() =>
+            {
+                foreach (var f in GetComponents<UMI3DUserFilter>())
+                    AddConnectionFilter(f);
+            });
             interactionId = id;
             inited = true;
         }
@@ -182,6 +190,23 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
         }
 
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

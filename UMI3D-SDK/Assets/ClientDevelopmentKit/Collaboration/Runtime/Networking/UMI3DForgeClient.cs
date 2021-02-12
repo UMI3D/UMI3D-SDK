@@ -221,6 +221,7 @@ namespace umi3d.cdk.collaboration
 
         public void SendVOIP(int length, byte[] sample)
         {
+            if (client == null || client.Me == null ) return;
             var dto = new VoiceDto()
             {
                 length = length,
