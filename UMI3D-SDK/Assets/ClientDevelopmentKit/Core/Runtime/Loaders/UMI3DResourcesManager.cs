@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ namespace umi3d.cdk
             public List<string> applications = new List<string>();
 
 
-            public DataFile(string key, string path, List<string> applications, string date,string format,string culture)
+            public DataFile(string key, string path, List<string> applications, string date, string format, string culture)
             {
                 this.path = path;
                 this.key = key;
@@ -688,7 +688,7 @@ namespace umi3d.cdk
                 var assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
                 var dto = UMI3DDto.FromBson(bytes);
                 if (dto is FileListDto)
-                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date,assetLibrary.format,assetLibrary.culture, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
+                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date, assetLibrary.format, assetLibrary.culture, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
                 else
                     finished = true;
             };
@@ -744,9 +744,9 @@ namespace umi3d.cdk
 
         #endregion
         #region file downloading
-        IEnumerator DownloadFiles(string key, string rootDirectoryPath, string directoryPath, List<string> applications, string date,string format,string culture, FileListDto list, Action<DataFile> finished)
+        IEnumerator DownloadFiles(string key, string rootDirectoryPath, string directoryPath, List<string> applications, string date, string format, string culture, FileListDto list, Action<DataFile> finished)
         {
-            var data = new DataFile(key, rootDirectoryPath, applications, date,format,culture);
+            var data = new DataFile(key, rootDirectoryPath, applications, date, format, culture);
             foreach (var name in list.files)
             {
                 string path = Path.Combine(directoryPath, name);

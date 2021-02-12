@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ namespace umi3d.edk
             Adto.materialId = ObjectMaterial.GetValue(user)?.Id();
             //Debug.Log(" env : " + Adto.materialId);
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
-            if(audioPlayer != null)
+            if (audioPlayer != null)
             {
                 Adto.audioId = audioPlayer.Id();
             }

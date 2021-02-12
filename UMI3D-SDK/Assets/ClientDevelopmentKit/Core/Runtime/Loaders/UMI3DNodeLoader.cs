@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ namespace umi3d.cdk
                          node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
                      }
 
-                     if(nodeDto.lodDto != null)
+                     if (nodeDto.lodDto != null)
                      {
                          MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
                      }
@@ -68,7 +68,7 @@ namespace umi3d.cdk
         }
 
 
-        IEnumerator LoadLod(UMI3DLodDto dto,GameObject node)
+        IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
         {
             var lg = node.GetOrAddComponent<LODGroup>();
             var ls = new List<LOD>();
@@ -76,7 +76,7 @@ namespace umi3d.cdk
             {
                 var rend = new List<Renderer>();
 
-                foreach(var id in lod.nodes)
+                foreach (var id in lod.nodes)
                 {
                     UMI3DNodeInstance n = null;
                     yield return new WaitUntil(() => (n = UMI3DEnvironmentLoader.GetNode(id)) != null);
@@ -84,7 +84,7 @@ namespace umi3d.cdk
                     if (r != null)
                         rend.Add(r);
                 }
-                var l = new LOD(lod.screenSize,rend.ToArray());
+                var l = new LOD(lod.screenSize, rend.ToArray());
                 l.fadeTransitionWidth = lod.fadeTransition;
                 ls.Add(l);
             }

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
