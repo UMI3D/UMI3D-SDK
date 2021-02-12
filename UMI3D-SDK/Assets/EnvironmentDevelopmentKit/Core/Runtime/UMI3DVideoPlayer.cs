@@ -53,7 +53,7 @@ namespace umi3d.edk
             Adto.materialId = ObjectMaterial.GetValue(user)?.Id();
             //Debug.Log(" env : " + Adto.materialId);
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
-            if(audioPlayer != null)
+            if (audioPlayer != null)
             {
                 Adto.audioId = audioPlayer.Id();
             }

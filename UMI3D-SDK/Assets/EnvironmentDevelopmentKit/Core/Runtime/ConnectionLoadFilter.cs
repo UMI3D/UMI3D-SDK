@@ -25,7 +25,7 @@ namespace umi3d.edk
 
         protected virtual void OnEnable()
         {
-            foreach(var e in GetComponents<UMI3DEntity>())
+            foreach (var e in GetComponents<UMI3DEntity>())
             {
                 e.AddConnectionFilter(this);
             }

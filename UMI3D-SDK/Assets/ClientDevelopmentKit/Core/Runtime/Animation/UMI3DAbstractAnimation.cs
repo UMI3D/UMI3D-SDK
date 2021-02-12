@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using MainThreadDispatcher;
-using System;
 using System.Collections;
 using umi3d.common;
 using UnityEngine;

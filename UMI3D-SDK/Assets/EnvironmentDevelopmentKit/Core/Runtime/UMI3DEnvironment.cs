@@ -81,7 +81,7 @@ namespace umi3d.edk
         {
             GlTFEnvironmentDto env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
-            env.scenes.AddRange(scenes.Where(s=>s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
+            env.scenes.AddRange(scenes.Where(s => s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
             WriteProperties(env.extensions.umi3d, user);
             return env;
@@ -124,7 +124,7 @@ namespace umi3d.edk
         {
             List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
             var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.id == l.Key))?.Select(l => l.First().ToDto());
-            if(sceneLib != null)
+            if (sceneLib != null)
                 libraries.AddRange(sceneLib);
             return new LibrariesDto() { libraries = libraries };
         }

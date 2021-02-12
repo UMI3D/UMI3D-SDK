@@ -18,7 +18,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
-using umi3d.cdk.collaboration;
 using umi3d.common.userCapture;
 using UnityEngine;
 

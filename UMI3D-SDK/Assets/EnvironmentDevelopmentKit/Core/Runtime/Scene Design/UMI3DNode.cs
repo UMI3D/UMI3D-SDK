@@ -299,10 +299,11 @@ namespace umi3d.edk
             if (lod == null) return null;
             var lodg = new UMI3DLodDto();
             lodg.lods = new List<UMI3DLodDefinitionDto>();
-            foreach (var lofd in lod.GetLODs()) {
+            foreach (var lofd in lod.GetLODs())
+            {
                 var loddef = new UMI3DLodDefinitionDto();
                 var renderers = lofd.renderers;
-                loddef.nodes = transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s=>s.GetComponent<UMI3DNode>()).Where(s=>s!=null).Select(s=>s.Id()).ToList();
+                loddef.nodes = transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponent<UMI3DNode>()).Where(s => s != null).Select(s => s.Id()).ToList();
                 loddef.screenSize = lofd.screenRelativeTransitionHeight;
                 loddef.fadeTransition = lofd.fadeTransitionWidth;
                 lodg.lods.Add(loddef);

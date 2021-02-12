@@ -14,33 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using BeardedManStudios;
-using BeardedManStudios.Forge.Networking;
-using BeardedManStudios.Forge.Networking.Frame;
-using BeardedManStudios.Forge.Networking.Unity;
-using BeardedManStudios.Threading;
 using System;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration;
 using UnityEngine;
 using UnityOpus;
 
 namespace umi3d.cdk.collaboration
 {
-	[RequireComponent(typeof(AudioSource))]
-	public class MicrophoneListener : Singleton<MicrophoneListener>
-	{
-		/// <summary>
-		/// Whether the microphone is running
-		/// </summary>
-		public static bool IsMute { get { return Exists ? Instance.muted : false; } set { if (Exists) Instance.muted = value; } }
+    [RequireComponent(typeof(AudioSource))]
+    public class MicrophoneListener : Singleton<MicrophoneListener>
+    {
+        /// <summary>
+        /// Whether the microphone is running
+        /// </summary>
+        public static bool IsMute { get { return Exists ? Instance.muted : false; } set { if (Exists) Instance.muted = value; } }
 
-		/// <summary>
-		/// Starts to stream the input of the current Mic device
-		/// </summary>
-		public void StartRecording()
-		{
+        /// <summary>
+        /// Starts to stream the input of the current Mic device
+        /// </summary>
+        public void StartRecording()
+        {
             reading = true;
             clip = Microphone.Start(null, true, lengthSeconds, samplingFrequency);
         }
@@ -49,7 +43,7 @@ namespace umi3d.cdk.collaboration
         /// Ends the Mic stream.
         /// </summary>
         public void StopRecording()
-		{
+        {
             reading = false;
         }
 
@@ -58,7 +52,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        [SerializeField,EditorReadOnly]
+        [SerializeField, EditorReadOnly]
         bool muted = false;
         bool reading = false;
 
@@ -109,7 +103,7 @@ namespace umi3d.cdk.collaboration
                     OnAudioReady(processBuffer);
                 }
 
-                    head += processBuffer.Length;
+                head += processBuffer.Length;
                 if (head > microphoneBuffer.Length)
                 {
                     head -= microphoneBuffer.Length;
@@ -175,10 +169,10 @@ namespace umi3d.cdk.collaboration
                     frameBuffer[i] = pcmQueue.Dequeue();
                 }
                 var encodedLength = encoder.Encode(frameBuffer, outputBuffer);
-                if(UMI3DCollaborationClientServer.Exists 
-                    && UMI3DCollaborationClientServer.Instance?.ForgeClient != null 
+                if (UMI3DCollaborationClientServer.Exists
+                    && UMI3DCollaborationClientServer.Instance?.ForgeClient != null
                     && UMI3DCollaborationClientServer.UserDto.status == StatusType.ACTIVE)
-                UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
+                    UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
             }
         }
 

@@ -14,13 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using umi3d.cdk.interaction;
-using umi3d.common;
-using umi3d.common.interaction;
-using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration

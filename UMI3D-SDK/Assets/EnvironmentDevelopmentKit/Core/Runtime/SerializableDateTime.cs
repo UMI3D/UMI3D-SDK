@@ -38,7 +38,7 @@ namespace umi3d.edk
         [HideInInspector] [SerializeField] private bool setNow;
 
         [HideInInspector] [SerializeField] private string culture = "en-US";
-        [HideInInspector] [SerializeField] private string format  = "dd/MM/yyyy  HH:mm:ss";
+        [HideInInspector] [SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
 
         public void OnAfterDeserialize()
         {

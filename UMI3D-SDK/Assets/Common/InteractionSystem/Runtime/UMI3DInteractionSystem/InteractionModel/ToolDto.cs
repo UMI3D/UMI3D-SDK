@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     [System.Serializable]
-    public class ToolDto : AbstractToolDto,IEntity
+    public class ToolDto : AbstractToolDto, IEntity
     {
 
         public ToolDto() : base() { }

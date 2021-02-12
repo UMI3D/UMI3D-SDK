@@ -19,7 +19,6 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {

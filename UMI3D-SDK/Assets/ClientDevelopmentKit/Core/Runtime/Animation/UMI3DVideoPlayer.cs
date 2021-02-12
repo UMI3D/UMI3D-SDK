@@ -69,7 +69,7 @@ namespace umi3d.cdk
             else
             {
                 videoPlayer.Pause(); // Don't call Stop() because it cancel videoPlayer.Prepare()
-                
+
                 UMI3DAnimationManager.Instance.StartCoroutine(SetFrame(dto.pauseFrame));
             }
 
@@ -88,7 +88,7 @@ namespace umi3d.cdk
             {
                 yield return delay;
             }
-           
+
             videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)UMI3DEnvironmentLoader.GetEntity(audioId).Object).audioSource);
         }
 
@@ -119,7 +119,7 @@ namespace umi3d.cdk
             }
             if (!dto.playing)
             {
-                videoPlayer.frame = dto.pauseFrame ;
+                videoPlayer.frame = dto.pauseFrame;
             }
         }
 
@@ -165,7 +165,7 @@ namespace umi3d.cdk
                     MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
 
                 }
-            //    Debug.Log("start client video " + UMI3DClientServer.Instance.GetTime() + "  at : " + videoPlayer.frame);
+                //    Debug.Log("start client video " + UMI3DClientServer.Instance.GetTime() + "  at : " + videoPlayer.frame);
             }
         }
 

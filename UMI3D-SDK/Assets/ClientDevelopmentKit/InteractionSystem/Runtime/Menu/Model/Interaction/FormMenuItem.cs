@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using UnityEngine.Events;
 using umi3d.common.interaction;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.interaction
 {

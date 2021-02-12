@@ -227,7 +227,7 @@ namespace umi3d.edk.collaboration
             var op = objectUserList.Remove(user);
             if (op == null)
                 yield break;
-            if(user != null)
+            if (user != null)
                 op.users.Remove(user);
             UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }

@@ -11,13 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using BeardedManStudios;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
-using BeardedManStudios.Threading;
 using System.Collections;
-using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -221,7 +218,7 @@ namespace umi3d.cdk.collaboration
 
         public void SendVOIP(int length, byte[] sample)
         {
-            if (client == null || client.Me == null ) return;
+            if (client == null || client.Me == null) return;
             var dto = new VoiceDto()
             {
                 length = length,

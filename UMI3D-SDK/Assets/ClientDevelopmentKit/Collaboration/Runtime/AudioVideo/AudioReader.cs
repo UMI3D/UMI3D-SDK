@@ -32,7 +32,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         public void Read(VoiceDto dto)
         {
-            MainThreadManager.Run(()=>OnEncoded(dto.data, dto.length));
+            MainThreadManager.Run(() => OnEncoded(dto.data, dto.length));
         }
 
         #region Read

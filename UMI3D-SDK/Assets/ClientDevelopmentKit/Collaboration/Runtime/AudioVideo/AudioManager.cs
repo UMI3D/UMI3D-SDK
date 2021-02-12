@@ -40,17 +40,17 @@ namespace umi3d.cdk.collaboration
                 MicrophoneListener.Instance.StartRecording();
         }
 
-    /// <summary>
-    /// Read a Voice Dto and dispatched it in the right audioSource.
-    /// </summary>
-    /// <param name="userId"> the speaking user</param>
-    /// <param name="dto"> the voice dto</param>
-    public void Read(string userId, VoiceDto dto)
+        /// <summary>
+        /// Read a Voice Dto and dispatched it in the right audioSource.
+        /// </summary>
+        /// <param name="userId"> the speaking user</param>
+        /// <param name="dto"> the voice dto</param>
+        public void Read(string userId, VoiceDto dto)
         {
             if (SpacialReader.ContainsKey(userId))
                 SpacialReader[userId].Read(dto);
             else if (GlobalReader.ContainsKey(userId))
-                    GlobalReader[userId].Read(dto);
+                GlobalReader[userId].Read(dto);
         }
 
 
@@ -91,7 +91,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (SpacialReader.ContainsKey(user.id))
                     SpacialReader.Remove(user.id);
-                if(!GlobalReader.ContainsKey(user.id))
+                if (!GlobalReader.ContainsKey(user.id))
                 {
                     var g = new GameObject($"Audio Reader {user.id}");
                     g.name = user.id;
