@@ -58,6 +58,10 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
                     dto.looping = (bool)property.value;
+                    if (dto is UMI3DVideoPlayerDto)
+                    {
+                        (entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
+                    }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
                     dto.startTime = (ulong)(long)property.value;
