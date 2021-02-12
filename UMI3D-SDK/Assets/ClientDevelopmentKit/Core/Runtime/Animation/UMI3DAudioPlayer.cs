@@ -125,13 +125,13 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = (float)property.value;
+                    audioSource.volume = ADto.volume = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = (float)property.value;
+                    audioSource.pitch = ADto.pitch = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = (float)property.value;
+                    audioSource.spatialBlend = ADto.spatialBlend = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     var res = ADto.audioResource;
