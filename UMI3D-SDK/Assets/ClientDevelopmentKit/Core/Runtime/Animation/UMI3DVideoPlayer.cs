@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ namespace umi3d.cdk
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
             //init material
-            renderTexture = new RenderTexture(1024, 1024, 16, RenderTextureFormat.ARGB32);
+            renderTexture = new RenderTexture(1024, 1024, 16, RenderTextureFormat.RGB565);
             renderTexture.Create();
             renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
             Debug.Log(renderTexture.isReadable);
@@ -53,6 +53,8 @@ namespace umi3d.cdk
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
             videoPlayer.url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.videoResource.variants).url;
             videoPlayer.targetTexture = renderTexture;
+
+            videoPlayer.source = VideoSource.Url;
             videoPlayer.renderMode = VideoRenderMode.RenderTexture;
             videoPlayer.playOnAwake = dto.playing;
             videoPlayer.skipOnDrop = true;
@@ -69,7 +71,7 @@ namespace umi3d.cdk
             else
             {
                 videoPlayer.Pause(); // Don't call Stop() because it cancel videoPlayer.Prepare()
-                
+
                 UMI3DAnimationManager.Instance.StartCoroutine(SetFrame(dto.pauseFrame));
             }
 
@@ -88,7 +90,7 @@ namespace umi3d.cdk
             {
                 yield return delay;
             }
-           
+
             videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)UMI3DEnvironmentLoader.GetEntity(audioId).Object).audioSource);
         }
 
@@ -119,7 +121,7 @@ namespace umi3d.cdk
             }
             if (!dto.playing)
             {
-                videoPlayer.frame = dto.pauseFrame ;
+                videoPlayer.frame = dto.pauseFrame;
             }
         }
 
@@ -148,6 +150,11 @@ namespace umi3d.cdk
             }
         }
 
+        public void SetLoopValue(bool b)
+        {
+            videoPlayer.isLooping = b;
+        }
+
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
@@ -165,7 +172,7 @@ namespace umi3d.cdk
                     MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
 
                 }
-            //    Debug.Log("start client video " + UMI3DClientServer.Instance.GetTime() + "  at : " + videoPlayer.frame);
+                //    Debug.Log("start client video " + UMI3DClientServer.Instance.GetTime() + "  at : " + videoPlayer.frame);
             }
         }
 

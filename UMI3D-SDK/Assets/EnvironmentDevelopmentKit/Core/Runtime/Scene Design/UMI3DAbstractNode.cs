@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -160,7 +160,7 @@ namespace umi3d.edk
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -184,6 +184,9 @@ namespace umi3d.edk
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            foreach (var f in GetComponents<UMI3DUserFilter>())
+                AddConnectionFilter(f);
+
             objectId = id;
 
             objectIsStatic = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.Static, this.isStatic);
@@ -249,9 +252,7 @@ namespace umi3d.edk
                         res.Add(child);
                     else if (child is UMI3DNode)
                     {
-                        UMI3DNode obj = child as UMI3DNode;
-                        if (obj.VisibleFor(user))
-                            res.Add(child);
+                        res.Add(child);
                     }
                 }
             }
@@ -271,14 +272,10 @@ namespace umi3d.edk
                 var child = ct.gameObject.GetComponent<UMI3DAbstractNode>();
                 if (child != null)
                 {
-                    if (child is UMI3DNode)
+                    if (child.LoadOnConnection(user) && child is UMI3DNode obj)
                     {
-                        UMI3DNode obj = child as UMI3DNode;
-                        if (obj.VisibleFor(user))
-                        {
-                            res.Add(obj);
-                            res.AddRange(child.GetAllChildrenInThisScene(user));
-                        }
+                        res.Add(obj);
+                        res.AddRange(child.GetAllChildrenInThisScene(user));
                     }
                 }
             }
@@ -292,7 +289,7 @@ namespace umi3d.edk
             if (transform == null) transform = this.transform;
             else if (transform.gameObject.GetComponent<UMI3DAbstractNode>() != null) return res;
 
-            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode));
+            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode) && i.LoadOnConnection(user));
             if (others != null)
             {
                 res.AddRange(others);
@@ -307,6 +304,25 @@ namespace umi3d.edk
 
         public abstract IEntity ToEntityDto(UMI3DUser user);
 
+        #endregion
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
         #endregion
 
     }

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ namespace umi3d.cdk
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
                 GameObject copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
-                foreach(var lodgroup in copy.GetComponentsInChildren<LODGroup>())
+                foreach (var lodgroup in copy.GetComponentsInChildren<LODGroup>())
                     GameObject.Destroy(lodgroup);
                 Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())

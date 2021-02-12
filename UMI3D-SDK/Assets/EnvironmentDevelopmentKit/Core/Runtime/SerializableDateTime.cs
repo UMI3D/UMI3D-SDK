@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ namespace umi3d.edk
         [HideInInspector] [SerializeField] private bool setNow;
 
         [HideInInspector] [SerializeField] private string culture = "en-US";
-        [HideInInspector] [SerializeField] private string format  = "dd/MM/yyyy  HH:mm:ss";
+        [HideInInspector] [SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
 
         public void OnAfterDeserialize()
         {

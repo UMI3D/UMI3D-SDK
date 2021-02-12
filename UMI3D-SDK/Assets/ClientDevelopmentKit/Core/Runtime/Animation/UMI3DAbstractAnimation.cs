@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using MainThreadDispatcher;
-using System;
 using System.Collections;
 using umi3d.common;
 using UnityEngine;
@@ -58,6 +57,10 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
                     dto.looping = (bool)property.value;
+                    if (dto is UMI3DVideoPlayerDto)
+                    {
+                        (entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
+                    }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
                     dto.startTime = (ulong)(long)property.value;

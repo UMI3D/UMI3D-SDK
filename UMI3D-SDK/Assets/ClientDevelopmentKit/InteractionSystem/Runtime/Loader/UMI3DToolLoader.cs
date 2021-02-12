@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,7 +28,12 @@ namespace umi3d.cdk.interaction
             AbstractInteractionMapper.Instance.CreateTool(tool);
         }
 
-
+        static public void ReadUMI3DExtension(ToolDto dto)
+        {
+            Tool tool = new Tool(dto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
+            AbstractInteractionMapper.Instance.CreateTool(tool);
+        }
 
 
         static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

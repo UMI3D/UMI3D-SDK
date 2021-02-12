@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -227,7 +227,7 @@ namespace umi3d.edk.collaboration
             var op = objectUserList.Remove(user);
             if (op == null)
                 yield break;
-            if(user != null)
+            if (user != null)
                 op.users.Remove(user);
             UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }
