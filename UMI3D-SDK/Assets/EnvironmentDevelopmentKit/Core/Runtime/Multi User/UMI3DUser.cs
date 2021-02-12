@@ -30,6 +30,7 @@ namespace umi3d.edk
         /// </summary>
         private string userId;
 
+        public bool hasJoined { get => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING; }
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
