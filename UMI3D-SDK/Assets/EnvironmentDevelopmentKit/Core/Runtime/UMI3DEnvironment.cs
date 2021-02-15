@@ -298,6 +298,12 @@ namespace umi3d.edk
                 Instance?.entities?.Remove(obj.Id());
         }
 
+        public static void Remove(string id)
+        {
+            if (id != null && Exists)
+                Instance?.entities?.Remove(id);
+        }
+
         public class DictionaryGenerator<A>
         {
 

@@ -109,7 +109,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void OnDestroy()
         {
-            UMI3DEnvironment.Remove(this);
+            UMI3DEnvironment.Remove(toolId);
         }
 
         /// <summary>
