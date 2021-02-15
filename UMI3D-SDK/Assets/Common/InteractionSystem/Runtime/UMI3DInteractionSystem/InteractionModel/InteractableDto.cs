@@ -30,6 +30,8 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool notifySubObject = false;
 
+        public bool active = true;
+
         public string nodeId;
 
         public InteractableDto() : base() { }
