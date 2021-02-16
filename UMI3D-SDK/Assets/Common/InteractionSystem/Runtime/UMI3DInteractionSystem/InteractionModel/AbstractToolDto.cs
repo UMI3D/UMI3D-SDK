@@ -31,6 +31,8 @@ namespace umi3d.common.interaction
         /// </summary>
         public string description = null;
 
+        public bool active = true;
+
         /// <summary>
         /// Path or url to a 2D icon 
         /// </summary>
