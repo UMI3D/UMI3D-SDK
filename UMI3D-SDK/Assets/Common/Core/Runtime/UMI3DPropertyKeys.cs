@@ -63,8 +63,8 @@ namespace umi3d.common
         #endregion
 
         #region tool
-        public const string ActiveTool = "umi3d_tool_active";
-        public const string ActiveToolBox = "umi3d_toolBox_active";
+        public const string ToolActive = "umi3d_tool_active";
+        public const string ToolBoxActive = "umi3d_toolBox_active";
 
         public const string ToolboxName = "umi3d_toolbox_name";
         public const string ToolboxDescription = "umi3d_toolbox_description";

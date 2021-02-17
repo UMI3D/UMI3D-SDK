@@ -45,7 +45,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return SetInteractions(dto, tool, property);
-                case UMI3DPropertyKeys.ActiveTool:
+                case UMI3DPropertyKeys.ToolActive:
                     dto.active = (bool)property.value;
                     break;
                 default:

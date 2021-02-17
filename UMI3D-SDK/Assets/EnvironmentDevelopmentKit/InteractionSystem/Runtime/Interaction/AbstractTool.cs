@@ -103,7 +103,7 @@ namespace umi3d.edk.interaction
 
             toolId = id;
             objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => i.ToDto(u));
-            objectActive = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.ActiveTool,Active);
+            objectActive = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.ToolActive,Active);
             inited = true;
         }
 
