@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-
+#if UNITY_EDITOR
 public class PackagesExporter 
 {
     const string folder = "../Packages/";
@@ -70,3 +70,4 @@ public class PackagesExporter
         AssetDatabase.ExportPackage(edk, pathEdk, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
     }
 }
+#endif

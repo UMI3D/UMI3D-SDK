@@ -26,18 +26,20 @@ namespace umi3d.cdk.collaboration
     public class AudioReader : MonoBehaviour
     {
 
+        ulong lastTimeStep = 0;
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="dto"></param>
-        public void Read(VoiceDto dto)
+        public void Read(VoiceDto dto, ulong timestep)
         {
-            MainThreadManager.Run(() => OnEncoded(dto.data, dto.length));
+            MainThreadManager.Run(() => OnEncoded(dto.data, dto.length, timestep));
         }
 
         #region Read
         const NumChannels channels = NumChannels.Mono;
-        const SamplingFrequency frequency = SamplingFrequency.Frequency_48000;
+        const SamplingFrequency frequency = SamplingFrequency.Frequency_12000;
         const int audioClipLength = 1024 * 6;
         AudioSource source;
         int head = 0;
@@ -49,8 +51,8 @@ namespace umi3d.cdk.collaboration
             source.clip = AudioClip.Create("Loopback", audioClipLength, (int)channels, (int)frequency, false);
             source.loop = false;
             decoder = new Decoder(
-                SamplingFrequency.Frequency_48000,
-                NumChannels.Mono);
+                frequency,
+                channels);
         }
 
         void OnDisable()
@@ -84,8 +86,12 @@ namespace umi3d.cdk.collaboration
         Decoder decoder;
         readonly float[] pcmBuffer = new float[Decoder.maximumPacketDuration * (int)channels];
 
-        void OnEncoded(byte[] data, int length)
+        void OnEncoded(byte[] data, int length, ulong timeStep)
         {
+            if (timeStep - lastTimeStep > 500)
+                head = 0;
+
+            lastTimeStep = timeStep;
             var pcmLength = decoder.Decode(data, length, pcmBuffer);
             OnDecoded(pcmBuffer, pcmLength);
         }

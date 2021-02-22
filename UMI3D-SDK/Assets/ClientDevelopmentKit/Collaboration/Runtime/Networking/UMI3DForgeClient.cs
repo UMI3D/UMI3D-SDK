@@ -304,7 +304,7 @@ namespace umi3d.cdk.collaboration
             VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
             UMI3DUser source = GetUserByNetWorkId(dto.senderId);
             if (source != null)
-                AudioManager.Instance.Read(source.id, dto);
+                AudioManager.Instance.Read(source.id, dto, client.Time.Timestep);
         }
 
 
