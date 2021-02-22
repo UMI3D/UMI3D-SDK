@@ -35,9 +35,6 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.AddListener(OnUserDisconected);
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
-
-            //if (MicrophoneListener.Exists)
-            //    MicrophoneListener.Instance.StartRecording();
         }
 
         /// <summary>
