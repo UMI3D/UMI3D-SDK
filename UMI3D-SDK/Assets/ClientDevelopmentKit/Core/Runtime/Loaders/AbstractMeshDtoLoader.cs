@@ -125,9 +125,8 @@ namespace umi3d.cdk
 
         public virtual Vector3 GetRotationOffset()
         {
-            return Vector3.one;
+            return Vector3.zero;
         }
-
 
     }
 }

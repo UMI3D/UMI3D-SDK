@@ -40,6 +40,11 @@ namespace umi3d.common
         public bool areSubobjectsTracked;
 
         /// <summary>
+        /// State if the subobject was generated in a rightHanded 
+        /// </summary>
+        public bool isRightHanded = true;
+
+        /// <summary>
         /// If true, the mesh will be used for navmesh generation on the browser.
         /// </summary>
         public bool isPartOfNavmesh = false;

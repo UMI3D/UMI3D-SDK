@@ -63,7 +63,12 @@ namespace umi3d.cdk
                         {
 
                             instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
+                            
                             AbstractMeshDtoLoader.ShowModelRecursively(instance);
+                            if (!rootDto.isRightHanded)
+                            {
+                                instance.transform.localEulerAngles += new Vector3(0, 180, 0);
+                            }
                             /*         instance.transform.localPosition = Vector3.zero;
                                      instance.transform.localEulerAngles = Vector3.zero; //new Vector3(0, 180, 0);
                                      instance.transform.localScale = Vector3.one;*/

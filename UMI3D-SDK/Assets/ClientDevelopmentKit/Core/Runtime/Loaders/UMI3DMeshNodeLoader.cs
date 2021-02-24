@@ -129,7 +129,7 @@ namespace umi3d.cdk
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
-                root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
+                root = SetSubObjectsReferences(go, dto,  rotationOffsetByLoader );
             }
             else
             {
