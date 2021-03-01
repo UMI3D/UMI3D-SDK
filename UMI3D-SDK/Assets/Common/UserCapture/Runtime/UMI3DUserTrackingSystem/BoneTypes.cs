@@ -20,6 +20,7 @@ namespace umi3d.common.userCapture
     public static class BoneType
     {
         public const string None = "none";
+        public const string CenterFeet = "center_feet";
         public const string Finger = "finger";
         public const string Head = "head";
         public const string LeftAnkle = "left_ankle";
