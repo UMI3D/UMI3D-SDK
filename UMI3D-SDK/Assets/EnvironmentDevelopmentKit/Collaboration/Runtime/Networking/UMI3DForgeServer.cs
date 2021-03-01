@@ -22,6 +22,7 @@ using umi3d.common.collaboration;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
@@ -253,6 +254,18 @@ namespace umi3d.edk.collaboration
         #endregion
 
         #region avatar
+
+        protected class AvatarFrameEvent : UnityEvent<common.userCapture.UserTrackingFrameDto, ulong> { };
+
+        protected static AvatarFrameEvent avatarFrameEvent = new AvatarFrameEvent();
+
+        public static void requestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
+        {
+            // do something with reason
+
+            avatarFrameEvent.AddListener(action);
+        }
+
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
@@ -260,6 +273,7 @@ namespace umi3d.edk.collaboration
 
             if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
             {
+                avatarFrameEvent.Invoke((dto as common.userCapture.UserTrackingFrameDto), server.Time.Timestep);
                 MainThreadManager.Run(() =>
                 {
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
@@ -267,6 +281,7 @@ namespace umi3d.edk.collaboration
                 RelayMessage(player, frame, Receivers.OthersProximity);
             }
         }
+
 
         #endregion
 
