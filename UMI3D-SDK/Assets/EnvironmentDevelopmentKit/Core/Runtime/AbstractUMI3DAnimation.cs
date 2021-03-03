@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -26,19 +26,23 @@ namespace umi3d.edk
     {
         string animationID;
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         bool playing;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         bool looping;
-        [SerializeField]
-        DateTime startTime;
+        [SerializeField, EditorReadOnly]
+        ulong startTime;
+        [SerializeField, EditorReadOnly]
+        long pauseFrame;
         private UMI3DAsyncProperty<bool> _objectPlaying;
         private UMI3DAsyncProperty<bool> _objectLooping;
-        private UMI3DAsyncProperty<DateTime> _objectStartTime;
+        private UMI3DAsyncProperty<ulong> _objectStartTime;
+        private UMI3DAsyncProperty<long> _objectPauseFrame;
 
-        public UMI3DAsyncProperty<bool> objectPlaying { get { Register();  return _objectPlaying; } protected set => _objectPlaying = value; }
+        public UMI3DAsyncProperty<bool> objectPlaying { get { Register(); return _objectPlaying; } protected set => _objectPlaying = value; }
         public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
-        public UMI3DAsyncProperty<DateTime> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
+        public UMI3DAsyncProperty<ulong> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
+        public UMI3DAsyncProperty<long> objectPauseFrame { get { Register(); return _objectPauseFrame; } protected set => _objectPauseFrame = value; }
 
         /// <summary>
         /// Get the Id of the animation.
@@ -70,13 +74,18 @@ namespace umi3d.edk
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            foreach (var f in GetComponents<UMI3DUserFilter>())
+                AddConnectionFilter(f);
+
             objectPlaying = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationPlaying, playing);
             objectLooping = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationLooping, looping);
-            objectStartTime = new UMI3DAsyncProperty<DateTime>(id, UMI3DPropertyKeys.AnimationStartTime, startTime);
+            objectStartTime = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.AnimationStartTime, startTime);
+            objectPauseFrame = new UMI3DAsyncProperty<long>(id, UMI3DPropertyKeys.AnimationPauseFrame, pauseFrame);
 
             objectPlaying.OnValueChanged += (b) => playing = b;
             objectLooping.OnValueChanged += (b) => looping = b;
             objectStartTime.OnValueChanged += (d) => startTime = d;
+            objectPauseFrame.OnValueChanged += (v) => pauseFrame = v;
         }
 
         /// <summary>
@@ -88,7 +97,7 @@ namespace umi3d.edk
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -118,6 +127,7 @@ namespace umi3d.edk
             dto.playing = objectPlaying.GetValue(user);
             dto.looping = objectLooping.GetValue(user);
             dto.startTime = objectStartTime.GetValue(user);
+            dto.pauseFrame = objectPauseFrame.GetValue(user);
         }
 
         /// <summary>
@@ -146,5 +156,25 @@ namespace umi3d.edk
         {
             return ToAnimationDto(user);
         }
+
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

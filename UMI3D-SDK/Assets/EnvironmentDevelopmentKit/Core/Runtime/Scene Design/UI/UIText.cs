@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -164,7 +164,7 @@ namespace umi3d.edk
             base.InitDefinition(id);
             Alignment = new UMI3DAsyncProperty<TextAnchor>(objectId, UMI3DPropertyKeys.Alignement, alignment, (a, u) => a.Convert());
             AlignByGeometry = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.AlignByGeometry, alignByGeometry);
-            TextColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.AlignByGeometry, color, ToUMI3DSerializable.ToSerializableColor);
+            TextColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.TextColor, color, ToUMI3DSerializable.ToSerializableColor);
             TextFont = new UMI3DAsyncProperty<Font>(objectId, UMI3DPropertyKeys.TextFont, font, (a, u) => a.name);
             FontSize = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.FontSize, fontSize);
             FontStyle = new UMI3DAsyncProperty<FontStyle>(objectId, UMI3DPropertyKeys.FontStyle, fontStyle, (a, u) => a.Convert());
@@ -187,6 +187,7 @@ namespace umi3d.edk
             return new UITextDto();
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,11 +26,21 @@ namespace umi3d.common
         /// Id of the root object of the model 
         /// </summary>
         public string modelId;
-        
+
         /// <summary>
         /// subModel Loader should apply root model material overrider or ignore it
         /// </summary>
         public bool ignoreModelMaterialOverride;
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
 
         public SubModelDto() : base() { }
 

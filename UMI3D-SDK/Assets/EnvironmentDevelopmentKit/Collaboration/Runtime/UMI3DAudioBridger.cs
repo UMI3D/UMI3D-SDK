@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -26,7 +25,7 @@ namespace umi3d.edk.collaboration
     {
         [SerializeField]
         bool _Spacialized = false;
-        bool Spacialized
+        public bool Spacialized
         {
             get => _Spacialized; set {
                 _Spacialized = value;
@@ -41,14 +40,6 @@ namespace umi3d.edk.collaboration
 
         void newUser(UMI3DUser _user)
         {
-            foreach (var userA in UMI3DCollaborationServer.Collaboration.Users)
-            {
-                if (userA == _user) continue;
-                if (!UMI3DCollaborationServer.WebRTC.ContainsChannel(userA, _user, "Audio"))
-                {
-                    UMI3DCollaborationServer.WebRTC.OpenChannel(userA, _user, "Audio", DataType.Audio, false);
-                }
-            }
             if (_user is UMI3DCollaborationUser user)
             {
                 if (user.audioPlayer == null)
@@ -56,7 +47,6 @@ namespace umi3d.edk.collaboration
                     StartCoroutine(SetAudioSource(user));
                 }
                 StartCoroutine(SetSpacialBlend(user));
-
             }
         }
 
@@ -95,10 +85,10 @@ namespace umi3d.edk.collaboration
 
         void UpdateSpacial()
         {
-            foreach(var user in UMI3DEnvironment.GetEntities<UMI3DCollaborationUser>())
+            foreach (var user in UMI3DEnvironment.GetEntities<UMI3DCollaborationUser>())
             {
                 var op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
-                if(op != null)
+                if (op != null)
                     UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
             }
         }

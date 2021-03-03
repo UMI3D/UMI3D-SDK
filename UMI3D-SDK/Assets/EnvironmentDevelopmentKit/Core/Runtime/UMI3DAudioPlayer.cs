@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -23,17 +21,17 @@ namespace umi3d.edk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DNode node;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource audioResources;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float volume = 1;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float pitch = 1;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         [Range(0f, 1f)]
         float spatialBlend;
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
@@ -48,6 +46,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> ObjectPitch { get { Register(); return _objectPitch; } protected set => _objectPitch = value; }
         public UMI3DAsyncProperty<float> ObjectSpacialBlend { get { Register(); return _objectSpacialBlend; } protected set => _objectSpacialBlend = value; }
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -66,6 +65,7 @@ namespace umi3d.edk
             ObjectSpacialBlend.OnValueChanged += (f) => spatialBlend = f;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -77,6 +77,7 @@ namespace umi3d.edk
             Adto.spatialBlend = ObjectSpacialBlend.GetValue(user);
         }
 
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAudioPlayerDto();

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -27,7 +26,7 @@ namespace umi3d.edk
     public class UMI3DEnvironment : Singleton<UMI3DEnvironment>
     {
         #region initialization
-
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -38,21 +37,21 @@ namespace umi3d.edk
         /// <summary>
         /// Environment's name.
         /// </summary>
+        [EditorReadOnly]
         public string environmentName = "test";
 
         [HideInInspector]
         public List<UMI3DScene> scenes;
 
+        [SerializeField, EditorReadOnly]
         public List<AssetLibrary> globalLibraries;
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
-        [SerializeField]
-        private Vector3 defaultStartOrentation = new Vector3(0, 0, 0); 
-        static public UMI3DAsyncProperty<Vector3> objectStartPosition {get; protected set;}
-        static public UMI3DAsyncProperty<Quaternion> objectStartQuaternion { get; protected set; }
-
-
+        [SerializeField, EditorReadOnly]
+        private Vector3 defaultStartOrientation = new Vector3(0, 0, 0);
+        static public UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
+        static public UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
 
         private void Start()
         {
@@ -68,10 +67,6 @@ namespace umi3d.edk
         public MediaDto ToDto()
         {
             var res = new MediaDto();
-            res.websocketUrl = UMI3DServer.GetWebsocketUrl();
-            res.websocketUrl = UMI3DServer.GetWebsocketUrl();
-            res.httpUrl = UMI3DServer.GetHttpUrl();
-            res.Authentication = UMI3DServer.GetAuthentication();
             res.name = environmentName;
             res.connection = UMI3DServer.Instance.ToDto();
             res.versionMajor = UMI3DVersion.major;
@@ -86,18 +81,18 @@ namespace umi3d.edk
         {
             GlTFEnvironmentDto env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
-            env.scenes.AddRange(scenes.Select(s => s.ToGlTFNodeDto(user)));
+            env.scenes.AddRange(scenes.Where(s => s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
             WriteProperties(env.extensions.umi3d, user);
             return env;
         }
 
         /// <summary>
-        /// Write Properties on a UMI3DEnvironementDto.
+        /// Write Properties on a UMI3DEnvironmentDto.
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="user"></param>
-        protected virtual void WriteProperties(UMI3DEnvironementDto dto, UMI3DUser user)
+        protected virtual void WriteProperties(UMI3DEnvironmentDto dto, UMI3DUser user)
         {
             dto.LibrariesId = globalLibraries.Select(l => l.id).ToList();
             dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
@@ -107,33 +102,36 @@ namespace umi3d.edk
             dto.groundColor = objectGroundColor.GetValue(user);
             dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
             dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+            dto.defaultMaterial = defaultMaterial?.ToDto();
         }
 
         /// <summary>
-        /// Create a UMI3DEnvironementDto.
+        /// Create a UMI3DEnvironmentDto.
         /// </summary>
         /// <returns></returns>
-        protected virtual UMI3DEnvironementDto CreateDto()
+        protected virtual UMI3DEnvironmentDto CreateDto()
         {
-            return new UMI3DEnvironementDto();
+            return new UMI3DEnvironmentDto();
         }
 
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartQuaternion.GetValue(user) };
+            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user) };
         }
 
 
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
-            List<AssetLibraryDto> libraries = globalLibraries.Select(l => l.ToDto()).ToList();
-            libraries.AddRange(scenes.SelectMany(s => s.libraries).GroupBy(l=>l.id).Select(l=>l.First().ToDto()));
+            List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
+            var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.id == l.Key))?.Select(l => l.First().ToDto());
+            if (sceneLib != null)
+                libraries.AddRange(sceneLib);
             return new LibrariesDto() { libraries = libraries };
         }
 
         static public bool UseLibrary()
         {
-            return Exists ? Instance.globalLibraries.Any() || Instance.scenes.Any(s=>s.libraries.Any()): false;
+            return Exists ? Instance.globalLibraries.Any() || Instance.scenes.Any(s => s.libraries.Any()) : false;
         }
         #endregion
 
@@ -144,7 +142,7 @@ namespace umi3d.edk
             var id = UMI3DGlobalID.EnvironementId;
 
             objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, null, defaultStartPosition);
-            objectStartQuaternion = new UMI3DAsyncProperty<Quaternion>(id, null, Quaternion.Euler(defaultStartOrentation));
+            objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, null, Quaternion.Euler(defaultStartOrientation));
 
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (AmbientType)mode);
@@ -153,10 +151,11 @@ namespace umi3d.edk
             objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, groundColor, (c, u) => (SerializableColor)c);
             objectAmbientIntensity = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientIntensity, ambientIntensity);
             objectAmbientSkyboxImage = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AmbientSkyboxImage, skyboxImage, (r, u) => r.ToDto());
+
         }
 
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         List<UMI3DResource> preloadedScenes = new List<UMI3DResource>();
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
@@ -189,9 +188,14 @@ namespace umi3d.edk
         /// <summary>
         /// AsyncProperties of the Skybox Image
         /// </summary>
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource skyboxImage = null;
         public UMI3DAsyncProperty<UMI3DResource> objectAmbientSkyboxImage;
+        /// <summary>
+        /// Properties of the default Material, it is used to initialise loaded materials in clients. 
+        /// </summary>
+        [SerializeField]
+        UMI3DResource defaultMaterial = null;
 
         #endregion
 
@@ -275,7 +279,7 @@ namespace umi3d.edk
             if (Exists)
             {
                 if (entity != null)
-                    return Instance.entities.Register(entity,id);
+                    return Instance.entities.Register(entity, id);
                 else
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
@@ -306,8 +310,7 @@ namespace umi3d.edk
 
             public A this[string key]
             {
-                get
-                {
+                get {
                     if (key == null || key.Length == 0)
                         return default;
                     else if (objects.ContainsKey(key))
@@ -324,7 +327,7 @@ namespace umi3d.edk
                 return guid;
             }
 
-            public string Register(A obj,string guid)
+            public string Register(A obj, string guid)
             {
                 if (objects.ContainsKey(guid))
                 {

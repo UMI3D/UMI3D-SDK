@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -32,11 +32,12 @@ namespace umi3d.edk.interaction
             name = "new toolbox"
         };
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DScene Scene;
         public UMI3DAsyncProperty<UMI3DScene> objectScene { get { Register(); return _objectScene; } protected set => _objectScene = value; }
 
-        public List<UMI3DTool> tools = new List<UMI3DTool>();
+        [SerializeField, EditorReadOnly]
+        protected List<UMI3DTool> tools = new List<UMI3DTool>();
         public UMI3DAsyncListProperty<UMI3DTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
 
 
@@ -80,7 +81,7 @@ namespace umi3d.edk.interaction
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -121,6 +122,9 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            foreach (var f in GetComponents<UMI3DUserFilter>())
+                AddConnectionFilter(f);
+
             toolboxId = id;
             if (Scene == null) Scene = GetComponent<UMI3DScene>();
             objectTools = new UMI3DAsyncListProperty<UMI3DTool>(toolboxId, UMI3DPropertyKeys.ToolboxTools, tools);
@@ -160,5 +164,24 @@ namespace umi3d.edk.interaction
         {
             return ToDto(user);
         }
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -89,18 +89,24 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 &#160;
 
 <h3><a id="index_i"></a>- i -</h3><ul>
+<li>iceParam
+: <a class="el" href="d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#aef53d954a3593874bed4f407cd6da0b1">umi3d.edk.collaboration.UMI3DLauncher</a>
+</li>
 <li>iceRestart
 : <a class="el" href="d1/d53/classumi3d_1_1common_1_1collaboration_1_1_answer_dto.html#a0cfb66f9c9b6259e8637f69f369d0362">umi3d.common.collaboration.AnswerDto</a>
 , <a class="el" href="dc/dcf/classumi3d_1_1common_1_1collaboration_1_1_offer_dto.html#a44d1cf47e48363c8d526144d74f063a1">umi3d.common.collaboration.OfferDto</a>
 </li>
 <li>iceServers
-: <a class="el" href="db/dcb/classumi3d_1_1common_1_1_web_r_t_cconnection.html#aab936d2254895027799d59c883cfa1af">umi3d.common.WebRTCconnection</a>
+: <a class="el" href="d5/d7c/classumi3d_1_1common_1_1collaboration_1_1_websocket_connection_dto.html#a135b71db3c2e02731026fc44a375baca">umi3d.common.collaboration.WebsocketConnectionDto</a>
+, <a class="el" href="dc/d32/classumi3d_1_1edk_1_1collaboration_1_1_ice_servers.html#a7220fe72c8357c7b98ac5f000860c59c">umi3d.edk.collaboration.IceServers</a>
+, <a class="el" href="d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a9e049d1cd04727ad0d101b4959d71aa8">umi3d.edk.collaboration.UMI3DCollaborationServer</a>
 </li>
 <li>icon2D
 : <a class="el" href="d4/d0b/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item.html#ae36c5b9883da97fce32f688b91784a68">umi3d.cdk.menu.AbstractMenuItem</a>
 , <a class="el" href="d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html#aea080326a6c5fb385cd74e1fd5f33334">umi3d.common.interaction.AbstractInteractionDto</a>
 , <a class="el" href="d6/df2/classumi3d_1_1common_1_1interaction_1_1_abstract_tool_dto.html#aafe016c6d393e4c5eefb0fa5a3cb9926">umi3d.common.interaction.AbstractToolDto</a>
 , <a class="el" href="df/d24/classumi3d_1_1common_1_1interaction_1_1_toolbox_dto.html#a328fc3f922798e66628de786388eed4d">umi3d.common.interaction.ToolboxDto</a>
+, <a class="el" href="d5/d5d/classumi3d_1_1common_1_1_media_dto.html#ac4ebafadb4ec5950f5c3fe3f552c6474">umi3d.common.MediaDto</a>
 , <a class="el" href="df/ddf/classumi3d_1_1common_1_1_notification_dto.html#aa8cb31cd274a9c64adde5585582193aa">umi3d.common.NotificationDto</a>
 , <a class="el" href="d5/dba/classumi3d_1_1edk_1_1interaction_1_1_interaction_display.html#a82d24203400216eefa779d1197c23fb8">umi3d.edk.interaction.InteractionDisplay</a>
 </li>
@@ -112,6 +118,7 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 , <a class="el" href="d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html#a05714d18a1e41df6eac0bf889b2f317f">umi3d.common.interaction.AbstractInteractionDto</a>
 , <a class="el" href="d6/df2/classumi3d_1_1common_1_1interaction_1_1_abstract_tool_dto.html#a855d5cf3ce8354ddfdf6b7274abc2f43">umi3d.common.interaction.AbstractToolDto</a>
 , <a class="el" href="df/d24/classumi3d_1_1common_1_1interaction_1_1_toolbox_dto.html#a3661a77b6ea4fdcc719d23a4a6dfd70b">umi3d.common.interaction.ToolboxDto</a>
+, <a class="el" href="d5/d5d/classumi3d_1_1common_1_1_media_dto.html#ad04fb5850602fd0187672bf9ae550d21">umi3d.common.MediaDto</a>
 , <a class="el" href="df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a117018e963d24d07f1ae0bbd59e6ddcc">umi3d.common.NotificationDto</a>
 , <a class="el" href="d5/dba/classumi3d_1_1edk_1_1interaction_1_1_interaction_display.html#a38fdeb5e7d2993db672b1650cc53a91c">umi3d.edk.interaction.InteractionDisplay</a>
 </li>
@@ -119,11 +126,14 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 : <a class="el" href="d1/d88/classumi3d_1_1edk_1_1_u_m_i3_d_notification.html#a585bfa63c60446eab88bbef873d0a996">umi3d.edk.UMI3DNotification</a>
 </li>
 <li>id
-: <a class="el" href="df/d15/classumi3d_1_1cdk_1_1_custom_textures.html#a4013b37b1a45bd95b14e7b49cf45a6d5">umi3d.cdk.CustomTextures</a>
+: <a class="el" href="dc/d9b/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_user.html#a82f77762b716c18fd1948567ab8df4e4">umi3d.cdk.collaboration.UMI3DUser</a>
 , <a class="el" href="d6/d9f/classumi3d_1_1cdk_1_1interaction_1_1_projection_tree_node.html#a1701a8627169b1b8eeef906ffb5ad29a">umi3d.cdk.interaction.ProjectionTreeNode</a>
 , <a class="el" href="d4/dbf/classumi3d_1_1common_1_1_abstract_entity_dto.html#a180413cb1d7af2ebe36d8175ac578b47">umi3d.common.AbstractEntityDto</a>
 , <a class="el" href="d0/d07/classumi3d_1_1common_1_1_asset_library_dto.html#ab7b8a3e3a2557cb6929d6cf4dd47ae8a">umi3d.common.AssetLibraryDto</a>
+, <a class="el" href="df/dc3/classumi3d_1_1common_1_1collaboration_1_1_websocket_data_channel.html#a5b39d6670468e9b0e39ea0d3092ed91a">umi3d.common.collaboration.WebsocketDataChannel</a>
+, <a class="el" href="d9/d21/classumi3d_1_1common_1_1interaction_1_1_interaction_request_dto.html#a5bffed03490b4198713fe3cda2b48da2">umi3d.common.interaction.InteractionRequestDto</a>
 , <a class="el" href="d3/d15/classumi3d_1_1edk_1_1_asset_library.html#ac1856944d3329403e949892a69e77521">umi3d.edk.AssetLibrary</a>
+, <a class="el" href="dd/df5/classumi3d_1_1edk_1_1_custom_textures.html#aefc0d94b16882590c4832989e0931c38">umi3d.edk.CustomTextures</a>
 </li>
 <li>id_
 : <a class="el" href="d8/d69/classumi3d_1_1cdk_1_1interaction_1_1_projection_memory.html#a446b9263e24d375b9d00858cde28197f">umi3d.cdk.interaction.ProjectionMemory</a>
@@ -151,11 +161,12 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 <li>ignoredPrimitiveNameForSubObjectsLoading
 : <a class="el" href="d3/d06/classumi3d_1_1cdk_1_1_u_m_i3_d_mesh_node_loader.html#a13a026eba1787bbbfde64c804d4a93ab">umi3d.cdk.UMI3DMeshNodeLoader</a>
 </li>
+<li>ignoreModelMaterialOverride
+: <a class="el" href="d2/dec/classumi3d_1_1common_1_1_sub_model_dto.html#a5d17ef7f38cb8063a1f3b239f09e068f">umi3d.common.SubModelDto</a>
+, <a class="el" href="da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#aad5a2a45944fd651cd93f6660ced3b49">umi3d.edk.UMI3DSubModel</a>
+</li>
 <li>image
 : <a class="el" href="d9/d20/classumi3d_1_1cdk_1_1menu_1_1_image_menu.html#ae8752be001ab5fe4d429e1ee7af93bba">umi3d.cdk.menu.ImageMenu</a>
-</li>
-<li>ImageType
-: <a class="el" href="d7/de9/classumi3d_1_1edk_1_1_u_i_image.html#abbb8f393051d5ed4bca15220f1d6206d">umi3d.edk.UIImage</a>
 </li>
 <li>immersiveOnly
 : <a class="el" href="dd/dc4/classumi3d_1_1common_1_1_u_m_i3_d_abstract_node_dto.html#a55056cb864dc0957dd8cff2e0225a0d5">umi3d.common.UMI3DAbstractNodeDto</a>
@@ -164,8 +175,9 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 <li>inc
 : <a class="el" href="d7/dea/classumi3d_1_1cdk_1_1menu_1_1_abstract_range_input_menu_item.html#a24faba637cb974b1c74a9369822f620c">umi3d.cdk.menu.AbstractRangeInputMenuItem&lt; T &gt;</a>
 </li>
-<li>Increment
-: <a class="el" href="d1/dfd/classumi3d_1_1common_1_1interaction_1_1_abstract_range_parameter_dto.html#aa19f93c00330459e6843f3ae5cd0ae1e">umi3d.common.interaction.AbstractRangeParameterDto&lt; T &gt;</a>
+<li>increment
+: <a class="el" href="d1/dfd/classumi3d_1_1common_1_1interaction_1_1_abstract_range_parameter_dto.html#a65f3e570ddf8ec5452e60efd76cfa1af">umi3d.common.interaction.AbstractRangeParameterDto&lt; T &gt;</a>
+, <a class="el" href="d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html#a4e3f78e54487677a5af3af30bd95a5ed">umi3d.edk.interaction.FloatRangeParameter</a>
 </li>
 <li>index
 : <a class="el" href="d4/d6d/classumi3d_1_1common_1_1_set_entity_list_property_dto.html#aef1edab862c85a0c3bb813bf8f20a950">umi3d.common.SetEntityListPropertyDto</a>
@@ -201,14 +213,17 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 <li>Interactions
 : <a class="el" href="d8/ddb/classumi3d_1_1edk_1_1interaction_1_1_abstract_tool.html#ab27794f4ec620980f83a2418b1802a5e">umi3d.edk.interaction.AbstractTool</a>
 </li>
-<li>IP
-: <a class="el" href="d5/d7c/classumi3d_1_1common_1_1collaboration_1_1_websocket_connection_dto.html#ab59fac68c436f1082d0c3b96fd762cf7">umi3d.common.collaboration.WebsocketConnectionDto</a>
+<li>iP
+: <a class="el" href="d5/d7c/classumi3d_1_1common_1_1collaboration_1_1_websocket_connection_dto.html#a9542944757afe09d1882cc89617135ff">umi3d.common.collaboration.WebsocketConnectionDto</a>
 </li>
 <li>ip
 : <a class="el" href="db/d4d/classumi3d_1_1edk_1_1_u_m_i3_d_server.html#a6cb41fb58e286cf245bb46d89b031411">umi3d.edk.UMI3DServer</a>
 </li>
+<li>ipParam
+: <a class="el" href="d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#abb3c1f19676be03607874054f39f84d2">umi3d.edk.collaboration.UMI3DLauncher</a>
+</li>
 <li>isBinded
-: <a class="el" href="d1/de9/classumi3d_1_1edk_1_1user_capture_1_1_binding.html#a0b661ab93dbd2238c5bd599b64c3085d">umi3d.edk.userCapture.Binding</a>
+: <a class="el" href="d7/d57/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_binding.html#a5aa5e63b18ef41860fd40d10f0d6da85">umi3d.edk.userCapture.UMI3DBinding</a>
 </li>
 <li>isInBundle
 : <a class="el" href="da/dac/classumi3d_1_1edk_1_1_u_m_i3_d_resource_file.html#a64b598220cddf0ff16bd7b5b11277822">umi3d.edk.UMI3DResourceFile</a>
@@ -223,9 +238,6 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 : <a class="el" href="dc/d43/classumi3d_1_1common_1_1_collider_dto.html#a522bab05bc05f2c4ec1c04fcf950b694">umi3d.common.ColliderDto</a>
 , <a class="el" href="d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ac5c705b469e2bf7584dc2361ce7e29c0">umi3d.edk.UMI3DNode</a>
 </li>
-<li>IsOn
-: <a class="el" href="d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a43699750b539a3b5c135e3dd50c66b7a">umi3d.cdk.collaboration.MicrophoneListener</a>
-</li>
 <li>isStatic
 : <a class="el" href="dd/dc4/classumi3d_1_1common_1_1_u_m_i3_d_abstract_node_dto.html#ade778d66208f3ac57be6578cb01a98a1">umi3d.common.UMI3DAbstractNodeDto</a>
 , <a class="el" href="d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a965c8ec8e715d5c1126e9f6e44d1297b">umi3d.edk.UMI3DAbstractNode</a>
@@ -235,6 +247,7 @@ $(document).ready(function(){initNavTree('functions_vars_i.html',''); initResiza
 </li>
 <li>isTracked
 : <a class="el" href="d6/ddc/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_bone.html#a4ee2df50a2516a4f6d1443f550220ec6">umi3d.cdk.userCapture.UMI3DClientUserTrackingBone</a>
+, <a class="el" href="d6/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_user_embodiment_bone.html#a74ce064554fd6ea2202063babe82f429">umi3d.edk.userCapture.UMI3DUserEmbodimentBone</a>
 </li>
 </ul>
 </div><!-- contents -->

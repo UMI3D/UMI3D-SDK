@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,13 +25,14 @@ namespace umi3d.edk.interaction
 {
     public class UMI3DInteractable : AbstractTool, UMI3DLoadableEntity
     {
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool NotifyHoverPosition;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected bool NotifySubObject;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         protected UMI3DNode Node;
 
+        ///<inheritdoc/>
         public override LoadEntity Register()
         {
             base.Register();
@@ -47,7 +48,7 @@ namespace umi3d.edk.interaction
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -82,7 +83,7 @@ namespace umi3d.edk.interaction
             public Vector3 normal { get; private set; }
             public Vector3 direction { get; private set; }
 
-            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user,dto)
+            public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
                 position = dto.position;
                 normal = dto.normal;
@@ -137,7 +138,7 @@ namespace umi3d.edk.interaction
             Idto.nodeId = objectNodeId.GetValue(user).Id();
         }
 
-
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -153,8 +154,8 @@ namespace umi3d.edk.interaction
         public void Hovered(UMI3DUser user, HoveredDto dto)
         {
             onHovered?.Invoke(new HoverEventContent(user, dto));
-
         }
+
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
             if (dto.state) onHoverEnter.Invoke(new HoverEventContent(user, dto));

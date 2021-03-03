@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -114,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6657922830ac9a6e6f1b340aaa5ea4b8"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d5/d68/interfaceumi3d_1_1cdk_1_1_i_resources_loader.html">IResourcesLoader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a6657922830ac9a6e6f1b340aaa5ea4b8">SelectLoader</a> (string extension)</td></tr>
 <tr class="memdesc:a6657922830ac9a6e6f1b340aaa5ea4b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the best ResourcesLoader for an extension.  <a href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a6657922830ac9a6e6f1b340aaa5ea4b8">More...</a><br /></td></tr>
 <tr class="separator:a6657922830ac9a6e6f1b340aaa5ea4b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1aec0d8e739d2b8496020b691ae0763"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html">AbstractUMI3DMaterialLoader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#ab1aec0d8e739d2b8496020b691ae0763">SelectMaterialLoader</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> gltfMatDto)</td></tr>
+<tr class="memdesc:ab1aec0d8e739d2b8496020b691ae0763"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return the best MaterialLoader for a GltfMaterialDto.  <a href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#ab1aec0d8e739d2b8496020b691ae0763">More...</a><br /></td></tr>
+<tr class="separator:ab1aec0d8e739d2b8496020b691ae0763"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42afd4541e513292b0fcef9899aa3721"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../dc/daf/classumi3d_1_1common_1_1_u_m_i3_d_local_asset_directory.html">UMI3DLocalAssetDirectory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a42afd4541e513292b0fcef9899aa3721">ChooseVariant</a> (<a class="el" href="../../d0/d07/classumi3d_1_1common_1_1_asset_library_dto.html">AssetLibraryDto</a> assetLibrary)</td></tr>
 <tr class="memdesc:a42afd4541e513292b0fcef9899aa3721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Choose the best library variant for this client.  <a href="../../db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a42afd4541e513292b0fcef9899aa3721">More...</a><br /></td></tr>
 <tr class="separator:a42afd4541e513292b0fcef9899aa3721"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -347,6 +350,43 @@ Properties</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 <p>Implemented in <a class="el" href="../../d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#aa4334ee602884c351c007a26c877ea44">umi3d.cdk.UMI3DLoadingParameters</a>.</p>
+
+</div>
+</div>
+<a id="ab1aec0d8e739d2b8496020b691ae0763"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1aec0d8e739d2b8496020b691ae0763">&#9670;&nbsp;</a></span>SelectMaterialLoader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html">AbstractUMI3DMaterialLoader</a> umi3d.cdk.AbstractUMI3DLoadingParameters.SelectMaterialLoader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a>&#160;</td>
+          <td class="paramname"><em>gltfMatDto</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return the best MaterialLoader for a GltfMaterialDto. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gltfMatDto</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a721f9365265aac426a547df3a546b9b7">umi3d.cdk.UMI3DLoadingParameters</a>.</p>
 
 </div>
 </div>

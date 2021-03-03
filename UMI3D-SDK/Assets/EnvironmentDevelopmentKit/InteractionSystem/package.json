@@ -1,12 +1,12 @@
 {
 	"name": "com.gfi-innovaton.umi3d.edk.interaction-system",
-	"version": "2.0.0",
+	"version": "2.2.0",
 	"displayName": "UMI3D EDK Interaction System",
 	"unity": "2019.4",
 	"author": "Gfi Innovation",
 	"description": "UMI3D Environment DevlopmentKit.",
 	"dependencies": {
-		"com.gfi-innovaton.umi3d.edk.core":"2.0.0",
-		"com.gfi-innovaton.umi3d.common.interaction-system":"2.0.0"
+		"com.gfi-innovaton.umi3d.edk.core":"2.2.0",
+		"com.gfi-innovaton.umi3d.common.interaction-system":"2.2.0"
 	}
 }

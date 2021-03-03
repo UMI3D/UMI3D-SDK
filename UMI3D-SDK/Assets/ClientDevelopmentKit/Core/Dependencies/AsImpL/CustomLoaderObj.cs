@@ -12,7 +12,6 @@ public class CustomLoaderObj : LoaderObj
     {
         loadedText = null;
 #if UNITY_2018_3_OR_NEWER
-
         UnityWebRequest uwr = UnityWebRequest.Get(url);
         SetCertificate(uwr);
         yield return uwr.SendWebRequest();
@@ -73,16 +72,12 @@ public class CustomLoaderObj : LoaderObj
     protected void SetCertificate(UnityWebRequest www)
     {
 
-        if (!String.IsNullOrEmpty( buildOptions.authorization) )
+        if (!String.IsNullOrEmpty(buildOptions.authorization))
         {
-            Debug.Log("authorization : " + buildOptions.authorization);
             www.certificateHandler = new AcceptAllCertificates();
 
-            string authorization = buildOptions.authorization;
-            authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-            authorization = "Basic " + authorization;
+            www.SetRequestHeader(buildOptions.authorizationName, buildOptions.authorization);
 
-            www.SetRequestHeader("AUTHORIZATION", authorization);
         }
     }
 

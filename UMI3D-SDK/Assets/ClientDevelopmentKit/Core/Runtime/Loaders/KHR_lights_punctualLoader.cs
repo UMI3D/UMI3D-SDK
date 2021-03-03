@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ namespace umi3d.cdk
             var dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
             var node = (entity as UMI3DNodeInstance);
             Light light = node?.gameObject?.GetComponent<Light>();
-            if(property.property == UMI3DPropertyKeys.Light)
+            if (property.property == UMI3DPropertyKeys.Light)
             {
                 var lightdto = (KHR_lights_punctual)property.value;
                 if (light != null && lightdto == null) GameObject.Destroy(light);

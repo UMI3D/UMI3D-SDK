@@ -84,8 +84,7 @@ namespace AsImpL
 #if UNITY_EDITOR
         public bool AllImported
         {
-            get
-            {
+            get {
                 return importAssets ? importPhase == ImportPhase.Done : allLoaded;
             }
         }
@@ -96,8 +95,7 @@ namespace AsImpL
         /// </summary>
         public float ImportProgress
         {
-            get
-            {
+            get {
                 if (Loader.totalProgress.singleProgress.Count > 0)
                 {
                     if (importAssets)
@@ -130,8 +128,7 @@ namespace AsImpL
         /// </summary>
         public string ImportMessage
         {
-            get
-            {
+            get {
                 if (Loader.totalProgress.singleProgress.Count > 0)
                 {
                     if (importAssets)
@@ -178,8 +175,9 @@ namespace AsImpL
         /// </summary>
         /// <param name="absolutePath"></param>
         /// <param name="parentObject"></param>
+        /// <param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         /// TODO: refactor this method, it is too long.
-        private IEnumerator ImportFileAsync(string absolutePath, Transform parentObject)
+        private IEnumerator ImportFileAsync(string absolutePath, Transform parentObject, Material baseMaterial = null)
         {
             Loader loader = CreateLoader(absolutePath);
             if (loader == null)
@@ -261,7 +259,7 @@ namespace AsImpL
                 importPhase = ImportPhase.ObjLoad;
                 loader.altTexPath = prefabPath + "/Textures/";
                 loader.buildOptions = buildOptions;
-                yield return StartCoroutine(loader.Load(newName, absolutePath, parentObject));
+                yield return StartCoroutine(loader.Load(newName, absolutePath, parentObject, baseMaterial));
 
                 importMessage = "Saving assets...";
                 AssetDatabase.SaveAssets();
@@ -318,7 +316,7 @@ namespace AsImpL
             else
             {
                 importPhase = ImportPhase.ObjLoad;
-                yield return StartCoroutine(loader.Load(newName, absolutePath, parentObject));
+                yield return StartCoroutine(loader.Load(newName, absolutePath, parentObject, baseMaterial));
             }
             Debug.LogFormat("OBJ files imported in {0} seconds", Time.realtimeSinceStartup - startTotTime);
         }
@@ -348,7 +346,7 @@ namespace AsImpL
                     Debug.LogError("Unable to detect file format in " + ext);
                     return null;
                 }
-                loader = gameObject.AddComponent<CustomLoaderObj>(); 
+                loader = gameObject.AddComponent<CustomLoaderObj>();
             }
             else
             {
@@ -378,7 +376,8 @@ namespace AsImpL
         /// <param name="filePath"></param>
         /// <param name="parentObj"></param>
         /// <param name="options"></param>
-        public void ImportModelAsync(string objName, string filePath, Transform parentObj, ImportOptions options)
+        ///<param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
+        public void ImportModelAsync(string objName, string filePath, Transform parentObj, ImportOptions options, Material baseMaterial = null)
         {
             if (loaderList == null)
             {
@@ -407,7 +406,7 @@ namespace AsImpL
                 objName = Path.GetFileNameWithoutExtension(absolutePath);
             }
             allLoaded = false;
-            StartCoroutine(loader.Load(objName, absolutePath, parentObj));
+            StartCoroutine(loader.Load(objName, absolutePath, parentObj, baseMaterial));
         }
 
 

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,18 +19,25 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
-    static public class UMI3DToolLoader 
+    static public class UMI3DToolLoader
     {
-        static public void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox) {
+        static public void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox)
+        {
             Tool tool = new Tool(dto, toolbox);
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
+            AbstractInteractionMapper.Instance.CreateTool(tool);
+        }
+
+        static public void ReadUMI3DExtension(ToolDto dto)
+        {
+            Tool tool = new Tool(dto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
             AbstractInteractionMapper.Instance.CreateTool(tool);
         }
 
 
-
-
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property) {
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
             if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property)) return true;
             return false;
         }

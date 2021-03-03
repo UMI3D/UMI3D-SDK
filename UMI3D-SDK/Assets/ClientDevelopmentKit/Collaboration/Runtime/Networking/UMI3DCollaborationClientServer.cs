@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.userCapture;
-#if UNITY_WEBRTC
-using Unity.WebRTC;
-#endif
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -37,31 +32,15 @@ namespace umi3d.cdk.collaboration
     {
         public static new UMI3DCollaborationClientServer Instance { get { return UMI3DClientServer.Instance as UMI3DCollaborationClientServer; } set { UMI3DClientServer.Instance = value; } }
 
-#if UNITY_WEBRTC
-        public EncoderType encoderType;
-#endif
-
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
-        public WebSocketClient WebSocketClient { get; private set; }
-        public IWebRTCClient WebRTCClient { get; private set; }
+        public UMI3DForgeClient ForgeClient { get; private set; }
+
         static public IdentityDto Identity = new IdentityDto();
         static public UserConnectionDto UserDto = new UserConnectionDto();
 
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
-
-        int tryCount = 0;
-        int maxTryCount = 10;
-
-        //public CameraDisplayer cameraDisplayer;
-        //public RectTransform TextureContainer;
-        //List<RawImage> images = new List<RawImage>();
-        //List<Texture2D> textures = new List<Texture2D>();
-
-
-        //public Camera cam;
-        //public RawImage image;
 
         public ClientIdentifierApi Identifier;
 
@@ -69,60 +48,17 @@ namespace umi3d.cdk.collaboration
         static bool connected = false;
 
 
-
-
-
         private void Start()
         {
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
-            //WebRTCClient.audio = Audio.CaptureStream();
-            //WebRTCClient.video = cam.CaptureStream(1280, 720, 1000000);
-            //image.texture = cam.targetTexture;
             connected = false;
             joinning = false;
-            //cameraDisplayer.Play();
         }
 
         public void Init()
         {
-            WebSocketClient = new WebSocketClient(this);
-#if UNITY_WEBRTC
-            WebRTCClient = new WebRTCClient(this, encoderType);
-            (WebRTCClient as WebRTCClient).iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
-#else
-            WebRTCClient = new FakeWebRTCClient(this);
-#endif
-        }
-
-        //public Texture2D GetStreamTexture2D()
-        //{
-        //    return cameraDisplayer.texture;
-        //}
-        //public Texture2D GetReceivedTexture2D()
-        //{
-        //    GameObject g = new GameObject();
-        //    g.transform.SetParent(TextureContainer);
-
-        //    RawImage image = g.AddComponent<RawImage>();
-        //    images.Add(image);
-        //    var texture = new Texture2D(0, 0);
-        //    textures.Add(texture);
-        //    return texture;
-        //}
-
-        //public void Update()
-        //{
-        //    for (int i = 0; i < images.Count; i++)
-        //        images[i].texture = textures[i];
-        //}
-
-
-        private void OnAudioFilterRead(float[] data, int channels)
-        {
-#if UNITY_WEBRTC
-            Audio.Update(data, data.Length);
-#endif
+            ForgeClient = UMI3DForgeClient.Create();
         }
 
         /// <summary>
@@ -131,7 +67,7 @@ namespace umi3d.cdk.collaboration
         /// <returns>True if the client is connected.</returns>
         public static bool Connected()
         {
-            return Exists && Instance?.WebSocketClient != null ? Instance.WebSocketClient.Connected() && connected : false;
+            return Exists && Instance?.ForgeClient != null ? Instance.ForgeClient.IsConnected && connected : false;
         }
 
         /// <summary>
@@ -141,7 +77,26 @@ namespace umi3d.cdk.collaboration
         static public void Connect()
         {
             Instance.Init();
-            Instance.WebSocketClient.Init();
+            if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
+            {
+                Instance.ForgeClient.ip = connection.host;
+                Instance.ForgeClient.port = connection.forgeServerPort;
+                Instance.ForgeClient.masterServerHost = connection.forgeMasterServerHost;
+                Instance.ForgeClient.masterServerPort = connection.forgeMasterServerPort;
+                Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
+                Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
+
+                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((Auth) =>
+                {
+                    UMI3DCollaborationClientServer.Identity.login = "";
+                    Auth.LoginSet = (s) =>
+                    {
+                        UMI3DCollaborationClientServer.Identity.login = s;
+                        Auth.LoginSet = null;
+                    };
+                    Instance.ForgeClient.Join(Auth);
+                });
+            }
         }
 
         /// <summary>
@@ -157,35 +112,27 @@ namespace umi3d.cdk.collaboration
             if (Connected())
                 HttpClient.SendPostLogout(() =>
                 {
-                    WebRTCClient.Stop();
-                    WebSocketClient.Close();
+                    ForgeClient.Stop();
                     Start();
                     success?.Invoke();
+                    Identity = new IdentityDto();
                 },
-                (error) => { failled.Invoke(error); });
+                (error) => { failled.Invoke(error); Identity = new IdentityDto(); });
+            else
+                Identity = new IdentityDto();
         }
 
-        public void onOpen()
-        {
-            tryCount = 0;
-        }
 
         /// <summary>
-        /// Should The websocket connection try to reconnect
+        /// Notify that the connection with the server was lost.
         /// </summary>
-        /// <param name="code">error code</param>
-        /// <returns></returns>
-        public bool shouldReconnectWebsocket(ushort code)
+        public void ConnectionLost()
         {
-            tryCount++;
-            if (code.Equals(1006) || tryCount >= maxTryCount)
-            {
-                OnConnectionLost.Invoke();
-                return false;
-            }
+            UMI3DCollaborationClientServer.Logout(null, null);
 
-            return true;
+            OnConnectionLost.Invoke();
         }
+
 
         /// <summary>
         /// Retry a failed http request
@@ -194,7 +141,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public bool TryAgainOnHttpFail(HttpClient.RequestFailedArgument argument)
         {
-            if (argument.count < 3)
+            if (argument.ShouldTryAgain(argument))
             {
                 StartCoroutine(TryAgain(argument));
                 return true;
@@ -227,18 +174,47 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="url">Url used for the get request.</param>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null)
+        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<HttpClient.RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) => { 
-                Media = media; Instance._setMedia();  callback?.Invoke(media); }, failback);
+            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
+            {
+                Media = media; Instance._setMedia(); callback?.Invoke(media);
+            }, failback, shouldTryAgain);
         }
 
         void _setMedia()
         {
-#if UNITY_WEBRTC
-            if ((WebRTCClient as WebRTCClient) != null)
-                (WebRTCClient as WebRTCClient).iceServers = (UMI3DCollaborationClientServer.Media?.connection as WebsocketConnectionDto)?.iceServers;
-#endif
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="status"></param>
+        static public void OnStatusChanged(StatusDto statusDto)
+        {
+            switch (statusDto.status)
+            {
+                case StatusType.CREATED:
+                    UMI3DCollaborationClientServer.Instance.HttpClient.SendGetIdentity((user) =>
+                    {
+                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                    }, (error) => { Debug.Log("error on get id :" + error); });
+                    break;
+                case StatusType.READY:
+                    if (Identity.userId == null)
+                        Instance.HttpClient.SendGetIdentity((user) =>
+                        {
+                            UserDto = user;
+                            Identity.userId = user.id;
+                            Instance.Join();
+
+                        }, (error) => { Debug.Log("error on get id :" + error); });
+                    else
+                        Instance.Join();
+                    break;
+            }
         }
 
 
@@ -250,20 +226,14 @@ namespace umi3d.cdk.collaboration
         {
             if (Exists)
             {
-                //Debug.Log("new token " + token);
+                //Debug.Log($"<color=magenta> new token { token}</color>");
                 lastTokenUpdate = DateTime.UtcNow;
                 Instance?.HttpClient?.SetToken(token);
-                Instance?.OnNewToken?.Invoke();
+                BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+                {
+                    Instance?.OnNewToken?.Invoke();
+                });
             }
-        }
-
-        /// <summary>
-        /// Send a RTCDto message via the websocket connection
-        /// </summary>
-        /// <param name="dto"></param>
-        public void Send(RTCDto dto)
-        {
-            WebSocketClient.Send(dto);
         }
 
         /// <summary>
@@ -273,8 +243,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         protected override void _Send(AbstractBrowserRequestDto dto, bool reliable)
         {
-            if (Exists)
-                Instance?.WebRTCClient?.SendServer(dto, reliable);
+            ForgeClient.SendBrowserRequest(dto, reliable);
         }
 
         /// <summary>
@@ -282,10 +251,9 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="dto">Dto to send</param>
         /// <param name="reliable">is the data channel used reliable</param>
-        protected override void _SendTracking(AbstractBrowserRequestDto dto, bool reliable)
+        protected override void _SendTracking(AbstractBrowserRequestDto dto)
         {
-            if (Exists)
-                Instance?.WebRTCClient?.Send(dto, reliable, DataType.Tracking);
+            ForgeClient.SendTrackingFrame(dto);
         }
 
         /// <summary>
@@ -297,33 +265,30 @@ namespace umi3d.cdk.collaboration
             switch (message)
             {
                 case TokenDto tokenDto:
-                        SetToken(tokenDto.token);
-                        break;
+                    SetToken(tokenDto.token);
+                    break;
                 case StatusDto statusDto:
-                        switch (statusDto.status)
-                        {
-                            case StatusType.CREATED:
-                                    Instance.HttpClient.SendGetIdentity((user) =>
-                                    {
-                                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                                    }, (error) => { Debug.Log("error on get id :" + error); });
-                                    break;
-                            case StatusType.READY:
-                                    if (Identity.userId == null)
-                                        Instance.HttpClient.SendGetIdentity((user) =>
-                                        {
-                                            UserDto = user;
-                                            Identity.userId = user.id;
-                                            Instance.Join();
+                    switch (statusDto.status)
+                    {
+                        case StatusType.CREATED:
+                            Instance.HttpClient.SendGetIdentity((user) =>
+                            {
+                                Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                            }, (error) => { Debug.Log("error on get id :" + error); });
+                            break;
+                        case StatusType.READY:
+                            if (Identity.userId == null)
+                                Instance.HttpClient.SendGetIdentity((user) =>
+                                {
+                                    UserDto = user;
+                                    Identity.userId = user.id;
+                                    Instance.Join();
 
-                                        }, (error) => { Debug.Log("error on get id :" + error); });
-                                    else
-                                        Instance.Join();
-                                    break;
-                        }
-                        break;
-                case RTCDto rTCDto:
-                    Instance.WebRTCClient.HandleMessage(rTCDto);
+                                }, (error) => { Debug.Log("error on get id :" + error); });
+                            else
+                                Instance.Join();
+                            break;
+                    }
                     break;
                 case StatusRequestDto statusRequestDto:
                     Instance.HttpClient.SendPostUpdateStatus(null, null);
@@ -345,40 +310,12 @@ namespace umi3d.cdk.collaboration
 #else
                 useWebrtc = false
 #endif
-        };
+            };
 
             Instance.HttpClient.SendPostJoin(
                 joinDto,
                 (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
                 (error) => { joinning = false; Debug.Log("error on get id :" + error); });
-        }
-
-        /// <summary>
-        /// Handle Rtc Message
-        /// </summary>
-        /// <param name="bytes">Message to handle</param>
-        /// <param name="channel">Channel from which the message was received</param>
-        static public void OnRtcMessage(UMI3DUser user, byte[] bytes, DataChannel channel)
-        {
-            var dto = UMI3DDto.FromBson(bytes);
-            switch (dto)
-            {
-                case TransactionDto transaction:
-                    UnityMainThreadDispatcher.Instance().Enqueue(UMI3DTransactionDispatcher.PerformTransaction(transaction));
-                    break;
-                case NavigateDto navigate:
-                    UnityMainThreadDispatcher.Instance().Enqueue(UMI3DNavigation.Navigate(navigate));
-                    break;
-                case UserTrackingFrameDto trackingFrame:
-                    if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
-                        userAvatar.UpdateBonePosition(trackingFrame);
-                    else
-                        Debug.LogWarning("User Avatar not found.");
-                    break;
-                default:
-                    Debug.Log($"Type not catch {dto.GetType()}");
-                    break;
-            }
         }
 
         /// <summary>
@@ -449,16 +386,27 @@ namespace umi3d.cdk.collaboration
                 (error) => { Debug.Log("error on get Environement :" + error); });
         }
 
+        ///<inheritdoc/>
         protected override void OnDestroy()
         {
-            WebRTCClient?.Clear();
             base.OnDestroy();
         }
 
-        protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError) {
+        ///<inheritdoc/>
+        protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        {
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
+        ///<inheritdoc/>
         public override string GetId() { return Identity.userId; }
+
+        ///<inheritdoc/>
+        public override ulong GetTime()
+        {
+            return ForgeClient.GetNetWorker().Time.Timestep;
+        }
+
+        protected override string _getAuthorization() { return HttpClient.ComputedToken; }
     }
 }

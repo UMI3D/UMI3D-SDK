@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public static class UMI3DNetworkingKeys 
+    public static class UMI3DNetworkingKeys
     {
         //users
         public const string identity = "/me";
@@ -42,7 +42,15 @@ namespace umi3d.common
         public const string scene = "/environment/scene/:id";
 
         //Prefix
+        /*
         public const string websocket = "/socket";
+        public const string websocket_reliable_data = "/reliabledata";
+        public const string websocket_unreliable_data = "/unreliabledata";
+        public const string websocket_reliable_tracking = "/reliabletracking";
+        public const string websocket_unreliable_tracking = "/unreliabletracking";
+        public const string websocket_audio = "/audio";
+        public const string websocket_video = "/video";
+        */
         public const string websocketProtocol = "echo-protocol";//"access_token";
         public const string Authorization = "AUTHORIZATION";
         public const string bearer = "BEARER";

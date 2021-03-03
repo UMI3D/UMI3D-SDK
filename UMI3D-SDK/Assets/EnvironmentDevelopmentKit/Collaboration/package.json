@@ -1,14 +1,13 @@
 {
 	"name": "com.gfi-innovaton.umi3d.edk.collaboration",
-	"version": "2.0.0",
+	"version": "2.2.0",
 	"displayName": "UMI3D EDK Collaboration",
 	"unity": "2019.4",
 	"author": "Gfi Innovation",
 	"description": "UMI3D Environment Devlopment Kit Collaboration.",
 	"dependencies": {
-		"com.gfi-innovaton.umi3d.edk.user-capture":"2.0.0",
-		"com.gfi-innovaton.umi3d.edk.interaction-system":"2.0.0",
-		"com.gfi-innovaton.umi3d.common.collaboration":"2.0.0",
-		"com.unity.webrtc": "2.1.0-preview.4"
+		"com.gfi-innovaton.umi3d.edk.user-capture":"2.2.0",
+		"com.gfi-innovaton.umi3d.edk.interaction-system":"2.2.0",
+		"com.gfi-innovaton.umi3d.common.collaboration":"2.2.0"
 	}
 }

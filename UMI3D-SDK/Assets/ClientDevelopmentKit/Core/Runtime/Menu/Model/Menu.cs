@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ namespace umi3d.cdk.menu
             }
         }
 
+        ///<inheritdoc/>
         public override bool Contains(AbstractMenuItem menuItem)
         {
             if (menuItem is MenuItem)
@@ -60,11 +61,13 @@ namespace umi3d.cdk.menu
             return false;
         }
 
+        ///<inheritdoc/>
         public override int Count
         {
             get => MenuItems.Count + SubMenu.Count;
         }
 
+        ///<inheritdoc/>
         public override IEnumerable<AbstractMenuItem> GetItems()
         {
             List<AbstractMenuItem> items = new List<AbstractMenuItem>();
@@ -122,6 +125,7 @@ namespace umi3d.cdk.menu
             return result;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return Name;

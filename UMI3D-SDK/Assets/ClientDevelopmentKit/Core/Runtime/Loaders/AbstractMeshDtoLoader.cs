@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -38,12 +38,9 @@ namespace umi3d.cdk
         /// <param name="fileAuthorization">Authorization</param>
         public virtual void SetCertificate(UnityWebRequest www, string fileAuthorization)
         {
-            if (fileAuthorization != null && fileAuthorization != "" )
+            if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-                authorization = "Basic " + authorization;
-
                 www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
             }
         }
@@ -67,7 +64,7 @@ namespace umi3d.cdk
         /// Spread recursively transform layer to all is childrens.
         /// </summary>
         /// <param name="transform">Transform</param>
-        public static void ApplyParentLayerInChildren( Transform transform)
+        public static void ApplyParentLayerInChildren(Transform transform)
         {
             int layer = transform.gameObject.layer;
             foreach (Transform child in transform)

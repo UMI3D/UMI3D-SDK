@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -50,9 +50,11 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Contained tools.
         /// </summary>
-        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions;}}
+        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions; } }
 
+        public UnityEvent OnUpdated = new UnityEvent();
 
+        public void Updated() { OnUpdated.Invoke(); }
 
         /// <summary>
         /// Event raised when the abstract tool is projected.
@@ -64,6 +66,28 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public UnityEvent onRelease = new UnityEvent();
 
+        public void onProjected(string boneType)
+        {
+            onProject.Invoke();
+            var projectedDto = new ToolProjectedDto
+            {
+                boneType = boneType,
+                toolId = id
+            };
+            UMI3DClientServer.SendData(projectedDto, true);
+        }
+
+        public void onReleased(string boneType)
+        {
+            onRelease.Invoke();
+            var releasedDto = new ToolReleasedDto
+            {
+                boneType = boneType,
+                toolId = id
+            };
+            UMI3DClientServer.SendData(releasedDto, true);
+        }
+
         protected AbstractTool(AbstractToolDto abstractDto)
         {
             this.abstractDto = abstractDto;
@@ -74,7 +98,8 @@ namespace umi3d.cdk.interaction
 
         public virtual void Destroy()
         {
-
+            if (InteractionMapper.Instance.IsToolSelected(id))
+                InteractionMapper.Instance.ReleaseTool(id, new RequestedByEnvironment());
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,6 +29,12 @@ namespace umi3d.cdk.interaction
     /// <see cref="InteractionMappingReason"/>
     public class SwitchController : InteractionMappingReason { }
 
+    /// <summary>
+    /// Motivation behind a tool selection/release.
+    /// The controller have changed.
+    /// </summary>
+    /// <see cref="InteractionMappingReason"/>
+    public class ToolNeedToBeUpdated : InteractionMappingReason { }
 
     /// <summary>
     /// Motivation behind a tool selection/release.

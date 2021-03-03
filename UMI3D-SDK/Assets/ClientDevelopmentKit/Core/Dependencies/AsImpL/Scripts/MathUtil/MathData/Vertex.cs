@@ -28,13 +28,11 @@ namespace AsImpL.MathUtil
         /// </summary>
         public Vertex PreviousVertex
         {
-            get
-            {
+            get {
                 return prevVertex;
             }
 
-            set
-            {
+            set {
                 triangleHasChanged = prevVertex != value;
                 prevVertex = value;
             }
@@ -45,13 +43,11 @@ namespace AsImpL.MathUtil
         /// </summary>
         public Vertex NextVertex
         {
-            get
-            {
+            get {
                 return nextVertex;
             }
 
-            set
-            {
+            set {
                 triangleHasChanged = nextVertex != value;
                 nextVertex = value;
             }
@@ -63,8 +59,7 @@ namespace AsImpL.MathUtil
         /// </summary>
         public float TriangleArea
         {
-            get
-            {
+            get {
                 if (triangleHasChanged)
                 {
                     ComputeTriangleArea();

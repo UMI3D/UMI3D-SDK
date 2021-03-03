@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,12 +24,8 @@ namespace umi3d.cdk.interaction
     public static class UMI3DAbstractToolLoader
     {
 
-        public static void DeleteInteractable(AbstractTool tool)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            tool.Destroy();
-        }
-
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property) {
             var dto = (entity.dto as AbstractToolDto);
             if (dto == null) return false;
             var tool = entity.Object as AbstractTool;
@@ -76,6 +72,7 @@ namespace umi3d.cdk.interaction
                     dto.interactions = (List<AbstractInteractionDto>)property.value;
                     break;
             }
+            tool.Updated();
             return true;
         }
 

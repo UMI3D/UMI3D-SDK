@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,10 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
-using umi3d.edk;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -24,6 +23,12 @@ namespace umi3d.edk
     //[CreateAssetMenu(fileName = "Umi3DMaterial", menuName = "UMI3D/Umi3DMaterial")]
     public abstract class MaterialSO : ScriptableObject, UMI3DLoadableEntity
     {
+
+
+        public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
+        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
+
+        private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
         public enum AlphaMode
         {
@@ -47,14 +52,11 @@ namespace umi3d.edk
 
         protected void RegisterMaterial(AbstractEntityDto mat)
         {
-            //   Debug.Log("try registered");
             if (string.IsNullOrEmpty(mat.id) || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
             {
                 mat.id = UMI3DEnvironment.Register(this);
                 SetId(mat.id);
                 InitDefinition(mat.id);
-
-                //      Debug.Log("registered");
             }
         }
 
@@ -65,7 +67,7 @@ namespace umi3d.edk
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -79,5 +81,24 @@ namespace umi3d.edk
             };
             return operation;
         }
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

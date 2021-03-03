@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public class GlTFMaterialExtensions :AbstractGlTFExtensions<IMaterialDto>
+    public class GlTFMaterialExtensions : AbstractGlTFExtensions<IMaterialDto>
     {
         public KHR_texture_transform KHR_texture_transform = new KHR_texture_transform();
     }

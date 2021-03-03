@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ namespace umi3d.cdk
     /// <summary>
     /// LOader for an UMI3D UI Text
     /// </summary>
-    public class UMI3DUITextNodeLoader 
+    public class UMI3DUITextNodeLoader
     {
         /// <summary>
         /// Load an UMI3D UI Text.

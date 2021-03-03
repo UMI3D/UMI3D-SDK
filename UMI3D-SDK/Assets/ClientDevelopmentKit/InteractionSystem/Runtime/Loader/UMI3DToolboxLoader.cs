@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,8 +39,8 @@ namespace umi3d.cdk.interaction
         static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var dto = (entity.dto as ToolboxDto);
-            if (dto == null ) return false;
-            var tool =  UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as Toolbox;
+            if (dto == null) return false;
+            var tool = UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as Toolbox;
             if (tool == null) return false;
             switch (property.property)
             {

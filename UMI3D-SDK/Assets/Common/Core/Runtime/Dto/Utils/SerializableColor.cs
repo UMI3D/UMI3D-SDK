@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ using UnityEngine;
 namespace umi3d.common
 {
     [Serializable]
-    public class SerializableColor:UMI3DDto
+    public class SerializableColor : UMI3DDto
     {
         public float R;
         public float G;
@@ -43,6 +43,7 @@ namespace umi3d.common
             A = a;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Color)this).ToString();

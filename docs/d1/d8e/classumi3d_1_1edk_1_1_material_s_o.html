@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -91,6 +91,7 @@ $(document).ready(function(){initNavTree('d1/d8e/classumi3d_1_1edk_1_1_material_
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#properties">Properties</a> &#124;
 <a href="../../d5/d2d/classumi3d_1_1edk_1_1_material_s_o-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">umi3d.edk.MaterialSO Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -104,8 +105,11 @@ $(document).ready(function(){initNavTree('d1/d8e/classumi3d_1_1edk_1_1_material_
  <div class="center">
   <img src="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.png" usemap="#umi3d.edk.MaterialSO_map" alt=""/>
   <map id="umi3d.edk.MaterialSO_map" name="umi3d.edk.MaterialSO_map">
-<area href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html" title="Interface for UMI3D entities." alt="umi3d.edk.UMI3DEntity" shape="rect" coords="153,0,296,24"/>
-<area href="../../de/d36/classumi3d_1_1cdk_1_1_p_b_r_material.html" alt="umi3d.cdk.PBRMaterial" shape="rect" coords="76,112,219,136"/>
+<area href="../../d4/d97/interfaceumi3d_1_1edk_1_1_u_m_i3_d_loadable_entity.html" title="Interface for UMI3D entities." alt="umi3d.edk.UMI3DLoadableEntity" shape="rect" coords="343,56,562,80"/>
+<area href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html" title="Interface for UMI3D entities." alt="umi3d.edk.UMI3DEntity" shape="rect" coords="343,0,562,24"/>
+<area href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html" alt="umi3d.edk.ExternalResourceMaterial" shape="rect" coords="0,168,219,192"/>
+<area href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html" alt="umi3d.edk.OriginalMaterial" shape="rect" coords="229,168,448,192"/>
+<area href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html" alt="umi3d.edk.PBRMaterial" shape="rect" coords="458,168,677,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -119,15 +123,21 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a431293766c9ec668968799e038bd766d"><td class="memItemLeft" align="right" valign="top">abstract string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a431293766c9ec668968799e038bd766d">GetId</a> ()</td></tr>
-<tr class="separator:a431293766c9ec668968799e038bd766d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0a30a920dfeac65a293b184f8663cfa"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ae0a30a920dfeac65a293b184f8663cfa">ToDto</a> ()</td></tr>
 <tr class="separator:ae0a30a920dfeac65a293b184f8663cfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3c2d3935b1a7b507c5bd67bbb5c0509"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad3c2d3935b1a7b507c5bd67bbb5c0509">Id</a> ()</td></tr>
 <tr class="separator:ad3c2d3935b1a7b507c5bd67bbb5c0509"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaad1c639aef40902fc35d2fe98f349b5"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d9/d53/interfaceumi3d_1_1common_1_1_i_entity.html">IEntity</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#aaad1c639aef40902fc35d2fe98f349b5">ToEntityDto</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user)</td></tr>
+<tr class="separator:aaad1c639aef40902fc35d2fe98f349b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5083154050efe26634ae6316b4d9825"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="../../d0/d0a/classumi3d_1_1edk_1_1_load_entity.html">LoadEntity</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ab5083154050efe26634ae6316b4d9825">GetLoadEntity</a> (HashSet&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt; users=null)</td></tr>
+<tr class="separator:ab5083154050efe26634ae6316b4d9825"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6a4555e46bd2b472e07c68909254850b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../dc/d27/classumi3d_1_1edk_1_1_delete_entity.html">DeleteEntity</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a6a4555e46bd2b472e07c68909254850b">GetDeleteEntity</a> (HashSet&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt; users=null)</td></tr>
+<tr class="separator:a6a4555e46bd2b472e07c68909254850b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
+<tr class="memitem:a66d96057ed6e3fe9b68753da168e72f0"><td class="memItemLeft" align="right" valign="top">Dictionary&lt; string, object &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a66d96057ed6e3fe9b68753da168e72f0">shaderProperties</a> = new Dictionary&lt;string, object&gt;()</td></tr>
+<tr class="separator:a66d96057ed6e3fe9b68753da168e72f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a024fd5a8d02f6a673f67c9b4a4f0d24e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7">AlphaMode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a024fd5a8d02f6a673f67c9b4a4f0d24e">alphaMode</a> = <a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7af58072a9536aaeef0196115e445fa4d8">AlphaMode.BLEND</a></td></tr>
 <tr class="separator:a024fd5a8d02f6a673f67c9b4a4f0d24e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -135,6 +145,19 @@ Public Attributes</h2></td></tr>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a6529e5bf1862321e7a270736097f8043"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a6529e5bf1862321e7a270736097f8043">OnEnable</a> ()</td></tr>
 <tr class="separator:a6529e5bf1862321e7a270736097f8043"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a431293766c9ec668968799e038bd766d"><td class="memItemLeft" align="right" valign="top">abstract string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a431293766c9ec668968799e038bd766d">GetId</a> ()</td></tr>
+<tr class="separator:a431293766c9ec668968799e038bd766d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5645bfe868e8cf34483759ecdfb8511a"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a5645bfe868e8cf34483759ecdfb8511a">SetId</a> (string id)</td></tr>
+<tr class="separator:a5645bfe868e8cf34483759ecdfb8511a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a105dd0ca420d9ac3b3410a9111c1d4b8"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a105dd0ca420d9ac3b3410a9111c1d4b8">InitDefinition</a> (string id)</td></tr>
+<tr class="separator:a105dd0ca420d9ac3b3410a9111c1d4b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95624cba86d3441877510bce68a55604"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a95624cba86d3441877510bce68a55604">RegisterMaterial</a> (<a class="el" href="../../d4/dbf/classumi3d_1_1common_1_1_abstract_entity_dto.html">AbstractEntityDto</a> mat)</td></tr>
+<tr class="separator:a95624cba86d3441877510bce68a55604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
+Properties</h2></td></tr>
+<tr class="memitem:a7d8566a37eb6b89003e340ff890d1ad3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d7/daf/classumi3d_1_1edk_1_1_u_m_i3_d_async_dictionnary_property.html">UMI3DAsyncDictionnaryProperty</a>&lt; string, object &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a7d8566a37eb6b89003e340ff890d1ad3">objectShaderProperties</a><code> [get, protected set]</code></td></tr>
+<tr class="separator:a7d8566a37eb6b89003e340ff890d1ad3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="ad1459f476c85b2d853a6b5f7ef6b4fc7"></a>
@@ -165,6 +188,26 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a6a4555e46bd2b472e07c68909254850b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6a4555e46bd2b472e07c68909254850b">&#9670;&nbsp;</a></span>GetDeleteEntity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../dc/d27/classumi3d_1_1edk_1_1_delete_entity.html">DeleteEntity</a> umi3d.edk.MaterialSO.GetDeleteEntity </td>
+          <td>(</td>
+          <td class="paramtype">HashSet&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td>
+          <td class="paramname"><em>users</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d4/d97/interfaceumi3d_1_1edk_1_1_u_m_i3_d_loadable_entity.html#afc81d54022968373315638f46e0d0de2">umi3d.edk.UMI3DLoadableEntity</a>.</p>
+
+</div>
+</div>
 <a id="a431293766c9ec668968799e038bd766d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a431293766c9ec668968799e038bd766d">&#9670;&nbsp;</a></span>GetId()</h2>
 
@@ -183,12 +226,40 @@ Protected Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="../../de/d36/classumi3d_1_1cdk_1_1_p_b_r_material.html#af7cd95509c31e4217b9c7e1dfbd58959">umi3d.cdk.PBRMaterial</a>.</p>
+<p>Implemented in <a class="el" href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a4bbf79780afeda21e13e6672b2b05211">umi3d.edk.PBRMaterial</a>, <a class="el" href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html#afe7ff289316b524cfea1b0947d9bdeb8">umi3d.edk.OriginalMaterial</a>, and <a class="el" href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#a22089297971e91349f8bbca3cb71b137">umi3d.edk.ExternalResourceMaterial</a>.</p>
+
+</div>
+</div>
+<a id="ab5083154050efe26634ae6316b4d9825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5083154050efe26634ae6316b4d9825">&#9670;&nbsp;</a></span>GetLoadEntity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="../../d0/d0a/classumi3d_1_1edk_1_1_load_entity.html">LoadEntity</a> umi3d.edk.MaterialSO.GetLoadEntity </td>
+          <td>(</td>
+          <td class="paramtype">HashSet&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td>
+          <td class="paramname"><em>users</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d4/d97/interfaceumi3d_1_1edk_1_1_u_m_i3_d_loadable_entity.html#a2069f32f0eb69d572d6ef8fbf41fb08c">umi3d.edk.UMI3DLoadableEntity</a>.</p>
 
 </div>
 </div>
@@ -208,6 +279,34 @@ Protected Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implements <a class="el" href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html#a70ffaed146b21c061aacfbf5c5e2e68b">umi3d.edk.UMI3DEntity</a>.</p>
+
+</div>
+</div>
+<a id="a105dd0ca420d9ac3b3410a9111c1d4b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a105dd0ca420d9ac3b3410a9111c1d4b8">&#9670;&nbsp;</a></span>InitDefinition()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void umi3d.edk.MaterialSO.InitDefinition </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a447e35c8987220193f74f8822ebc38b1">umi3d.edk.PBRMaterial</a>, <a class="el" href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html#a73a893396bffab40256f232e0885c1cd">umi3d.edk.OriginalMaterial</a>, and <a class="el" href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#aee198995310fda1bb73b01cad5bc9e84">umi3d.edk.ExternalResourceMaterial</a>.</p>
 
 </div>
 </div>
@@ -234,7 +333,61 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="../../de/d36/classumi3d_1_1cdk_1_1_p_b_r_material.html#a9809efd76d334e3323e809299ecd6ab2">umi3d.cdk.PBRMaterial</a>.</p>
+<p>Implemented in <a class="el" href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a81e29e864174468a562767661070d6c2">umi3d.edk.PBRMaterial</a>, <a class="el" href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html#a5f1188527b29ddc75f584aa4cb07461a">umi3d.edk.OriginalMaterial</a>, and <a class="el" href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#acf0d2f296e1e6afaf82f54b3205b7d07">umi3d.edk.ExternalResourceMaterial</a>.</p>
+
+</div>
+</div>
+<a id="a95624cba86d3441877510bce68a55604"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95624cba86d3441877510bce68a55604">&#9670;&nbsp;</a></span>RegisterMaterial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void umi3d.edk.MaterialSO.RegisterMaterial </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d4/dbf/classumi3d_1_1common_1_1_abstract_entity_dto.html">AbstractEntityDto</a>&#160;</td>
+          <td class="paramname"><em>mat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5645bfe868e8cf34483759ecdfb8511a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5645bfe868e8cf34483759ecdfb8511a">&#9670;&nbsp;</a></span>SetId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract void umi3d.edk.MaterialSO.SetId </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a7ffb4720ae86db8a3c010e231dd2b526">umi3d.edk.PBRMaterial</a>, <a class="el" href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html#a37c2d0e19b2618b2e41a8ac8636eff2e">umi3d.edk.OriginalMaterial</a>, and <a class="el" href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#aa15ee529c1c0cbf1b5485fe74ab1131a">umi3d.edk.ExternalResourceMaterial</a>.</p>
 
 </div>
 </div>
@@ -261,7 +414,37 @@ Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="../../de/d36/classumi3d_1_1cdk_1_1_p_b_r_material.html#acc50fcd29e5ed60c226bcfb626f92841">umi3d.cdk.PBRMaterial</a>.</p>
+<p>Implemented in <a class="el" href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a7c356270b8915045cbedc80842b4e3d7">umi3d.edk.PBRMaterial</a>, <a class="el" href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html#a73d9f7afa15565bd3d72a9ec75be0e55">umi3d.edk.OriginalMaterial</a>, and <a class="el" href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#a0cfd4641e8b83248b9d406df7a0a52e7">umi3d.edk.ExternalResourceMaterial</a>.</p>
+
+</div>
+</div>
+<a id="aaad1c639aef40902fc35d2fe98f349b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaad1c639aef40902fc35d2fe98f349b5">&#9670;&nbsp;</a></span>ToEntityDto()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d9/d53/interfaceumi3d_1_1common_1_1_i_entity.html">IEntity</a> umi3d.edk.MaterialSO.ToEntityDto </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
+          <td class="paramname"><em>user</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d4/d97/interfaceumi3d_1_1edk_1_1_u_m_i3_d_loadable_entity.html#ad27aeaee403f880650152150b9ddd50d">umi3d.edk.UMI3DLoadableEntity</a>.</p>
+
+<p>Implemented in <a class="el" href="../../de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#ae8382dd1945642d52480329dbba4ab9a">umi3d.edk.PBRMaterial</a>, <a class="el" href="../../d9/dc5/classumi3d_1_1edk_1_1_original_material.html#af9f7034d3a83b7501dc9b08a4dceb443">umi3d.edk.OriginalMaterial</a>, and <a class="el" href="../../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#af4282271a8522f5302cd7b446cbce602">umi3d.edk.ExternalResourceMaterial</a>.</p>
 
 </div>
 </div>
@@ -276,6 +459,43 @@ Protected Member Functions</h2></td></tr>
           <td class="memname"><a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7">AlphaMode</a> umi3d.edk.MaterialSO.alphaMode = <a class="el" href="../../d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7af58072a9536aaeef0196115e445fa4d8">AlphaMode.BLEND</a></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a66d96057ed6e3fe9b68753da168e72f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66d96057ed6e3fe9b68753da168e72f0">&#9670;&nbsp;</a></span>shaderProperties</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Dictionary&lt;string, object&gt; umi3d.edk.MaterialSO.shaderProperties = new Dictionary&lt;string, object&gt;()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<h2 class="groupheader">Property Documentation</h2>
+<a id="a7d8566a37eb6b89003e340ff890d1ad3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d8566a37eb6b89003e340ff890d1ad3">&#9670;&nbsp;</a></span>objectShaderProperties</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d7/daf/classumi3d_1_1edk_1_1_u_m_i3_d_async_dictionnary_property.html">UMI3DAsyncDictionnaryProperty</a>&lt;string, object&gt; umi3d.edk.MaterialSO.objectShaderProperties</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">protected set</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

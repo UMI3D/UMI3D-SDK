@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,34 +15,37 @@ limitations under the License.
 */
 
 using System.Collections;
-using System.Collections.Generic;
-using umi3d.common.userCapture;
 using umi3d.cdk.userCapture;
 using UnityEngine;
-using UnityEngine.Events;
-using umi3d.common.collaboration;
 
 namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
-        protected override void DispatchTracking()
+        ///<inheritdoc/>
+        protected override IEnumerator DispatchTracking()
         {
-            if ((checkTime() || checkMax()) && LastFrameDto.userId != null && UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
+            while (sendTracking)
             {
-                UMI3DClientServer.SendTracking(LastFrameDto, false);
+                if (targetTrackingFPS > 0)
+                {
+                    BonesIterator();
+                    if (UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected())
+                        UMI3DCollaborationClientServer.Instance.ForgeClient.SendTrackingFrame(LastFrameDto);
+
+                    yield return new WaitForSeconds(1f / targetTrackingFPS);
+                }
+                else
+                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
             }
         }
 
+        ///<inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == null || !UMI3DCollaborationClientServer.Instance.WebRTCClient.ExistServer(false, DataType.Tracking, out List<DataChannel> dataChannels))
-            {
-                yield return null;
-            }
+            yield return new WaitUntil(() => UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
 
-            UnityEngine.Debug.LogWarning("DispatchCamera");
-            UMI3DClientServer.SendTracking(CameraPropertiesDto, true);
+            UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);
         }
     }
 }

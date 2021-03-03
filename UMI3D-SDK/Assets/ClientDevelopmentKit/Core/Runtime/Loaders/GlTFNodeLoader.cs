@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ namespace umi3d.cdk
 
                 // Read glTF extensions
                 count += 1;
-                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,()=> { count -= 1; LoadedNodesCount?.Invoke(total- count); },(s)=> { count -= 1; Debug.LogWarning(s); });
+                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject, () => { count -= 1; LoadedNodesCount?.Invoke(total - count); }, (s) => { count -= 1; Debug.LogWarning(s); });
                 ReadLightingExtensions(dto, node.gameObject);
 
                 // Important: all nodes in the scene must be registred before to handle hierarchy. 
@@ -121,19 +121,19 @@ namespace umi3d.cdk
             GlTFNodeDto dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (property.property)
-                {
-                    case UMI3DPropertyKeys.Position:
-                        node.transform.localPosition = dto.position = (SerializableVector3)property.value;
-                        break;
-                    case UMI3DPropertyKeys.Rotation:
-                        node.transform.localRotation = dto.rotation = (SerializableVector4)property.value;
-                        break;
-                    case UMI3DPropertyKeys.Scale:
-                        node.transform.localScale = dto.scale = (SerializableVector3)property.value;
-                        break;
-                    default:
-                        return false;
-                }
+            {
+                case UMI3DPropertyKeys.Position:
+                    node.transform.localPosition = dto.position = (SerializableVector3)property.value;
+                    break;
+                case UMI3DPropertyKeys.Rotation:
+                    node.transform.localRotation = dto.rotation = (SerializableVector4)property.value;
+                    break;
+                case UMI3DPropertyKeys.Scale:
+                    node.transform.localScale = dto.scale = (SerializableVector3)property.value;
+                    break;
+                default:
+                    return false;
+            }
             return true;
         }
     }

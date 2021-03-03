@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// </summary>
         public AudioLoader()
         {
-            this.supportedFileExtentions = new List<string>() { ".mod",".mp3",".mp2",".ogg",".s3m",".wav" };
+            this.supportedFileExtentions = new List<string>() { ".mod", ".mp3", ".mp2", ".ogg", ".s3m", ".wav" };
             this.ignoredFileExtentions = new List<string>();
         }
 
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                     return AudioType.S3M;
                 case ".wav":
                     return AudioType.WAV;
-                default: 
+                default:
                     return AudioType.WAV;
             }
         }
@@ -89,7 +89,7 @@ namespace umi3d.cdk
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
-        {   
+        {
             callback.Invoke(o);
         }
 
@@ -103,9 +103,6 @@ namespace umi3d.cdk
             if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                authorization = System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
-                authorization = "Basic " + authorization;
-
                 www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
             }
         }

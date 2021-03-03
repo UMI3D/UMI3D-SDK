@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Unity;
 using MainThreadDispatcher;
 using System;
 using System.Collections;
@@ -23,7 +25,6 @@ using System.Net;
 using System.Net.Sockets;
 using umi3d.common;
 using umi3d.common.collaboration;
-using Unity.WebRTC;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -33,76 +34,66 @@ namespace umi3d.edk.collaboration
     {
         public static new UMI3DCollaborationServer Instance { get { return UMI3DServer.Instance as UMI3DCollaborationServer; } set { UMI3DServer.Instance = value; } }
 
-        public IceServers iceServers;
-
         public bool isRunning { get; protected set; } = false;
 
-        [SerializeField]
+        [SerializeField, ReadOnly]
         bool useIp = false;
 
-        public EncoderType encoderType;
         UMI3DHttp http;
-        UMI3DWebsocket websocket;
-        UMI3DWebRTC webRTC;
 
-        static public UMI3DWebsocket Websocket { get => Exists ? Instance.websocket : null; }
-        static public UMI3DWebRTC WebRTC { get => Exists ? Instance.webRTC : null; }
+        static public UMI3DHttp HttpServer { get => Exists ? Instance.http : null; }
+
+        UMI3DForgeServer forgeServer;
+
+        static public UMI3DForgeServer ForgeServer { get => Exists ? Instance.forgeServer : null; }
 
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
 
-        private void OnAudioFilterRead(float[] data, int channels)
-        {
-            Audio.Update(data, data.Length);
-        }
 
-        public bool useRandomWebsocketPort;
-        public int websocketPort;
+        [EditorReadOnly]
+        public bool useRandomForgePort;
+        [EditorReadOnly]
+        public ushort forgePort;
+        [EditorReadOnly]
+        public string forgeMasterServerHost;
+        [EditorReadOnly]
+        public ushort forgeMasterServerPort;
+        [EditorReadOnly]
+        public string forgeNatServerHost;
+        [EditorReadOnly]
+        public ushort forgeNatServerPort;
+        [EditorReadOnly]
+        public int forgeMaxNbPlayer = 32;
 
+        [EditorReadOnly]
         public bool useRandomHttpPort;
+        [EditorReadOnly]
         public int httpPort;
-
-        public bool useRandomFakeRTCReliablePort;
-        public int fakeRTCReliablePort;
-        public bool useRandomFakeRTCUnreliablePort;
-        public int fakeRTCUnreliablePort;
 
         public AuthenticationType Authentication;
 
-        /// <summary>
-        /// Return the Authentication type.
-        /// </summary>
-        /// <returns></returns>
-
-        protected override AuthenticationType _GetAuthentication()
-        {
-            return Instance.Authentication;
-        }
-
-        protected override string _GetWebsocketUrl()
-        {
-            return "http://" + ip + ":" + websocketPort;
-        }
+        ///<inheritdoc/>
         protected override string _GetHttpUrl()
         {
             return "http://" + ip + ":" + httpPort;
         }
 
         /// <summary>
-        /// Get the WebsocketConnectionDto.
+        /// Get the ForgeConnectionDto.
         /// </summary>
         /// <returns></returns>
-        public override UMI3DDto ToDto()
+        public override ForgeConnectionDto ToDto()
         {
-            var dto = new WebsocketConnectionDto();
-            dto.iP = ip;
-            dto.port = httpPort;
-            dto.postfix = UMI3DNetworkingKeys.websocket;
-            dto.websocketUrl = "ws://" + ip + ":" + websocketPort + UMI3DNetworkingKeys.websocket;
-            dto.rtcUnreliableUrl = "ws://" + ip + ":" + fakeRTCUnreliablePort + UMI3DNetworkingKeys.websocket;
-            dto.rtcReliableUrl = "ws://" + ip + ":" + fakeRTCReliablePort + UMI3DNetworkingKeys.websocket;
-            dto.iceServers = iceServers?.iceServers;
+            var dto = new ForgeConnectionDto();
+            dto.host = ip;
+            dto.httpUrl = _GetHttpUrl();
+            dto.forgeServerPort = forgePort;
+            dto.forgeMasterServerHost = forgeMasterServerHost;
+            dto.forgeMasterServerPort = forgeMasterServerPort;
+            dto.forgeNatServerHost = forgeNatServerHost;
+            dto.forgeNatServerPort = forgeNatServerPort;
             return dto;
         }
 
@@ -118,59 +109,64 @@ namespace umi3d.edk.collaboration
         {
             base.Init();
 
-            if(!useIp)
+            if (!useIp)
                 ip = GetLocalIPAddress();
 
             httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
-            websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
-            fakeRTCReliablePort = FreeTcpPort(useRandomFakeRTCReliablePort ? 0 : fakeRTCReliablePort);
-            fakeRTCUnreliablePort = FreeTcpPort(useRandomFakeRTCUnreliablePort ? 0 : fakeRTCUnreliablePort);
+            forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
+            //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
             http = new UMI3DHttp();
-            websocket = new UMI3DWebsocket();
-            webRTC = new UMI3DWebRTC(this,encoderType);
-            webRTC.iceServers = iceServers?.iceServers;
+
+            forgeServer = UMI3DForgeServer.Create(
+                ip, forgePort, //UDPServer config
+                forgeMasterServerHost, forgeMasterServerPort, //ForgeMasterServer
+                forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
+                forgeMaxNbPlayer //MAX NB of Players
+                );
+            var auth = Identifier?.GetAuthenticator(ref Authentication);
+            if (auth != null)
+                auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
+            forgeServer.Host(auth);
 
             isRunning = true;
             OnServerStart.Invoke();
         }
 
-        /// <summary>
-        /// Transmit RTCMessage to the RtcServer.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public void WebRtcMessage(string id, RTCDto dto)
+        void ShouldAcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action<bool> action)
         {
-            Instance.webRTC.HandleMessage(dto);
+            UMI3DCollaborationServer.Collaboration.CreateUser(player, identity, action, UserCreatedCallback);
         }
 
-        public static void sendRTC(UMI3DUser user, UMI3DDto dto, bool reliable)
+        protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
-            var _user = user as UMI3DCollaborationUser;
-            Instance.webRTC.SendRTC(dto, reliable, user.Id(), _user?.useWebrtc ?? false  );
+            OnUserCreated.Invoke(user);
+            user.InitConnection(forgeServer);
+            forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
+
 
         /// <summary>
         /// Create new peers connection for a new user
         /// </summary>
         /// <param name="user"></param>
-        public static void newUser(UMI3DCollaborationUser user)
+        public static void NotifyUserJoin(UMI3DCollaborationUser user)
         {
-            Instance.webRTC.newUser(user);
             Collaboration.UserJoin(user);
-            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(Instance.NotifyUserJoin(user));
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>");
+                Instance.NotifyUserJoin(user);
+            });
         }
 
         /// <summary>
         /// Call To Notify a user join.
         /// </summary>
         /// <param name="user">user that join</param>
-        public IEnumerator NotifyUserJoin(UMI3DUser user)
+        public void NotifyUserJoin(UMI3DUser user)
         {
             OnUserJoin.Invoke(user);
-            yield break;
         }
 
         public void ClearIP()
@@ -184,7 +180,6 @@ namespace umi3d.edk.collaboration
             this.ip = ip;
             useIp = true;
         }
-
 
         static string GetLocalIPAddress()
         {
@@ -216,8 +211,7 @@ namespace umi3d.edk.collaboration
         void _Stop()
         {
             http?.Stop();
-            websocket?.Stop();
-            webRTC?.Stop();
+            forgeServer?.Stop();
             isRunning = false;
             OnServerStop.Invoke();
         }
@@ -225,8 +219,7 @@ namespace umi3d.edk.collaboration
         void Clear()
         {
             http?.Stop();
-            websocket?.Stop();
-            webRTC?.Clear();
+            forgeServer?.Stop();
             isRunning = false;
             OnServerStop.Invoke();
         }
@@ -238,7 +231,7 @@ namespace umi3d.edk.collaboration
         }
 
 
-        static int FreeTcpPort(int port = 0)
+        public static int FreeTcpPort(int port = 0)
         {
             try
             {
@@ -303,21 +296,24 @@ namespace umi3d.edk.collaboration
 
         public static void Logout(UMI3DCollaborationUser user)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(Instance._Logout(user));
-        }
-
-        IEnumerator _Logout(UMI3DCollaborationUser user)
-        {
+            if (user == null)
+                return;
+            (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
             Collaboration.Logout(user);
-            Instance.webRTC.UserLeave(user);
+            MainThreadManager.Run(() => Instance._Logout(user));
+        }
+
+        void _Logout(UMI3DCollaborationUser user)
+        {
+            Debug.Log($"Logout {user.login} {user.Id()}");
             OnUserLeave.Invoke(user);
-            yield break;
         }
 
 
-        public float WaitTimeForPingAnswer = 1f;
-        public int MaxPingingTry = 3;
+        public float WaitTimeForPingAnswer = 3f;
+        public int MaxPingingTry = 5;
 
+        ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
@@ -341,13 +337,15 @@ namespace umi3d.edk.collaboration
             Logout(user);
         }
 
-        public virtual void Ping(UMI3DCollaborationUser user) {
-            Debug.Log($"Ping {user.Id()}");
+        public virtual void Ping(UMI3DCollaborationUser user)
+        {
+            Debug.Log($"Ping {user.Id()} {user.login}");
+            user.networkPlayer.Ping();
             var sr = new StatusRequestDto { CurrentStatus = user.status };
-            user.connection.SendData(sr);
+            ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
 
-
+        ///<inheritdoc/>
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
@@ -371,7 +369,7 @@ namespace umi3d.edk.collaboration
                 transactionDto.operations = new List<AbstractOperationDto>(transaction.Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }));
                 if (transactionDto.operations.Count > 0)
                 {
-                    UMI3DCollaborationServer.sendRTC(user, transactionDto, transaction.reliable);
+                    ForgeServer.SendData(user.networkPlayer, transactionDto, transaction.reliable);
                 }
             }
         }
@@ -379,11 +377,11 @@ namespace umi3d.edk.collaboration
         Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
         private void Update()
         {
-            foreach(var kp in TransactionToBeSend.ToList())
+            foreach (var kp in TransactionToBeSend.ToList())
             {
                 var user = kp.Key;
                 var transaction = kp.Value;
-                if(user.status == StatusType.NONE)
+                if (user.status == StatusType.NONE)
                 {
                     TransactionToBeSend.Remove(user);
                     continue;
@@ -394,11 +392,10 @@ namespace umi3d.edk.collaboration
                 transactionDto.operations = new List<AbstractOperationDto>(transaction.Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }));
                 if (transactionDto.operations.Count > 0)
                 {
-                    UMI3DCollaborationServer.sendRTC(user, transactionDto, transaction.reliable);
+                    ForgeServer.SendData(user.networkPlayer, transactionDto, transaction.reliable);
                 }
                 TransactionToBeSend.Remove(user);
             }
-
         }
 
         /// <summary>
@@ -412,6 +409,7 @@ namespace umi3d.edk.collaboration
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
+        ///<inheritdoc/>
         public override void NotifyUserChanged(UMI3DUser user)
         {
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);

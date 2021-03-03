@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,21 +36,24 @@ namespace umi3d.edk
             }
         }
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         float duration = 10f;
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         List<AnimationChain> animationChain = null;
+
         private UMI3DAsyncProperty<float> _objectDuration;
         private UMI3DAsyncListProperty<AnimationChain> _objectAnimationChain;
 
         public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return _objectDuration; } protected set => _objectDuration = value; }
         public UMI3DAsyncListProperty<AnimationChain> ObjectAnimationChain { get { Register(); return _objectAnimationChain; } protected set => _objectAnimationChain = value; }
 
+        ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAnimationDto();
         }
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -62,6 +65,7 @@ namespace umi3d.edk
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;
         }
 
+        ///<inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

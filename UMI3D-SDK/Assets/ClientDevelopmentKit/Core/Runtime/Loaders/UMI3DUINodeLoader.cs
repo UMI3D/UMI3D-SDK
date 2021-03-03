@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,34 +36,34 @@ namespace umi3d.cdk
         /// <param name="failed">error callback.</param>
         public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
         {
-            base.ReadUMI3DExtension(dto, node,()=>
-            {
+            base.ReadUMI3DExtension(dto, node, () =>
+             {
 
-                switch (dto)
-                {
-                    case UICanvasDto c:
-                        canvasNodeLoader.ReadUMI3DExtension(c, node);
-                        break;
-                    case UIImageDto i:
-                        imageNodeLoader.ReadUMI3DExtension(i, node);
-                        break;
-                    case UITextDto t:
-                        textNodeLoader.ReadUMI3DExtension(t, node);
-                        break;
-                }
-                RectTransform transform = node.GetOrAddComponent<RectTransform>();
-                UIRectDto rect = dto as UIRectDto;
-                transform.anchoredPosition = rect.anchoredPosition;
-                transform.anchoredPosition3D = rect.anchoredPosition3D;
-                transform.anchorMax = rect.anchorMax;
-                transform.anchorMin = rect.anchorMin;
-                transform.offsetMax = rect.offsetMax;
-                transform.offsetMin = rect.offsetMin;
-                transform.pivot = rect.pivot;
-                transform.sizeDelta = rect.sizeDelta;
-                if (rect.rectMask) node.GetOrAddComponent<RectMask2D>();
-                finished.Invoke();
-            },failed);
+                 switch (dto)
+                 {
+                     case UICanvasDto c:
+                         canvasNodeLoader.ReadUMI3DExtension(c, node);
+                         break;
+                     case UIImageDto i:
+                         imageNodeLoader.ReadUMI3DExtension(i, node);
+                         break;
+                     case UITextDto t:
+                         textNodeLoader.ReadUMI3DExtension(t, node);
+                         break;
+                 }
+                 RectTransform transform = node.GetOrAddComponent<RectTransform>();
+                 UIRectDto rect = dto as UIRectDto;
+                 transform.anchoredPosition = rect.anchoredPosition;
+                 transform.anchoredPosition3D = rect.anchoredPosition3D;
+                 transform.anchorMax = rect.anchorMax;
+                 transform.anchorMin = rect.anchorMin;
+                 transform.offsetMax = rect.offsetMax;
+                 transform.offsetMin = rect.offsetMin;
+                 transform.pivot = rect.pivot;
+                 transform.sizeDelta = rect.sizeDelta;
+                 if (rect.rectMask) node.GetOrAddComponent<RectMask2D>();
+                 finished.Invoke();
+             }, failed);
         }
 
         /// <summary>

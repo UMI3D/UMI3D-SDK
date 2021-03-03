@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,13 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
-    public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironementDto
+    public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironmentDto
     {
         public List<UserDto> userList;
     }

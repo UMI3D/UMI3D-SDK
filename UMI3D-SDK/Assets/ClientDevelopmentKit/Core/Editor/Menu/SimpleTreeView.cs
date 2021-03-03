@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 
 #if UNITY_EDITOR
-namespace umi3d.cdk.editor {
+namespace umi3d.cdk.editor
+{
     class SimpleTreeView : TreeView
     {
         public IList<TreeViewItem> content = new List<TreeViewItem>();
@@ -31,6 +29,7 @@ namespace umi3d.cdk.editor {
             Reload();
         }
 
+        ///<inheritdoc/>
         protected override TreeViewItem BuildRoot()
         {
             var root = new TreeViewItem { id = 0, depth = -1, displayName = "Root" };

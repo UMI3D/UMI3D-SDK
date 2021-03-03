@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ namespace umi3d.cdk.menu
     /// </summary>
     public abstract class AbstractMenu : AbstractMenuItem
     {
-        
+
 
         /// <summary>
         /// Is navigation allowed through this menu.
@@ -99,7 +99,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAllMenuItem()
         {
-            List<AbstractMenuItem> menuItems = new List<AbstractMenuItem> (GetMenuItems());
+            List<AbstractMenuItem> menuItems = new List<AbstractMenuItem>(GetMenuItems());
             foreach (AbstractMenuItem item in menuItems)
                 Remove(item);
         }

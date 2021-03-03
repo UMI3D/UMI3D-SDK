@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -74,6 +74,7 @@ namespace umi3d.common
             return b != a;
         }
 
+        ///<inheritdoc/>
         public override bool Equals(System.Object obj)
         {
             return obj == null ? false : Equals(obj.ToString());
@@ -89,10 +90,12 @@ namespace umi3d.common
             return Value.Equals(s);
         }
 
+        ///<inheritdoc/>
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
+        ///<inheritdoc/>
         public override string ToString()
         {
             return Value;

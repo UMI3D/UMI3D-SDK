@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,32 +35,40 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>() { ".mtl" };
         }
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
+        ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
             ImportOptions importOptions = CreateImportOption(authorization);
-  
-            objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions);
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
+                UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
+                    (m) =>
+                    {
+                        objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions, m);
 
 
-            objImporter.ImportingComplete += () => {
-                try
-                {
-                    HideModelRecursively(createdObj);
 
-                    Transform newModel = objImporter.transform.GetChild(0);
-                    newModel.SetParent(UMI3DResourcesManager.Instance.transform);
-                    callback.Invoke(newModel.gameObject);
-                }
-                catch
-                {
-                    failCallback("Importing failed with : "+url);
-                }
-                GameObject.Destroy(objImporter.gameObject, 1);
-            };
+                        objImporter.ImportingComplete += () =>
+                        {
+                            try
+                            {
+                                HideModelRecursively(createdObj);
+
+                                Transform newModel = objImporter.transform.GetChild(0);
+                                newModel.SetParent(UMI3DResourcesManager.Instance.transform);
+                                callback.Invoke(newModel.gameObject);
+                            }
+                            catch
+                            {
+                                failCallback("Importing failed with : " + url);
+                            }
+                            GameObject.Destroy(objImporter.gameObject, 1);
+                        };
+
+                    }));
+
 
         }
 
@@ -77,9 +85,10 @@ namespace umi3d.cdk
                 localEulerAngles = UMI3DResourcesManager.Instance.transform.eulerAngles + rotOffset,
                 localScale = UMI3DResourcesManager.Instance.transform.lossyScale,
                 authorization = authorization,
+                authorizationName = common.UMI3DNetworkingKeys.Authorization,
                 zUp = false,
                 hideWhileLoading = true,
-                
+
             };
         }
 

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,10 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
-using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
@@ -97,6 +95,8 @@ namespace umi3d.cdk
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
                 GameObject copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
+                foreach (var lodgroup in copy.GetComponentsInChildren<LODGroup>())
+                    GameObject.Destroy(lodgroup);
                 Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())
                 {
@@ -135,7 +135,7 @@ namespace umi3d.cdk
             var renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
 
-            foreach(var renderer in renderers)
+            foreach (var renderer in renderers)
             {
                 renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 renderer.receiveShadows = dto.receiveShadow;
@@ -147,10 +147,10 @@ namespace umi3d.cdk
             ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
-           
+
         }
 
-    
+
 
     }
 

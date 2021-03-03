@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License = ""; Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ namespace umi3d.common.userCapture
     public static class BoneType
     {
         public const string None = "none";
+        public const string CenterFeet = "center_feet";
         public const string Finger = "finger";
         public const string Head = "head";
         public const string LeftAnkle = "left_ankle";

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -25,6 +26,7 @@ namespace umi3d.edk
     public class AssetLibrary : ScriptableObject, UMI3DLoadableEntity
     {
         public string id = "com.compagny.application";
+        [SerializeField]
         public SerializableDateTime date;
         [SerializeField]
         public List<UMI3DLocalAssetDirectory> variants = new List<UMI3DLocalAssetDirectory>();
@@ -33,6 +35,8 @@ namespace umi3d.edk
         {
             AssetLibraryDto dto = new AssetLibraryDto();
             dto.id = id;
+            dto.format = date.Format();
+            dto.culture = date.Culture();
             dto.date = date.ToString();
             dto.variants = new List<UMI3DLocalAssetDirectory>();
             foreach (var variant in variants)
@@ -62,7 +66,7 @@ namespace umi3d.edk
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -80,6 +84,25 @@ namespace umi3d.edk
             };
             return operation;
         }
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
 
     }
 }

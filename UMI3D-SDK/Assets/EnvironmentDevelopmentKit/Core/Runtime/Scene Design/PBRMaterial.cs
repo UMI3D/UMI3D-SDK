@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,11 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.edk;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -35,13 +32,11 @@ namespace umi3d.edk
         //   public UMI3DMaterialDto textures;
         public CustomTextures textures = new CustomTextures();
 
-        // list of supported type for object: float, int, vector2-3-4, Color, TextureDto
-        public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
 
         public Vector2 tilingScale = Vector2.one;
         public Vector2 tilingOffset = Vector2.zero;
 
-
+        ///<inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
             var extensions = new GlTFMaterialExtensions() { umi3d = textures.ToDto() };
@@ -66,6 +61,7 @@ namespace umi3d.edk
             };
         }
 
+        ///<inheritdoc/>
         protected override string GetId()
         {
             if (!registered)
@@ -77,6 +73,7 @@ namespace umi3d.edk
             return textures.id;
         }
 
+        ///<inheritdoc/>
         protected override void SetId(string id)
         {
             textures.id = id;
@@ -85,6 +82,7 @@ namespace umi3d.edk
 
         private bool registered = false;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             //        Debug.Log("init mat id");
@@ -106,12 +104,12 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<UMI3DTextureResource> objectOcclusionTexture { get { Id(); return _objectOcclusionTexture; } protected set => _objectOcclusionTexture = value; }
         public UMI3DAsyncProperty<UMI3DTextureResource> objectMetallicTexture { get { Id(); return _objectMetallicTexture; } protected set => _objectMetallicTexture = value; }
         public UMI3DAsyncProperty<UMI3DTextureResource> objectRoughnessTexture { get { Id(); return _objectRoughnessTexture; } protected set => _objectRoughnessTexture = value; }
+        public UMI3DAsyncProperty<UMI3DTextureResource> objectChannelTexture { get { Id(); return _objectChannelTexture; } protected set => _objectChannelTexture = value; }
         public UMI3DAsyncProperty<UMI3DScalableTextureResource> objectHeightTexture { get { Id(); return _objectHeightTexture; } protected set => _objectHeightTexture = value; }
         public UMI3DAsyncProperty<Vector2> objectTextureTilingScale { get { Id(); return _objectTextureTilingScale; } protected set => _objectTextureTilingScale = value; }
         public UMI3DAsyncProperty<Vector2> objectTextureTilingOffset { get { Id(); return _objectTextureTilingOffset; } protected set => _objectTextureTilingOffset = value; }
         public UMI3DAsyncProperty<float> objectNormalTextureScale { get { Id(); return _objectNormalTextureScale; } protected set => _objectNormalTextureScale = value; }
         public UMI3DAsyncProperty<float> objectHeightTextureScale { get { Id(); return _objectHeightTextureScale; } protected set => _objectHeightTextureScale = value; }
-        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; } // not totaly implemented
 
         private UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
 
@@ -125,6 +123,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectEmissiveTexture;
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectOcclusionTexture;
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectMetallicTexture;
+        private UMI3DAsyncProperty<UMI3DTextureResource> _objectChannelTexture;
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectRoughnessTexture;
         private UMI3DAsyncProperty<UMI3DScalableTextureResource> _objectHeightTexture;
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingScale;
@@ -133,6 +132,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<float> _objectHeightTextureScale;
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             Debug.Log("id mat " + id);
@@ -173,6 +173,9 @@ namespace umi3d.edk
             objectRoughnessTexture = new UMI3DAsyncProperty<UMI3DTextureResource>(id, UMI3DPropertyKeys.RoughnessTexture, this.textures.roughnessTexture, (x, u) => { return x.ToDto(); });
             objectRoughnessTexture.OnValueChanged += (UMI3DTextureResource t) => { textures.roughnessTexture = t; };
 
+            objectChannelTexture = new UMI3DAsyncProperty<UMI3DTextureResource>(id, UMI3DPropertyKeys.ChannelTexture, this.textures.channelTexture, (x, u) => { return x.ToDto(); });
+            objectChannelTexture.OnValueChanged += (UMI3DTextureResource t) => { textures.channelTexture = t; };
+
             objectHeightTexture = new UMI3DAsyncProperty<UMI3DScalableTextureResource>(id, UMI3DPropertyKeys.HeightTexture, this.textures.heightTexture, (x, u) => { return x.ToDto(); });
             objectHeightTexture.OnValueChanged += (UMI3DScalableTextureResource t) => { textures.heightTexture = t; };
 
@@ -193,10 +196,10 @@ namespace umi3d.edk
             {
                 return new Dictionary<string, object>(d);
             });
-            objectShaderProperties.OnInnerValueChanged += (string s, object o) => { shaderProperties[s] = o; };
-            objectShaderProperties.OnInnerValueAdded += (string s, object o) => { shaderProperties.Add(s, o); };
-            objectShaderProperties.OnInnerValueRemoved += (string s) => { shaderProperties.Remove(s); };
-            objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
+            objectShaderProperties.OnInnerValueChanged += (string s, object o) => { /*shaderProperties[s] = o;*/ };
+            objectShaderProperties.OnInnerValueAdded += (string s, object o) => {/* shaderProperties.Add(s, o); */};
+            objectShaderProperties.OnInnerValueRemoved += (string s) => { /*shaderProperties.Remove(s);*/ };
+            objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { /*shaderProperties = d; */};
         }
 
         public static void UpdateTexture(UMI3DAsyncProperty<UMI3DTextureResource> objectTexture, UMI3DTextureResource newTexture)
@@ -213,12 +216,13 @@ namespace umi3d.edk
             }
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
-     
+
     }
     [System.Serializable]
     public class CustomTextures
@@ -226,6 +230,7 @@ namespace umi3d.edk
         public string id = null;
         // public string shaderName; // unused
         public UMI3DTextureResource baseColorTexture = new UMI3DTextureResource();
+        public UMI3DTextureResource channelTexture = new UMI3DTextureResource();
         public UMI3DTextureResource metallicRoughnessTexture = new UMI3DTextureResource();
         public UMI3DScalableTextureResource normalTexture = new UMI3DScalableTextureResource();
         public UMI3DTextureResource emissiveTexture = new UMI3DTextureResource();
@@ -245,6 +250,7 @@ namespace umi3d.edk
                 metallicTexture = metallicTexture.ToDto(),
                 normalTexture = normalTexture.ToDto(),
                 occlusionTexture = occlusionTexture.ToDto(),
+                channelTexture = channelTexture.ToDto(),
                 roughnessTexture = roughnessTexture.ToDto(),
             };
         }

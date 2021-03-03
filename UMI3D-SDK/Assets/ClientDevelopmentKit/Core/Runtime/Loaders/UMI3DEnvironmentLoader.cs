@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="collider">collider.</param>
         /// <returns></returns>
-        public static string GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k=>(k.Value as UMI3DNodeInstance).colliders.Any(c=>c==collider)).Key : null; }
+        public static string GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : null; }
 
         /// <summary>
         /// Register a node instance.
@@ -71,7 +71,7 @@ namespace umi3d.cdk
         /// <param name="instance">gameobject of the node.</param>
         /// <param name="issubObject">id this node a sub object of an other node.</param>
         /// <returns></returns>
-        public static UMI3DNodeInstance RegisterNodeInstance(string id, UMI3DDto dto, GameObject instance, bool issubObject = false)
+        public static UMI3DNodeInstance RegisterNodeInstance(string id, UMI3DDto dto, GameObject instance, Action delete = null)
         {
             if (!Exists || instance == null)
                 return null;
@@ -86,7 +86,7 @@ namespace umi3d.cdk
             }
             else
             {
-                UMI3DNodeInstance node = new UMI3DNodeInstance() { gameObject = instance, dto = dto };
+                UMI3DNodeInstance node = new UMI3DNodeInstance() { gameObject = instance, dto = dto, Delete = delete };
                 Instance.entities.Add(id, node);
                 return node;
             }
@@ -98,7 +98,7 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the node.</param>
         /// <param name="dto">dto of the node.</param>
         /// <returns></returns>
-        public static UMI3DEntityInstance RegisterEntityInstance(string id, UMI3DDto dto, object Object)
+        public static UMI3DEntityInstance RegisterEntityInstance(string id, UMI3DDto dto, object Object, Action delete = null)
         {
             if (!Exists)
                 return null;
@@ -108,7 +108,7 @@ namespace umi3d.cdk
             }
             else
             {
-                UMI3DEntityInstance node = new UMI3DEntityInstance() { dto = dto, Object = Object };
+                UMI3DEntityInstance node = new UMI3DEntityInstance() { dto = dto, Object = Object, Delete = delete };
                 Instance.entities.Add(id, node);
                 return node;
             }
@@ -145,7 +145,42 @@ namespace umi3d.cdk
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
 
+        /// <summary>
+        /// Basic material used to init a new material with the same properties
+        /// </summary>
+        public Material baseMaterial;
 
+        /// <summary>
+        /// return a copy of the baseMaterial. it can be modified 
+        /// </summary>
+        /// <returns></returns>
+        public Material GetBaseMaterial()
+        {
+            //Debug.Log("GetBaseMaterial");
+            if (baseMaterial == null)
+                return null;
+            return new Material(baseMaterial);
+        }
+
+        /// <summary>
+        /// wait initialization of baseMaterial then invoke callback
+        /// </summary>
+        /// <param name="callback">callback to invoke with the baseMaterial in argument</param>
+        /// <returns></returns>
+        public IEnumerator GetBaseMaterialBeforeAction(Action<Material> callback)
+        {
+            yield return new WaitWhile(() => baseMaterial == null);
+
+            callback.Invoke(new Material(baseMaterial));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
+        public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material(newBaseMat); }
+
+        ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -283,7 +318,7 @@ namespace umi3d.cdk
                 count += 1;
                 UMI3DNodeInstance node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject,()=> { count -= 1; instantiatedNodes += 1; }, (s) => { count -= 1; Debug.LogWarning(s); });
+                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 1; }, (s) => { count -= 1; Debug.LogWarning(s); });
                 node.gameObject.SetActive(true);
             }
             yield return new WaitUntil(() => count <= 0);
@@ -301,7 +336,7 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         static public void LoadEntity(IEntity entity, Action performed)
         {
-            if(Exists)Instance._LoadEntity( entity, performed);
+            if (Exists) Instance._LoadEntity(entity, performed);
         }
 
         /// <summary>
@@ -334,13 +369,12 @@ namespace umi3d.cdk
                     Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
                     {
 
-                        if(matDto.name != null && matDto.name.Length>0)
+                        if (matDto.name != null && matDto.name.Length > 0)
                             m.name = matDto.name;
                         //register the material
                         RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
                         performed.Invoke();
                     });
-
                     break;
                 default:
                     Debug.Log($"load entity fail missing case {entity.GetType()}");
@@ -362,16 +396,10 @@ namespace umi3d.cdk
                 UMI3DEntityInstance entity = Instance.entities[entityId];
                 if (entity is UMI3DNodeInstance)
                 {
-                    if(entity.dto is GlTFSceneDto)
-                    {
-                        var sceneDto = (entity.dto as GlTFSceneDto).extensions.umi3d;
-                        foreach(var library in sceneDto.LibrariesId)
-                            UMI3DResourcesManager.UnloadLibrary(library,sceneDto.id);
-                    }
-
                     UMI3DNodeInstance node = entity as UMI3DNodeInstance;
                     Destroy(node.gameObject);
                 }
+                Instance.entities[entityId].Delete?.Invoke();
                 Instance.entities.Remove(entityId);
             }
             else if (UMI3DResourcesManager.isKnowedLibrary(entityId))
@@ -388,7 +416,7 @@ namespace umi3d.cdk
         /// </summary>
         static public void Clear()
         {
-            foreach(var entity in Instance.entities.ToList().Select(p=> { return p.Key; }))
+            foreach (var entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
                 DeleteEntity(entity, null);
             }
@@ -405,8 +433,13 @@ namespace umi3d.cdk
             var extension = dto?.extensions?.umi3d;
             if (extension != null)
             {
+                if (extension.defaultMaterial != null && extension.defaultMaterial.variants != null && extension.defaultMaterial.variants.Count > 0)
+                {
+                    baseMaterial = null;
+                    LoadDefaultMaterial(extension.defaultMaterial);
+                }
                 foreach (var scene in extension.preloadedScenes)
-                    Parameters.ReadUMI3DExtension(scene,node,null,null);
+                    Parameters.ReadUMI3DExtension(scene, node, null, null);
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor;
                 RenderSettings.ambientEquatorColor = extension.horizontalColor;
@@ -416,7 +449,33 @@ namespace umi3d.cdk
                 {
                     Parameters.loadSkybox(extension.skybox);
                 }
+
             }
+        }
+
+        /// <summary>
+        /// Load DefaultMaterial from matDto
+        /// </summary>
+        /// <param name="matDto"></param>
+        private void LoadDefaultMaterial(ResourceDto matDto)
+        {
+            FileDto fileToLoad = Parameters.ChooseVariante(matDto.variants);
+            if (fileToLoad == null) return;
+            string url = fileToLoad.url;
+            string ext = fileToLoad.extension;
+            string authorization = fileToLoad.authorization;
+            IResourcesLoader loader = Parameters.SelectLoader(ext);
+            if (loader != null)
+                UMI3DResourcesManager.LoadFile(
+                    UMI3DGlobalID.EnvironementId,
+                    fileToLoad,
+                    loader.UrlToObject,
+                    loader.ObjectFromCache,
+                    (mat) => SetBaseMaterial((Material)mat),
+                    Debug.LogWarning,
+                    loader.DeleteObject
+                    );
+
         }
 
         /// <summary>
@@ -456,22 +515,76 @@ namespace umi3d.cdk
         /// <summary>
         /// Handle SetEntityPropertyDto operation.
         /// </summary>
-        /// <param name="dto">set operation to handle.</param>
+        /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
         public static bool SetEntity(SetEntityPropertyDto dto)
         {
             if (!Exists) return false;
             var node = UMI3DEnvironmentLoader.GetEntity(dto.entityId);
-            if (node == null) {
+            if (node == null)
+            {
                 Instance.StartCoroutine(Instance._SetEntity(dto));
                 return false;
             }
             else
             {
-                if (SetUMI3DPorperty(node, dto)) return true;
-                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
-                return Parameters.SetUMI3DProperty(node, dto);
+                return SetEntity(node, dto);
             }
+        }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
+        /// <param name="node">Node on which the dto should be applied.</param>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public static bool SetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
+        {
+            if (SetUMI3DPorperty(node, dto)) return true;
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
+            return Parameters.SetUMI3DProperty(node, dto);
+        }
+
+
+        /// <summary>
+        /// Apply a setEntity to multiple entities
+        /// </summary>
+        /// <param name="dto">MultiSetEntityPropertyDto with the ids list to mofify</param>
+        /// <returns></returns>
+        public static bool SetMultiEntity(MultiSetEntityPropertyDto dto)
+        {
+            if (!Exists) return false;
+            foreach (string id in dto.entityIds)
+            {
+                try
+                {
+                    var node = UMI3DEnvironmentLoader.GetEntity(id);
+                    SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()
+                    {
+                        entityId = id,
+                        property = dto.property,
+                        value = dto.value
+                    };
+                    if (node == null)
+                    {
+                        Instance.StartCoroutine(Instance._SetEntity(entityPropertyDto));
+                    }
+                    else
+                    {
+                        if (SetUMI3DPorperty(node, entityPropertyDto)) break;
+                        if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, entityPropertyDto)) break;
+                        Parameters.SetUMI3DProperty(node, entityPropertyDto);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property);
+                    Debug.LogWarning(e);
+                }
+            }
+
+            return true;
+
         }
 
         IEnumerator _SetEntity(SetEntityPropertyDto dto)
@@ -479,14 +592,12 @@ namespace umi3d.cdk
             var wait = new WaitForFixedUpdate();
             UMI3DEntityInstance node = null;
             yield return wait;
-            while((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
+            while ((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
             {
                 yield return wait;
-                Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
+                //Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
             }
-            if (SetUMI3DPorperty(node, dto)) yield break;
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) yield break;
-            Parameters.SetUMI3DProperty(node, dto);
+            SetEntity(node, dto);
         }
 
     }

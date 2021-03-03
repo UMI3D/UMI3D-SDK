@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture
-{ 
+{
 
     public class UMI3DBinding
     {
         public string boneType;
         public bool isBinded = true;
-        public UMI3DNode node;
+        public UMI3DAbstractNode node;
         public string rigName = "";
         public Vector3 offsetPosition = Vector3.zero;
         public Quaternion offsetRotation = Quaternion.identity;
@@ -58,9 +58,9 @@ namespace umi3d.edk.userCapture
                 dto.objectId = "";
 
             if (user != null)
-                dto.bindingId = user.Id() + "binding" + rigName + dto.objectId;
+                dto.bindingId = user.Id() + "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
             else
-                dto.bindingId = "binding" + rigName + dto.objectId;
+                dto.bindingId = "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
 
             return dto;
         }

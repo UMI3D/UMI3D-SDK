@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ namespace umi3d.common
         public float Z;
         public float W;
 
-        public SerializableVector4():base()
+        public SerializableVector4() : base()
         {
             X = 0;
             Y = 0;
@@ -43,6 +43,7 @@ namespace umi3d.common
             W = w;
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return ((Vector4)this).ToString();

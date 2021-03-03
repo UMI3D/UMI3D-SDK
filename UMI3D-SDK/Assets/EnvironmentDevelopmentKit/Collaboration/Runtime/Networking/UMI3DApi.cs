@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,9 +44,9 @@ namespace umi3d.edk.collaboration
         {
             var user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UserConnectionDto identity = new UserConnectionDto(user.ToUserDto());
-            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user.login);
+            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user);
             //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user.login);
+            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user);
             e.Response.WriteContent(identity.ToBson());
         }
 
@@ -84,11 +84,11 @@ namespace umi3d.edk.collaboration
             UserConnectionDto dto = ReadDto(e.Request) as UserConnectionDto;
             UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, dto));
         }
-        
+
         IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
-            user.connection.SendData(user.ToStatusDto());
+            user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
             yield break;
         }
 
@@ -124,7 +124,6 @@ namespace umi3d.edk.collaboration
             {
                 message = UMI3DEnvironment.Instance.ToDto().ToBson();
             }
-
             res.WriteContent(message);
         }
         #endregion
@@ -153,9 +152,10 @@ namespace umi3d.edk.collaboration
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.publicFiles.Length);
             file = common.Path.Combine(
-                UMI3DServer.publicRepository,file);
+                UMI3DServer.publicRepository, file);
+            file = System.Uri.UnescapeDataString(file);
             //Validate url.
-             var res = e.Response;
+            var res = e.Response;
             if (UMI3DServer.IsInPublicRepository(file))
             {
                 GetFile(file, res);
@@ -176,13 +176,14 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
         [HttpGet(UMI3DNetworkingKeys.privateFiles, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Directory)]
-        public void GetPrivateFile(object sender, HttpRequestEventArgs e , Dictionary<string, string> uriparam)
+        public void GetPrivateFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.privateFiles.Length);
             file = common.Path.Combine(UMI3DServer.privateRepository, file);
+            file = System.Uri.UnescapeDataString(file);
             //Validate url.
             HttpListenerResponse res = e.Response;
-            if (UMI3DServer.IsInPrivateRepository(file)|| UMI3DServer.IsInPublicRepository(file))
+            if (UMI3DServer.IsInPrivateRepository(file) || UMI3DServer.IsInPublicRepository(file))
             {
                 GetFile(file, res);
             }
@@ -206,6 +207,7 @@ namespace umi3d.edk.collaboration
         public void GetDirectory(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
+            rawDirectory = System.Uri.UnescapeDataString(rawDirectory);
             string directory = common.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
             //Validate url.
             HttpListenerResponse res = e.Response;
@@ -213,9 +215,10 @@ namespace umi3d.edk.collaboration
             {
                 if (Directory.Exists(directory))
                 {
-                    FileListDto dto = new FileListDto() {
-                        files = GetDir(directory),
-                        baseUrl = common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory)
+                    FileListDto dto = new FileListDto()
+                    {
+                        files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
+                        baseUrl = System.Uri.EscapeUriString(common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 
                     res.WriteContent(dto.ToBson());
@@ -244,6 +247,8 @@ namespace umi3d.edk.collaboration
         {
             string directory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory_zip.Length);
             directory = common.Path.Combine(UMI3DServer.dataRepository, directory);
+            directory = System.Uri.UnescapeDataString(directory);
+
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInDataRepository(directory))
@@ -294,13 +299,13 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Handles an authorized directory access.
         /// </summary>
-        private List<string> GetDir(string directory,string localpath = "/")
+        private List<string> GetDir(string directory, string localpath = "/")
         {
             List<string> files = new List<string>();
             IEnumerable<string> localFiles = Directory.GetFiles(directory).Select(full => System.IO.Path.GetFileName(full));
             IEnumerable<string> uris = localFiles.Select(f => common.Path.Combine(localpath, f));
             files.AddRange(uris);
-            foreach(string susdir in Directory.GetDirectories(directory))
+            foreach (string susdir in Directory.GetDirectories(directory))
             {
                 files.AddRange(GetDir(susdir, common.Path.Combine(localpath, System.IO.Path.GetFileName(System.IO.Path.GetFileName(susdir)))));
             }
@@ -323,11 +328,11 @@ namespace umi3d.edk.collaboration
         {
             UMI3DUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DEnvironment environment = UMI3DEnvironment.Instance;
-            if(environment == null)
+            if (environment == null)
             {
                 Return404(e.Response, "UMI3DEnvironment is missing !");
             }
-            else if(user == null)
+            else if (user == null)
             {
                 Return404(e.Response, "UMI3DUser is missing !");
             }
@@ -337,7 +342,7 @@ namespace umi3d.edk.collaboration
                 bool finished = false;
                 UnityMainThreadDispatcher.Instance().Enqueue(
                     _GetEnvironment(
-                        environment,user,
+                        environment, user,
                         (res) => { result = res; finished = true; },
                         () => { finished = true; }
                     ));
@@ -368,7 +373,7 @@ namespace umi3d.edk.collaboration
             JoinDto dto = ReadDto(e.Request) as JoinDto;
             user.useWebrtc = dto.useWebrtc;
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
-            UMI3DCollaborationServer.newUser(user);
+            UMI3DCollaborationServer.NotifyUserJoin(user);
         }
 
         /// <summary>
@@ -396,7 +401,7 @@ namespace umi3d.edk.collaboration
                 e.Response.WriteContent(scene.ToGlTFNodeDto(user).ToBson());
             }
         }
-        
+
         #endregion
 
         #region utils
@@ -422,7 +427,7 @@ namespace umi3d.edk.collaboration
             response.StatusDescription = description;
             response.WriteContent(Encoding.UTF8.GetBytes("404 :("));
         }
-        
+
         void ReturnNotImplemented(HttpListenerResponse response, string description = "This method isn't implemented now :(")
         {
             response.ContentType = "text/html";

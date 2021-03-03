@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using umi3d.common;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -80,17 +79,6 @@ namespace umi3d.edk.collaboration
                 }
             };
 
-            // Add the WebSocket services.
-            //todo look if working
-            httpsv.AddWebSocketService<UMI3DWebSocketConnection>(
-                UMI3DNetworkingKeys.websocket,
-                () =>
-                    new UMI3DWebSocketConnection()
-                    {
-                        IgnoreExtensions = true,
-                        Protocol = UMI3DNetworkingKeys.websocketProtocol,
-                    }
-            );
             httpsv.Start();
             if (httpsv.IsListening)
             {
@@ -100,6 +88,9 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <summary>
+        /// Stop the http server.
+        /// </summary>
         public void Stop()
         {
             if (httpsv != null)

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,35 +30,39 @@ namespace umi3d.edk
 
         public bool overrideAllMaterial { get => materialListToOverride.overrideAllMaterial; set => materialListToOverride.overrideAllMaterial = value; }
 
+        public bool addMaterialIfNotExists { get => materialListToOverride.addMaterialIfNotExists; set => materialListToOverride.addMaterialIfNotExists = value; }
+
         public List<string> overidedMaterials { get => materialListToOverride.overidedMaterials; set => materialListToOverride.overidedMaterials = value; }
 
         [Serializable]
         public class OverridedMaterialList
         {
             public bool overrideAllMaterial = false;
+            public bool addMaterialIfNotExists = false;
             public List<string> overidedMaterials = new List<string>();
         }
 
-        private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat"};
+        private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
 
         public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
         {
-            if(overrideAllMaterial)
+            if (overrideAllMaterial)
                 return new UMI3DRenderedNodeDto.MaterialOverrideDto()
                 {
                     newMaterialId = newMaterial.Id(),
-                    overridedMaterialsId = ANY_mat
-                    
+                    overridedMaterialsId = ANY_mat,
+                    addMaterialIfNotExists = addMaterialIfNotExists
                 };
 
             return new UMI3DRenderedNodeDto.MaterialOverrideDto()
             {
                 newMaterialId = newMaterial.Id(),
-                overridedMaterialsId = overidedMaterials
+                overridedMaterialsId = overidedMaterials,
+                addMaterialIfNotExists = addMaterialIfNotExists
             };
         }
 
     }
-    
+
 
 }

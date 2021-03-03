@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -25,21 +24,11 @@ namespace umi3d.cdk.interaction
     static public class UMI3DInteractableLoader
     {
 
-        public static void DeleteInteractable(InteractableContainer interactable)
-        {
-            if (InteractableContainer.containers.Where(i => { return i.Interactable == interactable.Interactable; }).Count() == 1)
-            {
-                UMI3DAbstractToolLoader.DeleteInteractable(interactable.Interactable);
-                UMI3DEnvironmentLoader.DeleteEntity(interactable.Interactable.dto.id, null);
-            }
-            GameObject.Destroy(interactable);
-        }
-
         public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<string> failed)
         {
             node = UMI3DEnvironmentLoader.GetNode(dto.nodeId).gameObject;
             var interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
             finished?.Invoke();
         }
 
@@ -79,7 +68,7 @@ namespace umi3d.cdk.interaction
         {
             var node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
             var interactable = UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as Interactable;
-            if(interactable == null)
+            if (interactable == null)
                 interactable = new Interactable(dto);
             node.gameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
         }

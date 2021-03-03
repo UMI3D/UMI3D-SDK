@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,10 +41,10 @@ namespace umi3d.cdk
         }
 
         private List<Collider> _colliders;
-        public List<Collider> colliders 
-        {  
-            get { 
-                if (_colliders == null) 
+        public List<Collider> colliders
+        {
+            get {
+                if (_colliders == null)
                     _colliders = new List<Collider>();
                 return _colliders;
             }
@@ -52,13 +52,12 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// The list of Subnode intance when the model has tracked subMesh. Empty if sub Model are not tracked.
+        /// The list of Subnode instance when the model has tracked subMeshs. Empty if sub Models are not tracked.
         /// </summary>
         private List<UMI3DNodeInstance> _subNodeInstances;
         public List<UMI3DNodeInstance> subNodeInstances
         {
-            get
-            {
+            get {
                 if (_subNodeInstances == null)
                     _subNodeInstances = new List<UMI3DNodeInstance>();
                 return _subNodeInstances;

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         private List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
 
+        ///<inheritdoc/>
         public override string GetValue()
         {
             return value;
@@ -73,6 +74,7 @@ namespace umi3d.cdk.menu
             subscribers.Remove(callback);
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
             return Name;

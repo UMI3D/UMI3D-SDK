@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -25,14 +26,28 @@ namespace umi3d.edk
 
         public UMI3DModel parentModel;
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
-        public bool ignoreModelMaterialOverride = false;
+        [SerializeField, EditorReadOnly]
+        protected bool ignoreModelMaterialOverride = false;
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
+
+
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
 
-            objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id,UMI3DPropertyKeys.IgnoreModelMaterialOverride,ignoreModelMaterialOverride);
+            objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.IgnoreModelMaterialOverride, ignoreModelMaterialOverride);
         }
 
         /// <summary>
@@ -48,6 +63,7 @@ namespace umi3d.edk
             return GetLoadEntity();
         }
 
+        ///<inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);
@@ -75,7 +91,8 @@ namespace umi3d.edk
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
-
+            subDto.isTraversable = isTraversable;
+            subDto.isPartOfNavmesh = isPartOfNavmesh;
         }
 
     }

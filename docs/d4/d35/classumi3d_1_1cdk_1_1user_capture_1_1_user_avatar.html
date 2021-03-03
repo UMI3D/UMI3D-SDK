@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -89,6 +89,7 @@ $(document).ready(function(){initNavTree('d4/d35/classumi3d_1_1cdk_1_1user_captu
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="../../da/dd9/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -124,9 +125,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a09f78508f025c5d1d95add6088d01432"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a09f78508f025c5d1d95add6088d01432">UpdateBinding</a> (int index, <a class="el" href="../../d5/d91/classumi3d_1_1common_1_1user_capture_1_1_bone_binding_dto.html">BoneBindingDto</a> dto)</td></tr>
 <tr class="memdesc:a09f78508f025c5d1d95add6088d01432"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the BoneBindingDto at the given index.  <a href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a09f78508f025c5d1d95add6088d01432">More...</a><br /></td></tr>
 <tr class="separator:a09f78508f025c5d1d95add6088d01432"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5d00968c463cb760931beb038869e26"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#af5d00968c463cb760931beb038869e26">UpdateBonePosition</a> (<a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a> dto)</td></tr>
-<tr class="memdesc:af5d00968c463cb760931beb038869e26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the a <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> directly sent by another client.  <a href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#af5d00968c463cb760931beb038869e26">More...</a><br /></td></tr>
-<tr class="separator:af5d00968c463cb760931beb038869e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a772f1120a0d81c8c00b949b9265e03b9"><td class="memItemLeft" align="right" valign="top">IEnumerator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a772f1120a0d81c8c00b949b9265e03b9">UpdateBonePosition</a> (<a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a> trackingFrameDto)</td></tr>
+<tr class="memdesc:a772f1120a0d81c8c00b949b9265e03b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Update the a <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> directly sent by another client.  <a href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a772f1120a0d81c8c00b949b9265e03b9">More...</a><br /></td></tr>
+<tr class="separator:a772f1120a0d81c8c00b949b9265e03b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
+Public Attributes</h2></td></tr>
+<tr class="memitem:ab542fd5fe2f98cca34e52d12e239edea"><td class="memItemLeft" align="right" valign="top">List&lt; Transform &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#ab542fd5fe2f98cca34e52d12e239edea">boundRigs</a> = new List&lt;Transform&gt;()</td></tr>
+<tr class="separator:ab542fd5fe2f98cca34e52d12e239edea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
@@ -165,6 +171,13 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Add a new BoneBindingDto at the given index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>the index in the list of bindings</td></tr>
+    <tr><td class="paramname">dto</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -195,6 +208,13 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Remove the BoneBindingDto at the given index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>the index in the list of bindings</td></tr>
+    <tr><td class="paramname">dto</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -215,6 +235,12 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set a new <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> from an UMI3DAvatarNodeDto. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dto</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -235,6 +261,12 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set the binding activation from the given bool. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">b</td><td>the activation value</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -255,6 +287,12 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Set a new list of BoneBindingDto. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">newBindings</td><td>a list of dto containing binding data</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -285,26 +323,54 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Update the BoneBindingDto at the given index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>the index in the list of bindings</td></tr>
+    <tr><td class="paramname">dto</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<a id="af5d00968c463cb760931beb038869e26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af5d00968c463cb760931beb038869e26">&#9670;&nbsp;</a></span>UpdateBonePosition()</h2>
+<a id="a772f1120a0d81c8c00b949b9265e03b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a772f1120a0d81c8c00b949b9265e03b9">&#9670;&nbsp;</a></span>UpdateBonePosition()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void umi3d.cdk.userCapture.UserAvatar.UpdateBonePosition </td>
+          <td class="memname">IEnumerator umi3d.cdk.userCapture.UserAvatar.UpdateBonePosition </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="../../dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html">UserTrackingFrameDto</a>&#160;</td>
-          <td class="paramname"><em>dto</em></td><td>)</td>
+          <td class="paramname"><em>trackingFrameDto</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Update the a <a class="el" href="../../d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html">UserAvatar</a> directly sent by another client. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">trackingFrameDto</td><td>a dto containing the tracking data</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ab542fd5fe2f98cca34e52d12e239edea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab542fd5fe2f98cca34e52d12e239edea">&#9670;&nbsp;</a></span>boundRigs</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;Transform&gt; umi3d.cdk.userCapture.UserAvatar.boundRigs = new List&lt;Transform&gt;()</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

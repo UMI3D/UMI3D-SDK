@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -27,18 +27,29 @@ namespace umi3d.edk
         public bool lockColliders = false;
 
 
-        [SerializeField]
+        [SerializeField, EditorReadOnly]
         UMI3DResource model = new UMI3DResource();
         public UMI3DAsyncProperty<UMI3DResource> objectModel { get { Register(); return _objectModel; } protected set => _objectModel = value; }
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
-    
+
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
 
-    
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
+
+
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
 
+        ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
@@ -49,6 +60,7 @@ namespace umi3d.edk
             }
 
             objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r, u) => r.ToDto());
+            objectModel.OnValueChanged += v => model = v;
         }
 
         public void SetSubHierarchy()
@@ -60,7 +72,7 @@ namespace umi3d.edk
             }
 
             //Debug.Log("add subobjects in hierarchy for " + gameObject.name);
-            foreach (GameObject child in GetSubModelGameObjectOfUMI3DModel( gameObject.transform))
+            foreach (GameObject child in GetSubModelGameObjectOfUMI3DModel(gameObject.transform))
             {
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
                 {
@@ -71,13 +83,18 @@ namespace umi3d.edk
                         subModel.objectCastShadow.SetValue(this.castShadow);
                         subModel.objectReceiveShadow.SetValue(this.receiveShadow);
                     }
+                    else if (child.gameObject.GetComponent<ReflectionProbe>() != null)
+                    {
+                        UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
+                        subModel.parentModel = this;
+                    }
                     else
                     {
                         UMI3DNode node = child.gameObject.AddComponent<UMI3DNode>();
                     }
                 }
                 else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
-                {                  
+                {
                     UMI3DSubModel subModel = child.gameObject.GetComponent<UMI3DSubModel>();
                     subModel.parentModel = this;
 
@@ -88,7 +105,7 @@ namespace umi3d.edk
         public List<GameObject> GetSubModelGameObjectOfUMI3DModel(Transform modelRoot)
         {
             var res = GetChildrenWhithoutOtherModel(modelRoot);
-            if(modelRoot.GetComponent<Renderer>() != null)
+            if (modelRoot.GetComponent<Renderer>() != null)
                 res.Add(modelRoot.gameObject);
             return res;
         }
@@ -133,10 +150,11 @@ namespace umi3d.edk
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
             meshDto.idGenerator = idGenerator;
-           
-          
+            meshDto.isPartOfNavmesh = isPartOfNavmesh;
+            meshDto.isTraversable = isTraversable;
         }
 
+        ///<inheritdoc/>
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
 

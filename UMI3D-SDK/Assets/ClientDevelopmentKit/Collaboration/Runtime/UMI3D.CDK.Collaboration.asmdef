@@ -9,7 +9,7 @@
         "GUID:608ff695b5b1d8f46a32962b70ec9792",
         "GUID:86623230113704741b2575414446f181",
         "GUID:215efa65361782e41b5e3fac87a2c7e3",
-        "GUID:f12aafacab75a87499e7e45c873ffab8"
+        "GUID:6f151ebfe5ecb224b9b424364cc7733e"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -18,12 +18,6 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [
-        {
-            "name": "com.unity.webrtc",
-            "expression": "",
-            "define": "UNITY_WEBRTC"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

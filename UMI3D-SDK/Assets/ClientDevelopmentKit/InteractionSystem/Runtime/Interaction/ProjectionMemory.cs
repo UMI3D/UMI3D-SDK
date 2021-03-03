@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,14 +24,13 @@ namespace umi3d.cdk.interaction
     public class ProjectionMemory : MonoBehaviour
     {
         protected string id_ = "";
-        public string id 
-        { 
-            get 
-            {
+        public string id
+        {
+            get {
                 if (id_.Equals(""))
                     id_ = (this.gameObject.GetInstanceID() + Random.Range(0, 1000)).ToString();
                 return id_;
-            } 
+            }
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace umi3d.cdk.interaction
 
         protected virtual void Awake()
         {
-            memoryRoot = new ProjectionTreeNode(id) { id = "root" };   
+            memoryRoot = new ProjectionTreeNode(id) { id = "root" };
         }
 
 
@@ -760,8 +759,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public List<ProjectionTreeNode> children
         {
-            get
-            {
+            get {
                 List<ProjectionTreeNode> buffer = new List<ProjectionTreeNode>();
                 foreach (string id in childrensId)
                 {
@@ -792,7 +790,7 @@ namespace umi3d.cdk.interaction
         public AbstractUMI3DInput projectedInput;
 
 
-        public ProjectionTreeNode (string treeId)
+        public ProjectionTreeNode(string treeId)
         {
             this.treeId = treeId;
         }
@@ -862,7 +860,7 @@ namespace umi3d.cdk.interaction
         [SerializeField]
         public EventDto evt;
 
-        public EventNode (string treeId) : base(treeId) { }
+        public EventNode(string treeId) : base(treeId) { }
     }
 
     [System.Serializable]

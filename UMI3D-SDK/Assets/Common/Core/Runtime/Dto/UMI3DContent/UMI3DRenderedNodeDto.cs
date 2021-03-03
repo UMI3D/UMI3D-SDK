@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
-    public class UMI3DRenderedNodeDto :UMI3DNodeDto
+    public class UMI3DRenderedNodeDto : UMI3DNodeDto
     {
         /// <summary>
         /// Should some material be overrided
@@ -47,6 +47,7 @@ namespace umi3d.common
         {
             public List<string> overridedMaterialsId; // List of names of mat or "ANY_mat" or "DEFAULT_mat"
             public string newMaterialId;  // name of the umi3d entity (the id of the mat)
+            public bool addMaterialIfNotExists;
         }
     }
 }

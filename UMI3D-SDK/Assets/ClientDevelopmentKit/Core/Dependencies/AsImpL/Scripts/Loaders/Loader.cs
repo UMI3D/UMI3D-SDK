@@ -62,12 +62,10 @@ namespace AsImpL
         /// </summary>
         public bool ConvertVertAxis
         {
-            get
-            {
+            get {
                 return buildOptions != null ? buildOptions.zUp : false;
             }
-            set
-            {
+            set {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -82,12 +80,10 @@ namespace AsImpL
         /// </summary>
         public float Scaling
         {
-            get
-            {
+            get {
                 return buildOptions != null ? buildOptions.modelScaling : 1f;
             }
-            set
-            {
+            set {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -146,8 +142,9 @@ namespace AsImpL
         /// <param name="objName">name of the GameObject, if empty use file name</param>
         /// <param name="absolutePath">absolute file path</param>
         /// <param name="parentObj">Transform to which attach the loaded object (null=scene)</param>
+        /// <param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         /// <returns>You can use StartCoroutine( loader.Load(...) )</returns>
-        public IEnumerator Load(string objName, string absolutePath, Transform parentObj)
+        public IEnumerator Load(string objName, string absolutePath, Transform parentObj, Material baseMaterial)
         {
             string fileName = Path.GetFileName(absolutePath);
             string fileNameNoExt = Path.GetFileNameWithoutExtension(absolutePath);
@@ -177,7 +174,7 @@ namespace AsImpL
                 }
 
 
-                GameObject newObj = Instantiate(loadedModels[absolutePath],parentObj == null ? null : parentObj.transform);
+                GameObject newObj = Instantiate(loadedModels[absolutePath], parentObj == null ? null : parentObj.transform);
 
                 yield return newObj;
                 OnCreated(newObj, absolutePath);
@@ -209,7 +206,7 @@ namespace AsImpL
             }
             loadStats.materialsParseTime = Time.realtimeSinceStartup - lastTime;
             lastTime = Time.realtimeSinceStartup;
-            yield return Build(absolutePath, objName, parentObj);
+            yield return Build(absolutePath, objName, parentObj, baseMaterial);
             loadStats.buildTime = Time.realtimeSinceStartup - lastTime;
             loadStats.totalTime = Time.realtimeSinceStartup - startTime;
             /*Debug.Log("Done: " + objName
@@ -254,8 +251,9 @@ namespace AsImpL
         /// <param name="absolutePath">absolute file path</param>
         /// <param name="objName">Name of the main game object (model root)</param>
         /// <param name="parentTransform">transform to which the model root will be attached (if null it will be a root aobject)</param>
+        /// <param name="baseMaterial">a simple white material used to create the new material with the same properties</param>
         /// <remarks>This is called by Load() method</remarks>
-        protected IEnumerator Build(string absolutePath, string objName, Transform parentTransform)
+        protected IEnumerator Build(string absolutePath, string objName, Transform parentTransform, Material baseMaterial)
         {
             float prevTime = Time.realtimeSinceStartup;
             if (materialData != null)
@@ -326,6 +324,23 @@ namespace AsImpL
                             mtl.opacityTex = loadedTexture;
                         }
                     }
+
+                    //add emissive
+                    if (mtl.emissiveTexPath != null)
+                    {
+#if UNITY_EDITOR
+                        if (ImportingAssets)
+                        {
+                            mtl.emissiveTex = LoadAssetTexture(mtl.emissiveTexPath);
+                        }
+                        else
+#endif
+                        {
+                            yield return LoadMaterialTexture(basePath, mtl.emissiveTexPath);
+                            mtl.emissiveTex = loadedTexture;
+                        }
+                    }
+
                 }
             }
             loadStats.buildStats.texturesTime = Time.realtimeSinceStartup - prevTime;
@@ -345,7 +360,7 @@ namespace AsImpL
             float objInitPerc = objLoadingProgress.percentage;
             if (hasMaterials)
             {
-                while (objectBuilder.BuildMaterials(info))
+                while (objectBuilder.BuildMaterials(info, baseMaterial))
                 {
                     objLoadingProgress.percentage = objInitPerc + MATERIAL_PHASE_PERC * objectBuilder.NumImportedMaterials / materialData.Count;
                     yield return null;
@@ -493,7 +508,7 @@ namespace AsImpL
         /// <param name="basePath">base texture path</param>
         /// <param name="texturePath">relative texture path</param>
         /// <returns>URL of the texture</returns>
-        protected string GetTextureUrl(string basePath, string texturePath)  
+        protected string GetTextureUrl(string basePath, string texturePath)
         {
             string texPath = texturePath.Replace("\\", "/").Replace("//", "/");
             if (!Path.IsPathRooted(texPath))

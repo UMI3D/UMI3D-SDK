@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
@@ -79,6 +78,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -95,7 +95,7 @@ namespace umi3d.edk.interaction
                         else
                         {
                             value = submitedValue;
-                            onChange.Invoke(new ParameterEventContent<float>(user,settingRequestDto,value));
+                            onChange.Invoke(new ParameterEventContent<float>(user, settingRequestDto, value));
                         }
                     }
                     else

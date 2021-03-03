@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ namespace umi3d.common
 
         public float this[int i]
         {
-            get { if (i >= 0 && i < 16) return this[i/4,i-4*(i/4)]; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
+            get { if (i >= 0 && i < 16) return this[i / 4, i - 4 * (i / 4)]; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
             set { if (i >= 0 && i < 16) this[i / 4, i - 4 * (i / 4)] = value; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
         }
 
@@ -51,7 +51,7 @@ namespace umi3d.common
                     if (c == 2) return c2[r];
                     return c3[r];
                 }
-                else throw new ArgumentOutOfRangeException("ensure that 0 < r:"+r.ToString()+" < 4 and 0 < c:"+c.ToString()+" < 4");
+                else throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
             }
             set {
                 if (r >= 0 && r < 4 && c >= 0 && c < 4)

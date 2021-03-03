@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,12 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
 using UnityEditor;
-using System.Reflection;
-using UnityEditorInternal;
-using umi3d.edk;
-using umi3d.common;
 
 namespace umi3d.edk.editor
 {
@@ -32,12 +27,14 @@ namespace umi3d.edk.editor
 
         SerializedProperty variants;
 
+        ///<inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
             variants = serializedObject.FindProperty("sprite.variants");
         }
 
+        ///<inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -47,8 +44,6 @@ namespace umi3d.edk.editor
             serializedObject.ApplyModifiedProperties();
 
         }
-
-
     }
 }
 #endif

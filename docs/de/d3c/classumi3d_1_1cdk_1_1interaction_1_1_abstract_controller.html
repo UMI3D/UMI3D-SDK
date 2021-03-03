@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -126,6 +126,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abf533fb170054fe40a43cee6665e80c4"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html">AbstractUMI3DInput</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#abf533fb170054fe40a43cee6665e80c4">FindInput</a> (<a class="el" href="../../d6/d80/classumi3d_1_1common_1_1interaction_1_1_abstract_parameter_dto.html">AbstractParameterDto</a> param, bool unused=true)</td></tr>
 <tr class="memdesc:abf533fb170054fe40a43cee6665e80c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an input for a given parameter. Return null if no input is available.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#abf533fb170054fe40a43cee6665e80c4">More...</a><br /></td></tr>
 <tr class="separator:abf533fb170054fe40a43cee6665e80c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a044cf102e76c7761ef6c28ccf8499dfd"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html">AbstractUMI3DInput</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a044cf102e76c7761ef6c28ccf8499dfd">FindInput</a> (<a class="el" href="../../db/ddb/classumi3d_1_1common_1_1interaction_1_1_form_dto.html">FormDto</a> form, bool unused=true)</td></tr>
+<tr class="memdesc:a044cf102e76c7761ef6c28ccf8499dfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an input for a given form. Return null if no input is available.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a044cf102e76c7761ef6c28ccf8499dfd">More...</a><br /></td></tr>
+<tr class="separator:a044cf102e76c7761ef6c28ccf8499dfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8040514f601a2fcc48dcac771751097"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html">AbstractUMI3DInput</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#af8040514f601a2fcc48dcac771751097">FindInput</a> (<a class="el" href="../../d5/de2/classumi3d_1_1common_1_1interaction_1_1_link_dto.html">LinkDto</a> link, bool unused=true)</td></tr>
+<tr class="memdesc:af8040514f601a2fcc48dcac771751097"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return an input for a given form. Return null if no input is available.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#af8040514f601a2fcc48dcac771751097">More...</a><br /></td></tr>
+<tr class="separator:af8040514f601a2fcc48dcac771751097"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbcc2f756f090a2b9265dd81bd5b5616"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#abbcc2f756f090a2b9265dd81bd5b5616">IsCompatibleWith</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>)</td></tr>
 <tr class="memdesc:abbcc2f756f090a2b9265dd81bd5b5616"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if a tool can be projected on this controller.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#abbcc2f756f090a2b9265dd81bd5b5616">More...</a><br /></td></tr>
 <tr class="separator:abbcc2f756f090a2b9265dd81bd5b5616"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,9 +144,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a81a93727f617437af899025551a9cd0c"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a81a93727f617437af899025551a9cd0c">CreateInteractionsMenuFor</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>)</td></tr>
 <tr class="memdesc:a81a93727f617437af899025551a9cd0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a menu to access each interactions of a tool separately.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a81a93727f617437af899025551a9cd0c">More...</a><br /></td></tr>
 <tr class="separator:a81a93727f617437af899025551a9cd0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb0d9fc0621a5250f385c67e3a2fe6b8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#acb0d9fc0621a5250f385c67e3a2fe6b8">Project</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason)</td></tr>
-<tr class="memdesc:acb0d9fc0621a5250f385c67e3a2fe6b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project a tool on this controller.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#acb0d9fc0621a5250f385c67e3a2fe6b8">More...</a><br /></td></tr>
-<tr class="separator:acb0d9fc0621a5250f385c67e3a2fe6b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9e5daad6d11650e10217d3799cba71f0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a9e5daad6d11650e10217d3799cba71f0">Project</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>, bool releasable, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason, string hoveredObjectId)</td></tr>
+<tr class="memdesc:a9e5daad6d11650e10217d3799cba71f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project a tool on this controller.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a9e5daad6d11650e10217d3799cba71f0">More...</a><br /></td></tr>
+<tr class="separator:a9e5daad6d11650e10217d3799cba71f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee5c924fc5c7f5299d222d27c3aca7a5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#aee5c924fc5c7f5299d222d27c3aca7a5">Update</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>, bool releasable, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason)</td></tr>
+<tr class="memdesc:aee5c924fc5c7f5299d222d27c3aca7a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Project a tool on this controller.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#aee5c924fc5c7f5299d222d27c3aca7a5">More...</a><br /></td></tr>
+<tr class="separator:aee5c924fc5c7f5299d222d27c3aca7a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe437d9212a71bae03d84475ea457f5e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#afe437d9212a71bae03d84475ea457f5e">Release</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason)</td></tr>
 <tr class="memdesc:afe437d9212a71bae03d84475ea457f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a projected tool from this controller.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#afe437d9212a71bae03d84475ea457f5e">More...</a><br /></td></tr>
 <tr class="separator:afe437d9212a71bae03d84475ea457f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -158,6 +167,8 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ac049ce764e98af5fd038bddd718fc961"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#ac049ce764e98af5fd038bddd718fc961">isNavigating</a> ()</td></tr>
 <tr class="memdesc:ac049ce764e98af5fd038bddd718fc961"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the user is currently manipulating the tools menu  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#ac049ce764e98af5fd038bddd718fc961">More...</a><br /></td></tr>
 <tr class="separator:ac049ce764e98af5fd038bddd718fc961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a87ab7ccd21a25296faec315d3f89f05d"><td class="memItemLeft" align="right" valign="top">abstract string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a87ab7ccd21a25296faec315d3f89f05d">GetCurrentHoveredId</a> ()</td></tr>
+<tr class="separator:a87ab7ccd21a25296faec315d3f89f05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -282,7 +293,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <a id="abf533fb170054fe40a43cee6665e80c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf533fb170054fe40a43cee6665e80c4">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abf533fb170054fe40a43cee6665e80c4">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[1/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -328,7 +339,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <a id="a82b42faeb0ea064e0fb511ff394acb14"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a82b42faeb0ea064e0fb511ff394acb14">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a82b42faeb0ea064e0fb511ff394acb14">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[2/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -372,8 +383,100 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a id="a044cf102e76c7761ef6c28ccf8499dfd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a044cf102e76c7761ef6c28ccf8499dfd">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[3/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html">AbstractUMI3DInput</a> umi3d.cdk.interaction.AbstractController.FindInput </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../db/ddb/classumi3d_1_1common_1_1interaction_1_1_form_dto.html">FormDto</a>&#160;</td>
+          <td class="paramname"><em>form</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>unused</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return an input for a given form. Return null if no input is available. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">form</td><td>Form to find an input for</td></tr>
+    <tr><td class="paramname">unused</td><td>Should the input be unused ?</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="af8040514f601a2fcc48dcac771751097"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8040514f601a2fcc48dcac771751097">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[4/5]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html">AbstractUMI3DInput</a> umi3d.cdk.interaction.AbstractController.FindInput </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d5/de2/classumi3d_1_1common_1_1interaction_1_1_link_dto.html">LinkDto</a>&#160;</td>
+          <td class="paramname"><em>link</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>unused</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return an input for a given form. Return null if no input is available. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">link</td><td>Form to find an input for</td></tr>
+    <tr><td class="paramname">unused</td><td>Should the input be unused ?</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
 <a id="a1e6ea9becd64258d70b23bac58fe2732"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e6ea9becd64258d70b23bac58fe2732">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e6ea9becd64258d70b23bac58fe2732">&#9670;&nbsp;</a></span>FindInput() <span class="overload">[5/5]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -421,6 +524,31 @@ Properties</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a87ab7ccd21a25296faec315d3f89f05d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a87ab7ccd21a25296faec315d3f89f05d">&#9670;&nbsp;</a></span>GetCurrentHoveredId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract string umi3d.cdk.interaction.AbstractController.GetCurrentHoveredId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>
@@ -551,8 +679,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="acb0d9fc0621a5250f385c67e3a2fe6b8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acb0d9fc0621a5250f385c67e3a2fe6b8">&#9670;&nbsp;</a></span>Project()</h2>
+<a id="a9e5daad6d11650e10217d3799cba71f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e5daad6d11650e10217d3799cba71f0">&#9670;&nbsp;</a></span>Project()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -569,8 +697,20 @@ Properties</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype"><a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a>&#160;</td>
-          <td class="paramname"><em>reason</em>&#160;</td>
+          <td class="paramname"><em>reason</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>hoveredObjectId</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -673,6 +813,57 @@ Properties</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="aee5c924fc5c7f5299d222d27c3aca7a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee5c924fc5c7f5299d222d27c3aca7a5">&#9670;&nbsp;</a></span>Update()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void umi3d.cdk.interaction.AbstractController.Update </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a>&#160;</td>
+          <td class="paramname"><em>tool</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a>&#160;</td>
+          <td class="paramname"><em>reason</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Project a tool on this controller. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tool</td><td>The ToolDto to be projected.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Release(AbstractTool) </p>
 
 </div>
 </div>

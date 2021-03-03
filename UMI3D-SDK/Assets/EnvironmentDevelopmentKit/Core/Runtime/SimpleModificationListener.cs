@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -96,8 +96,8 @@ namespace umi3d.edk
             setOperation(obj.objectPosition.SetValue(obj.transform.localPosition));
             setOperation(obj.objectRotation.SetValue(obj.transform.localRotation));
             setOperation(obj.objectScale.SetValue(obj.transform.localScale));
-            setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
-            setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
+            //setOperation(obj.objectXBillboard.SetValue(obj.xBillboard));
+            //setOperation(obj.objectYBillboard.SetValue(obj.yBillboard));
 
             UIUpdate(obj as UIRect);
 
@@ -136,37 +136,39 @@ namespace umi3d.edk
                         break;
                     case ExternalResourceMaterial extmat:
                         break;
+                    case OriginalMaterial extmat:
+                        break;
                     default:
                         Debug.LogWarning("unsupported material type");
                         break;
                 }
-      
+
             }
         }
 
         private void ModelUpdate(UMI3DNode obj)
         {
-            //setOperation(obj.hasCollider)
-            // setOperation(obj.objectColliderBoxSize.SetValue(o)
-            setOperation(obj.objectColliderRadius.SetValue(obj.colliderRadius));
-            setOperation(obj.objectColliderCenter.SetValue(obj.colliderCenter));
-            setOperation(obj.objectColliderBoxSize.SetValue(obj.colliderBoxSize));
-            setOperation(obj.objectColliderDirection.SetValue(obj.colliderDirection));
-            setOperation(obj.objectColliderHeight.SetValue(obj.colliderHeight));
-            setOperation(obj.objectColliderType.SetValue(obj.colliderType));
-            setOperation(obj.objectCustomMeshCollider.SetValue(obj.customMeshCollider));
-            setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
-            setOperation(obj.objectIsConvexe.SetValue(obj.convex));
-            setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
-            if(obj as AbstractRenderedNode)
-            {
-                setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
-                setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
-            }
-            if(obj as UMI3DSubModel)
-            {
-                setOperation(((UMI3DSubModel)obj).objectIgnoreModelMaterialOverride.SetValue(((UMI3DSubModel)obj).ignoreModelMaterialOverride));
-            }
+            ////setOperation(obj.hasCollider)
+            //// setOperation(obj.objectColliderBoxSize.SetValue(o)
+            //setOperation(obj.objectColliderRadius.SetValue(obj.colliderRadius));
+            //setOperation(obj.objectColliderCenter.SetValue(obj.colliderCenter));
+            //setOperation(obj.objectColliderBoxSize.SetValue(obj.colliderBoxSize));
+            //setOperation(obj.objectColliderDirection.SetValue(obj.colliderDirection));
+            //setOperation(obj.objectColliderHeight.SetValue(obj.colliderHeight));
+            //setOperation(obj.objectColliderType.SetValue(obj.colliderType));
+            //setOperation(obj.objectCustomMeshCollider.SetValue(obj.customMeshCollider));
+            //setOperation(obj.objectHasCollider.SetValue(obj.hasCollider));
+            //setOperation(obj.objectIsConvexe.SetValue(obj.convex));
+            //setOperation(obj.objectIsMeshCustom.SetValue(obj.isMeshCustom));
+            //if (obj as AbstractRenderedNode)
+            //{
+            //    //setOperation(((AbstractRenderedNode)obj).objectMaterialsOverrided.SetValue(((AbstractRenderedNode)obj).overrideModelMaterials));
+            //    //setOperation(((AbstractRenderedNode)obj).objectMaterialOverriders.SetValue(((AbstractRenderedNode)obj).materialsOverrider));
+            //}
+            //if (obj as UMI3DSubModel)
+            //{
+            //    setOperation(((UMI3DSubModel)obj).objectIgnoreModelMaterialOverride.SetValue(((UMI3DSubModel)obj).ignoreModelMaterialOverride));
+            //}
         }
 
         private void UIUpdate(UIRect obj)

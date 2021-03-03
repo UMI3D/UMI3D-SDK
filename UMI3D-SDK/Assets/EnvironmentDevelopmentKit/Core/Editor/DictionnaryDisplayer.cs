@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
-using System;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
 
-    public class DictionnaryDisplayer<T,L>
+    public class DictionnaryDisplayer<T, L>
     {
         const char upArrow = '\u25B2';
         const char downArrow = '\u25bc';
@@ -33,9 +32,9 @@ namespace umi3d.edk.editor
         const int buttonWidth = 25;
         bool displayArrows = false;
 
-        Func<SerializedProperty, SerializedProperty, KeyValuePair<T,L>> NewValue;
+        Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> NewValue;
 
-        public DictionnaryDisplayer(Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> newValue,bool displayArrow = false)
+        public DictionnaryDisplayer(Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> newValue, bool displayArrow = false)
         {
             NewValue = newValue;
             this.displayArrows = displayArrow;
@@ -43,7 +42,7 @@ namespace umi3d.edk.editor
 
         public DictionnaryDisplayer(Func<T> newKey, bool displayArrow = false)
         {
-            NewValue = (SerializedProperty k,SerializedProperty v)=> { return new KeyValuePair<T, L>( newKey.Invoke(), default ); };
+            NewValue = (SerializedProperty k, SerializedProperty v) => { return new KeyValuePair<T, L>(newKey.Invoke(), default); };
             this.displayArrows = displayArrow;
         }
 
@@ -54,7 +53,7 @@ namespace umi3d.edk.editor
         /// <param name="KeyList"></param>
         /// <param name="ValueList"></param>
         /// <param name="Dictionnary"></param>
-        public void Display(ref bool showDict, SerializedProperty KeyList, SerializedProperty ValueList, Dictionary<T,L> Dictionnary)
+        public void Display(ref bool showDict, SerializedProperty KeyList, SerializedProperty ValueList, Dictionary<T, L> Dictionnary)
         {
             showDict = EditorGUILayout.Foldout(showDict, KeyList.displayName, true);
             if (showDict)
@@ -85,11 +84,11 @@ namespace umi3d.edk.editor
                     if (KeyList.arraySize == 0)
                     {
                         var k = NewValue(null, null);
-                        Dictionnary.Add(k.Key,k.Value);
+                        Dictionnary.Add(k.Key, k.Value);
                     }
                     else
                     {
-                        var k = NewValue(KeyList.GetArrayElementAtIndex(KeyList.arraySize - 1),ValueList.GetArrayElementAtIndex(ValueList.arraySize - 1));
+                        var k = NewValue(KeyList.GetArrayElementAtIndex(KeyList.arraySize - 1), ValueList.GetArrayElementAtIndex(ValueList.arraySize - 1));
                         Dictionnary.Add(k.Key, k.Value);
                     }
                 }

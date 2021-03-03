@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.0</span>
+   &#160;<span id="projectnumber">2.1.r.210112</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -109,6 +109,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abfc384bfa096bb205f5ff1013bf5eec3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#abfc384bfa096bb205f5ff1013bf5eec3">Vector4Equality</a> (Vector4 a, Vector4 b)</td></tr>
 <tr class="memdesc:abfc384bfa096bb205f5ff1013bf5eec3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector Equality test component by component using epsilon.  <a href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#abfc384bfa096bb205f5ff1013bf5eec3">More...</a><br /></td></tr>
 <tr class="separator:abfc384bfa096bb205f5ff1013bf5eec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfca19b02bceab8eefe1ca4e77a2714a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#acfca19b02bceab8eefe1ca4e77a2714a">ColorEquality</a> (Color a, Color b)</td></tr>
+<tr class="memdesc:acfca19b02bceab8eefe1ca4e77a2714a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Color Equality test component by component using epsilon.  <a href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#acfca19b02bceab8eefe1ca4e77a2714a">More...</a><br /></td></tr>
+<tr class="separator:acfca19b02bceab8eefe1ca4e77a2714a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5330c5ba44242270713bed83fb1fcb67"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#a5330c5ba44242270713bed83fb1fcb67">QuaternionEquality</a> (Quaternion a, Quaternion b)</td></tr>
 <tr class="memdesc:a5330c5ba44242270713bed83fb1fcb67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quaternion Equality test by angle using epsilon.  <a href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#a5330c5ba44242270713bed83fb1fcb67">More...</a><br /></td></tr>
 <tr class="separator:a5330c5ba44242270713bed83fb1fcb67"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,6 +128,45 @@ Public Attributes</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Collection of Equality fonction for float and struct containing float using an epsilon range. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="acfca19b02bceab8eefe1ca4e77a2714a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfca19b02bceab8eefe1ca4e77a2714a">&#9670;&nbsp;</a></span>ColorEquality()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool umi3d.edk.UMI3DAsyncPropertyEquality.ColorEquality </td>
+          <td>(</td>
+          <td class="paramtype">Color&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Color&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Color Equality test component by component using epsilon. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td></td></tr>
+    <tr><td class="paramname">b</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if all components are close enough.</dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="../../de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html#a1386b788f7fe522303ea52e7fee7d991" title="Epsilon used for Equality test. A == B is true if A in ]B - epsilon; B + epsilon[.">epsilon</a></dd></dl>
+
+</div>
+</div>
 <a id="a1641e106644acc17e23cd914181953c9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1641e106644acc17e23cd914181953c9">&#9670;&nbsp;</a></span>FloatEquality()</h2>
 

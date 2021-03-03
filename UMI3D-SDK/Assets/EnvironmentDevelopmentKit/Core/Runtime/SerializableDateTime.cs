@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Globalization;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -36,6 +37,9 @@ namespace umi3d.edk
 
         [HideInInspector] [SerializeField] private bool setNow;
 
+        [HideInInspector] [SerializeField] private string culture = "en-US";
+        [HideInInspector] [SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
+
         public void OnAfterDeserialize()
         {
             if (setNow)
@@ -46,6 +50,7 @@ namespace umi3d.edk
             {
                 _dateTime = $"{day}/{month}/{year} {hours}:{minutes}:{seconds}";
                 DateTime tmp;
+                CultureInfo info = new CultureInfo(culture);
                 if (DateTime.TryParse(_dateTime, out tmp)) dateTime = tmp;
             }
         }
@@ -62,11 +67,13 @@ namespace umi3d.edk
             _dateTime = dateTime.ToString();
         }
 
+        ///<inheritdoc/>
         public override string ToString()
         {
-            return dateTime.ToString();
+            return dateTime.ToString(format);
         }
-
+        public string Format() { return format; }
+        public string Culture() { return culture; }
         public static implicit operator DateTime(SerializableDateTime date)
         {
             return (date.dateTime);

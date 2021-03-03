@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,27 +24,43 @@ namespace umi3d.edk.collaboration
 {
     public abstract class IdentifierApi : ScriptableObject
     {
-        public abstract WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login);
 
         Dictionary<string, bool> librariesUpdateStatus;
 
+        public virtual UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type) { return null; }
+
+        /// <summary>
+        /// Update a client status acording to a userconnectionDto
+        /// </summary>
+        /// <param name="user">User.</param>
+        /// <param name="identity">Identity Dto send by the user.</param>
+        /// <returns></returns>
         public virtual StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
-            librariesUpdateStatus[user.login] = identity.librariesUpdated;
-            return librariesUpdateStatus[user.login] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
+            librariesUpdateStatus[user.Id()] = identity.librariesUpdated;
+            return librariesUpdateStatus[user.Id()] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
         }
 
-        public virtual FormDto GetParameterDtosFor(string login)
+        /// <summary>
+        /// Get a Form Dto for a login.
+        /// </summary>
+        /// <param name="login">Login of the user.</param>
+        /// <returns></returns>
+        public virtual FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
             return null;
         }
 
-        public virtual bool getLibrariesUpdateSatus(string login)
+        /// <summary>
+        /// Should a user update has updataed its libraries.
+        /// </summary>
+        /// <param name="login">Login of the user.</param>
+        /// <returns></returns>
+        public virtual bool getLibrariesUpdateSatus(UMI3DCollaborationUser user)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
-            return librariesUpdateStatus.ContainsKey(login) ? librariesUpdateStatus[login] : false;
+            return librariesUpdateStatus.ContainsKey(user.Id()) ? librariesUpdateStatus[user.Id()] : false;
         }
-
     }
 }

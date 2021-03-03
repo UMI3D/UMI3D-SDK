@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ namespace umi3d.edk.collaboration
     public class HttpRoutingUtil
     {
         public Type attributeType { get; private set; }
-        
+
         public List<WebServiceMethod> roots = new List<WebServiceMethod>();
 
-        public HttpRoutingUtil(object Object, Type attributeType) : this( new List<object>(){ Object }, attributeType ){ }
+        public HttpRoutingUtil(object Object, Type attributeType) : this(new List<object>() { Object }, attributeType) { }
 
         public HttpRoutingUtil(List<object> objects, Type attributeType)
         {
@@ -61,7 +61,7 @@ namespace umi3d.edk.collaboration
                 }
             }
         }
-        
+
         public bool TryProccessRequest(object sender, HttpRequestEventArgs e, IdentityDto identity = null)
         {
             var path = e.Request.RawUrl;
@@ -73,7 +73,7 @@ namespace umi3d.edk.collaboration
                     return true;
                 }
             }
-            UnityEngine.Debug.Log("no post root "+path);
+            UnityEngine.Debug.Log("no post root " + path);
             return false;
         }
 
@@ -81,6 +81,6 @@ namespace umi3d.edk.collaboration
         {
             roots.Clear();
         }
-        
+
     }
 }

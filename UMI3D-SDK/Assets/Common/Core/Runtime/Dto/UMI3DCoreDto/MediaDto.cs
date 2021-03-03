@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -52,22 +52,7 @@ namespace umi3d.common
         public string versionStatus;
         public string versionDate;
 
-        /// <summary>
-        /// Url of the media
-        /// </summary>
-        public string websocketUrl;
-
-        /// <summary>
-        /// public Url of the media
-        /// </summary>
-        public string httpUrl;
-
-        /// <summary>
-        /// Authentification type of the media
-        /// </summary>
-        public AuthenticationType Authentication;
-
-        public UMI3DDto connection;
+        public ForgeConnectionDto connection;
 
         public MediaDto() : base() { }
 

@@ -1,10 +1,7 @@
 ﻿#if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
-using umi3d.edk;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -15,7 +12,9 @@ namespace umi3d.edk.editor
         const int space = 5;
         const int nowButtonSize = 40;
         const int twoDigitField = 20;
+        const int fourDigitField = 40;
 
+        ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Using BeginProperty / EndProperty on the parent property means that
@@ -30,7 +29,7 @@ namespace umi3d.edk.editor
             EditorGUI.indentLevel = 0;
 
             // Calculate rects
-            Rect year = new Rect(position.x, position.y, twoDigitField, position.height);
+            Rect year = new Rect(position.x, position.y, fourDigitField, position.height);
             Rect labelRect = new Rect(position.x, position.y, twoDigitField, position.height);
             Rect month = new Rect(year.size.x + space + year.position.x, position.y, twoDigitField, position.height);
             Rect day = new Rect(month.size.x + space + month.position.x, position.y, twoDigitField, position.height);

@@ -41,15 +41,16 @@ namespace GLTFast
         /// <param name="downloadProvider">Download Provider for custom loading (e.g. caching or HTTP authorization)</param>
         /// <param name="deferAgent">Defer Agent takes care of interrupting the
         /// loading procedure in order to keep the frame rate responsive.</param>
-        public virtual void Load( string url, IDownloadProvider downloadProvider=null, IDeferAgent deferAgent=null ) {
+        /// <param name="materialGenerator">materialGenerator class used to initialise the new material.</param>
+        public virtual void Load( string url, IDownloadProvider downloadProvider=null, IDeferAgent deferAgent=null, IMaterialGenerator materialGenerator = null ) {
 
             float startTime = Time.time;
 
-            gLTFastInstance = new GLTFast(this,downloadProvider,deferAgent);
+            gLTFastInstance = new GLTFast(this,downloadProvider,deferAgent, materialGenerator);
             gLTFastInstance.onLoadComplete += OnLoadComplete;
             gLTFastInstance.onLoadComplete += (b) =>
             {
-                Debug.Log("Loading time = " + (Time.time - startTime).ToString() + "seconds");
+                //Debug.Log("Loading time = " + (Time.time - startTime).ToString() + "seconds");
             };
             gLTFastInstance.Load(url);
         }

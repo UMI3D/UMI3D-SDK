@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -160,7 +160,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="tool"> The ToolDto to be projected.</param>
         /// <see cref="Release(AbstractTool)"/>
-        public virtual void Project(AbstractTool tool, InteractionMappingReason reason, string hoveredObjectId)
+        public virtual void Project(AbstractTool tool, bool releasable, InteractionMappingReason reason, string hoveredObjectId)
         {
             if (!IsCompatibleWith(tool))
                 throw new System.Exception("Trying to project an uncompatible tool !");
@@ -180,6 +180,24 @@ namespace umi3d.cdk.interaction
             currentTool = tool;
         }
 
+
+        /// <summary>
+        /// Project a tool on this controller.
+        /// </summary>
+        /// <param name="tool"> The ToolDto to be projected.</param>
+        /// <see cref="Release(AbstractTool)"/>
+        public virtual void Update(AbstractTool tool, bool releasable, InteractionMappingReason reason)
+        {
+            if (currentTool != tool)
+                throw new System.Exception("Try to update wrong tool");
+
+            Release(tool, new ToolNeedToBeUpdated());
+            Project(tool, releasable, reason, GetCurrentHoveredId());
+        }
+
+        protected abstract string GetCurrentHoveredId();
+
+
         /// <summary>
         /// Release a projected tool from this controller.
         /// </summary>
@@ -188,7 +206,7 @@ namespace umi3d.cdk.interaction
         public virtual void Release(AbstractTool tool, InteractionMappingReason reason)
         {
             if (currentTool == null)
-                throw new System.Exception("no tool is not currently projected on this controller");
+                throw new System.Exception("no tool is currently projected on this controller");
             if (currentTool.id != tool.id)
                 throw new System.Exception("This tool is not currently projected on this controller");
 

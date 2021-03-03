@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -33,21 +33,20 @@ namespace umi3d.cdk.interaction
 
         public static ToolMenuItem IdToMenu(string id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Tool)?.Menu; }
 
-
         public ToolMenuItem Menu;
 
-
-
+        public Toolbox toolbox;
         /// <summary>
-        /// Interactable dto describing this object.
+        /// ToolFix t dto describing this object.
         /// </summary>
         public ToolDto dto;
 
+        ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolDto; }
 
         public Tool(ToolDto dto, Toolbox toolbox) : base(dto)
         {
-
+            this.toolbox = toolbox;
             Menu = new ToolMenuItem()
             {
                 tool = this,
@@ -59,8 +58,8 @@ namespace umi3d.cdk.interaction
                 Menu.Add(item);
             }
 
-            toolbox.tools.Add(this);
-            toolbox.sub.Add(Menu);
+            toolbox?.tools.Add(this);
+            toolbox?.sub.Add(Menu);
         }
 
 
@@ -74,23 +73,50 @@ namespace umi3d.cdk.interaction
                     break;
                 case EventDto eventDto:
                     var e = new EventMenuItem();
-                    e.Subscribe(() => Debug.Log("hellooo"));
+                    e.interaction = eventDto;
+                    e.toggle = eventDto.hold;
+                    e.Subscribe((x) =>
+                    {
+                        if (eventDto.hold)
+                        {
+                            var stateChangeDto = new EventStateChangedDto
+                            {
+                                active = x,
+                                boneType = "none",
+                                id = eventDto.id,
+                                toolId = dto.id,
+                                hoveredObjectId = null
+                            };
+                            UMI3DClientServer.SendData(stateChangeDto, true);
+                        }
+                        else
+                        {
+                            var triggeredDto = new EventTriggeredDto
+                            {
+                                boneType = "none",
+                                id = eventDto.id,
+                                toolId = dto.id,
+                                hoveredObjectId = null
+                            };
+                            UMI3DClientServer.SendData(triggeredDto, true);
+                        }
+                    });
                     result = e;
                     break;
                 case BooleanParameterDto booleanParameterDto:
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
                     b.Subscribe((x) =>
+                    {
+                        booleanParameterDto.value = x;
+                        var pararmeterDto = new ParameterSettingRequestDto()
                         {
-                            booleanParameterDto.value = x;
-                            var pararmeterDto = new ParameterSettingRequestDto()
-                            {
-                                toolId = dto.id,
-                                id = booleanParameterDto.id,
-                                parameter = booleanParameterDto,
-                                hoveredObjectId = null
-                            };
-                            UMI3DClientServer.Send(pararmeterDto, true);
-                        }
+                            toolId = dto.id,
+                            id = booleanParameterDto.id,
+                            parameter = booleanParameterDto,
+                            hoveredObjectId = null
+                        };
+                        UMI3DClientServer.SendData(pararmeterDto, true);
+                    }
                     );
                     result = b;
                     break;
@@ -106,7 +132,7 @@ namespace umi3d.cdk.interaction
                             parameter = floatRangeParameterDto,
                             hoveredObjectId = null
                         };
-                        UMI3DClientServer.Send(pararmeterDto, true);
+                        UMI3DClientServer.SendData(pararmeterDto, true);
                     }
                     );
                     result = f;
@@ -123,7 +149,7 @@ namespace umi3d.cdk.interaction
                             parameter = enumParameterDto,
                             hoveredObjectId = null
                         };
-                        UMI3DClientServer.Send(pararmeterDto, true);
+                        UMI3DClientServer.SendData(pararmeterDto, true);
                     }
                     );
                     result = en;
@@ -140,14 +166,31 @@ namespace umi3d.cdk.interaction
                             parameter = stringParameterDto,
                             hoveredObjectId = null
                         };
-                        UMI3DClientServer.Send(pararmeterDto, true);
+                        UMI3DClientServer.SendData(pararmeterDto, true);
                     }
                     );
                     result = s;
                     break;
+                case FormDto formDto:
+                    var form = new FormMenuItem() { dto = formDto };
+                    form.Subscribe((x) =>
+                    {
+                        var FormAnswer = new FormAnswer()
+                        {
+                            toolId = dto.id,
+                            id = formDto.id,
+                            form = x,
+                            hoveredObjectId = null
+                        };
+                        UMI3DClientServer.SendData(FormAnswer, true);
+                    }
+                    );
+                    result = form;
+                    break;
                 default:
+                    Debug.LogWarning($"Unknown Menu Item for {dto}");
                     result = new MenuItem();
-                    result.Subscribe(() => Debug.Log("hellooo 2"));
+                    result.Subscribe(() => Debug.Log("Unknown case."));
                     break;
             }
             result.Name = dto.name;

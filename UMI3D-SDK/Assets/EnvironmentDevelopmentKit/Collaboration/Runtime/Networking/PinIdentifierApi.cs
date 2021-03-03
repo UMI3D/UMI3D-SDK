@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
+using umi3d.common;
+using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -22,14 +23,14 @@ namespace umi3d.edk.collaboration
     [CreateAssetMenu(fileName = "PinIdentifierApi", menuName = "UMI3D/Pin Identifier")]
     public class PinIdentifierApi : IdentifierApi
     {
-        Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
-        public string Pin = "defaultPin";
+        public string pin = "0000";
 
-        public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
+        ///<inheritdoc/>
+        public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
         {
-            if (!PasswordMap.ContainsKey(login))
-                PasswordMap[login] = new WebSocketSharp.Net.NetworkCredential(login, Pin);
-            return PasswordMap[login];
+            if (type != AuthenticationType.Pin) Debug.LogWarning($"PinIdentifierApi does not handle other AuthenticationType than PIN [ignored type : {type}]");
+            type = AuthenticationType.Pin;
+            return new UMI3DAuthenticator(pin);
         }
     }
 }

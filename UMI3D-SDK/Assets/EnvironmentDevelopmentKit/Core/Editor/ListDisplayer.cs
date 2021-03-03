@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,11 +16,10 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using UnityEngine;
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEditor;
-using System;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -41,7 +40,7 @@ namespace umi3d.edk.editor
 
         public ListDisplayer()
         {
-            NewValue = (SerializedProperty s)=>default;
+            NewValue = (SerializedProperty s) => default;
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace umi3d.edk.editor
         /// <param name="ThisList"></param>
         /// <param name="RealList"></param>
         /// <param name="converter"></param>
-        public void Display(ref bool showList,SerializedProperty ThisList,List<T> RealList,Func<UnityEngine.Object,List<T>> converter = null)
+        public void Display(ref bool showList, SerializedProperty ThisList, List<T> RealList, Func<UnityEngine.Object, List<T>> converter = null)
         {
             showList = EditorGUILayout.Foldout(showList, ThisList.displayName, true);
             if (converter != null)

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Linq.Expressions;
 using umi3d.common;
 using UnityEngine;
 
@@ -54,7 +53,7 @@ namespace umi3d.cdk
         {
             var anim = entity?.Object as UMI3DAbstractAnimation;
             if (anim == null) return false;
-            return anim.SetUMI3DProperty(entity,property);
+            return anim.SetUMI3DProperty(entity, property);
         }
 
     }

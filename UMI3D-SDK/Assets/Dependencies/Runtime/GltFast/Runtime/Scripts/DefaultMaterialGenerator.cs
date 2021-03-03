@@ -30,7 +30,7 @@ namespace GLTFast {
         Shader pbrSpecularGlossinessDoubleSideShader;
         Shader unlitShader;
 
-        public UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided=false) {
+        public virtual UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided=false) {
             if(pbrMetallicRoughnessShader==null) {
                 pbrMetallicRoughnessShader = Shader.Find("glTF/PbrMetallicRoughness");
             }
@@ -66,7 +66,7 @@ namespace GLTFast {
             return mat;
         }
 
-        public UnityEngine.Material GenerateMaterial(
+        public virtual UnityEngine.Material GenerateMaterial(
             Schema.Material gltfMaterial,
             ref Schema.Texture[] textures,
             ref Schema.Image[] schemaImages,
@@ -142,7 +142,7 @@ namespace GLTFast {
             if(TrySetTexture(gltfMaterial.emissiveTexture,material,StandardShaderHelper.emissionMapPropId,ref textures,ref schemaImages, ref imageVariants)) {
                 material.EnableKeyword(StandardShaderHelper.KW_EMISSION);
             }
-            
+     /*       
             if(gltfMaterial.alphaModeEnum == AlphaMode.MASK) {
                 material.SetFloat(StandardShaderHelper.cutoffPropId, gltfMaterial.alphaCutoff);
                 StandardShaderHelper.SetAlphaModeMask( material, gltfMaterial);
@@ -151,7 +151,7 @@ namespace GLTFast {
             } else {
                 StandardShaderHelper.SetOpaqueMode(material);
             }
-
+            */
             if(gltfMaterial.emissive != Color.black) {
                 material.SetColor("_EmissionColor", gltfMaterial.emissive.gamma);
                 material.EnableKeyword(StandardShaderHelper.KW_EMISSION);
@@ -160,7 +160,7 @@ namespace GLTFast {
             return material;
         }
 
-        static bool TrySetTexture(
+        protected bool TrySetTexture(
             Schema.TextureInfo textureInfo,
             UnityEngine.Material material,
             int propertyId,
@@ -203,7 +203,7 @@ namespace GLTFast {
             return false;
         }
 
-        static void TrySetTextureTransform(
+        protected virtual void TrySetTextureTransform(
             Schema.TextureInfo textureInfo,
             UnityEngine.Material material,
             int propertyId,
