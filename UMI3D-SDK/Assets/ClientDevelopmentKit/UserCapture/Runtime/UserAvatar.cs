@@ -191,6 +191,7 @@ namespace umi3d.cdk.userCapture
         {
             if (userId == UMI3DClientServer.Instance.GetId())
             {
+                Debug.Log("OKAY");
                 if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
                 {
 
@@ -261,6 +262,17 @@ namespace umi3d.cdk.userCapture
 
                     if (dto.rigName == "")
                         node.updatePose = false;
+                }
+                else
+                {
+                    if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out SavedTransform savedTransform))
+                    {
+                        int index = bounds.FindIndex(b => b.obj == savedTransform.obj);
+                        var bound = bounds[index];
+                        bound.offsetPosition = dto.position;
+                        bound.offsetRotation = dto.rotation;
+                        bounds[index] = bound;
+                    }
                 }
             }
         }
