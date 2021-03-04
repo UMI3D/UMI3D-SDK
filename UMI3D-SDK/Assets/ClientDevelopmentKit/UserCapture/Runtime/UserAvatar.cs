@@ -267,7 +267,7 @@ namespace umi3d.cdk.userCapture
                     if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out SavedTransform savedTransform))
                     {
                         int index = bounds.FindIndex(b => b.obj == savedTransform.obj);
-                        var bound = bounds[index];
+                        Bound bound = bounds[index];
                         bound.offsetPosition = dto.position;
                         bound.offsetRotation = dto.rotation;
                         bounds[index] = bound;
