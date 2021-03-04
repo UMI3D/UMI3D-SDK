@@ -262,6 +262,17 @@ namespace umi3d.cdk.userCapture
                     if (dto.rigName == "")
                         node.updatePose = false;
                 }
+                else
+                {
+                    if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out SavedTransform savedTransform))
+                    {
+                        int index = bounds.FindIndex(b => b.obj == savedTransform.obj);
+                        Bound bound = bounds[index];
+                        bound.offsetPosition = dto.position;
+                        bound.offsetRotation = dto.rotation;
+                        bounds[index] = bound;
+                    }
+                }
             }
         }
 
