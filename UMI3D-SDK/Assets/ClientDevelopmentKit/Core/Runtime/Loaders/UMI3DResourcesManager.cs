@@ -193,6 +193,9 @@ namespace umi3d.cdk
                 NotLoaded, Loading, Loaded
             }
 
+            public static Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
+            Match a;// = rx.Match(url);
+
             /// <summary>
             /// Match if a url is valid for this object.
             /// Ignore difference between http and https and the port used.
@@ -203,8 +206,8 @@ namespace umi3d.cdk
             {
                 if (url == this.url) return true;
 
-                Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
-                Match a = rx.Match(this.url);
+                //Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
+                //Match a = rx.Match(this.url);
                 Match b = rx.Match(url);
                 if (a.Success && b.Success)
                     return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && entityIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == b.Groups[3].Captures[0].Value;
@@ -219,8 +222,8 @@ namespace umi3d.cdk
 
                 if (url == this.url) return true;
 
-                Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
-                Match a = rx.Match(this.url);
+                //Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
+                //Match a = rx.Match(this.url);
                 Match b = rx.Match(url);
                 if (a.Success && b.Success)
                     return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
@@ -249,6 +252,7 @@ namespace umi3d.cdk
                 state = Estate.Loaded;
                 downloadedPath = null;
                 this.url = url;
+                a = rx.Match(url);
             }
 
             public ObjectData(string url, object value, string entityId)
@@ -260,6 +264,7 @@ namespace umi3d.cdk
                 state = Estate.Loaded;
                 downloadedPath = null;
                 this.url = url;
+                a = rx.Match(url);
             }
 
             public ObjectData(string url, string extension, string authorization, HashSet<string> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
@@ -272,6 +277,7 @@ namespace umi3d.cdk
                 downloadedPath = null;
                 this.url = url;
                 this.extension = extension;
+                a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
             }
 
@@ -285,6 +291,7 @@ namespace umi3d.cdk
                 downloadedPath = null;
                 this.url = url;
                 this.extension = extension;
+                a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
             }
 
@@ -298,6 +305,7 @@ namespace umi3d.cdk
                 downloadedPath = null;
                 this.url = url;
                 this.extension = extension;
+                a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
             }
 
@@ -312,6 +320,7 @@ namespace umi3d.cdk
                 this.url = url;
                 this.extension = extension;
                 this.authorization = authorization;
+                a = rx.Match(url);
             }
 
         }
@@ -385,7 +394,7 @@ namespace umi3d.cdk
                         if (objectData != null)
                             objectData.downloadedPath = file.path;
                         else
-                            CacheCollection.Add(new ObjectData(file.url, null, null, data.key, file.path));
+                            CacheCollection.Insert(0, new ObjectData(file.url, null, null, data.key, file.path));
                     }
                     libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<string>>(data, new HashSet<string>()));
                 }
@@ -537,7 +546,7 @@ namespace umi3d.cdk
             if (objectData == null)
             {
                 objectData = new ObjectData(file.url, file.extension, file.authorization, id);
-                CacheCollection.Add(objectData);
+                CacheCollection.Insert(0, objectData);
             }
             _LoadFile(id, objectData, urlToObject, objectFromCache, callback, failCallback, deleteAction, file.pathIfInBundle);
         }
@@ -787,7 +796,7 @@ namespace umi3d.cdk
                 }
                 else objectData.downloadedPath = filePath;
             }
-            else CacheCollection.Add(new ObjectData(url, null, null, key, filePath));
+            else CacheCollection.Insert(0, new ObjectData(url, null, null, key, filePath));
 
             UMI3DClientServer.GetFile(url, action, error2);
             yield return new WaitUntil(() => { return finished; });
