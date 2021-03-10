@@ -152,7 +152,8 @@ namespace umi3d.edk.userCapture
         /// <param name="node">the avatar node to load</param>
         public void LoadAvatarNode(UMI3DAbstractNode node)
         {
-            LoadEntity op = node.Register();
+            node.Register();
+            LoadEntity op = node.GetLoadEntity();
             UMI3DServer.Dispatch(new Transaction
             {
                 Operations = new List<Operation> { op },

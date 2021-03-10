@@ -62,15 +62,13 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Check if the AbstractTool has been registered to to the UMI3DScene and do it if not
         /// </summary>
-        /// <returns>Return a LoadEntity</returns>
-        public virtual LoadEntity Register()
+        public virtual void Register()
         {
             if (toolId == null && UMI3DEnvironment.Exists)
             {
                 toolId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolId);
             }
-            return null;
         }
 
 
