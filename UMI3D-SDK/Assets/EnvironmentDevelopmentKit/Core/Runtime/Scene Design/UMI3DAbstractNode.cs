@@ -140,15 +140,13 @@ namespace umi3d.edk
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
         /// </summary>
-        /// <returns>Return a LoadEntity</returns>
-        public virtual LoadEntity Register()
+        public virtual void Register()
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
                 objectId = UMI3DEnvironment.Register(this);
                 InitDefinition(objectId);
             }
-            return GetLoadEntity();
         }
 
         /// <summary>
