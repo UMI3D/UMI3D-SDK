@@ -406,6 +406,8 @@ namespace umi3d.edk.collaboration
         public override void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
             base.NotifyUserStatusChanged(user, status);
+            if(user is UMI3DCollaborationUser cUser)
+                Collaboration.SetLastUpdate(cUser);
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
