@@ -184,8 +184,12 @@ namespace umi3d.edk
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
-            foreach (var f in GetComponents<UMI3DUserFilter>())
-                AddConnectionFilter(f);
+            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+            {
+                if (this != null)
+                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                        AddConnectionFilter(f);
+            });
 
             objectId = id;
 

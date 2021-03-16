@@ -112,7 +112,6 @@ namespace umi3d.cdk
             }
             else
             {
-
                 callback.Invoke(o);
             }
         }

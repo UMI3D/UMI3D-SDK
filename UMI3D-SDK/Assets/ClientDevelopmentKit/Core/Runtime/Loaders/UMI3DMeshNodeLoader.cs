@@ -73,8 +73,14 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform, offset);
-                            finished.Invoke();
+                            if (o is GameObject g && dto is UMI3DMeshNodeDto meshDto)
+                            {
+                                CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset);
+                                finished.Invoke();
+                            }
+                            else
+                                failed?.Invoke($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto");
+                            
                         },
                         failed,
                         loader.DeleteObject
@@ -123,7 +129,7 @@ namespace umi3d.cdk
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
-                root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
+                root = SetSubObjectsReferences(go, dto,  rotationOffsetByLoader );
             }
             else
             {

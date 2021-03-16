@@ -38,6 +38,11 @@ namespace umi3d.edk.interaction
         public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
         UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
 
+        [SerializeField, EditorReadOnly]
+        public bool Active = true;
+
+        public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
+        UMI3DAsyncProperty<bool> _objectActive;
 
         /// <summary>
         /// The tool's unique id. 
@@ -89,11 +94,16 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
-            foreach (var f in GetComponents<UMI3DUserFilter>())
-                AddConnectionFilter(f);
+            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+            {
+                if (this != null)
+                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                        AddConnectionFilter(f);
+            });
 
             toolId = id;
             objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => i.ToDto(u));
+            objectActive = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.ToolActive,Active);
             inited = true;
         }
 
@@ -105,7 +115,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void OnDestroy()
         {
-            UMI3DEnvironment.Remove(this);
+            UMI3DEnvironment.Remove(toolId);
         }
 
         /// <summary>
@@ -221,6 +231,7 @@ namespace umi3d.edk.interaction
             dto.icon2D = Display.icon2D?.ToDto();
             dto.icon3D = Display.icon3D?.ToDto();
             dto.interactions = objectInteractions.GetValue(user).Where(i => i != null).Select(i => i.ToDto(user)).ToList();
+            dto.active = objectActive.GetValue(user);
         }
 
         /// <summary>

@@ -303,19 +303,10 @@ namespace umi3d.cdk.collaboration
             if (joinning || connected) return;
             joinning = true;
 
-            Dictionary<string, bool> trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<string, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(pair => pair.Key, pair => pair.Value);
-
-
-
             JoinDto joinDto = new JoinDto()
             {
                 trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<string, bool>(trackingBone.boneType, trackingBone.isTracked)).ToList(),
                 userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
-#if UNITY_WEBRTC
-                useWebrtc = true
-#else
-                useWebrtc = false
-#endif
             };
 
             Instance.HttpClient.SendPostJoin(

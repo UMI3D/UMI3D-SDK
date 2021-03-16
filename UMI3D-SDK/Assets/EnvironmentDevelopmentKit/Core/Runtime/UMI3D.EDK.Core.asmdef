@@ -1,7 +1,8 @@
 {
     "name": "UMI3D.EDK.Core",
     "references": [
-        "GUID:6e34c4b4c3202a14eb95e0a784041765"
+        "GUID:6e34c4b4c3202a14eb95e0a784041765",
+        "GUID:215efa65361782e41b5e3fac87a2c7e3"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
