@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
@@ -302,9 +303,14 @@ namespace umi3d.cdk.collaboration
             if (joinning || connected) return;
             joinning = true;
 
+            Dictionary<string, bool> trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<string, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+
+
             JoinDto joinDto = new JoinDto()
             {
-                bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList(),
+                trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<string, bool>(trackingBone.boneType, trackingBone.isTracked)).ToList(),
+                userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
 #if UNITY_WEBRTC
                 useWebrtc = true
 #else

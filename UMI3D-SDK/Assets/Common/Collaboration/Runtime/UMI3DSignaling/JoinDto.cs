@@ -21,7 +21,8 @@ namespace umi3d.common.collaboration
 {
     public class JoinDto : UMI3DDto
     {
-        public List<BoneDto> bonesList;
+        public List<KeyValuePair<string, bool>> trackedBonetypes; // passera pas dans le serializer
+        public SerializableVector3 userSize;
         public bool useWebrtc;
     }
 }

@@ -26,6 +26,7 @@ namespace umi3d.cdk.userCapture
     public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
     {
         public Transform anchor;
+        public Transform skeletonContainer;
         public Transform viewpoint;
         [ConstStringEnum(typeof(BoneType))]
         public string viewpointBonetype;
@@ -125,7 +126,7 @@ namespace umi3d.cdk.userCapture
                     bones = bonesList,
                     position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
-                    scale = anchor.localScale,
+                    scale = skeletonContainer.localScale,
                     userId = UMI3DClientServer.Instance.GetId(),
                 };
 
