@@ -14,14 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
+using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
-    public class JoinDto : UMI3DDto
+    public class AbstractInterpolationPropertyDto : AbstractOperationDto
     {
-        public Dictionary<string, bool> trackedBonetypes;
-        public SerializableVector3 userSize;
+        /// <summary>
+        /// The unique identifier of the entity
+        /// </summary>
+        public string entityId;
+
+        /// <summary>
+        /// The name of the interpolated property
+        /// </summary>
+        public string property;
+
+        /// <summary>
+        /// The name of the interpolated property
+        /// </summary>
+        public int frequency;
     }
 }

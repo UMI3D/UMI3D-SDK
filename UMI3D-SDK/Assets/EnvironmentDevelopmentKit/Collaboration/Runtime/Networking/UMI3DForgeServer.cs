@@ -317,10 +317,14 @@ namespace umi3d.edk.collaboration
         /// </summary>
         protected ulong minProximityRelay = 200;
 
+        protected uint maxFPSRelay = 5;
+
         /// <summary>
         /// 
         /// </summary>
         protected ulong maxProximityRelay = 1000;
+
+        protected uint minFPSRelay = 1;
 
         /// <summary>
         /// 
@@ -396,7 +400,8 @@ namespace umi3d.edk.collaboration
                 if (last > 0)
                 {
                     ulong diff = timestep - last;
-                    if (diff < GetCurrentDelay(from, to))
+                    var currentDelay = GetCurrentDelay(from, to);
+                    if (diff < currentDelay)
                         return false;
                 }
             }
@@ -420,8 +425,8 @@ namespace umi3d.edk.collaboration
                 coeff = (dist - startProximityAt) / (proximityCutout - startProximityAt);
             }
             else if (dist >= proximityCutout)
-                coeff = 0f;
-            return (ulong)Mathf.RoundToInt((1f - coeff) * minProximityRelay + coeff * maxProximityRelay);
+                coeff = 1f;
+            return (ulong)Mathf.RoundToInt(1000 / Mathf.Floor((1f - coeff) * maxFPSRelay + coeff * minFPSRelay));
         }
 
         //relayMemory[p1][p2][gi] = a ulong corresponding to the last time player p1 sent a message to p2 in the gi channel
