@@ -129,7 +129,7 @@ namespace umi3d.edk.userCapture
                 localRotation = dto.rotation,
                 localScale = dto.scale
             };
-            embodimentBone.isTracked = dto.tracked;
+            embodimentBone.isTracked = UMI3DEmbodimentManager.Instance.BoneTrackedInformation(userId, dto.boneType);
         }
 
         #endregion

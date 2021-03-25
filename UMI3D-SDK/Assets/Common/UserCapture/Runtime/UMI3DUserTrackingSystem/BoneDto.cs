@@ -29,7 +29,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         public string boneType;
 
-        public bool tracked;
+        //public bool tracked;
 
         public SerializableVector3 position;
 

@@ -63,6 +63,8 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string login;
 
+        public JoinDto joinDto;
+
         public UMI3DForgeServer forgeServer;
 
         public UMI3DAudioPlayer audioPlayer;
@@ -113,6 +115,5 @@ namespace umi3d.edk.collaboration
             status.status = this.status;
             return status;
         }
-
     }
 }

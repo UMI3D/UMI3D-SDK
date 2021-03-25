@@ -55,6 +55,11 @@ namespace umi3d.edk.userCapture
             UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
         }
 
+        public virtual bool BoneTrackedInformation(string userId, string bonetype)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Create an Embodiment for a User.
         /// </summary>
