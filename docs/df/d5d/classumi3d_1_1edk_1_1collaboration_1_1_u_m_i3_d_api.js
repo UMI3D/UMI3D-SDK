@@ -5,6 +5,7 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api =
     [ "GetEnvironment", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#ab86240c6718e5a1c2d494b14d77ddf8f", null ],
     [ "GetIdentity", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a8390a3f96c4de00bdf32d633e197ff5c", null ],
     [ "GetLibraries", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a4aa9371da6832514c378b5984e6dc3f4", null ],
+    [ "GetPlayerCount", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a7a73be509e9b772cb5df59202f92bb39", null ],
     [ "GetPrivateFile", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a756c2bd5f9f232d357553ddf265e926c", null ],
     [ "GetPublicFile", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#aabd488915227bc9a2387b748cae5fe65", null ],
     [ "GetScene", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a137a382eb961714da4731d65b9c85c00", null ],

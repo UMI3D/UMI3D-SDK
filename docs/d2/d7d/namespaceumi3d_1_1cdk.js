@@ -15,7 +15,6 @@ var namespaceumi3d_1_1cdk =
     [ "GltfastCustomMaterialGenerator", "d1/d66/classumi3d_1_1cdk_1_1_gltfast_custom_material_generator.html", "d1/d66/classumi3d_1_1cdk_1_1_gltfast_custom_material_generator" ],
     [ "GlTFMeshDtoLoader", "dd/d5c/classumi3d_1_1cdk_1_1_gl_t_f_mesh_dto_loader.html", "dd/d5c/classumi3d_1_1cdk_1_1_gl_t_f_mesh_dto_loader" ],
     [ "GlTFNodeLoader", "d8/d2f/classumi3d_1_1cdk_1_1_gl_t_f_node_loader.html", "d8/d2f/classumi3d_1_1cdk_1_1_gl_t_f_node_loader" ],
-    [ "IAudioReader", "d4/df0/interfaceumi3d_1_1cdk_1_1_i_audio_reader.html", "d4/df0/interfaceumi3d_1_1cdk_1_1_i_audio_reader" ],
     [ "ImageDtoLoader", "d2/daf/classumi3d_1_1cdk_1_1_image_dto_loader.html", "d2/daf/classumi3d_1_1cdk_1_1_image_dto_loader" ],
     [ "IResourcesLoader", "d5/d68/interfaceumi3d_1_1cdk_1_1_i_resources_loader.html", "d5/d68/interfaceumi3d_1_1cdk_1_1_i_resources_loader" ],
     [ "KHR_lights_punctualLoader", "d3/d81/classumi3d_1_1cdk_1_1_k_h_r__lights__punctual_loader.html", "d3/d81/classumi3d_1_1cdk_1_1_k_h_r__lights__punctual_loader" ],

@@ -6,8 +6,10 @@ var namespaceumi3d_1_1edk =
     [ "userCapture", "df/dc4/namespaceumi3d_1_1edk_1_1user_capture.html", "df/dc4/namespaceumi3d_1_1edk_1_1user_capture" ],
     [ "AbstractRenderedNode", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node" ],
     [ "AssetLibrary", "d3/d15/classumi3d_1_1edk_1_1_asset_library.html", "d3/d15/classumi3d_1_1edk_1_1_asset_library" ],
+    [ "ConnectionLoadFilter", "dc/d5e/classumi3d_1_1edk_1_1_connection_load_filter.html", "dc/d5e/classumi3d_1_1edk_1_1_connection_load_filter" ],
     [ "CustomTextures", "dd/df5/classumi3d_1_1edk_1_1_custom_textures.html", "dd/df5/classumi3d_1_1edk_1_1_custom_textures" ],
     [ "DeleteEntity", "dc/d27/classumi3d_1_1edk_1_1_delete_entity.html", "dc/d27/classumi3d_1_1edk_1_1_delete_entity" ],
+    [ "EntityGroup", "d8/d9a/classumi3d_1_1edk_1_1_entity_group.html", "d8/d9a/classumi3d_1_1edk_1_1_entity_group" ],
     [ "ExternalResourceMaterial", "dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html", "dc/d05/classumi3d_1_1edk_1_1_external_resource_material" ],
     [ "LoadEntity", "d0/d0a/classumi3d_1_1edk_1_1_load_entity.html", "d0/d0a/classumi3d_1_1edk_1_1_load_entity" ],
     [ "MaterialOverrider", "d7/d27/classumi3d_1_1edk_1_1_material_overrider.html", "d7/d27/classumi3d_1_1edk_1_1_material_overrider" ],
@@ -57,6 +59,6 @@ var namespaceumi3d_1_1edk =
     [ "UMI3DTextureResource", "da/d86/classumi3d_1_1edk_1_1_u_m_i3_d_texture_resource.html", "da/d86/classumi3d_1_1edk_1_1_u_m_i3_d_texture_resource" ],
     [ "UMI3DUser", "d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html", "d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user" ],
     [ "UMI3DUserEvent", "d7/dc0/classumi3d_1_1edk_1_1_u_m_i3_d_user_event.html", null ],
-    [ "UMI3DVideoPlayer", "da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player.html", "da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player" ],
-    [ "VisibilityFilter", "d5/d7d/classumi3d_1_1edk_1_1_visibility_filter.html", "d5/d7d/classumi3d_1_1edk_1_1_visibility_filter" ]
+    [ "UMI3DUserFilter", "d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter.html", "d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter" ],
+    [ "UMI3DVideoPlayer", "da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player.html", "da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player" ]
 ];
