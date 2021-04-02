@@ -1,5 +1,6 @@
 var classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node =
 [
+    [ "AddConnectionFilter", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a045865cd1a187028b09207ce03cac8a3", null ],
     [ "GetAllChildrenInThisScene", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a63f38decb6505a06e36627f71629ff44", null ],
     [ "GetAllLoadableEntityUnderThisNode", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#af1124e7aed548bfac650c3906ddbb40a", null ],
     [ "GetChildren", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#aedc2d33d7046d2fa477816d4e062a352", null ],
@@ -7,7 +8,9 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node =
     [ "GetLoadEntity", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a3ffa048895bd2f9a583b09f87768011b", null ],
     [ "Id", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#ae3ac459b453fc4de12e59d6abffc86b6", null ],
     [ "InitDefinition", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#ae40465c57523209a747d6ac14a2c2e98", null ],
-    [ "Register", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a00a84b4537dcdd1cfdde81d4fe79604e", null ],
+    [ "LoadOnConnection", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a0c681a11f6b032ec8b5562e4eb9810fe", null ],
+    [ "Register", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a81fa950ae7367fb20a76565fa4c65ea2", null ],
+    [ "RemoveConnectionFilter", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a7b645b76a1c4eadc2d442d945bc5285e", null ],
     [ "ToEntityDto", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a86c31036f06ca9e97d14e758e053354d", null ],
     [ "WriteProperties", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#ad4a14b191c21872111ef1507d5b8db41", null ],
     [ "active", "d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a8d95c5d0854354d2b6c152762c4da99c", null ],

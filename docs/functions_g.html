@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.1.r.210112</span>
+   &#160;<span id="projectnumber">2.2.r.210402</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -121,8 +121,10 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetAllLoadableEntityUnderThisNode()
 : <a class="el" href="d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#af1124e7aed548bfac650c3906ddbb40a">umi3d.edk.UMI3DAbstractNode</a>
 </li>
-<li>GetAuthentication()
-: <a class="el" href="db/d4d/classumi3d_1_1edk_1_1_u_m_i3_d_server.html#a0a21d84ab22012b119d5715eb5d6d63c">umi3d.edk.UMI3DServer</a>
+<li>GetAuthenticator()
+: <a class="el" href="dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#ab0ab0ae60c8beeb069aa6c9f02cf593f">umi3d.edk.collaboration.IdentifierApi</a>
+, <a class="el" href="dc/da5/classumi3d_1_1edk_1_1collaboration_1_1_pin_identifier_api.html#a99c1ddf893d7d99381b3364519b75fec">umi3d.edk.collaboration.PinIdentifierApi</a>
+, <a class="el" href="d5/da9/classumi3d_1_1edk_1_1collaboration_1_1_unsecured_identifier_api.html#a90fac720898360c649102dcada70dade">umi3d.edk.collaboration.UnsecuredIdentifierApi</a>
 </li>
 <li>getAuthorization()
 : <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1_u_m_i3_d_client_server.html#a6713407ac987fa3d39c51fbbc2ad06ef">umi3d.cdk.UMI3DClientServer</a>
@@ -143,12 +145,20 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 : <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a8d0b1b98368a0a919c0fc3475840cb37">umi3d.cdk.interaction.AbstractInteractionMapper</a>
 , <a class="el" href="d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#ac1a06283d2d4be902b400841e1aaff5d">umi3d.cdk.interaction.InteractionMapper</a>
 </li>
+<li>getCovariance()
+: <a class="el" href="da/d3f/classumi3d_1_1cdk_1_1collaboration_1_1_u_k_f.html#a500f0bfe0bca986069c37dc7a3c78149">umi3d.cdk.collaboration.UKF</a>
+</li>
+<li>GetCurrentDelay()
+: <a class="el" href="d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#acee8a7ff7ec868b25fef2743a3f04652">umi3d.edk.collaboration.UMI3DForgeServer</a>
+</li>
 <li>GetCurrentHoveredId()
 : <a class="el" href="de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a87ab7ccd21a25296faec315d3f89f05d">umi3d.cdk.interaction.AbstractController</a>
 </li>
 <li>GetDeleteEntity()
 : <a class="el" href="d3/d15/classumi3d_1_1edk_1_1_asset_library.html#acee71d4c7fb190e9d3ab3182621df131">umi3d.edk.AssetLibrary</a>
+, <a class="el" href="d8/d9a/classumi3d_1_1edk_1_1_entity_group.html#afd916a59a282175f1fb1712c8e1b8c37">umi3d.edk.EntityGroup</a>
 , <a class="el" href="d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html#aa7768962125e3c7d3d4792e138a15948">umi3d.edk.interaction.UMI3DInteractable</a>
+, <a class="el" href="d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool.html#ace66aec38df888eab4be7bad0ac408fb">umi3d.edk.interaction.UMI3DTool</a>
 , <a class="el" href="df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox.html#aadd8a53bd6bdae86ba77d013118fc843">umi3d.edk.interaction.UMI3DToolbox</a>
 , <a class="el" href="d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a6a4555e46bd2b472e07c68909254850b">umi3d.edk.MaterialSO</a>
 , <a class="el" href="da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#a7296b48eb8e0c0f8db4fd5b1929f6529">umi3d.edk.UMI3DAbstractAnimation</a>
@@ -197,15 +207,14 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetId()
 : <a class="el" href="d0/d29/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_server.html#a13abd0e2ac1681a0580fd893c23de397">umi3d.cdk.collaboration.UMI3DCollaborationClientServer</a>
 , <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1_u_m_i3_d_client_server.html#a1a855ce8ed5feee9bd2edd4e0f9f211a">umi3d.cdk.UMI3DClientServer</a>
-, <a class="el" href="df/df7/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_abstract_web_socket_connection.html#a8afea5371970b4a208ebcfa15fa465b8">umi3d.edk.collaboration.UMI3DAbstractWebSocketConnection</a>
 , <a class="el" href="dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html#a22089297971e91349f8bbca3cb71b137">umi3d.edk.ExternalResourceMaterial</a>
 , <a class="el" href="d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a431293766c9ec668968799e038bd766d">umi3d.edk.MaterialSO</a>
 , <a class="el" href="d9/dc5/classumi3d_1_1edk_1_1_original_material.html#afe7ff289316b524cfea1b0947d9bdeb8">umi3d.edk.OriginalMaterial</a>
 , <a class="el" href="de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a4bbf79780afeda21e13e6672b2b05211">umi3d.edk.PBRMaterial</a>
 </li>
 <li>GetIdentity()
-: <a class="el" href="dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html#aaac95db69a13df53a8e6d2ebe8bf53ec">umi3d.cdk.collaboration.ClientIdentifierApi</a>
-, <a class="el" href="dd/d22/classumi3d_1_1cdk_1_1collaboration_1_1_pin_client_identifier_api.html#ab97151e3eb83b4a6b8cdc2de1b2efc07">umi3d.cdk.collaboration.PinClientIdentifierApi</a>
+: <a class="el" href="dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html#a8459fcc8e30c5cde5d76b35f3940596f">umi3d.cdk.collaboration.ClientIdentifierApi</a>
+, <a class="el" href="dd/d22/classumi3d_1_1cdk_1_1collaboration_1_1_pin_client_identifier_api.html#a9a310b60e0ab364cf6748b6f36a931df">umi3d.cdk.collaboration.PinClientIdentifierApi</a>
 , <a class="el" href="df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a8390a3f96c4de00bdf32d633e197ff5c">umi3d.edk.collaboration.UMI3DApi</a>
 </li>
 <li>GetIndexOf()
@@ -219,7 +228,7 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 , <a class="el" href="d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#af1956c9f1b50b3e960af82bc0eca99c4">umi3d.cdk.interaction.InteractionMapper</a>
 </li>
 <li>GetInteractions()
-: <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#aff89ee717cd214d2b527f66c95f1ebc4">umi3d.cdk.interaction.AbstractInteractionMapper</a>
+: <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#aaf3e1d06c050b5448525078a1e9bf692">umi3d.cdk.interaction.AbstractInteractionMapper</a>
 , <a class="el" href="d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a78f041439cc9c9ecd69d197c1faf1e39">umi3d.cdk.interaction.InteractionMapper</a>
 </li>
 <li>GetItems()
@@ -230,11 +239,13 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 : <a class="el" href="df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a4aa9371da6832514c378b5984e6dc3f4">umi3d.edk.collaboration.UMI3DApi</a>
 </li>
 <li>getLibrariesUpdateSatus()
-: <a class="el" href="dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#adc70edf2b48d69ad3bc996d6b2d09c02">umi3d.edk.collaboration.IdentifierApi</a>
+: <a class="el" href="dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a5f98e7c376d00312edb05e949d8d786b">umi3d.edk.collaboration.IdentifierApi</a>
 </li>
 <li>GetLoadEntity()
 : <a class="el" href="d3/d15/classumi3d_1_1edk_1_1_asset_library.html#ae3246b421010e30892087f8cb198c99f">umi3d.edk.AssetLibrary</a>
+, <a class="el" href="d8/d9a/classumi3d_1_1edk_1_1_entity_group.html#aeeb09ae7f4199ab5b56ab4cec345e9fc">umi3d.edk.EntityGroup</a>
 , <a class="el" href="d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html#a8f0974cf192795f7ec741f48b8a92d0e">umi3d.edk.interaction.UMI3DInteractable</a>
+, <a class="el" href="d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool.html#ac1f8cd7935658874afcd1422ef4a36d8">umi3d.edk.interaction.UMI3DTool</a>
 , <a class="el" href="df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox.html#a822a180fe1df83c775f0317555316421">umi3d.edk.interaction.UMI3DToolbox</a>
 , <a class="el" href="d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ab5083154050efe26634ae6316b4d9825">umi3d.edk.MaterialSO</a>
 , <a class="el" href="da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#aea7b842b5af4107c92d6eccfbd87e144">umi3d.edk.UMI3DAbstractAnimation</a>
@@ -243,11 +254,16 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 , <a class="el" href="d1/d88/classumi3d_1_1edk_1_1_u_m_i3_d_notification.html#a7e0a245b1a37bfeb2ae3d155e6f1f76f">umi3d.edk.UMI3DNotification</a>
 </li>
 <li>GetMedia()
-: <a class="el" href="d0/d29/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_server.html#a6f74d45898913542a32dd6b3fa4fc898">umi3d.cdk.collaboration.UMI3DCollaborationClientServer</a>
+: <a class="el" href="d0/d29/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_server.html#aa18bdad34fd603f698200f1a21b2f210">umi3d.cdk.collaboration.UMI3DCollaborationClientServer</a>
 </li>
 <li>GetMenuItems()
 : <a class="el" href="df/d6e/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu.html#a029133ca84a8ee4d8167fa4589afd36d">umi3d.cdk.menu.AbstractMenu</a>
 , <a class="el" href="df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu.html#aa5289dc0cbf7740fcca47b379d341194">umi3d.cdk.menu.Menu</a>
+</li>
+<li>GetNetWorker()
+: <a class="el" href="d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a7797d1cc1c74851400d711bb0f05f164">umi3d.cdk.collaboration.UMI3DForgeClient</a>
+, <a class="el" href="d8/da2/classumi3d_1_1common_1_1collaboration_1_1_forge_socket_base.html#a388736a406d2d581b40b0f511de1fcca">umi3d.common.collaboration.ForgeSocketBase</a>
+, <a class="el" href="d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aa4519bf4f4683fcf51d3be20b1c4f568">umi3d.edk.collaboration.UMI3DForgeServer</a>
 </li>
 <li>GetNode()
 : <a class="el" href="df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#adf20195e43933848d471dbddcbf5a1a9">umi3d.cdk.UMI3DEnvironmentLoader</a>
@@ -259,19 +275,18 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 : <a class="el" href="dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html#a875664b3bf6a9e73ace9a7daf862d7de">umi3d.cdk.collaboration.ClientIdentifierApi</a>
 </li>
 <li>GetParameterDtosFor()
-: <a class="el" href="dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a81567079b680d2e38754bbd5d5bae53a">umi3d.edk.collaboration.IdentifierApi</a>
-, <a class="el" href="d5/da9/classumi3d_1_1edk_1_1collaboration_1_1_unsecured_identifier_api.html#aa3fed2ead4dc4f5790e23a1af9fe11e3">umi3d.edk.collaboration.UnsecuredIdentifierApi</a>
+: <a class="el" href="dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#a6fc1b1bdf785afb9167e5ec566ff7878">umi3d.edk.collaboration.IdentifierApi</a>
+, <a class="el" href="d5/d79/classumi3d_1_1edk_1_1collaboration_1_1_pin_identifier_with_form_api.html#af8dae0cd5403a6b2869b572e80d3bcef">umi3d.edk.collaboration.PinIdentifierWithFormApi</a>
 </li>
 <li>GetParametersFrom()
 : <a class="el" href="db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a40e0cfa904cb8c48bb796ff38071ed54">umi3d.edk.collaboration.WebServiceMethodAttribute</a>
 </li>
-<li>GetPasswordFor()
-: <a class="el" href="dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html#ad64849ca64b466e6c920ccf59728ae82">umi3d.edk.collaboration.IdentifierApi</a>
-, <a class="el" href="dc/da5/classumi3d_1_1edk_1_1collaboration_1_1_pin_identifier_api.html#a82bb1cd5a7601ed16cfa20dc71c65cfb">umi3d.edk.collaboration.PinIdentifierApi</a>
-, <a class="el" href="d5/da9/classumi3d_1_1edk_1_1collaboration_1_1_unsecured_identifier_api.html#ae9b8105578424c89f65dbeb5c6719ac4">umi3d.edk.collaboration.UnsecuredIdentifierApi</a>
-</li>
 <li>GetPbrMetallicRoughnessMaterial()
 : <a class="el" href="d1/d66/classumi3d_1_1cdk_1_1_gltfast_custom_material_generator.html#a0a29e09f287187729375d9d884b52260">umi3d.cdk.GltfastCustomMaterialGenerator</a>
+</li>
+<li>GetPlayerCount()
+: <a class="el" href="df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a7a73be509e9b772cb5df59202f92bb39">umi3d.edk.collaboration.UMI3DApi</a>
+, <a class="el" href="d4/dde/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_user_manager.html#aaa0f89db9654fe6faca36d6d5887466c">umi3d.edk.collaboration.UMI3DUserManager</a>
 </li>
 <li>GetPrivateFile()
 : <a class="el" href="df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a756c2bd5f9f232d357553ddf265e926c">umi3d.edk.collaboration.UMI3DApi</a>
@@ -302,6 +317,9 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetScene()
 : <a class="el" href="df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a137a382eb961714da4731d65b9c85c00">umi3d.edk.collaboration.UMI3DApi</a>
 </li>
+<li>getState()
+: <a class="el" href="da/d3f/classumi3d_1_1cdk_1_1collaboration_1_1_u_k_f.html#a033a5ac4622b6dc2ea18d29b4184ef6f">umi3d.cdk.collaboration.UKF</a>
+</li>
 <li>GetSubMenu()
 : <a class="el" href="df/d6e/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu.html#a72eec909de574c47800e93620b816377">umi3d.cdk.menu.AbstractMenu</a>
 , <a class="el" href="df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu.html#a482772303d4d69534aab519616d10b77">umi3d.cdk.menu.Menu</a>
@@ -315,6 +333,10 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 <li>GetSwitchTool()
 : <a class="el" href="d8/ddb/classumi3d_1_1edk_1_1interaction_1_1_abstract_tool.html#a5e8a19716664b151b0b2b1cd970e182a">umi3d.edk.interaction.AbstractTool</a>
 </li>
+<li>GetTime()
+: <a class="el" href="d0/d29/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_server.html#a72c8a30cb2fa5418fc7a977e3b3cb22d">umi3d.cdk.collaboration.UMI3DCollaborationClientServer</a>
+, <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1_u_m_i3_d_client_server.html#a73f8e23d43227497318d32bd3c141dad">umi3d.cdk.UMI3DClientServer</a>
+</li>
 <li>GetTool()
 : <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ab3bd4fb3ecc9f03189f4f4ba50869671">umi3d.cdk.interaction.AbstractInteractionMapper</a>
 , <a class="el" href="d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a016740fd7f9fd15e5ebc70da49e8d31f">umi3d.cdk.interaction.InteractionMapper</a>
@@ -324,7 +346,7 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 , <a class="el" href="d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a4796e05d5819dd28323008bbec0baf44">umi3d.cdk.interaction.InteractionMapper</a>
 </li>
 <li>GetToolboxes()
-: <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a50beec777d580fdc96153451c826f964">umi3d.cdk.interaction.AbstractInteractionMapper</a>
+: <a class="el" href="d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#acb3fb7e39c004930d9eac6761b483839">umi3d.cdk.interaction.AbstractInteractionMapper</a>
 , <a class="el" href="d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a47234c954da0335ac60a1c774532dbf7">umi3d.cdk.interaction.InteractionMapper</a>
 </li>
 <li>GetTools()
@@ -336,6 +358,9 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 </li>
 <li>GetUser()
 : <a class="el" href="d4/dde/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_user_manager.html#a937c6742639690d4d655962955753125">umi3d.edk.collaboration.UMI3DUserManager</a>
+</li>
+<li>GetUserByNetworkId()
+: <a class="el" href="d4/dde/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_user_manager.html#a4be7663fcd6ef6e0a68f0ff6b57e0648">umi3d.edk.collaboration.UMI3DUserManager</a>
 </li>
 <li>GetUserByToken()
 : <a class="el" href="d4/dde/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_user_manager.html#a337ba878dca49449874e67bd4cc98a15">umi3d.edk.collaboration.UMI3DUserManager</a>
@@ -352,6 +377,7 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 , <a class="el" href="d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#ac959d912593596c1597bcb05338e37c1">umi3d.cdk.menu.FloatRangeInputMenuItem</a>
 , <a class="el" href="d6/df0/classumi3d_1_1cdk_1_1menu_1_1_integer_input_menu_item.html#a53e8d8c72b5d7664bd8d4a80c854f2f0">umi3d.cdk.menu.IntegerInputMenuItem</a>
 , <a class="el" href="de/d3c/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_event_menu_item.html#a5dc7a11db57765cd37087c9a39ba4588">umi3d.cdk.menu.interaction.EventMenuItem</a>
+, <a class="el" href="d4/dfd/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_form_menu_item.html#ac7df5b7cc08f4a6b346a871ba08bd650">umi3d.cdk.menu.interaction.FormMenuItem</a>
 , <a class="el" href="d1/d63/classumi3d_1_1cdk_1_1menu_1_1_text_input_menu_item.html#adcaf0b07b79f7090c4e47a01c5d09cae">umi3d.cdk.menu.TextInputMenuItem</a>
 , <a class="el" href="d4/dbb/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_boolean_input_displayer.html#ae9a87ea6ceb2d755a2b7cf3fa3f30bdf">umi3d.cdk.menu.view.AbstractBooleanInputDisplayer</a>
 , <a class="el" href="d8/dda/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_drop_down_input_displayer.html#a33f899085d2d93142ee6c011fd08c1ab">umi3d.cdk.menu.view.AbstractDropDownInputDisplayer</a>
@@ -360,10 +386,7 @@ $(document).ready(function(){initNavTree('functions_g.html',''); initResizable()
 , <a class="el" href="da/d39/interfaceumi3d_1_1common_1_1_i_observable.html#a9dc17811f8eb0aff267df21ad287a44a">umi3d.common.IObservable&lt; T &gt;</a>
 , <a class="el" href="d7/daf/classumi3d_1_1edk_1_1_u_m_i3_d_async_dictionnary_property.html#afa4a93dee7d09e3afd28d44fb33f4a06">umi3d.edk.UMI3DAsyncDictionnaryProperty&lt; T, L &gt;</a>
 , <a class="el" href="de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html#a8ed47903cebe2245b7709132bf961481">umi3d.edk.UMI3DAsyncListProperty&lt; T &gt;</a>
-, <a class="el" href="da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a60f5d02aa5cc949454a6385b764af5c3">umi3d.edk.UMI3DAsyncProperty&lt; T &gt;</a>
-</li>
-<li>GetWebsocketUrl()
-: <a class="el" href="db/d4d/classumi3d_1_1edk_1_1_u_m_i3_d_server.html#a4c8169b8cd7ae633febf1ae6c213f430">umi3d.edk.UMI3DServer</a>
+, <a class="el" href="da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a25e0c9d0b4470e50235f58c77efdf808">umi3d.edk.UMI3DAsyncProperty&lt; T &gt;</a>
 </li>
 <li>globalLibraries
 : <a class="el" href="d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a8ada5f768741b837df12ce0af3ea6898">umi3d.edk.UMI3DEnvironment</a>
