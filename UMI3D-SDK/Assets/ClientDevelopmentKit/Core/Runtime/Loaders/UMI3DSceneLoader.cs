@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -105,13 +105,19 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Position:
-                    node.transform.localPosition = dto.position = (SerializableVector3)property.value;
+                    dto.position = (SerializableVector3)property.value;
+                    if (node.updatePose)
+                        node.transform.localPosition = dto.position;
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = (SerializableVector4)property.value;
+                    dto.rotation = (SerializableVector4)property.value;
+                    if (node.updatePose)
+                        node.transform.localRotation = dto.rotation;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    node.transform.localScale = dto.scale = (SerializableVector3)property.value;
+                    dto.scale = (SerializableVector3)property.value;
+                    if (node.updatePose)
+                        node.transform.localScale = dto.scale;
                     break;
                 default:
                     return false;

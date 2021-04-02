@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using umi3d.common;
 using UnityEngine;
+using UnityOpus;
 
 namespace umi3d.cdk.collaboration
 {
@@ -27,185 +30,184 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Whether the microphone is running
         /// </summary>
-        public static bool IsMute { get { return Exists ? Instance._IsMute : false; } set { if (Exists) Instance._IsMute = value; } }
-
-        [SerializeField]
-        bool _IsMute = false;
-
-
-        /// <summary>
-        /// Whether the microphone is running
-        /// </summary>
-        public bool IsRecording { get; private set; }
-
-        /// <summary>
-        /// The frequency at which the mic is operating
-        /// </summary>
-        public int Frequency { get; private set; }
-
-        /// <summary>
-        /// Last populated audio sample
-        /// </summary>
-        public float[] Sample { get; private set; }
-
-        /// <summary>
-        /// Sample duration/length in milliseconds
-        /// </summary>
-        public int SampleDurationMS { get; private set; }
-
-        /// <summary>
-        /// The length of the sample float array
-        /// </summary>
-        public int SampleLength
+        public static bool IsMute
         {
-            get { return Frequency * SampleDurationMS / 1000; }
-        }
+            get { return Exists ? Instance.muted : false; }
+            set {
+                if (Exists)
+                {
+                    if (Instance.muted != value)
+                    {
+                        if (value) Instance.StopRecording();
+                        else Instance.StartRecording();
+                    }
 
-        AudioClip Clip;
-
-        /// <summary>
-        /// List of all the available Mic devices
-        /// </summary>
-        public List<string> Devices { get; private set; }
-
-        int CurrentDeviceIndex;
-
-        /// <summary>
-        /// Gets the name of the Mic device currently in use
-        /// </summary>
-        public string CurrentDeviceName
-        {
-            get { return Devices[CurrentDeviceIndex]; }
-        }
-
-        AudioSource AudioSource;
-        int SampleCount = 0;
-
-        protected override void Awake()
-        {
-            base.Awake();
-            AudioSource = GetComponent<AudioSource>();
-
-            Devices = new List<string>();
-            foreach (var device in Microphone.devices)
-                Devices.Add(device);
-            CurrentDeviceIndex = 0;
-        }
-
-        void Update()
-        {
-            if (AudioSource == null)
-                AudioSource = gameObject.AddComponent<AudioSource>();
-
-            AudioSource.mute = true;
-            AudioSource.loop = true;
-            AudioSource.maxDistance = AudioSource.minDistance = 0;
-            AudioSource.spatialBlend = 0;
-
-            if (IsRecording && !AudioSource.isPlaying)
-                AudioSource.Play();
-        }
-
-        /// <summary>
-        /// Changes to a Mic device for Recording
-        /// </summary>
-        /// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/></param>
-        public void ChangeDevice(int index)
-        {
-            Microphone.End(CurrentDeviceName);
-            CurrentDeviceIndex = index;
-            Microphone.Start(CurrentDeviceName, true, 1, Frequency);
+                    Instance.muted = value;
+                }
+            }
         }
 
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
-        public void StartRecording(int frequency = 16000, int sampleLen = 10)
+        void StartRecording()
         {
-            StopRecording();
-            IsRecording = true;
-
-            Frequency = frequency;
-            SampleDurationMS = sampleLen;
-
-            Clip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
-            Debug.Log(Clip.channels);
-            Sample = new float[Frequency / 1000 * SampleDurationMS * Clip.channels];
-
-            AudioSource.clip = Clip;
-
-            StartCoroutine(ReadRawAudio());
+            reading = true;
+            clip = Microphone.Start(null, true, lengthSeconds, (int)samplingFrequency);
+            lock (pcmQueue)
+                pcmQueue.Clear();
+            if (thread == null)
+                thread = new Thread(ThreadUpdate);
+            if (!thread.IsAlive)
+                thread.Start();
         }
 
         /// <summary>
         /// Ends the Mic stream.
         /// </summary>
-        public void StopRecording()
+        void StopRecording()
         {
-            if (!Microphone.IsRecording(CurrentDeviceName)) return;
-
-            IsRecording = false;
-
-            Microphone.End(CurrentDeviceName);
-            Destroy(Clip);
-            Clip = null;
-            AudioSource.Stop();
-
-            StopCoroutine(ReadRawAudio());
+            reading = false;
+            Destroy(clip);
+            Microphone.End(null);
         }
 
-        IEnumerator ReadRawAudio()
+        #region ReadMicrophone
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [SerializeField, EditorReadOnly]
+        bool muted = false;
+        bool reading = false;
+
+        const SamplingFrequency samplingFrequency = SamplingFrequency.Frequency_12000;
+
+        const int lengthSeconds = 1;
+
+        AudioClip clip;
+        int head = 0;
+        float[] microphoneBuffer = new float[lengthSeconds * (int)samplingFrequency];
+
+
+        private Thread thread;
+        int sleepTimeMiliseconde = 5;
+
+        void Update()
         {
-            int loops = 0;
-            int readAbsPos = 0;
-            int prevPos = 0;
-            float[] temp = new float[Sample.Length];
+            if (!reading) return;
 
-            while (Clip != null && Microphone.IsRecording(CurrentDeviceName))
+            var position = Microphone.GetPosition(null);
+            if (position < 0 || head == position)
             {
-                bool isNewDataAvailable = true;
-
-                while (isNewDataAvailable)
-                {
-                    int currPos = Microphone.GetPosition(CurrentDeviceName);
-                    if (currPos < prevPos)
-                        loops++;
-                    prevPos = currPos;
-
-                    var currAbsPos = loops * Clip.samples + currPos;
-                    var nextReadAbsPos = readAbsPos + temp.Length;
-
-                    if (nextReadAbsPos < currAbsPos)
-                    {
-                        Clip.GetData(temp, readAbsPos % Clip.samples);
-
-                        Sample = temp;
-                        SampleCount++;
-                        if (!_IsMute && UMI3DCollaborationClientServer.Exists)
-                        {
-                            var dto = new AudioDto()
-                            {
-                                frequency = Frequency,
-                                pos = SampleCount,
-                                sample = Sample
-                            };
-                            UMI3DCollaborationClientServer.Instance.SendAudio(dto);
-                        }
-
-                        readAbsPos = nextReadAbsPos;
-                        isNewDataAvailable = true;
-                    }
-                    else
-                        isNewDataAvailable = false;
-                }
-                yield return null;
+                return;
             }
+
+            clip.GetData(microphoneBuffer, 0);
+            if (!muted)
+            {
+                if (head < position)
+                {
+                    lock (pcmQueue)
+                    {
+                        for (int i = head; i < position; i++)
+                        {
+                            pcmQueue.Enqueue(microphoneBuffer[i]);
+                        }
+                    }
+                }
+                else
+                {
+                    lock (pcmQueue)
+                    {
+                        //head -> length
+                        for (int i = head; i < microphoneBuffer.Length; i++)
+                        {
+                            pcmQueue.Enqueue(microphoneBuffer[i]);
+                        }
+                        //0->position
+                        for (int i = 0; i < position; i++)
+                        {
+                            pcmQueue.Enqueue(microphoneBuffer[i]);
+                        }
+                    }
+                }
+            }
+            head = position;
+        }
+
+        #endregion
+
+        #region Encoder
+
+        const int bitrate = 96000;
+        const int frameSize = 240; //at least frequency/100
+        const int outputBufferSize = frameSize * 4; // at least frameSize * sizeof(float)
+
+        Encoder encoder;
+        Queue<float> pcmQueue = new Queue<float>();
+        readonly float[] frameBuffer = new float[frameSize];
+        readonly byte[] outputBuffer = new byte[outputBufferSize];
+
+        void OnEnable()
+        {
+            encoder = new Encoder(
+                samplingFrequency,
+                NumChannels.Mono,
+                OpusApplication.Audio)
+            {
+                Bitrate = bitrate,
+                Complexity = 10,
+                Signal = OpusSignal.Voice
+            };
+        }
+
+        void OnDisable()
+        {
+            encoder.Dispose();
+            encoder = null;
+            pcmQueue.Clear();
+            reading = false;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            Microphone.End(null);
+            reading = false;
         }
+
+        void ThreadUpdate()
+        {
+            while (reading)
+            {
+                bool ok = false;
+                lock (pcmQueue)
+                {
+                    ok = pcmQueue.Count >= frameSize;
+                }
+                if (ok)
+                {
+                    lock (pcmQueue)
+                    {
+                        for (int i = 0; i < frameSize; i++)
+                        {
+                            frameBuffer[i] = pcmQueue.Dequeue();
+                        }
+                    }
+                    var encodedLength = encoder.Encode(frameBuffer, outputBuffer);
+                    if (UMI3DCollaborationClientServer.Exists
+                        && UMI3DCollaborationClientServer.Instance?.ForgeClient != null
+                        && UMI3DCollaborationClientServer.UserDto.status == StatusType.ACTIVE)
+                    {
+                        UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer.Take(encodedLength).ToArray());
+                    }
+                }
+                Thread.Sleep(sleepTimeMiliseconde);
+            }
+            thread = null;
+        }
+
+
+        #endregion
     }
 }

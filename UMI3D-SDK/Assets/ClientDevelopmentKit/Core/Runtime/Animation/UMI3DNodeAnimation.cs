@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -144,6 +144,10 @@ namespace umi3d.cdk
                 if (GetProgress() < chain.startOnProgress)
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
+        }
+
+        public override void SetProgress(long frame)
+        {
         }
     }
 }

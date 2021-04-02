@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationEnvironmentLoader : UMI3DEnvironmentLoader
     {
-
         public static new UMI3DCollaborationEnvironmentLoader Instance { get => UMI3DEnvironmentLoader.Instance as UMI3DCollaborationEnvironmentLoader; set => UMI3DEnvironmentLoader.Instance = value; }
 
         public List<UMI3DUser> UserList;
@@ -65,31 +64,50 @@ namespace umi3d.cdk.collaboration
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
-                    var user = add.value as UserDto;
-                    UserList.Add(new UMI3DUser(user));
-                    dto.userList.Add(user);
-                    break;
+                    {
+                        var user = add.value as UserDto;
+                        var _user = new UMI3DUser(user);
+                        UserList.Insert(add.index, _user);
+                        dto.userList.Insert(add.index, user);
+                        break;
+                    }
                 case SetEntityListRemovePropertyDto rem:
-                    UserList.RemoveAt(rem.index);
-                    dto.userList.RemoveAt(rem.index);
-                    break;
+                    {
+                        if (UserList.Count > rem.index)
+                        {
+                            var Olduser = UserList[rem.index];
+                            UserList.RemoveAt(rem.index);
+                            dto.userList.RemoveAt(rem.index);
+                            Olduser.Destroy();
+                        }
+                        break;
+                    }
                 case SetEntityListPropertyDto set:
-                    var user2 = set.value as UserDto;
-                    if (UserList.Count < set.index)
                     {
-                        UserList[set.index].Update(user2);
-                        dto.userList[set.index] = user2;
+                        if (0 > set.index)
+                            break;
+                        var user2 = set.value as UserDto;
+                        if (UserList.Count > set.index)
+                        {
+                            UserList[set.index].Update(user2);
+                            dto.userList[set.index] = user2;
+                        }
+                        else if (UserList.Count == set.index)
+                        {
+                            var _user2 = new UMI3DUser(user2);
+                            UserList.Add(_user2);
+                            dto.userList.Add(user2);
+                        }
+                        break;
                     }
-                    else if (UserList.Count == set.index)
-                    {
-                        UserList.Add(new UMI3DUser(user2));
-                        dto.userList.Add(user2);
-                    }
-                    break;
                 default:
-                    dto.userList = property.value as List<UserDto>;
-                    UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
-                    break;
+                    {
+                        foreach (var user in UserList)
+                            user.Destroy();
+                        dto.userList = property.value as List<UserDto>;
+                        UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+                        break;
+                    }
             }
             return true;
         }

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -57,8 +57,11 @@ namespace umi3d.cdk
         {
 
             // add bundle in the cache
+#if UNITY_ANDROID
+            UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
+#else
             UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
-
+#endif
             SetCertificate(www, authorization);
             UMI3DResourcesManager.DownloadObject(www,
                 () =>
@@ -86,7 +89,7 @@ namespace umi3d.cdk
                     var objectInBundle = ((AssetBundle)o).LoadAsset(pathIfObjectInBundle);
                     if (objectInBundle is GameObject)
                     {
-                        Debug.Log("load game object from bundle");
+                        //Debug.Log("load game object from bundle");
                         AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
                     }
 
@@ -109,7 +112,6 @@ namespace umi3d.cdk
             }
             else
             {
-
                 callback.Invoke(o);
             }
         }

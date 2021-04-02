@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -86,6 +86,7 @@ namespace umi3d.edk
             return ip;
         }
 
+        /*
         /// <summary>
         /// Return the Url of the websocket server.
         /// </summary>
@@ -98,36 +99,12 @@ namespace umi3d.edk
         protected virtual string _GetWebsocketUrl()
         {
             return ip;
-        }
+        }*/
 
-        /// <summary>
-        /// Return the Authentication type.
-        /// </summary>
-        /// <returns></returns>
-        static public AuthenticationType GetAuthentication()
-        {
-            return Instance._GetAuthentication();
-        }
-        protected virtual AuthenticationType _GetAuthentication()
-        {
-            return AuthenticationType.Anonymous;
-        }
-
-        public virtual UMI3DDto ToDto()
+        public virtual ForgeConnectionDto ToDto()
         {
             return null;
         }
-
-        public virtual UMI3DDto ToFakeRTCReliableDto()
-        {
-            return null;
-        }
-
-        public virtual UMI3DDto ToFakeRTCUnreliableDto()
-        {
-            return null;
-        }
-
 
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
@@ -140,7 +117,6 @@ namespace umi3d.edk
         /// <param name="status">new status</param>
         public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
-            //Debug.Log($"{user.Id()}:{status}");
             switch (status)
             {
                 case StatusType.CREATED:
@@ -183,7 +159,6 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserActive = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserLeave = new UMI3DUserEvent();
-
         #endregion
     }
 }

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,6 +35,19 @@ namespace umi3d.edk
 
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
+
+        // Should not be modified after init 
+        public bool isRightHanded = true;
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
 
 
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
@@ -139,9 +152,10 @@ namespace umi3d.edk
             meshDto.mesh = objectModel.GetValue(user).ToDto();
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
+            meshDto.isRightHanded = areSubobjectsTracked ? isRightHanded : true;
             meshDto.idGenerator = idGenerator;
-
-
+            meshDto.isPartOfNavmesh = isPartOfNavmesh;
+            meshDto.isTraversable = isTraversable;
         }
 
         ///<inheritdoc/>

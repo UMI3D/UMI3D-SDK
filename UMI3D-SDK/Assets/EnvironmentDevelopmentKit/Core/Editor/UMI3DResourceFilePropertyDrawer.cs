@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -146,8 +146,10 @@ namespace umi3d.edk.editor
                         if (FilePath != null && FilePath != "")
                         {
                             FilePath = System.IO.Path.GetFullPath(FilePath);
-                            if (!FilePath.Contains(path)) EditorUtility.DisplayDialog("Invalid File", "The File should be under <project folder>/Public/ folder or any of its subfolder", "Ok, my bad");
-                            else
+                            bool usePath = true;
+                            if (!FilePath.Contains(path)) usePath = EditorUtility.DisplayDialog("Invalid File", $"The File should be under {path} folder or any of its subfolder. your entry was {FilePath}", "Use it anyway", "Ok, my bad");
+
+                            if (usePath)
                             {
                                 this.path.stringValue = FilePath.Split(new string[] { path }, StringSplitOptions.None)[1];
                                 this.extension.stringValue = System.IO.Path.GetExtension(FilePath);

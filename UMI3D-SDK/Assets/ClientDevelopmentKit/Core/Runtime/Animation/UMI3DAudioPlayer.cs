@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,10 +21,10 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class UMI3DAudioPlayer : UMI3DAbstractAnimation, IAudioReader
+    public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
         new public static UMI3DAudioPlayer Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
-        AudioSource audioSource;
+        public AudioSource audioSource { get; private set; }
 
 
         public UMI3DAudioPlayer(UMI3DAudioPlayerDto dto) : base(dto)
@@ -48,8 +48,6 @@ namespace umi3d.cdk
 
             }
             audioSource = gameObject.AddComponent<AudioSource>();
-
-
             audioSource.playOnAwake = false;
             audioSource.pitch = dto.pitch;
             audioSource.volume = dto.volume;
@@ -81,7 +79,7 @@ namespace umi3d.cdk
                         if (clip != null)
                             audioSource.clip = clip;
                         else
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}");
                     },
                     Debug.LogWarning,
                     loader.DeleteObject
@@ -127,13 +125,13 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = (float)property.value;
+                    audioSource.volume = ADto.volume = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = (float)property.value;
+                    audioSource.pitch = ADto.pitch = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = (float)property.value;
+                    audioSource.spatialBlend = ADto.spatialBlend = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     var res = ADto.audioResource;
@@ -202,40 +200,10 @@ namespace umi3d.cdk
 
         }
 
-
-        AudioClip clip = null;
-        public int position = 0;
-        public int samplerate = 44100;
-
-        /// <summary>
-        /// Read an AudioDto and play it in an audioSource.
-        /// </summary>
-        /// <param name="sample">AudioDto  to play</param>
-        public void Read(AudioDto sample)
+        public override void SetProgress(long frame)
         {
-            if (sample != null)
-            {
-                if (clip == null)
-                {
-                    audioSource.clip = AudioClip.Create("GlobalAudio", samplerate * 10, 1, samplerate, false, OnAudioRead, OnAudioSetPosition);
-                }
-
-                // Put the data in the audio source.
-                audioSource.clip.SetData(sample.sample, sample.pos);
-                if (!audioSource.isPlaying) audioSource.Play();
-            }
-        }
-
-
-        public void OnAudioRead(float[] data)
-        {
+            audioSource.timeSamples = (int)frame;
 
         }
-
-        public void OnAudioSetPosition(int newPosition)
-        {
-            position = newPosition;
-        }
-
     }
 }

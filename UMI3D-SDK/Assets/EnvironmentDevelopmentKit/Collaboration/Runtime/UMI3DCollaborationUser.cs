@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -29,12 +29,13 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser(string login)
         {
             this.login = login;
-            Debug.Log($"<color=magenta>new User {Id()}</color>");
+            status = StatusType.CREATED;
+            Debug.Log($"<color=magenta>new User {Id()} {login}</color>");
         }
 
-        public void InitConnection(UMI3DWebSocketConnection connection)
+        public void InitConnection(UMI3DForgeServer connection)
         {
-            this.connection = connection;
+            this.forgeServer = connection;
             UserConnectionDto ucDto = new UserConnectionDto(ToUserDto());
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
             RenewToken();
@@ -47,27 +48,25 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Does the user have a devise compatible with webrtc
+        /// Current id for ForgeNetworkingRemastered
         /// </summary>
-        public bool useWebrtc { get; set; }
+        public NetworkingPlayer networkPlayer { get; set; }
 
         /// <summary>
         /// The user token
         /// </summary>
         public string token { get; private set; }
-        
+
 
         /// <summary>
         /// The unique user login.
         /// </summary>
         public string login;
 
-        public UMI3DAbstractWebSocketConnection connection;
+        public UMI3DForgeServer forgeServer;
 
         public UMI3DAudioPlayer audioPlayer;
         public UMI3DAudioPlayer videoPlayer;
-
-        public List<DataChannel> dataChannels = new List<DataChannel>();
 
         public string RenewToken()
         {
@@ -77,7 +76,7 @@ namespace umi3d.edk.collaboration
             byte[] key = Guid.NewGuid().ToByteArray();
             string token = Convert.ToBase64String(time.Concat(key).ToArray());
             this.token = token;
-            connection.SendData(ToTokenDto());
+            forgeServer.SendSignalingMessage(networkPlayer, ToTokenDto());
             return token;
         }
 
@@ -91,8 +90,10 @@ namespace umi3d.edk.collaboration
         ///<inheritdoc/>
         public override void SetStatus(StatusType status)
         {
+            bool isSame = status == this.status;
             base.SetStatus(status);
-            UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);
+            if (!isSame)
+                UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);
         }
 
 
@@ -102,6 +103,7 @@ namespace umi3d.edk.collaboration
             user.id = Id();
             user.status = status;
             user.avatarId = Avatar == null ? null : Avatar.Id();
+            user.networkId = networkPlayer?.NetworkId ?? 0;
             return user;
         }
 

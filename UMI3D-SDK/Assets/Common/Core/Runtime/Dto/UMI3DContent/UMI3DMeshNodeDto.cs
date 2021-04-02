@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,6 +39,20 @@ namespace umi3d.common
         /// </summary>
         public bool areSubobjectsTracked;
 
+        /// <summary>
+        /// State if the subobject was generated in a rightHanded 
+        /// </summary>
+        public bool isRightHanded = true;
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
     }
 
 }

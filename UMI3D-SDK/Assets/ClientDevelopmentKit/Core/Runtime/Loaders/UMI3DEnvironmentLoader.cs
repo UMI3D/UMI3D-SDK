@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -375,7 +375,6 @@ namespace umi3d.cdk
                         RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
                         performed.Invoke();
                     });
-
                     break;
                 default:
                     Debug.Log($"load entity fail missing case {entity.GetType()}");
@@ -516,7 +515,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Handle SetEntityPropertyDto operation.
         /// </summary>
-        /// <param name="dto">set operation to handle.</param>
+        /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
         public static bool SetEntity(SetEntityPropertyDto dto)
         {
@@ -529,11 +528,23 @@ namespace umi3d.cdk
             }
             else
             {
-                if (SetUMI3DPorperty(node, dto)) return true;
-                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
-                return Parameters.SetUMI3DProperty(node, dto);
+                return SetEntity(node, dto);
             }
         }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
+        /// <param name="node">Node on which the dto should be applied.</param>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public static bool SetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
+        {
+            if (SetUMI3DPorperty(node, dto)) return true;
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
+            return Parameters.SetUMI3DProperty(node, dto);
+        }
+
 
         /// <summary>
         /// Apply a setEntity to multiple entities
@@ -586,9 +597,7 @@ namespace umi3d.cdk
                 yield return wait;
                 //Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
             }
-            if (SetUMI3DPorperty(node, dto)) yield break;
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) yield break;
-            Parameters.SetUMI3DProperty(node, dto);
+            SetEntity(node, dto);
         }
 
     }

@@ -32,7 +32,7 @@ namespace umi3d.cdk
         }
         protected virtual string _getAuthorization() { return null; }
 
-        static public void Send(AbstractBrowserRequestDto dto, bool reliable)
+        static public void SendData(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
                 Instance._Send(dto, reliable);
@@ -40,12 +40,12 @@ namespace umi3d.cdk
 
         protected virtual void _Send(AbstractBrowserRequestDto dto, bool reliable) { }
 
-        static public void SendTracking(AbstractBrowserRequestDto dto, bool reliable)
+        static public void SendTracking(AbstractBrowserRequestDto dto)
         {
             if (Exists)
-                Instance._SendTracking(dto, reliable);
+                Instance._SendTracking(dto);
         }
-        protected virtual void _SendTracking(AbstractBrowserRequestDto dto, bool reliable) { }
+        protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
 
         static public void GetFile(string url, Action<byte[]> callback, Action<string> onError)
@@ -58,6 +58,12 @@ namespace umi3d.cdk
 
 
         public virtual string GetId() { return null; }
+
+        /// <summary>
+        /// return time server in millisecond, use synchronised time in collaborative cases.
+        /// </summary>
+        /// <returns></returns>
+        public virtual ulong GetTime() { return (ulong)DateTime.Now.Millisecond; }
 
     }
 }

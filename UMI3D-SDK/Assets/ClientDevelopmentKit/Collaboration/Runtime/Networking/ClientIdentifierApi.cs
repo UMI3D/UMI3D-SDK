@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,13 +30,7 @@ namespace umi3d.cdk.collaboration
         /// Should return a login and a password as a string for this client via the callback. 
         /// </summary>
         /// <param name="callback">Action to return the login and the password.</param>
-        public abstract void GetIdentity(Action<string, string> callback);
-
-        /// <summary>
-        /// Should return a login as a string for this client via the callback. 
-        /// </summary>
-        /// <param name="callback">Action to return the login.</param>
-        public abstract void GetIdentity(Action<string> callback);
+        public abstract void GetIdentity(Action<common.collaboration.UMI3DAuthenticator> callback);
 
         /// <summary>
         /// Should fill a formDto and return it via a callback.

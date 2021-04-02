@@ -17,7 +17,7 @@ namespace umi3d.edk
         public string audioSourceId = null;
 
         /// <summary>
-        /// optional user Id for webRTC video chat.
+        /// optional user Id for video chat.
         /// </summary>
         public string streamingFromUserId = null;
 

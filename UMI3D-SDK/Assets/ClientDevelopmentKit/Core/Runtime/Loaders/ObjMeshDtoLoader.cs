@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,8 +44,8 @@ namespace umi3d.cdk
             ImportOptions importOptions = CreateImportOption(authorization);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
                 UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
-                    (m)=>
-                    { 
+                    (m) =>
+                    {
                         objImporter.ImportModelAsync(System.IO.Path.GetFileNameWithoutExtension(url), url, createdObj.transform /*UMI3DResourcesManager.Instance.gameObject.transform*/, importOptions, m);
 
 
@@ -85,6 +85,7 @@ namespace umi3d.cdk
                 localEulerAngles = UMI3DResourcesManager.Instance.transform.eulerAngles + rotOffset,
                 localScale = UMI3DResourcesManager.Instance.transform.lossyScale,
                 authorization = authorization,
+                authorizationName = common.UMI3DNetworkingKeys.Authorization,
                 zUp = false,
                 hideWhileLoading = true,
 

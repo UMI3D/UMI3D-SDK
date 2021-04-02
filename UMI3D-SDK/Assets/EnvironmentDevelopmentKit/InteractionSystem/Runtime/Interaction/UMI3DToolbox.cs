@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -40,6 +40,9 @@ namespace umi3d.edk.interaction
         protected List<UMI3DTool> tools = new List<UMI3DTool>();
         public UMI3DAsyncListProperty<UMI3DTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
 
+        [SerializeField, EditorReadOnly]
+        protected bool Active;
+        public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
 
         #region properties
 
@@ -81,7 +84,7 @@ namespace umi3d.edk.interaction
             var operation = new LoadEntity()
             {
                 entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;
         }
@@ -111,7 +114,7 @@ namespace umi3d.edk.interaction
         protected Dictionary<UMI3DUser, bool> availableLastFrame = new Dictionary<UMI3DUser, bool>();
         private UMI3DAsyncProperty<UMI3DScene> _objectScene;
         private UMI3DAsyncListProperty<UMI3DTool> _objectTools;
-
+        private UMI3DAsyncProperty<bool> _objectActive;
         #endregion
 
 
@@ -122,10 +125,18 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
+            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+            {
+                if (this != null)
+                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                        AddConnectionFilter(f);
+            });
+
             toolboxId = id;
             if (Scene == null) Scene = GetComponent<UMI3DScene>();
             objectTools = new UMI3DAsyncListProperty<UMI3DTool>(toolboxId, UMI3DPropertyKeys.ToolboxTools, tools);
             objectScene = new UMI3DAsyncProperty<UMI3DScene>(toolboxId, UMI3DPropertyKeys.ToolboxSceneId, Scene, (s, u) => s.Id());
+            objectActive = new UMI3DAsyncProperty<bool>(toolboxId, UMI3DPropertyKeys.ToolBoxActive, Active);
             inited = true;
         }
 
@@ -154,6 +165,7 @@ namespace umi3d.edk.interaction
             dto.icon2D = display.icon2D.ToDto();
             dto.icon3D = display.icon3D.ToDto();
             dto.tools = objectTools?.GetValue(user).Where(t => t != null).Select(t => t.ToDto(user) as ToolDto).ToList();
+            dto.Active = objectActive.GetValue(user);
             return dto;
         }
 
@@ -161,5 +173,24 @@ namespace umi3d.edk.interaction
         {
             return ToDto(user);
         }
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

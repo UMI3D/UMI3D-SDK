@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -29,19 +28,24 @@ namespace umi3d.cdk.collaboration
         UserDto dto;
 
         public string id;
+        public uint networkId;
         public StatusType status;
         public UMI3DAudioPlayer audioplayer { get => UMI3DAudioPlayer.Get(dto.audioSourceId); }
         public UMI3DVideoPlayer videoPlayer { get => UMI3DVideoPlayer.Get(dto.videoSourceId); }
         public UserAvatar avatar { get => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar; }
 
-        public List<DataChannel> dataChannels = new List<DataChannel>();
-
         public UMI3DUser(UserDto user)
         {
             dto = user;
             id = user.id;
+            networkId = user.networkId;
             status = user.status;
             OnNewUser.Invoke(this);
+        }
+
+        public void Destroy()
+        {
+            OnRemoveUser.Invoke(this);
         }
 
         /// <summary>
@@ -69,6 +73,7 @@ namespace umi3d.cdk.collaboration
         public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
 
         static public UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
+        static public UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();

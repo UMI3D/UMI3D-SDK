@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -73,8 +73,14 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            CallbackAfterLoadingForMesh((GameObject)o, (UMI3DMeshNodeDto)dto, node.transform, offset);
-                            finished.Invoke();
+                            if (o is GameObject g && dto is UMI3DMeshNodeDto meshDto)
+                            {
+                                CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset);
+                                finished.Invoke();
+                            }
+                            else
+                                failed?.Invoke($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto");
+                            
                         },
                         failed,
                         loader.DeleteObject
@@ -95,6 +101,8 @@ namespace umi3d.cdk
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
                 GameObject copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
+                foreach (var lodgroup in copy.GetComponentsInChildren<LODGroup>())
+                    GameObject.Destroy(lodgroup);
                 Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())
                 {
@@ -121,7 +129,7 @@ namespace umi3d.cdk
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
-                root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
+                root = SetSubObjectsReferences(go, dto,  rotationOffsetByLoader );
             }
             else
             {

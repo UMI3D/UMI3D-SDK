@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -192,13 +192,24 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override bool SwitchTools(string select, string release, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null)
         {
-            ReleaseTool(release);
-            if (!SelectTool(select, releasable, hoveredObjectId, reason))
+            if (toolIdToController.ContainsKey(release))
             {
-                if (SelectTool(release, releasable, hoveredObjectId))
-                    return false;
-                else
+                AbstractController controller = toolIdToController[release];
+                ReleaseTool(release);
+                if (!SelectTool(select, releasable, controller, hoveredObjectId, reason))
+                {
+                    if (SelectTool(release, releasable, controller, hoveredObjectId))
+                        return false;
+                    else
+                        throw new Exception("Internal error");
+                }
+            }
+            else
+            {
+                if (!SelectTool(select, releasable, hoveredObjectId, reason))
+                {
                     throw new Exception("Internal error");
+                }
             }
             return true;
         }

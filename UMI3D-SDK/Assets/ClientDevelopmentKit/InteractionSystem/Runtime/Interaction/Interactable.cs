@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public InteractableDto dto;
 
-        public bool NotifySubObject { get => dto.notifySubObject; }
+        public bool NotifySubObject { get => dto?.notifySubObject ?? false; }
+
 
         ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
@@ -59,7 +60,7 @@ namespace umi3d.cdk.interaction
                 position = position,
                 direction = direction
             };
-            UMI3DClientServer.Send(hoverDto, true);
+            UMI3DClientServer.SendData(hoverDto, true);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace umi3d.cdk.interaction
                 position = position,
                 direction = direction
             };
-            UMI3DClientServer.Send(hoverDto, true);
+            UMI3DClientServer.SendData(hoverDto, true);
         }
 
         /// <summary>
@@ -98,7 +99,7 @@ namespace umi3d.cdk.interaction
                     position = position,
                     direction = direction
                 };
-                UMI3DClientServer.Send(hoverDto, false);
+                UMI3DClientServer.SendData(hoverDto, false);
             }
         }
 

@@ -37,3 +37,5 @@ sysinfo.txt
 /UMI3D-SDK/Assets/EXCLUDED.meta
 /UMI3D-SDK/Assets/EXCLUDED
 */data
+/Packages
+/Dll

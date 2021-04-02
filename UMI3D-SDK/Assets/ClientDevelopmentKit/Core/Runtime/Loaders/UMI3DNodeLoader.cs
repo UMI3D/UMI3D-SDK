@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -53,11 +55,41 @@ namespace umi3d.cdk
                          node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
                      }
 
+                     if (nodeDto.lodDto != null)
+                     {
+                         MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
+                     }
+
 
                      finished?.Invoke();
                  }
                  else failed?.Invoke("nodeDto should not be null");
              }, failed);
+        }
+
+
+        IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
+        {
+            var lg = node.GetOrAddComponent<LODGroup>();
+            var ls = new List<LOD>();
+            foreach (var lod in dto.lods)
+            {
+                var rend = new List<Renderer>();
+
+                foreach (var id in lod.nodes)
+                {
+                    UMI3DNodeInstance n = null;
+                    yield return new WaitUntil(() => (n = UMI3DEnvironmentLoader.GetNode(id)) != null);
+                    var r = n.gameObject.GetComponentInChildren<Renderer>();
+                    if (r != null)
+                        rend.Add(r);
+                }
+                var l = new LOD(lod.screenSize, rend.ToArray());
+                l.fadeTransitionWidth = lod.fadeTransition;
+                ls.Add(l);
+            }
+
+            lg.SetLODs(ls.ToArray());
         }
 
         /// <summary>

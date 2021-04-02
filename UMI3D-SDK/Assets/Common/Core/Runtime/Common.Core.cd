@@ -51,7 +51,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.common.AudioSourceDto" Collapsed="true">
-    <Position X="80.5" Y="6.25" Width="1.5" />
+    <Position X="79.75" Y="6.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAEhAIAIwCAgAASEDAAAAAAIAAAAIQAAAAJAAAAAEAg=</HashCode>
       <FileName>Assets\Common\Core\Runtime\Dto\Objects\AudioSourceDto.cs</FileName>
@@ -339,14 +339,15 @@
   <Class Name="umi3d.common.UMI3DMaterialDto" Collapsed="true">
     <Position X="53.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAgAAAAAAAAAAQAAAAAAICAAgBgAAAAI=</HashCode>
+      <HashCode>AAAAAAAAACAAAgAAAAAAAAAAQAAAAAAICAAgBgAAEAI=</HashCode>
       <FileName>Assets\Common\Core\Runtime\Dto\UMI3DContent\UMI3DMaterialDto.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.common.UMI3DMeshNodeDto" Collapsed="true">
     <Position X="78.25" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAQBAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AACAAAEAAAAAAAAAAAAAAAAAAAQBAAAAAAAAQAAAAAA=</HashCode>
       <FileName>Assets\Common\Core\Runtime\Dto\UMI3DContent\UMI3DMeshNodeDto.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -360,7 +361,7 @@
   <Class Name="umi3d.common.UMI3DNodeDto" Collapsed="true">
     <Position X="77" Y="4.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAgAAAAEAIAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAgAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Assets\Common\Core\Runtime\Dto\UMI3DContent\UMI3DNodeDto.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -430,7 +431,7 @@
   <Class Name="umi3d.common.MediaDto" Collapsed="true">
     <Position X="15.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAAAAAAgAAAAAAAAAABCACAAAAEEIAIBQAAAAAAAAA=</HashCode>
+      <HashCode>BAAAAEAAgAAAAAAAAAAhCACAAAAEEIAIBQAAAAAAAAA=</HashCode>
       <FileName>Assets\Common\Core\Runtime\Dto\UMI3DCoreDto\MediaDto.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -682,14 +683,14 @@
   <Class Name="umi3d.common.UMI3DNetworkingKeys" Collapsed="true">
     <Position X="128.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAAIAAACQBAQAgAAIAEoAIAAAAACAAAAAAAAhABAAAA=</HashCode>
+      <HashCode>gAAIAAACQBAQAgAAIAEoAIAAAAACEAAAAAAAhABAAAA=</HashCode>
       <FileName>Assets\Common\Core\Runtime\UMI3DNetworkingKeys.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.common.UMI3DPropertyKeys" Collapsed="true">
     <Position X="130.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>7GhGMQEyRkZoBoF8REtAMswYiwoQJjU8XkygLAgmgtI=</HashCode>
+      <HashCode>7GjGMQEyRkZoBoF8REtAMswYiwoQJjU8XkywLAgmgtI=</HashCode>
       <FileName>Assets\Common\Core\Runtime\UMI3DPropertyKeys.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -724,7 +725,7 @@
   <Interface Name="umi3d.common.IMaterialDto" Collapsed="true">
     <Position X="125.25" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
       <FileName>Assets\Common\Core\Runtime\Dto\UMI3DContent\IMaterialDto.cs</FileName>
     </TypeIdentifier>
   </Interface>

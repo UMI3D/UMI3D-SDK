@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,10 +67,6 @@ namespace umi3d.edk
         public MediaDto ToDto()
         {
             var res = new MediaDto();
-            res.websocketUrl = UMI3DServer.GetWebsocketUrl();
-            res.websocketUrl = UMI3DServer.GetWebsocketUrl();
-            res.httpUrl = UMI3DServer.GetHttpUrl();
-            res.Authentication = UMI3DServer.GetAuthentication();
             res.name = environmentName;
             res.connection = UMI3DServer.Instance.ToDto();
             res.versionMajor = UMI3DVersion.major;
@@ -85,7 +81,7 @@ namespace umi3d.edk
         {
             GlTFEnvironmentDto env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
-            env.scenes.AddRange(scenes.Select(s => s.ToGlTFNodeDto(user)));
+            env.scenes.AddRange(scenes.Where(s => s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
             WriteProperties(env.extensions.umi3d, user);
             return env;
@@ -126,8 +122,10 @@ namespace umi3d.edk
 
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
-            List<AssetLibraryDto> libraries = globalLibraries.Select(l => l.ToDto()).ToList();
-            libraries.AddRange(scenes.SelectMany(s => s.libraries).GroupBy(l => l.id).Select(l => l.First().ToDto()));
+            List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
+            var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.id == l.Key))?.Select(l => l.First().ToDto());
+            if (sceneLib != null)
+                libraries.AddRange(sceneLib);
             return new LibrariesDto() { libraries = libraries };
         }
 
@@ -149,8 +147,8 @@ namespace umi3d.edk
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (AmbientType)mode);
             objectSkyColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, skyColor, (c, u) => (SerializableColor)c);
-            objectHorizonColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, horizontalColor, (c, u) => (SerializableColor)c);
-            objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, groundColor, (c, u) => (SerializableColor)c);
+            objectHorizonColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientHorizontalColor, horizontalColor, (c, u) => (SerializableColor)c);
+            objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientGroundColor, groundColor, (c, u) => (SerializableColor)c);
             objectAmbientIntensity = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientIntensity, ambientIntensity);
             objectAmbientSkyboxImage = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AmbientSkyboxImage, skyboxImage, (r, u) => r.ToDto());
 
@@ -298,6 +296,12 @@ namespace umi3d.edk
         {
             if (obj != null && Exists)
                 Instance?.entities?.Remove(obj.Id());
+        }
+
+        public static void Remove(string id)
+        {
+            if (id != null && Exists)
+                Instance?.entities?.Remove(id);
         }
 
         public class DictionaryGenerator<A>

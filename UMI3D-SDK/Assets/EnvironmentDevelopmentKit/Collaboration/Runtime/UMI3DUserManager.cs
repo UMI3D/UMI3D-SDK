@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using MainThreadDispatcher;
 using System;
 using System.Collections;
@@ -33,9 +34,14 @@ namespace umi3d.edk.collaboration
         /// </summary>
         Dictionary<string, UMI3DCollaborationUser> users = new Dictionary<string, UMI3DCollaborationUser>();
         Dictionary<string, string> loginMap = new Dictionary<string, string>();
+        Dictionary<uint, string> forgeMap = new Dictionary<uint, string>();
 
         UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
 
+        DateTime lastUpdate = new DateTime();
+
+        public void SetLastUpdate(UMI3DCollaborationUser user) { if(users.ContainsValue(user)) SetLastUpdate(); }
+        void SetLastUpdate() {  lastUpdate = DateTime.UtcNow; }
         public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
             get {
@@ -53,13 +59,40 @@ namespace umi3d.edk.collaboration
             return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
         }
 
+        public PlayerCountDto GetPlayerCount()
+        {
+            var pc = new PlayerCountDto();
+            pc.count = users.Count(k=>k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY);
+            pc.lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss");
+            return pc;
+        }
+
+        
 
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
         public UMI3DCollaborationUser GetUser(string id)
         {
-            return users.ContainsKey(id) ? users[id] : null;
+            lock (users)
+            {
+                return id != null && users.ContainsKey(id) ? users[id] : null;
+            }
+        }
+
+        /// <summary>
+        /// Return the UMI3D user associated with a ForgeNetworkingRemastered Id.
+        /// </summary>
+        public UMI3DCollaborationUser GetUserByNetworkId(uint id)
+        {
+            lock (forgeMap)
+            {
+                string uid = forgeMap.ContainsKey(id) ? forgeMap[id] : null;
+                lock (users)
+                {
+                    return (uid != null && users.ContainsKey(uid)) ? users[uid] : null;
+                }
+            }
         }
 
         /// <summary>
@@ -67,10 +100,13 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public UMI3DCollaborationUser GetUserByToken(string authorization)
         {
-            foreach (UMI3DCollaborationUser u in users.Values)
+            lock (users)
             {
-                if (UMI3DNetworkingKeys.bearer + u.token == authorization)
-                    return u;
+                foreach (UMI3DCollaborationUser u in users.Values)
+                {
+                    if (UMI3DNetworkingKeys.bearer + u.token == authorization)
+                        return u;
+                }
             }
             return null;
         }
@@ -81,7 +117,10 @@ namespace umi3d.edk.collaboration
         public IEnumerable<UMI3DCollaborationUser> Users
         {
             get {
-                return users.Values;
+                lock (users)
+                {
+                    return users.Values.ToList();
+                }
             }
         }
 
@@ -92,10 +131,13 @@ namespace umi3d.edk.collaboration
         public void Logout(UMI3DCollaborationUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
-            if (users.ContainsKey(user.Id()))
+            lock (users)
+            {
                 users.Remove(user.Id());
-            if (loginMap.ContainsKey(user.login))
-                loginMap.Remove(user.login);
+                SetLastUpdate();
+            }
+            loginMap.Remove(user.login);
+            forgeMap.Remove(user.networkPlayer.NetworkId);
             user.SetStatus(StatusType.NONE);
             user.Logout();
         }
@@ -105,40 +147,65 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IEnumerator ConnectionClose(string id)
+        public void ConnectionClose(string id)
         {
-            Debug.Log($"connection close {id}");
             if (users.ContainsKey(id))
             {
                 var user = users[id];
                 user.SetStatus(StatusType.MISSING);
             }
             else Debug.Log($"{id} not found");
-            yield break;
         }
 
         /// <summary>
         /// Create a User.
         /// </summary>
-        /// <param name="Login">Login of the user.</param>
-        /// <param name="connection">Websoket connection of the user.</param>
-        /// <param name="Callback">Callback called when the user has been created.</param>
-        public void CreateUser(string Login, Action<UMI3DCollaborationUser, bool> Callback)
+        /// <param name="LoginDto">Login of the user.</param>
+        /// <param name="onUserCreated">Callback called when the user has been created.</param>
+        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            UMI3DCollaborationUser user;
-            bool reconnection = false;
-            if (loginMap.ContainsKey(Login) && users.ContainsKey(loginMap[Login]))
+            lock (users)
             {
-                user = users[loginMap[Login]];
-                reconnection = true;
+                UMI3DCollaborationUser user;
+                bool reconnection = false;
+                if (LoginDto == null)
+                {
+                    Debug.LogWarning("user try to use empty login");
+                    acceptUser(false);
+                    return;
+                }
+                if (LoginDto.login == null || LoginDto.login == "")
+                {
+                    LoginDto.login = player.NetworkId.ToString();
+                }
+
+                if (loginMap.ContainsKey(LoginDto.login))
+                {
+                    if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != null && users.ContainsKey(LoginDto.userId))
+                    {
+                        Debug.LogWarning($"Login [{LoginDto.login}] already us by an other user");
+                        acceptUser(false);
+                        return;
+                    }
+                    else
+                    {
+                        user = users[LoginDto.userId];
+                        forgeMap.Remove(user.networkPlayer.NetworkId);
+                        reconnection = true;
+                    }
+                }
+                else
+                {
+                    user = new UMI3DCollaborationUser(LoginDto.login);
+                    SetLastUpdate();
+                    loginMap[LoginDto.login] = user.Id();
+                    users.Add(user.Id(), user);
+                }
+                user.networkPlayer = player;
+                forgeMap.Add(player.NetworkId, user.Id());
+                acceptUser(true);
+                onUserCreated.Invoke(user, reconnection);
             }
-            else
-            {
-                user = new UMI3DCollaborationUser(Login);
-                loginMap[Login] = user.Id();
-                users.Add(user.Id(), user);
-            }
-            Callback.Invoke(user, reconnection);
         }
 
         /// <summary>
@@ -164,13 +231,20 @@ namespace umi3d.edk.collaboration
         IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Add(user) } });
+            var op = objectUserList.Add(user);
+            op.users.Remove(user);
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }
 
         IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { objectUserList.Remove(user) } });
+            var op = objectUserList.Remove(user);
+            if (op == null)
+                yield break;
+            if (user != null)
+                op.users.Remove(user);
+            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
         }
 
         IEnumerator UpdateUser(UMI3DCollaborationUser user)

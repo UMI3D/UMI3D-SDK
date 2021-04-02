@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ namespace umi3d.common
         public const string Position = "position";
         public const string Rotation = "rotation";
         public const string Scale = "scale";
+
+        public const string EntityGroupIds = "entity_group_ids";
 
         #region Node
         public const string XBillboard = "umi3d_billboard_x";
@@ -61,6 +63,9 @@ namespace umi3d.common
         #endregion
 
         #region tool
+        public const string ToolActive = "umi3d_tool_active";
+        public const string ToolBoxActive = "umi3d_toolBox_active";
+
         public const string ToolboxName = "umi3d_toolbox_name";
         public const string ToolboxDescription = "umi3d_toolbox_description";
         public const string ToolboxIcon2D = "umi3d_toolbox_icon_2d";
@@ -152,6 +157,7 @@ namespace umi3d.common
         public const string AnimationPlaying = "umi3d_animation_playing";
         public const string AnimationLooping = "umi3d_animation_looping";
         public const string AnimationStartTime = "umi3d_animation_start_time";
+        public const string AnimationPauseFrame = "umi3d_animation_pause_frame";
 
         public const string AnimationNode = "umi3d_animation_node";
         public const string AnimationResource = "umi3d_animation_resource";
@@ -164,7 +170,6 @@ namespace umi3d.common
         public const string AnimationChain = "umi3d_animation_chain";
 
         #endregion
-
 
         #region Material
 

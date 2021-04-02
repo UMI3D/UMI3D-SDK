@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,6 +47,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public ResourceDto icon3D { get { return abstractDto.icon3D; } }
 
+        public bool Active { get => abstractDto?.active ?? false; }
+
         /// <summary>
         /// Contained tools.
         /// </summary>
@@ -74,7 +76,7 @@ namespace umi3d.cdk.interaction
                 boneType = boneType,
                 toolId = id
             };
-            UMI3DClientServer.Send(projectedDto, true);
+            UMI3DClientServer.SendData(projectedDto, true);
         }
 
         public void onReleased(string boneType)
@@ -85,7 +87,7 @@ namespace umi3d.cdk.interaction
                 boneType = boneType,
                 toolId = id
             };
-            UMI3DClientServer.Send(releasedDto, true);
+            UMI3DClientServer.SendData(releasedDto, true);
         }
 
         protected AbstractTool(AbstractToolDto abstractDto)

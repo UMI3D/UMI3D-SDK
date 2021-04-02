@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -40,8 +40,10 @@ namespace umi3d.common
         public const string environment = "/environment";
         public const string join = "/environment/join";
         public const string scene = "/environment/scene/:id";
+        public const string playerCount = "/environment/player_count";
 
         //Prefix
+        /*
         public const string websocket = "/socket";
         public const string websocket_reliable_data = "/reliabledata";
         public const string websocket_unreliable_data = "/unreliabledata";
@@ -49,6 +51,7 @@ namespace umi3d.common
         public const string websocket_unreliable_tracking = "/unreliabletracking";
         public const string websocket_audio = "/audio";
         public const string websocket_video = "/video";
+        */
         public const string websocketProtocol = "echo-protocol";//"access_token";
         public const string Authorization = "AUTHORIZATION";
         public const string bearer = "BEARER";

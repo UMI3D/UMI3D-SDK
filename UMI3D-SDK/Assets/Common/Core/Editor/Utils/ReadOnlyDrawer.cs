@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +15,8 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.common.editor
 {
@@ -51,7 +49,7 @@ namespace umi3d.common.editor
         /// <inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property,true);
+            return EditorGUI.GetPropertyHeight(property, true);
         }
 
         /// <summary>Property will not be editable.</summary>

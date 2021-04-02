@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ namespace umi3d.edk.editor
     {
 
         AbstractTool t;
+        SerializedProperty Active;
         protected SerializedObject _target;
         SerializedProperty interactions;
         SerializedProperty display;
@@ -46,11 +47,13 @@ namespace umi3d.edk.editor
             interactions = _target.FindProperty("Interactions");
             onProjection = _target.FindProperty("onProjection");
             onRelease = _target.FindProperty("onRelease");
+            Active = _target.FindProperty("Active");
             ListDisplayer = new ListDisplayer<AbstractInteraction>();
         }
 
         protected virtual void _OnInspectorGUI()
         {
+            EditorGUILayout.PropertyField(Active);
             EditorGUILayout.PropertyField(display);
             ListDisplayer.Display(ref showList, interactions, t.Interactions,
                 t =>

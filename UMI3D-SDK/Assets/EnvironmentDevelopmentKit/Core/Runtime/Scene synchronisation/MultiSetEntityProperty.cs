@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ namespace umi3d.edk
         /// <summary>
         /// The identifiers list of the entities
         /// </summary>
-        public List<string> entityIds;
+        public List<UMI3DEntity> entityIds;
 
         /// <summary>
         /// The name of the modified property
@@ -45,7 +45,7 @@ namespace umi3d.edk
             {
                 property = property,
                 value = value,
-                entityIds = entityIds
+                entityIds = entityIds.Select(e => e.Id()).ToList()
             };
 
         }

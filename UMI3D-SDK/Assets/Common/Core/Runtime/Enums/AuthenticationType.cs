@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,16 +19,16 @@ namespace umi3d.common
     public enum AuthenticationType
     {
         /// <summary>
-        /// Specifies digest authentication.
+        /// No Authentication.
         /// </summary>
-        Digest,
+        None,
         /// <summary>
-        /// Specifies basic authentication.
+        /// Basic authentication.
         /// </summary>
         Basic,
         /// <summary>
-        /// Specifies anonymous authentication.
+        /// Pin authentication.
         /// </summary>
-        Anonymous,
+        Pin,
     }
 }

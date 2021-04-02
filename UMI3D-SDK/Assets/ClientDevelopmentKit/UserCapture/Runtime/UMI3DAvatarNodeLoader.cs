@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -45,9 +45,13 @@ namespace umi3d.cdk
             }
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
-                ua.Set(dto as UMI3DAvatarNodeDto);
-                UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
+                {
+                    UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
+                    ua.Set(dto as UMI3DAvatarNodeDto);
+                    UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+                }
+
                 finished.Invoke();
             }, (s) => failed.Invoke(s));
         }

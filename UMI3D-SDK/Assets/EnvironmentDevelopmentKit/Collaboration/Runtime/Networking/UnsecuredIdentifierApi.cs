@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -25,41 +23,12 @@ namespace umi3d.edk.collaboration
     [CreateAssetMenu(fileName = "UnsecuredIdentifierApi", menuName = "UMI3D/Unsecured Identifier")]
     public class UnsecuredIdentifierApi : IdentifierApi
     {
-        public Dictionary<string, WebSocketSharp.Net.NetworkCredential> PasswordMap = new Dictionary<string, WebSocketSharp.Net.NetworkCredential>();
-        public Dictionary<string, FormDto> idMap = new Dictionary<string, FormDto>();
-
         ///<inheritdoc/>
-        public override FormDto GetParameterDtosFor(string login)
+        public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
         {
-            if (!idMap.ContainsKey(login) || idMap[login] == null)
-            {
-                idMap[login] = new FormDto();
-                idMap[login].fields = new List<AbstractParameterDto>();
-                StringParameterDto username = new StringParameterDto()
-                {
-                    name = "username",
-                    value = "",
-                };
-                idMap[login].fields.Add(username);
-            }
-
-            return idMap[login];
-        }
-
-        ///<inheritdoc/>
-        public override WebSocketSharp.Net.NetworkCredential GetPasswordFor(string login)
-        {
-            if (PasswordMap.ContainsKey(login))
-                return PasswordMap[login];
-            Debug.Log("no pw found for " + login);
-            return null;
-        }
-
-        ///<inheritdoc/>
-        public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
-        {
-            idMap[user.login] = identity.parameters;
-            return (idMap[user.login] != null && (idMap[user.login].fields[0] is StringParameterDto) && (idMap[user.login].fields[0] as StringParameterDto).value != "") ? StatusType.READY : StatusType.CREATED;
+            if (type != AuthenticationType.None) Debug.LogWarning($"UnsecuredIdentifierApi does not handle other AuthenticationType than None [ignored type : {type}]");
+            type = AuthenticationType.None;
+            return new UMI3DAuthenticator();
         }
     }
 }

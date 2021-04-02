@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,29 +16,32 @@ limitations under the License.
 
 using umi3d.common;
 using UnityEngine;
+using UnityEngine.Video;
 
 namespace umi3d.edk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
 
-        //[SerializeField]
-        //UMI3DMAterial material;
+        public VideoPlayer video; // could be null, used to synchonize video progreess
+        [SerializeField]
+        MaterialSO material;
         [SerializeField, EditorReadOnly]
         UMI3DResource videoResources;
+        public UMI3DAudioPlayer audioPlayer;
         private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
 
-        //public UMI3DAsyncProperty<UMI3DMaterial> ObjectMaterial;
+        public UMI3DAsyncProperty<MaterialSO> ObjectMaterial;
         public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource { get { Register(); return objectVideoResource; } protected set => objectVideoResource = value; }
 
         ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
             base.InitDefinition(id);
-            //ObjectMaterial = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNode, material, (m, u) => m?.Id());
+            ObjectMaterial = new UMI3DAsyncProperty<MaterialSO>(id, UMI3DPropertyKeys.AnimationNode, material, (m, u) => m?.Id());
             ObjectVideoResource = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AnimationResource, videoResources, (r, u) => r?.ToDto());
 
-            //ObjectMaterial.OnValueChanged += (n) => material = n;
+            ObjectMaterial.OnValueChanged += (n) => material = n;
             ObjectVideoResource.OnValueChanged += (r) => videoResources = r;
         }
 
@@ -47,8 +50,13 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var Adto = dto as UMI3DVideoPlayerDto;
-            //Adto.materialId = ObjectMaterial.GetValue(user)?.Id();
+            Adto.materialId = ObjectMaterial.GetValue(user)?.Id();
+            //Debug.Log(" env : " + Adto.materialId);
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
+            if (audioPlayer != null)
+            {
+                Adto.audioId = audioPlayer.Id();
+            }
         }
 
         ///<inheritdoc/>

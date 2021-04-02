@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
-using umi3d.common.collaboration;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -44,22 +42,11 @@ namespace umi3d.edk.collaboration
         {
             if (_user is UMI3DCollaborationUser user)
             {
-                user.dataChannels.Add(UMI3DCollaborationServer.WebRTC.CreateChannel(user, false, DataType.Audio));
-                UMI3DCollaborationServer.Collaboration.Users.Where(u => u != user)
-                    .Where(u => u.dataChannels.FirstOrDefault(dc => dc is BridgeChannel bridge && bridge.Equals(u, user, false, DataType.Audio)) == default)
-                    .ForEach(u =>
-                    {
-                        var dc = UMI3DCollaborationServer.WebRTC.CreateChannel(user, u, false, DataType.Tracking);
-                        user.dataChannels.Add(dc);
-                        u.dataChannels.Add(dc);
-                    });
-
                 if (user.audioPlayer == null)
                 {
                     StartCoroutine(SetAudioSource(user));
                 }
                 StartCoroutine(SetSpacialBlend(user));
-
             }
         }
 

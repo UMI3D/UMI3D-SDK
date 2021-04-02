@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,6 +30,18 @@ namespace umi3d.edk
         protected bool ignoreModelMaterialOverride = false;
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable = true;
+
+
         ///<inheritdoc/>
         protected override void InitDefinition(string id)
         {
@@ -41,14 +53,13 @@ namespace umi3d.edk
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
         /// </summary>
-        public override LoadEntity Register()
+        public override void Register()
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
                 objectId = UMI3DEnvironment.Register(this, parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id()));
                 InitDefinition(objectId);
             }
-            return GetLoadEntity();
         }
 
         ///<inheritdoc/>
@@ -79,7 +90,8 @@ namespace umi3d.edk
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
-
+            subDto.isTraversable = isTraversable;
+            subDto.isPartOfNavmesh = isPartOfNavmesh;
         }
 
     }

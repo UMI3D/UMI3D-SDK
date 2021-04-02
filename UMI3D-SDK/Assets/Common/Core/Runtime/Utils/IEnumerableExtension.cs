@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,15 +15,13 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace umi3d.common
 {
-    public static class IEnumerableExtension 
+    public static class IEnumerableExtension
     {
-        public static void ForEach<A>(this IEnumerable<A> source,Action<A> action)
+        public static void ForEach<A>(this IEnumerable<A> source, Action<A> action)
         {
             if (action == null)
                 throw new Exception("action should not be null");

@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 Gfi Informatique
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ namespace umi3d.edk
             dto.extension = extension;
             dto.metrics = metrics;
             dto.pathIfInBundle = isInBundle ? pathIfInBundle : null;
-            dto.libraryKey = isInLibrary ? libraryKey.id : null;
+            dto.libraryKey = isInLibrary ? libraryKey?.id : null;
             return dto;
         }
         public string GetUrl()
@@ -54,9 +54,9 @@ namespace umi3d.edk
                 path = "/" + path;
             }
             if (isLocalFile)
-                return Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path);
+                return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));
             else
-                return Path.Combine(domain, path);
+                return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
     }
