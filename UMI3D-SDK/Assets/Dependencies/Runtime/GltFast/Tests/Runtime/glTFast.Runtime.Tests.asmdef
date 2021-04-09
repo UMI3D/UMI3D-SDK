@@ -1,18 +1,22 @@
 {
-    "name": "glTFastTests",
+    "name": "glTFast.Runtime.Tests",
     "references": [
         "glTFast",
-        "glTFSampleModels"
-    ],
-    "optionalUnityReferences": [
-        "TestAssemblies"
+        "glTFSampleModels",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
-    "versionDefines": []
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
