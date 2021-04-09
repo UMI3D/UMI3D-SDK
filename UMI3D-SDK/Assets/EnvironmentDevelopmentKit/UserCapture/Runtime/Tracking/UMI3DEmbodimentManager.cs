@@ -59,7 +59,10 @@ namespace umi3d.edk.userCapture
 
         public virtual bool BoneTrackedInformation(string userId, string bonetype)
         {
-            return true;
+            if (embodimentTrackedBonetypes.ContainsKey(userId))
+                return embodimentTrackedBonetypes[userId][bonetype];
+            else
+                return false;
         }
 
         public void JoinDtoReception(string userId, SerializableVector3 userSize, Dictionary<string, bool> trackedBonetypes)
