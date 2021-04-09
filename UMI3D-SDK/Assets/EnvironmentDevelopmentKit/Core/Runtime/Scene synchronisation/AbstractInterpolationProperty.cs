@@ -33,10 +33,5 @@ namespace umi3d.edk
         /// The name of the interpolated property
         /// </summary>
         public string property;
-
-        /// <summary>
-        /// The name of the interpolated property
-        /// </summary>
-        public int frequency;
     }
 }

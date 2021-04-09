@@ -48,7 +48,7 @@ namespace umi3d.cdk.userCapture
                     Anchor.lossyScale),
                 rotation = Quaternion.Inverse(Anchor.rotation) * transform.rotation,
                 scale = transform.lossyScale,
-                tracked = isTracked
+                //tracked = isTracked
             };
         }
 

@@ -32,7 +32,9 @@ namespace umi3d.cdk.userCapture
         public string viewpointBonetype;
 
         public bool sendTracking = true;
-        public float targetTrackingFPS = 30;
+
+        [SerializeField]
+        float targetTrackingFPS = 15;
 
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
@@ -127,7 +129,7 @@ namespace umi3d.cdk.userCapture
                     position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     scale = skeletonContainer.localScale,
-                    userId = UMI3DClientServer.Instance.GetId(),
+                    //userId = UMI3DClientServer.Instance.GetId(),
                 };
 
                 skeletonParsedEvent.Invoke();
@@ -172,5 +174,9 @@ namespace umi3d.cdk.userCapture
             return embodimentDict.TryGetValue(id, out embd);
         }
 
+        public void setFPSTarget(int newFPSTarget)
+        {
+            targetTrackingFPS = newFPSTarget;
+        }
     }
 }

@@ -28,6 +28,8 @@ namespace umi3d.edk.userCapture
         public UMI3DScene embodimentsScene;
 
         public Dictionary<string, UMI3DAvatarNode> embodimentInstances = new Dictionary<string, UMI3DAvatarNode>();
+        public Dictionary<string, Vector3> embodimentSize = new Dictionary<string, Vector3>();
+        public Dictionary<string, Dictionary<string, bool>> embodimentTrackedBonetypes = new Dictionary<string, Dictionary<string, bool>>();
 
         public class EmbodimentEvent : UnityEvent<UMI3DAvatarNode> { };
         public class EmbodimentBoneEvent : UnityEvent<UMI3DUserEmbodimentBone> { };
@@ -58,6 +60,19 @@ namespace umi3d.edk.userCapture
         public virtual bool BoneTrackedInformation(string userId, string bonetype)
         {
             return true;
+        }
+
+        public void JoinDtoReception(string userId, SerializableVector3 userSize, Dictionary<string, bool> trackedBonetypes)
+        {
+            if (embodimentSize.ContainsKey(userId))
+                Debug.LogWarning("Internal error : the user size is already registered");
+            else 
+                embodimentSize.Add(userId, (Vector3)userSize);
+
+            if (embodimentTrackedBonetypes.ContainsKey(userId))
+                Debug.LogWarning("Internal error : the user tracked data are already registered");
+            else
+                embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
         }
 
         /// <summary>
@@ -91,15 +106,15 @@ namespace umi3d.edk.userCapture
         /// Update the Embodiment from the received Dto.
         /// </summary>
         /// <param name="dto">a dto containing the tracking data</param>
-        public void UserTrackingReception(UserTrackingFrameDto dto)
+        public void UserTrackingReception(UserTrackingFrameDto dto, string userId)
         {
-            if (!embodimentInstances.ContainsKey(dto.userId))
+            if (!embodimentInstances.ContainsKey(userId)) // voir avec Forge
             {
-                Debug.LogWarning($"Internal error : the user [{dto.userId}] is not registered");
+                Debug.LogWarning($"Internal error : the user [{userId}] is not registered");
                 return;
             }
 
-            UMI3DAvatarNode userEmbd = embodimentInstances[dto.userId];
+            UMI3DAvatarNode userEmbd = embodimentInstances[userId];
             userEmbd.transform.localPosition = dto.position;
             userEmbd.transform.localRotation = dto.rotation;
             userEmbd.transform.localScale = dto.scale;

@@ -19,23 +19,8 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
-    /// <summary>
-    /// An operation to transmit information about interpolation to users.
-    /// </summary>
-    public class StopInterpolationProperty : AbstractInterpolationProperty
+    public abstract class SetTrackingTargetFPS : Operation
     {
-        /// <summary>
-        /// The new value for the property
-        /// </summary>
-        public object stopValue;
-
-        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
-        {
-            var stopInterpolation = new StopInterpolationPropertyDto();
-            stopInterpolation.property = property;
-            stopInterpolation.entityId = entityId;
-            stopInterpolation.stopValue = stopValue;
-            return stopInterpolation;
-        }
+        public int targetFPS;
     }
 }

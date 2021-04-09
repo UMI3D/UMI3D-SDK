@@ -276,7 +276,7 @@ namespace umi3d.edk.collaboration
                 avatarFrameEvent.Invoke((dto as common.userCapture.UserTrackingFrameDto), server.Time.Timestep);
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
+                    UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, player.NetworkId.ToString());
                 });
                 RelayMessage(player, frame, Receivers.OthersProximity);
             }

@@ -13,24 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
-using umi3d.common.userCapture;
-using umi3d.common.collaboration;
-using umi3d.edk.userCapture;
-using UnityEngine;
-using UnityEngine.Events;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk
 {
-    public class UMI3DCollaborationEmbodimentManager : UMI3DEmbodimentManager
+    public abstract class SetStreamedBones : Operation
     {
-        public override bool BoneTrackedInformation(string userId, string bonetype)
-        {
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUser(userId);
-            return user.joinDto.trackedBonetypes[bonetype];
-        }
+        public List<string> streamedBones;
     }
 }

@@ -34,7 +34,6 @@ namespace umi3d.edk
             var startInterpolation = new StartInterpolationPropertyDto();
             startInterpolation.property = property;
             startInterpolation.entityId = entityId;
-            startInterpolation.frequency = frequency;
             startInterpolation.startValue = startValue;
             return startInterpolation;
         }
