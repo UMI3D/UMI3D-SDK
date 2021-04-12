@@ -17,10 +17,10 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 
-namespace umi3d.edk
+namespace umi3d.edk.userCapture
 {
-    public abstract class SetStreamedBones : Operation
+    public abstract class SetTrackingTargetFPS : Operation
     {
-        public List<string> streamedBones;
+        public int targetFPS;
     }
 }
