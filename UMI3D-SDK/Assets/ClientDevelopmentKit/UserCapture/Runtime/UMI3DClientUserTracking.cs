@@ -36,6 +36,8 @@ namespace umi3d.cdk.userCapture
         [SerializeField]
         float targetTrackingFPS = 15;
 
+        List<string> bonesToStream = new List<string>();
+
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
         [Tooltip("This event is raised after each analysis of the skeleton.")]
@@ -84,7 +86,7 @@ namespace umi3d.cdk.userCapture
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists && LastFrameDto.userId != null)
+                    if (UMI3DClientServer.Exists /*&& LastFrameDto.userId != null*/)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
@@ -118,9 +120,12 @@ namespace umi3d.cdk.userCapture
                 List<BoneDto> bonesList = new List<BoneDto>();
                 foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
                 {
-                    BoneDto dto = bone.ToDto(anchor);
-                    if (dto != null)
-                        bonesList.Add(dto);
+                    if (bonesToStream.Contains(bone.boneType))
+                    {
+                        BoneDto dto = bone.ToDto(anchor);
+                        if (dto != null)
+                            bonesList.Add(dto);
+                    }
                 }
 
                 LastFrameDto = new UserTrackingFrameDto()
@@ -177,6 +182,11 @@ namespace umi3d.cdk.userCapture
         public void setFPSTarget(int newFPSTarget)
         {
             targetTrackingFPS = newFPSTarget;
+        }
+
+        public void setStreamedBones(List<string> bonesToStream)
+        {
+            this.bonesToStream = bonesToStream;
         }
     }
 }

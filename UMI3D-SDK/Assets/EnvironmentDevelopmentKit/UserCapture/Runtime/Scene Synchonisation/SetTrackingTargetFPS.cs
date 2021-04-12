@@ -19,8 +19,17 @@ using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
-    public abstract class SetStreamedBones : Operation
+    public abstract class SetTrackingTargetFPS : Operation
     {
-        public List<string> streamedBones;
+        public int targetFPS;
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            var targetFPS = new SetTrackingTargetFPSDto()
+            {
+                targetFPS = this.targetFPS
+            };
+            return targetFPS;
+        }
     }
 }

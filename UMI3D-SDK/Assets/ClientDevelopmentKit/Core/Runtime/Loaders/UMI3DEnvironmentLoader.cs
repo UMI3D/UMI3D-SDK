@@ -600,5 +600,17 @@ namespace umi3d.cdk
             SetEntity(node, dto);
         }
 
+        public static bool StartInterpolation(StartInterpolationPropertyDto dto)
+        {
+
+            return true;
+        }
+
+        public static bool StopInterpolation(StopInterpolationPropertyDto dto)
+        {
+
+            return true;
+        }
+
     }
 }
