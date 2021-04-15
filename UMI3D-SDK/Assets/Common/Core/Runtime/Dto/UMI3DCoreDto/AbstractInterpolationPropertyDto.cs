@@ -29,10 +29,5 @@ namespace umi3d.common
         /// The name of the interpolated property
         /// </summary>
         public string property;
-
-        /// <summary>
-        /// The name of the interpolated property
-        /// </summary>
-        public int frequency;
     }
 }

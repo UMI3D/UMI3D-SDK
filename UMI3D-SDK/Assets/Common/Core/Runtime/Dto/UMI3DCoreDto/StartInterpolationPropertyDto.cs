@@ -24,5 +24,10 @@ namespace umi3d.common
         /// The new value for the property
         /// </summary>
         public object startValue;
+
+        /// <summary>
+        /// The frequency of update 
+        /// </summary>
+        public int frequency;
     }
 }

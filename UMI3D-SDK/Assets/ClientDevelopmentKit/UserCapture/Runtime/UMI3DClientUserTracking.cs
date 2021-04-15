@@ -34,9 +34,9 @@ namespace umi3d.cdk.userCapture
         public bool sendTracking = true;
 
         [SerializeField]
-        float targetTrackingFPS = 15;
+        protected float targetTrackingFPS = 15;
 
-        List<string> bonesToStream = new List<string>();
+        List<string> streamedBonetypes = new List<string>();
 
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
@@ -86,7 +86,7 @@ namespace umi3d.cdk.userCapture
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists /*&& LastFrameDto.userId != null*/)
+                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != null)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
@@ -120,7 +120,7 @@ namespace umi3d.cdk.userCapture
                 List<BoneDto> bonesList = new List<BoneDto>();
                 foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
                 {
-                    if (bonesToStream.Contains(bone.boneType))
+                    if (streamedBonetypes.Contains(bone.boneType))
                     {
                         BoneDto dto = bone.ToDto(anchor);
                         if (dto != null)
@@ -134,7 +134,6 @@ namespace umi3d.cdk.userCapture
                     position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     scale = skeletonContainer.localScale,
-                    //userId = UMI3DClientServer.Instance.GetId(),
                 };
 
                 skeletonParsedEvent.Invoke();
@@ -186,7 +185,7 @@ namespace umi3d.cdk.userCapture
 
         public void setStreamedBones(List<string> bonesToStream)
         {
-            this.bonesToStream = bonesToStream;
+            this.streamedBonetypes = bonesToStream;
         }
     }
 }

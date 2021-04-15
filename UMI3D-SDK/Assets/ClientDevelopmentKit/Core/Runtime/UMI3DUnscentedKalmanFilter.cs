@@ -18,9 +18,9 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk
 {
-    public class UKF
+    public class UMI3DUnscentedKalmanFilter
     {
         /// <summary>
         /// States number
@@ -102,12 +102,12 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="L">States number</param>
         /// <param name="m">Measurements number</param>
-        public UKF(int L = 0)
+        public UMI3DUnscentedKalmanFilter(int L = 0)
         {
             this.L = L;
         }
 
-        public UKF(double q, double r, int L = 0)
+        public UMI3DUnscentedKalmanFilter(double q, double r, int L = 0)
         {
             this.q = q;
             this.r = r;

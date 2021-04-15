@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     {
         private class KalmanPosition
         {
-            public UKF KalmanFilter;
+            public UMI3DUnscentedKalmanFilter KalmanFilter;
             public double[] estimations;
             public double[] previous_prediction;
             public double[] prediction;
@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
 
             public KalmanPosition(double q, double r)
             {
-                KalmanFilter = new UKF(q, r);
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
                 estimations = new double[] { };
                 previous_prediction = new double[] { };
                 prediction = new double[] { };
@@ -44,7 +44,7 @@ namespace umi3d.cdk.collaboration
 
         private class KalmanRotation
         {
-            public UKF KalmanFilter = new UKF();
+            public UMI3DUnscentedKalmanFilter KalmanFilter = new UMI3DUnscentedKalmanFilter();
             public double[] estimations;
             public double[] previous_prediction;
             public double[] prediction;
@@ -52,7 +52,7 @@ namespace umi3d.cdk.collaboration
 
             public KalmanRotation(double q, double r)
             {
-                KalmanFilter = new UKF(q, r);
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
                 estimations = new double[] { };
                 previous_prediction = new double[] { };
                 prediction = new double[] { };
@@ -116,7 +116,7 @@ namespace umi3d.cdk.collaboration
                 double check = lastMessageTime;
                 double now = Time.time;
 
-                var delta = now - check;
+                double delta = now - check;
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
