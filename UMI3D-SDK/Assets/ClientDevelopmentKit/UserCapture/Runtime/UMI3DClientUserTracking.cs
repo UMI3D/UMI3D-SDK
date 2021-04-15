@@ -133,7 +133,7 @@ namespace umi3d.cdk.userCapture
                     bones = bonesList,
                     position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
-                    scale = skeletonContainer.localScale,
+                    refreshFrequency = targetTrackingFPS
                 };
 
                 skeletonParsedEvent.Invoke();

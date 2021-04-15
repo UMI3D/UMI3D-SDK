@@ -45,7 +45,7 @@ namespace umi3d.cdk.userCapture
                     Anchor.InverseTransformPoint(transform.position),
                     Anchor.lossyScale),
                 rotation = Quaternion.Inverse(Anchor.rotation) * transform.rotation,
-                scale = transform.lossyScale,
+                scale = transform.localScale,
             };
         }
 
