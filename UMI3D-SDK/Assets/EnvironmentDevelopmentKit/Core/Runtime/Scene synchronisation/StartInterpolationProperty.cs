@@ -20,14 +20,19 @@ using umi3d.common;
 namespace umi3d.edk
 {
     /// <summary>
-    /// An operation to transmit information about interpolation to users.
+    /// An operation to start interpolatation on a property's entity
     /// </summary>
     public class StartInterpolationProperty : AbstractInterpolationProperty
     {
         /// <summary>
-        /// The new value for the property
+        /// The value with witch to start interpolation
         /// </summary>
         public object startValue;
+
+        /// <summary>
+        /// The frequency of update 
+        /// </summary>
+        public int frequency;
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
@@ -35,6 +40,7 @@ namespace umi3d.edk
             startInterpolation.property = property;
             startInterpolation.entityId = entityId;
             startInterpolation.startValue = startValue;
+            startInterpolation.frequency = frequency; 
             return startInterpolation;
         }
     }

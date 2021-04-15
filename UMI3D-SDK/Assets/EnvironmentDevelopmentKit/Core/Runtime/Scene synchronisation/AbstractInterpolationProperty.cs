@@ -20,7 +20,7 @@ using umi3d.common;
 namespace umi3d.edk
 {
     /// <summary>
-    /// An operation to transmit information about interpolation to users.
+    /// Abstract class for Interpolation class
     /// </summary>
     public abstract class AbstractInterpolationProperty : Operation
     {

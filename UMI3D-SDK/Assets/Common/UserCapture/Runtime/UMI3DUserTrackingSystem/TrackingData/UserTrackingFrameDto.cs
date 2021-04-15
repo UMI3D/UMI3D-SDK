@@ -25,8 +25,6 @@ namespace umi3d.common.userCapture
     [Serializable]
     public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
-        //public string userId; -> connu grâce à l'emitter forge
-
         public List<BoneDto> bones;
 
         public SerializableVector3 position;

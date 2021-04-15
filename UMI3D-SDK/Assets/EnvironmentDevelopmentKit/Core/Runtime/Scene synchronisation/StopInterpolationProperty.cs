@@ -20,12 +20,12 @@ using umi3d.common;
 namespace umi3d.edk
 {
     /// <summary>
-    /// An operation to transmit information about interpolation to users.
+    /// An opertion to stop interpolation on a property's entity
     /// </summary>
     public class StopInterpolationProperty : AbstractInterpolationProperty
     {
         /// <summary>
-        /// The new value for the property
+        /// The value with which to stop interpolation
         /// </summary>
         public object stopValue;
 

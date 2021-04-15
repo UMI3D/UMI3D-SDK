@@ -372,7 +372,6 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             JoinDto dto = ReadDto(e.Request) as JoinDto;
             UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), dto.userSize, dto.trackedBonetypes); 
-            //user.joinDto = dto;
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
             UMI3DCollaborationServer.NotifyUserJoin(user);
         }

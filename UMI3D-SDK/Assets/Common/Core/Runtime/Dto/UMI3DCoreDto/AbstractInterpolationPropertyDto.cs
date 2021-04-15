@@ -18,6 +18,9 @@ using System;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Abstract class to describe an interpolation operation
+    /// </summary>
     public class AbstractInterpolationPropertyDto : AbstractOperationDto
     {
         /// <summary>

@@ -18,6 +18,9 @@ using System;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// A class to describe a stopping interpolation operation
+    /// </summary>
     public class StopInterpolationPropertyDto : AbstractInterpolationPropertyDto
     {
         /// <summary>
