@@ -697,6 +697,8 @@ namespace umi3d.cdk
 
                 Instance.entityFilters.Add(id, newKalmanEntity);
 
+                Instance.PropertyKalmanUpdate(newKalmanEntity, dto.startValue);
+
                 SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()
                 {
                     entityId = dto.entityId,

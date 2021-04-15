@@ -25,14 +25,14 @@ namespace umi3d.edk
     public class StartInterpolationProperty : AbstractInterpolationProperty
     {
         /// <summary>
-        /// The value with witch to start interpolation
-        /// </summary>
-        public object startValue;
-
-        /// <summary>
         /// The frequency of update 
         /// </summary>
         public int frequency;
+
+        /// <summary>
+        /// The value with witch to start interpolation
+        /// </summary>
+        public object startValue;
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
