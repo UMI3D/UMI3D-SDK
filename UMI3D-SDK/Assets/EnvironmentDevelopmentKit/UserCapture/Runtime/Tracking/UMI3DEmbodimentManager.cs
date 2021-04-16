@@ -120,7 +120,7 @@ namespace umi3d.edk.userCapture
             UMI3DAvatarNode userEmbd = embodimentInstances[userId];
             userEmbd.transform.localPosition = dto.position;
             userEmbd.transform.localRotation = dto.rotation;
-            userEmbd.transform.localScale = dto.scale;
+            userEmbd.transform.localScale = Vector3.one;
 
             UpdateNodeTransform(userEmbd);
 
