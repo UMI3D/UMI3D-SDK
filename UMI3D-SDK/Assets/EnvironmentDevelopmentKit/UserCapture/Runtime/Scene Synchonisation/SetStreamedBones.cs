@@ -19,7 +19,7 @@ using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
-    public abstract class SetStreamedBones : Operation
+    public class SetStreamedBones : Operation
     {
         public List<string> streamedBones;
 

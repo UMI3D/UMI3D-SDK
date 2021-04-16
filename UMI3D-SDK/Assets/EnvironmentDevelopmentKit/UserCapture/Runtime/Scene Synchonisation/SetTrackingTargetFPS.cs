@@ -19,7 +19,7 @@ using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
-    public abstract class SetTrackingTargetFPS : Operation
+    public class SetTrackingTargetFPS : Operation
     {
         public int targetFPS;
 

@@ -62,6 +62,8 @@ namespace umi3d.edk
             {
                 switch (op)
                 {
+                    case StartInterpolationProperty starti:
+                    case StopInterpolationProperty stopi:
                     case SetEntityDictionaryAddProperty a:
                     case SetEntityDictionaryRemoveProperty r:
                     case SetEntityListAddProperty al:
