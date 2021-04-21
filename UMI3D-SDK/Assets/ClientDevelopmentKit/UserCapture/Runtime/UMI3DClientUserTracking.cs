@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -69,6 +70,7 @@ namespace umi3d.cdk.userCapture
 
         protected virtual void Start()
         {
+            streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
             cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
             cameraHasChanged.Invoke();
             startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine("DispatchTracking"); });
