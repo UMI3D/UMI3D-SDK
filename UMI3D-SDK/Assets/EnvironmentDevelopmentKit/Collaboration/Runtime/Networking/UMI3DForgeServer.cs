@@ -347,7 +347,7 @@ namespace umi3d.edk.collaboration
 
         /// <summary>
         /// 
-        /// </summary>
+        /// </summar
         public float startProximityAt = 3f;
 
         /// <summary>
