@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['visibilityfilter_2149',['VisibilityFilter',['../d5/d7d/classumi3d_1_1edk_1_1_visibility_filter.html',1,'umi3d::edk']]]
+  ['voicedto_2181',['VoiceDto',['../d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html',1,'umi3d::common::collaboration']]]
 ];
