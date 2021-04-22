@@ -129,8 +129,9 @@ namespace umi3d.edk.interaction
         {
             MainThreadManager.Run(() =>
             {
-                foreach (var f in GetComponents<UMI3DUserFilter>())
-                    AddConnectionFilter(f);
+                if (this != null)
+                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                        AddConnectionFilter(f);
             });
             interactionId = id;
             inited = true;

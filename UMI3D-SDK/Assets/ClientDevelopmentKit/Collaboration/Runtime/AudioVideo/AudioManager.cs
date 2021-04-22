@@ -35,9 +35,6 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.AddListener(OnUserDisconected);
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
-
-            if (MicrophoneListener.Exists)
-                MicrophoneListener.Instance.StartRecording();
         }
 
         /// <summary>
@@ -45,12 +42,12 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="userId"> the speaking user</param>
         /// <param name="dto"> the voice dto</param>
-        public void Read(string userId, VoiceDto dto)
+        public void Read(string userId, VoiceDto dto, ulong timestep)
         {
             if (SpacialReader.ContainsKey(userId))
-                SpacialReader[userId].Read(dto);
+                SpacialReader[userId].Read(dto, timestep);
             else if (GlobalReader.ContainsKey(userId))
-                GlobalReader[userId].Read(dto);
+                GlobalReader[userId].Read(dto, timestep);
         }
 
 

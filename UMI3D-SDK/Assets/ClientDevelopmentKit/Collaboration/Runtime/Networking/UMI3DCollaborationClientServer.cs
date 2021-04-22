@@ -305,11 +305,6 @@ namespace umi3d.cdk.collaboration
             JoinDto joinDto = new JoinDto()
             {
                 bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList(),
-#if UNITY_WEBRTC
-                useWebrtc = true
-#else
-                useWebrtc = false
-#endif
             };
 
             Instance.HttpClient.SendPostJoin(

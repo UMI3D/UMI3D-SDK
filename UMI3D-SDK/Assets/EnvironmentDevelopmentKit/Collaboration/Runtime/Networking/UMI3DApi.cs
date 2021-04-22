@@ -371,7 +371,6 @@ namespace umi3d.edk.collaboration
 
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             JoinDto dto = ReadDto(e.Request) as JoinDto;
-            user.useWebrtc = dto.useWebrtc;
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
             UMI3DCollaborationServer.NotifyUserJoin(user);
         }
@@ -400,6 +399,21 @@ namespace umi3d.edk.collaboration
             {
                 e.Response.WriteContent(scene.ToGlTFNodeDto(user).ToBson());
             }
+        }
+
+
+
+        /// <summary>
+        /// GET "/environment/player_count"
+        /// get the player count
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="uriparam"></param>
+        [HttpGet(UMI3DNetworkingKeys.playerCount, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
+        public void GetPlayerCount(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            e.Response.WriteContent(UMI3DCollaborationServer.Collaboration.GetPlayerCount().ToBson());
         }
 
         #endregion

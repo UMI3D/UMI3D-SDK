@@ -47,6 +47,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public ResourceDto icon3D { get { return abstractDto.icon3D; } }
 
+        public bool Active { get => abstractDto?.active ?? false; }
+
         /// <summary>
         /// Contained tools.
         /// </summary>

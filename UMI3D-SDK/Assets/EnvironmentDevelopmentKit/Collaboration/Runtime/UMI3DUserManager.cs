@@ -38,6 +38,10 @@ namespace umi3d.edk.collaboration
 
         UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
 
+        DateTime lastUpdate = new DateTime();
+
+        public void SetLastUpdate(UMI3DCollaborationUser user) { if(users.ContainsValue(user)) SetLastUpdate(); }
+        void SetLastUpdate() {  lastUpdate = DateTime.UtcNow; }
         public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
             get {
@@ -55,6 +59,15 @@ namespace umi3d.edk.collaboration
             return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
         }
 
+        public PlayerCountDto GetPlayerCount()
+        {
+            var pc = new PlayerCountDto();
+            pc.count = users.Count(k=>k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY);
+            pc.lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss");
+            return pc;
+        }
+
+        
 
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
@@ -121,6 +134,7 @@ namespace umi3d.edk.collaboration
             lock (users)
             {
                 users.Remove(user.Id());
+                SetLastUpdate();
             }
             loginMap.Remove(user.login);
             forgeMap.Remove(user.networkPlayer.NetworkId);
@@ -183,6 +197,7 @@ namespace umi3d.edk.collaboration
                 else
                 {
                     user = new UMI3DCollaborationUser(LoginDto.login);
+                    SetLastUpdate();
                     loginMap[LoginDto.login] = user.Id();
                     users.Add(user.Id(), user);
                 }

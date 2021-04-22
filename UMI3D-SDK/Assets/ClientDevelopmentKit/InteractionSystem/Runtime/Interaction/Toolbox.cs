@@ -36,6 +36,8 @@ namespace umi3d.cdk.interaction
         public ToolboxSubMenu sub;
         public List<Tool> tools;
 
+        public bool Active { get => dto?.Active ?? false; }
+
         public Toolbox(ToolboxDto dto)
         {
             tools = new List<Tool>();

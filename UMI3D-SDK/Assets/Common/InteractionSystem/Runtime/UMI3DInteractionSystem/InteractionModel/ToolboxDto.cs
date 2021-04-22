@@ -39,6 +39,8 @@ namespace umi3d.common.interaction
         /// </summary>
         public ResourceDto icon2D = null;
 
+        public bool Active;
+
         /// <summary>
         /// 3D icon.
         /// </summary>

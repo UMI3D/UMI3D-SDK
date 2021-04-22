@@ -36,6 +36,9 @@ namespace umi3d.edk
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
 
+        // Should not be modified after init 
+        public bool isRightHanded = true;
+
         /// <summary>
         /// If true, the mesh will be used for navmesh generation on the browser.
         /// </summary>
@@ -149,6 +152,7 @@ namespace umi3d.edk
             meshDto.mesh = objectModel.GetValue(user).ToDto();
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
+            meshDto.isRightHanded = areSubobjectsTracked ? isRightHanded : true;
             meshDto.idGenerator = idGenerator;
             meshDto.isPartOfNavmesh = isPartOfNavmesh;
             meshDto.isTraversable = isTraversable;
