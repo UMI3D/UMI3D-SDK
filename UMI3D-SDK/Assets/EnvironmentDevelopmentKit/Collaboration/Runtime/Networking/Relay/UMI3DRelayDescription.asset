@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1230079d3b59c0c449c16face355221d, type: 3}
   m_Name: UMI3DRelayDescription
   m_EditorClassIdentifier: 
-  channelType: 10004
+  channelType: 10002
   InsideVolume:
     sendData: 1
     dataRule: 1
     constantFPS: 0
-    minProximityFPS: 0
-    maxProximityFPS: 0
-    startingProximityDistance: 0
-    stoppingProximityDistance: 0
+    minProximityFPS: 11.3
+    maxProximityFPS: 11.3
+    startingProximityDistance: 14.34
+    stoppingProximityDistance: 14.37
   OutsideVolume:
     sendData: 1
     dataRule: 1

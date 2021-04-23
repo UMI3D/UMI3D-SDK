@@ -22,14 +22,12 @@ namespace umi3d.edk.collaboration
 
         RelayDescription RelayDescription();
 
-        void RelayDataRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting);
+        void RelayDataRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting);
 
-        void RelayTrackingRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting);
+        void RelayTrackingRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting);
 
-        void RelayVoIPRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting);
+        void RelayVoIPRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting);
 
-        void RelayVideoPRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting);
-
-        void SendingData();
+        void RelayVideoRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting);
     }
 }

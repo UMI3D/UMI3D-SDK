@@ -45,10 +45,9 @@ namespace umi3d.edk.collaboration
 
             [Min(0)]
             public float stoppingProximityDistance;
-
         }
 
-        public DataChannelTypes channelType;
+        public DataChannelTypes channelType = DataChannelTypes.Data;
 
         public Rule InsideVolume; 
 

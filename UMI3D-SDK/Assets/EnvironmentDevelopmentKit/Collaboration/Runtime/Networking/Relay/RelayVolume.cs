@@ -14,45 +14,102 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
     public class RelayVolume : MonoBehaviour, ICollaborationRoom
     {
+        public RelayDescription Relay;
+
+        protected string volumeId;
+
         public string VolumeId()
         {
-            throw new System.NotImplementedException();
+            if (volumeId == null)
+            {
+                byte[] key = Guid.NewGuid().ToByteArray();
+                volumeId = Convert.ToBase64String(key);
+            }
+            return volumeId;
         }
 
         public RelayDescription RelayDescription()
         {
-            throw new System.NotImplementedException();
+            return Relay;
         }
 
-        public void RelayDataRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting)
+        public void RelayDataRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting)
         {
-            throw new System.NotImplementedException();
+            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, targetSetting);
+            
+            if (targetHashSet != null)
+            {
+
+            }
         }
 
-        public void RelayTrackingRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting)
+        public void RelayTrackingRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting)
         {
-            throw new System.NotImplementedException();
+            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, targetSetting);
+
+            if (targetHashSet != null)
+            {
+
+            }
         }
 
-        public void RelayVideoPRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting)
+        public void RelayVoIPRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting)
         {
-            throw new System.NotImplementedException();
+            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, targetSetting);
+
+            if (targetHashSet != null)
+            {
+
+            }
         }
 
-        public void RelayVoIPRequest(byte[] sender, byte[] data, UMI3DUser target, TargetEnum targetSetting)
+        public void RelayVideoRequest(byte[] sender, byte[] data, UMI3DCollaborationUser target, TargetEnum targetSetting)
         {
-            throw new System.NotImplementedException();
+            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, targetSetting);
+
+            if (targetHashSet != null)
+            {
+
+            }
+        }
+        
+        protected HashSet<UMI3DCollaborationUser> GetTargetHashSet(UMI3DCollaborationUser target, TargetEnum targetSetting)
+        {
+            switch (targetSetting)
+            {
+                case TargetEnum.All:
+                    return (HashSet<UMI3DCollaborationUser>)UMI3DCollaborationServer.Collaboration.Users;
+                case TargetEnum.Other:
+                    return (HashSet<UMI3DCollaborationUser>)(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
+                case TargetEnum.Target:
+                    return new HashSet<UMI3DCollaborationUser>() { target };
+                default:
+                    return null;
+            }
         }
 
-        public void SendingData()
+        protected void RelayMemory()
         {
-            throw new System.NotImplementedException();
+
+        }
+
+        protected void ShouldRelay()
+        {
+
+        }
+
+        protected void DispatchTransaction()
+        {
+
         }
     }
 }
