@@ -27,6 +27,7 @@ namespace umi3d.edk.editor
         SerializedProperty Node;
         SerializedProperty NotifySubObject;
         SerializedProperty NotifyHoverPosition;
+        SerializedProperty HasPriority;
         SerializedProperty onHoverEnter;
         SerializedProperty onHoverExit;
         SerializedProperty onHovered;
@@ -38,6 +39,7 @@ namespace umi3d.edk.editor
             Node = _target.FindProperty("Node");
             NotifyHoverPosition = _target.FindProperty("NotifyHoverPosition");
             NotifySubObject = _target.FindProperty("NotifySubObject");
+            HasPriority = _target.FindProperty("HasPriority");
             onHoverEnter = serializedObject.FindProperty("onHoverEnter");
             onHovered = serializedObject.FindProperty("onHovered");
             onHoverExit = serializedObject.FindProperty("onHoverExit");
@@ -51,6 +53,7 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(Node);
             EditorGUILayout.PropertyField(NotifyHoverPosition);
             EditorGUILayout.PropertyField(NotifySubObject);
+            EditorGUILayout.PropertyField(HasPriority);
             base._OnInspectorGUI();
             displayEvent = EditorGUILayout.Foldout(displayEvent, "Interaction Events", true);
             if (displayEvent)
