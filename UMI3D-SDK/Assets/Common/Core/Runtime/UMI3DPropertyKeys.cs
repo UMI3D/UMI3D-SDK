@@ -82,6 +82,7 @@ namespace umi3d.common
         public const string InteractableNodeId = "umi3d_interactable_node_id";
         public const string InteractableNotifyHoverPosition = "umi3d_interactable_notify_hover_position";
         public const string InteractableNotifySubObject = "umi3d_interactable_notify_sub_object";
+        public const string InteractableHasPriority = "umi3d_interactable_has_priority";
         #endregion
 
         #region UI
