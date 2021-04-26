@@ -132,6 +132,10 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Quaternion> _objectRotation;
         private UMI3DAsyncProperty<Vector3> _objectScale;
 
+        public string VolumeId;
+
+        public ICollaborationRoom room;
+
         #endregion
 
 

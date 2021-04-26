@@ -30,10 +30,8 @@ namespace umi3d.edk.collaboration.editor
         static bool showInsideVolume = false;
         static bool showOutsideVolume = false; 
 
-        SerializedProperty channelType;
-
         SerializedProperty insideVolumeSendData;
-        SerializedProperty insideDataRule;
+        SerializedProperty insideSendingStrategy;
         SerializedProperty insideConstantFPS;
         SerializedProperty insideMinProximityFPS;
         SerializedProperty insideMaxProximityFPS;
@@ -41,7 +39,7 @@ namespace umi3d.edk.collaboration.editor
         SerializedProperty insideStoppingProximityDistance;
 
         SerializedProperty outsideVolumeSendData;
-        SerializedProperty outsideDataRule;
+        SerializedProperty outsideSendingStrategy;
         SerializedProperty outsideConstantFPS;
         SerializedProperty outsideMinProximityFPS;
         SerializedProperty outsideMaxProximityFPS;
@@ -50,10 +48,8 @@ namespace umi3d.edk.collaboration.editor
 
         protected virtual void OnEnable()
         {
-            channelType = serializedObject.FindProperty("channelType");
-
             insideVolumeSendData = serializedObject.FindProperty("InsideVolume.sendData");
-            insideDataRule = serializedObject.FindProperty("InsideVolume.dataRule");
+            insideSendingStrategy = serializedObject.FindProperty("InsideVolume.sendingStrategy");
             insideConstantFPS = serializedObject.FindProperty("InsideVolume.constantFPS");
             insideMinProximityFPS = serializedObject.FindProperty("InsideVolume.minProximityFPS");
             insideMaxProximityFPS = serializedObject.FindProperty("InsideVolume.maxProximityFPS");
@@ -61,7 +57,7 @@ namespace umi3d.edk.collaboration.editor
             insideStoppingProximityDistance = serializedObject.FindProperty("InsideVolume.stoppingProximityDistance");
 
             outsideVolumeSendData = serializedObject.FindProperty("OutsideVolume.sendData");
-            outsideDataRule = serializedObject.FindProperty("OutsideVolume.dataRule");
+            outsideSendingStrategy = serializedObject.FindProperty("OutsideVolume.sendingStrategy");
             outsideConstantFPS = serializedObject.FindProperty("OutsideVolume.constantFPS");
             outsideMinProximityFPS = serializedObject.FindProperty("OutsideVolume.minProximityFPS");
             outsideMaxProximityFPS = serializedObject.FindProperty("OutsideVolume.maxProximityFPS");
@@ -75,8 +71,8 @@ namespace umi3d.edk.collaboration.editor
 
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(channelType);
-            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Relay Strategy", EditorStyles.boldLabel);
+            EditorGUILayout.Space(0.3f);
             showInsideVolume = EditorGUILayout.Foldout(showInsideVolume, "Inside Volume");
 
             if (showInsideVolume)
@@ -88,14 +84,14 @@ namespace umi3d.edk.collaboration.editor
                 if (insideVolumeSendData.boolValue)
                 {
                     EditorGUILayout.Space(0.3f);
-                    EditorGUILayout.PropertyField(insideDataRule);
+                    EditorGUILayout.PropertyField(insideSendingStrategy);
 
-                    if (insideDataRule.intValue == 0)
+                    if (insideSendingStrategy.intValue == 1)
                     {
                         EditorGUILayout.Space(0.3f);
                         EditorGUILayout.PropertyField(insideConstantFPS);
                     }
-                    else if (insideDataRule.intValue == 1)
+                    else if (insideSendingStrategy.intValue == 2)
                     {
                         EditorGUILayout.Space(0.3f);
                         EditorGUILayout.PropertyField(insideMinProximityFPS);
@@ -107,7 +103,7 @@ namespace umi3d.edk.collaboration.editor
                 EditorGUI.indentLevel--;
             }
 
-            EditorGUILayout.Space();
+            EditorGUILayout.Space(0.15f);
 
             showOutsideVolume = EditorGUILayout.Foldout(showOutsideVolume, "Outside Volume");
 
@@ -120,14 +116,14 @@ namespace umi3d.edk.collaboration.editor
                 if (outsideVolumeSendData.boolValue)
                 {
                     EditorGUILayout.Space(0.3f);
-                    EditorGUILayout.PropertyField(outsideDataRule);
+                    EditorGUILayout.PropertyField(outsideSendingStrategy);
 
-                    if (outsideDataRule.intValue == 0)
+                    if (outsideSendingStrategy.intValue == 1)
                     {
                         EditorGUILayout.Space(0.3f);
                         EditorGUILayout.PropertyField(outsideConstantFPS);
                     }
-                    else if (outsideDataRule.intValue == 1)
+                    else if (outsideSendingStrategy.intValue == 2)
                     {
                         EditorGUILayout.Space(0.3f);
                         EditorGUILayout.PropertyField(outsideMinProximityFPS);

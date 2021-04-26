@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using umi3d.common.collaboration;
 using System;
 
 namespace umi3d.edk.collaboration
@@ -23,13 +22,13 @@ namespace umi3d.edk.collaboration
     [CreateAssetMenu(fileName = "UMI3DRelayDescription", menuName = "UMI3D/UMI3D_Relay_Description")]
     public class RelayDescription : ScriptableObject
     {
-        public enum DataRule { Fixed, Proximity };
+        public enum SendingStrategy { AlwaysSend, Fixed, Proximity };
 
         [Serializable]
-        public struct Rule
+        public struct Strategy
         {
             public bool sendData;
-            public DataRule dataRule;
+            public SendingStrategy sendingStrategy;
 
             [Min(0)]
             public float constantFPS;
@@ -47,11 +46,9 @@ namespace umi3d.edk.collaboration
             public float stoppingProximityDistance;
         }
 
-        public DataChannelTypes channelType = DataChannelTypes.Data;
+        public Strategy InsideVolume; 
 
-        public Rule InsideVolume; 
-
-        public Rule OutsideVolume;
+        public Strategy OutsideVolume;
 
 
         private void OnValidate()

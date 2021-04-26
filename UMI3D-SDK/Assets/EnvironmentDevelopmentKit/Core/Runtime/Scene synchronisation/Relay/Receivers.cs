@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk
 {
-    public enum TargetEnum
+    public enum Receivers
     {
         All = 0,
-        Other = 1,
+        Others = 1,
         Target = 2
     }
 }
