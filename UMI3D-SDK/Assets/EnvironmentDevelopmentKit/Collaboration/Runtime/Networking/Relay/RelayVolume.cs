@@ -68,7 +68,7 @@ namespace umi3d.edk.collaboration
             return DicoRelays[channel];
         }
 
-        public void RelayDataRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting)
+        public void RelayDataRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -81,13 +81,13 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Data, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Data, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Data);
+                        DispatchTransaction(user, data, DataChannelTypes.Data, isReliable);
                     }
                 }
             }
         }
 
-        public void RelayTrackingRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting)
+        public void RelayTrackingRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -100,13 +100,13 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Tracking, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Tracking, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Tracking);
+                        DispatchTransaction(user, data, DataChannelTypes.Tracking, isReliable);
                     }
                 }
             }
         }
 
-        public void RelayVoIPRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting)
+        public void RelayVoIPRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -119,13 +119,13 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.VoIP, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.VoIP, now);
-                        DispatchTransaction(user, data, DataChannelTypes.VoIP);
+                        DispatchTransaction(user, data, DataChannelTypes.VoIP, isReliable);
                     }
                 }
             }
         }
 
-        public void RelayVideoRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting)
+        public void RelayVideoRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -138,7 +138,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Video, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Video, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Video);
+                        DispatchTransaction(user, data, DataChannelTypes.Video, isReliable);
                     }
                 }
             }
@@ -165,7 +165,7 @@ namespace umi3d.edk.collaboration
                 return false;
 
             RelayDescription relay = DicoRelays[channel];
-            RelayDescription.Strategy strategy = sender.VolumeId.Equals(this.VolumeId()) ? relay.InsideVolume : relay.OutsideVolume;
+            RelayDescription.Strategy strategy = sender.room.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
 
             if (strategy.sendData)
             {
@@ -268,9 +268,9 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel)
+        protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
         {
-            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, false);
+            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
         }
     }
 }

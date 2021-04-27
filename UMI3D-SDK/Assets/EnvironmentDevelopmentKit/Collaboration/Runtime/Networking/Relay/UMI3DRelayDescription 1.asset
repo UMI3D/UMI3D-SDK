@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InsideVolume:
     sendData: 1
-    sendingStrategy: 2
+    sendingStrategy: 0
     constantFPS: 0
     minProximityFPS: 0
     maxProximityFPS: 0
@@ -22,7 +22,7 @@ MonoBehaviour:
     stoppingProximityDistance: 0
   OutsideVolume:
     sendData: 1
-    sendingStrategy: 2
+    sendingStrategy: 1
     constantFPS: 0
     minProximityFPS: 0
     maxProximityFPS: 0
