@@ -711,7 +711,6 @@ namespace umi3d.cdk
             {
                 KalmanEntity newKalmanEntity = new KalmanEntity(50, 0.5)
                 {
-                    measuresPerSecond = dto.frequency,
                     lastMessageTime = Time.time,
                     entityId = dto.entityId,
                     property = dto.property
@@ -887,6 +886,8 @@ namespace umi3d.cdk
 
         void PropertyKalmanUpdate(KalmanEntity kalmanEntity, object value)
         {
+            kalmanEntity.measuresPerSecond = 1 / (Time.time - kalmanEntity.lastMessageTime);
+
             double[] measurement;
 
             switch (value)

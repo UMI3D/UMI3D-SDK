@@ -24,11 +24,6 @@ namespace umi3d.common
     public class StartInterpolationPropertyDto : AbstractInterpolationPropertyDto
     {
         /// <summary>
-        /// The frequency of update 
-        /// </summary>
-        public int frequency;
-
-        /// <summary>
         /// The value with witch to start interpolation
         /// </summary>
         public object startValue;

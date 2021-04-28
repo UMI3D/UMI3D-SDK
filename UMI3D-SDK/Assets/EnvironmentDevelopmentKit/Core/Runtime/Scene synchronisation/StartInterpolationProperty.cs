@@ -40,7 +40,6 @@ namespace umi3d.edk
             startInterpolation.property = property;
             startInterpolation.entityId = entityId;
             startInterpolation.startValue = startValue;
-            startInterpolation.frequency = frequency; 
             return startInterpolation;
         }
     }
