@@ -544,7 +544,9 @@ namespace umi3d.cdk
 
             if (Instance.entityFilters.ContainsKey(id))
             {
-                Instance.entityFilters[id].lastMessageTime = Time.time;
+                float now = Time.time;
+                Instance.entityFilters[id].measuresPerSecond = 1 / (now - Instance.entityFilters[id].lastMessageTime);
+                Instance.entityFilters[id].lastMessageTime = now;
                 Instance.PropertyKalmanUpdate(Instance.entityFilters[id], dto.value);
                 return true;
             }
@@ -639,6 +641,7 @@ namespace umi3d.cdk
                 estimations = new double[] { };
                 previous_prediction = new double[] { };
                 prediction = new double[] { };
+                lastMessageTime = 0;
             }
         }
 
@@ -886,8 +889,6 @@ namespace umi3d.cdk
 
         void PropertyKalmanUpdate(KalmanEntity kalmanEntity, object value)
         {
-            kalmanEntity.measuresPerSecond = 1 / (Time.time - kalmanEntity.lastMessageTime);
-
             double[] measurement;
 
             switch (value)
