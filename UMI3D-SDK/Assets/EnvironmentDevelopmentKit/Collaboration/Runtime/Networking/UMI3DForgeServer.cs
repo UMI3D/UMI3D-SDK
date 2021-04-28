@@ -279,8 +279,6 @@ namespace umi3d.edk.collaboration
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
                 });
 
-                //RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
-
                 UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
                 RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.VolumeId];
 
@@ -307,190 +305,12 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            //RelayMessage(player, frame);
-
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.VolumeId];
 
             if (relayVolume != null)
                 relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
         }
-
-        #endregion
-
-        #region proximity_relay
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //static readonly List<BeardedManStudios.Forge.Networking.Receivers> Proximity = new List<BeardedManStudios.Forge.Networking.Receivers> { BeardedManStudios.Forge.Networking.Receivers.AllProximity, BeardedManStudios.Forge.Networking.Receivers.AllProximityGrid, BeardedManStudios.Forge.Networking.Receivers.OthersProximity, BeardedManStudios.Forge.Networking.Receivers.OthersProximityGrid };
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //protected ulong minProximityRelay = 200;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //protected ulong maxProximityRelay = 1000;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //public ulong minProximityRelayFPS
-        //{
-        //    get { return maxProximityRelay == 0 ? 0 : 1000 / maxProximityRelay; }
-        //    set { if (value <= 0) maxProximityRelay = 0; else maxProximityRelay = 1000 / value; }
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //public ulong maxProximityRelayFPS
-        //{
-        //    get { return minProximityRelay == 0 ? 0 : 1000 / minProximityRelay; }
-        //    set { if (value <= 0) minProximityRelay = 0; else minProximityRelay = 1000 / value; }
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //public bool proximityRelay = true;
-
-        /// <summary>
-        /// 
-        /// </summar
-        //public float startProximityAt = 3f;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        //public float proximityCutout = 20f;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="player"></param>
-        /// <param name="frame"></param>
-        /// <param name="strategy"></param>
-        //protected void RelayMessage(NetworkingPlayer player, Binary frame, BeardedManStudios.Forge.Networking.Receivers strategy = BeardedManStudios.Forge.Networking.Receivers.Others)
-        //{
-        //    ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
-        //    Binary message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
-        //    if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
-        //        lock (server.Players)
-        //        {
-        //            foreach (NetworkingPlayer p in server.Players)
-        //                if (ShouldRelay(frame.GroupId, player, p, time, strategy))
-        //                {
-        //                    RememberRelay(player, p, frame.GroupId, time);
-        //                    server.Send(p, message, frame.IsReliable);
-        //                }
-        //        }
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="groupId"></param>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <param name="timestep"></param>
-        /// <param name="strategy"></param>
-        /// <returns></returns>
-        //protected bool ShouldRelay(int groupId, NetworkingPlayer from, NetworkingPlayer to, ulong timestep, BeardedManStudios.Forge.Networking.Receivers strategy)
-        //{
-        //    if (to.IsHost || from == to || UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(to.NetworkId)?.status != StatusType.ACTIVE)
-        //        return false;
-        //    if (Proximity.Contains(strategy))
-        //    {
-        //        ulong last = GetLastRelay(from, to, groupId);
-        //        if (last > 0)
-        //        {
-        //            ulong diff = timestep - last;
-        //            if (diff < GetCurrentDelay(from, to))
-        //                return false;
-        //        }
-        //    }
-        //    return true;
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <returns></returns>
-        //protected ulong GetCurrentDelay(NetworkingPlayer from, NetworkingPlayer to)
-        //{
-        //    var user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
-        //    var user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
-        //    float dist = Vector3.Distance(user1.Avatar.objectPosition.GetValue(user2), user2.Avatar.objectPosition.GetValue(user2));
-        //    float coeff = 0f;
-        //    if (dist > startProximityAt && dist < proximityCutout)
-        //    {
-        //        coeff = (dist - startProximityAt) / (proximityCutout - startProximityAt);
-        //    }
-        //    else if (dist >= proximityCutout)
-        //        coeff = 0f;
-        //    return (ulong)Mathf.RoundToInt((1f - coeff) * minProximityRelay + coeff * maxProximityRelay);
-        //}
-
-        //relayMemory[p1][p2][gi] = a ulong corresponding to the last time player p1 sent a message to p2 in the gi channel
-        /// <summary>
-        /// 
-        /// </summary>
-        //Dictionary<uint, Dictionary<uint, Dictionary<int, ulong>>> relayMemory = new Dictionary<uint, Dictionary<uint, Dictionary<int, ulong>>>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <param name="groupId"></param>
-        /// <param name="time"></param>
-        //void RememberRelay(NetworkingPlayer from, NetworkingPlayer to, int groupId, ulong time)
-        //{
-        //    uint p1 = from.NetworkId, p2 = to.NetworkId;
-        //    if (!relayMemory.ContainsKey(p1))
-        //        relayMemory.Add(p1, new Dictionary<uint, Dictionary<int, ulong>>());
-        //    var dicP1 = relayMemory[p1];
-
-        //    if (!dicP1.ContainsKey(p2))
-        //        dicP1.Add(p2, new Dictionary<int, ulong>());
-        //    var dicP2 = dicP1[p2];
-
-        //    if (dicP2.ContainsKey(groupId))
-        //        dicP2[groupId] = time;
-        //    else
-        //        dicP2.Add(groupId, time);
-        //}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <param name="groupId"></param>
-        /// <returns></returns>
-        //ulong GetLastRelay(NetworkingPlayer from, NetworkingPlayer to, int groupId)
-        //{
-        //    uint p1 = from.NetworkId, p2 = to.NetworkId;
-        //    //no relay from p1
-        //    if (!relayMemory.ContainsKey(p1))
-        //        return 0;
-        //    var dicP1 = relayMemory[p1];
-        //    //no relay from p1 to P2
-        //    if (!dicP1.ContainsKey(p2))
-        //        return 0;
-        //    var dicP2 = dicP1[p2];
-        //    //last telay from p1 to p2 on channel groupId
-        //    if (dicP2.ContainsKey(groupId))
-        //        return dicP2[groupId];
-        //    else
-        //        return 0;
-        //}
 
         #endregion
 
@@ -522,6 +342,13 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="player"></param>
+        /// <param name="data"></param>
+        /// <param name="isRealiable"></param>
         public void RelayBinaryDataTo(int channel, NetworkingPlayer player, byte[] data, bool isRealiable)
         {
             SendBinaryDataTo(channel, player, data, isRealiable);

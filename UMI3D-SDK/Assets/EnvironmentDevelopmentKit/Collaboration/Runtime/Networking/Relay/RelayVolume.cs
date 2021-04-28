@@ -68,6 +68,14 @@ namespace umi3d.edk.collaboration
             return DicoRelays[channel];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender">Node associated to the request</param>
+        /// <param name="data"></param>
+        /// <param name="target"></param>
+        /// <param name="receiverSetting"></param>
+        /// <param name="isReliable"></param>
         public void RelayDataRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
