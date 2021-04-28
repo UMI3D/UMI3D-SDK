@@ -544,9 +544,21 @@ namespace umi3d.cdk
 
             if (Instance.entityFilters.ContainsKey(id))
             {
+                Instance.entityFilters[id].lastMessageTime = Time.time;
                 Instance.PropertyKalmanUpdate(Instance.entityFilters[id], dto.value);
+                return true;
             }
+            else
+            {
 
+                if (SetUMI3DPorperty(node, dto)) return true;
+                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
+                return Parameters.SetUMI3DProperty(node, dto);
+            }
+        }
+
+        private static bool SimulatedSetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
+        {
             if (SetUMI3DPorperty(node, dto)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
             return Parameters.SetUMI3DProperty(node, dto);
@@ -602,7 +614,6 @@ namespace umi3d.cdk
             while ((node = UMI3DEnvironmentLoader.GetEntity(dto.entityId)) == null)
             {
                 yield return wait;
-                //Debug.Log($"{dto.entityId} not found, will try again next fixed frame");
             }
             SetEntity(node, dto);
         }
@@ -637,7 +648,7 @@ namespace umi3d.cdk
         {
             foreach (string entityPropertyId in Instance.entityFilters.Keys)
             {
-                var node = UMI3DEnvironmentLoader.GetEntity(entityPropertyId);
+                var node = UMI3DEnvironmentLoader.GetEntity(entityPropertyId.Split('_')[0]);
                 KalmanEntity kalmanEntity = Instance.entityFilters[entityPropertyId];
 
                 Instance.PropertyRegression(kalmanEntity);
@@ -649,10 +660,15 @@ namespace umi3d.cdk
                     value = kalmanEntity.regressed_value
                 };
 
-                SetEntity(node, entityPropertyDto);
+                SimulatedSetEntity(node, entityPropertyDto);
             }
         }
 
+        /// <summary>
+        /// Handle StartInterpolationPropertyDto operation.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public static bool StartInterpolation(StartInterpolationPropertyDto dto)
         {
             if (!Exists) return false;
@@ -681,6 +697,12 @@ namespace umi3d.cdk
             StartInterpolation(node, dto);
         }
 
+        /// <summary>
+        /// Handle StartInterpolationPropertyDto operation.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public static bool StartInterpolation(UMI3DEntityInstance node, StartInterpolationPropertyDto dto)
         {
             string id = dto.entityId + "_" + dto.property;
@@ -712,6 +734,11 @@ namespace umi3d.cdk
             return false;
         }
 
+        /// <summary>
+        /// Handle StopInterpolationPropertyDto operation.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public static bool StopInterpolation(StopInterpolationPropertyDto dto)
         {
             if (!Exists) return false;
@@ -740,6 +767,12 @@ namespace umi3d.cdk
             StopInterpolation(node, dto);
         }
 
+        /// <summary>
+        /// Handle StopInterpolationPropertyDto operation.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public static bool StopInterpolation(UMI3DEntityInstance node, StopInterpolationPropertyDto dto)
         {
             string id = dto.entityId + "_" + dto.property;
@@ -755,6 +788,7 @@ namespace umi3d.cdk
                 };
 
                 SetEntity(node, entityPropertyDto);
+
                 return true;
             }
             return false;
@@ -780,15 +814,17 @@ namespace umi3d.cdk
                     {
                         case int n:
                             new_value_1 = (kalmanEntity.prediction[0] - kalmanEntity.previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[0];
-                            
+
                             kalmanEntity.estimations = new double[] { new_value_1 };
                             kalmanEntity.regressed_value = (int)new_value_1;
+
                             break;
                         case float f:
                             new_value_1 = (kalmanEntity.prediction[0] - kalmanEntity.previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[0];
 
                             kalmanEntity.estimations = new double[] { new_value_1 };
                             kalmanEntity.regressed_value = (float)new_value_1;
+
                             break;
                         case SerializableVector2 v:
                             new_value_1 = (kalmanEntity.prediction[0] - kalmanEntity.previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[0];
@@ -796,6 +832,7 @@ namespace umi3d.cdk
 
                             kalmanEntity.estimations = new double[] { new_value_1, new_value_2 };
                             kalmanEntity.regressed_value = new SerializableVector2((float)new_value_1, (float)new_value_2);
+
                             break;
                         case SerializableVector3 v:
                             new_value_1 = (kalmanEntity.prediction[0] - kalmanEntity.previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[0];
@@ -804,15 +841,16 @@ namespace umi3d.cdk
 
                             kalmanEntity.estimations = new double[] { new_value_1, new_value_2, new_value_3 };
                             kalmanEntity.regressed_value = new SerializableVector3((float)new_value_1, (float)new_value_2, (float)new_value_3);
+
                             break;
                         case SerializableVector4 v:
                             double[] estimations;
                             object regressed_value;
-                            
+
                             new_value_1 = (kalmanEntity.prediction[0] - kalmanEntity.previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[0];
                             new_value_2 = (kalmanEntity.prediction[1] - kalmanEntity.previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[1];
                             new_value_3 = (kalmanEntity.prediction[2] - kalmanEntity.previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[2];
-                            
+
                             if (kalmanEntity.property.Equals(UMI3DPropertyKeys.Rotation))
                             {
                                 estimations = new double[] { new_value_1, new_value_2, new_value_3 };
@@ -823,7 +861,7 @@ namespace umi3d.cdk
                             {
                                 new_value_4 = (kalmanEntity.prediction[3] - kalmanEntity.previous_prediction[3]) * delta * kalmanEntity.measuresPerSecond + kalmanEntity.previous_prediction[3];
 
-                                estimations = new double[] { new_value_1, new_value_2, new_value_3, new_value_4};
+                                estimations = new double[] { new_value_1, new_value_2, new_value_3, new_value_4 };
                                 regressed_value = new SerializableVector4((float)new_value_1, (float)new_value_2, (float)new_value_3, (float)new_value_4);
                             }
 
@@ -855,15 +893,23 @@ namespace umi3d.cdk
             {
                 case int n:
                     measurement = new double[] { n };
+                    if (kalmanEntity.regressed_value == null)
+                        kalmanEntity.regressed_value = new int();
                     break;
                 case float f:
                     measurement = new double[] { f };
+                    if (kalmanEntity.regressed_value == null)
+                        kalmanEntity.regressed_value = new float();
                     break;
                 case SerializableVector2 v:
                     measurement = new double[] { v.X, v.Y };
+                    if (kalmanEntity.regressed_value == null)
+                        kalmanEntity.regressed_value = new SerializableVector2();
                     break;
                 case SerializableVector3 v:
                     measurement = new double[] { v.X, v.Y, v.Z };
+                    if (kalmanEntity.regressed_value == null)
+                        kalmanEntity.regressed_value = new SerializableVector3();
                     break;
                 case SerializableVector4 v:
                     if (kalmanEntity.property.Equals(UMI3DPropertyKeys.Rotation))
@@ -873,10 +919,14 @@ namespace umi3d.cdk
                     }
                     else
                         measurement = new double[] { v.X, v.Y, v.Z, v.W };
- 
+                    if (kalmanEntity.regressed_value == null)
+                        kalmanEntity.regressed_value = new SerializableVector4();
+
                     break;
                 case SerializableColor v:
                     measurement = new double[] { v.R, v.G, v.B, v.A };
+                    if (kalmanEntity.regressed_value == null)
+                        kalmanEntity.regressed_value = new SerializableColor();
                     break;
                 default:
                     measurement = new double[0];
