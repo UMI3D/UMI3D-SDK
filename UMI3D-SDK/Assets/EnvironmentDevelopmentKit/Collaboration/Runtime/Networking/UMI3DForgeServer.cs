@@ -280,10 +280,17 @@ namespace umi3d.edk.collaboration
                 });
 
                 UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.VolumeId];
 
-                if (relayVolume != null)
-                    relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                if (user.Avatar != null && user.Avatar.room != null)
+                {
+                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.room.VolumeId()];
+
+                    if (relayVolume != null)
+                        MainThreadManager.Run(() =>
+                        {
+                            relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                        });
+                }
             }
         }
 
@@ -306,10 +313,16 @@ namespace umi3d.edk.collaboration
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-            RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.VolumeId];
+            if (user.Avatar != null && user.Avatar.room != null)
+            {
+                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.room.VolumeId()];
 
-            if (relayVolume != null)
-                relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                if (relayVolume != null)
+                    MainThreadManager.Run(() =>
+                    {
+                        relayVolume.RelayVoIPRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                    });
+            }
         }
 
         #endregion

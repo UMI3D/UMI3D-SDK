@@ -151,15 +151,15 @@ namespace umi3d.edk.collaboration
                 }
             }
         }
-        
+
         protected HashSet<UMI3DCollaborationUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
         {
             switch (receiverSetting)
             {
                 case Receivers.All:
-                    return (HashSet<UMI3DCollaborationUser>)UMI3DCollaborationServer.Collaboration.Users;
+                    return new HashSet<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users);
                 case Receivers.Others:
-                    return (HashSet<UMI3DCollaborationUser>)(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
+                    return new HashSet<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
                 case Receivers.Target:
                     return new HashSet<UMI3DCollaborationUser>() { target as UMI3DCollaborationUser };
                 default:
