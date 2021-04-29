@@ -134,7 +134,7 @@ namespace umi3d.edk
 
         public string VolumeId;
 
-        public ICollaborationRoom room;
+        public ICollaborationRoom RelayRoom;
 
         #endregion
 

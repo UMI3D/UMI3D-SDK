@@ -281,9 +281,9 @@ namespace umi3d.edk.collaboration
 
                 UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
 
-                if (user.Avatar != null && user.Avatar.room != null)
+                if (user.Avatar != null && user.Avatar.RelayRoom != null)
                 {
-                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.room.VolumeId()];
+                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
 
                     if (relayVolume != null)
                         MainThreadManager.Run(() =>
@@ -313,9 +313,9 @@ namespace umi3d.edk.collaboration
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-            if (user.Avatar != null && user.Avatar.room != null)
+            if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
-                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.room.VolumeId()];
+                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
 
                 if (relayVolume != null)
                     MainThreadManager.Run(() =>
