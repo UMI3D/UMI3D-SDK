@@ -132,8 +132,14 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Quaternion> _objectRotation;
         private UMI3DAsyncProperty<Vector3> _objectScale;
 
+        /// <summary>
+        /// Id of the Volume in which the node is present
+        /// </summary>
         public string VolumeId;
 
+        /// <summary>
+        /// Room object used to relay data
+        /// </summary>
         public ICollaborationRoom RelayRoom;
 
         #endregion
