@@ -40,6 +40,7 @@ namespace umi3d.common
         public const string environment = "/environment";
         public const string join = "/environment/join";
         public const string scene = "/environment/scene/:id";
+        public const string playerCount = "/environment/player_count";
 
         //Prefix
         /*

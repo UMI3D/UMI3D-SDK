@@ -126,13 +126,14 @@ namespace umi3d.cdk
                             if (extension.applyCustomMaterial)
                             {
                                 RevertToOriginalMaterial((UMI3DNodeInstance)entity);
-                                extension.overridedMaterials = (List<UMI3DRenderedNodeDto.MaterialOverrideDto>)prop.value;
+                                extension.overridedMaterials = (prop.value as List<object>)?.Select(i => i as UMI3DRenderedNodeDto.MaterialOverrideDto).Where(i=>i!=null).ToList();
+
                                 SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
 
                             }
                             else
                             {
-                                extension.overridedMaterials = (List<UMI3DRenderedNodeDto.MaterialOverrideDto>)prop.value;
+                                extension.overridedMaterials = (prop.value as List<object>)?.Select(i => i as UMI3DRenderedNodeDto.MaterialOverrideDto).Where(i => i != null).ToList();
                             }
                             break;
                         default:

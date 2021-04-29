@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.1.r.210112</span>
+   &#160;<span id="projectnumber">2.2.r.210402</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -120,6 +120,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a67a281e9b6665e256bb5d66e183c87cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60bb238dd68f004316c430355f61cacb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d9/d53/interfaceumi3d_1_1common_1_1_i_entity.html">IEntity</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html#a60bb238dd68f004316c430355f61cacb">ToEntityDto</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user)</td></tr>
 <tr class="separator:a60bb238dd68f004316c430355f61cacb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adfeff567374f63236f7059276a5ae5b0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html#adfeff567374f63236f7059276a5ae5b0">LoadOnConnection</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user)</td></tr>
+<tr class="separator:adfeff567374f63236f7059276a5ae5b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f72525f82bb37dda66a4b4bf2e9fba3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html#a4f72525f82bb37dda66a4b4bf2e9fba3">AddConnectionFilter</a> (<a class="el" href="../../d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter.html">UMI3DUserFilter</a> filter)</td></tr>
+<tr class="separator:a4f72525f82bb37dda66a4b4bf2e9fba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21575d60f49bf6e558841ed0a40d524e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html#a21575d60f49bf6e558841ed0a40d524e">RemoveConnectionFilter</a> (<a class="el" href="../../d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter.html">UMI3DUserFilter</a> filter)</td></tr>
+<tr class="separator:a21575d60f49bf6e558841ed0a40d524e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -128,10 +134,32 @@ Public Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
 Properties</h2></td></tr>
+<tr class="memitem:a47b5b977df00332e7a835f8d6d3d2bbb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html#a47b5b977df00332e7a835f8d6d3d2bbb">hasJoined</a><code> [get]</code></td></tr>
+<tr class="separator:a47b5b977df00332e7a835f8d6d3d2bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeb86096e8ffc957733420a727e2fb87b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60">StatusType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html#aeb86096e8ffc957733420a727e2fb87b">status</a> = StatusType.CREATED<code> [get, protected set]</code></td></tr>
 <tr class="separator:aeb86096e8ffc957733420a727e2fb87b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4f72525f82bb37dda66a4b4bf2e9fba3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f72525f82bb37dda66a4b4bf2e9fba3">&#9670;&nbsp;</a></span>AddConnectionFilter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool umi3d.edk.UMI3DUser.AddConnectionFilter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter.html">UMI3DUserFilter</a>&#160;</td>
+          <td class="paramname"><em>filter</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html#a07c782ee183f14fbc150dfa4fa6eabd1">umi3d.edk.UMI3DEntity</a>.</p>
+
+</div>
+</div>
 <a id="a16fc4ed3e2292ac569aa33bb95be3293"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16fc4ed3e2292ac569aa33bb95be3293">&#9670;&nbsp;</a></span>Id()</h2>
 
@@ -150,6 +178,26 @@ Properties</h2></td></tr>
 <p>The public Getter for objectId. </p>
 
 <p>Implements <a class="el" href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html#a70ffaed146b21c061aacfbf5c5e2e68b">umi3d.edk.UMI3DEntity</a>.</p>
+
+</div>
+</div>
+<a id="adfeff567374f63236f7059276a5ae5b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adfeff567374f63236f7059276a5ae5b0">&#9670;&nbsp;</a></span>LoadOnConnection()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool umi3d.edk.UMI3DUser.LoadOnConnection </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
+          <td class="paramname"><em>user</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html#a74edc59d6db6bdb5e7cc947267dc26e3">umi3d.edk.UMI3DEntity</a>.</p>
 
 </div>
 </div>
@@ -176,6 +224,26 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a21575d60f49bf6e558841ed0a40d524e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21575d60f49bf6e558841ed0a40d524e">&#9670;&nbsp;</a></span>RemoveConnectionFilter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool umi3d.edk.UMI3DUser.RemoveConnectionFilter </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter.html">UMI3DUserFilter</a>&#160;</td>
+          <td class="paramname"><em>filter</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implements <a class="el" href="../../d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html#a3d5859dae60db538f1478abbd3ce06cd">umi3d.edk.UMI3DEntity</a>.</p>
 
 </div>
 </div>
@@ -241,6 +309,28 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
+<a id="a47b5b977df00332e7a835f8d6d3d2bbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47b5b977df00332e7a835f8d6d3d2bbb">&#9670;&nbsp;</a></span>hasJoined</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool umi3d.edk.UMI3DUser.hasJoined</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aeb86096e8ffc957733420a727e2fb87b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb86096e8ffc957733420a727e2fb87b">&#9670;&nbsp;</a></span>status</h2>
 

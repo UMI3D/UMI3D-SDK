@@ -40,6 +40,9 @@ namespace umi3d.edk.interaction
         protected List<UMI3DTool> tools = new List<UMI3DTool>();
         public UMI3DAsyncListProperty<UMI3DTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
 
+        [SerializeField, EditorReadOnly]
+        protected bool Active;
+        public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
 
         #region properties
 
@@ -111,7 +114,7 @@ namespace umi3d.edk.interaction
         protected Dictionary<UMI3DUser, bool> availableLastFrame = new Dictionary<UMI3DUser, bool>();
         private UMI3DAsyncProperty<UMI3DScene> _objectScene;
         private UMI3DAsyncListProperty<UMI3DTool> _objectTools;
-
+        private UMI3DAsyncProperty<bool> _objectActive;
         #endregion
 
 
@@ -122,13 +125,18 @@ namespace umi3d.edk.interaction
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
-            foreach (var f in GetComponents<UMI3DUserFilter>())
-                AddConnectionFilter(f);
+            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+            {
+                if (this != null)
+                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                        AddConnectionFilter(f);
+            });
 
             toolboxId = id;
             if (Scene == null) Scene = GetComponent<UMI3DScene>();
             objectTools = new UMI3DAsyncListProperty<UMI3DTool>(toolboxId, UMI3DPropertyKeys.ToolboxTools, tools);
             objectScene = new UMI3DAsyncProperty<UMI3DScene>(toolboxId, UMI3DPropertyKeys.ToolboxSceneId, Scene, (s, u) => s.Id());
+            objectActive = new UMI3DAsyncProperty<bool>(toolboxId, UMI3DPropertyKeys.ToolBoxActive, Active);
             inited = true;
         }
 
@@ -157,6 +165,7 @@ namespace umi3d.edk.interaction
             dto.icon2D = display.icon2D.ToDto();
             dto.icon3D = display.icon3D.ToDto();
             dto.tools = objectTools?.GetValue(user).Where(t => t != null).Select(t => t.ToDto(user) as ToolDto).ToList();
+            dto.Active = objectActive.GetValue(user);
             return dto;
         }
 

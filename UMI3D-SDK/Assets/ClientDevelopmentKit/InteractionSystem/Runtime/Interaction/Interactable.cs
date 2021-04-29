@@ -35,7 +35,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public InteractableDto dto;
 
-        public bool NotifySubObject { get => dto.notifySubObject; }
+        public bool NotifySubObject { get => dto?.notifySubObject ?? false; }
+
 
         ///<inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }

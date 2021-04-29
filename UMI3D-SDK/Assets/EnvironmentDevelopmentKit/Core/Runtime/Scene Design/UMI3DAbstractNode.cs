@@ -144,15 +144,13 @@ namespace umi3d.edk
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
         /// </summary>
-        /// <returns>Return a LoadEntity</returns>
-        public virtual LoadEntity Register()
+        public virtual void Register()
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
                 objectId = UMI3DEnvironment.Register(this);
                 InitDefinition(objectId);
             }
-            return GetLoadEntity();
         }
 
         /// <summary>
@@ -188,8 +186,12 @@ namespace umi3d.edk
         /// </summary>
         protected virtual void InitDefinition(string id)
         {
-            foreach (var f in GetComponents<UMI3DUserFilter>())
-                AddConnectionFilter(f);
+            BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
+            {
+                if (this != null)
+                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                        AddConnectionFilter(f);
+            });
 
             objectId = id;
 

@@ -33,10 +33,9 @@ namespace umi3d.edk.interaction
         protected UMI3DNode Node;
 
         ///<inheritdoc/>
-        public override LoadEntity Register()
+        public override void Register()
         {
             base.Register();
-            return GetLoadEntity();
         }
 
         /// <summary>

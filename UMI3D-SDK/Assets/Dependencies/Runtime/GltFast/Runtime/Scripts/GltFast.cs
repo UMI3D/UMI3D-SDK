@@ -991,14 +991,18 @@ namespace GLTFast {
                 if(node.mesh>=0) {
                     int end = meshPrimitiveIndex[node.mesh+1];
                     GameObject meshGo = null;
+
                     for( int i=meshPrimitiveIndex[node.mesh]; i<end; i++ ) {
                         var mesh = primitives[i].mesh;
                         var meshName = string.IsNullOrEmpty(mesh.name) ? null : mesh.name;
                         if(meshGo==null) {
                             meshGo = go;
                             goName = goName ?? meshName;
-                        } else { 
-                            meshGo = new GameObject( meshName ?? "Gltf_Primitive" );
+                        } else {
+                            string n = (goName ?? meshName);
+                            if(n != null)
+                                 n = $"{(goName ?? meshName)}_mesh<{i}>";
+                            meshGo = new GameObject( n ?? "Gltf_Primitive" );
                             meshGo.transform.SetParent(go.transform,false);
                         }
                         var mf = meshGo.AddComponent<MeshFilter>();
