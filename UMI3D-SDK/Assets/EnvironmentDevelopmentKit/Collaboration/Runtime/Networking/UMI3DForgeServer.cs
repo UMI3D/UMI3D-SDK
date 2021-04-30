@@ -329,10 +329,12 @@ namespace umi3d.edk.collaboration
                 else
                     RelayMessage(player, frame);
             }
+            else
+                RelayMessage(player, frame);
         }
 
         #endregion
-       
+
         #region proximity_relay
 
         /// <summary>
