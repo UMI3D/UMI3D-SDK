@@ -35,12 +35,12 @@ namespace umi3d.edk
         /// <summary>
         /// The id of this property.
         /// </summary>
-        protected string propertyId { private set; get; }
+        public string propertyId { private set; get; }
 
         /// <summary>
         /// The id of the entity.
         /// </summary>
-        protected string entityId { private set; get; }
+        public string entityId { private set; get; }
 
         /// <summary>
         /// The current async i.e. user specific values.

@@ -79,7 +79,7 @@ namespace umi3d.cdk
 
         IEnumerator WaitForProgress(float waitFor, Action action)
         {
-            yield return new WaitWhile(() => LaunchAnimation(waitFor));
+            yield return new WaitUntil(() => LaunchAnimation(waitFor));
             action.Invoke();
         }
 
