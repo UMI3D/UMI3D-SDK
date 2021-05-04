@@ -154,9 +154,10 @@ namespace umi3d.edk
         /// Set the property's default/synchronized value.
         /// </summary>
         /// <param name="value">the new property's value</param>
-        public SetEntityProperty SetValue(T value)
+        /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        public SetEntityProperty SetValue(T value, bool forceOperation = false)
         {
-            if (this.value == null && value == null || this.value != null && Equal(this.value, value))
+            if ((this.value == null && value == null || this.value != null && Equal(this.value, value)) && !forceOperation)
                 return null;
             this.value = value;
 
@@ -190,7 +191,8 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user">the user</param>
         /// <param name="value">the new property's value</param>
-        public SetEntityProperty SetValue(UMI3DUser user, T value)
+        /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        public SetEntityProperty SetValue(UMI3DUser user, T value, bool forceOperation = false)
         {
             SetEntityProperty operation = new SetEntityProperty()
             {
@@ -203,14 +205,14 @@ namespace umi3d.edk
 
             if (asyncValues.ContainsKey(user))
             {
-                if (asyncValues[user] == null && value == null || Equal(asyncValues[user], value))
+                if ((asyncValues[user] == null && value == null || Equal(asyncValues[user], value)) && !forceOperation)
                     return null;
                 else
                 {
                     asyncValues[user] = value;
                     if (OnUserValueChanged != null)
                         OnUserValueChanged.Invoke(user, value);
-                    if (!UserDesync.Contains(user))
+                    if (!UserDesync.Contains(user) || forceOperation)
                         return operation;
                     else
                         return null;
@@ -222,7 +224,7 @@ namespace umi3d.edk
                 asyncValues[user] = value;
                 if (OnUserValueChanged != null)
                     OnUserValueChanged.Invoke(user, value);
-                if (!UserDesync.Contains(user))
+                if (!UserDesync.Contains(user) || forceOperation)
                     return operation;
                 else
                     return null;
