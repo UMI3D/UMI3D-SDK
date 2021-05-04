@@ -111,7 +111,7 @@ namespace umi3d.edk.userCapture
         /// <param name="dto">a dto containing the tracking data</param>
         public void UserTrackingReception(UserTrackingFrameDto dto, string userId)
         {
-            if (!embodimentInstances.ContainsKey(userId)) // voir avec Forge
+            if (!embodimentInstances.ContainsKey(userId))
             {
                 Debug.LogWarning($"Internal error : the user [{userId}] is not registered");
                 return;
