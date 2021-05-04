@@ -132,6 +132,16 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Quaternion> _objectRotation;
         private UMI3DAsyncProperty<Vector3> _objectScale;
 
+        /// <summary>
+        /// Id of the Volume in which the node is present
+        /// </summary>
+        public string VolumeId;
+
+        /// <summary>
+        /// Room object used to relay data
+        /// </summary>
+        public ICollaborationRoom RelayRoom;
+
         #endregion
 
 
@@ -140,15 +150,13 @@ namespace umi3d.edk
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
         /// </summary>
-        /// <returns>Return a LoadEntity</returns>
-        public virtual LoadEntity Register()
+        public virtual void Register()
         {
             if (objectId == null && UMI3DEnvironment.Exists)
             {
                 objectId = UMI3DEnvironment.Register(this);
                 InitDefinition(objectId);
             }
-            return GetLoadEntity();
         }
 
         /// <summary>

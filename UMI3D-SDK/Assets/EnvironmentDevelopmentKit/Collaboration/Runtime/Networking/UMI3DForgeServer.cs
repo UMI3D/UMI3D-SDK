@@ -279,7 +279,23 @@ namespace umi3d.edk.collaboration
                 {
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
                 });
-                RelayMessage(player, frame, Receivers.OthersProximity);
+
+                UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+
+                if (user.Avatar != null && user.Avatar.RelayRoom != null)
+                {
+                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
+
+                    if (relayVolume != null)
+                        MainThreadManager.Run(() =>
+                        {
+                            relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                        });
+                    else
+                        RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                }
+                else
+                    RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
             }
         }
 
@@ -301,7 +317,21 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            RelayMessage(player, frame);
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            if (user.Avatar != null && user.Avatar.RelayRoom != null)
+            {
+                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
+
+                if (relayVolume != null)
+                    MainThreadManager.Run(() =>
+                    {
+                        relayVolume.RelayVoIPRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                    });
+                else
+                    RelayMessage(player, frame);
+            }
+            else
+                RelayMessage(player, frame);
         }
 
         #endregion
@@ -311,7 +341,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        static readonly List<Receivers> Proximity = new List<Receivers> { Receivers.AllProximity, Receivers.AllProximityGrid, Receivers.OthersProximity, Receivers.OthersProximityGrid };
+        static readonly List<BeardedManStudios.Forge.Networking.Receivers> Proximity = new List<BeardedManStudios.Forge.Networking.Receivers> { BeardedManStudios.Forge.Networking.Receivers.AllProximity, BeardedManStudios.Forge.Networking.Receivers.AllProximityGrid, BeardedManStudios.Forge.Networking.Receivers.OthersProximity, BeardedManStudios.Forge.Networking.Receivers.OthersProximityGrid };
 
         /// <summary>
         /// 
@@ -366,10 +396,10 @@ namespace umi3d.edk.collaboration
         /// <param name="player"></param>
         /// <param name="frame"></param>
         /// <param name="strategy"></param>
-        protected void RelayMessage(NetworkingPlayer player, Binary frame, Receivers strategy = Receivers.Others)
+        protected void RelayMessage(NetworkingPlayer player, Binary frame, BeardedManStudios.Forge.Networking.Receivers strategy = BeardedManStudios.Forge.Networking.Receivers.Others)
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
-            Binary message = new Binary(time, false, frame.StreamData, Receivers.Target, frame.GroupId, frame.IsReliable);
+            Binary message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
             if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
                 lock (server.Players)
                 {
@@ -391,7 +421,7 @@ namespace umi3d.edk.collaboration
         /// <param name="timestep"></param>
         /// <param name="strategy"></param>
         /// <returns></returns>
-        protected bool ShouldRelay(int groupId, NetworkingPlayer from, NetworkingPlayer to, ulong timestep, Receivers strategy)
+        protected bool ShouldRelay(int groupId, NetworkingPlayer from, NetworkingPlayer to, ulong timestep, BeardedManStudios.Forge.Networking.Receivers strategy)
         {
             if (to.IsHost || from == to || UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(to.NetworkId)?.status != StatusType.ACTIVE)
                 return false;
@@ -500,7 +530,7 @@ namespace umi3d.edk.collaboration
             bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-            Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Target, channel, isTcp);
+            Binary bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.Target, channel, isTcp);
 
             try
             {
@@ -519,6 +549,18 @@ namespace umi3d.edk.collaboration
         /// 
         /// </summary>
         /// <param name="channel"></param>
+        /// <param name="player"></param>
+        /// <param name="data"></param>
+        /// <param name="isRealiable"></param>
+        public void RelayBinaryDataTo(int channel, NetworkingPlayer player, byte[] data, bool isRealiable)
+        {
+            SendBinaryDataTo(channel, player, data, isRealiable);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="channel"></param>
         /// <param name="data"></param>
         /// <param name="isReliable"></param>
         protected void SendBinaryDataToAll(int channel, byte[] data, bool isReliable)
@@ -526,7 +568,7 @@ namespace umi3d.edk.collaboration
             ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
             bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
-            Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Others, channel, isTcp);
+            Binary bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.Others, channel, isTcp);
             server.Send(bin, isReliable);
         }
 

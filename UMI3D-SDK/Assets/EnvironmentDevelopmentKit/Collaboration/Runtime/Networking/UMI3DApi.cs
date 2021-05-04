@@ -402,6 +402,21 @@ namespace umi3d.edk.collaboration
             }
         }
 
+
+
+        /// <summary>
+        /// GET "/environment/player_count"
+        /// get the player count
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="uriparam"></param>
+        [HttpGet(UMI3DNetworkingKeys.playerCount, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
+        public void GetPlayerCount(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            e.Response.WriteContent(UMI3DCollaborationServer.Collaboration.GetPlayerCount().ToBson());
+        }
+
         #endregion
 
         #region utils
