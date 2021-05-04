@@ -44,6 +44,7 @@ namespace umi3d.cdk.userCapture
         protected struct Bound
         {
             public Transform bone;
+            public string bonetype;
             public Transform obj;
             public Vector3 offsetPosition;
             public Quaternion offsetRotation;
@@ -254,6 +255,7 @@ namespace umi3d.cdk.userCapture
                     bounds.Add(new Bound()
                     {
                         bone = bone.transform,
+                        bonetype = dto.boneType,
                         obj = obj,
                         offsetPosition = dto.position,
                         offsetRotation = dto.rotation
@@ -266,11 +268,26 @@ namespace umi3d.cdk.userCapture
                 {
                     if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out SavedTransform savedTransform))
                     {
-                        int index = bounds.FindIndex(b => b.obj == savedTransform.obj);
-                        Bound bound = bounds[index];
-                        bound.offsetPosition = dto.position;
-                        bound.offsetRotation = dto.rotation;
-                        bounds[index] = bound;
+                        int index = bounds.FindIndex(b => b.obj == savedTransform.obj && b.bonetype == dto.boneType);
+
+                        if (index >= 0)
+                        {
+                            Bound bound = bounds[index];
+                            bound.offsetPosition = dto.position;
+                            bound.offsetRotation = dto.rotation;
+                            bounds[index] = bound;
+                        }
+                        else
+                        {
+                            bounds.Add(new Bound()
+                            {
+                                bone = bone.transform,
+                                bonetype = dto.boneType,
+                                obj = obj,
+                                offsetPosition = dto.position,
+                                offsetRotation = dto.rotation
+                            });
+                        }
                     }
                 }
             }
@@ -286,8 +303,10 @@ namespace umi3d.cdk.userCapture
                 {
                     if (savedTransform.obj != null)
                     {
-                        var c = bounds.Find(b => b.obj == savedTransform.obj);
-                        bounds.Remove(c);
+                        int index = bounds.FindIndex(b => b.obj == savedTransform.obj);
+
+                        Bound bd = bounds[index];
+                        bounds.Remove(bd);
 
                         if (dto.rigName == "")
                         {
@@ -318,7 +337,10 @@ namespace umi3d.cdk.userCapture
                     Destroy(node.gameObject);
             }
 
-            savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
+            if (!dto.active)
+            {
+                savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
+            }
         }
     }
 }
