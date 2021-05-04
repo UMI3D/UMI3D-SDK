@@ -267,7 +267,8 @@ namespace umi3d.cdk.collaboration
         {
             if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
             {
-                if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                var user = GetUserByNetWorkId(player.NetworkId);
+                if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(user.id, out UserAvatar userAvatar))
                     MainThreadManager.Run(() =>
                     {
                         if (client.Time.Timestep - frame.TimeStep < 500)

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.interaction;
+using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
@@ -321,6 +322,14 @@ namespace umi3d.cdk
                     break;
                 case ReleaseToolDto release:
                     AbstractInteractionMapper.Instance.ReleaseTool(release.toolId, new interaction.RequestedByEnvironment());
+                    performed.Invoke();
+                    break;
+                case SetTrackingTargetFPSDto setTargetFPS:
+                    UMI3DClientUserTracking.Instance.setFPSTarget(setTargetFPS.targetFPS);
+                    performed.Invoke();
+                    break;
+                case SetStreamedBonesDto streamedBones:
+                    UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones.streamedBones);
                     performed.Invoke();
                     break;
             }

@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     {
         private class KalmanPosition
         {
-            public UKF KalmanFilter;
+            public UMI3DUnscentedKalmanFilter KalmanFilter;
             public double[] estimations;
             public double[] previous_prediction;
             public double[] prediction;
@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
 
             public KalmanPosition(double q, double r)
             {
-                KalmanFilter = new UKF(q, r);
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
                 estimations = new double[] { };
                 previous_prediction = new double[] { };
                 prediction = new double[] { };
@@ -44,7 +44,7 @@ namespace umi3d.cdk.collaboration
 
         private class KalmanRotation
         {
-            public UKF KalmanFilter = new UKF();
+            public UMI3DUnscentedKalmanFilter KalmanFilter = new UMI3DUnscentedKalmanFilter();
             public double[] estimations;
             public double[] previous_prediction;
             public double[] prediction;
@@ -52,7 +52,7 @@ namespace umi3d.cdk.collaboration
 
             public KalmanRotation(double q, double r)
             {
-                KalmanFilter = new UKF(q, r);
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
                 estimations = new double[] { };
                 previous_prediction = new double[] { };
                 prediction = new double[] { };
@@ -98,7 +98,7 @@ namespace umi3d.cdk.collaboration
                     {
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
                         Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneType].regressed_position);
-                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion(), boneScales[boneType]).MultiplyPoint3x4((Vector3)boneBindingDto.position);
+                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion(), Vector3.Scale(this.scale, boneScales[boneType])).MultiplyPoint3x4((Vector3)boneBindingDto.position);
                         st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
                     }
                 }
@@ -116,7 +116,7 @@ namespace umi3d.cdk.collaboration
                 double check = lastMessageTime;
                 double now = Time.time;
 
-                var delta = now - check;
+                double delta = now - check;
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
