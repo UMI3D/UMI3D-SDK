@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,7 +84,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayDataRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -96,7 +97,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Data, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Data, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Data, isReliable);
+                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.Data, isReliable);
                     }
                 }
             }
@@ -110,7 +111,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayTrackingRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayTrackingRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -123,7 +124,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Tracking, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Tracking, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Tracking, isReliable);
+                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.Tracking, isReliable);
                     }
                 }
             }   
@@ -137,7 +138,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayVoIPRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayVoIPRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -150,7 +151,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.VoIP, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.VoIP, now);
-                        DispatchTransaction(user, data, DataChannelTypes.VoIP, isReliable);
+                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.VoIP, isReliable);
                     }
                 }
             }
@@ -165,7 +166,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayVideoRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayVideoRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -178,7 +179,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Video, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Video, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Video, isReliable);
+                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.Video, isReliable);
                     }
                 }
             }
@@ -329,9 +330,9 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
+        protected void DispatchTransaction(UMI3DCollaborationUser player, UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
         {
-            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
+            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, player.networkPlayer, to.networkPlayer, data, isReliable);
         }
     }
 }

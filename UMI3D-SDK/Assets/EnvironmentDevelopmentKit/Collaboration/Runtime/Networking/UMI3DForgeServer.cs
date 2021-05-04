@@ -288,7 +288,7 @@ namespace umi3d.edk.collaboration
                     if (relayVolume != null)
                         MainThreadManager.Run(() =>
                         {
-                            relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                            relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
                         });
                     else
                         RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
@@ -324,7 +324,7 @@ namespace umi3d.edk.collaboration
                 if (relayVolume != null)
                     MainThreadManager.Run(() =>
                     {
-                        relayVolume.RelayVoIPRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                        relayVolume.RelayVoIPRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
                     });
                 else
                     RelayMessage(player, frame);
@@ -395,6 +395,7 @@ namespace umi3d.edk.collaboration
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
             Binary message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
+            message.SetSender(player);
             if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
                 lock (server.Players)
                 {
@@ -518,14 +519,15 @@ namespace umi3d.edk.collaboration
         /// <param name="player"></param>
         /// <param name="data"></param>
         /// <param name="isReliable"></param>
-        protected void SendBinaryDataTo(int channel, NetworkingPlayer player, byte[] data, bool isReliable)
+        protected void SendBinaryDataTo(int channel, NetworkingPlayer player, byte[] data, bool isReliable, NetworkingPlayer from = null)
         {
             ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
             bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
             Binary bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.Target, channel, isTcp);
-
+            if(from != null)
+                bin.SetSender(from);
             try
             {
                 server.Send(player, bin, isReliable);
@@ -534,7 +536,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log($"Error on send binary to {player.NetworkId} on channel {channel} [{e}]");
+                    Debug.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender}) on channel {channel} [{e}]");
                 });
             }
         }
@@ -546,9 +548,9 @@ namespace umi3d.edk.collaboration
         /// <param name="player"></param>
         /// <param name="data"></param>
         /// <param name="isRealiable"></param>
-        public void RelayBinaryDataTo(int channel, NetworkingPlayer player, byte[] data, bool isRealiable)
+        public void RelayBinaryDataTo(int channel, NetworkingPlayer from, NetworkingPlayer player, byte[] data, bool isRealiable)
         {
-            SendBinaryDataTo(channel, player, data, isRealiable);
+            SendBinaryDataTo(channel, player, data, isRealiable, from);
         }
 
         /// <summary>
