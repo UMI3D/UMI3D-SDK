@@ -45,7 +45,7 @@ namespace AsImpL
         public static Texture2D LoadTexture(string fileName)
         {
             string ext = Path.GetExtension(fileName).ToLower();
-            if (ext == ".png" || ext == ".jpg")
+            if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".PNG" || ext == ".JPG" || ext == ".JPEG")
             {
                 Texture2D t2d = new Texture2D(1, 1);
                 t2d.LoadImage(File.ReadAllBytes(fileName));

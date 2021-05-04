@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// </summary>
         public ImageDtoLoader()
         {
-            this.supportedFileExtentions = new List<string>() { ".jpg", ".bmp", ".dib", ".rle", ".exr", ".gif", ".hdr", ".iff", ".jpg", ".jpeg", ".pict", ".pct", ".png", ".psd", ".tga", ".tif", ".tiff" };
+            this.supportedFileExtentions = new List<string>() { ".jpg", ".bmp", ".dib", ".rle", ".exr", ".gif", ".hdr", ".iff", ".jpeg", ".pict", ".pct", ".png", ".psd", ".tga", ".tif", ".tiff", ".TGA", ".PNG", ".JPG", ".JPEG" };
             this.ignoredFileExtentions = new List<string>();
         }
 
