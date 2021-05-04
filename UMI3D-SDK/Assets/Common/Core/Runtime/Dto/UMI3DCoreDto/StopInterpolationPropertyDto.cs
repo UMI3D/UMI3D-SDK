@@ -14,14 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
+using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
-    public class JoinDto : UMI3DDto
+    /// <summary>
+    /// A class to describe a stopping interpolation operation
+    /// </summary>
+    public class StopInterpolationPropertyDto : AbstractInterpolationPropertyDto
     {
-        public Dictionary<string, bool> trackedBonetypes;
-        public SerializableVector3 userSize;
+        /// <summary>
+        /// The new value for the property
+        /// </summary>
+        public object stopValue;
     }
 }

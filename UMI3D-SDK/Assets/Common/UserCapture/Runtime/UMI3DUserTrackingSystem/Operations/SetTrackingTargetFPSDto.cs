@@ -14,14 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
+using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
-    public class JoinDto : UMI3DDto
+    public class SetTrackingTargetFPSDto : AbstractOperationDto
     {
-        public Dictionary<string, bool> trackedBonetypes;
-        public SerializableVector3 userSize;
+        public int targetFPS;
     }
 }
