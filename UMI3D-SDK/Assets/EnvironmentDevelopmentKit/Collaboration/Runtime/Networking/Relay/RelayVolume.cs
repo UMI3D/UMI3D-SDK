@@ -27,7 +27,7 @@ namespace umi3d.edk.collaboration
 {
     public class RelayVolume : MonoBehaviour, ICollaborationRoom
     {
-        public static Dictionary<string, RelayVolume> relaysVolumes = new Dictionary<string, RelayVolume>(); 
+        public static Dictionary<string, RelayVolume> relaysVolumes = new Dictionary<string, RelayVolume>();
 
         [Serializable]
         public struct RelayAssociation
@@ -89,7 +89,7 @@ namespace umi3d.edk.collaboration
             float now = Time.time;
 
             HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
-            
+
             if (targetHashSet != null)
             {
                 foreach (UMI3DCollaborationUser user in targetHashSet)
@@ -97,7 +97,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Data, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Data, now);
-                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.Data, isReliable);
+                        DispatchTransaction(user, data, DataChannelTypes.Data, isReliable);
                     }
                 }
             }
@@ -124,10 +124,10 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Tracking, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Tracking, now);
-                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.Tracking, isReliable);
+                        DispatchTransaction(user, data, DataChannelTypes.Tracking, isReliable);
                     }
                 }
-            }   
+            }
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.VoIP, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.VoIP, now);
-                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.VoIP, isReliable);
+                        DispatchTransaction(user, data, DataChannelTypes.VoIP, isReliable);
                     }
                 }
             }
@@ -179,7 +179,7 @@ namespace umi3d.edk.collaboration
                     if (ShouldRelay(sender, user, DataChannelTypes.Video, now))
                     {
                         RememberRelay(sender, user, DataChannelTypes.Video, now);
-                        DispatchTransaction(userSender as UMI3DCollaborationUser, user, data, DataChannelTypes.Video, isReliable);
+                        DispatchTransaction(user, data, DataChannelTypes.Video, isReliable);
                     }
                 }
             }
@@ -330,9 +330,9 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected void DispatchTransaction(UMI3DCollaborationUser player, UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
+        protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
         {
-            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, player.networkPlayer, to.networkPlayer, data, isReliable);
+            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
         }
     }
 }
