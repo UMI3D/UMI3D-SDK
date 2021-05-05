@@ -33,11 +33,8 @@ namespace umi3d.common.collaboration
         {
         }
 
-        public UserConnectionDto(UserDto user)
+        public UserConnectionDto(UserDto user) : base(user)
         {
-            avatarId = user.avatarId;
-            id = user.id;
-            status = user.status;
         }
     }
 }
