@@ -220,11 +220,43 @@ namespace umi3d.cdk.collaboration
         public void SendVOIP(int length, byte[] sample)
         {
             if (client == null || client.Me == null) return;
-            var message = new byte[length + sizeof(uint)];
-            var pos = UMI3DNetworkingHelper.Write(Me, message, 0);
-            MainThreadManager.Run(() => { Debug.Log($"audio out {Me} {length} < {sample.Length}"); });
-            sample.CopyRangeTo(message, (int)pos,0,length-1);
-            Binary voice = new Binary(client.Time.Timestep, false, message, Receivers.All, MessageGroupIds.VOIP, false);
+            Binary voice = null;
+            if (useDto)
+            {
+                var message = new byte[length];
+                sample.CopyRangeTo(message, 0, 0, length - 1);
+
+                MainThreadManager.Run(() => {
+                    Debug.Log(sample.Take(length).Zip(message, (a, b) => $"[{a}:{b}]").Aggregate((a, b) => $"{a};{b}"));
+                });
+
+
+                sample.Take(length);
+
+
+                var dto = new VoiceDto()
+                {
+                    data = sample.Take(length).ToArray(),
+                    senderId = Me
+                };
+                voice = new Binary(client.Time.Timestep, false, dto.ToBson(), Receivers.All, MessageGroupIds.VOIP, false);
+            }
+            else
+            {
+                var message2 = new byte[length];
+                sample.CopyRangeTo(message2, 0, 0, length - 1);
+                var stringdetest = sample.Take(length).Zip(message2, (a, b) => $"[{a}:{b}]").Aggregate((a, b) => $"{a};{b}");
+                MainThreadManager.Run(() => {
+                    Debug.Log(stringdetest);
+                });
+
+
+                var message = new byte[length + sizeof(uint)];
+                var pos = UMI3DNetworkingHelper.Write(Me, message, 0);
+                MainThreadManager.Run(() => { Debug.Log($"audio out {Me} {length} < {sample.Length}"); });
+                sample.CopyRangeTo(message, (int)pos, 0, length - 1);
+                voice = new Binary(client.Time.Timestep, false, message, Receivers.All, MessageGroupIds.VOIP, false);
+            }
             client.Send(voice);
         }
 
@@ -297,14 +329,18 @@ namespace umi3d.cdk.collaboration
 
         #region VoIP
 
+        bool useDto = true;
+
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, 0);
+            VoiceDto dto = null;
+            if (useDto) dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
+            var id = useDto ? dto.senderId : UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, 0);
             UMI3DUser source = GetUserByNetWorkId(id);
             MainThreadManager.Run(() => { Debug.Log($"audio in {id} {source}"); });
             if (source != null)
-                AudioManager.Instance.Read(source.id, frame.StreamData.byteArr.Skip(sizeof(uint)).ToArray(), client.Time.Timestep);
+                AudioManager.Instance.Read(source.id, useDto ? dto.data : frame.StreamData.byteArr.Skip(sizeof(uint)).ToArray(), client.Time.Timestep);
         }
 
 
