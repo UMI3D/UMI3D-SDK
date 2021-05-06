@@ -29,7 +29,7 @@ namespace umi3d.common.collaboration
         public FormDto parameters;
         public bool librariesUpdated = false;
 
-        public UserConnectionDto()
+        public UserConnectionDto() : base()
         {
         }
 

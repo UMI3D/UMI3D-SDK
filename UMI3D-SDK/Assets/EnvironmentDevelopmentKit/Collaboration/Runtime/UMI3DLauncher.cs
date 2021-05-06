@@ -119,8 +119,8 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetHttpPort(string arg)
         {
-            int result;
-            if (int.TryParse(arg, out result))
+            ushort result;
+            if (ushort.TryParse(arg, out result))
             {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = result == 0;
                 UMI3DCollaborationServer.Instance.httpPort = result;

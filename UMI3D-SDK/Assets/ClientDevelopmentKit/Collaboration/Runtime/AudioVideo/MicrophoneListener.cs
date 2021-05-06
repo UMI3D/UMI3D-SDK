@@ -199,7 +199,7 @@ namespace umi3d.cdk.collaboration
                         && UMI3DCollaborationClientServer.Instance?.ForgeClient != null
                         && UMI3DCollaborationClientServer.UserDto.status == StatusType.ACTIVE)
                     {
-                        UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer.Take(encodedLength).ToArray());
+                        UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
                     }
                 }
                 Thread.Sleep(sleepTimeMiliseconde);

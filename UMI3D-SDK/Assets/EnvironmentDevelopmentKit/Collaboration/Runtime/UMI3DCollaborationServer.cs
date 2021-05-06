@@ -70,7 +70,7 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly]
         public bool useRandomHttpPort;
         [EditorReadOnly]
-        public int httpPort;
+        public ushort httpPort;
 
         public AuthenticationType Authentication;
 
@@ -112,7 +112,7 @@ namespace umi3d.edk.collaboration
             if (!useIp)
                 ip = GetLocalIPAddress();
 
-            httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
+            httpPort = (ushort)FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 

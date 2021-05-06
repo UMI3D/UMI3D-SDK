@@ -147,14 +147,23 @@ namespace umi3d.edk.editor
                         {
                             FilePath = System.IO.Path.GetFullPath(FilePath);
                             bool usePath = true;
-                            if (!FilePath.Contains(path)) usePath = EditorUtility.DisplayDialog("Invalid File", $"The File should be under {path} folder or any of its subfolder. your entry was {FilePath}", "Use it anyway", "Ok, my bad");
-
-                            if (usePath)
+                            if (!FilePath.Contains(path))
+                            {
+                                usePath = EditorUtility.DisplayDialog("Invalid File", $"The File should be under {path} folder or any of its subfolder. your entry was {FilePath}", "Use it anyway", "Ok, my bad");
+                                if (usePath)
+                                {
+                                    this.path.stringValue = path;
+                                    this.extension.stringValue = System.IO.Path.GetExtension(FilePath);
+                                    this.size.floatValue = new FileInfo(FilePath).Length / 1000f;
+                                }
+                            }
+                            else
                             {
                                 this.path.stringValue = FilePath.Split(new string[] { path }, StringSplitOptions.None)[1];
                                 this.extension.stringValue = System.IO.Path.GetExtension(FilePath);
                                 this.size.floatValue = new FileInfo(FilePath).Length / 1000f;
                             }
+
                         }
                     }
 

@@ -220,9 +220,10 @@ namespace umi3d.cdk.collaboration
         public void SendVOIP(int length, byte[] sample)
         {
             if (client == null || client.Me == null) return;
-            var message = new byte[length + 4];
-            var pos = UMI3DNetworkingHelper.Writte(Me, message, 0);
-            sample.CopyTo(message, (int)pos);
+            var message = new byte[length + sizeof(uint)];
+            var pos = UMI3DNetworkingHelper.Write(Me, message, 0);
+            MainThreadManager.Run(() => { Debug.Log($"audio out {Me} {length} < {sample.Length}"); });
+            sample.CopyRangeTo(message, (int)pos,0,length-1);
             Binary voice = new Binary(client.Time.Timestep, false, message, Receivers.All, MessageGroupIds.VOIP, false);
             client.Send(voice);
         }
@@ -299,7 +300,9 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            UMI3DUser source = GetUserByNetWorkId(UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr,0));
+            var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, 0);
+            UMI3DUser source = GetUserByNetWorkId(id);
+            MainThreadManager.Run(() => { Debug.Log($"audio in {id} {source}"); });
             if (source != null)
                 AudioManager.Instance.Read(source.id, frame.StreamData.byteArr.Skip(sizeof(uint)).ToArray(), client.Time.Timestep);
         }

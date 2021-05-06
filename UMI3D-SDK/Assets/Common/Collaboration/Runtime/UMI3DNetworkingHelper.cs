@@ -121,7 +121,7 @@ public static class UMI3DNetworkingHelper
         return value.Select(v => GetSize(v)).Aggregate((a, b) => (a + b));
     }
 
-    public static ulong Writte<T>(T value, byte[] array, ulong position) {
+    public static ulong Write<T>(T value, byte[] array, ulong position) {
         var pos = (int)position;
         switch (value)
         {
@@ -177,7 +177,7 @@ public static class UMI3DNetworkingHelper
         ulong count = 0;
         foreach(var v in value)
         {
-            count += Writte(v, array, position + count);
+            count += Write(v, array, position + count);
         }
         return count;
     }
