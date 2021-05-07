@@ -41,6 +41,15 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private UDPServer server;
 
+       
+
+        /// <summary>
+        /// Forge server environmentType
+        /// </summary>
+        public string environmentType="";
+
+
+
         /// <inheritdoc/>
         public override NetWorker GetNetWorker()
         {
@@ -117,11 +126,11 @@ namespace umi3d.edk.collaboration
             JSONNode masterServerData = null;
             if (!string.IsNullOrEmpty(masterServerHost))
             {
-                string serverId = "myGame";
-                string serverName = "Forge Game";
-                string type = "Deathmatch";
-                string mode = "Teams";
-                string comment = "Demo comment...";
+                string serverId = UMI3DCollaborationServer.Instance.sessionId;
+                string serverName = UMI3DCollaborationEnvironment.Instance.environmentName;// ok
+                string type = string.IsNullOrEmpty(environmentType) ? UMI3DCollaborationEnvironment.Instance.environmentName : environmentType;
+                string mode = string.IsNullOrEmpty(UMI3DCollaborationServer.Instance.iconServerUrl) ? "public/picture.png" : UMI3DCollaborationServer.Instance.iconServerUrl;
+                string comment = UMI3DCollaborationServer.Instance.descriptionComment;
 
                 masterServerData = mgr.MasterServerRegisterData(server, serverId, serverName, type, mode, comment);
             }
