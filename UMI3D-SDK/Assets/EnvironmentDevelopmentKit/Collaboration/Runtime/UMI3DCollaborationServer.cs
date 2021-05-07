@@ -70,7 +70,23 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly]
         public bool useRandomHttpPort;
         [EditorReadOnly]
-        public int httpPort;
+        public ushort httpPort;
+
+        /// <summary>
+        /// url of an image that could be displayed by browser to show different awailable environments.
+        /// </summary>
+        public string iconServerUrl;
+
+        /// <summary>
+        /// Forge server session id
+        /// </summary>
+        [HideInInspector]
+        public string sessionId = "";
+
+        /// <summary>
+        /// Forge server description scene (comment)
+        /// </summary>
+        public string descriptionComment = "";
 
         public AuthenticationType Authentication;
 
@@ -112,7 +128,7 @@ namespace umi3d.edk.collaboration
             if (!useIp)
                 ip = GetLocalIPAddress();
 
-            httpPort = FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
+            httpPort = (ushort)FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
