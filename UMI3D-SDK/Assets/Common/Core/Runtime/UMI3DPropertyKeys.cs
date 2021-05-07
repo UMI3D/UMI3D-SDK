@@ -16,7 +16,6 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    [System.Serializable]
     static public class UMI3DPropertyKeys
     {
         public const ulong None = 0;
