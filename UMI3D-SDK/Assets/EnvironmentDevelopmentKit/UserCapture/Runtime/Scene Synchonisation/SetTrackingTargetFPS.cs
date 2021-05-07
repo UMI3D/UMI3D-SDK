@@ -13,15 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 using System.Collections.Generic;
-using umi3d.common.userCapture;
+using System.Linq;
+using umi3d.common;
 
-namespace umi3d.common.collaboration
+namespace umi3d.edk.userCapture
 {
-    public class JoinDto : UMI3DDto
+    public class SetTrackingTargetFPS : Operation
     {
-        public Dictionary<string, bool> trackedBonetypes;
-        public SerializableVector3 userSize;
+        public int targetFPS;
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            var targetFPS = new SetTrackingTargetFPSDto()
+            {
+                targetFPS = this.targetFPS
+            };
+            return targetFPS;
+        }
     }
 }

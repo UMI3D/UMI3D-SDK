@@ -113,6 +113,5 @@ namespace umi3d.edk.collaboration
             status.status = this.status;
             return status;
         }
-
     }
 }

@@ -60,6 +60,14 @@ namespace umi3d.cdk
                     UMI3DEnvironmentLoader.SetMultiEntity(multiSet);
                     performed.Invoke();
                     break;
+                case StartInterpolationPropertyDto interpolationStart:
+                    UMI3DEnvironmentLoader.StartInterpolation(interpolationStart);
+                    performed.Invoke();
+                    break;
+                case StopInterpolationPropertyDto interpolationStop:
+                    UMI3DEnvironmentLoader.StopInterpolation(interpolationStop);
+                    performed.Invoke();
+                    break;
 
                 default:
                     UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operation, performed);

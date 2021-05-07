@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
-using umi3d.common.userCapture;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
-    public class JoinDto : UMI3DDto
+    public class SetStreamedBonesDto : AbstractOperationDto
     {
-        public Dictionary<string, bool> trackedBonetypes;
-        public SerializableVector3 userSize;
+        public List<string> streamedBones;
     }
 }

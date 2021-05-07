@@ -14,14 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
-using umi3d.common.userCapture;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.userCapture
 {
-    public class JoinDto : UMI3DDto
+    /// <summary>
+    /// A request to inform about the current pose of the user.
+    /// </summary>
+    [Serializable]
+    public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
-        public Dictionary<string, bool> trackedBonetypes;
-        public SerializableVector3 userSize;
+        public List<BoneDto> bones;
+
+        public SerializableVector3 position;
+
+        public SerializableVector4 rotation;
+
+        public SerializableVector3 scale;
+
+        public float refreshFrequency;
     }
 }

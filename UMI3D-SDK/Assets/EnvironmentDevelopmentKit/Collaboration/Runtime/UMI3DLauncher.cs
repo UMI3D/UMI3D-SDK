@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.IO;
 using System.Collections;
 using UnityEngine;
 
@@ -72,6 +73,22 @@ namespace umi3d.edk.collaboration
         /// Set the max number of player.
         /// </summary>
         public const string maxNbPlayerParam = Separator + "players";
+        /// <summary>
+        /// Set the id of the session.
+        /// </summary>
+        public const string sessionIdParam = Separator + "sessionId";
+        /// <summary>
+        /// Set the comment of the session.
+        /// </summary>
+        public const string sessionCommentParam = Separator + "sessioncomment";
+        /// <summary>
+        /// Set the icon url of the server.
+        /// </summary>
+        public const string iconParam = Separator + "iconurl";
+        /// <summary>
+        /// Set the config file path.
+        /// </summary>
+        public const string configFileParam = Separator + "config";
 
         /// <summary>
         /// Should the server be launch at start.
@@ -84,6 +101,24 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetName(string arg) { UMI3DCollaborationEnvironment.Instance.environmentName = arg; }
+        
+        /// <summary>
+        /// method called when param <see cref="sessionId"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetSessionId(string arg) { UMI3DCollaborationServer.Instance.sessionId = arg; }
+
+        /// <summary>
+        /// method called when param <see cref="sessioncomment"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetSessionComment(string arg) { UMI3DCollaborationServer.Instance.descriptionComment = arg; }
+        
+        /// <summary>
+        /// method called when param <see cref="sessionId"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetIconServerUrl(string arg) { UMI3DCollaborationServer.Instance.iconServerUrl = arg; }
 
         /// <summary>
         /// method called when param <see cref="ipParam"/> is found
@@ -196,6 +231,66 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        protected virtual ConfigServer ReadConfigFile(string arg)
+        {
+            if (File.Exists(arg))
+            {
+                return ConfigServer.ReadXml(arg);
+            }
+            else
+                return null;             
+        }
+
+        /// <summary>
+        /// method called when param <see cref="configFileParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void ApplyConfigFile(ConfigServer conf)
+        {
+            if (conf != null)
+            {
+                if (!string.IsNullOrEmpty(conf.nameParam))
+                    SetName(conf.nameParam);
+
+                if (!string.IsNullOrEmpty(conf.ipParam))
+                    SetIp(conf.ipParam);
+
+                if (!string.IsNullOrEmpty(conf.authParam))
+                    SetAuth(conf.authParam);
+
+                if (conf.tokenLifeParam > 0)
+                    UMI3DCollaborationServer.Instance.tokenLifeTime = conf.tokenLifeParam;
+
+                UMI3DCollaborationServer.Instance.useRandomHttpPort = conf.httpPortParam == 0;
+                UMI3DCollaborationServer.Instance.httpPort = conf.httpPortParam;
+
+                UMI3DCollaborationServer.Instance.useRandomForgePort = conf.udpportParam == 0;
+                UMI3DCollaborationServer.Instance.forgePort = conf.udpportParam;
+
+                if (!string.IsNullOrEmpty(conf.masterIpParam))
+                    SetMasterServerIp(conf.masterIpParam);
+
+                UMI3DCollaborationServer.Instance.forgeMasterServerPort = conf.masterPortParam;
+
+                if (!string.IsNullOrEmpty(conf.natIpParam))
+                    SetNatServerIp(conf.natIpParam);
+
+                UMI3DCollaborationServer.Instance.forgeNatServerPort = conf.natPortParam;
+
+                UMI3DCollaborationServer.Instance.forgeMaxNbPlayer = conf.playersParam;
+
+                if (!string.IsNullOrEmpty(conf.sessionIdParam))
+                    SetSessionId(conf.sessionIdParam);
+
+                if (!string.IsNullOrEmpty(conf.sessionCommentParam))
+                    SetSessionComment(conf.sessionCommentParam);
+
+                if (!string.IsNullOrEmpty(conf.iconUrlParam))
+                    SetIconServerUrl(conf.iconUrlParam);
+            }
+
+        }
+
         /// <summary>
         /// method called if a parameter wasn't catch.
         /// </summary>
@@ -225,6 +320,17 @@ namespace umi3d.edk.collaboration
         {
             string[] args = System.Environment.GetCommandLineArgs();
             int length = args.Length;
+            //Apply first config fileif it exists
+            for (int i = 0; i < length; i++)
+            {
+                if (args[i].CompareTo(configFileParam) == 0)
+                {
+                    if (++i < length)
+                        ApplyConfigFile(ReadConfigFile(args[i]));
+                }
+            }
+
+            //then aplly other arguments
             for (int i = 0; i < length; i++)
             {
                 if (args[i].CompareTo(nameParam) == 0)
@@ -281,6 +387,21 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetMaxNbPlayers(args[i]);
+                }
+                else if (args[i].CompareTo(sessionIdParam) == 0)
+                {
+                    if (++i < length)
+                        SetSessionId(args[i]);
+                }
+                else if (args[i].CompareTo(sessionCommentParam) == 0)
+                {
+                    if (++i < length)
+                        SetSessionComment(args[i]);
+                }
+                else if (args[i].CompareTo(iconParam) == 0)
+                {
+                    if (++i < length)
+                        SetIconServerUrl(args[i]);
                 }
                 else
                     OtherParam(ref i, args);

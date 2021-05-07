@@ -15,26 +15,22 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
     /// <summary>
-    /// A request to inform about the current pose of the user.
+    /// Abstract class to describe an interpolation operation
     /// </summary>
-    [Serializable]
-    public class UserTrackingFrameDto : AbstractBrowserRequestDto
+    public class AbstractInterpolationPropertyDto : AbstractOperationDto
     {
-        public string userId;
+        /// <summary>
+        /// The unique identifier of the entity
+        /// </summary>
+        public string entityId;
 
-        public List<BoneDto> bones;
-
-        public SerializableVector3 position;
-
-        public SerializableVector4 rotation;
-
-        public SerializableVector3 scale;
-
-        public float refreshFrequency;
+        /// <summary>
+        /// The name of the interpolated property
+        /// </summary>
+        public string property;
     }
 }
