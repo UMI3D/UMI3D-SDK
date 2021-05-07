@@ -32,6 +32,8 @@ namespace umi3d.cdk.collaboration
     {
         public static new UMI3DCollaborationClientServer Instance { get { return UMI3DClientServer.Instance as UMI3DCollaborationClientServer; } set { UMI3DClientServer.Instance = value; } }
 
+        public static bool useDto { protected set; get; } = false;
+
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public UMI3DForgeClient ForgeClient { get; private set; }
@@ -367,6 +369,7 @@ namespace umi3d.cdk.collaboration
 
         void EnterScene(EnterDto enter)
         {
+            useDto = enter.usedDto;
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {

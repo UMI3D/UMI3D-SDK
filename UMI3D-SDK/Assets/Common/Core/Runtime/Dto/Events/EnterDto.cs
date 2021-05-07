@@ -21,6 +21,7 @@ namespace umi3d.common
     {
         public SerializableVector3 userPosition;
         public SerializableVector4 userRotation;
+        public bool usedDto;
 
         public EnterDto() : base() { }
     }

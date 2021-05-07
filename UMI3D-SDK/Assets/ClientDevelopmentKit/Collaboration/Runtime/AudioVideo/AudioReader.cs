@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="data"></param>
         public void Read(byte[] data, ulong timestep)
         {
-            MainThreadManager.Run(() => { Debug.Log($"audio in 2 {data.Length}"); OnEncoded(data, data.Length, timestep); });
+            MainThreadManager.Run(() => { OnEncoded(data, data.Length, timestep); });
         }
 
         #region Read
