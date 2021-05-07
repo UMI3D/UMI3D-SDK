@@ -136,7 +136,7 @@ namespace umi3d.edk.interaction
             if (Scene == null) Scene = GetComponent<UMI3DScene>();
             objectTools = new UMI3DAsyncListProperty<UMI3DTool>(toolboxId, UMI3DPropertyKeys.ToolboxTools, tools);
             objectScene = new UMI3DAsyncProperty<UMI3DScene>(toolboxId, UMI3DPropertyKeys.ToolboxSceneId, Scene, (s, u) => s.Id());
-            objectActive = new UMI3DAsyncProperty<bool>(toolboxId, UMI3DPropertyKeys.ToolBoxActive, Active);
+            objectActive = new UMI3DAsyncProperty<bool>(toolboxId, UMI3DPropertyKeys.ToolboxActive, Active);
             inited = true;
         }
 

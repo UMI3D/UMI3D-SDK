@@ -34,6 +34,11 @@ namespace umi3d.edk
         /// </summary>
         public object startValue;
 
+        public override byte[] ToBytes(UMI3DUser user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var startInterpolation = new StartInterpolationPropertyDto();

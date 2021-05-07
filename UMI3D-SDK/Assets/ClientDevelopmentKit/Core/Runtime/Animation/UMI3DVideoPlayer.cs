@@ -27,7 +27,7 @@ namespace umi3d.cdk
         VideoPlayer videoPlayer;
         Material mat;
         RenderTexture renderTexture;
-        bool started = false;
+
         new public static UMI3DVideoPlayer Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
@@ -146,7 +146,6 @@ namespace umi3d.cdk
             if (videoPlayer != null)
             {
                 videoPlayer.Pause();
-                started = false;
             }
         }
 

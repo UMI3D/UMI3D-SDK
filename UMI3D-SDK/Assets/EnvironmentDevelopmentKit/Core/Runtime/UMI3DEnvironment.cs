@@ -144,8 +144,8 @@ namespace umi3d.edk
         {
             var id = UMI3DGlobalID.EnvironementId;
 
-            objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, null, defaultStartPosition);
-            objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, null, Quaternion.Euler(defaultStartOrientation));
+            objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, 0, defaultStartPosition);
+            objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, 0, Quaternion.Euler(defaultStartOrientation));
 
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (AmbientType)mode);

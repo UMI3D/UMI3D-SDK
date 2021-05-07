@@ -1,15 +1,15 @@
 ﻿/*
 Copyright 2019 - 2021 Inetum
 
-Licensed under the Apache License, Version 2.0 (the "License");
+Licensed under the Apache License; Version 2.0 (the );
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
     http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+Unless required by applicable law or agreed to in writing; software
+distributed under the License is distributed on an  BASIS;
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND; either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
@@ -17,191 +17,212 @@ limitations under the License.
 namespace umi3d.common
 {
     [System.Serializable]
-    public static class UMI3DPropertyKeys
+    static public class UMI3DPropertyKeys
     {
+        public const ulong None = 0;
 
-        public const string Active = "umi3d_active";
-        public const string Static = "umi3d_static";
-        public const string ParentId = "umi3d_parent_id";
-        public const string Anchor = "umi3d_anchor";
-        public const string VROnly = "umi3d_vr_only";
+        #region core
+        // 1 - 999
+        public const ulong Active = 1;
+        public const ulong Static = 2;
+        public const ulong ParentId = 3;
+        public const ulong Anchor = 4;
+        public const ulong VROnly = 5;
 
-        public const string Position = "position";
-        public const string Rotation = "rotation";
-        public const string Scale = "scale";
+        public const ulong Position = 10;
+        public const ulong Rotation = 11;
+        public const ulong Scale = 12;
 
-        public const string EntityGroupIds = "entity_group_ids";
+        public const ulong EntityGroupIds = 101;
+        #endregion
 
         #region Node
-        public const string XBillboard = "umi3d_billboard_x";
-        public const string YBillboard = "umi3d_billboard_y";
+        // 1000 - 1999
+        public const ulong XBillboard = 1001;
+        public const ulong YBillboard = 1002;
         #endregion
 
         #region environement
-        public const string PreloadedScenes = "umi3d_preloadedScenes";
-        public const string UserList = "umi3d_userList";
-        public const string AmbientType = "umi3d_ambient_type";
-        public const string AmbientSkyColor = "umi3d_ambient_sky_color";
-        public const string AmbientHorizontalColor = "umi3d_ambient_horizontal_color";
-        public const string AmbientGroundColor = "umi3d_ambient_ground_color";
-        public const string AmbientIntensity = "umi3d_ambient_intensity";
-        public const string AmbientSkyboxImage = "umi3d_ambient_skybox_image";
+        // 2000 - 2999
+        public const ulong PreloadedScenes = 2001;
+        public const ulong UserList = 2002;
+
+        public const ulong AmbientType = 2101;
+        public const ulong AmbientSkyColor = 2102;
+        public const ulong AmbientHorizontalColor = 2103;
+        public const ulong AmbientGroundColor = 2104;
+        public const ulong AmbientIntensity = 2105;
+        public const ulong AmbientSkyboxImage = 2106;
         #endregion
 
         #region Model
-        public const string Model = "umi3d_model";
-        //public const string OverrideMaterial = "umi3d_model_override_material";
-        public const string ApplyCustomMaterial = "umi3d_is_custom_material_applied";
-        public const string AreSubobjectsTracked = "umi3d_are_subobject_tracked";
-        public const string CastShadow = "umi3d_cast_shadow";
-        public const string ReceiveShadow = "umi3d_receive_shadow";
-        public const string IgnoreModelMaterialOverride = "umi3d_ignore_model_material_override";
+        //3000 -3999
+        public const ulong Model = 3001;
+        public const ulong ApplyCustomMaterial = 3002;
+        public const ulong AreSubobjectsTracked = 3003;
+        public const ulong CastShadow = 3004;
+        public const ulong ReceiveShadow = 3005;
+        public const ulong IgnoreModelMaterialOverride = 3006;
         #endregion
 
         #region KHR_light
-        public const string Light = "KHR_light";
+        // 4000 - 4999
+        public const ulong Light = 4001;
+        public const ulong LightColor = 4002;
+        public const ulong LightIntensity = 4003;
+        public const ulong LightRange = 4004;
+        public const ulong LightType = 4005;
+        public const ulong LightSpot = 4006;
         #endregion
 
         #region tool
-        public const string ToolActive = "umi3d_tool_active";
-        public const string ToolBoxActive = "umi3d_toolBox_active";
+        // 5000 - 5999
+        public const ulong ToolboxName = 5001;
+        public const ulong ToolboxDescription = 5002;
+        public const ulong ToolboxIcon2D = 5003;
+        public const ulong ToolboxIcon3D = 5004;
+        public const ulong ToolboxTools = 5005;
+        public const ulong ToolboxSceneId = 5006;
 
-        public const string ToolboxName = "umi3d_toolbox_name";
-        public const string ToolboxDescription = "umi3d_toolbox_description";
-        public const string ToolboxIcon2D = "umi3d_toolbox_icon_2d";
-        public const string ToolboxIcon3D = "umi3d_toolbox_icon_3d";
-        public const string ToolboxTools = "umi3d_toolbox_tools";
-        public const string ToolboxSceneId = "umi3d_toolbox_scene_id";
+        public const ulong ToolboxActive = 5010;
+        public const ulong ToolActive = 5011;
 
-        public const string AbstractToolName = "umi3d_abstract_tool_name";
-        public const string AbstractToolDescription = "umi3d_abstract_tool_description";
-        public const string AbstractToolIcon2D = "umi3d_abstract_tool_icon_2d";
-        public const string AbstractToolIcon3D = "umi3d_abstract_tool_icon_3d";
-        public const string AbstractToolInteractions = "umi3d_abstract_tool_interactions";
+        public const ulong AbstractToolName = 5101;
+        public const ulong AbstractToolDescription = 5102;
+        public const ulong AbstractToolIcon2D = 5103;
+        public const ulong AbstractToolIcon3D = 5104;
+        public const ulong AbstractToolInteractions = 5105;
 
-        public const string InteractableNodeId = "umi3d_interactable_node_id";
-        public const string InteractableNotifyHoverPosition = "umi3d_interactable_notify_hover_position";
-        public const string InteractableNotifySubObject = "umi3d_interactable_notify_sub_object";
-        public const string InteractableHasPriority = "umi3d_interactable_has_priority";
+        public const ulong InteractableNodeId = 5201;
+        public const ulong InteractableNotifyHoverPosition = 5202;
+        public const ulong InteractableNotifySubObject = 5203;
+        public const ulong InteractableHasPriority = 5204;
         #endregion
 
         #region UI
-        public const string AnchoredPosition = "umi3d_anchored_position";
-        public const string AnchoredPosition3D = "umi3d_anchored_position_3d";
-        public const string AnchorMax = "umi3d_anchor_max";
-        public const string AnchorMin = "umi3d_anchor_min";
-        public const string OffsetMax = "umi3d_offset_max";
-        public const string OffsetMin = "umi3d_offset_min";
-        public const string Pivot = "umi3d_pivot";
-        public const string SizeDelta = "umi3d_size_delta";
-        public const string RectMask = "umi3d_rect_mask";
+        // 6000-9999
+        #region core
+        // 6000-6999
+        public const ulong AnchoredPosition = 6001;
+        public const ulong AnchoredPosition3D = 6002;
+        public const ulong AnchorMax = 6003;
+        public const ulong AnchorMin = 6004;
+        public const ulong OffsetMax = 6005;
+        public const ulong OffsetMin = 6006;
+        public const ulong Pivot = 6007;
+        public const ulong SizeDelta = 6008;
+        public const ulong RectMask = 6009;
+        #endregion
 
         #region Canvas
-        public const string DynamicPixelsPerUnit = "umi3d_dynamic_pixels_per_unit";
-        public const string ReferencePixelsPerUnit = "umi3d_reference_pixels_per_unit";
-        public const string OrderInLayer = "umi3d_order_in_layer";
+        //7000-7999
+        public const ulong DynamicPixelsPerUnit = 7001;
+        public const ulong ReferencePixelsPerUnit = 7002;
+        public const ulong OrderInLayer = 7003;
         #endregion
 
         #region Text
-        public const string Alignement = "umi3d_text_alignement";
-        public const string AlignByGeometry = "umi3d_text_align_by_geometry";
-        public const string TextColor = "umi3d_text_color";
-        public const string TextFont = "umi3d_text_font";
-        public const string FontSize = "umi3d_text_font_size";
-        public const string FontStyle = "umi3d_text_font_style";
-        public const string HorizontalOverflow = "umi3d_text_horizontal_overflow";
-        public const string VerticalOverflow = "umi3d_text_vertical_overflow";
-        public const string LineSpacing = "umi3d_text_line_spacing";
-        public const string ResizeTextForBestFit = "umi3d_text_resize_for_best_fit";
-        public const string ResizeTextMaxSize = "umi3d_text_resize_max";
-        public const string ResizeTextMinSize = "umi3d_text_resize_min";
-        public const string SupportRichText = "umi3d_text_support_rich_text";
-        public const string Text = "umi3d_text_value";
+        //8000-8999
+        public const ulong Alignement = 8001;
+        public const ulong AlignByGeometry = 8002;
+        public const ulong TextColor = 8003;
+        public const ulong TextFont = 8004;
+        public const ulong FontSize = 8005;
+        public const ulong FontStyle = 8006;
+        public const ulong HorizontalOverflow = 8007;
+        public const ulong VerticalOverflow = 8008;
+        public const ulong LineSpacing = 8009;
+        public const ulong ResizeTextForBestFit = 8010;
+        public const ulong ResizeTextMaxSize = 8011;
+        public const ulong ResizeTextMinSize = 8012;
+        public const ulong SupportRichText = 8013;
+        public const ulong Text = 8014;
         #endregion
 
         #region Image
-        public const string ImageColor = "umi3d_image_color";
-        public const string ImageType = "umi3d_image_type";
-        public const string Image = "umi3d_image_value";
+        //9000-9999
+        public const ulong ImageColor = 9001;
+        public const ulong ImageType = 9002;
+        public const ulong Image = 9003;
         #endregion
         #endregion
 
         #region Collider
-        public const string HasCollider = "umi3d_has_collider";
-        public const string ColliderType = "umi3d_collider_type";
-        public const string Convex = "umi3d_collider_convexe";
-        public const string ColliderCenter = "umi3d_collider_center";
-        public const string ColliderRadius = "umi3d_collider_radius";
-        public const string ColliderBoxSize = "umi3d_collider_box_size";
-        public const string ColliderHeight = "umi3d_collider_height";
-        public const string ColliderDirection = "umi3d_collider_direction";
-        public const string IsMeshColliderCustom = "umi3d_collider_is_custom";
-        public const string ColliderCustomResource = "umi3d_collider_custom_mesh";
+        // 10000-10999
+        public const ulong HasCollider = 10001;
+        public const ulong ColliderType = 10002;
+        public const ulong Convex = 10003;
+        public const ulong ColliderCenter = 10004;
+        public const ulong ColliderRadius = 10005;
+        public const ulong ColliderBoxSize = 10006;
+        public const ulong ColliderHeight = 10007;
+        public const ulong ColliderDirection = 10008;
+        public const ulong IsMeshColliderCustom = 10009;
+        public const ulong ColliderCustomResource = 10010;
         #endregion
 
         #region UserTracking
-        public const string UserBindings = "umi3d_user_bones";
-        public const string ActiveBindings = "umi3d_active_bindings";
+        // 11000-11999
+        public const ulong UserBindings = 11001;
+        public const ulong ActiveBindings = 11002;
         #endregion
 
         #region notification
-        public const string NotificationTitle = "umi3d_notification_title";
-        public const string NotificationContent = "umi3d_notification_content";
-        public const string NotificationDuration = "umi3d_notification_duration";
-        public const string NotificationIcon2D = "umi3d_notification_icon_2d";
-        public const string NotificationIcon3D = "umi3d_notification_icon_3d";
-        public const string NotificationObjectId = "umi3d_notification_object_id";
+        // 12000-12999
+        public const ulong NotificationTitle = 12001;
+        public const ulong NotificationContent = 12002;
+        public const ulong NotificationDuration = 12003;
+        public const ulong NotificationIcon2D = 12004;
+        public const ulong NotificationIcon3D = 12005;
+        public const ulong NotificationObjectId = 12006;
         #endregion
 
         #region Animation
+        // 13000-13999
+        public const ulong AnimationPlaying = 13001;
+        public const ulong AnimationLooping = 13002;
+        public const ulong AnimationStartTime = 13003;
+        public const ulong AnimationPauseFrame = 13004;
 
-        public const string AnimationPlaying = "umi3d_animation_playing";
-        public const string AnimationLooping = "umi3d_animation_looping";
-        public const string AnimationStartTime = "umi3d_animation_start_time";
-        public const string AnimationPauseFrame = "umi3d_animation_pause_frame";
+        public const ulong AnimationNode = 13101;
+        public const ulong AnimationResource = 13102;
 
-        public const string AnimationNode = "umi3d_animation_node";
-        public const string AnimationResource = "umi3d_animation_resource";
+        public const ulong AnimationVolume = 13201;
+        public const ulong AnimationPitch = 13202;
+        public const ulong AnimationSpacialBlend = 13203;
 
-        public const string AnimationVolume = "umi3d_animation_audio_volume";
-        public const string AnimationPitch = "umi3d_animation_audio_pitch";
-        public const string AnimationSpacialBlend = "umi3d_animation_audio_spacial_blend";
-
-        public const string AnimationDuration = "umi3d_animation_duration";
-        public const string AnimationChain = "umi3d_animation_chain";
+        public const ulong AnimationDuration = 13301;
+        public const ulong AnimationChain = 13302;
 
         #endregion
 
         #region Material
+        //14000-14999
+        public const ulong BaseColorFactor = 14001;
+        public const ulong MetallicFactor = 14002;
+        public const ulong RoughnessFactor = 14003;
+        public const ulong EmissiveFactor = 14004;
 
-        //Material properties
-        public const string BaseColorFactor = "umi3D_material_base_color_factor";
-        public const string MetallicFactor = "umi3D_material_metallic_factor";
-        public const string RoughnessFactor = "umi3D_material_roughness_factor";
-        public const string EmissiveFactor = "umi3D_material_emissive_factor";
+        public const ulong Maintexture = 14101;
+        public const ulong MetallicRoughnessTexture = 14102;
+        public const ulong NormalTexture = 14103;
+        public const ulong EmissiveTexture = 14104;
+        public const ulong OcclusionTexture = 14105;
+        public const ulong MetallicTexture = 14106;
+        public const ulong RoughnessTexture = 14107;
+        public const ulong HeightTexture = 14108;
+        public const ulong ChannelTexture = 14109;
 
-        public const string Maintexture = "umi3D_material_main_texture";
-        public const string MetallicRoughnessTexture = "umi3D_material_metallic_roughness_texture";
-        public const string NormalTexture = "umi3D_material_normal_texture";
-        public const string EmissiveTexture = "umi3D_material_emissive_texture";
-        public const string OcclusionTexture = "umi3D_material_occlusion_texture";
-        public const string MetallicTexture = "umi3D_material_metallic_texture";
-        public const string RoughnessTexture = "umi3D_material_roughness_texture";
-        public const string HeightTexture = "umi3D_material_height_texture";
-        public const string ChannelTexture = "umi3D_material_channel_texture";
+        public const ulong TextureTilingOffset = 14201;
+        public const ulong TextureTilingScale = 14202;
+        public const ulong NormalTextureScale = 14203;
+        public const ulong HeightTextureScale = 14204;
 
-        public const string TextureTilingOffset = "umi3D_material_texture_tiling_offset";
-        public const string TextureTilingScale = "umi3D_material_texture_tiling_scale";
-        public const string NormalTextureScale = "umi3D_material_normal_texture_scale";
-        public const string HeightTextureScale = "umi3D_material_height_texture_scale";
-
-        public const string ShaderProperties = "umi3D_material_shader_properties";
-        public const string Shader = "umi3D_material_shader";
+        public const ulong ShaderProperties = 14301;
+        public const ulong Shader = 14302;
 
         //List of overided materials
-        public const string OverideMaterialId = "umi3D_material_overrider";
-
-
+        public const ulong OverideMaterialId = 14401;
         #endregion
     }
 }

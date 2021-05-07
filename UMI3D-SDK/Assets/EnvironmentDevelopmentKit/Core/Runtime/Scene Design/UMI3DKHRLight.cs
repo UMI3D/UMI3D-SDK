@@ -28,12 +28,12 @@ namespace umi3d.edk
         public UMI3DKHRLight(string objectId, Light light)
         {
             UMI3DAsyncPropertyEquality comparer = new UMI3DAsyncPropertyEquality();
-            objectLightIntensity = new UMI3DAsyncProperty<float>(objectId, KHR_lightsKeys.Intensity, light.intensity, null, comparer.FloatEquality);
+            objectLightIntensity = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LightIntensity, light.intensity, null, comparer.FloatEquality);
             LightName = light.name;
-            objectLightRange = new UMI3DAsyncProperty<float>(objectId, KHR_lightsKeys.Range, light.range, null, comparer.FloatEquality);
-            objectLightColor = new UMI3DAsyncProperty<Color>(objectId, KHR_lightsKeys.Color, light.color, ToUMI3DSerializable.ToSerializableColor);
-            objectLightType = new UMI3DAsyncProperty<string>(objectId, KHR_lightsKeys.type, null);
-            objectLightSpot = new UMI3DAsyncProperty<KHR_lights_punctual.KHR_spot>(objectId, KHR_lightsKeys.spot, null);
+            objectLightRange = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LightRange, light.range, null, comparer.FloatEquality);
+            objectLightColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LightColor, light.color, ToUMI3DSerializable.ToSerializableColor);
+            objectLightType = new UMI3DAsyncProperty<string>(objectId, UMI3DPropertyKeys.LightType, null);
+            objectLightSpot = new UMI3DAsyncProperty<KHR_lights_punctual.KHR_spot>(objectId, UMI3DPropertyKeys.LightSpot, null);
             switch (light.type)
             {
                 case LightType.Directional:

@@ -110,7 +110,7 @@ namespace umi3d.edk
             return DictionnaryEqual;
         }
 
-        public UMI3DAsyncDictionnaryProperty(string entityId, string propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializerT, serializerL), EqualToListEqual(equal))
+        public UMI3DAsyncDictionnaryProperty(string entityId, ulong propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializerT, serializerL), EqualToListEqual(equal))
         {
             if (equal == null)
             {

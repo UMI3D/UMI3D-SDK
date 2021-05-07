@@ -29,6 +29,11 @@ namespace umi3d.edk
         /// </summary>
         public object stopValue;
 
+        public override byte[] ToBytes(UMI3DUser user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var stopInterpolation = new StopInterpolationPropertyDto();

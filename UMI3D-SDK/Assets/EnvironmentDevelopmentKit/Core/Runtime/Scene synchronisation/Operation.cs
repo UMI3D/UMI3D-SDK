@@ -34,6 +34,13 @@ namespace umi3d.edk
         /// <returns></returns>
         public abstract AbstractOperationDto ToOperationDto(UMI3DUser user);
 
+        /// <summary>
+        /// Return the operationDto of this Dto.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public abstract byte[] ToBytes(UMI3DUser user);
+
         public static Operation operator +(Operation a, Operation b)
         {
             a.users = new HashSet<UMI3DUser>(a.users.Concat(b.users));

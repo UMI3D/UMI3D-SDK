@@ -25,6 +25,11 @@ namespace umi3d.edk
 
         public UMI3DLoadableEntity entity;
 
+        public override byte[] ToBytes(UMI3DUser user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {

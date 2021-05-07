@@ -33,12 +33,17 @@ namespace umi3d.edk
         /// <summary>
         /// The name of the modified property
         /// </summary>
-        public string property;
+        public ulong property;
 
         /// <summary>
         /// The new value for the property
         /// </summary>
         public object value;
+
+        public override byte[] ToBytes(UMI3DUser user)
+        {
+            throw new System.NotImplementedException();
+        }
 
         ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)

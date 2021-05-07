@@ -72,16 +72,16 @@ namespace umi3d.cdk
             if (dto == null || light == null) return false;
             switch (property.property)
             {
-                case KHR_lightsKeys.Intensity:
+                case UMI3DPropertyKeys.LightIntensity:
                     light.intensity = dto.intensity = (float)(Double)property.value;
                     break;
-                case KHR_lightsKeys.Color:
+                case UMI3DPropertyKeys.LightColor:
                     light.color = dto.color = (SerializableColor)property.value;
                     break;
-                case KHR_lightsKeys.Range:
+                case UMI3DPropertyKeys.LightRange:
                     light.range = dto.range = (float)(Double)property.value;
                     break;
-                case KHR_lightsKeys.type:
+                case UMI3DPropertyKeys.LightType:
                     dto.type = (string)property.value;
                     if (dto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
                         light.type = LightType.Directional;
@@ -94,7 +94,7 @@ namespace umi3d.cdk
                         light.spotAngle = dto.spot.outerConeAngle;
                     }
                     break;
-                case KHR_lightsKeys.spot:
+                case UMI3DPropertyKeys.LightSpot:
                     light.innerSpotAngle = dto.spot.innerConeAngle = ((KHR_lights_punctual.KHR_spot)property.value).innerConeAngle;
                     light.spotAngle = dto.spot.outerConeAngle = ((KHR_lights_punctual.KHR_spot)property.value).outerConeAngle;
                     break;

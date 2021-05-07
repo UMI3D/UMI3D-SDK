@@ -31,6 +31,6 @@ namespace umi3d.common
         /// <summary>
         /// The name of the interpolated property
         /// </summary>
-        public string property;
+        public ulong property;
     }
 }

@@ -633,7 +633,7 @@ namespace umi3d.cdk
             public float measuresPerSecond;
             public float lastMessageTime;
             public string entityId;
-            public string property;
+            public ulong property;
 
             public KalmanEntity(double q, double r)
             {

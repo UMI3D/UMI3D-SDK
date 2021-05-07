@@ -37,7 +37,7 @@ namespace umi3d.edk.collaboration
         }
 
         [SerializeField]
-        private RelayAssociation[] relays;
+        private RelayAssociation[] relays = null;
 
         protected Dictionary<DataChannelTypes, RelayDescription> DicoRelays = new Dictionary<DataChannelTypes, RelayDescription>();
 

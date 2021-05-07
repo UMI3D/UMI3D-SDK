@@ -24,6 +24,11 @@ namespace umi3d.edk.interaction
     {
         public AbstractTool tool;
 
+        public override byte[] ToBytes(UMI3DUser user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {

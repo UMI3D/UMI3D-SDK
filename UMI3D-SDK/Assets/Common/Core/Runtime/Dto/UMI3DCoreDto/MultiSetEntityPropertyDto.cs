@@ -33,7 +33,7 @@ namespace umi3d.common
         /// <summary>
         /// The name of the modified property
         /// </summary>
-        public string property;
+        public ulong property;
 
         /// <summary>
         /// The new value for the property

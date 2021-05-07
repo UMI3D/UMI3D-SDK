@@ -23,6 +23,11 @@ namespace umi3d.edk.userCapture
     {
         public List<string> streamedBones;
 
+        public override byte[] ToBytes(UMI3DUser user)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var streamedBones = new SetStreamedBonesDto()
