@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace umi3d.edk.collaboration
 {
     public class RelayVolume : MonoBehaviour, ICollaborationRoom
     {
-        public static Dictionary<string, RelayVolume> relaysVolumes = new Dictionary<string, RelayVolume>(); 
+        public static Dictionary<string, RelayVolume> relaysVolumes = new Dictionary<string, RelayVolume>();
 
         [Serializable]
         public struct RelayAssociation
@@ -83,12 +84,12 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayDataRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
             HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
-            
+
             if (targetHashSet != null)
             {
                 foreach (UMI3DCollaborationUser user in targetHashSet)
@@ -110,7 +111,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayTrackingRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayTrackingRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -126,7 +127,7 @@ namespace umi3d.edk.collaboration
                         DispatchTransaction(user, data, DataChannelTypes.Tracking, isReliable);
                     }
                 }
-            }   
+            }
         }
 
         /// <summary>
@@ -137,7 +138,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayVoIPRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayVoIPRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 
@@ -165,7 +166,7 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayVideoRequest(UMI3DAbstractNode sender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public void RelayVideoRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
 

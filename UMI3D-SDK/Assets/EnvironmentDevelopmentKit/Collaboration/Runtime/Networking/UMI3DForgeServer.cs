@@ -296,7 +296,7 @@ namespace umi3d.edk.collaboration
                     if (relayVolume != null)
                         MainThreadManager.Run(() =>
                         {
-                            relayVolume.RelayTrackingRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                            relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
                         });
                     else
                         RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
@@ -324,6 +324,7 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
+
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
@@ -332,7 +333,7 @@ namespace umi3d.edk.collaboration
                 if (relayVolume != null)
                     MainThreadManager.Run(() =>
                     {
-                        relayVolume.RelayVoIPRequest(user.Avatar, frame.StreamData.byteArr, user, Receivers.Others);
+                        relayVolume.RelayVoIPRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
                     });
                 else
                     RelayMessage(player, frame);
@@ -407,6 +408,7 @@ namespace umi3d.edk.collaboration
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
             Binary message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
+            message.SetSender(player);
             if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
                 lock (server.Players)
                 {
@@ -538,7 +540,6 @@ namespace umi3d.edk.collaboration
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
             Binary bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.Target, channel, isTcp);
-
             try
             {
                 server.Send(player, bin, isReliable);
@@ -547,7 +548,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log($"Error on send binary to {player.NetworkId} on channel {channel} [{e}]");
+                    Debug.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]");
                 });
             }
         }

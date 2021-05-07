@@ -29,5 +29,19 @@ namespace umi3d.common.collaboration
         public string audioSourceId;
         public string videoSourceId;
         public uint networkId;
+
+        public UserDto(UserDto source)
+        {
+            this.status = source.status;
+            this.avatarId = source.avatarId;
+            this.audioSourceId = source.audioSourceId;
+            this.videoSourceId = source.videoSourceId;
+            this.networkId = source.networkId;
+            this.id = source.id;
+        }
+
+        public UserDto(){ }
     }
+
+
 }
