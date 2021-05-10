@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     {
         UserDto dto;
 
-        public string id;
+        public ulong id;
         public uint networkId;
         public StatusType status;
         public UMI3DAudioPlayer audioplayer { get => UMI3DAudioPlayer.Get(dto.audioSourceId); }

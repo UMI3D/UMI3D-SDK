@@ -29,7 +29,7 @@ namespace umi3d.common
             /// <summary>
             /// Id of the animation.
             /// </summary>
-            public string animationId = null;
+            public ulong animationId = 0;
             /// <summary>
             /// Time in second after which this animation will start.
             /// </summary>

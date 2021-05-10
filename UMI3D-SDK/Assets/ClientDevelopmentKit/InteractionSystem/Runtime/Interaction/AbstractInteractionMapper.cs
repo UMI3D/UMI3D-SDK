@@ -60,12 +60,12 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if a toolbox with the given id exists.
         /// </summary>
-        public abstract bool ToolboxExists(string id);
+        public abstract bool ToolboxExists(ulong id);
 
         /// <summary>
         /// Get the toolbox with the given id (if any).
         /// </summary>
-        public abstract Toolbox GetToolbox(string id);
+        public abstract Toolbox GetToolbox(ulong id);
 
         /// <summary>
         /// Return the toolboxes matching a given condition.
@@ -82,19 +82,19 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if a tool with the given id exists.
         /// </summary>
-        public abstract bool ToolExists(string id);
+        public abstract bool ToolExists(ulong id);
 
         /// <summary>
         /// Return true if the tool is currently projected on a controller.
         /// </summary>
         /// <param name="id">Id of the tool.</param>
         /// <returns></returns>
-        public abstract bool IsToolSelected(string id);
+        public abstract bool IsToolSelected(ulong id);
 
         /// <summary>
         /// Get the tool with the given id (if any).
         /// </summary>
-        public abstract AbstractTool GetTool(string id);
+        public abstract AbstractTool GetTool(ulong id);
 
         /// <summary>
         /// Return the tools matching a given condition.
@@ -111,12 +111,12 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if an interaction with the given id exists.
         /// </summary>
-        public abstract bool InteractionExists(string id);
+        public abstract bool InteractionExists(ulong id);
 
         /// <summary>
         /// Get the interaction with the given id (if any).
         /// </summary>
-        public abstract AbstractInteractionDto GetInteraction(string id);
+        public abstract AbstractInteractionDto GetInteraction(ulong id);
 
         /// <summary>
         /// Return the interactions matching a given condition.
@@ -134,7 +134,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="projectedToolId">Tool's id</param>
         /// <returns></returns>
-        public abstract AbstractController GetController(string projectedToolId);
+        public abstract AbstractController GetController(ulong projectedToolId);
 
 
         public abstract void CreateToolbox(Toolbox toolbox);
@@ -151,14 +151,14 @@ namespace umi3d.cdk.interaction
         /// <param name="hoveredObjectId">The id of the hovered object.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool SelectTool(string toolId, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null);
+        public abstract bool SelectTool(ulong toolId, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be released.
         /// </summary>
         /// <param name="toolId">Id of the tool to release.</param>
         /// <param name="reason">Interaction mapping reason.</param>
-        public abstract void ReleaseTool(string toolId, InteractionMappingReason reason = null);
+        public abstract void ReleaseTool(ulong toolId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be replaced by another one.
@@ -169,7 +169,7 @@ namespace umi3d.cdk.interaction
         /// <param name="hoveredObjectId">The id of the hovered object.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool SwitchTools(string selected, string released, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null);
+        public abstract bool SwitchTools(ulong selected, ulong released, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be updated.
@@ -178,7 +178,7 @@ namespace umi3d.cdk.interaction
         /// <param name="releasable">Is the tool releasable.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool UpdateTools(string toolId, bool releasable, InteractionMappingReason reason = null);
+        public abstract bool UpdateTools(ulong toolId, bool releasable, InteractionMappingReason reason = null);
 
     }
 }

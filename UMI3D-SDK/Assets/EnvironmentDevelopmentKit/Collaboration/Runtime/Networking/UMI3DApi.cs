@@ -385,20 +385,27 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.scene, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void GetScene(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            string id = uriparam["id"];
-            UMI3DUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UMI3DScene scene = UMI3DEnvironment.GetEntity<UMI3DScene>(id);
-            if (scene == null)
+            ulong id;
+            if (ulong.TryParse(uriparam["id"], out id))
             {
-                Return404(e.Response, "UMI3DScene is missing !");
-            }
-            else if (user == null)
-            {
-                Return404(e.Response, "UMI3DUser is missing !");
+                UMI3DUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+                UMI3DScene scene = UMI3DEnvironment.GetEntity<UMI3DScene>(id);
+                if (scene == null)
+                {
+                    Return404(e.Response, "UMI3DScene is missing !");
+                }
+                else if (user == null)
+                {
+                    Return404(e.Response, "UMI3DUser is missing !");
+                }
+                else
+                {
+                    e.Response.WriteContent(scene.ToGlTFNodeDto(user).ToBson());
+                }
             }
             else
             {
-                e.Response.WriteContent(scene.ToGlTFNodeDto(user).ToBson());
+                Return404(e.Response, "UMI3DScene is missing ! SceneId parsing failed");
             }
         }
 

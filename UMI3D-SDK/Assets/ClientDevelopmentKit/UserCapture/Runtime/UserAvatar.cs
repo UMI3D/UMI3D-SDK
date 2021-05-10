@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
 
         protected struct BoundObject
         {
-            public string objectId;
+            public ulong objectId;
             public string rigname;
         }
 
@@ -51,7 +51,7 @@ namespace umi3d.cdk.userCapture
         }
 
         public List<Transform> boundRigs = new List<Transform>();
-        public string userId { get; protected set; }
+        public ulong userId { get; protected set; }
         public bool activeUserBindings { get; protected set; }
         public List<BoneBindingDto> userBindings { get; protected set; }
 

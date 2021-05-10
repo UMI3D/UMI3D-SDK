@@ -39,7 +39,7 @@ namespace umi3d.common
     /// </summary>
     public class NotificationOnObjectDto : NotificationDto
     {
-        public string objectId;
+        public ulong objectId;
 
         public NotificationOnObjectDto() : base() { }
     }

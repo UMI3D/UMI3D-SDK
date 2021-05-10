@@ -30,7 +30,7 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool notifySubObject = false;
 
-        public string nodeId;
+        public ulong nodeId;
 
         /// <summary>
         /// Defines if this interactable has priority on browsers over other interactables with hasPriority false.

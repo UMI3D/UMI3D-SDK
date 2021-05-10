@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        new public static UMI3DAudioPlayer Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
+        new public static UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         public AudioSource audioSource { get; private set; }
 
 
@@ -36,7 +36,7 @@ namespace umi3d.cdk
         {
             var wait = new WaitForFixedUpdate();
             var gameObject = UMI3DEnvironmentLoader.Instance.gameObject;
-            if (dto.nodeID != null)
+            if (dto.nodeID != 0)
             {
                 gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID)?.gameObject;
                 while (gameObject == null)
@@ -44,16 +44,12 @@ namespace umi3d.cdk
                     yield return wait;
                     gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID).gameObject;
                 }
-
-
             }
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
             audioSource.pitch = dto.pitch;
             audioSource.volume = dto.volume;
             audioSource.spatialBlend = dto.spatialBlend;
-
-
 
             if (dto.audioResource == null || dto.audioResource.variants == null || dto.audioResource.variants.Count < 1)
             {
@@ -149,7 +145,7 @@ namespace umi3d.cdk
                     IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                     if (loader != null)
                         UMI3DResourcesManager.LoadFile(
-                            dto.id,
+                            ADto.id,
                             fileToLoad,
                             loader.UrlToObject,
                             loader.ObjectFromCache,
@@ -169,9 +165,9 @@ namespace umi3d.cdk
                     var clip = audioSource?.clip;
                     var g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
-                    ADto.nodeID = (string)property.value;
+                    ADto.nodeID = (ulong)property.value;
                     g = UMI3DEnvironmentLoader.Instance.gameObject;
-                    if (ADto.nodeID != null)
+                    if (ADto.nodeID != 0)
                     {
                         g = UMI3DEnvironmentLoader.GetNode(ADto.nodeID).gameObject;
                     }

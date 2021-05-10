@@ -26,7 +26,7 @@ namespace umi3d.edk
         /// <summary>
         /// The identifiers list of the entities
         /// </summary>
-        public List<UMI3DEntity> entityIds;
+        public List<UMI3DMediaEntity> entityIds;
 
         /// <summary>
         /// The name of the modified property

@@ -38,21 +38,21 @@ namespace umi3d.edk
 
         protected abstract void OnEnable();
 
-        protected abstract string GetId();
+        protected abstract ulong GetId();
 
-        protected abstract void SetId(string id);
+        protected abstract void SetId(ulong id);
 
         public abstract GlTFMaterialDto ToDto();
 
-        public string Id()
+        public ulong Id()
         {
             return GetId();
         }
-        protected abstract void InitDefinition(string id);
+        protected abstract void InitDefinition(ulong id);
 
         protected void RegisterMaterial(AbstractEntityDto mat)
         {
-            if (string.IsNullOrEmpty(mat.id) || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
+            if ( mat.id != 0 || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
             {
                 mat.id = UMI3DEnvironment.Register(this);
                 SetId(mat.id);

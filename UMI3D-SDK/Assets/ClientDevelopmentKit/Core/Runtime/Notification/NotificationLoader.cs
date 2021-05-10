@@ -62,7 +62,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.NotificationObjectId:
                     var Odto = dto as NotificationOnObjectDto;
                     if (Odto == null) return false;
-                    Odto.objectId = (string)property.value;
+                    Odto.objectId = (ulong)property.value;
                     break;
                 default:
                     return false;

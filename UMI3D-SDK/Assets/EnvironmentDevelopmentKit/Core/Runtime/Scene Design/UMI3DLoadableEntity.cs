@@ -22,7 +22,7 @@ namespace umi3d.edk
     /// <summary>
     /// Interface for UMI3D entities.
     /// </summary>
-    public interface UMI3DLoadableEntity : UMI3DEntity
+    public interface UMI3DLoadableEntity : UMI3DMediaEntity
     {
         LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null);
 

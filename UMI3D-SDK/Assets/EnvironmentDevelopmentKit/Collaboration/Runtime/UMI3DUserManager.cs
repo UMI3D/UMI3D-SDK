@@ -32,9 +32,9 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Contain the users connected to the scene.
         /// </summary>
-        Dictionary<string, UMI3DCollaborationUser> users = new Dictionary<string, UMI3DCollaborationUser>();
-        Dictionary<string, string> loginMap = new Dictionary<string, string>();
-        Dictionary<uint, string> forgeMap = new Dictionary<uint, string>();
+        Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
+        Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
+        Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
 
         UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
 
@@ -72,11 +72,11 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
-        public UMI3DCollaborationUser GetUser(string id)
+        public UMI3DCollaborationUser GetUser(ulong id)
         {
             lock (users)
             {
-                return id != null && users.ContainsKey(id) ? users[id] : null;
+                return id != 0 && users.ContainsKey(id) ? users[id] : null;
             }
         }
 
@@ -87,10 +87,10 @@ namespace umi3d.edk.collaboration
         {
             lock (forgeMap)
             {
-                string uid = forgeMap.ContainsKey(id) ? forgeMap[id] : null;
+                ulong uid = forgeMap.ContainsKey(id) ? forgeMap[id] : 0;
                 lock (users)
                 {
-                    return (uid != null && users.ContainsKey(uid)) ? users[uid] : null;
+                    return (uid != 0 && users.ContainsKey(uid)) ? users[uid] : null;
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public void ConnectionClose(string id)
+        public void ConnectionClose(ulong id)
         {
             if (users.ContainsKey(id))
             {
@@ -181,7 +181,7 @@ namespace umi3d.edk.collaboration
 
                 if (loginMap.ContainsKey(LoginDto.login))
                 {
-                    if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != null && users.ContainsKey(LoginDto.userId))
+                    if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != 0 && users.ContainsKey(LoginDto.userId))
                     {
                         Debug.LogWarning($"Login [{LoginDto.login}] already us by an other user");
                         acceptUser(false);
@@ -267,7 +267,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Called when a status update is received by the real-time connection.
         /// </summary>
-        public void OnStatusUpdate(string id, StatusType status)
+        public void OnStatusUpdate(ulong id, StatusType status)
         {
             if (users.ContainsKey(id))
             {

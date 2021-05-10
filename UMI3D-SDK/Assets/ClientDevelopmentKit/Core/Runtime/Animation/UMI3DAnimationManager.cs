@@ -20,14 +20,14 @@ namespace umi3d.cdk
 {
     public class UMI3DAnimationManager : Singleton<UMI3DAnimationManager>
     {
-        static public UMI3DAbstractAnimation Get(string id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
+        static public UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
-        static public void Start(string id)
+        static public void Start(ulong id)
         {
             Get(id)?.Start();
         }
 
-        static public void Stop(string id)
+        static public void Stop(ulong id)
         {
             Get(id)?.Stop();
         }

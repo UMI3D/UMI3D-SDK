@@ -75,7 +75,7 @@ namespace umi3d.cdk
         /// <param name="materialKey">The Shader property, it contains the id/name used to change the good texture in the material</param>
         /// <param name="mat">the material to modify</param>
         /// <param name="alternativeCallback">The basic callback is juste apply the new shader property in the shader but you can overide it to do some other action and then apply the property in the shader</param>
-        public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat, Action<Texture2D> alternativeCallback = null)
+        public static void LoadTextureInMaterial(ulong id, TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat, Action<Texture2D> alternativeCallback = null)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1)
             {
@@ -91,7 +91,7 @@ namespace umi3d.cdk
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
                 UMI3DResourcesManager.LoadFile(
-                    fileToLoad.url,
+                    id,
                     fileToLoad,
                     loader.UrlToObject,
                     loader.ObjectFromCache,
@@ -122,7 +122,7 @@ namespace umi3d.cdk
         }
 
         [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
-        protected static void LoadTextureInMaterial(TextureDto textureDto, string materialKey, Material mat)
+        protected static void LoadTextureInMaterial(ulong id, TextureDto textureDto, string materialKey, Material mat)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
 
@@ -134,7 +134,7 @@ namespace umi3d.cdk
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
                 UMI3DResourcesManager.LoadFile(
-                    fileToLoad.url,
+                    id,
                     fileToLoad,
                     loader.UrlToObject,
                     loader.ObjectFromCache,
@@ -170,7 +170,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="shaderAdditionalProperties">A dictionary containing in keys the name to identify the shader property and in value the new value to apply</param>
         /// <param name="newMat">The material to modify</param>
-        public static void ReadAdditionalShaderProperties(Dictionary<string, object> shaderAdditionalProperties, Material newMat)
+        public static void ReadAdditionalShaderProperties(ulong id, Dictionary<string, object> shaderAdditionalProperties, Material newMat)
         {
             if (shaderAdditionalProperties == null)
                 return;
@@ -219,7 +219,7 @@ namespace umi3d.cdk
                             break;
                         case TextureDto t:
                             //newMat.SetTexture(item.Key, t);
-                            LoadTextureInMaterial(t, item.Key, newMat);
+                            LoadTextureInMaterial(id, t, item.Key, newMat);
                             //ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
                             break;
                         case bool b:

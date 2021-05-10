@@ -26,7 +26,7 @@ namespace umi3d.common
         /// <summary>
         /// The unique identifier of the entity
         /// </summary>
-        public string entityId;
+        public ulong entityId;
 
         /// <summary>
         /// The name of the interpolated property

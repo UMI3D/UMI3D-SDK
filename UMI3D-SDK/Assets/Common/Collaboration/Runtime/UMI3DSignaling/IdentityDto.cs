@@ -23,7 +23,7 @@ namespace umi3d.common.collaboration
     [Serializable]
     public class IdentityDto : UMI3DDto
     {
-        public string userId = null;
+        public ulong userId = 0;
         public string login = null;
     }
 }

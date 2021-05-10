@@ -64,7 +64,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialise component.
         /// </summary>
-        protected override void InitDefinition(string Id)
+        protected override void InitDefinition(ulong Id)
         {
             base.InitDefinition(Id);
             Color = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.ImageColor, color, ToUMI3DSerializable.ToSerializableColor);

@@ -399,7 +399,7 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public override string GetId() { return Identity.userId; }
+        public override ulong GetId() { return Identity.userId; }
 
         ///<inheritdoc/>
         public override ulong GetTime()

@@ -27,7 +27,7 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DEntity
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity
     {
 
         /// <summary>
@@ -55,15 +55,15 @@ namespace umi3d.edk.interaction
             /// It will be always null for an Interaction inside a Tool.
             /// For an Interaction inside an Interactable, it could be the Id of the Interactable associated object, or the Id of a sub-object if Interaction.notifyHoverPosition == true.
             /// </summary>
-            public string hoveredId { get; private set; }
+            public ulong hoveredId { get; private set; }
             /// <summary>
             /// Id of the tool.
             /// </summary>
-            public string toolId { get; private set; }
+            public ulong toolId { get; private set; }
             /// <summary>
             /// Id of the Interaction.
             /// </summary>
-            public string interactionId { get; private set; }
+            public ulong interactionId { get; private set; }
 
             public InteractionEventContent(UMI3DUser user, InteractionRequestDto dto)
             {
@@ -91,21 +91,21 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// The interaction's unique id. 
         /// </summary>
-        private string interactionId;
+        private ulong interactionId;
 
         /// <summary>
         /// The public Getter for interactionId.
         /// </summary>
-        public string Id()
+        public ulong Id()
         {
-            if (interactionId == null && UMI3DEnvironment.Exists)
+            if (interactionId == 0 && UMI3DEnvironment.Exists)
                 Register();
             return interactionId;
         }
 
         void Register()
         {
-            if (interactionId == null && UMI3DEnvironment.Exists)
+            if (interactionId == 0 && UMI3DEnvironment.Exists)
             {
                 interactionId = UMI3DEnvironment.Register(this);
                 InitDefinition(interactionId);
@@ -125,7 +125,7 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Initialize interaction's properties.
         /// </summary>
-        protected virtual void InitDefinition(string id)
+        protected virtual void InitDefinition(ulong id)
         {
             MainThreadManager.Run(() =>
             {

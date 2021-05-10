@@ -111,7 +111,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialise component.
         /// </summary>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
             AnchoredPosition = new UMI3DAsyncProperty<Vector2>(objectId, UMI3DPropertyKeys.AnchoredPosition, anchoredPosition, ToUMI3DSerializable.ToSerializableVector2, equality.Vector2Equality);

@@ -31,7 +31,7 @@ namespace umi3d.cdk.interaction
 
         public class Event : UnityEvent<Tool> { }
 
-        public static ToolMenuItem IdToMenu(string id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Tool)?.Menu; }
+        public static ToolMenuItem IdToMenu(ulong id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Tool)?.Menu; }
 
         public ToolMenuItem Menu;
 
@@ -85,7 +85,7 @@ namespace umi3d.cdk.interaction
                                 boneType = "none",
                                 id = eventDto.id,
                                 toolId = dto.id,
-                                hoveredObjectId = null
+                                hoveredObjectId = 0
                             };
                             UMI3DClientServer.SendData(stateChangeDto, true);
                         }
@@ -96,7 +96,7 @@ namespace umi3d.cdk.interaction
                                 boneType = "none",
                                 id = eventDto.id,
                                 toolId = dto.id,
-                                hoveredObjectId = null
+                                hoveredObjectId = 0
                             };
                             UMI3DClientServer.SendData(triggeredDto, true);
                         }
@@ -113,7 +113,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = booleanParameterDto.id,
                             parameter = booleanParameterDto,
-                            hoveredObjectId = null
+                            hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(pararmeterDto, true);
                     }
@@ -130,7 +130,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = floatRangeParameterDto.id,
                             parameter = floatRangeParameterDto,
-                            hoveredObjectId = null
+                            hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(pararmeterDto, true);
                     }
@@ -147,7 +147,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = enumParameterDto.id,
                             parameter = enumParameterDto,
-                            hoveredObjectId = null
+                            hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(pararmeterDto, true);
                     }
@@ -164,7 +164,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = stringParameterDto.id,
                             parameter = stringParameterDto,
-                            hoveredObjectId = null
+                            hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(pararmeterDto, true);
                     }
@@ -180,7 +180,7 @@ namespace umi3d.cdk.interaction
                             toolId = dto.id,
                             id = formDto.id,
                             form = x,
-                            hoveredObjectId = null
+                            hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(FormAnswer, true);
                     }

@@ -17,16 +17,27 @@ limitations under the License.
 namespace umi3d.edk
 {
     /// <summary>
+    /// Interface for UMI3D entities which can be send to a client.
+    /// </summary>
+    public interface UMI3DMediaEntity : UMI3DEntity
+    {
+        bool LoadOnConnection(UMI3DUser user);
+        bool AddConnectionFilter(UMI3DUserFilter filter);
+        bool RemoveConnectionFilter(UMI3DUserFilter filter);
+    }
+
+    /// <summary>
     /// Interface for UMI3D entities.
     /// </summary>
     public interface UMI3DEntity
     {
-        string Id();
-
-        bool LoadOnConnection(UMI3DUser user);
-        bool AddConnectionFilter(UMI3DUserFilter filter);
-        bool RemoveConnectionFilter(UMI3DUserFilter filter);
-
+        /// <summary>
+        /// Id of an entity;
+        /// Null id is 0;
+        /// id are set between 1 and 4,294,967,295;
+        /// </summary>
+        /// <returns></returns>
+        ulong Id();
     }
 
 }

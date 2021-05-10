@@ -47,7 +47,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> ObjectSpacialBlend { get { Register(); return _objectSpacialBlend; } protected set => _objectSpacialBlend = value; }
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
 
@@ -70,7 +70,7 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var Adto = dto as UMI3DAudioPlayerDto;
-            Adto.nodeID = ObjectNode.GetValue(user)?.Id();
+            Adto.nodeID = ObjectNode.GetValue(user)?.Id() ?? 0;
             Adto.audioResource = ObjectAudioResource.GetValue(user)?.ToDto();
             Adto.volume = ObjectVolume.GetValue(user);
             Adto.pitch = ObjectPitch.GetValue(user);

@@ -55,7 +55,7 @@ namespace umi3d.edk.userCapture
             if (node != null)
                 dto.objectId = node.Id();
             else
-                dto.objectId = "";
+                dto.objectId = 0;
 
             if (user != null)
                 dto.bindingId = user.Id() + "binding_" + boneType + "_" + rigName + "_" + dto.objectId;

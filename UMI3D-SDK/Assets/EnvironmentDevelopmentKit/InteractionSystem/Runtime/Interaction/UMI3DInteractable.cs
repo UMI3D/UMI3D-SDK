@@ -143,7 +143,7 @@ namespace umi3d.edk.interaction
         }
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
             if (Node == null) Node = GetComponent<UMI3DNode>();

@@ -23,7 +23,7 @@ namespace umi3d.edk
     public class OriginalMaterial : MaterialSO
     {
 
-        public string matId;
+        public ulong matId;
 
 
         private bool registered = false;
@@ -46,7 +46,7 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        protected override string GetId()
+        protected override ulong GetId()
         {
             if (!registered)
             {
@@ -57,7 +57,7 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             Debug.Log("id original mat " + id);
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, null, null, (d) =>
@@ -73,12 +73,12 @@ namespace umi3d.edk
         protected override void OnEnable()
         {
 
-            matId = null;
+            matId = 0;
             registered = false;
         }
 
         ///<inheritdoc/>
-        protected override void SetId(string id)
+        protected override void SetId(ulong id)
         {
             registered = true;
             matId = id;

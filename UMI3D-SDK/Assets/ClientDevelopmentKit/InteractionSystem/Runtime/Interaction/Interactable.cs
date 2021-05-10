@@ -28,7 +28,7 @@ namespace umi3d.cdk.interaction
     {
         public class Event : UnityEvent<Interactable> { }
 
-        public static InteractableDto IdToDto(string id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Interactable).dto; }
+        public static InteractableDto IdToDto(ulong id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Interactable).dto; }
 
         /// <summary>
         /// Interactable dto describing this object.
@@ -53,7 +53,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Notify the hovering of the object by the user (first frame only).
         /// </summary>
-        public void HoverEnter(string bone, string hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
+        public void HoverEnter(string bone, ulong hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
             HoverStateChangedDto hoverDto = new HoverStateChangedDto()
             {
@@ -71,7 +71,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Notify the end of the object's hovering by the user (first frame only).
         /// </summary>
-        public void HoverExit(string bone, string hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
+        public void HoverExit(string bone, ulong hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
             HoverStateChangedDto hoverDto = new HoverStateChangedDto()
             {
@@ -91,7 +91,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="position">Object's point hovered (in object's local frame)</param>
         /// <param name="normal">Normal of the hovered point (in objects's local frame)</param>
-        public void Hovered(string bone, string hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
+        public void Hovered(string bone, ulong hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
             if (dto.notifyHoverPosition)
             {

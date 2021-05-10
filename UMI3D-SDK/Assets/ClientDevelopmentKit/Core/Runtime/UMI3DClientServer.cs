@@ -57,7 +57,7 @@ namespace umi3d.cdk
         protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { }
 
 
-        public virtual string GetId() { return null; }
+        public virtual ulong GetId() { return 0; }
 
         /// <summary>
         /// return time server in millisecond, use synchronised time in collaborative cases.

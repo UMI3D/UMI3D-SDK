@@ -42,7 +42,7 @@ namespace umi3d.edk
         protected UMI3DAsyncProperty<bool> _objectReceiveShadow;
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
 

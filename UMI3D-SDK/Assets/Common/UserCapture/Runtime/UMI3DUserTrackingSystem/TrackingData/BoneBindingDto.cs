@@ -47,7 +47,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The identifier of the 3D object.
         /// </summary>
-        public string objectId;
+        public ulong objectId;
 
         public SerializableVector3 position;
 

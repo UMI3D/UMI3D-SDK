@@ -126,7 +126,7 @@ namespace umi3d.edk
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
             List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
-            var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.id == l.Key))?.Select(l => l.First().ToDto());
+            var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
             if (sceneLib != null)
                 libraries.AddRange(sceneLib);
             return new LibrariesDto() { libraries = libraries };
@@ -245,7 +245,7 @@ namespace umi3d.edk
         /// Get entity by id.
         /// </summary>
         /// <param name="id">Entity to get id</param>
-        public static E GetEntity<E>(string id) where E : class, UMI3DEntity
+        public static E GetEntity<E>(ulong id) where E : class, UMI3DEntity
         {
             if (Exists)
                 return Instance.entities[id] as E;
@@ -258,7 +258,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="entity">Entity to register</param>
         /// <returns>Registered object's id.</returns>
-        public static string Register(UMI3DEntity entity)
+        public static ulong Register(UMI3DEntity entity)
         {
             if (Exists)
             {
@@ -277,7 +277,7 @@ namespace umi3d.edk
         /// <param name="entity">Entity to register</param>
         /// <param name="id">id to use</param>
         /// <returns>Registered object's id (same as id field if the id wasn't already used).</returns>
-        public static string Register(UMI3DEntity entity, string id)
+        public static ulong Register(UMI3DEntity entity, ulong id)
         {
             if (Exists)
             {
@@ -301,9 +301,9 @@ namespace umi3d.edk
                 Instance?.entities?.Remove(obj.Id());
         }
 
-        public static void Remove(string id)
+        public static void Remove(ulong id)
         {
-            if (id != null && Exists)
+            if (id != 0 && Exists)
                 Instance?.entities?.Remove(id);
         }
 
@@ -313,14 +313,14 @@ namespace umi3d.edk
             /// <summary>
             /// Contains the  stored objects.
             /// </summary>
-            Dictionary<string, A> objects = new Dictionary<string, A>();
+            Dictionary<ulong, A> objects = new Dictionary<ulong, A>();
 
-            public Dictionary<string, A>.ValueCollection Values { get { return objects.Values; } }
+            public Dictionary<ulong, A>.ValueCollection Values { get { return objects.Values; } }
 
-            public A this[string key]
+            public A this[ulong key]
             {
                 get {
-                    if (key == null || key.Length == 0)
+                    if (key == 0)
                         return default;
                     else if (objects.ContainsKey(key))
                         return objects[key];
@@ -328,28 +328,51 @@ namespace umi3d.edk
                 }
             }
 
-            public string Register(A obj)
+            System.Random random = new System.Random();
+
+            ulong NewID()
+            {
+                ulong value = LongRandom(100010);
+                while(objects.ContainsKey(value)) value = LongRandom(100010);
+                return value;
+            }
+
+            /// <summary>
+            /// return a random ulong with a min value;
+            /// </summary>
+            /// <param name="min">min value for this ulong. this should be inferior to 4,294,967,295/2</param>
+            /// <returns></returns>
+            ulong LongRandom(ulong min)
+            {
+                byte[] buf = new byte[64];
+                random.NextBytes(buf);
+                ulong longRand = BitConverter.ToUInt64(buf, 0);
+                if (longRand < min) return longRand + min;
+                return longRand;
+            }
+
+
+            public ulong Register(A obj)
             {
                 byte[] key = Guid.NewGuid().ToByteArray();
-                string guid = Convert.ToBase64String(key);
+                ulong guid = NewID();
                 objects.Add(guid, obj);
                 return guid;
             }
 
-            public string Register(A obj, string guid)
+            public ulong Register(A obj, ulong guid)
             {
                 if (objects.ContainsKey(guid))
                 {
-                    string old = guid;
-                    byte[] key = Guid.NewGuid().ToByteArray();
-                    guid = Convert.ToBase64String(key);
+                    ulong old = guid;
+                    guid = NewID();
                     Debug.LogWarning($"Guid [{old}] was already used node register with another id [{guid}]");
                 }
                 objects.Add(guid, obj);
                 return guid;
             }
 
-            public void Remove(string key)
+            public void Remove(ulong key)
             {
                 objects.Remove(key);
             }

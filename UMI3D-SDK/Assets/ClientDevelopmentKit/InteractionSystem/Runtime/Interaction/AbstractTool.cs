@@ -25,7 +25,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Tool Id.
         /// </summary>
-        public string id { get { return abstractDto.id; } }
+        public ulong id { get { return abstractDto.id; } }
 
         /// <summary>
         /// Toolbox name.

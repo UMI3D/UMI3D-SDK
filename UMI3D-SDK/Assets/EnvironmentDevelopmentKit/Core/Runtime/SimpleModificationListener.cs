@@ -31,7 +31,7 @@ namespace umi3d.edk
         float timeTmp = 0;
         public int max = 0;
 
-        Dictionary<string, Dictionary<ulong, SetEntityProperty>> sets;
+        Dictionary<ulong, Dictionary<ulong, SetEntityProperty>> sets;
 
 
         // Start is called before the first frame update
@@ -67,7 +67,7 @@ namespace umi3d.edk
                 {
                     transaction.reliable = false;
                     UMI3DServer.Dispatch(transaction);
-                    sets = new Dictionary<string, Dictionary<ulong, SetEntityProperty>>();
+                    sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
                 }
             }
         }
@@ -90,7 +90,7 @@ namespace umi3d.edk
 
         private void Update(UMI3DNode obj)
         {
-            if (sets == null) sets = new Dictionary<string, Dictionary<ulong, SetEntityProperty>>();
+            if (sets == null) sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
             if (!sets.ContainsKey(obj.Id())) sets[obj.Id()] = new Dictionary<ulong, SetEntityProperty>();
 
             setOperation(obj.objectPosition.SetValue(obj.transform.localPosition));
@@ -107,7 +107,7 @@ namespace umi3d.edk
 
         private void MaterialUpdate(UMI3DScene scene)
         {
-            if (sets == null) sets = new Dictionary<string, Dictionary<ulong, SetEntityProperty>>();
+            if (sets == null) sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
 
 
             foreach (MaterialSO mat in scene.materialSOs)

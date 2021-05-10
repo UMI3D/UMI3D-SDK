@@ -62,7 +62,7 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        protected override string GetId()
+        protected override ulong GetId()
         {
             if (!registered)
             {
@@ -74,7 +74,7 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        protected override void SetId(string id)
+        protected override void SetId(ulong id)
         {
             textures.id = id;
             registered = true;
@@ -87,7 +87,7 @@ namespace umi3d.edk
         {
             //        Debug.Log("init mat id");
 
-            textures.id = null;
+            textures.id = 0;
             registered = false;
 
         }
@@ -133,7 +133,7 @@ namespace umi3d.edk
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             Debug.Log("id mat " + id);
             objectRoughnessFactor = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.RoughnessFactor, this.roughnessFactor, null, pCompare.FloatEquality);
@@ -227,7 +227,7 @@ namespace umi3d.edk
     [System.Serializable]
     public class CustomTextures
     {
-        public string id = null;
+        public ulong id = 0;
         // public string shaderName; // unused
         public UMI3DTextureResource baseColorTexture = new UMI3DTextureResource();
         public UMI3DTextureResource channelTexture = new UMI3DTextureResource();

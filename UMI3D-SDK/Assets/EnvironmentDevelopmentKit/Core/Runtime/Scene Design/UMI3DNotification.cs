@@ -23,18 +23,18 @@ namespace umi3d.edk
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
 
-        string notificationId;
+        ulong notificationId;
 
-        public string Id()
+        public ulong Id()
         {
-            if (notificationId == null && UMI3DEnvironment.Exists)
+            if (notificationId == 0 && UMI3DEnvironment.Exists)
                 Register();
             return notificationId;
         }
 
         void Register()
         {
-            if (notificationId == null && UMI3DEnvironment.Exists)
+            if (notificationId == 0 && UMI3DEnvironment.Exists)
             {
                 notificationId = UMI3DEnvironment.Register(this);
             }

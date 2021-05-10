@@ -34,7 +34,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Index of any 3D object loaded.
         /// </summary>
-        Dictionary<string, UMI3DEntityInstance> entities = new Dictionary<string, UMI3DEntityInstance>();
+        Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
 
         /// <summary>
         /// Return a list of all registered entities.
@@ -47,21 +47,21 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public static UMI3DEntityInstance GetEntity(string id) { return id != null && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] : null; }
+        public static UMI3DEntityInstance GetEntity(ulong id) { return id != 0 && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] : null; }
 
         /// <summary>
         /// Get a node with an id.
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public static UMI3DNodeInstance GetNode(string id) { return id != null && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] as UMI3DNodeInstance : null; }
+        public static UMI3DNodeInstance GetNode(ulong id) { return id != null && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] as UMI3DNodeInstance : null; }
 
         /// <summary>
         /// Get a node id with a collider.
         /// </summary>
         /// <param name="collider">collider.</param>
         /// <returns></returns>
-        public static string GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : null; }
+        public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : 0; }
 
         /// <summary>
         /// Register a node instance.
@@ -71,7 +71,7 @@ namespace umi3d.cdk
         /// <param name="instance">gameobject of the node.</param>
         /// <param name="issubObject">id this node a sub object of an other node.</param>
         /// <returns></returns>
-        public static UMI3DNodeInstance RegisterNodeInstance(string id, UMI3DDto dto, GameObject instance, Action delete = null)
+        public static UMI3DNodeInstance RegisterNodeInstance(ulong id, UMI3DDto dto, GameObject instance, Action delete = null)
         {
             if (!Exists || instance == null)
                 return null;
@@ -98,7 +98,7 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the node.</param>
         /// <param name="dto">dto of the node.</param>
         /// <returns></returns>
-        public static UMI3DEntityInstance RegisterEntityInstance(string id, UMI3DDto dto, object Object, Action delete = null)
+        public static UMI3DEntityInstance RegisterEntityInstance(ulong id, UMI3DDto dto, object Object, Action delete = null)
         {
             if (!Exists)
                 return null;
@@ -359,7 +359,7 @@ namespace umi3d.cdk
                         UMI3DClientServer.Media.name,
                         () =>
                         {
-                            UMI3DResourcesManager.LoadLibrary(library.id, performed);
+                            UMI3DResourcesManager.LoadLibrary(library.libraryId, performed);
                         });
                     break;
                 case AbstractEntityDto dto:
@@ -389,7 +389,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entityId"></param>
         /// <param name="performed"></param>
-        static public void DeleteEntity(string entityId, Action performed)
+        static public void DeleteEntity(ulong entityId, Action performed)
         {
             if (Instance.entities.ContainsKey(entityId))
             {
@@ -540,14 +540,12 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static bool SetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
         {
-            string id = dto.entityId + "_" + dto.property;
-
-            if (Instance.entityFilters.ContainsKey(id))
+            if (Instance.entityFilters.ContainsKey(dto.entityId) && Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
             {
                 float now = Time.time;
-                Instance.entityFilters[id].measuresPerSecond = 1 / (now - Instance.entityFilters[id].lastMessageTime);
-                Instance.entityFilters[id].lastMessageTime = now;
-                Instance.PropertyKalmanUpdate(Instance.entityFilters[id], dto.value);
+                Instance.entityFilters[dto.entityId][dto.property].measuresPerSecond = 1 / (now - Instance.entityFilters[dto.entityId][dto.property].lastMessageTime);
+                Instance.entityFilters[dto.entityId][dto.property].lastMessageTime = now;
+                Instance.PropertyKalmanUpdate(Instance.entityFilters[dto.entityId][dto.property], dto.value);
                 return true;
             }
             else
@@ -575,7 +573,7 @@ namespace umi3d.cdk
         public static bool SetMultiEntity(MultiSetEntityPropertyDto dto)
         {
             if (!Exists) return false;
-            foreach (string id in dto.entityIds)
+            foreach (ulong id in dto.entityIds)
             {
                 try
                 {
@@ -632,7 +630,7 @@ namespace umi3d.cdk
             public object regressed_value;
             public float measuresPerSecond;
             public float lastMessageTime;
-            public string entityId;
+            public ulong entityId;
             public ulong property;
 
             public KalmanEntity(double q, double r)
@@ -645,26 +643,27 @@ namespace umi3d.cdk
             }
         }
 
-        Dictionary<string, KalmanEntity> entityFilters = new Dictionary<string, KalmanEntity>();
+        Dictionary<ulong, Dictionary<ulong, KalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, KalmanEntity>>();
 
         private void Update()
         {
-            foreach (string entityPropertyId in Instance.entityFilters.Keys)
-            {
-                var node = UMI3DEnvironmentLoader.GetEntity(entityPropertyId.Split('_')[0]);
-                KalmanEntity kalmanEntity = Instance.entityFilters[entityPropertyId];
-
-                Instance.PropertyRegression(kalmanEntity);
-
-                SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()
+            foreach (var entityId in Instance.entityFilters.Keys)
+                foreach (var propertyId in Instance.entityFilters[entityId].Keys)
                 {
-                    entityId = kalmanEntity.entityId,
-                    property = kalmanEntity.property,
-                    value = kalmanEntity.regressed_value
-                };
+                    var node = UMI3DEnvironmentLoader.GetEntity(entityId);
+                    KalmanEntity kalmanEntity = Instance.entityFilters[entityId][propertyId];
 
-                SimulatedSetEntity(node, entityPropertyDto);
-            }
+                    Instance.PropertyRegression(kalmanEntity);
+
+                    SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()
+                    {
+                        entityId = kalmanEntity.entityId,
+                        property = kalmanEntity.property,
+                        value = kalmanEntity.regressed_value
+                    };
+
+                    SimulatedSetEntity(node, entityPropertyDto);
+                }
         }
 
         /// <summary>
@@ -708,9 +707,12 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static bool StartInterpolation(UMI3DEntityInstance node, StartInterpolationPropertyDto dto)
         {
-            string id = dto.entityId + "_" + dto.property;
+            if (!Instance.entityFilters.ContainsKey(dto.entityId))
+            {
+                Instance.entityFilters.Add(dto.entityId, new Dictionary<ulong, KalmanEntity>());
+            }
 
-            if (!Instance.entityFilters.ContainsKey(id))
+            if (!Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
             {
                 KalmanEntity newKalmanEntity = new KalmanEntity(50, 0.5)
                 {
@@ -719,7 +721,7 @@ namespace umi3d.cdk
                     property = dto.property
                 };
 
-                Instance.entityFilters.Add(id, newKalmanEntity);
+                Instance.entityFilters[dto.entityId].Add(dto.property, newKalmanEntity);
 
                 Instance.PropertyKalmanUpdate(newKalmanEntity, dto.startValue);
 
@@ -777,11 +779,9 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static bool StopInterpolation(UMI3DEntityInstance node, StopInterpolationPropertyDto dto)
         {
-            string id = dto.entityId + "_" + dto.property;
-
-            if (Instance.entityFilters.ContainsKey(id))
+            if (Instance.entityFilters.ContainsKey(dto.entityId) && Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
             {
-                Instance.entityFilters.Remove(id);
+                Instance.entityFilters[dto.entityId].Remove(dto.property);
                 SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()
                 {
                     entityId = dto.entityId,

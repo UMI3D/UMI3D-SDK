@@ -40,7 +40,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialize scene's properties.
         /// </summary>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
         }
@@ -100,7 +100,7 @@ namespace umi3d.edk
             nodeDto.position = objectPosition.GetValue(user);
             nodeDto.scale = objectScale.GetValue(user);
             nodeDto.rotation = objectRotation.GetValue(user);
-            nodeDto.LibrariesId = libraries.Select(l => { return l.Id(); }).ToList();
+            nodeDto.LibrariesId = libraries.Select(l => { return l.id; }).ToList();
             nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e => e.ToEntityDto(user)).ToList();
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
@@ -108,9 +108,9 @@ namespace umi3d.edk
 
         //Remember already added entities
         [HideInInspector]
-        public List<string> materialIds = new List<string>();
+        public List<ulong> materialIds = new List<ulong>();
         [HideInInspector]
-        public List<string> animationIds = new List<string>();
+        public List<ulong> animationIds = new List<ulong>();
 
         [EditorReadOnly]
         public List<MaterialSO> materialSOs = new List<MaterialSO>();

@@ -46,7 +46,7 @@ namespace umi3d.common
         public class MaterialOverrideDto : UMI3DDto
         {
             public List<string> overridedMaterialsId; // List of names of mat or "ANY_mat" or "DEFAULT_mat"
-            public string newMaterialId;  // name of the umi3d entity (the id of the mat)
+            public ulong newMaterialId;  // name of the umi3d entity (the id of the mat)
             public bool addMaterialIfNotExists;
         }
     }

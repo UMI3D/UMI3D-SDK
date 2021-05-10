@@ -53,7 +53,7 @@ namespace umi3d.cdk
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 if (loader != null)
                     UMI3DResourcesManager.LoadFile(
-                        url,
+                        UMI3DGlobalID.EnvironementId,
                         fileToLoad,
                         loader.UrlToObject,
                         loader.ObjectFromCache,

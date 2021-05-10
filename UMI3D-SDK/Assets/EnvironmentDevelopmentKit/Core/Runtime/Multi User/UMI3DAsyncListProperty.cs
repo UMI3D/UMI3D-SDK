@@ -98,7 +98,7 @@ namespace umi3d.edk
             return ListEqual;
         }
 
-        public UMI3DAsyncListProperty(string entityId, ulong propertyId, List<T> value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null, Func<List<T>, List<T>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializer), EqualToListEqual(equal))
+        public UMI3DAsyncListProperty(ulong entityId, ulong propertyId, List<T> value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null, Func<List<T>, List<T>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializer), EqualToListEqual(equal))
         {
             if (equal == null)
             {

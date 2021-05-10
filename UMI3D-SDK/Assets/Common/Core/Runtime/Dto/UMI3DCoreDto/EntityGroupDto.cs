@@ -24,6 +24,6 @@ namespace umi3d.common
     [System.Serializable]
     public class EntityGroupDto : AbstractEntityDto, IEntity
     {
-        public List<string> entitiesId;
+        public List<ulong> entitiesId;
     }
 }

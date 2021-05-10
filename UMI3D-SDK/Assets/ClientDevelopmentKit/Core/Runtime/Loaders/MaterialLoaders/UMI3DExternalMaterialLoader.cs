@@ -45,7 +45,7 @@ namespace umi3d.cdk
                 if (loader != null)
 
                     UMI3DResourcesManager.LoadFile(
-                   fileToLoad.url,
+                   (dto.extensions.umi3d as ExternalMaterialDto)?.id ?? 0,
                    fileToLoad,
                    loader.UrlToObject,
                    loader.ObjectFromCache,
@@ -59,7 +59,7 @@ namespace umi3d.cdk
                                //     ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
 
                                callback.Invoke(newMat);
-                               ReadAdditionalShaderProperties(externalMat.shaderProperties, newMat);
+                               ReadAdditionalShaderProperties(externalMat.id, externalMat.shaderProperties, newMat);
                            }
                            catch
                            {

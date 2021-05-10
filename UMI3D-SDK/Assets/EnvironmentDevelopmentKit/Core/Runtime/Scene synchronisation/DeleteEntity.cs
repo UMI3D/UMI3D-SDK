@@ -23,7 +23,7 @@ namespace umi3d.edk
     public class DeleteEntity : Operation
     {
 
-        public string entityId;
+        public ulong entityId;
 
         public override byte[] ToBytes(UMI3DUser user)
         {

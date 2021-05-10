@@ -40,7 +40,7 @@ namespace umi3d.cdk.interaction
 
         protected virtual void Awake()
         {
-            memoryRoot = new ProjectionTreeNode(id) { id = "root" };
+            memoryRoot = new ProjectionTreeNode(id) { id = 0 };
         }
 
 
@@ -260,7 +260,7 @@ namespace umi3d.cdk.interaction
         /// <param name="manip">Manipulation to project</param>
         /// <param name="dof">Dof to project</param>
         /// <param name="unusedInputsOnly">Project on unused inputs only</param>
-        public AbstractUMI3DInput PartialProject(AbstractController controller, ManipulationDto manip, DofGroupDto dof, bool unusedInputsOnly, string toolId, string hoveredObjectId)
+        public AbstractUMI3DInput PartialProject(AbstractController controller, ManipulationDto manip, DofGroupDto dof, bool unusedInputsOnly, ulong toolId, ulong hoveredObjectId)
         {
             ProjectionTreeNode currentMemoryTreeState = memoryRoot;
 
@@ -310,7 +310,7 @@ namespace umi3d.cdk.interaction
         /// <param name="controller">Controller to project on</param>
         /// <param name="form">form dto to project</param>
         /// <param name="unusedInputsOnly">Project on unused inputs only</param>
-        public AbstractUMI3DInput PartialProject(AbstractController controller, FormDto form, string toolId, string hoveredObjectId, bool unusedInputsOnly = false)
+        public AbstractUMI3DInput PartialProject(AbstractController controller, FormDto form, ulong toolId, ulong hoveredObjectId, bool unusedInputsOnly = false)
         {
             System.Func<ProjectionTreeNode> deepProjectionCreation = () =>
             {
@@ -355,7 +355,7 @@ namespace umi3d.cdk.interaction
         /// <param name="controller">Controller to project on</param>
         /// <param name="link">link dto to project</param>
         /// <param name="unusedInputsOnly">Project on unused inputs only</param>
-        public AbstractUMI3DInput PartialProject(AbstractController controller, LinkDto link, string toolId, string hoveredObjectId, bool unusedInputsOnly = false)
+        public AbstractUMI3DInput PartialProject(AbstractController controller, LinkDto link, ulong toolId, ulong hoveredObjectId, bool unusedInputsOnly = false)
         {
             System.Func<ProjectionTreeNode> deepProjectionCreation = () =>
             {
@@ -400,7 +400,7 @@ namespace umi3d.cdk.interaction
         /// <param name="controller">Controller to project on</param>
         /// <param name="evt">Event dto to project</param>
         /// <param name="unusedInputsOnly">Project on unused inputs only</param>
-        public AbstractUMI3DInput PartialProject(AbstractController controller, EventDto evt, string toolId, string hoveredObjectId, bool unusedInputsOnly = false)
+        public AbstractUMI3DInput PartialProject(AbstractController controller, EventDto evt, ulong toolId, ulong hoveredObjectId, bool unusedInputsOnly = false)
         {
             System.Func<ProjectionTreeNode> deepProjectionCreation = () =>
             {
@@ -444,7 +444,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="controller">Controller to project interactions on</param>
         /// <param name="interactions">Interactions to project</param>
-        public AbstractUMI3DInput[] Project(AbstractController controller, AbstractInteractionDto[] interactions, string toolId, string hoveredObjectId)
+        public AbstractUMI3DInput[] Project(AbstractController controller, AbstractInteractionDto[] interactions, ulong toolId, ulong hoveredObjectId)
         {
             ProjectionTreeNode currentMemoryTreeState = memoryRoot;
 
@@ -752,7 +752,7 @@ namespace umi3d.cdk.interaction
         /// Nodes collection by tree id.
         /// </summary>
         [SerializeField]
-        protected static Dictionary<string, Dictionary<string, ProjectionTreeNode>> nodesByTree = new Dictionary<string, Dictionary<string, ProjectionTreeNode>>();
+        protected static Dictionary<string, Dictionary<ulong, ProjectionTreeNode>> nodesByTree = new Dictionary<string, Dictionary<ulong, ProjectionTreeNode>>();
 
         /// <summary>
         /// Node's children. Please avoid calling this field too often as it is slow to compute.
@@ -761,9 +761,9 @@ namespace umi3d.cdk.interaction
         {
             get {
                 List<ProjectionTreeNode> buffer = new List<ProjectionTreeNode>();
-                foreach (string id in childrensId)
+                foreach (ulong id in childrensId)
                 {
-                    if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+                    if (nodesByTree.TryGetValue(treeId, out Dictionary<ulong, ProjectionTreeNode> nodes))
                         if (nodes.TryGetValue(id, out ProjectionTreeNode child))
                             buffer.Add(child);
                 }
@@ -773,13 +773,13 @@ namespace umi3d.cdk.interaction
 
 
         [SerializeField]
-        protected List<string> childrensId = new List<string>();
+        protected List<ulong> childrensId = new List<ulong>();
 
         /// <summary>
         /// Node id.
         /// </summary>
         [SerializeField]
-        public string id;
+        public ulong id;
 
         public string treeId { get; protected set; }
 
@@ -804,7 +804,7 @@ namespace umi3d.cdk.interaction
             if (childrensId.Contains(child.id))
                 return;
             childrensId.Add(child.id);
-            if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+            if (nodesByTree.TryGetValue(treeId, out Dictionary<ulong, ProjectionTreeNode> nodes))
             {
                 if (!nodes.ContainsKey(child.id))
                 {
@@ -819,7 +819,7 @@ namespace umi3d.cdk.interaction
         /// <param name="path">path to the file</param>
         public void SaveToFile(string path)
         {
-            if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+            if (nodesByTree.TryGetValue(treeId, out Dictionary<ulong, ProjectionTreeNode> nodes))
             {
 
                 string objectJson = JsonUtility.ToJson(this, true);
@@ -838,7 +838,7 @@ namespace umi3d.cdk.interaction
         /// <param name="path">path to the file</param>
         public void LoadFromFile(string path)
         {
-            if (nodesByTree.TryGetValue(treeId, out Dictionary<string, ProjectionTreeNode> nodes))
+            if (nodesByTree.TryGetValue(treeId, out Dictionary<ulong, ProjectionTreeNode> nodes))
             {
                 StreamReader reader = new StreamReader(path);
                 string storage = reader.ReadToEnd();

@@ -25,11 +25,11 @@ namespace umi3d.edk
     public class EntityGroup : UMI3DLoadableEntity
     {
 
-        string entityId;
+        ulong entityId;
         [SerializeField, EditorReadOnly]
-        List<UMI3DEntity> _entities = new List<UMI3DEntity>();
-        public UMI3DAsyncListProperty<UMI3DEntity> entities { get { Id(); return _entitiesObject; } private set { _entitiesObject = value; } }
-        UMI3DAsyncListProperty<UMI3DEntity> _entitiesObject;
+        List<UMI3DMediaEntity> _entities = new List<UMI3DMediaEntity>();
+        public UMI3DAsyncListProperty<UMI3DMediaEntity> entities { get { Id(); return _entitiesObject; } private set { _entitiesObject = value; } }
+        UMI3DAsyncListProperty<UMI3DMediaEntity> _entitiesObject;
 
 
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
@@ -53,7 +53,7 @@ namespace umi3d.edk
         }
 
 
-        public string Id()
+        public ulong Id()
         {
             if (entityId == null)
             {
@@ -66,7 +66,7 @@ namespace umi3d.edk
 
         void InitDefinition()
         {
-            entities = new UMI3DAsyncListProperty<UMI3DEntity>(entityId, UMI3DPropertyKeys.EntityGroupIds, _entities, (e, u) => e.Id());
+            entities = new UMI3DAsyncListProperty<UMI3DMediaEntity>(entityId, UMI3DPropertyKeys.EntityGroupIds, _entities, (e, u) => e.Id());
         }
 
 
@@ -78,7 +78,7 @@ namespace umi3d.edk
         public void Destroy()
         {
             UMI3DEnvironment.Remove(this);
-            entityId = null;
+            entityId = 0;
         }
 
 

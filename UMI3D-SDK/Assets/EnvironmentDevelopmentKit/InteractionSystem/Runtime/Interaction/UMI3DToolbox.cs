@@ -49,14 +49,14 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// The interaction's unique id. 
         /// </summary>
-        private string toolboxId;
+        private ulong toolboxId;
 
         /// <summary>
         /// The public Getter for interactionId.
         /// </summary>
-        public string Id()
+        public ulong Id()
         {
-            if (toolboxId == null && UMI3DEnvironment.Exists)
+            if (toolboxId == 0 && UMI3DEnvironment.Exists)
                 Register();
             return toolboxId;
         }
@@ -67,7 +67,7 @@ namespace umi3d.edk.interaction
         /// <returns>Return a LoadEntity</returns>
         public virtual LoadEntity Register()
         {
-            if (toolboxId == null && UMI3DEnvironment.Exists)
+            if (toolboxId == 0 && UMI3DEnvironment.Exists)
             {
                 toolboxId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolboxId);
@@ -123,7 +123,7 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Initialize interaction's properties.
         /// </summary>
-        protected virtual void InitDefinition(string id)
+        protected virtual void InitDefinition(ulong id)
         {
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {

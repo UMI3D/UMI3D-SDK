@@ -24,7 +24,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the tool to project.
         /// </summary>
-        public string toolId;
+        public ulong toolId;
 
         /// <summary>
         /// Can the client choose to release the tool.

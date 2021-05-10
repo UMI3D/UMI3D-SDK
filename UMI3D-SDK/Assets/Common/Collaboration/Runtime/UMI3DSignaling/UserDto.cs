@@ -25,9 +25,9 @@ namespace umi3d.common.collaboration
     public class UserDto : AbstractEntityDto
     {
         public StatusType status;
-        public string avatarId;
-        public string audioSourceId;
-        public string videoSourceId;
+        public ulong  avatarId;
+        public ulong audioSourceId;
+        public ulong videoSourceId;
         public uint networkId;
 
         public UserDto(UserDto source)

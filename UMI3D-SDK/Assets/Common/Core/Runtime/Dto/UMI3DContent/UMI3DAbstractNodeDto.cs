@@ -22,7 +22,7 @@ namespace umi3d.common
         public bool active = true;
         public bool immersiveOnly = false;
         public UMI3DAnchorDto anchorDto = null;
-        public string pid = null;
+        public ulong pid = 0;
         public bool isStatic = false;
     }
 

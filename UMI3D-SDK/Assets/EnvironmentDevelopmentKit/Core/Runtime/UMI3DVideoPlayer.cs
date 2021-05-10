@@ -35,7 +35,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource { get { Register(); return objectVideoResource; } protected set => objectVideoResource = value; }
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
             ObjectMaterial = new UMI3DAsyncProperty<MaterialSO>(id, UMI3DPropertyKeys.AnimationNode, material, (m, u) => m?.Id());
@@ -50,7 +50,7 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var Adto = dto as UMI3DVideoPlayerDto;
-            Adto.materialId = ObjectMaterial.GetValue(user)?.Id();
+            Adto.materialId = ObjectMaterial.GetValue(user)?.Id() ?? 0;
             //Debug.Log(" env : " + Adto.materialId);
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
             if (audioPlayer != null)

@@ -24,7 +24,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
-    public abstract class AbstractTool : MonoBehaviour, UMI3DEntity
+    public abstract class AbstractTool : MonoBehaviour, UMI3DMediaEntity
     {
         #region properties
 
@@ -47,14 +47,14 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// The tool's unique id. 
         /// </summary>
-        protected string toolId;
+        protected ulong toolId;
 
         /// <summary>
         /// The public Getter for interactionId.
         /// </summary>
-        public string Id()
+        public ulong Id()
         {
-            if (toolId == null && UMI3DEnvironment.Exists)
+            if (toolId == 0 && UMI3DEnvironment.Exists)
                 Register();
             return toolId;
         }
@@ -64,7 +64,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         public virtual void Register()
         {
-            if (toolId == null && UMI3DEnvironment.Exists)
+            if (toolId == 0 && UMI3DEnvironment.Exists)
             {
                 toolId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolId);
@@ -90,7 +90,7 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Initialize interaction's properties.
         /// </summary>
-        protected virtual void InitDefinition(string id)
+        protected virtual void InitDefinition(ulong id)
         {
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {

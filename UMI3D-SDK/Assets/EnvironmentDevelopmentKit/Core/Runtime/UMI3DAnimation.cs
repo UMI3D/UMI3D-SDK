@@ -54,7 +54,7 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
             base.InitDefinition(id);

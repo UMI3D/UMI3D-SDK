@@ -159,7 +159,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialise component.
         /// </summary>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
             Alignment = new UMI3DAsyncProperty<TextAnchor>(objectId, UMI3DPropertyKeys.Alignement, alignment, (a, u) => a.Convert());

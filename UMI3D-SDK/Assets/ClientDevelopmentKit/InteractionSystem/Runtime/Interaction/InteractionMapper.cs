@@ -35,17 +35,17 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Associate a toolid with the controller the tool is projected on.
         /// </summary>
-        public Dictionary<string, AbstractController> toolIdToController { get; protected set; } = new Dictionary<string, AbstractController>();
+        public Dictionary<ulong, AbstractController> toolIdToController { get; protected set; } = new Dictionary<ulong, AbstractController>();
 
         /// <summary>
         /// Id to Dto interactions map.
         /// </summary>
-        public Dictionary<string, AbstractInteractionDto> interactionsIdToDto { get; protected set; } = new Dictionary<string, AbstractInteractionDto>();
+        public Dictionary<ulong, AbstractInteractionDto> interactionsIdToDto { get; protected set; } = new Dictionary<ulong, AbstractInteractionDto>();
 
         /// <summary>
         /// Currently projected tools.
         /// </summary>
-        private Dictionary<string, InteractionMappingReason> projectedTools = new Dictionary<string, InteractionMappingReason>();
+        private Dictionary<ulong, InteractionMappingReason> projectedTools = new Dictionary<ulong, InteractionMappingReason>();
 
         #endregion
 
@@ -62,7 +62,7 @@ namespace umi3d.cdk.interaction
                 toolboxMenu.RemoveAllMenuItem();
             }
 
-            toolIdToController = new Dictionary<string, AbstractController>();
+            toolIdToController = new Dictionary<ulong, AbstractController>();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override void ReleaseTool(string toolId, InteractionMappingReason reason = null)
+        public override void ReleaseTool(ulong toolId, InteractionMappingReason reason = null)
         {
             AbstractTool tool = GetTool(toolId);
 
@@ -110,7 +110,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override bool SelectTool(string toolId, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null)
+        public override bool SelectTool(ulong toolId, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null)
         {
             AbstractTool tool = GetTool(toolId);
             if (tool == null)
@@ -150,7 +150,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="tool">The tool to select</param>
         /// <param name="controller">Controller to project the tool on</param>
-        public bool SelectTool(string toolId, bool releasable, AbstractController controller, string hoveredObjectId, InteractionMappingReason reason = null)
+        public bool SelectTool(ulong toolId, bool releasable, AbstractController controller, ulong hoveredObjectId, InteractionMappingReason reason = null)
         {
             AbstractTool tool = GetTool(toolId);
             if (controller.IsCompatibleWith(tool))
@@ -174,7 +174,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override bool UpdateTools(string toolId, bool releasable, InteractionMappingReason reason = null)
+        public override bool UpdateTools(ulong toolId, bool releasable, InteractionMappingReason reason = null)
         {
             if (toolIdToController.ContainsKey(toolId))
             {
@@ -190,7 +190,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override bool SwitchTools(string select, string release, bool releasable, string hoveredObjectId, InteractionMappingReason reason = null)
+        public override bool SwitchTools(ulong select, ulong release, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null)
         {
             if (toolIdToController.ContainsKey(release))
             {
@@ -235,7 +235,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override bool IsToolSelected(string toolId)
+        public override bool IsToolSelected(ulong toolId)
         {
             return projectedTools.ContainsKey(toolId);
         }
@@ -264,13 +264,13 @@ namespace umi3d.cdk.interaction
                 }
                 else
                 {
-                    SelectTool(tool.id, true, null, new RequestedFromMenu());
+                    SelectTool(tool.id, true, 0, new RequestedFromMenu());
                 }
             });
         }
 
         /// <inheritdoc/>
-        public override Toolbox GetToolbox(string id)
+        public override Toolbox GetToolbox(ulong id)
         {
             if (!ToolboxExists(id))
                 throw new KeyNotFoundException();
@@ -284,7 +284,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override AbstractTool GetTool(string id)
+        public override AbstractTool GetTool(ulong id)
         {
             if (!ToolExists(id))
                 throw new KeyNotFoundException();
@@ -298,7 +298,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override AbstractInteractionDto GetInteraction(string id)
+        public override AbstractInteractionDto GetInteraction(ulong id)
         {
             if (!InteractionExists(id))
                 throw new KeyNotFoundException();
@@ -313,25 +313,25 @@ namespace umi3d.cdk.interaction
         }
 
         /// <inheritdoc/>
-        public override bool ToolboxExists(string id)
+        public override bool ToolboxExists(ulong id)
         {
             return UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox != null;
         }
 
         /// <inheritdoc/>
-        public override bool ToolExists(string id)
+        public override bool ToolExists(ulong id)
         {
             return UMI3DEnvironmentLoader.GetEntity(id)?.Object as AbstractTool != null;
         }
 
         /// <inheritdoc/>
-        public override bool InteractionExists(string id)
+        public override bool InteractionExists(ulong id)
         {
             return interactionsIdToDto.ContainsKey(id);
         }
 
         /// <inheritdoc/>
-        public override AbstractController GetController(string projectedToolId)
+        public override AbstractController GetController(ulong projectedToolId)
         {
             if (!IsToolSelected(projectedToolId))
                 return null;

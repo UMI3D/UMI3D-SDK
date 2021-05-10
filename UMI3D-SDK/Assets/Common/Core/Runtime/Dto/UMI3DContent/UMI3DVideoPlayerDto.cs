@@ -19,9 +19,9 @@ namespace umi3d.common
     public class UMI3DVideoPlayerDto : UMI3DAbstractAnimationDto
     {
         public ResourceDto videoResource;
-        public string materialId;
+        public ulong materialId;
 
-        public string audioId;
+        public ulong audioId;
 
     }
 }

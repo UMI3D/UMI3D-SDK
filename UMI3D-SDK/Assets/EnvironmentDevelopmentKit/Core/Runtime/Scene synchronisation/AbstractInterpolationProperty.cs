@@ -27,7 +27,7 @@ namespace umi3d.edk
         /// <summary>
         /// The unique identifier of the entity
         /// </summary>
-        public string entityId;
+        public ulong entityId;
 
         /// <summary>
         /// The name of the interpolated property

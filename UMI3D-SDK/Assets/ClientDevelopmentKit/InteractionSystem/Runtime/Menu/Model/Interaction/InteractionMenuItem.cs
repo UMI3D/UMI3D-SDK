@@ -21,11 +21,11 @@ namespace umi3d.cdk.menu.interaction
     public class InteractionMenuItem : MenuItem
     {
         public virtual AbstractInteractionDto interaction { get; set; }
-        public virtual string toolId { get; set; }
+        public virtual ulong toolId { get; set; }
 
         public bool isProjected()
         {
-            if ((interaction == null) || (interaction.id == null))
+            if ((interaction == null) || (interaction.id == 0))
                 return false;
 
             if (!AbstractInteractionMapper.Instance.IsToolSelected(toolId))

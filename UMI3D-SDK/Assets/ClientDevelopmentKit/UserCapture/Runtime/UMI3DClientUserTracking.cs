@@ -39,7 +39,7 @@ namespace umi3d.cdk.userCapture
 
         List<string> streamedBonetypes = new List<string>();
 
-        public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
+        public Dictionary<ulong, UserAvatar> embodimentDict = new Dictionary<ulong, UserAvatar>();
 
         [Tooltip("This event is raised after each analysis of the skeleton.")]
         public UnityEvent skeletonParsedEvent;
@@ -149,7 +149,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="id">the id of the user</param>
         /// <param name="u">the UserAvatar instance to register</param>
         /// <returns>A bool indicating if the UserAvatar has been registered</returns>
-        public virtual bool RegisterEmbd(string id, UserAvatar u)
+        public virtual bool RegisterEmbd(ulong id, UserAvatar u)
         {
             if (embodimentDict.ContainsKey(id))
                 return false;
@@ -165,7 +165,7 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="id">the id of the user</param>
         /// <returns>A bool indicating if the UserAvatar has been unregistered</returns>
-        public virtual bool UnregisterEmbd(string id)
+        public virtual bool UnregisterEmbd(ulong id)
         {
             return embodimentDict.Remove(id);
         }
@@ -176,7 +176,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="id">the id of the user</param>
         /// <param name="embd">the UserAvatar instance if found</param>
         /// <returns>A bool indicating if the UserAvatar has been found</returns>
-        public virtual bool TryGetValue(string id, out UserAvatar embd)
+        public virtual bool TryGetValue(ulong id, out UserAvatar embd)
         {
             return embodimentDict.TryGetValue(id, out embd);
         }

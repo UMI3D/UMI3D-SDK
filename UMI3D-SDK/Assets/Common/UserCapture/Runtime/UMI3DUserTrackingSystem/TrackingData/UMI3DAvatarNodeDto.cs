@@ -28,7 +28,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The unique identifier of the user.
         /// </summary>
-        public string userId;
+        public ulong userId;
 
         /// <summary>
         /// A bool to enable or disable bindings

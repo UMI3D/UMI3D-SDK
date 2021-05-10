@@ -24,7 +24,7 @@ namespace umi3d.cdk
 {
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
-        new public static UMI3DNodeAnimation Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
+        new public static UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
         protected new UMI3DNodeAnimationDto dto { get => base.dto as UMI3DNodeAnimationDto; set => base.dto = value; }
 
         List<Coroutine> Coroutines = new List<Coroutine>();

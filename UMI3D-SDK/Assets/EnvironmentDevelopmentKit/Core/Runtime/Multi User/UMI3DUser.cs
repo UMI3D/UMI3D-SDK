@@ -20,7 +20,7 @@ using System.Linq;
 using umi3d.common;
 namespace umi3d.edk
 {
-    public class UMI3DUser : UMI3DEntity
+    public class UMI3DUser : UMI3DMediaEntity
     {
 
         #region identity
@@ -28,15 +28,15 @@ namespace umi3d.edk
         /// <summary>
         /// The unique user identifier.
         /// </summary>
-        private string userId;
+        private ulong userId;
 
         public bool hasJoined { get => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING; }
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
-        public string Id()
+        public ulong Id()
         {
-            if (userId == null && UMI3DEnvironment.Exists)
+            if (userId == 0 && UMI3DEnvironment.Exists)
                 userId = UMI3DEnvironment.Register(this);
             return userId;
         }

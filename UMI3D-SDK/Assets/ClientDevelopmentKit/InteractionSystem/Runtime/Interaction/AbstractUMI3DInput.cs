@@ -70,14 +70,14 @@ namespace umi3d.cdk.interaction
         /// Associate an AbstractInteractionDto to this Input.
         /// </summary>
         /// <param name="interaction">The interaction that will be associated</param>
-        public abstract void Associate(AbstractInteractionDto interaction, string toolId, string hoveredObjectId);
+        public abstract void Associate(AbstractInteractionDto interaction, ulong toolId, ulong hoveredObjectId);
 
         /// <summary>
         /// Associate a ManipulationDto to this input.
         /// </summary>
         /// <param name="manipulation"></param>
         /// <param name="dofs"></param>
-        public abstract void Associate(ManipulationDto manipulation, DofGroupEnum dofs, string toolId, string hoveredObjectId);
+        public abstract void Associate(ManipulationDto manipulation, DofGroupEnum dofs, ulong toolId, ulong hoveredObjectId);
 
         /// <summary>
         /// Associate an AbstractInteractionDto to this Input.

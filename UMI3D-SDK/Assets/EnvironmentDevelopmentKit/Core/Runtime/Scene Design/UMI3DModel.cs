@@ -53,7 +53,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
 

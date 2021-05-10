@@ -40,7 +40,7 @@ namespace umi3d.edk
         /// <summary>
         /// The id of the entity.
         /// </summary>
-        public string entityId { private set; get; }
+        public ulong entityId { private set; get; }
 
         /// <summary>
         /// The current async i.e. user specific values.
@@ -103,7 +103,7 @@ namespace umi3d.edk
         /// <param name="source">The object to which this property belongs.</param>
         /// <param name="value">The current default or synchronized value.</param>
         /// <param name="equal">Set the function use to check the equality between to value. If null the default object.Equals function will be use</param>
-        public UMI3DAsyncProperty(string entityId, ulong propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
+        public UMI3DAsyncProperty(ulong entityId, ulong propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
         {
 
             if (equal == null)

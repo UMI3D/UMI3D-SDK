@@ -16,9 +16,8 @@ limitations under the License.
 
 namespace umi3d.edk
 {
-    public interface ICollaborationRoom
+    public interface ICollaborationRoom : UMI3DEntity
     {
-        string VolumeId();
 
         void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 

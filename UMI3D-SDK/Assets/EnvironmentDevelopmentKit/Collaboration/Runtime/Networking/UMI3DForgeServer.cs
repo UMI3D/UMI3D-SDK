@@ -291,7 +291,7 @@ namespace umi3d.edk.collaboration
 
                 if (user.Avatar != null && user.Avatar.RelayRoom != null)
                 {
-                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
+                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
                     if (relayVolume != null)
                         MainThreadManager.Run(() =>
@@ -328,7 +328,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
-                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
+                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
                 if (relayVolume != null)
                     MainThreadManager.Run(() =>

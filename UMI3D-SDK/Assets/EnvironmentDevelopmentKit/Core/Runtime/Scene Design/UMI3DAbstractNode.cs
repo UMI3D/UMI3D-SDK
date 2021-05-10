@@ -39,12 +39,12 @@ namespace umi3d.edk
         /// <summary>
         /// The objects's unique id. 
         /// </summary>
-        protected string objectId;
+        protected ulong objectId;
 
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
-        public string Id()
+        public ulong Id()
         {
             Register();
             return objectId;
@@ -152,7 +152,7 @@ namespace umi3d.edk
         /// </summary>
         public virtual void Register()
         {
-            if (objectId == null && UMI3DEnvironment.Exists)
+            if (objectId == 0 && UMI3DEnvironment.Exists)
             {
                 objectId = UMI3DEnvironment.Register(this);
                 InitDefinition(objectId);
@@ -190,7 +190,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialize object's properties.
         /// </summary>
-        protected virtual void InitDefinition(string id)
+        protected virtual void InitDefinition(ulong id)
         {
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {
@@ -237,7 +237,7 @@ namespace umi3d.edk
         protected virtual void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             dto.id = Id();
-            dto.pid = objectParentId.GetValue(user)?.Id();
+            dto.pid = objectParentId.GetValue(user)?.Id() ?? 0;
             dto.active = objectActive.GetValue(user);
             dto.isStatic = objectIsStatic.GetValue(user);
             dto.immersiveOnly = objectImmersiveOnly.GetValue(user);

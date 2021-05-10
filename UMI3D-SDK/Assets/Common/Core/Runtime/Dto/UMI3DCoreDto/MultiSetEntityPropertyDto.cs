@@ -28,7 +28,7 @@ namespace umi3d.common
         /// <summary>
         /// The identifiers list of the entities
         /// </summary>
-        public List<string> entityIds;
+        public List<ulong> entityIds;
 
         /// <summary>
         /// The name of the modified property

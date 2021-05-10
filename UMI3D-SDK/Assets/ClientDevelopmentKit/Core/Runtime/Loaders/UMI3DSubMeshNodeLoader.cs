@@ -33,8 +33,7 @@ namespace umi3d.cdk
 
                     try
                     {
-                        string sub = nodeDto.id.Split(new string[] { "==_[" }, StringSplitOptions.RemoveEmptyEntries)[1];
-                        sub = sub.Remove(sub.Length - 1);
+                        string sub = nodeDto.subModelName;
                         if (UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(modelInCache))
                         {
                             instance = GameObject.Instantiate(UMI3DResourcesManager.Instance.subModelsCache[modelInCache][sub].gameObject, node.gameObject.transform);
@@ -61,7 +60,7 @@ namespace umi3d.cdk
                                 renderer.receiveShadows = nodeDto.receiveShadow;
                             }
 
-                            SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
+                            SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
                         }
                         else
                         {
@@ -78,7 +77,7 @@ namespace umi3d.cdk
                                 /*         instance.transform.localPosition = Vector3.zero;
                                          instance.transform.localEulerAngles = Vector3.zero; //new Vector3(0, 180, 0);
                                          instance.transform.localScale = Vector3.one;*/
-                                SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
+                                SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
 
                                 UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
                                 var renderers = instance.GetComponentsInChildren<Renderer>();

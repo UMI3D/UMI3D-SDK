@@ -140,8 +140,10 @@ namespace umi3d.cdk
             /// <summary>
             /// entityId of all object using this object.
             /// </summary>
-            public HashSet<string> entityIds;
-            /// <summary>
+            public HashSet<ulong> entityIds;
+            public HashSet<string> libraryIds;
+
+            /// <summary
             /// Loading state.
             /// </summary>
             public Estate state;
@@ -210,7 +212,7 @@ namespace umi3d.cdk
                 //Match a = rx.Match(this.url);
                 Match b = rx.Match(url);
                 if (a.Success && b.Success)
-                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && entityIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == b.Groups[3].Captures[0].Value;
+                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && libraryIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == b.Groups[3].Captures[0].Value;
                 return false;
             }
 
@@ -243,10 +245,11 @@ namespace umi3d.cdk
             }
 
 
-            public ObjectData(string url, object value, HashSet<string> entityId)
+            public ObjectData(string url, object value, HashSet<ulong> entityId)
             {
                 this.value = value;
                 entityIds = entityId;
+                libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
                 loadFailCallback = new List<Action<string>>();
                 state = Estate.Loaded;
@@ -255,10 +258,11 @@ namespace umi3d.cdk
                 a = rx.Match(url);
             }
 
-            public ObjectData(string url, object value, string entityId)
+            public ObjectData(string url, object value, ulong entityId)
             {
                 this.value = value;
-                entityIds = new HashSet<string>() { entityId };
+                entityIds = new HashSet<ulong>() { entityId };
+                libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
                 loadFailCallback = new List<Action<string>>();
                 state = Estate.Loaded;
@@ -267,10 +271,11 @@ namespace umi3d.cdk
                 a = rx.Match(url);
             }
 
-            public ObjectData(string url, string extension, string authorization, HashSet<string> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
+            public ObjectData(string url, string extension, string authorization, HashSet<ulong> entityId, List<Action<object>> loadCallback, List<Action<string>> loadFailCallback)
             {
                 value = null;
                 entityIds = entityId;
+                libraryIds = new HashSet<string>();
                 this.loadCallback = loadCallback;
                 this.loadFailCallback = loadFailCallback;
                 state = Estate.NotLoaded;
@@ -281,10 +286,11 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string authorization, string entityId, Action<object> loadCallback, Action<string> loadFailCallback)
+            public ObjectData(string url, string extension, string authorization, ulong entityId, Action<object> loadCallback, Action<string> loadFailCallback)
             {
                 value = null;
-                entityIds = new HashSet<string>() { entityId };
+                entityIds = new HashSet<ulong>() { entityId };
+                libraryIds = new HashSet<string>();
                 this.loadCallback = new List<Action<object>>() { loadCallback };
                 this.loadFailCallback = new List<Action<string>>() { loadFailCallback };
                 state = Estate.NotLoaded;
@@ -295,10 +301,11 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string authorization, string entityId)
+            public ObjectData(string url, string extension, string authorization, ulong entityId)
             {
                 value = null;
-                entityIds = new HashSet<string>() { entityId };
+                entityIds = new HashSet<ulong>() { entityId };
+                libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
                 loadFailCallback = new List<Action<string>>();
                 state = Estate.NotLoaded;
@@ -309,10 +316,25 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string authorization, string entityId, string downloadedPath)
+            public ObjectData(string url, string extension, string authorization, string libraryId, string downloadedPath)
             {
                 value = null;
-                entityIds = new HashSet<string>() { entityId };
+                libraryIds = new HashSet<string>() { libraryId };
+                loadCallback = new List<Action<object>>();
+                loadFailCallback = new List<Action<string>>();
+                state = Estate.NotLoaded;
+                this.downloadedPath = downloadedPath;
+                this.url = url;
+                this.extension = extension;
+                this.authorization = authorization;
+                a = rx.Match(url);
+            }
+
+            public ObjectData(string url, string extension, string authorization, ulong entityId, string downloadedPath)
+            {
+                value = null;
+                entityIds = new HashSet<ulong>() { entityId };
+                libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
                 loadFailCallback = new List<Action<string>>();
                 state = Estate.NotLoaded;
@@ -325,8 +347,9 @@ namespace umi3d.cdk
 
         }
 
+        public Dictionary<ulong, string> librariesMap = new Dictionary<ulong, string>();
         List<ObjectData> CacheCollection;
-        Dictionary<string, KeyValuePair<DataFile, HashSet<string>>> libraries;
+        Dictionary<string, KeyValuePair<DataFile, HashSet<ulong>>> libraries;
         static public List<DataFile> Libraries { get { return Exists ? Instance.libraries.Values.Select(k => k.Key).ToList() : new List<DataFile>(); } }
 
         #endregion
@@ -366,7 +389,7 @@ namespace umi3d.cdk
             subModelsCache = new Dictionary<string, Dictionary<string, Transform>>();
             CacheCollection = new List<ObjectData>();
             StopAllCoroutines();
-            libraries = new Dictionary<string, KeyValuePair<DataFile, HashSet<string>>>();
+            libraries = new Dictionary<string, KeyValuePair<DataFile, HashSet<ulong>>>();
             LoadLocalLib();
         }
 
@@ -396,7 +419,7 @@ namespace umi3d.cdk
                         else
                             CacheCollection.Insert(0, new ObjectData(file.url, null, null, data.key, file.path));
                     }
-                    libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<string>>(data, new HashSet<string>()));
+                    libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
                 }
                 //else
                 //    Directory.Delete(directory, true);
@@ -410,18 +433,19 @@ namespace umi3d.cdk
         /// <param name="libraryId">id of the library to load.</param>
         /// <param name="finished">finished callback.</param>
         /// <param name="SceneId">id of the scene which use this library</param>
-        static public void LoadLibrary(string libraryId, Action finished, string SceneId = null)
+        static public void LoadLibrary(string libraryId, Action finished, ulong SceneId = 0)
         {
             Instance.StartCoroutine(_LoadLibrary(libraryId, finished, SceneId));
         }
 
-        static public IEnumerator _LoadLibrary(string libraryId, Action finished, string SceneId)
+        static public IEnumerator _LoadLibrary(string libraryId, Action finished, ulong SceneId)
         {
             int count = 0;
             var lib = Instance.libraries.Where((p) => { return p.Key == libraryId; }).Select((p) => { return p.Value; }).FirstOrDefault();
-            if (lib.Key != null) lib.Value.Add(SceneId);
+            if (lib.Key != null && SceneId != 0)
+                lib.Value.Add(SceneId);
 
-            var downloaded = Instance.CacheCollection.Where((od) => { return od.state == ObjectData.Estate.NotLoaded && od.entityIds.Contains(libraryId); });
+            var downloaded = Instance.CacheCollection.Where((od) => { return od.state == ObjectData.Estate.NotLoaded && od.libraryIds.Contains(libraryId); });
             foreach (var pair in downloaded)
             {
 
@@ -447,7 +471,7 @@ namespace umi3d.cdk
         static public IEnumerator LoadLibraries(List<string> ids, Action<int> loadedResources, Action<int> resourcesToLoad)
         {
             int count = 0;
-            IEnumerable<ObjectData> downloaded = Instance.CacheCollection.Where((p) => { return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.entityIds.Any(i => ids.Contains(i)); });
+            IEnumerable<ObjectData> downloaded = Instance.CacheCollection.Where((p) => { return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Contains(i)); });
             int total = downloaded.Count();
             resourcesToLoad.Invoke(total);
             loadedResources.Invoke(0);
@@ -473,17 +497,17 @@ namespace umi3d.cdk
         #endregion
         #region file Load
 
-        static public void LoadFile(string id, FileDto file, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction)
+        static public void LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction)
         {
             Instance._LoadFile(id, file, urlToObject, objectFromCache, callback, failCallback, deleteAction);
         }
 
-        static void LoadFile(string id, ObjectData file, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction)
+        static void LoadFile(ulong id, ObjectData file, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction)
         {
             Instance._LoadFile(id, file, urlToObject, objectFromCache, callback, failCallback, deleteAction);
         }
 
-        void _LoadFile(string id, ObjectData objectData, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction, string PathIfInBundle = null)
+        void _LoadFile(ulong id, ObjectData objectData, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction, string PathIfInBundle = null)
         {
             bool shouldLoad = true;
 
@@ -540,7 +564,7 @@ namespace umi3d.cdk
             }
         }
 
-        void _LoadFile(string id, FileDto file, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction)
+        void _LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<string>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<string> failCallback, Action<object, string> deleteAction)
         {
             ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(file.url, file.libraryKey); });
             if (objectData == null)
@@ -601,9 +625,9 @@ namespace umi3d.cdk
                 {
                     try
                     {
-                        if (libraries.ContainsKey(assetLibrary.id))
+                        if (libraries.ContainsKey(assetLibrary.libraryId))
                         {
-                            var dt = libraries[assetLibrary.id].Key;
+                            var dt = libraries[assetLibrary.libraryId].Key;
                             CultureInfo info = new CultureInfo(assetLibrary.culture);
                             CultureInfo dtInfo = new CultureInfo(dt.culture);
                             if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out server))
@@ -614,7 +638,7 @@ namespace umi3d.cdk
                         }
                     }
                     catch { };
-                    toDownload.Add(assetLibrary.id);
+                    toDownload.Add(assetLibrary.libraryId);
                 }
             }
             return toDownload;
@@ -659,12 +683,13 @@ namespace umi3d.cdk
         IEnumerator DownloadResources(AssetLibraryDto assetLibrary, string application)
         {
             List<string> applications = new List<string>() { application };
-            string directoryPath = Path.Combine(Application.persistentDataPath, assetLibrary.id);
+            librariesMap[assetLibrary.id] = assetLibrary.libraryId; 
+            string directoryPath = Path.Combine(Application.persistentDataPath, assetLibrary.libraryId);
             if (Directory.Exists(directoryPath))
             {
                 try
                 {
-                    DataFile dt = Instance.libraries[assetLibrary.id].Key;
+                    DataFile dt = Instance.libraries[assetLibrary.libraryId].Key;
                     DateTime local, server;
                     CultureInfo info = new CultureInfo(assetLibrary.culture);
                     CultureInfo dtInfo = new CultureInfo(dt.culture);
@@ -688,7 +713,7 @@ namespace umi3d.cdk
                     }
                 }
                 catch { }
-                RemoveLibrary(assetLibrary.id);
+                RemoveLibrary(assetLibrary.libraryId);
             }
 
             bool finished = false;
@@ -697,7 +722,7 @@ namespace umi3d.cdk
                 var assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
                 var dto = UMI3DDto.FromBson(bytes);
                 if (dto is FileListDto)
-                    StartCoroutine(DownloadFiles(assetLibrary.id, directoryPath, assetDirectoryPath, applications, assetLibrary.date, assetLibrary.format, assetLibrary.culture, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
+                    StartCoroutine(DownloadFiles(assetLibrary.libraryId, directoryPath, assetDirectoryPath, applications, assetLibrary.date, assetLibrary.format, assetLibrary.culture, dto as FileListDto, (data) => { if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath); SetData(data, directoryPath); finished = true; }));
                 else
                     finished = true;
             };
@@ -711,41 +736,52 @@ namespace umi3d.cdk
             yield return new WaitUntil(() => { return finished; });
         }
 
-        public static bool isKnowedLibrary(string key)
+        public static bool isKnowedLibrary(ulong key)
         {
-            return Instance.libraries.ContainsKey(key);
+            var libraryID = Instance.librariesMap[key];
+            return Instance.libraries.ContainsKey(libraryID);
         }
 
 
-        public static void UnloadLibrary(string id, string SceneId = null)
+        public static void UnloadLibrary(ulong id, ulong SceneId = 0)
         {
-            var dataf = Instance.libraries.Where((p) => { return p.Key == id; }).Select((p) => { return p.Value; }).FirstOrDefault();
+
+            if (Instance.librariesMap.ContainsKey(id))
+            {
+                var libraryID = Instance.librariesMap[id];
+                UnloadLibrary(id, SceneId);
+            }
+        }
+
+        public static void UnloadLibrary(string libraryID, ulong SceneId = 0)
+        {
+            var dataf = Instance.libraries.Where((p) => { return p.Key == libraryID; }).Select((p) => { return p.Value; }).FirstOrDefault();
 
             if (dataf.Key != null)
             {
-                if (SceneId != null && dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
+                if (SceneId != 0 && dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
                 if (dataf.Value.Count == 0)
                     foreach (var data in dataf.Key.files)
                     {
-                        Instance.UnloadFile(data.url, id);
+                        Instance.UnloadFile(data.url, libraryID);
                     }
             }
         }
 
-        public static void RemoveLibrary(string id, string SceneId = null)
+        public static void RemoveLibrary(string libraryId, ulong SceneId = 0)
         {
-            var dataf = Instance.libraries.Where((p) => { return p.Key == id; }).Select((p) => { return p.Value; }).FirstOrDefault();
+            var dataf = Instance.libraries.Where((p) => { return p.Key == libraryId; }).Select((p) => { return p.Value; }).FirstOrDefault();
 
             if (dataf.Key != null)
             {
-                if (dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
+                if (SceneId != 0 && dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
                 if (dataf.Value.Count == 0)
                 {
                     foreach (var data in dataf.Key.files)
                     {
-                        Instance.UnloadFile(data.url, id, true);
+                        Instance.UnloadFile(data.url, libraryId, true);
                     }
-                    Instance.libraries.Remove(id);
+                    Instance.libraries.Remove(libraryId);
                 }
                 Directory.Delete(dataf.Key.path, true);
             }
@@ -767,7 +803,7 @@ namespace umi3d.cdk
 
                 yield return StartCoroutine(DownloadFile(key, dicPath, path, url, callback, error));
             }
-            libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<string>>(data, new HashSet<string>()));
+            libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
             finished.Invoke(data);
         }
 
@@ -820,8 +856,8 @@ namespace umi3d.cdk
             ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(url, id); });
             if (objectData != null)
             {
-                objectData.entityIds.Remove(id);
-                if (objectData.entityIds.Count == 0)
+                objectData.libraryIds.Remove(id);
+                if (objectData.libraryIds.Count == 0 && objectData.entityIds.Count == 0)
                 {
                     objectData.DeleteAction?.Invoke(objectData.value, "Unload");
                     objectData.state = ObjectData.Estate.NotLoaded;
@@ -862,11 +898,11 @@ namespace umi3d.cdk
         #region sub Models
         public Dictionary<string, Dictionary<string, Transform>> subModelsCache;
 
-        public void GetSubModel(string modelUrlInCache, string subModelId, Action<object> callback)
+        public void GetSubModel(string modelUrlInCache, string subModelName, Action<object> callback)
         {
             if (subModelsCache.ContainsKey(modelUrlInCache))
             {
-                callback.Invoke(subModelsCache[modelUrlInCache][subModelId].gameObject);
+                callback.Invoke(subModelsCache[modelUrlInCache][subModelName].gameObject);
             }
             else
             {
@@ -875,8 +911,8 @@ namespace umi3d.cdk
                     Debug.LogError("not found in cache");
                 objectData.loadCallback.Add((o) =>
                 {
-                    if (subModelsCache[modelUrlInCache].ContainsKey(subModelId))
-                        callback.Invoke(subModelsCache[modelUrlInCache][subModelId].gameObject);
+                    if (subModelsCache[modelUrlInCache].ContainsKey(subModelName))
+                        callback.Invoke(subModelsCache[modelUrlInCache][subModelName].gameObject);
                 });
 
             }

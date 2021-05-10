@@ -162,7 +162,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialize object's properties.
         /// </summary>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             //PropertiesHandler = new AsyncPropertiesHandler();
             //PropertiesHandler.DelegateBroadcastUpdate += BroadcastUpdates;

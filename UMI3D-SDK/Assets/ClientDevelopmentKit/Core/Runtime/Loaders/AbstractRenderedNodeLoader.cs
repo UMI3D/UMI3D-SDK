@@ -58,7 +58,7 @@ namespace umi3d.cdk
                                 if (extension.applyCustomMaterial)
                                 {
                                     var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
-                                    string newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
+                                    ulong newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
                                     bool shouldAdd = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).addMaterialIfNotExists;
                                     UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node, null, shouldAdd));
 
@@ -182,7 +182,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void OverrideMaterial(UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string, object> additionalShaderProperties = null, bool addIfNotExists = false)
+        private void OverrideMaterial(ulong id, UMI3DNodeInstance node, Material newMat, Func<string, bool> filter, UMI3DEntityInstance entity, Dictionary<string, object> additionalShaderProperties = null, bool addIfNotExists = false)
         {
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(node))
             {
@@ -204,7 +204,7 @@ namespace umi3d.cdk
                         {
                             mats[i] = new Material(oldMats.oldMats[i]);
                             if (additionalShaderProperties != null)
-                                AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(additionalShaderProperties, mats[i]);
+                                AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(id, additionalShaderProperties, mats[i]);
                             if (entity.Object == null)
                                 entity.Object = new List<Material>();
                             var matList = entity.Object as List<Material>;
@@ -296,7 +296,7 @@ namespace umi3d.cdk
         }
 
 
-        protected IEnumerator ApplyMaterialOverrider(string newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
+        protected IEnumerator ApplyMaterialOverrider(ulong newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
         {
             UMI3DEntityInstance matEntity = UMI3DEnvironmentLoader.GetEntity(newMatId);
             if (matEntity == null) Debug.LogWarning("Material not found : " + newMatId + " , that should not append");
@@ -324,13 +324,13 @@ namespace umi3d.cdk
             }
             if (listToOverride.Contains("ANY_mat"))
             {
-                OverrideMaterial(node, newMat, (s) => true, matEntity, shaderProperties);
+                OverrideMaterial(newMatId, node, newMat, (s) => true, matEntity, shaderProperties);
             }
             else
             {
                 foreach (string matKey in listToOverride)
                 {
-                    OverrideMaterial(node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")), matEntity, shaderProperties, addIfNotExists);
+                    OverrideMaterial(newMatId, node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")), matEntity, shaderProperties, addIfNotExists);
                 }
             }
 

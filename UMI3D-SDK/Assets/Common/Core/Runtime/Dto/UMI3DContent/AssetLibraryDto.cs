@@ -20,7 +20,8 @@ namespace umi3d.common
 {
     public class AssetLibraryDto : UMI3DDto, IEntity
     {
-        public string id;
+        public ulong id;
+        public string libraryId;
         public string baseUrl;
         public string date;
         public string culture;

@@ -78,19 +78,19 @@ namespace umi3d.cdk
                             newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
                             newMat.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - dto.pbrMetallicRoughness.roughnessFactor);
 
-                            LoadTextureInMaterial(ext.baseColorTexture, MRTKShaderUtils.MainTex, newMat);
-                            LoadTextureInMaterial(ext.normalTexture, MRTKShaderUtils.NormalMap, newMat);
-                            LoadTextureInMaterial(ext.heightTexture, MRTKShaderUtils.BumpMap, newMat);
+                            LoadTextureInMaterial(ext.id, ext.baseColorTexture, MRTKShaderUtils.MainTex, newMat);
+                            LoadTextureInMaterial(ext.id, ext.normalTexture, MRTKShaderUtils.NormalMap, newMat);
+                            LoadTextureInMaterial(ext.id, ext.heightTexture, MRTKShaderUtils.BumpMap, newMat);
 
 
-                            LoadTextureInMaterial(ext.emissiveTexture, MRTKShaderUtils.EmissionMap, newMat);
-                            LoadTextureInMaterial(ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
-                            LoadTextureInMaterial(ext.metallicRoughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
+                            LoadTextureInMaterial(ext.id, ext.emissiveTexture, MRTKShaderUtils.EmissionMap, newMat);
+                            LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+                            LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
 
                             // TODO optimise combine chanel map 
                             if (ext.channelTexture != null)
                             {
-                                LoadTextureInMaterial(ext.channelTexture, MRTKShaderUtils.ChannelMap, newMat);
+                                LoadTextureInMaterial(ext.id, ext.channelTexture, MRTKShaderUtils.ChannelMap, newMat);
                             }
 
                             else if (ext.emissiveTexture != null || ext.occlusionTexture != null || ext.metallicRoughnessTexture != null || ext.metallicTexture != null || ext.roughnessTexture != null)
@@ -98,11 +98,11 @@ namespace umi3d.cdk
                                 Texture2D channelMap;
                                 if (ext.metallicRoughnessTexture != null)
                                 {
-                                    LoadTextureInMaterial(ext.metallicRoughnessTexture, null, newMat, (mrTexture) =>
+                                    LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, null, newMat, (mrTexture) =>
                                     {
-                                        LoadTextureInMaterial(ext.emissiveTexture, null, newMat, (eTexture) =>
+                                        LoadTextureInMaterial(ext.id, ext.emissiveTexture, null, newMat, (eTexture) =>
                                         {
-                                            LoadTextureInMaterial(ext.occlusionTexture, null, newMat, (oTexture) =>
+                                            LoadTextureInMaterial(ext.id, ext.occlusionTexture, null, newMat, (oTexture) =>
                                             {
                                                 channelMap = TextureCombiner.CombineFromGltfStandard(mrTexture, oTexture, eTexture);
                                                 if (channelMap != null)
@@ -113,13 +113,13 @@ namespace umi3d.cdk
                                 }
                                 else
                                 {
-                                    LoadTextureInMaterial(ext.metallicTexture, null, newMat, (mTexture) =>
+                                    LoadTextureInMaterial(ext.id, ext.metallicTexture, null, newMat, (mTexture) =>
                                     {
-                                        LoadTextureInMaterial(ext.emissiveTexture, null, newMat, (eTexture) =>
+                                        LoadTextureInMaterial(ext.id, ext.emissiveTexture, null, newMat, (eTexture) =>
                                         {
-                                            LoadTextureInMaterial(ext.occlusionTexture, null, newMat, (oTexture) =>
+                                            LoadTextureInMaterial(ext.id, ext.occlusionTexture, null, newMat, (oTexture) =>
                                             {
-                                                LoadTextureInMaterial(ext.roughnessTexture, null, newMat, (rTexture) =>
+                                                LoadTextureInMaterial(ext.id, ext.roughnessTexture, null, newMat, (rTexture) =>
                                                 {
                                                     channelMap = TextureCombiner.CombineFromGltfStandard(mTexture, oTexture, eTexture, rTexture);
                                                     if (channelMap != null)
@@ -132,9 +132,9 @@ namespace umi3d.cdk
 
                             }
 
-                            newMat.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, ((UMI3DMaterialDto)dto.extensions.umi3d).normalTexture.scale);
+                            newMat.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, ext.normalTexture.scale);
 
-                            ReadAdditionalShaderProperties(ext.shaderProperties, newMat);
+                            ReadAdditionalShaderProperties(ext.id, ext.shaderProperties, newMat);
                             ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
 
                             callback.Invoke(newMat);

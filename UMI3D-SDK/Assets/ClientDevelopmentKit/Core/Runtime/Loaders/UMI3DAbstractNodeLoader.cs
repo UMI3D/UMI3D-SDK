@@ -102,7 +102,7 @@ namespace umi3d.cdk
                         node.gameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    string pid = dto.pid = (string)property.value;
+                    ulong pid = dto.pid = (ulong)property.value;
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);

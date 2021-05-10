@@ -22,7 +22,7 @@ namespace umi3d.common
 
     public class UMI3DLodDefinitionDto : UMI3DDto
     {
-        public List<string> nodes;
+        public List<ulong> nodes;
         public float screenSize;
         public float fadeTransition;
     }

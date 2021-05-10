@@ -44,7 +44,7 @@ namespace umi3d.cdk
                  {
                      if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
                      {
-                         SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+                         SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
                      }
 
                      if (nodeDto.xBillboard || nodeDto.yBillboard)
@@ -258,7 +258,7 @@ namespace umi3d.cdk
                         //  Collider c = node.gameObject.GetComponent<Collider>();
                         if ((dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null) || !dto.colliderDto.isMeshCustom)
                         {
-                            SetCollider(node, dto.colliderDto);
+                            SetCollider(dto.id, node, dto.colliderDto);
                             // SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
                         }
                         else if (!dto.colliderDto.isMeshCustom)
@@ -276,7 +276,7 @@ namespace umi3d.cdk
                         // Collider c = node.gameObject.GetComponent<Collider>();
                         if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null)
                         {
-                            SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
+                            SetCustomCollider(dto.id,node.gameObject, dto.colliderDto.customMeshCollider);
                         }
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
@@ -297,7 +297,7 @@ namespace umi3d.cdk
                         {
                             dto.colliderDto.colliderType = (ColliderType)(Int64)property.value;
 
-                            SetCollider(node, dto.colliderDto);
+                            SetCollider(dto.id, node, dto.colliderDto);
                         }
 
                     }
@@ -309,7 +309,7 @@ namespace umi3d.cdk
                             if (dto.colliderDto == null)
                                 dto.colliderDto = new ColliderDto();
 
-                            SetCollider(node, dto.colliderDto);
+                            SetCollider(dto.id, node, dto.colliderDto);
                         }
                         else
                         {
@@ -325,7 +325,7 @@ namespace umi3d.cdk
 
 
         #region Collider
-        protected void SetCustomCollider(GameObject node, ResourceDto resourceDto)
+        protected void SetCustomCollider(ulong id, GameObject node, ResourceDto resourceDto)
         {
             if (resourceDto == null) return;
 
@@ -337,7 +337,7 @@ namespace umi3d.cdk
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
                 UMI3DResourcesManager.LoadFile(
-                    url,
+                    id,
                     fileToLoad,
                     loader.UrlToObject,
                     loader.ObjectFromCache,
@@ -374,7 +374,7 @@ namespace umi3d.cdk
             }
         }
 
-        protected virtual void SetCollider(UMI3DNodeInstance nodeInstance, ColliderDto dto)
+        protected virtual void SetCollider(ulong id,UMI3DNodeInstance nodeInstance, ColliderDto dto)
         {
             //UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(pid);// go.GetComponent<UMI3DNodeInstance>();
             GameObject go = nodeInstance.gameObject;
@@ -399,7 +399,7 @@ namespace umi3d.cdk
                             if (mesh.sharedMesh.isReadable)
                             {
                                 mesh.convex = false;
-                                SetCustomCollider(go, dto.customMeshCollider);
+                                SetCustomCollider(id, go, dto.customMeshCollider);
                                 if (nodeInstance != null)
                                     nodeInstance.colliders.Add(mesh);
                                 else

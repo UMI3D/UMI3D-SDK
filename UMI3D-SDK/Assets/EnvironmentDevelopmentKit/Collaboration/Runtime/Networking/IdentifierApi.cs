@@ -25,7 +25,7 @@ namespace umi3d.edk.collaboration
     public abstract class IdentifierApi : ScriptableObject
     {
 
-        Dictionary<string, bool> librariesUpdateStatus;
+        Dictionary<ulong, bool> librariesUpdateStatus;
 
         public virtual UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type) { return null; }
 
@@ -37,7 +37,7 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         public virtual StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
         {
-            if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
+            if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<ulong, bool>();
             librariesUpdateStatus[user.Id()] = identity.librariesUpdated;
             return librariesUpdateStatus[user.Id()] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
         }
@@ -59,7 +59,7 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         public virtual bool getLibrariesUpdateSatus(UMI3DCollaborationUser user)
         {
-            if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
+            if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<ulong, bool>();
             return librariesUpdateStatus.ContainsKey(user.Id()) ? librariesUpdateStatus[user.Id()] : false;
         }
     }

@@ -20,7 +20,7 @@ namespace umi3d.common.interaction
     public class ToolReleasedDto : AbstractBrowserRequestDto
     {
 
-        public string toolId;
+        public ulong toolId;
 
         public string boneType;
 

@@ -25,7 +25,7 @@ namespace umi3d.edk.userCapture
     public class UMI3DAvatarNode : UMI3DNode
     {
         [SerializeField]
-        public string userId;
+        public ulong userId;
 
         [SerializeField, EditorReadOnly]
         bool activeAvatarBindings_ = true;
@@ -37,14 +37,14 @@ namespace umi3d.edk.userCapture
         public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
         public UMI3DAsyncProperty<bool> activeBindings { get { Register(); return _activeBindings; } protected set => _activeBindings = value; }
 
-        public class OnActivationValueChanged : UnityEvent<string, bool> { };
+        public class OnActivationValueChanged : UnityEvent<ulong, bool> { };
 
         public static OnActivationValueChanged onActivationValueChanged = new OnActivationValueChanged();
         private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
         private UMI3DAsyncProperty<bool> _activeBindings;
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
 

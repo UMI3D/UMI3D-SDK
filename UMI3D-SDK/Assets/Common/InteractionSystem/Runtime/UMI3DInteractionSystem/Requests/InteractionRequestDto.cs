@@ -26,19 +26,19 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the interactable or tool (in the case of an interaction related to hoverring).
         /// </summary>
-        public string toolId;
+        public ulong toolId;
 
         /// <summary>
         /// Id of the interaction (in the case of an interaction related to hoverring).
         /// </summary>
-        public string id;
+        public ulong id;
 
         /// <summary>
         /// The id of the currently hoverred object.
         /// It will be always null for an Interaction inside a Tool.
         /// For an Interaction inside an Interactable, it could be the Id of the Interactable associated object, or the Id of a sub-object if Interaction.notifyHoverPosition == true.
         /// </summary>
-        public string hoveredObjectId;
+        public ulong hoveredObjectId;
 
         /// <summary>
         /// The type of bone associated to the user's controller.

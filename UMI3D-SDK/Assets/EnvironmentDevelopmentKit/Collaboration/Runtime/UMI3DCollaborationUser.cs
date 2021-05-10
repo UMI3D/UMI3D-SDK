@@ -102,7 +102,7 @@ namespace umi3d.edk.collaboration
             UserDto user = new UserDto();
             user.id = Id();
             user.status = status;
-            user.avatarId = Avatar == null ? null : Avatar.Id();
+            user.avatarId = Avatar == null ? 0 : Avatar.Id();
             user.networkId = networkPlayer?.NetworkId ?? 0;
             return user;
         }

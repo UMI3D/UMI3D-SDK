@@ -23,7 +23,7 @@ namespace umi3d.edk
     public class ExternalResourceMaterial : MaterialSO
     {
 
-        public string matId;
+        public ulong matId;
         public UMI3DResource resource;
 
 
@@ -37,7 +37,6 @@ namespace umi3d.edk
             ((ExternalMaterialDto)res.extensions.umi3d).id = GetId();
             ((ExternalMaterialDto)res.extensions.umi3d).shaderProperties = shaderProperties;
 
-
             return res;
         }
 
@@ -50,7 +49,7 @@ namespace umi3d.edk
         private bool registered = false;
 
         ///<inheritdoc/>
-        protected override string GetId()
+        protected override ulong GetId()
         {
             if (!registered)
             {
@@ -64,7 +63,7 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             Debug.Log("id external mat " + id);
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, null, null, (d) =>
@@ -80,12 +79,12 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void OnEnable()
         {
-            matId = null;
+            matId = 0;
             registered = false;
         }
 
         ///<inheritdoc/>
-        protected override void SetId(string id)
+        protected override void SetId(ulong id)
         {
             registered = true;
             matId = id;

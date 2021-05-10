@@ -19,7 +19,7 @@ namespace umi3d.common
     public class UMI3DAudioPlayerDto : UMI3DAbstractAnimationDto
     {
         public ResourceDto audioResource;
-        public string nodeID;
+        public ulong nodeID;
         /// <summary>
         /// Spacial Blend.
         /// 0:not spacialized; 1:Spacialized on the node; 

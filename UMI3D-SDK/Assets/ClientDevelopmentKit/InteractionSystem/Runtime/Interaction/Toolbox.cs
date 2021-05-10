@@ -27,7 +27,7 @@ namespace umi3d.cdk.interaction
     public class Toolbox
     {
         public static List<Toolbox> Toolboxes() { return UMI3DEnvironmentLoader.Entities().Where(e => e?.Object is Toolbox).Select(e => e?.Object as Toolbox).ToList(); }
-        public static ToolboxSubMenu IdToMenu(string id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox).sub; }
+        public static ToolboxSubMenu IdToMenu(ulong id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox).sub; }
 
         /// <summary>
         /// Interactable dto describing this object.

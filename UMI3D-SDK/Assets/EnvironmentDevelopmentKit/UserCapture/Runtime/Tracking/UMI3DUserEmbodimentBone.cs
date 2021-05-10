@@ -27,7 +27,7 @@ namespace umi3d.edk.userCapture
             public Vector3 localScale;
         }
 
-        public string userId { get; protected set; }
+        public ulong userId { get; protected set; }
 
         public string boneType { get; protected set; }
 
@@ -35,7 +35,7 @@ namespace umi3d.edk.userCapture
 
         public bool isTracked;
 
-        public UMI3DUserEmbodimentBone(string userId, string boneType)
+        public UMI3DUserEmbodimentBone(ulong userId, string boneType)
         {
             this.userId = userId;
             this.boneType = boneType;

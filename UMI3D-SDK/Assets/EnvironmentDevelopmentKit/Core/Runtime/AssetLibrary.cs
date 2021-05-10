@@ -26,6 +26,8 @@ namespace umi3d.edk
     public class AssetLibrary : ScriptableObject, UMI3DLoadableEntity
     {
         public string id = "com.compagny.application";
+
+        ulong eId = 0;
         [SerializeField]
         public SerializableDateTime date;
         [SerializeField]
@@ -34,7 +36,8 @@ namespace umi3d.edk
         public AssetLibraryDto ToDto()
         {
             AssetLibraryDto dto = new AssetLibraryDto();
-            dto.id = id;
+            dto.libraryId = id;
+            dto.id = Id();
             dto.format = date.Format();
             dto.culture = date.Culture();
             dto.date = date.ToString();
@@ -47,9 +50,11 @@ namespace umi3d.edk
             return dto;
         }
 
-        public string Id()
+        public ulong Id()
         {
-            return id;
+            if (eId == 0)
+                eId = umi3d.edk.UMI3DEnvironment.Register(this);
+            return eId;
         }
 
         public IEntity ToEntityDto(UMI3DUser user)

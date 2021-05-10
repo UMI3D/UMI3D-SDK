@@ -27,7 +27,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the gameobject describing the space in which the manipulation is applied.
         /// </summary>
-        public string frameOfReference;
+        public ulong frameOfReference;
 
         /// <summary>
         /// List of different description of the manipulation.

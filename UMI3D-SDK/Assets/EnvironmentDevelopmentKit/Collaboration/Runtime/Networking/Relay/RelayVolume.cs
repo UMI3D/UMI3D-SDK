@@ -27,7 +27,7 @@ namespace umi3d.edk.collaboration
 {
     public class RelayVolume : MonoBehaviour, ICollaborationRoom
     {
-        public static Dictionary<string, RelayVolume> relaysVolumes = new Dictionary<string, RelayVolume>();
+        public static Dictionary<ulong, RelayVolume> relaysVolumes = new Dictionary<ulong, RelayVolume>();
 
         [Serializable]
         public struct RelayAssociation
@@ -44,16 +44,16 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The objects's unique id. 
         /// </summary>
-        protected string volumeId;
+        protected ulong volumeId;
 
-        protected Dictionary<string, Dictionary<string, float>> relayDataMemory = new Dictionary<string, Dictionary<string, float>>();
-        protected Dictionary<string, Dictionary<string, float>> relayTrackingMemory = new Dictionary<string, Dictionary<string, float>>();
-        protected Dictionary<string, Dictionary<string, float>> relayVoIPMemory = new Dictionary<string, Dictionary<string, float>>();
-        protected Dictionary<string, Dictionary<string, float>> relayVideoMemory = new Dictionary<string, Dictionary<string, float>>();
+        protected Dictionary<ulong, Dictionary<ulong, float>> relayDataMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
+        protected Dictionary<ulong, Dictionary<ulong, float>> relayTrackingMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
+        protected Dictionary<ulong, Dictionary<ulong, float>> relayVoIPMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
+        protected Dictionary<ulong, Dictionary<ulong, float>> relayVideoMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
 
         private void Awake()
         {
-            RelayVolume.relaysVolumes.Add(this.VolumeId(), this);
+            RelayVolume.relaysVolumes.Add(this.Id(), this);
             DicoRelays = relays.ToDictionary(p => p.channel, p => p.relay);
         }
 
@@ -61,15 +61,16 @@ namespace umi3d.edk.collaboration
         /// The public getter for volumeId
         /// </summary>
         /// <returns></returns>
-        public string VolumeId()
+        public ulong Id()
         {
-            if (volumeId == null)
+            if (volumeId == 0 && UMI3DEnvironment.Exists)
             {
-                byte[] key = Guid.NewGuid().ToByteArray();
-                volumeId = Convert.ToBase64String(key);
+                UMI3DEnvironment.Register(this);
             }
             return volumeId;
         }
+
+
 
         public RelayDescription RelayDescription(DataChannelTypes channel)
         {
@@ -224,7 +225,7 @@ namespace umi3d.edk.collaboration
 
             if (strategy.sendData)
             {
-                Dictionary<string, Dictionary<string, float>> relayMemory;
+                Dictionary<ulong, Dictionary<ulong, float>> relayMemory;
 
                 switch (strategy.sendingStrategy)
                 {
@@ -299,12 +300,12 @@ namespace umi3d.edk.collaboration
         /// <param name="now"></param>
         protected void RememberRelay(UMI3DAbstractNode sender, UMI3DCollaborationUser to, DataChannelTypes channel, float now)
         {
-            Dictionary<string, Dictionary<string, float>> relayMemory = GetRelayMemory(channel);
+            Dictionary<ulong, Dictionary<ulong, float>> relayMemory = GetRelayMemory(channel);
 
             if (relayMemory != null)
             {
                 if (!relayMemory.ContainsKey(sender.Id()))
-                    relayMemory.Add(sender.Id(), new Dictionary<string, float>());
+                    relayMemory.Add(sender.Id(), new Dictionary<ulong, float>());
 
                 if (!relayMemory[sender.Id()].ContainsKey(to.Id()))
                     relayMemory[sender.Id()].Add(to.Id(), now);
@@ -313,7 +314,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected Dictionary<string, Dictionary<string, float>> GetRelayMemory(DataChannelTypes channel)
+        protected Dictionary<ulong, Dictionary<ulong, float>> GetRelayMemory(DataChannelTypes channel)
         {
             switch (channel)
             {

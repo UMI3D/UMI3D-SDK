@@ -24,7 +24,7 @@ namespace umi3d.edk
 
     public class UMI3DAbstractAnimation : MonoBehaviour, UMI3DLoadableEntity
     {
-        string animationID;
+        ulong animationID;
 
         [SerializeField, EditorReadOnly]
         bool playing;
@@ -48,7 +48,7 @@ namespace umi3d.edk
         /// Get the Id of the animation.
         /// </summary>
         /// <returns></returns>
-        public string Id()
+        public ulong Id()
         {
             Register();
             return animationID;
@@ -61,7 +61,7 @@ namespace umi3d.edk
         /// <returns>Return a LoadEntity</returns>
         public virtual LoadEntity Register()
         {
-            if (animationID == null && UMI3DEnvironment.Exists)
+            if (animationID == 0 && UMI3DEnvironment.Exists)
             {
                 animationID = UMI3DEnvironment.Register(this);
                 InitDefinition(animationID);
@@ -72,7 +72,7 @@ namespace umi3d.edk
         /// <summary>
         /// Initialize object's properties.
         /// </summary>
-        protected virtual void InitDefinition(string id)
+        protected virtual void InitDefinition(ulong id)
         {
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {

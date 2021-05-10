@@ -24,6 +24,6 @@ namespace umi3d.common
     [Serializable]
     public class DeleteEntityDto : AbstractOperationDto
     {
-        public string entityId;
+        public ulong entityId;
     }
 }

@@ -20,7 +20,7 @@ namespace umi3d.common
     [System.Serializable]
     static public class UMI3DGlobalID
     {
-        public const string ServerId = "umi3d_server_id";
-        public const string EnvironementId = "umi3d_environement_id";
+        public const ulong ServerId = 100001;
+        public const ulong EnvironementId = 100002;
     }
 }

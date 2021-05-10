@@ -25,7 +25,7 @@ namespace umi3d.edk
 
 
 
-        public UMI3DKHRLight(string objectId, Light light)
+        public UMI3DKHRLight(ulong objectId, Light light)
         {
             UMI3DAsyncPropertyEquality comparer = new UMI3DAsyncPropertyEquality();
             objectLightIntensity = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LightIntensity, light.intensity, null, comparer.FloatEquality);

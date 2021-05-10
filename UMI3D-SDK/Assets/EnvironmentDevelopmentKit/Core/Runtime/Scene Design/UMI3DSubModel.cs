@@ -25,6 +25,7 @@ namespace umi3d.edk
     {
 
         public UMI3DModel parentModel;
+        public string submodelName { get; protected set; }
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
         [SerializeField, EditorReadOnly]
         protected bool ignoreModelMaterialOverride = false;
@@ -43,7 +44,7 @@ namespace umi3d.edk
 
 
         ///<inheritdoc/>
-        protected override void InitDefinition(string id)
+        protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
 
@@ -55,9 +56,10 @@ namespace umi3d.edk
         /// </summary>
         public override void Register()
         {
-            if (objectId == null && UMI3DEnvironment.Exists)
+            if (objectId == 0 && UMI3DEnvironment.Exists)
             {
-                objectId = UMI3DEnvironment.Register(this, parentModel.idGenerator.Replace("{{name}}", gameObject.name).Replace("{{pid}}", parentModel.Id()));
+                objectId = UMI3DEnvironment.Register(this);
+                submodelName = gameObject.name;
                 InitDefinition(objectId);
             }
         }
@@ -89,6 +91,7 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
+            subDto.subModelName = submodelName;
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
             subDto.isTraversable = isTraversable;
             subDto.isPartOfNavmesh = isPartOfNavmesh;
