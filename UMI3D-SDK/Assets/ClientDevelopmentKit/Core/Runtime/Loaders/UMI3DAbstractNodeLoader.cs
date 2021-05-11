@@ -48,7 +48,7 @@ namespace umi3d.cdk
                 UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(nodeDto.pid);
                 node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
 
-                if (parent == null && nodeDto.pid != null)
+                if (parent == null && nodeDto.pid != 0)
                     UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node));
                 if (node.activeSelf != nodeDto.active)
                     node.SetActive(nodeDto.active);
@@ -66,7 +66,7 @@ namespace umi3d.cdk
         {
             var wait = new WaitForFixedUpdate();
             UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(dto.pid);
-            while ((parent = UMI3DEnvironmentLoader.GetNode(dto.pid)) == null && dto.pid != null)
+            while ((parent = UMI3DEnvironmentLoader.GetNode(dto.pid)) == null && dto.pid != 0)
             {
                 UnityEngine.Debug.Log($"parent not found {dto.pid} [{dto.id}:{node.name}]");
                 yield return wait;

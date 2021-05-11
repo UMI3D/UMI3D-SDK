@@ -88,7 +88,7 @@ namespace umi3d.cdk.userCapture
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != null)
+                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != 0)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
@@ -104,7 +104,7 @@ namespace umi3d.cdk.userCapture
         /// <returns></returns>
         protected virtual IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == null)
+            while (UMI3DClientServer.Instance.GetId() == 0)
             {
                 yield return null;
             }

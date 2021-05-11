@@ -83,7 +83,7 @@ namespace umi3d.cdk.interaction
         /// Associate an AbstractInteractionDto to this Input.
         /// </summary>
         /// <param name="interaction">The interaction that will be associated</param>
-        public abstract void UpdateHoveredObjectId(string hoveredObjectId);
+        public abstract void UpdateHoveredObjectId(ulong hoveredObjectId);
 
         /// <summary>
         /// Dissociate the current associated interaction.
