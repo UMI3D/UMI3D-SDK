@@ -244,25 +244,44 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-            MainThreadManager.Run(() =>
+            if (useDto)
             {
-                switch (dto)
+                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                MainThreadManager.Run(() =>
                 {
-                    case TransactionDto transaction:
-                        StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
+                    switch (dto)
+                    {
+                        case TransactionDto transaction:
+                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
 
+                            break;
+                        case NavigateDto navigate:
+                            StartCoroutine(UMI3DNavigation.Navigate(navigate));
+
+                            break;
+                        default:
+                            Debug.Log($"Type not catch {dto.GetType()}");
+                            break;
+                    }
+                });
+            }
+            else
+            {
+                var TransactionId = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, 0);
+                switch (TransactionId)
+                {
+                    case UMI3DOperationKeys.Transaction:
+                        StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr));
                         break;
-                    case NavigateDto navigate:
-                        StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                    case UMI3DOperationKeys.NavigationRequest:
+                        
 
                         break;
                     default:
-                        Debug.Log($"Type not catch {dto.GetType()}");
+                        Debug.Log($"Type not catch {TransactionId}");
                         break;
                 }
-            });
+            }
         }
 
         #endregion

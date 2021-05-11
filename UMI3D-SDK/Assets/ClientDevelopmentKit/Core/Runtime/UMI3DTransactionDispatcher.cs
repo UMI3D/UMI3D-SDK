@@ -41,6 +41,12 @@ namespace umi3d.cdk
             }
         }
 
+        public static IEnumerator PerformTransaction(byte[] transaction)
+        {
+            yield return new WaitForEndOfFrame();
+
+        }
+
         static public void PerformOperation(AbstractOperationDto operation, Action performed)
         {
             if (performed == null) performed = () => { };
