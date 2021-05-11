@@ -118,9 +118,11 @@ namespace umi3d.cdk.userCapture
             };
 
             if (!newCameraProperties.Equals(CameraPropertiesDto))
-                UMI3DClientServer.SendData(CameraPropertiesDto, true);
+            {
+                UMI3DClientServer.SendData(newCameraProperties, true);
+                CameraPropertiesDto = newCameraProperties;
+            }
 
-            CameraPropertiesDto = newCameraProperties;
         }
 
         /// <summary>
