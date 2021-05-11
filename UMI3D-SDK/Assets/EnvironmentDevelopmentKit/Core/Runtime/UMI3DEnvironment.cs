@@ -346,7 +346,7 @@ namespace umi3d.edk
             {
                 byte[] buf = new byte[64];
                 random.NextBytes(buf);
-                ulong longRand = BitConverter.ToUInt64(buf, 0);
+                ulong longRand = (ulong)Mathf.Abs(BitConverter.ToInt64(buf, 0));
                 if (longRand < min) return longRand + min;
                 return longRand;
             }

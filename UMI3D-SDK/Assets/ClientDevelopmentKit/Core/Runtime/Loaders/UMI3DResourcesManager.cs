@@ -319,6 +319,7 @@ namespace umi3d.cdk
             public ObjectData(string url, string extension, string authorization, string libraryId, string downloadedPath)
             {
                 value = null;
+                entityIds = new HashSet<ulong>();
                 libraryIds = new HashSet<string>() { libraryId };
                 loadCallback = new List<Action<object>>();
                 loadFailCallback = new List<Action<string>>();
@@ -482,16 +483,20 @@ namespace umi3d.cdk
                 if (loader != null)
                 {
                     count++;
-                    LoadFile(pair.entityIds.First(), pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; loadedResources.Invoke(total - count); }, (error) => { Debug.LogError($"{error}[{pair.url}]"); count--; }, loader.DeleteObject);
+                    var id = pair.entityIds?.FirstOrDefault();
+                    if (id == null)
+                    {
+                        var libId = pair.libraryIds?.FirstOrDefault();
+                        if (libId != null && Instance.librariesMap.ContainsValue(libId))
+                        {
+                            id = Instance.librariesMap.FirstOrDefault(l => l.Value == libId).Key;
+                        }
+                    }
+                    if (id == null)
+                        throw new Exception("id should never be null");
+                    LoadFile(id ?? 0, pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; loadedResources.Invoke(total - count); }, (error) => { Debug.LogError($"{error}[{pair.url}]"); count--; }, loader.DeleteObject);
                 }
             }
-            /*   foreach (var fileExtensionLoader in fileExtensionLoaders)
-                     if (fileExtensionLoader.IsSuitable(pair.Value))
-                     {
-                         count++;
-                         LoadFile(pair.Value, fileExtensionLoader.Load, (obj) => { count--; loadedResources.Invoke(total - count); }, (error) => { Debug.LogError(error); count--; });
-                         break;
-                     }*/
             yield return new WaitUntil(() => { return count <= 0; });
         }
         #endregion
