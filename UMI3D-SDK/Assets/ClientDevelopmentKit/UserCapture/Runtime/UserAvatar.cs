@@ -69,6 +69,12 @@ namespace umi3d.cdk.userCapture
                     item.obj.rotation = item.bone.rotation * item.offsetRotation;
                 }
             }
+
+            RegressionPosition(nodePositionFilter);
+            RegressionRotation(nodeRotationFilter);
+
+            this.transform.localPosition = nodePositionFilter.regressed_position;
+            this.transform.localRotation = nodeRotationFilter.RegressedQuaternion();
         }
 
         /// <summary>
@@ -341,6 +347,169 @@ namespace umi3d.cdk.userCapture
             {
                 savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
             }
+        }
+
+        protected class KalmanPosition
+        {
+            public UMI3DUnscentedKalmanFilter KalmanFilter;
+            public double[] estimations;
+            public double[] previous_prediction;
+            public double[] prediction;
+            public Vector3 regressed_position;
+
+            public KalmanPosition(double q, double r)
+            {
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
+                estimations = new double[] { };
+                previous_prediction = new double[] { };
+                prediction = new double[] { };
+            }
+        }
+
+        protected class KalmanRotation
+        {
+            public UMI3DUnscentedKalmanFilter KalmanFilter = new UMI3DUnscentedKalmanFilter();
+            public double[] estimations;
+            public double[] previous_prediction;
+            public double[] prediction;
+            public Vector3 regressed_rotation;
+
+            public KalmanRotation(double q, double r)
+            {
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
+                estimations = new double[] { };
+                previous_prediction = new double[] { };
+                prediction = new double[] { };
+            }
+
+            public Quaternion RegressedQuaternion()
+            {
+                return Quaternion.Euler(regressed_rotation.x, regressed_rotation.y, regressed_rotation.z);
+            }
+
+        }
+
+        protected KalmanPosition nodePositionFilter = new KalmanPosition(50, 0.5);
+        protected KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
+        protected Vector3 scale = Vector3.one;
+
+        protected float MeasuresPerSecond = 0;
+        protected float lastFrameTime = 0;
+        protected float lastMessageTime = 0;
+
+        /// <summary>
+        /// Applies linear regression to the filtered position of an object
+        /// </summary>
+        /// <param name="tools"></param>
+        protected void RegressionPosition(KalmanPosition tools)
+        {
+            if (tools.previous_prediction.Length > 0)
+            {
+                double check = lastMessageTime;
+                double now = Time.time;
+
+                double delta = now - check;
+
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
+                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
+
+                    tools.estimations = new double[] { value_x, value_y, value_z };
+
+                    tools.regressed_position = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies linear regression to the filtered rotation of an object
+        /// </summary>
+        /// <param name="tools"></param>
+        protected void RegressionRotation(KalmanRotation tools)
+        {
+            if (tools.previous_prediction.Length > 0)
+            {
+                double check = lastMessageTime;
+                double now = Time.time;
+
+                var delta = now - check;
+
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * MeasuresPerSecond * delta + tools.previous_prediction[0];
+                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
+                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
+
+                    tools.estimations = new double[] { value_x, value_y, value_z };
+
+                    tools.regressed_rotation = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Filtering a user AvatarNode position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        /// <param name="scale"></param>
+        protected void NodeKalmanUpdate(Vector3 position, Quaternion rotation, Vector3 scale)
+        {
+            double[] positionMeasurement = new double[] { position.x, position.y, position.z };
+
+            nodePositionFilter.KalmanFilter.Update(positionMeasurement);
+
+            double[] newPositionState = nodePositionFilter.KalmanFilter.getState();
+            nodePositionFilter.prediction = new double[] { newPositionState[0], newPositionState[1], newPositionState[2] };
+
+            if (nodePositionFilter.estimations.Length > 0)
+                nodePositionFilter.previous_prediction = nodePositionFilter.estimations;
+            else
+                nodePositionFilter.previous_prediction = positionMeasurement;
+
+            Vector3 eulerRotation = rotation.eulerAngles;
+
+            float x_euler; float y_euler; float z_euler;
+
+            if (nodeRotationFilter.estimations.Length > 0)
+            {
+                x_euler = Mathf.Abs(eulerRotation.x - (float)nodeRotationFilter.estimations[0]) <= 180 ? eulerRotation.x : (eulerRotation.x > (float)nodeRotationFilter.estimations[0] ? eulerRotation.x - 360 : eulerRotation.x + 360);
+                y_euler = Mathf.Abs(eulerRotation.y - (float)nodeRotationFilter.estimations[1]) <= 180 ? eulerRotation.y : (eulerRotation.y > (float)nodeRotationFilter.estimations[1] ? eulerRotation.y - 360 : eulerRotation.y + 360);
+                z_euler = Mathf.Abs(eulerRotation.z - (float)nodeRotationFilter.estimations[2]) <= 180 ? eulerRotation.z : (eulerRotation.z > (float)nodeRotationFilter.estimations[2] ? eulerRotation.z - 360 : eulerRotation.z + 360);
+            }
+            else
+            {
+                x_euler = eulerRotation.x;
+                y_euler = eulerRotation.y;
+                z_euler = eulerRotation.z;
+            }
+
+            double[] rotationMeasurement = new double[] { x_euler, y_euler, z_euler };
+            nodeRotationFilter.KalmanFilter.Update(rotationMeasurement);
+
+            double[] newRotationState = nodeRotationFilter.KalmanFilter.getState();
+
+            nodeRotationFilter.prediction = new double[] { newRotationState[0], newRotationState[1], newRotationState[2] };
+
+            if (nodeRotationFilter.estimations.Length > 0)
+                nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
+            else
+                nodeRotationFilter.previous_prediction = rotationMeasurement;
+
+            this.scale = scale;
+        }
+
+        public virtual IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
+        {
+            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+            lastFrameTime = timeFrame;
+            lastMessageTime = Time.time;
+
+            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation, trackingFrameDto.scale);
+
+            yield return null; 
         }
     }
 }
