@@ -34,7 +34,8 @@ namespace umi3d.edk
         /// <summary>
         /// Id of an entity;
         /// Null id is 0;
-        /// id are set between 1 and 4,294,967,295;
+        /// id are set between 1 and 18,446,744,073,709,551,615;
+        /// Actualy between 1 and 9,223,372,036,854,775,807 due to the serializer not sutporting unsigned values.
         /// </summary>
         /// <returns></returns>
         ulong Id();

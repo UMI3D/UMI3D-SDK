@@ -233,9 +233,9 @@ namespace umi3d.edk.collaboration
 
 
 
-        public void SendData(NetworkingPlayer player, UMI3DDto dto, bool reliable)
+        public void SendData(NetworkingPlayer player, byte[] data, bool reliable)
         {
-            SendBinaryDataTo((int)DataChannelTypes.Data, player, dto.ToBson(), reliable);
+            SendBinaryDataTo((int)DataChannelTypes.Data, player, data, reliable);
         }
 
         /// <inheritdoc/>

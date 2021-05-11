@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -35,11 +36,11 @@ namespace umi3d.edk
         public abstract AbstractOperationDto ToOperationDto(UMI3DUser user);
 
         /// <summary>
-        /// Return the operationDto of this Dto.
+        /// Return the byte[] of this operation.
         /// </summary>
         /// <param name="user"></param>
-        /// <returns></returns>
-        public abstract byte[] ToBytes(UMI3DUser user);
+        /// <returns>the size needed ans a function to set the byte array at a position and return the size again</returns>
+        public abstract (int,Func<byte[],int,int>) ToBytes(UMI3DUser user);
 
         public static Operation operator +(Operation a, Operation b)
         {

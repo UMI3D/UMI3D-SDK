@@ -85,7 +85,7 @@ public static class UMI3DNetworkingHelper
         return res;
     }
 
-    public static ulong GetSize<T>(T value) {
+    public static int GetSize<T>(T value) {
         switch (value)
         {
             case bool b:
@@ -113,15 +113,15 @@ public static class UMI3DNetworkingHelper
             case Vector4 v4:
                 return 4 * sizeof(float);
             case string str:
-                return sizeof(uint) + (ulong)str.Length * sizeof(Char);
+                return sizeof(uint) + str.Length * sizeof(Char);
         }
         throw new Exception($"Missing case [{typeof(T)} was not catched]");
     }
-    public static ulong GetSizeArray<T>(T[] value) {
+    public static int GetSizeArray<T>(T[] value) {
         return value.Select(v => GetSize(v)).Aggregate((a, b) => (a + b));
     }
 
-    public static ulong Write<T>(T value, byte[] array, ulong position) {
+    public static int Write<T>(T value, byte[] array, int position) {
         var pos = (int)position;
         switch (value)
         {
@@ -168,18 +168,17 @@ public static class UMI3DNetworkingHelper
                 BitConverter.GetBytes(v4.w).CopyTo(array, pos + 3 * sizeof(float));
                 return 4 * sizeof(float);
             case string str:
-                return sizeof(uint) + (ulong)str.Length * sizeof(Char);
+                return sizeof(uint) + str.Length * sizeof(Char);
         }
         throw new Exception($"Missing case [{typeof(T)} was not catched]");
     }
 
-    public static ulong WritteArray<T>(T[] value, byte[] array, ulong position) {
-        ulong count = 0;
+    public static int WritteArray<T>(T[] value, byte[] array, int position) {
+        int count = 0;
         foreach(var v in value)
         {
             count += Write(v, array, position + count);
         }
         return count;
     }
-
 }

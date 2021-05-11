@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common;
 using umi3d.common.interaction;
 
@@ -24,7 +25,7 @@ namespace umi3d.edk.interaction
     {
         public AbstractTool tool;
 
-        public override byte[] ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
         {
             throw new System.NotImplementedException();
         }

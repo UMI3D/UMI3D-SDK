@@ -381,14 +381,58 @@ namespace umi3d.edk.collaboration
                     continue;
                 }
 
+                SendTransaction(user, transaction);
+            }
+        }
+
+        void SendTransaction(UMI3DCollaborationUser user, Transaction transaction)
+        {
+            if (UMI3DEnvironment.Instance.useDto)
+            {
                 var transactionDto = new TransactionDto();
                 transactionDto.operations = new List<AbstractOperationDto>(transaction.Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }));
                 if (transactionDto.operations.Count > 0)
                 {
-                    ForgeServer.SendData(user.networkPlayer, transactionDto, transaction.reliable);
+                    ForgeServer.SendData(user.networkPlayer, transactionDto.ToBson(), transaction.reliable);
                 }
             }
+            else
+            {
+                Func<byte[], int, int, (int, int, int)> f3 = (byte[] by, int i, int j) =>
+                {
+                    return (0, i, j);
+                };
+                var operation = transaction.Operations.Where((op) => { return op.users.Contains(user); });
+                int indexPos = UMI3DNetworkingHelper.GetSize(UMI3DOperationKeys.Transaction);
+                int size = indexPos + operation.Count() * sizeof(int);
+                var func = operation
+                    .Select(o => o.ToBytes(user))
+                    .Select(c =>
+                    {
+                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => (c.Item2(by, i), i, j);
+                        return (c.Item1, f1);
+                    })
+                    .Aggregate((0, f3)
+                    , (a, b) =>
+                    {
+                        Func<byte[], int, int, (int, int, int)> f2 = (byte[] by, int i, int j) =>
+                        {
+                            int s;
+                            (s, i, j) = a.Item2(by, i, j);
+                            (s, i, j) = b.Item2(by, i, j);
+                            i += s;
+                            j += UMI3DNetworkingHelper.Write(s, by, j);
+                            return (s, i, j);
+                        };
+                        return (a.Item1 + b.Item1, f2);
+                    });
+                var data = new byte[size + func.Item1];
+                UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction, data, 0);
+                var couple = func.Item2(data, size, indexPos);
+                ForgeServer.SendData(user.networkPlayer, data, transaction.reliable);
+            }
         }
+
 
         Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
         private void Update()
@@ -404,13 +448,7 @@ namespace umi3d.edk.collaboration
                 }
                 if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY) continue;
                 transaction.Simplify();
-                var transactionDto = new TransactionDto();
-                transactionDto.operations = new List<AbstractOperationDto>(transaction.Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }));
-                if (transactionDto.operations.Count > 0)
-                {
-                    ForgeServer.SendData(user.networkPlayer, transactionDto, transaction.reliable);
-                }
-                TransactionToBeSend.Remove(user);
+                SendTransaction(user, transaction);
             }
         }
 

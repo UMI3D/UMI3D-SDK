@@ -26,11 +26,11 @@ namespace umi3d.common
 
         public static void Debug<A>(this IEnumerable<A> source, Func<A,string> action)
         {
-            UnityEngine.Debug.Log(source.ToString(action));
+            UnityEngine.Debug.Log(source.ToString<A>(action));
         }
         public static void Debug<A>(this IEnumerable<A> source)
         {
-            UnityEngine.Debug.Log(source.ToString());
+            UnityEngine.Debug.Log(source.ToString<A>());
         }
 
         /// <summary>
