@@ -124,6 +124,60 @@ namespace umi3d.cdk
                 }
             return true;
         }
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">entity to update.</param>
+        /// <param name="property">property containing the new value.</param>
+        /// <returns></returns>
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (entity == null) return false;
+            var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            if (dto == null) return false;
+            if (propertyKey == UMI3DPropertyKeys.PreloadedScenes)
+                switch (operationId)
+                {
+                    case UMI3DOperationKeys.SetEntityListAddProperty:
+                    case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    case UMI3DOperationKeys.SetEntityListProperty:
+                        Debug.Log($"Case not handled {operationId}");
+                        break;
+                    default:
+                        var newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(operation,position,length);
+                        var oldList = dto.preloadedScenes;
+                        var scenesToUnload = new List<PreloadedSceneDto>();
+                        var scenesToLoad = new List<PreloadedSceneDto>();
+
+                        foreach (var newScene in newList)
+                        {
+                            if (!oldList.Contains(newScene))
+                            {
+                                scenesToLoad.Add(newScene);
+                            }
+                        }
+                        foreach (var oldScene in oldList)
+                        {
+                            if (!newList.Contains(oldScene))
+                            {
+                                scenesToUnload.Add(oldScene);
+                            }
+                        }
+
+                        foreach (var scene in scenesToLoad)
+                            CreatePreloadedScene(scene, null);
+
+                        foreach (var scene in scenesToUnload)
+                            Unload(scene, null);
+
+                        break;
+                }
+            return true;
+        }
+
+        
+
     }
 
 

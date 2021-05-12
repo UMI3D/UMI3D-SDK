@@ -59,6 +59,35 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            var dto = (entity?.dto as InteractableDto);
+            if (dto == null) return false;
+            if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length)) return true;
+            switch (property.property)
+            {
+                case UMI3DPropertyKeys.InteractableNotifyHoverPosition:
+                    dto.notifyHoverPosition = (bool)property.value;
+                    break;
+                case UMI3DPropertyKeys.InteractableNotifySubObject:
+                    dto.notifySubObject = (bool)property.value;
+                    break;
+                case UMI3DPropertyKeys.InteractableNodeId:
+                    RemoveInteractableOnNode(dto);
+                    dto.nodeId = (ulong)property.value;
+                    setInteractableOnNode(dto);
+                    break;
+                case UMI3DPropertyKeys.InteractableHasPriority:
+                    dto.hasPriority = (bool)property.value;
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+
         static void RemoveInteractableOnNode(InteractableDto dto)
         {
             var node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);

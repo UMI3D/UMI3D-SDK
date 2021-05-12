@@ -87,11 +87,25 @@ namespace umi3d.common
             }
             return res;
         }
+        public static List<T> ReadList<T>(byte[] array, ref int position, int length)
+        {
+            var res = new List<T>();
+            for (int i = 0; i < length; i++)
+            {
+                res.Add(Read<T>(array, ref position));
+            }
+            return res;
+        }
+
+
         public static T[] ReadArray<T>(byte[] array, int position, int length)
         {
             return ReadArray<T>(array,ref position, length);
         }
-
+        public static List<T> ReadList<T>(byte[] array, int position, int length)
+        {
+            return ReadList<T>(array, ref position, length);
+        }
 
         public static int GetSize<T>(T value)
         {
@@ -126,7 +140,7 @@ namespace umi3d.common
             }
             throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
-        public static int GetSizeArray<T>(T[] value)
+        public static int GetSizeArray<T>(IEnumerable<T> value)
         {
             return value.Select(v => GetSize(v)).Aggregate((a, b) => a + b);
         }
@@ -184,7 +198,7 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
 
-        public static int WritteArray<T>(T[] value, byte[] array, int position)
+        public static int WritteArray<T>(IEnumerable<T> value, byte[] array, int position)
         {
             int count = 0;
             foreach (var v in value)

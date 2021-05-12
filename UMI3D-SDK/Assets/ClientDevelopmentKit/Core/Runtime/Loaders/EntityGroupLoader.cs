@@ -142,7 +142,7 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Set value ignore for {index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId = new List<ulong>(UMI3DNetworkingHelper.ReadArray<ulong>(operation, position + sizeof(int),length));
+                    groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(operation, position + sizeof(int),length);
                     break;
             }
         }

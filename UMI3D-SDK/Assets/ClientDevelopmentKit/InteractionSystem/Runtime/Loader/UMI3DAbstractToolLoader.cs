@@ -54,6 +54,65 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            var dto = (entity.dto as AbstractToolDto);
+            if (dto == null) return false;
+            var tool = entity.Object as AbstractTool;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AbstractToolName:
+                    dto.name = UMI3DNetworkingHelper.Read<string>(operation,position,length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolDescription:
+                    dto.description = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolIcon2D:
+                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolIcon3D:
+                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolInteractions:
+                    return SetInteractions(dto, tool, operationId, propertyKey, operation, position, length);
+                case UMI3DPropertyKeys.ToolActive:
+                    dto.active = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+
+        static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            int index;
+            AbstractInteractionDto value;
+
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.SetEntityListAddProperty:
+                    dto.interactions.Add(UMI3DNetworkingHelper.Read<AbstractInteractionDto>(operation,position,length));
+                    break;
+                case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    if ((int)(Int64)rem.index < dto.interactions.Count)
+                        dto.interactions.RemoveAt((int)(Int64)rem.index);
+                    else return false;
+                    break;
+                case UMI3DOperationKeys.SetEntityListProperty:
+                    if ((int)(Int64)set.index < dto.interactions.Count)
+                        dto.interactions[(int)(Int64)set.index] = (AbstractInteractionDto)set.value;
+                    else return false;
+                    break;
+                default:
+                    dto.interactions = (List<AbstractInteractionDto>)property.value;
+                    break;
+            }
+            tool.Updated();
+            return true;
+        }
+
         static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, SetEntityPropertyDto property)
         {
             switch (property)
