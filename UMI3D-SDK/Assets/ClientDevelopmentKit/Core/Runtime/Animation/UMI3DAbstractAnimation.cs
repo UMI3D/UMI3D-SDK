@@ -75,7 +75,46 @@ namespace umi3d.cdk
             return true;
         }
 
-
+        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationPlaying:
+                    bool old = dto.playing;
+                    dto.playing = UMI3DNetworkingHelper.Read<bool>(operation,position,length);
+                    if (old != dto.playing)
+                    {
+                        if (dto.playing)
+                        {
+                            if (dto.startTime == default)
+                                (entity.Object as UMI3DAbstractAnimation).Start();
+                            else
+                            {
+                                (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                            }
+                        }
+                        else (entity.Object as UMI3DAbstractAnimation).Stop();
+                    }
+                    break;
+                case UMI3DPropertyKeys.AnimationLooping:
+                    dto.looping = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    if (dto is UMI3DVideoPlayerDto)
+                    {
+                        (entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
+                    }
+                    break;
+                case UMI3DPropertyKeys.AnimationStartTime:
+                    dto.startTime = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AnimationPauseFrame:
+                    dto.pauseFrame = UMI3DNetworkingHelper.Read<long>(operation, position, length);
+                    SetProgress(dto.pauseFrame);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
 
         protected UMI3DAbstractAnimationDto dto { get; set; }
 

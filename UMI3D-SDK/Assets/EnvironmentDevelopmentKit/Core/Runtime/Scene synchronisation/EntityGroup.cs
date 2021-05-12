@@ -55,7 +55,7 @@ namespace umi3d.edk
 
         public ulong Id()
         {
-            if (entityId == null)
+            if (entityId == 0)
             {
                 entityId = UMI3DEnvironment.Register(this);
                 InitDefinition();

@@ -271,7 +271,7 @@ namespace umi3d.cdk.collaboration
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
-                        StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr));
+                        StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr,sizeof(uint)));
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
                         

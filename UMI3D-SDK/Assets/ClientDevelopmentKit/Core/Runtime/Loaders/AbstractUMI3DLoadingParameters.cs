@@ -77,6 +77,14 @@ namespace umi3d.cdk
         abstract public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property);
 
         /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">entity to update.</param>
+        /// <param name="property">property containing the updated value</param>
+        /// <returns></returns>
+        abstract public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length);
+
+        /// <summary>
         /// Handle Operation not handle by default.
         /// </summary>
         /// <param name="operation">Operation to handle.</param>

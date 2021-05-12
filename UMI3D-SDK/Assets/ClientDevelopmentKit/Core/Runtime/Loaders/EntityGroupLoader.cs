@@ -52,6 +52,28 @@ namespace umi3d.cdk
             return false;
         }
 
+
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (entity != null && entity.dto is EntityGroupDto groupDto)
+            {
+                switch (propertyKey)
+                {
+                    case UMI3DPropertyKeys.EntityGroupIds:
+                        UpdateEntities(entity, groupDto, operationId, propertyKey, operation, position, length);
+                        break;
+                    default:
+                        foreach (var e in groupDto.entitiesId)
+                        {
+                            UMI3DEnvironmentLoader.SetEntity(e,operationId,operation,position,length);
+                        }
+                        break;
+                }
+                return true;
+            }
+            return false;
+        }
+
         static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
         {
             var list = groupDto.entitiesId;
@@ -79,6 +101,48 @@ namespace umi3d.cdk
                     break;
                 default:
                     groupDto.entitiesId = property.value as List<ulong>;
+                    break;
+            }
+        }
+
+        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            int index;
+            ulong value;
+
+            var list = groupDto.entitiesId;
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.SetEntityListAddProperty:
+                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position + sizeof(int));
+
+                    if (index == list.Count())
+                        list.Add(value);
+                    else if (index < list.Count() && index >= 0)
+                        list.Insert(index, value);
+                    else
+                        Debug.LogWarning($"Add value ignore for {index} in collection of size {list.Count}");
+                    break;
+                case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
+
+                    if (index < list.Count && index >= 0)
+                        list.RemoveAt(index);
+                    else
+                        Debug.LogWarning($"Remove value ignore for {index} in collection of size {list.Count}");
+                    break;
+                case UMI3DOperationKeys.SetEntityListProperty:
+                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position + sizeof(int));
+
+                    if (index < list.Count() && index >= 0)
+                        list[index] = value;
+                    else
+                        Debug.LogWarning($"Set value ignore for {index} in collection of size {list.Count}");
+                    break;
+                default:
+                    groupDto.entitiesId = new List<ulong>(UMI3DNetworkingHelper.ReadArray<ulong>(operation, position + sizeof(int),length));
                     break;
             }
         }

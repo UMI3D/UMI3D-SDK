@@ -147,6 +147,42 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
 
+
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (entity == null)
+                throw new Exception($"Entity should not be null");
+            if (EntityGroupLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (UMI3DAnimationLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (PreloadedSceneLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length);
+        }
+
         ///<inheritdoc/>
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {

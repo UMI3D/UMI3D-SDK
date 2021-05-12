@@ -492,6 +492,22 @@ namespace umi3d.cdk
                 return false;
         }
 
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the new value.</param>
+        /// <returns></returns>
+        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (Exists)
+                return Instance._SetUMI3DPorperty(entity, operationId, propertyKey, operation, position, length);
+            else
+                return false;
+        }
+
+
         /// <summary>
         /// Update a property.
         /// </summary>
@@ -507,6 +523,28 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
                     return Parameters.SetUMI3DProperty(entity, property);
+                default:
+                    return false;
+            }
+        }
+
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the new value.</param>
+        /// <returns></returns>
+        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (entity == null) return false;
+            var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            if (dto == null) return false;
+
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.PreloadedScenes:
+                    return Parameters.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length);
                 default:
                     return false;
             }
@@ -535,6 +573,52 @@ namespace umi3d.cdk
         /// <summary>
         /// Handle SetEntityPropertyDto operation.
         /// </summary>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public static bool SetEntity(uint operationId, byte[] operation, int position, int lenght)
+        {
+            var entityId = UMI3DNetworkingHelper.Read<ulong>(operation, position);
+            position += sizeof(ulong);
+            lenght -= sizeof(ulong);
+            return SetEntity(entityId, operationId, operation, position, lenght);
+        }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public static bool SetEntity(ulong entityId, uint operationId, byte[] operation, int position, int lenght)
+        {
+            var node = UMI3DEnvironmentLoader.GetEntity(entityId);
+            if (node == null)
+            {
+                Instance.StartCoroutine(Instance._SetEntity(operationId, entityId, operation, position, lenght));
+                return false;
+            }
+            else
+            {
+                return SetEntity(node, operationId, entityId, operation, position, lenght);
+            }
+        }
+
+        public static bool SetEntity(ulong entityId, uint operationId, uint propertyId, byte[] operation, int position, int lenght)
+        {
+            var node = UMI3DEnvironmentLoader.GetEntity(entityId);
+            if (node == null)
+            {
+                Instance.StartCoroutine(Instance._SetEntity(operationId, entityId, propertyId, operation, position, lenght));
+                return false;
+            }
+            else
+            {
+                return SetEntity(node, operationId, entityId, propertyId, operation, position, lenght);
+            }
+        }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
         /// <param name="node">Node on which the dto should be applied.</param>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
@@ -550,10 +634,43 @@ namespace umi3d.cdk
             }
             else
             {
-
                 if (SetUMI3DPorperty(node, dto)) return true;
                 if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
                 return Parameters.SetUMI3DProperty(node, dto);
+            }
+        }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
+        /// <param name="node">Node on which the dto should be applied.</param>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public static bool SetEntity(UMI3DEntityInstance node, uint operationId, ulong entityId, byte[] operation, int position, int length)
+        {
+            var propertyKey = UMI3DNetworkingHelper.Read<uint>(operation, position);
+            position += sizeof(uint);
+            length -= sizeof(uint);
+
+            return SetEntity(node, operationId, entityId, propertyKey, operation, position, length);
+        }
+
+        public static bool SetEntity(UMI3DEntityInstance node, uint operationId, ulong entityId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(propertyKey))
+            {
+                float now = Time.time;
+                Instance.entityFilters[entityId][propertyKey].measuresPerSecond = 1 / (now - Instance.entityFilters[entityId][propertyKey].lastMessageTime);
+                Instance.entityFilters[entityId][propertyKey].lastMessageTime = now;
+                Debug.Log("To Do Kalman");
+                //Instance.PropertyKalmanUpdate(Instance.entityFilters[entityId][propertyKey], dto.value);
+                return true;
+            }
+            else
+            {
+                if (SetUMI3DPorperty(node, operationId, propertyKey, operation, position, length)) return true;
+                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey, operation, position, length)) return true;
+                return Parameters.SetUMI3DProperty(node, operationId, propertyKey, operation, position, length);
             }
         }
 
@@ -618,6 +735,29 @@ namespace umi3d.cdk
             SetEntity(node, dto);
         }
 
+        IEnumerator _SetEntity(uint operationId, ulong entityId, byte[] operation, int position, int length )
+        {
+            WaitForFixedUpdate wait = new WaitForFixedUpdate();
+            UMI3DEntityInstance node = null;
+            yield return wait;
+            while ((node = UMI3DEnvironmentLoader.GetEntity(entityId)) == null)
+            {
+                yield return wait;
+            }
+            SetEntity(node, operationId, entityId, operation, position, length);
+        }
+
+        IEnumerator _SetEntity(uint operationId, ulong entityId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            WaitForFixedUpdate wait = new WaitForFixedUpdate();
+            UMI3DEntityInstance node = null;
+            yield return wait;
+            while ((node = UMI3DEnvironmentLoader.GetEntity(entityId)) == null)
+            {
+                yield return wait;
+            }
+            SetEntity(node, operationId, entityId, propertyKey, operation, position, length);
+        }
 
         #region interpolation
 
