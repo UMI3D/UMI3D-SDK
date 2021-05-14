@@ -274,13 +274,11 @@ namespace umi3d.edk.collaboration
             if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
             {
                 avatarFrameEvent.Invoke((dto as common.userCapture.UserTrackingFrameDto), server.Time.Timestep);
-                var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+                UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
                 MainThreadManager.Run(() =>
                 {
                     UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
                 });
-
-                UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
 
                 if (user.Avatar != null && user.Avatar.RelayRoom != null)
                 {
