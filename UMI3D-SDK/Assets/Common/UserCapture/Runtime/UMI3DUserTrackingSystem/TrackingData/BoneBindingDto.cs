@@ -49,7 +49,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         public string objectId;
 
-        public SerializableVector3 position;
+        public SerializableVector3 offsetPosition;
 
         public SerializableVector4 rotation;
 

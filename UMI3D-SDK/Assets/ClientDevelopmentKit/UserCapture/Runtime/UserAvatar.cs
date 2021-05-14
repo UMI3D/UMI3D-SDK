@@ -263,7 +263,7 @@ namespace umi3d.cdk.userCapture
                         bone = bone.transform,
                         bonetype = dto.boneType,
                         obj = obj,
-                        offsetPosition = dto.position,
+                        offsetPosition = dto.offsetPosition,
                         offsetRotation = dto.rotation
                     });
 
@@ -279,7 +279,7 @@ namespace umi3d.cdk.userCapture
                         if (index >= 0)
                         {
                             Bound bound = bounds[index];
-                            bound.offsetPosition = dto.position;
+                            bound.offsetPosition = dto.offsetPosition;
                             bound.offsetRotation = dto.rotation;
                             bounds[index] = bound;
                         }
@@ -290,7 +290,7 @@ namespace umi3d.cdk.userCapture
                                 bone = bone.transform,
                                 bonetype = dto.boneType,
                                 obj = obj,
-                                offsetPosition = dto.position,
+                                offsetPosition = dto.offsetPosition,
                                 offsetRotation = dto.rotation
                             });
                         }
