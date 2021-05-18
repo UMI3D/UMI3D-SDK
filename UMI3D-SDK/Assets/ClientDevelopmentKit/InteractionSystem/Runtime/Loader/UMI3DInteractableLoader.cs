@@ -68,18 +68,18 @@ namespace umi3d.cdk.interaction
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.InteractableNotifyHoverPosition:
-                    dto.notifyHoverPosition = UMI3DNetworkingHelper.Read<bool>(operation,position);
+                    dto.notifyHoverPosition = UMI3DNetworkingHelper.Read<bool>(operation,position, length);
                     break;
                 case UMI3DPropertyKeys.InteractableNotifySubObject:
-                    dto.notifySubObject = UMI3DNetworkingHelper.Read<bool>(operation, position);
+                    dto.notifySubObject = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
                     break;
                 case UMI3DPropertyKeys.InteractableNodeId:
                     RemoveInteractableOnNode(dto);
-                    dto.nodeId = UMI3DNetworkingHelper.Read<ulong>(operation, position);
+                    dto.nodeId = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
                     setInteractableOnNode(dto);
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:
-                    dto.hasPriority = UMI3DNetworkingHelper.Read<bool>(operation, position);
+                    dto.hasPriority = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
                     break;
                 default:
                     return false;

@@ -145,17 +145,17 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = UMI3DNetworkingHelper.Read<Vector3>(operation, position); ;
+                    dto.position = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length); ;
                     if (node.updatePose)
                         node.transform.localPosition = dto.position;
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(operation, position); ;
+                    dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(operation, position, length); ;
                     if (node.updatePose)
                         node.transform.localRotation = dto.rotation;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = UMI3DNetworkingHelper.Read<Vector3>(operation, position); ;
+                    dto.scale = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length); ;
                     if (node.updatePose)
                         node.transform.localScale = dto.scale;
                     break;
@@ -354,26 +354,26 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.RoughnessFactor:
                     //        ((Material)entity.Object).SetFloat("_Roughness", (float)(double)property.value);
                     //      ((Material)entity.Object).SetFloat("_Smoothness", RoughnessToSmoothness((float)(double)property.value)); 
-                    var rf = UMI3DNetworkingHelper.Read<float>(operation, position);
+                    var rf = UMI3DNetworkingHelper.Read<float>(operation, position, length);
                     materialToModify.ApplyShaderProperty(MRTKShaderUtils.Smoothness, RoughnessToSmoothness(rf));
 
                     glTFMaterialDto.pbrMetallicRoughness.roughnessFactor = rf;
                     break;
 
                 case UMI3DPropertyKeys.MetallicFactor:
-                    var mf = UMI3DNetworkingHelper.Read<float>(operation, position);
+                    var mf = UMI3DNetworkingHelper.Read<float>(operation, position, length);
                     materialToModify.ApplyShaderProperty(MRTKShaderUtils.Metallic, mf);
                     glTFMaterialDto.pbrMetallicRoughness.metallicFactor = mf;
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    var bc = UMI3DNetworkingHelper.Read<Color>(operation, position);
+                    var bc = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
                     materialToModify.color = bc;
                     glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = bc;
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    var ef = UMI3DNetworkingHelper.Read<Color>(operation, position);
+                    var ef = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
                     materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ef);
                     glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)ef;
                     break;

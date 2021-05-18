@@ -20,7 +20,7 @@ namespace umi3d.edk.collaboration
             return false;
         }
 
-        public override bool Read<T>(byte[] array, ref int position, ref int length, out T result)
+        public override bool Read<T>(byte[] array, ref int position, ref int length, out bool readable, out T result)
         {
             //switch (true)
             //{
@@ -43,6 +43,7 @@ namespace umi3d.edk.collaboration
             //        return true;
             //}
             result = default;
+            readable = false;
             return false;
         }
 
@@ -51,14 +52,15 @@ namespace umi3d.edk.collaboration
             switch (value)
             {
                 case UMI3DCollaborationUser user:
-                    result = position;
+                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
                     position += UMI3DNetworkingHelper.Write<ulong>(user.Id(), array, position);
                     position += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, position);
                     position += UMI3DNetworkingHelper.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id(), array, position);
                     position += UMI3DNetworkingHelper.Write<ulong>(user.audioPlayer?.Id() ?? 0, array, position);
                     position += UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0, array, position);
                     position += UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0, array, position);
-                    result = position - result;
+                    result = 2 * sizeof(uint) + 4 * sizeof(ulong);
+                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
                     return true;
             }
             result = 0;

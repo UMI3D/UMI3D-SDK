@@ -184,7 +184,7 @@ namespace umi3d.cdk.collaboration
                     {
                         foreach (var ouser in UserList)
                             ouser.Destroy();
-                        dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(operation, ref position);
+                        dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(operation, ref position, ref length);
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
                         break;
                     }

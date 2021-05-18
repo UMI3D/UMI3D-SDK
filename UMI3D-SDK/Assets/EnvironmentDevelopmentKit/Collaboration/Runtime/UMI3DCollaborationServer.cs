@@ -432,6 +432,7 @@ namespace umi3d.edk.collaboration
                 if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY) continue;
                 transaction.Simplify();
                 SendTransaction(user, transaction);
+                TransactionToBeSend.Remove(user);
             }
         }
 

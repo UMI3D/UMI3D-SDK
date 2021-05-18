@@ -41,18 +41,18 @@ namespace umi3d.cdk
             }
         }
 
-        public static IEnumerator PerformTransaction(byte[] transaction, int pos)
+        public static IEnumerator PerformTransaction(byte[] transaction, int pos, int length)
         {
             yield return new WaitForEndOfFrame();
-            int length = -1;
+            int operationLength = -1;
             int maxLength = transaction.Length;
             int opIndex = -1;
-            for (int i = pos; i < length || length == -1;)
+            for (int i = pos; i < operationLength || operationLength == -1;)
             {
-                int nopIndex = UMI3DNetworkingHelper.Read<int>(transaction, ref i);
-                if (length == -1)
+                int nopIndex = UMI3DNetworkingHelper.Read<int>(transaction, ref i, ref length);
+                if (operationLength == -1)
                 {
-                    length = opIndex = nopIndex;
+                    operationLength = opIndex = nopIndex;
                     continue;
                 }
 

@@ -267,13 +267,15 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var TransactionId = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, 0);
+                int length = frame.StreamData.byteArr.Length;
+                int position = 0;
+                var TransactionId = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr, sizeof(uint)));
+                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr, position, length));
                         });
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
@@ -343,10 +345,12 @@ namespace umi3d.cdk.collaboration
         {
             VoiceDto dto = null;
             if (useDto) dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
-            var id = useDto ? dto.senderId : UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, 0);
+            var position = 0;
+            var length = frame.StreamData.byteArr.Length;
+            var id = useDto ? dto.senderId : UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position,ref length);
             UMI3DUser source = GetUserByNetWorkId(id);
             if (source != null)
-                AudioManager.Instance.Read(source.id, useDto ? dto.data : frame.StreamData.byteArr.Skip(sizeof(uint)).SkipLast().ToArray(), client.Time.Timestep);
+                AudioManager.Instance.Read(source.id, useDto ? dto.data : frame.StreamData.byteArr.Skip(position).SkipLast().ToArray(), client.Time.Timestep);
         }
 
 

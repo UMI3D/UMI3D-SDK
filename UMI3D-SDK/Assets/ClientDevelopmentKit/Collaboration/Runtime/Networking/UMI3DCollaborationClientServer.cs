@@ -57,6 +57,7 @@ namespace umi3d.cdk.collaboration
             HttpClient = new HttpClient(this);
             connected = false;
             joinning = false;
+            UMI3DNetworkingHelper.AddModule(new UMI3DCollaborationNetworkingModule());
         }
 
         public void Init()

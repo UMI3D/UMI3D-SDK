@@ -135,7 +135,7 @@ namespace umi3d.cdk.interaction
                     dto.tools.Add(value);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
+                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
                     if (index < dto.tools.Count)
                         dto.tools.RemoveAt(index);
                     else return false;

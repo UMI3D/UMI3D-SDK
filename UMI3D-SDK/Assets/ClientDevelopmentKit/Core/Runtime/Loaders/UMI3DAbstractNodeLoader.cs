@@ -130,17 +130,17 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    dto.isStatic = UMI3DNetworkingHelper.Read<bool>(operation,position);
+                    dto.isStatic = UMI3DNetworkingHelper.Read<bool>(operation,position,length);
                     if (dto.isStatic != node.gameObject.isStatic)
                         node.gameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
-                    dto.active = UMI3DNetworkingHelper.Read<bool>(operation, position);
+                    dto.active = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
                     if (node.gameObject.activeSelf != dto.active)
                         node.gameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(operation, position);
+                    ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
