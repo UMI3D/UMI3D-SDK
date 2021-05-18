@@ -45,7 +45,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
             get {
-                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => u.ToUserDto());
+                if (_objectUserList == null) _objectUserList =  new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(),  (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto() : (object)u);
                 return _objectUserList;
             }
         }
@@ -257,7 +257,7 @@ namespace umi3d.edk.collaboration
                 entityId = UMI3DGlobalID.EnvironementId,
                 property = UMI3DPropertyKeys.UserList,
                 index = index,
-                value = user.ToUserDto()
+                value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
             };
             operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
             UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { operation } });

@@ -271,14 +271,20 @@ namespace umi3d.cdk.collaboration
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
-                        StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr,sizeof(uint)));
+                        MainThreadManager.Run(() =>
+                        {
+                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr, sizeof(uint)));
+                        });
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
                         
 
                         break;
                     default:
-                        Debug.Log($"Type not catch {TransactionId}");
+                        MainThreadManager.Run(() =>
+                        {
+                            Debug.Log($"Type not catch {TransactionId}");
+                        });
                         break;
                 }
             }

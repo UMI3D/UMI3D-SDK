@@ -114,8 +114,8 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
-                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position + sizeof(int));
+                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position);
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, ref position);
 
                     if (index == list.Count())
                         list.Add(value);
@@ -133,8 +133,8 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Remove value ignore for {index} in collection of size {list.Count}");
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
-                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position + sizeof(int));
+                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position);
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, ref position);
 
                     if (index < list.Count() && index >= 0)
                         list[index] = value;
@@ -142,7 +142,7 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Set value ignore for {index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(operation, position + sizeof(int),length);
+                    groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(operation, position,length);
                     break;
             }
         }

@@ -49,8 +49,7 @@ namespace umi3d.cdk
             int opIndex = -1;
             for (int i = pos; i < length || length == -1;)
             {
-                int nopIndex = UMI3DNetworkingHelper.Read<int>(transaction, i);
-                i += sizeof(int);
+                int nopIndex = UMI3DNetworkingHelper.Read<int>(transaction, ref i);
                 if (length == -1)
                 {
                     length = opIndex = nopIndex;
@@ -114,9 +113,7 @@ namespace umi3d.cdk
         {
             if (performed == null) performed = () => { };
 
-            var operationId = UMI3DNetworkingHelper.Read<uint>(operation,position);
-            position += sizeof(uint);
-            length -= sizeof(uint);
+            var operationId = UMI3DNetworkingHelper.Read<uint>(operation,ref position, ref length);
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:

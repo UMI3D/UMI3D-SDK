@@ -21,11 +21,11 @@ namespace umi3d.edk
 {
     public static class ToUMI3DSerializable
     {
-        static public SerializableColor ToSerializableColor(Color color, UMI3DUser user) { return color; }
-        static public SerializableVector2 ToSerializableVector2(Vector2 vector, UMI3DUser user) { return vector; }
-        static public SerializableVector3 ToSerializableVector3(Vector3 vector, UMI3DUser user) { return vector; }
-        static public SerializableVector4 ToSerializableVector4(Vector4 vector, UMI3DUser user) { return vector; }
-        static public SerializableVector4 ToSerializableVector4(Quaternion quaternion, UMI3DUser user) { return quaternion; }
-        static public SerializableMatrix4x4 ToSerializableMatrix4x4(Matrix4x4 matrix, UMI3DUser user) { return matrix; }
+        static public object ToSerializableColor(Color color, UMI3DUser user) { return UMI3DEnvironment.Instance.useDto ? (SerializableColor)color : (object)color; }
+        static public object ToSerializableVector2(Vector2 vector, UMI3DUser user) { return UMI3DEnvironment.Instance.useDto ? (SerializableVector2)vector : (object)vector; }
+        static public object ToSerializableVector3(Vector3 vector, UMI3DUser user) { return UMI3DEnvironment.Instance.useDto ? (SerializableVector3)vector : (object)vector; }
+        static public object ToSerializableVector4(Vector4 vector, UMI3DUser user) { return UMI3DEnvironment.Instance.useDto ? (SerializableVector4)vector : (object)vector; }
+        static public object ToSerializableVector4(Quaternion quaternion, UMI3DUser user) { return UMI3DEnvironment.Instance.useDto ? (SerializableVector4)quaternion : (object)quaternion; }
+        static public object ToSerializableMatrix4x4(Matrix4x4 matrix, UMI3DUser user) { return UMI3DEnvironment.Instance.useDto ? (SerializableMatrix4x4)matrix : (object)matrix; }
     }
 }

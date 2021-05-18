@@ -62,7 +62,7 @@ namespace umi3d.edk.collaboration
                 user.audioPlayer = user.Avatar.gameObject.AddComponent<UMI3DAudioPlayer>();
                 user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
                 user.audioPlayer.ObjectNode.SetValue(user.Avatar);
-                UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { user.audioPlayer.GetLoadEntity() } });
+                UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { user.audioPlayer.GetLoadEntity() }});
             }
             if (user.audioPlayer.ObjectNode.GetValue() == null)
             {

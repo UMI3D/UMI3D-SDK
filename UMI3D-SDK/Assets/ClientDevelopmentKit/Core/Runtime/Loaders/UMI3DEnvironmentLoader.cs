@@ -575,12 +575,10 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static bool SetEntity(uint operationId, byte[] operation, int position, int lenght)
+        public static bool SetEntity(uint operationId, byte[] operation, int position, int length)
         {
-            var entityId = UMI3DNetworkingHelper.Read<ulong>(operation, position);
-            position += sizeof(ulong);
-            lenght -= sizeof(ulong);
-            return SetEntity(entityId, operationId, operation, position, lenght);
+            var entityId = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+            return SetEntity(entityId, operationId, operation, position, length);
         }
 
         /// <summary>
@@ -588,17 +586,17 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static bool SetEntity(ulong entityId, uint operationId, byte[] operation, int position, int lenght)
+        public static bool SetEntity(ulong entityId, uint operationId, byte[] operation, int position, int length)
         {
             var node = UMI3DEnvironmentLoader.GetEntity(entityId);
             if (node == null)
             {
-                Instance.StartCoroutine(Instance._SetEntity(operationId, entityId, operation, position, lenght));
+                Instance.StartCoroutine(Instance._SetEntity(operationId, entityId, operation, position, length));
                 return false;
             }
             else
             {
-                return SetEntity(node, operationId, entityId, operation, position, lenght);
+                return SetEntity(node, operationId, entityId, operation, position, length);
             }
         }
 
@@ -648,10 +646,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static bool SetEntity(UMI3DEntityInstance node, uint operationId, ulong entityId, byte[] operation, int position, int length)
         {
-            var propertyKey = UMI3DNetworkingHelper.Read<uint>(operation, position);
-            position += sizeof(uint);
-            length -= sizeof(uint);
-
+            var propertyKey = UMI3DNetworkingHelper.Read<uint>(operation, ref position, ref length);
             return SetEntity(node, operationId, entityId, propertyKey, operation, position, length);
         }
 

@@ -93,20 +93,25 @@ namespace umi3d.cdk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    dto.interactions.Add(UMI3DNetworkingHelper.Read<AbstractInteractionDto>(operation,position,length));
+                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                    value = UMI3DNetworkingHelper.Read<AbstractInteractionDto>(operation, ref position, ref length);
+                    dto.interactions.Add(value);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    if ((int)(Int64)rem.index < dto.interactions.Count)
-                        dto.interactions.RemoveAt((int)(Int64)rem.index);
+                    index = UMI3DNetworkingHelper.Read<int>(operation, position);
+                    if (index < dto.interactions.Count)
+                        dto.interactions.RemoveAt(index);
                     else return false;
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    if ((int)(Int64)set.index < dto.interactions.Count)
-                        dto.interactions[(int)(Int64)set.index] = (AbstractInteractionDto)set.value;
+                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                    value = UMI3DNetworkingHelper.Read<AbstractInteractionDto>(operation, position, length);
+                    if (index < dto.interactions.Count)
+                        dto.interactions[index] = value;
                     else return false;
                     break;
                 default:
-                    dto.interactions = (List<AbstractInteractionDto>)property.value;
+                    dto.interactions = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(operation, position, length);
                     break;
             }
             tool.Updated();

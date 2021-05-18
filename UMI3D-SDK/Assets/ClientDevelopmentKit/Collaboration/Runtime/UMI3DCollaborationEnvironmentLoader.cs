@@ -53,6 +53,21 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if( base._SetUMI3DPorperty(entity, operationId, propertyKey, operation, position, length)) return true;
+            if (entity == null) return false;
+            var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
+            if (dto == null) return false;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.UserList:
+                    return SetUserList(dto, operationId, propertyKey, operation, position, length);
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>
         /// Update Userlist
         /// </summary>
@@ -112,5 +127,69 @@ namespace umi3d.cdk.collaboration
             return true;
         }
 
+        /// <summary>
+        /// Update Userlist
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            int index;
+            UserDto user;
+
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.SetEntityListAddProperty:
+                    {
+                        index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                        user = UMI3DNetworkingHelper.Read<UserDto>(operation, ref position, ref length);
+                        var _user = new UMI3DUser(user);
+                        UserList.Insert(index, _user);
+                        dto.userList.Insert(index, user);
+                        break;
+                    }
+                case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    {
+                        index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                        if (UserList.Count > index)
+                        {
+                            var Olduser = UserList[index];
+                            UserList.RemoveAt(index);
+                            dto.userList.RemoveAt(index);
+                            Olduser.Destroy();
+                        }
+                        break;
+                    }
+                case UMI3DOperationKeys.SetEntityListProperty:
+                    {
+                        index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                        user = UMI3DNetworkingHelper.Read<UserDto>(operation, ref position, ref length);
+                        if (0 > index)
+                            break;
+                        if (UserList.Count > index)
+                        {
+                            UserList[index].Update(user);
+                            dto.userList[index] = user;
+                        }
+                        else if (UserList.Count == index)
+                        {
+                            var _user = new UMI3DUser(user);
+                            UserList.Add(_user);
+                            dto.userList.Add(user);
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        foreach (var ouser in UserList)
+                            ouser.Destroy();
+                        dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(operation, ref position);
+                        UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+                        break;
+                    }
+            }
+            return true;
+        }
     }
 }

@@ -103,6 +103,61 @@ namespace umi3d.cdk
             }
             return true;
         }
+
+        /// <summary>
+        /// Update KHR light.
+        /// </summary>
+        /// <param name="entity">entity to be updated.</param>
+        /// <param name="property">property containing the new value</param>
+        /// <returns></returns>
+        public virtual bool SetLightPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            var dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
+            var node = (entity as UMI3DNodeInstance);
+            Light light = node?.gameObject?.GetComponent<Light>();
+            if (propertyKey == UMI3DPropertyKeys.Light)
+            {
+                var lightdto = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(operation,position,length);
+                if (light != null && lightdto == null) GameObject.Destroy(light);
+                else if (lightdto != null) CreateLight(lightdto, node.gameObject);
+                return true;
+            }
+            if (dto == null || light == null) return false;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.LightIntensity:
+                    light.intensity = dto.intensity = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightColor:
+                    light.color = dto.color = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightRange:
+                    light.range = dto.range = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightType:
+                    dto.type = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    if (dto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
+                        light.type = LightType.Directional;
+                    else if (dto.type == KHR_lights_punctual.LightTypes.Point.ToString())
+                        light.type = LightType.Point;
+                    else if (dto.type == KHR_lights_punctual.LightTypes.Spot.ToString())
+                    {
+                        light.type = LightType.Spot;
+                        light.innerSpotAngle = dto.spot.innerConeAngle;
+                        light.spotAngle = dto.spot.outerConeAngle;
+                    }
+                    break;
+                case UMI3DPropertyKeys.LightSpot:
+                    var value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(operation, position, length);
+                    light.innerSpotAngle = dto.spot.innerConeAngle = value.innerConeAngle;
+                    light.spotAngle = dto.spot.outerConeAngle = value.outerConeAngle;
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
     }
 
 }

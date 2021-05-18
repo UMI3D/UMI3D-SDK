@@ -136,5 +136,37 @@ namespace umi3d.cdk
             }
             return true;
         }
+
+
+        /// <summary>
+        /// Update Umi3dProperty.
+        /// </summary>
+        /// <param name="entity">entity to update.</param>
+        /// <param name="property">property containing the new value.</param>
+        /// <returns>state if the property was handled</returns>
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey, operation, position, length))
+                return true;
+            var node = entity as UMI3DNodeInstance;
+            if (node == null) return false;
+            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            if (dto == null) return false;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.Position:
+                    dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.Rotation:
+                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(operation, position, length); ;
+                    break;
+                case UMI3DPropertyKeys.Scale:
+                    dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
     }
 }

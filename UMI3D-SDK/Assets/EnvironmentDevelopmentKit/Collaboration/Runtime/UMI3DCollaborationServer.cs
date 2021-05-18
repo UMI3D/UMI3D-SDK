@@ -118,12 +118,17 @@ namespace umi3d.edk.collaboration
             user.SetStatus(dto.status);
         }
 
+        Umi3dNetworkingHelperModule collaborativeModule;
+
         /// <summary>
         /// Initialize the server.
         /// </summary>
         public override void Init()
         {
             base.Init();
+
+            if (collaborativeModule == null) collaborativeModule = new UMI3DEnvironmentNetworkingCollaborationModule();
+            UMI3DNetworkingHelper.AddModule(collaborativeModule);
 
             if (!useIp)
                 ip = GetLocalIPAddress();
@@ -226,6 +231,8 @@ namespace umi3d.edk.collaboration
 
         void _Stop()
         {
+            if (collaborativeModule != null)
+                UMI3DNetworkingHelper.RemoveModule(collaborativeModule);
             http?.Stop();
             forgeServer?.Stop();
             isRunning = false;
@@ -373,6 +380,23 @@ namespace umi3d.edk.collaboration
                 }
                 if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                 {
+
+                    Func<Operation, string> func = (op) =>
+                    {
+                        {
+                            switch (op)
+                            {
+                                case SetEntityProperty set:
+                                    return set.value.ToString();
+                                case LoadEntity load:
+                                    return load.entity.ToString();
+                                default:
+                                    return op.ToString();
+                            };
+                        }
+                    };
+
+                    Debug.Log($"yo {transaction.Operations.Select(op => func(op)).Aggregate((a,b)=>$"{a};{b}")}");
                     if (!TransactionToBeSend.ContainsKey(user))
                     {
                         TransactionToBeSend[user] = new Transaction();

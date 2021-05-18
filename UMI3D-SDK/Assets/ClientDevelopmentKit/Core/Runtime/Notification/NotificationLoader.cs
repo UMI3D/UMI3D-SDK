@@ -69,5 +69,43 @@ namespace umi3d.cdk
             }
             return true;
         }
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">entity to be updated.</param>
+        /// <param name="property">property containing the new value.</param>
+        /// <returns></returns>
+        public virtual bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            var dto = entity.dto as NotificationDto;
+            if (dto == null) return false;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.NotificationTitle:
+                    dto.title = UMI3DNetworkingHelper.Read<string>(operation, position,length);
+                    break;
+                case UMI3DPropertyKeys.NotificationContent:
+                    dto.content = UMI3DNetworkingHelper.Read<string>(operation, position,length);
+                    break;
+                case UMI3DPropertyKeys.NotificationDuration:
+                    dto.duration = UMI3DNetworkingHelper.Read<float>(operation, position,length);
+                    break;
+                case UMI3DPropertyKeys.NotificationIcon2D:
+                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position,length);
+                    break;
+                case UMI3DPropertyKeys.NotificationIcon3D:
+                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.NotificationObjectId:
+                    var Odto = dto as NotificationOnObjectDto;
+                    if (Odto == null) return false;
+                    Odto.objectId = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
     }
 }

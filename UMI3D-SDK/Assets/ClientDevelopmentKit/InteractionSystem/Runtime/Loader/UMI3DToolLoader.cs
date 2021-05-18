@@ -38,8 +38,12 @@ namespace umi3d.cdk.interaction
 
         static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property)) return true;
-            return false;
+            return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property));
+        }
+
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length));
         }
     }
 }
