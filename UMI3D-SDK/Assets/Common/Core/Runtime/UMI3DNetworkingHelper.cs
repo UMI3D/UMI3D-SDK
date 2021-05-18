@@ -218,13 +218,15 @@ namespace umi3d.common
                     return sizeof(long);
                 case ulong ul:
                     return sizeof(ulong);
+                case SerializableVector2 V2:
                 case Vector2 v2:
                     return 2 * sizeof(float);
+                case SerializableVector3 V3:
                 case Vector3 v3:
                     return 3 * sizeof(float);
-                case Vector4 v4:
-                    return 4 * sizeof(float);
+                case SerializableVector4 V4:
                 case Quaternion q:
+                case Vector4 v4:
                     return 4 * sizeof(float);
                 case string str:
                     return sizeof(uint) + str.Length * sizeof(char);
@@ -274,15 +276,30 @@ namespace umi3d.common
                 case ulong ul:
                     BitConverter.GetBytes(ul).CopyTo(array, pos);
                     return sizeof(ulong);
+                case SerializableVector2 v2:
+                    BitConverter.GetBytes(v2.X).CopyTo(array, pos);
+                    BitConverter.GetBytes(v2.Y).CopyTo(array, pos + sizeof(float));
+                    return 2 * sizeof(float);
                 case Vector2 v2:
                     BitConverter.GetBytes(v2.x).CopyTo(array, pos);
                     BitConverter.GetBytes(v2.y).CopyTo(array, pos + sizeof(float));
                     return 2 * sizeof(float);
+                case SerializableVector3 v3:
+                    BitConverter.GetBytes(v3.X).CopyTo(array, pos);
+                    BitConverter.GetBytes(v3.Y).CopyTo(array, pos + sizeof(float));
+                    BitConverter.GetBytes(v3.Z).CopyTo(array, pos + 2 * sizeof(float));
+                    return 3 * sizeof(float);
                 case Vector3 v3:
                     BitConverter.GetBytes(v3.x).CopyTo(array, pos);
                     BitConverter.GetBytes(v3.y).CopyTo(array, pos + sizeof(float));
                     BitConverter.GetBytes(v3.z).CopyTo(array, pos + 2 * sizeof(float));
                     return 3 * sizeof(float);
+                case SerializableVector4 v4:
+                    BitConverter.GetBytes(v4.X).CopyTo(array, pos);
+                    BitConverter.GetBytes(v4.Y).CopyTo(array, pos + sizeof(float));
+                    BitConverter.GetBytes(v4.Z).CopyTo(array, pos + 2 * sizeof(float));
+                    BitConverter.GetBytes(v4.W).CopyTo(array, pos + 3 * sizeof(float));
+                    return 4 * sizeof(float);
                 case Vector4 v4:
                     BitConverter.GetBytes(v4.x).CopyTo(array, pos);
                     BitConverter.GetBytes(v4.y).CopyTo(array, pos + sizeof(float));

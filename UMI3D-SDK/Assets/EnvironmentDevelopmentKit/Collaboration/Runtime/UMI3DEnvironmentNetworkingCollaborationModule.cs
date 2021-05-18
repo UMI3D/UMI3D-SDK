@@ -51,6 +51,17 @@ namespace umi3d.edk.collaboration
         {
             switch (value)
             {
+                case UserDto user:
+                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
+                    position += UMI3DNetworkingHelper.Write<ulong>(user.id, array, position);
+                    position += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, position);
+                    position += UMI3DNetworkingHelper.Write<ulong>(user.avatarId, array, position);
+                    position += UMI3DNetworkingHelper.Write<ulong>(user.audioSourceId, array, position);
+                    position += UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId, array, position);
+                    position += UMI3DNetworkingHelper.Write<uint>(user.networkId, array, position);
+                    result = 2 * sizeof(uint) + 4 * sizeof(ulong);
+                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
+                    return true;
                 case UMI3DCollaborationUser user:
                     Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
                     position += UMI3DNetworkingHelper.Write<ulong>(user.Id(), array, position);
