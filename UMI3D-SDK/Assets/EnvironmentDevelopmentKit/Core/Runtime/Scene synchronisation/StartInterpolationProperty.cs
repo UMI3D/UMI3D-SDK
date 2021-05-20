@@ -32,7 +32,16 @@ namespace umi3d.edk
 
         public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
         {
-            throw new System.NotImplementedException();
+            int size = 3 * sizeof(uint) + sizeof(ulong) + UMI3DNetworkingHelper.GetSize(startValue);
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
+                i += UMI3DNetworkingHelper.Write(entityId, b, i);
+                i += UMI3DNetworkingHelper.Write(property, b, i);
+                i += UMI3DNetworkingHelper.Write((uint)0, b, i);
+                i += UMI3DNetworkingHelper.Write(startValue, b, i);
+                return size;
+            };
+            return (size, func);
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
