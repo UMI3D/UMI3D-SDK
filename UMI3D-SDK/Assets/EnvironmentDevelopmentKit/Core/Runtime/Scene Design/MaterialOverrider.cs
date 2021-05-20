@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     [Serializable]
-    public class MaterialOverrider
+    public class MaterialOverrider : IByte
     {
         public MaterialSO newMaterial;
         [SerializeField]
@@ -62,6 +62,10 @@ namespace umi3d.edk
             };
         }
 
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

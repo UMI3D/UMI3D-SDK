@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
@@ -79,6 +80,26 @@ namespace umi3d.edk
             meshDto.applyCustomMaterial = overrideModelMaterials;
             meshDto.overridedMaterials = materialsOverrider.ConvertAll((mat) => mat.ToDto());
         }
+
+        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var fp = base.ToBytes(user);
+            var fom = UMI3DNetworkingHelper.ToBytes(materialsOverrider);
+
+            int size = 3 * sizeof(bool)
+                + fp.Item1
+                + fom.Item1;
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, i);
+                i += fp.Item2( b, i); 
+                i += fom.Item2(b, i);
+                return size;
+            };
+            return (size, func);
+        }
+
 
     }
 }

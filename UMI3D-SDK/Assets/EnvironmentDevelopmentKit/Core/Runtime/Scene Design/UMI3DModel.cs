@@ -158,6 +158,28 @@ namespace umi3d.edk
             meshDto.isTraversable = isTraversable;
         }
 
+        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var fm = objectModel.GetValue(user).ToByte();
+            var fp = base.ToBytes(user);
+
+            int size = 4 * sizeof(bool)
+                + UMI3DNetworkingHelper.GetSize(idGenerator)
+                + fm.Item1
+                + fp.Item1;
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, i);
+                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, i);
+                i += UMI3DNetworkingHelper.Write(idGenerator, b, i);
+                i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
+                i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
+                i += fm.Item2(b, i);
+                i += fp.Item2(b, i);
+                return size;
+            };
+            return (size, func);
+        }
+
         ///<inheritdoc/>
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {

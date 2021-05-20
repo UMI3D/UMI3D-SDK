@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -244,6 +245,28 @@ namespace umi3d.edk
             dto.anchorDto = objectAnchor.GetValue(user);
         }
 
+        public virtual (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var anchor = objectAnchor.GetValue(user);
+            int size = 2*sizeof(ulong) + 3*sizeof(bool) 
+                + UMI3DNetworkingHelper.GetSize(anchor.positionOffset)
+                + UMI3DNetworkingHelper.GetSize(anchor.rotationOffset)
+                + UMI3DNetworkingHelper.GetSize(anchor.scaleOffset);
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(Id(), b, i);
+                i += UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0, b, i);
+                i += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user), b, i);
+                
+                i += UMI3DNetworkingHelper.Write(anchor.positionOffset, b, i);
+                i += UMI3DNetworkingHelper.Write(anchor.rotationOffset, b, i);
+                i += UMI3DNetworkingHelper.Write(anchor.scaleOffset, b, i);
+                return size;
+            };
+            return (size, func);
+        }
+
 
         #region sub objects
 
@@ -335,6 +358,7 @@ namespace umi3d.edk
         {
             return ConnectionFilters.Remove(filter);
         }
+
         #endregion
 
     }

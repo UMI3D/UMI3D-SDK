@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -287,6 +288,27 @@ namespace umi3d.edk
             nodeDto.yBillboard = objectYBillboard.GetValue(user);
             nodeDto.colliderDto = GetColliderDto();
             nodeDto.lodDto = GetLod();
+        }
+
+        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var fp = base.ToBytes(user);
+
+            int size = 2 * sizeof(bool)
+                + UMI3DNetworkingHelper.GetSize(idGenerator)
+                + fm.Item1
+                + fp.Item1;
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, i);
+                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, i);
+                i += UMI3DNetworkingHelper.Write(idGenerator, b, i);
+                i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
+                i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
+                i += fm.Item2(b, i);
+                i += fp.Item2(b, i);
+                return size;
+            };
+            return (size, func);
         }
 
         /// <summary>

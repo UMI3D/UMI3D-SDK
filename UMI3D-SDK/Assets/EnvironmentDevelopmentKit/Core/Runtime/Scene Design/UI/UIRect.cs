@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.UI;
@@ -149,5 +150,47 @@ namespace umi3d.edk
             rectDto.sizeDelta = SizeDelta.GetValue(user);
             rectDto.rectMask = RectMask.GetValue(user);
         }
+
+        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var fp = base.ToBytes(user);
+            var anchoredPosition = AnchoredPosition.GetValue(user);
+            var anchoredPosition3D = AnchoredPosition3D.GetValue(user);
+            var anchorMax = AnchorMax.GetValue(user);
+            var anchorMin = AnchorMin.GetValue(user);
+            var offsetMax = OffsetMax.GetValue(user);
+            var offsetMin = OffsetMin.GetValue(user);
+            var pivot = Pivot.GetValue(user);
+            var sizeDelta = SizeDelta.GetValue(user);
+            var rectMask = RectMask.GetValue(user);
+
+            int size =
+                UMI3DNetworkingHelper.GetSize(anchoredPosition)
+                + UMI3DNetworkingHelper.GetSize(anchoredPosition3D)
+                + UMI3DNetworkingHelper.GetSize(anchorMax)
+                + UMI3DNetworkingHelper.GetSize(anchorMin)
+                + UMI3DNetworkingHelper.GetSize(offsetMax)
+                + UMI3DNetworkingHelper.GetSize(offsetMin)
+                + UMI3DNetworkingHelper.GetSize(pivot)
+                + UMI3DNetworkingHelper.GetSize(sizeDelta)
+                + UMI3DNetworkingHelper.GetSize(rectMask)
+                + fp.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(anchoredPosition, b, i);
+                i += UMI3DNetworkingHelper.Write(anchoredPosition3D, b, i);
+                i += UMI3DNetworkingHelper.Write(anchorMax, b, i);
+                i += UMI3DNetworkingHelper.Write(anchorMin, b, i);
+                i += UMI3DNetworkingHelper.Write(offsetMax, b, i);
+                i += UMI3DNetworkingHelper.Write(offsetMin, b, i);
+                i += UMI3DNetworkingHelper.Write(pivot, b, i);
+                i += UMI3DNetworkingHelper.Write(sizeDelta, b, i);
+                i += UMI3DNetworkingHelper.Write(rectMask, b, i);
+                i += fp.Item2(b, i);
+                return size;
+            };
+            return (size, func);
+        }
+
     }
 }
