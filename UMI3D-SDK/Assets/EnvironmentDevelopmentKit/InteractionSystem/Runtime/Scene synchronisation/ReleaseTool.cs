@@ -27,7 +27,13 @@ namespace umi3d.edk.interaction
 
         public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
         {
-            throw new System.NotImplementedException();
+            int size = sizeof(uint) + sizeof(ulong);
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
+                i += UMI3DNetworkingHelper.Write(tool.Id(), b, i);
+                return size;
+            };
+            return (size, func);
         }
 
         ///<inheritdoc/>

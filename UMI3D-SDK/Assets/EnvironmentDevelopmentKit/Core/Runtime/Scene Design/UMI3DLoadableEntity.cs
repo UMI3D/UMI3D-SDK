@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 
@@ -29,6 +30,8 @@ namespace umi3d.edk
         DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null);
 
         IEntity ToEntityDto(UMI3DUser user);
+
+        (int, Func<byte[], int, int>) ToBytes(UMI3DUser user);
     }
 
 }
