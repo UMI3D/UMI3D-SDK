@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -161,6 +162,34 @@ namespace umi3d.edk
             return ToAnimationDto(user);
         }
 
+        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var aux = ToBytesAux(user);
+
+            int size = 2*sizeof(ulong) + 2*sizeof(bool)+sizeof(long)+aux.Item1;
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(Id(), b, i);
+                i += UMI3DNetworkingHelper.Write(objectPlaying.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectLooping.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectStartTime.GetValue(user), b, i);
+                i += UMI3DNetworkingHelper.Write(objectPauseFrame.GetValue(user), b, i);
+                i += aux.Item2(b, i);
+                return size;
+            };
+            return (size, func);
+
+        }
+
+        protected virtual (int, Func<byte[], int, int>) ToBytesAux(UMI3DUser user)
+        {
+
+            int size = 0;
+            Func<byte[], int, int> func = (b, i) => {
+                return size;
+            };
+            return (size, func);
+
+        }
 
         #region filter
         HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
@@ -179,6 +208,7 @@ namespace umi3d.edk
         {
             return ConnectionFilters.Remove(filter);
         }
+
         #endregion
     }
 }

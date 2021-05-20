@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Video;
@@ -63,6 +64,19 @@ namespace umi3d.edk
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DVideoPlayerDto();
+        }
+
+        protected override (int, Func<byte[], int, int>) ToBytesAux(UMI3DUser user)
+        {
+            var fr = ObjectVideoResource.GetValue(user).ToByte();
+            int size = 2*sizeof(ulong) + fr.Item1;
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(ObjectMaterial.GetValue(user)?.Id() ?? 0, b, i);
+                i += UMI3DNetworkingHelper.Write(audioPlayer?.Id() ?? 0, b, i);
+                i += fr.Item2(b, i);
+                return size;
+            };
+            return (size, func);
         }
     }
 }

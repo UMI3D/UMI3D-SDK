@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -34,5 +35,11 @@ namespace umi3d.edk
             dto.variants.AddRange(variants.Select(v => v.ToDto()));
             return dto;
         }
+
+        public (int, Func<byte[], int, int>) ToByte()
+        {
+            return UMI3DNetworkingHelper.ToBytes(variants);
+        }
+
     }
 }

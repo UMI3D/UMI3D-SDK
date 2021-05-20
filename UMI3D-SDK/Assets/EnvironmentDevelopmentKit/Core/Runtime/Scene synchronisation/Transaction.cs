@@ -46,31 +46,14 @@ namespace umi3d.edk
             if (operation.Count() > 0)
             {
                 int indexPos = UMI3DNetworkingHelper.GetSize(UMI3DOperationKeys.Transaction);
-                int size = indexPos + operation.Count() * sizeof(int);
-                var func = operation
-                    .Select(o => o.ToBytes(user))
-                    .Select(c =>
-                    {
-                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => (c.Item2(by, i), i, j);
-                        return (c.Item1, f1);
-                    })
-                    .Aggregate((0, f3)
-                    , (a, b) =>
-                    {
-                        Func<byte[], int, int, (int, int, int)> f2 = (byte[] by, int i, int j) =>
-                        {
-                            int s;
-                            (s, i, j) = a.Item2(by, i, j);
-                            (s, i, j) = b.Item2(by, i, j);
-                            j += UMI3DNetworkingHelper.Write(i, by, j);
-                            i += s;
-                            return (s, i, j);
-                        };
-                        return (a.Item1 + b.Item1, f2);
-                    });
-                var data = new byte[size + func.Item1];
-                UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction, data, 0);
-                var couple = func.Item2(data, size, indexPos);
+
+                var func = UMI3DNetworkingHelper.ToBytes(operation, user);
+
+                var lenght = indexPos + func.Item1;
+                var position = 0;
+                var data = new byte[lenght];
+                position = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction, data, position);
+                var couple = func.Item2(data, position);
                 return (data,true);
             }
             return (null,false);

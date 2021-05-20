@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -48,6 +49,30 @@ namespace umi3d.edk
             }
             dto.baseUrl = UMI3DServer.GetHttpUrl() + UMI3DNetworkingKeys.directory;
             return dto;
+        }
+
+        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var f = UMI3DNetworkingHelper.ToBytes(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
+
+            int size =
+                UMI3DNetworkingHelper.GetSize(id)
+                + UMI3DNetworkingHelper.GetSize(Id())
+                + UMI3DNetworkingHelper.GetSize(date.Format())
+                + UMI3DNetworkingHelper.GetSize(date.Culture())
+                + UMI3DNetworkingHelper.GetSize(date.ToString())
+                + f.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(id, b, i);
+                i += UMI3DNetworkingHelper.Write(Id(), b, i);
+                i += UMI3DNetworkingHelper.Write(date.Format(), b, i);
+                i += UMI3DNetworkingHelper.Write(date.Culture(), b, i);
+                i += UMI3DNetworkingHelper.Write(date.ToString(), b, i);
+                i += f.Item2(b, i);
+                return size;
+            };
+            return (size, func);
         }
 
         public ulong Id()

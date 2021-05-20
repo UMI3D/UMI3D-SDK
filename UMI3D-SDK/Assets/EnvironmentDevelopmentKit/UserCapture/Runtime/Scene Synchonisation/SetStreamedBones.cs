@@ -29,7 +29,7 @@ namespace umi3d.edk.userCapture
             int size = sizeof(uint) + UMI3DNetworkingHelper.GetSizeArray(streamedBones);
             Func<byte[], int, int> func = (b, i) => {
                 i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
-                i += UMI3DNetworkingHelper.WritteArray(streamedBones, b, i);
+                i += UMI3DNetworkingHelper.WriteArray(streamedBones, b, i);
                 return size;
             };
             return (size, func);

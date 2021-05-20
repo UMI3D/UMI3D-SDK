@@ -21,7 +21,7 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
-    public abstract class Operation
+    public abstract class Operation : IByte
     {
         /// <summary>
         /// List of users to which this operation should be send.
@@ -41,6 +41,13 @@ namespace umi3d.edk
         /// <param name="user"></param>
         /// <returns>the size needed ans a function to set the byte array at a position and return the size again</returns>
         public abstract (int,Func<byte[],int,int>) ToBytes(UMI3DUser user);
+
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            if (parameters.Length < 1)
+                return ToBytes(null);
+            return ToBytes(parameters[0] as UMI3DUser);
+        }
 
         public static Operation operator +(Operation a, Operation b)
         {

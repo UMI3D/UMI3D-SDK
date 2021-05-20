@@ -324,7 +324,7 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
 
-        public static int WritteArray<T>(IEnumerable<T> value, byte[] array, int position)
+        public static int WriteArray<T>(IEnumerable<T> value, byte[] array, int position)
         {
             int count = 0;
             foreach (var v in value)
@@ -334,6 +334,62 @@ namespace umi3d.common
             return count;
         }
 
+        public static (int, Func<byte[], int, int>) ToBytes(IEnumerable<IByte> operations, params object[] parameters)
+        {
+            Func<byte[], int, int, (int, int, int)> f3 = (byte[] by, int i, int j) =>
+            {
+                return (0, i, j);
+            };
+            if (operations.Count() > 0)
+            {
+                int size = operations.Count() * sizeof(int);
+                var func = operations
+                    .Select(o => o.ToByteArray(parameters))
+                    .Select(c =>
+                    {
+                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => (c.Item2(by, i), i, j);
+                        return (c.Item1, f1);
+                    })
+                    .Aggregate((0, f3)
+                    , (a, b) =>
+                    {
+                        Func<byte[], int, int, (int, int, int)> f2 = (byte[] by, int i, int j) =>
+                        {
+                            int s;
+                            (s, i, j) = a.Item2(by, i, j);
+                            (s, i, j) = b.Item2(by, i, j);
+                            j += UMI3DNetworkingHelper.Write(i, by, j);
+                            i += s;
+                            return (s, i, j);
+                        };
+                        return (a.Item1 + b.Item1, f2);
+                    });
+                var length = size + func.Item1;
+
+                Func<byte[], int, int> f5 = (byte[] by, int i) =>
+                {
+                    var couple = func.Item2(by, size, i);
+
+                    Debug.Log($"couple.Item2 == length {couple.Item2 == length}");
+
+                    return couple.Item2;
+                };
+
+                return (length, f5);
+            }
+            Func<byte[], int,  int> f4 = (byte[] by, int i) =>
+            {
+                return 0;
+            };
+            return (0, f4);
+        }
+
+
+    }
+
+    public interface IByte
+    {
+        (int, Func<byte[], int, int>) ToByteArray(params object[] parameters);
     }
 
     public abstract class Umi3dNetworkingHelperModule

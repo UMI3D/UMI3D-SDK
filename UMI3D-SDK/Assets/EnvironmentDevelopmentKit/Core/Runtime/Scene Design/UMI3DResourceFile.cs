@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common;
 
 namespace umi3d.edk
 {
 
     [System.Serializable]
-    public class UMI3DResourceFile
+    public class UMI3DResourceFile : IByte
     {
         public bool isLocalFile = false;
         public string domain = "";
@@ -46,6 +47,31 @@ namespace umi3d.edk
             dto.libraryKey = isInLibrary ? libraryKey?.id : null;
             return dto;
         }
+
+        public (int, Func<byte[], int, int>) ToByte()
+        {
+            int size =
+                UMI3DNetworkingHelper.GetSize(GetUrl())
+                + UMI3DNetworkingHelper.GetSize(format)
+                + UMI3DNetworkingHelper.GetSize(extension)
+                + UMI3DNetworkingHelper.GetSize(metrics.resolution)
+                + UMI3DNetworkingHelper.GetSize(metrics.size)
+                + UMI3DNetworkingHelper.GetSize(isInBundle ? pathIfInBundle : null)
+                + UMI3DNetworkingHelper.GetSize(isInLibrary ? libraryKey?.id : null);
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(GetUrl(), b, i);
+                i += UMI3DNetworkingHelper.Write(format, b, i);
+                i += UMI3DNetworkingHelper.Write(extension, b, i);
+                i += UMI3DNetworkingHelper.Write(metrics.resolution, b, i);
+                i += UMI3DNetworkingHelper.Write(metrics.size, b, i);
+                i += UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null, b, i);
+                i += UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null, b, i);
+                return size;
+            };
+            return (size, func);
+        }
+
         public string GetUrl()
         {
             path = path.Replace(@"\", "/");
@@ -59,5 +85,9 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            return ToByte();
+        }
     }
 }

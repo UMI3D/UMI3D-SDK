@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -73,6 +74,20 @@ namespace umi3d.edk
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return new EntityGroupDto() { id = Id(), entitiesId = entities.GetValue(user).Select(e => e.Id()).ToList() };
+        }
+
+        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            var ids = entities.GetValue(user).Select(e => e.Id()).ToList();
+
+            int size = sizeof(ulong) + UMI3DNetworkingHelper.GetSizeArray(ids);
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
+                i += UMI3DNetworkingHelper.Write(entityId, b, i);
+                i += UMI3DNetworkingHelper.WriteArray(ids, b, i);
+                return size;
+            };
+            return (size, func);
         }
 
         public void Destroy()

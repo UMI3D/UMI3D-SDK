@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DLocalAssetDirectory
+    public class UMI3DLocalAssetDirectory : IByte
     {
         public string name = "new variant";
         public string path;
@@ -39,6 +40,26 @@ namespace umi3d.common
             this.path = other.path;
             this.metrics = other.metrics;
             this.formats = other.formats;
+        }
+
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            int size =
+                UMI3DNetworkingHelper.GetSize(name)
+                + UMI3DNetworkingHelper.GetSize(path)
+                + UMI3DNetworkingHelper.GetSize(metrics.resolution)
+                + UMI3DNetworkingHelper.GetSize(metrics.size)
+                + UMI3DNetworkingHelper.GetSizeArray(formats);
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(name, b, i);
+                i += UMI3DNetworkingHelper.Write(path, b, i);
+                i += UMI3DNetworkingHelper.Write(metrics.resolution, b, i);
+                i += UMI3DNetworkingHelper.Write(metrics.size, b, i);
+                i += UMI3DNetworkingHelper.WriteArray(formats, b, i);
+                return size;
+            };
+            return (size, func);
         }
         //public List<string> dependencies = new List<string>();
     }

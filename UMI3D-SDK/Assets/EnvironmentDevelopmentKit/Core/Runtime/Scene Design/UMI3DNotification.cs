@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 
@@ -62,6 +63,18 @@ namespace umi3d.edk
             return dto;
         }
 
+        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user) 
+        {
+            int size = sizeof(uint) + sizeof(ulong) + sizeof(uint) + UMI3DNetworkingHelper.GetSize(value);
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
+                i += UMI3DNetworkingHelper.Write(entityId, b, i);
+                i += UMI3DNetworkingHelper.Write(property, b, i);
+                i += UMI3DNetworkingHelper.Write(value, b, i);
+                return size;
+            };
+            return (size, func);
+        }
 
         /// <summary>
         /// Return load operation

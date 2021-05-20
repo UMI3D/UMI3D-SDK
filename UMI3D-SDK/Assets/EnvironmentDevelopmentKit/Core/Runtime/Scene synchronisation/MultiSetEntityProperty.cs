@@ -49,7 +49,7 @@ namespace umi3d.edk
             Func<byte[], int, int> func = (b, i) => {
                 i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty, b, i);
                 i += UMI3DNetworkingHelper.Write(entityIds.Count(), b, i);
-                i += UMI3DNetworkingHelper.WritteArray(funcs, b, i);
+                i += UMI3DNetworkingHelper.WriteArray(funcs, b, i);
                 i += UMI3DNetworkingHelper.Write(property, b, i);
                 i += UMI3DNetworkingHelper.Write(value, b, i);
                 return size;

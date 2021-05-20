@@ -25,7 +25,7 @@ namespace umi3d.edk
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
         [Serializable]
-        public class OperationChain
+        public class OperationChain : IByte
         {
             public Operation Operation;
             public float progress;
@@ -33,6 +33,26 @@ namespace umi3d.edk
             public UMI3DNodeAnimationDto.OperationChainDto Todto(UMI3DUser user)
             {
                 return new UMI3DNodeAnimationDto.OperationChainDto() { operation = Operation.ToOperationDto(user), startOnProgress = progress };
+            }
+
+            public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+            {
+                var op = Operation.ToBytes(user);
+
+                int size =  sizeof(float) + op.Item1;
+                Func<byte[], int, int> func = (b, i) => {
+                    i += UMI3DNetworkingHelper.Write(progress, b, i);
+                    i += op.Item2(b, i);
+                    return size;
+                };
+                return (size, func);
+            }
+
+            (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+            {
+                if (parameters.Length < 1)
+                    return ToBytes(null);
+                return ToBytes(parameters[0] as UMI3DUser);
             }
         }
 
@@ -71,6 +91,21 @@ namespace umi3d.edk
             var NAdto = dto as UMI3DNodeAnimationDto;
             NAdto.animationChain = ObjectAnimationChain.GetValue(user)?.Select(op => op?.Todto(user)).ToList();
             NAdto.duration = ObjectDuration.GetValue(user);
+        }
+
+        protected override (int, Func<byte[], int, int>) ToBytesAux(UMI3DUser user)
+        {
+
+            var funcChain = UMI3DNetworkingHelper.ToBytes(animationChain, user);
+
+            int size = sizeof(float) + funcChain.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(objectDuration.GetValue(user), b, i);
+                funcChain.Item2(b, i);
+                return size;
+            };
+            return (size, func);
         }
     }
 }
