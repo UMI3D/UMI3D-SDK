@@ -204,14 +204,14 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log("Player " + player.NetworkId + " disconnected");
+                Debug.Log($"Player [{player.NetworkId}] disconnected");
             });
             playerCount = server.Players.Count;
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user != null)
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
+                    //UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
                 });
         }
 
@@ -223,7 +223,10 @@ namespace umi3d.edk.collaboration
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (dto is StatusDto sts)
             {
-                Debug.Log(sts.status);
+                MainThreadManager.Run(() =>
+                {
+                    Debug.Log(sts.status);
+                });
                 UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
             }
         }
@@ -314,7 +317,10 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVideoFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            Debug.LogError("Video frame not implemented!");
+            MainThreadManager.Run(() =>
+            {
+                Debug.LogError("Video frame not implemented!");
+            });
         }
 
         #endregion
@@ -408,7 +414,7 @@ namespace umi3d.edk.collaboration
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
             Binary message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
-            message.SetSender(player);
+            //message.SetSender(player);
             if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
                 lock (server.Players)
                 {
