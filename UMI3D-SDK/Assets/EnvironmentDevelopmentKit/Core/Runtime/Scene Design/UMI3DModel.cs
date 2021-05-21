@@ -168,13 +168,13 @@ namespace umi3d.edk
                 + fm.Item1
                 + fp.Item1;
             Func<byte[], int, int> func = (b, i) => {
+                i += fp.Item2(b, i);
                 i += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, i);
                 i += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, i);
                 i += UMI3DNetworkingHelper.Write(idGenerator, b, i);
                 i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
                 i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
                 i += fm.Item2(b, i);
-                i += fp.Item2(b, i);
                 return size;
             };
             return (size, func);

@@ -104,10 +104,10 @@ namespace umi3d.edk
                 + fp.Item1
                 + fi.Item1;
             Func<byte[], int, int> func = (b, i) => {
+                i += fp.Item2(b, i);
                 i += UMI3DNetworkingHelper.Write(c, b, i);
                 i += UMI3DNetworkingHelper.Write((int)ImageType.GetValue(user).Convert(), b, i);
                 i += fi.Item2(b, i);
-                i += fp.Item2(b, i);
                 return size;
             };
             return (size, func);

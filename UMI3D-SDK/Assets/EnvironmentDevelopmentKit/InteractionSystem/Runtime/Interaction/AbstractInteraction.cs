@@ -18,6 +18,7 @@ using BeardedManStudios.Forge.Networking.Unity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -27,7 +28,7 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IByte
     {
 
         /// <summary>
@@ -189,6 +190,18 @@ namespace umi3d.edk.interaction
             dto.icon3D = Display.icon3D.ToDto();
             dto.id = Id();
             dto.description = Display.description;
+        }
+
+        public virtual (int, Func<byte[], int, int>) ToByte(UMI3DUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            if (parameters.Length < 1)
+                return ToByte(null);
+            return ToByte(parameters[0] as UMI3DUser);
         }
 
         #region filter

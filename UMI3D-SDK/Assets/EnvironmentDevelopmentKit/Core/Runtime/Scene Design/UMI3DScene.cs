@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -109,21 +110,46 @@ namespace umi3d.edk
         {
             var fp = base.ToBytes(user);
 
-            int size = 2 * sizeof(bool)
-                + UMI3DNetworkingHelper.GetSize(idGenerator)
-                + fm.Item1
+
+
+            var otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(o => o.ToBytes(user)).ToList();
+            otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(o => o.ToBytes(user)));
+            Func<byte[], int, int> f0 = (byte[] b, int i) => { return 0; };
+            var f = otherEntities.Aggregate((0, f0), (a, b) => {
+                Func<byte[], int, int> f1 = (byte[] by, int i) =>
+                {
+                    var i1 = 0;
+                    i1 = a.Item2(by, i);
+                    i += i1;
+                    var i2 = b.Item2(by, i);
+                    return i1 + i2;
+                };
+                return (a.Item1 + b.Item1, f1); });
+
+            var position = objectPosition.GetValue(user);
+            var scale = objectScale.GetValue(user);
+            var rotation = objectRotation.GetValue(user);
+            var LibrariesId = libraries.Select(l => { return l.id; }).ToList();
+
+            int size =
+                UMI3DNetworkingHelper.GetSize(position)
+                + UMI3DNetworkingHelper.GetSize(scale)
+                + UMI3DNetworkingHelper.GetSize(rotation)
+                + UMI3DNetworkingHelper.GetSize(LibrariesId)
+                + f.Item1
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, i);
-                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, i);
-                i += UMI3DNetworkingHelper.Write(idGenerator, b, i);
-                i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
-                i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
-                i += fm.Item2(b, i);
+            Func<byte[], int, int> func = (b, i) =>
+            {
                 i += fp.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(position, b, i);
+                i += UMI3DNetworkingHelper.Write(scale, b, i);
+                i += UMI3DNetworkingHelper.Write(rotation, b, i);
+                i += UMI3DNetworkingHelper.Write(LibrariesId, b, i);
+                i += f.Item2(b, i);
                 return size;
             };
-
+            return (size,func);
+        }
 
             //Remember already added entities
             [HideInInspector]

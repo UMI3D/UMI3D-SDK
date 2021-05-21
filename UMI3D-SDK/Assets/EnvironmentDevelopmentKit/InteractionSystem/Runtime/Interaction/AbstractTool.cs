@@ -232,6 +232,39 @@ namespace umi3d.edk.interaction
             dto.active = objectActive.GetValue(user);
         }
 
+
+        public virtual (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            Func<byte[], int, int> f0 = (b, i) => { return 0; };
+
+            var id = Id();
+            var name = Display.name;
+            var description = Display.description;
+            var icon2D = Display.icon2D?.ToByte() ?? (0, f0);
+            var icon3D = Display.icon3D?.ToByte() ?? (0, f0);
+            var interactions = UMI3DNetworkingHelper.ToBytes(objectInteractions.GetValue(user).Where(i => i != null),user);
+            var active = objectActive.GetValue(user);
+
+            int size =
+                sizeof(ulong) + sizeof(bool)
+                + UMI3DNetworkingHelper.GetSize(name) + UMI3DNetworkingHelper.GetSize(description)
+                +icon2D.Item1
+                +icon3D.Item1
+                +interactions.Item1;
+            Func<byte[], int, int> func = (b, i) => {
+                i += UMI3DNetworkingHelper.Write(id, b, i);
+                i += UMI3DNetworkingHelper.Write(name, b, i);
+                i += UMI3DNetworkingHelper.Write(description, b, i);
+                i += icon2D.Item2(b,i);
+                i += icon3D.Item2(b, i);
+                i += interactions.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(active, b, i);
+                return size;
+            };
+
+            return (size, func);
+        }
+
         /// <summary>
         /// Convert interaction to Data Transfer Object for a given user. 
         /// </summary>

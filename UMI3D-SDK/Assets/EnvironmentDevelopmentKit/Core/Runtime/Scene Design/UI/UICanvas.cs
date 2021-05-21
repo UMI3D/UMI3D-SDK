@@ -89,10 +89,10 @@ namespace umi3d.edk
             int size = 2 * sizeof(float)+ sizeof(int)
                 + fp.Item1;
             Func<byte[], int, int> func = (b, i) => {
+                i += fp.Item2(b, i);
                 i += UMI3DNetworkingHelper.Write(DynamicPixelPerUnit.GetValue(user), b, i);
                 i += UMI3DNetworkingHelper.Write(ReferencePixelPerUnit.GetValue(user), b, i);
                 i += UMI3DNetworkingHelper.Write(OrderInLayer.GetValue(user), b, i);
-                i += fp.Item2(b, i);
                 return size;
             };
             return (size, func);

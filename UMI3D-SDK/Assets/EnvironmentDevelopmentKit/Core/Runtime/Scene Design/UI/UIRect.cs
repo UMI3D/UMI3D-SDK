@@ -177,6 +177,7 @@ namespace umi3d.edk
                 + fp.Item1;
             Func<byte[], int, int> func = (b, i) =>
             {
+                i += fp.Item2(b, i);
                 i += UMI3DNetworkingHelper.Write(anchoredPosition, b, i);
                 i += UMI3DNetworkingHelper.Write(anchoredPosition3D, b, i);
                 i += UMI3DNetworkingHelper.Write(anchorMax, b, i);
@@ -186,7 +187,6 @@ namespace umi3d.edk
                 i += UMI3DNetworkingHelper.Write(pivot, b, i);
                 i += UMI3DNetworkingHelper.Write(sizeDelta, b, i);
                 i += UMI3DNetworkingHelper.Write(rectMask, b, i);
-                i += fp.Item2(b, i);
                 return size;
             };
             return (size, func);

@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -163,21 +165,26 @@ namespace umi3d.edk.userCapture
         {
             var fp = base.ToBytes(user);
 
-            int size = 2 * sizeof(bool)
-                + UMI3DNetworkingHelper.GetSize(idGenerator)
-                + fm.Item1
+            var userId = this.userId;
+            var activeBindings = this.activeBindings.GetValue(user);
+
+            var fb = UMI3DNetworkingHelper.ToBytes(bindings.GetValue(user), user);
+
+
+            int size = UMI3DNetworkingHelper.GetSize(userId)
+                + UMI3DNetworkingHelper.GetSize(activeBindings)
+                + fb.Item1
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, i);
-                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, i);
-                i += UMI3DNetworkingHelper.Write(idGenerator, b, i);
-                i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
-                i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
-                i += fm.Item2(b, i);
+            Func<byte[], int, int> func = (b, i) =>
+            {
                 i += fp.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(userId, b, i);
+                i += UMI3DNetworkingHelper.Write(activeBindings, b, i);
+                i += fb.Item2(b, i);
                 return size;
             };
 
-
+            return (size, func);
         }
     }
+}

@@ -90,10 +90,10 @@ namespace umi3d.edk
                 + fp.Item1
                 + fom.Item1;
             Func<byte[], int, int> func = (b, i) => {
+                i += fp.Item2(b, i);
                 i += UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user), b, i);
                 i += UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user), b, i);
                 i += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, i);
-                i += fp.Item2( b, i); 
                 i += fom.Item2(b, i);
                 return size;
             };

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common;
 using UnityEngine;
 
@@ -25,7 +26,7 @@ namespace umi3d.edk
     {
 
         public UMI3DModel parentModel;
-        public string submodelName { get; protected set; }
+        public string subModelName { get; protected set; }
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
         [SerializeField, EditorReadOnly]
         protected bool ignoreModelMaterialOverride = false;
@@ -59,7 +60,7 @@ namespace umi3d.edk
             if (objectId == 0 && UMI3DEnvironment.Exists)
             {
                 objectId = UMI3DEnvironment.Register(this);
-                submodelName = gameObject.name;
+                subModelName = gameObject.name;
                 InitDefinition(objectId);
             }
         }
@@ -91,7 +92,7 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             SubModelDto subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
-            subDto.subModelName = submodelName;
+            subDto.subModelName = subModelName;
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
             subDto.isTraversable = isTraversable;
             subDto.isPartOfNavmesh = isPartOfNavmesh;
@@ -101,21 +102,31 @@ namespace umi3d.edk
         {
             var fp = base.ToBytes(user);
 
-            int size = 2 * sizeof(bool)
-                + UMI3DNetworkingHelper.GetSize(idGenerator)
-                + fm.Item1
+            var modelId = this.parentModel.Id();
+            var subModelName = this.subModelName;
+            var ignoreModelMaterialOverride = this.ignoreModelMaterialOverride;
+            var isTraversable = this.isTraversable;
+            var isPartOfNavmesh = this.isPartOfNavmesh;
+
+
+            int size = UMI3DNetworkingHelper.GetSize(modelId)
+                + UMI3DNetworkingHelper.GetSize(subModelName)
+                + UMI3DNetworkingHelper.GetSize(ignoreModelMaterialOverride)
+                + UMI3DNetworkingHelper.GetSize(isTraversable)
+                + UMI3DNetworkingHelper.GetSize(isPartOfNavmesh)
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, i);
-                i += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, i);
-                i += UMI3DNetworkingHelper.Write(idGenerator, b, i);
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fp.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(modelId, b, i);
+                i += UMI3DNetworkingHelper.Write(subModelName, b, i);
+                i += UMI3DNetworkingHelper.Write(ignoreModelMaterialOverride, b, i);
                 i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
                 i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
-                i += fm.Item2(b, i);
-                i += fp.Item2(b, i);
                 return size;
             };
 
-
+            return (size, func);
         }
     }
+}

@@ -247,6 +247,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.GetSize((int)verticalOverflow)
                 + fp.Item1;
             Func<byte[], int, int> func = (b, i) => {
+                i += fp.Item2(b, i);
                 i += UMI3DNetworkingHelper.Write(alignment, b, i);
                 i += UMI3DNetworkingHelper.Write(alignByGeometry, b, i);
                 i += UMI3DNetworkingHelper.Write(color, b, i);
@@ -261,7 +262,6 @@ namespace umi3d.edk
                 i += UMI3DNetworkingHelper.Write(supportRichText, b, i);
                 i += UMI3DNetworkingHelper.Write(text, b, i);
                 i += UMI3DNetworkingHelper.Write((int)verticalOverflow, b, i);
-                i += fp.Item2(b, i);
                 return size;
             };
             return (size, func);

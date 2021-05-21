@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -64,5 +65,9 @@ namespace umi3d.edk.interaction
             return new ToolDto();
         }
 
+        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
