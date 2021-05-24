@@ -135,7 +135,7 @@ namespace umi3d.edk.collaboration
             http = new UMI3DHttp();
 
             forgeServer = UMI3DForgeServer.Create(
-                ip, forgePort, //UDPServer config
+                ip, httpPort, //UDPServer config
                 forgeMasterServerHost, forgeMasterServerPort, //ForgeMasterServer
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
