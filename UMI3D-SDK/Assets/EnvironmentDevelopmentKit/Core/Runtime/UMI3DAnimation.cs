@@ -25,10 +25,26 @@ namespace umi3d.edk
     public class UMI3DAnimation : UMI3DAbstractAnimation
     {
         [Serializable]
-        public class AnimationChain
+        public class AnimationChain : IByte
         {
             public UMI3DAbstractAnimation Animation;
             public float Progress;
+
+            public (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+            {
+                return ToByte(null);
+            }
+
+            public (int, Func<byte[], int, int>) ToByte(UMI3DUser user)
+            {
+                int size = sizeof(ulong) + sizeof(float);
+                Func<byte[], int, int> func = (b, i) => {
+                    i += UMI3DNetworkingHelper.Write(Animation.Id(), b, i);
+                    i += UMI3DNetworkingHelper.Write(Progress, b, i);
+                    return size;
+                };
+                return (size, func);
+            }
 
             public UMI3DAnimationDto.AnimationChainDto Todto(UMI3DUser user)
             {
@@ -72,6 +88,22 @@ namespace umi3d.edk
             var Adto = dto as UMI3DAnimationDto;
             Adto.animationChain = ObjectAnimationChain.GetValue(user)?.Select(op => op?.Todto(user)).ToList();
             Adto.duration = ObjectDuration.GetValue(user);
+        }
+
+        protected override (int, Func<byte[], int, int>) ToBytesAux(UMI3DUser user)
+        {
+            var fbase = base.ToBytesAux(user);
+            var fchain = UMI3DNetworkingHelper.ToBytes(ObjectAnimationChain.GetValue(user));
+            var duration = ObjectDuration.GetValue(user);
+
+            int size = fbase.Item1 + fchain.Item1 + UMI3DNetworkingHelper.GetSize(duration);
+            Func<byte[], int, int> func = (b, i) => {
+                i += fbase.Item2(b, i);
+                i += fchain.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(duration, b, i);
+                return size;
+            };
+            return (size, func);
         }
     }
 }
