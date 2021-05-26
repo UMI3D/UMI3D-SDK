@@ -48,7 +48,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string environmentType="";
 
-
+        /// <summary>
+        /// Port given to clients if they find this server via a master server.
+        /// </summary>
+        public ushort connectionPort;
 
         /// <inheritdoc/>
         public override NetWorker GetNetWorker()
@@ -67,7 +70,7 @@ namespace umi3d.edk.collaboration
         /// <param name="natServerPort"></param>
         /// <param name="maxNbPlayer"></param>
         /// <returns></returns>
-        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64)
+        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64)
         {
             UMI3DForgeServer server = (new GameObject("UMI3DForgeServer")).AddComponent<UMI3DForgeServer>();
             server.ip = ip;
@@ -77,6 +80,7 @@ namespace umi3d.edk.collaboration
             server.natServerHost = natServerHost;
             server.natServerPort = natServerPort;
             server.maxNbPlayer = maxNbPlayer;
+            server.connectionPort = connectionPort;
             return server;
         }
 
@@ -117,10 +121,10 @@ namespace umi3d.edk.collaboration
             {
                 Debug.LogWarning("A network manager was not provided, generating a new one instead");
                 networkManager = new GameObject("Network Manager");
-                mgr = networkManager.AddComponent<NetworkManager>();
+                mgr = networkManager.AddComponent<UMI3DNetworkManager>();
             }
             else if (mgr == null)
-                mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+                mgr = Instantiate(networkManager).GetComponent<UMI3DNetworkManager>();
 
             // If we are using the master server we need to get the registration data
             JSONNode masterServerData = null;
@@ -132,7 +136,7 @@ namespace umi3d.edk.collaboration
                 string mode = string.IsNullOrEmpty(UMI3DCollaborationServer.Instance.iconServerUrl) ? "public/picture.png" : UMI3DCollaborationServer.Instance.iconServerUrl;
                 string comment = UMI3DCollaborationServer.Instance.descriptionComment;
 
-                masterServerData = mgr.MasterServerRegisterData(server, serverId, serverName, type, mode, comment);
+                masterServerData = (mgr as UMI3DNetworkManager).MasterServerRegisterData(server, connectionPort.ToString(), serverId, serverName, type, mode, comment);
             }
             mgr.Initialize(server, masterServerHost, masterServerPort, masterServerData);
             NetworkObject.Flush(server); //Called because we are already in the correct scene!
