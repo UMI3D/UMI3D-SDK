@@ -117,31 +117,38 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
-                    throw new NotImplementedException();
+                    UMI3DEnvironmentLoader.LoadEntity(operation,position,length,performed);
                     break;
                 case UMI3DOperationKeys.DeleteEntity:
-                    throw new NotImplementedException();
-                    break;
+                    {
+                        var entityId = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+                        UMI3DEnvironmentLoader.DeleteEntity(entityId, performed);
+                        break;
+                    }
                 case UMI3DOperationKeys.MultiSetEntityProperty:
-                    throw new NotImplementedException();
+                    UMI3DEnvironmentLoader.SetMultiEntity(operation, position, length);
+                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.StartInterpolationProperty:
-                    throw new NotImplementedException();
+                    UMI3DEnvironmentLoader.StartInterpolation(operation, position, length);
+                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.StopInterpolationProperty:
-                    throw new NotImplementedException();
+                    UMI3DEnvironmentLoader.StopInterpolation(operation, position, length);
+                    performed.Invoke();
                     break;
 
                 default:
                     if(UMI3DOperationKeys.SetEntityProperty <= operationId && operationId <= UMI3DOperationKeys.SetEntityMatrixProperty)
                     {
-                        UMI3DEnvironmentLoader.SetEntity(operationId, operation, position, length);
+                        var entityId = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+                        var propertyKey = UMI3DNetworkingHelper.Read<uint>(operation, ref position, ref length);
+                        UMI3DEnvironmentLoader.SetEntity(operationId,entityId, propertyKey, operation, position, length);
                         performed.Invoke();
                     }
                     else
                     {
-                        throw new NotImplementedException();
-                        //UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operation, performed);
+                        UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operationId, operation, position, length, performed);
                     }
                     break;
             }

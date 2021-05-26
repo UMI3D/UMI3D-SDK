@@ -187,6 +187,21 @@ namespace umi3d.common
             return res;
         }
 
+        public static List<T> ReadList<T>(byte[] array, ref int position, ref int length, int count)
+        {
+            var res = new List<T>();
+            var Length = array.Length;
+            for (int i = 0; position < Length && length > 0 && i < count;i++)
+            {
+                T result;
+                if (TryRead<T>(array, ref position, ref length, out result))
+                    res.Add(result);
+                else
+                    break;
+            }
+            return res;
+        }
+
         public static T[] ReadArray<T>(byte[] array, int position, int length)
         {
             return ReadArray<T>(array,ref position, ref length);

@@ -116,6 +116,28 @@ namespace umi3d.cdk
             return true;
         }
 
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationPlaying:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AnimationLooping:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AnimationStartTime:
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AnimationPauseFrame:
+                    value = UMI3DNetworkingHelper.Read<long>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
         protected UMI3DAbstractAnimationDto dto { get; set; }
 
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)

@@ -45,11 +45,12 @@ namespace umi3d.edk
             uint count = (uint)entityIds.Count();
 
 
-            int size =  (int) (3 * sizeof(uint) + count * sizeof(ulong) + UMI3DNetworkingHelper.GetSize(value));
+            int size =  (int) (4 * sizeof(uint) + count * sizeof(ulong) + UMI3DNetworkingHelper.GetSize(value));
             Func<byte[], int, int> func = (b, i) => {
                 i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty, b, i);
                 i += UMI3DNetworkingHelper.Write(entityIds.Count(), b, i);
                 i += UMI3DNetworkingHelper.WriteArray(funcs, b, i);
+                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
                 i += UMI3DNetworkingHelper.Write(property, b, i);
                 i += UMI3DNetworkingHelper.Write(value, b, i);
                 return size;

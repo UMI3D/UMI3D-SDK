@@ -165,6 +165,28 @@ namespace umi3d.cdk
             return true;
         }
 
+        public override bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (ReadUMI3DMaterialProperty(ref value, propertyKey, operation, position, length))
+                return true;
+            if (base.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+                return true;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.Position:
+                    value = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.Rotation:
+                    value = UMI3DNetworkingHelper.Read<Vector4>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.Scale:
+                    value = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
 
         public void LoadSceneMaterials(GlTFSceneDto dto, Action callback)
         {
@@ -546,6 +568,90 @@ namespace umi3d.cdk
                 return res;
             }
             return false;
+        }
+
+        public bool ReadUMI3DMaterialProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.RoughnessFactor:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.MetallicFactor:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.BaseColorFactor:
+                    value = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.EmissiveFactor:
+                    value = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.Maintexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.NormalTexture:
+                    value = UMI3DNetworkingHelper.Read<ScalableTextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.EmissiveTexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.RoughnessTexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.MetallicTexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.ChannelTexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.MetallicRoughnessTexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.OcclusionTexture:
+                    value = UMI3DNetworkingHelper.Read<TextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.HeightTexture:
+                    Debug.LogWarning("Height Texture not supported");
+                    break;
+
+                case UMI3DPropertyKeys.TextureTilingOffset:
+                    value = UMI3DNetworkingHelper.Read<Vector2>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.TextureTilingScale:
+                    value = UMI3DNetworkingHelper.Read<Vector2>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.NormalTextureScale:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.HeightTextureScale:
+                    value = UMI3DNetworkingHelper.Read<ScalableTextureDto>(operation, position, length);
+                    break;
+
+                case UMI3DPropertyKeys.ShaderProperties:
+                    Debug.LogWarning("not totaly implemented");
+                    break;
+
+                default:
+                    return false;
+
+            }
+
+            return true;
         }
 
     }

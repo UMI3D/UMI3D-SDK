@@ -167,6 +167,23 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Get a LoadEntityDto
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="onError"></param>
+        /// <param name="shouldTryAgain"></param>
+        public void SendPostEntity(EntityRequestDto id, Action<LoadEntityDto> callback, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                var res = UMI3DDto.FromBson(uwr.downloadHandler.data) as LoadEntityDto;
+                callback.Invoke(res);
+            };
+
+            client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.entity, id.ToBson(), action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
+        }
+
+        /// <summary>
         /// Send request using GET
         /// </summary>
         /// <param name="url">Url</param>

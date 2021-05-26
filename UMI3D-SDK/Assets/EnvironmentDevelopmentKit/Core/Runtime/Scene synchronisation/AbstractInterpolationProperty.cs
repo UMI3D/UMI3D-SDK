@@ -32,6 +32,6 @@ namespace umi3d.edk
         /// <summary>
         /// The name of the interpolated property
         /// </summary>
-        public ulong property;
+        public uint property;
     }
 }

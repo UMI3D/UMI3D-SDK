@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -117,6 +118,25 @@ namespace umi3d.cdk
             return true;
         }
 
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationDuration:
+                    dto.duration = UMI3DNetworkingHelper.Read<float>(operation,ref position,ref length);
+                    break;
+                case UMI3DPropertyKeys.AnimationChain:
+                    return UpdateChain(property);
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length) { }
+
         bool UpdateChain(SetEntityPropertyDto property)
         {
             switch (property)
@@ -131,7 +151,27 @@ namespace umi3d.cdk
                     dto.animationChain[(int)(Int64)set.index] = (UMI3DAnimationDto.AnimationChainDto)set.value;
                     break;
                 default:
-                    dto.animationChain = (List<UMI3DAnimationDto.AnimationChainDto>)property.value;
+                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DAnimationDto.AnimationChainDto).ToList();
+                    break;
+            }
+            return true;
+        }
+
+        bool UpdateChain(uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (operationId)
+            {
+                case op.SetEntityListAddProperty:
+                    dto.animationChain.Add((UMI3DAnimationDto.AnimationChainDto)add.value);
+                    break;
+                case SetEntityListRemovePropertyDto rem:
+                    dto.animationChain.RemoveAt((int)(Int64)rem.index);
+                    break;
+                case SetEntityListPropertyDto set:
+                    dto.animationChain[(int)(Int64)set.index] = (UMI3DAnimationDto.AnimationChainDto)set.value;
+                    break;
+                default:
+                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DAnimationDto.AnimationChainDto).ToList();
                     break;
             }
             return true;

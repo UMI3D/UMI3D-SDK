@@ -114,6 +114,25 @@ namespace umi3d.cdk
             return true;
         }
 
+        public virtual bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.Static:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.Active:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.ParentId:
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Update a property.
         /// </summary>

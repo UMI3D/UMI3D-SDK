@@ -65,12 +65,17 @@ namespace umi3d.cdk
                     default:
                         foreach (var e in groupDto.entitiesId)
                         {
-                            UMI3DEnvironmentLoader.SetEntity(e,operationId,operation,position,length);
+                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, operation, position, length);
                         }
                         break;
                 }
                 return true;
             }
+            return false;
+        }
+
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
             return false;
         }
 

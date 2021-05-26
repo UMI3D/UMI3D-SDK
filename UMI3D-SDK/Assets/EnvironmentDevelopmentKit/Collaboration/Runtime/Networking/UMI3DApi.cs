@@ -377,6 +377,30 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
+        /// GET "/environment"
+        /// Get the environment description.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        [HttpPost(UMI3DNetworkingKeys.entity, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void PostEntity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            EntityRequestDto dto = ReadDto(e.Request) as EntityRequestDto;
+            var entity = UMI3DEnvironment.GetEntity<UMI3DLoadableEntity>(dto.entityId);
+            if (entity != null)
+            {
+                var load = new LoadEntityDto()
+                {
+                    entity = entity.ToEntityDto(user),
+                };
+                e.Response.WriteContent(load.ToBson());
+            }
+            else
+                Return404(e.Response, "Unvalid Id");
+        }
+
+        /// <summary>
         /// GET "/environment/scene/:id"
         /// Get a scene description.
         /// </summary>

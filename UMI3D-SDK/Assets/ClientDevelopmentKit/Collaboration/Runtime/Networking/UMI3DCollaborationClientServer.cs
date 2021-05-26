@@ -399,6 +399,12 @@ namespace umi3d.cdk.collaboration
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
+        protected override void _GetEntity(ulong id,Action<LoadEntityDto> callback, Action<string> onError)
+        {
+            var dto = new EntityRequestDto() { entityId = id };
+            HttpClient.SendPostEntity(dto, callback, onError);
+        }
+
         ///<inheritdoc/>
         public override ulong GetId() { return Identity.userId; }
 

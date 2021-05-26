@@ -85,11 +85,26 @@ namespace umi3d.cdk
         abstract public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length);
 
         /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">entity to update.</param>
+        /// <param name="property">property containing the updated value</param>
+        /// <returns></returns>
+        abstract public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length);
+
+        /// <summary>
         /// Handle Operation not handle by default.
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
         abstract public void UnknownOperationHandler(AbstractOperationDto operation, Action performed);
+
+        /// <summary>
+        /// Handle Operation not handle by default.
+        /// </summary>
+        /// <param name="operation">Operation to handle.</param>
+        /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
+        abstract public void UnknownOperationHandler(uint operationId, byte[] operation, int position, int length, Action performed);
 
         /// <summary>
         /// Load a ResourceDto as a Skybox.

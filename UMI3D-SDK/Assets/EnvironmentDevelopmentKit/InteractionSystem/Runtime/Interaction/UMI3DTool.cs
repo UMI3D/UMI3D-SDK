@@ -21,7 +21,7 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-    public class UMI3DTool : AbstractTool, UMI3DLoadableEntity
+    public class UMI3DTool : AbstractTool, UMI3DLoadableEntity, IByte
     {
         /// <summary>
         /// Return load operation
@@ -65,9 +65,16 @@ namespace umi3d.edk.interaction
             return new ToolDto();
         }
 
-        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
         {
-            throw new NotImplementedException();
+            return base.ToBytes(user);
+        }
+
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            if (parameters.Length < 1)
+                ToBytes(null);
+            return ToBytes(parameters[0] as UMI3DUser);
         }
     }
 }

@@ -34,7 +34,7 @@ namespace umi3d.edk
         {
             int size = 2*sizeof(uint) + sizeof(ulong) + UMI3DNetworkingHelper.GetSize(stopValue);
             Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
+                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StopInterpolationProperty, b, i);
                 i += UMI3DNetworkingHelper.Write(entityId, b, i);
                 i += UMI3DNetworkingHelper.Write(property, b, i);
                 i += UMI3DNetworkingHelper.Write(stopValue, b, i);
