@@ -40,5 +40,10 @@ namespace umi3d.cdk
         {
             return false;
         }
+
+        public virtual bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            return false;
+        }
     }
 }

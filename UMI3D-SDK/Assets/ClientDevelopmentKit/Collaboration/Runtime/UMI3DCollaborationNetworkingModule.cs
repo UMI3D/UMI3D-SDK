@@ -36,6 +36,21 @@ namespace umi3d.cdk.collaboration
                     result = (T)Convert.ChangeType(user, typeof(T));
                     readable = true;
                     return true;
+                case true when typeof(T) == typeof(UMI3DAnimationDto.AnimationChainDto):
+                    if (length < sizeof(ulong) + sizeof(float))
+                    {
+                        result = default(T);
+                        readable = false;
+                        return true;
+                    }
+                    var value = new UMI3DAnimationDto.AnimationChainDto()
+                    {
+                        animationId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length),
+                        startOnProgress = UMI3DNetworkingHelper.Read<float>(array, ref position, ref length),
+                    };
+                    result = (T)Convert.ChangeType(value, typeof(T));
+                    readable = true;
+                    return true;
             }
 
             result = default(T);

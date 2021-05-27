@@ -168,5 +168,26 @@ namespace umi3d.cdk
             }
             return true;
         }
+
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey, operation, position, length))
+                return true;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.Position:
+                    value = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.Rotation:
+                    value = UMI3DNetworkingHelper.Read<Vector4>(operation, position, length); ;
+                    break;
+                case UMI3DPropertyKeys.Scale:
+                    value = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
     }
 }

@@ -176,7 +176,10 @@ namespace umi3d.cdk
             return true;
         }
 
-        
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            return false;
+        }
 
     }
 

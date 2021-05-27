@@ -87,6 +87,29 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length)) return true;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.InteractableNotifyHoverPosition:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.InteractableNotifySubObject:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.InteractableNodeId:
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.InteractableHasPriority:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
 
         static void RemoveInteractableOnNode(InteractableDto dto)
         {

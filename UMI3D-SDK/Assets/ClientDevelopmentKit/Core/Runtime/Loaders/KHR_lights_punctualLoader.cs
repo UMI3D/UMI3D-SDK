@@ -158,6 +158,36 @@ namespace umi3d.cdk
             return true;
         }
 
+        public virtual bool ReadLightPorperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (propertyKey == UMI3DPropertyKeys.Light)
+            {
+                value = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(operation, position, length);
+                return true;
+            }
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.LightIntensity:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightColor:
+                    value = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightRange:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightType:
+                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.LightSpot:
+                     value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
     }
 
 }

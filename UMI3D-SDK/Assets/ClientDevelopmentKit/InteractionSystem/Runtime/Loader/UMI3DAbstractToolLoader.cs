@@ -84,6 +84,32 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AbstractToolName:
+                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolDescription:
+                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolIcon2D:
+                    value = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolIcon3D:
+                    value = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.AbstractToolInteractions:
+                    return ReadInteractions(ref value, propertyKey, operation, position, length);
+                case UMI3DPropertyKeys.ToolActive:
+                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
 
         static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, byte[] operation, int position, int length)
         {
@@ -140,6 +166,12 @@ namespace umi3d.cdk.interaction
                     break;
             }
             tool.Updated();
+            return true;
+        }
+
+        static bool ReadInteractions(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            value = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(operation, position, length);
             return true;
         }
 

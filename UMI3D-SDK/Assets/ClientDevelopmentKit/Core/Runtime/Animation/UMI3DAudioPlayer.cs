@@ -185,6 +185,8 @@ namespace umi3d.cdk
 
         }
 
+        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length) { return false; }
+
         ///<inheritdoc/>
         public override void Start(float atTime)
         {

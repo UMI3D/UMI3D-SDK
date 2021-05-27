@@ -135,7 +135,20 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length) { }
+        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length) {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationDuration:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length);
+                    break;
+                case UMI3DPropertyKeys.AnimationChain:
+                    return UpdateChain(ref value, propertyKey, operation, position, length);
+                default:
+                    return false;
+            }
+
+            return true;
+        }
 
         bool UpdateChain(SetEntityPropertyDto property)
         {
@@ -162,10 +175,7 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    var value = new UMI3DAnimationDto.AnimationChainDto() {
-                        animationId = UMI3DNetworkingHelper.Read<ulong>(operation,ref position, ref length),
-                        startOnProgress = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length),
-                    };
+                    var value = UMI3DNetworkingHelper.Read<UMI3DAnimationDto.AnimationChainDto>(operation, ref position, ref length);
                     dto.animationChain.Add(value);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
@@ -173,18 +183,20 @@ namespace umi3d.cdk
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
                     var index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                    var v = new UMI3DAnimationDto.AnimationChainDto()
-                    {
-                        animationId = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length),
-                        startOnProgress = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length),
-                    };
+                    var v = UMI3DNetworkingHelper.Read<UMI3DAnimationDto.AnimationChainDto>(operation, ref position, ref length);
                     dto.animationChain[index] = v;
                     break;
                 default:
-                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DAnimationDto.AnimationChainDto).ToList();
+                    dto.animationChain = UMI3DNetworkingHelper.ReadList<UMI3DAnimationDto.AnimationChainDto>(operation, ref position, ref length);
                     break;
             }
             return true;
+        }
+
+        static bool UpdateChain(ref object value,  uint propertyKey, byte[] operation, int position, int length)
+        {
+            value = UMI3DNetworkingHelper.ReadList<UMI3DAnimationDto.AnimationChainDto>(operation, ref position, ref length);
+            return true; 
         }
 
         ///<inheritdoc/>

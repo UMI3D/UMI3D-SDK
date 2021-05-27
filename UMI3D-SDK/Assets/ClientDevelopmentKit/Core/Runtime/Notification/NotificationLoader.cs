@@ -70,6 +70,34 @@ namespace umi3d.cdk
             return true;
         }
 
+        public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.NotificationTitle:
+                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.NotificationContent:
+                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.NotificationDuration:
+                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.NotificationIcon2D:
+                    value = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.NotificationIcon3D:
+                    value = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    break;
+                case UMI3DPropertyKeys.NotificationObjectId:
+                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
         /// <summary>
         /// Update a property.
         /// </summary>

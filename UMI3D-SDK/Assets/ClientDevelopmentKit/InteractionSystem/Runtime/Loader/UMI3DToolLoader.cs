@@ -45,5 +45,10 @@ namespace umi3d.cdk.interaction
         {
             return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length));
         }
+
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        {
+            return (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length));
+        }
     }
 }
