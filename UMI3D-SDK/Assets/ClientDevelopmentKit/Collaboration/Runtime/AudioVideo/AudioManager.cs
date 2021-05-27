@@ -41,13 +41,13 @@ namespace umi3d.cdk.collaboration
         /// Read a Voice Dto and dispatched it in the right audioSource.
         /// </summary>
         /// <param name="userId"> the speaking user</param>
-        /// <param name="dto"> the voice dto</param>
-        public void Read(string userId, VoiceDto dto, ulong timestep)
+        /// <param name="sample"> the voice dto</param>
+        public void Read(string userId, byte[] sample, ulong timestep)
         {
             if (SpacialReader.ContainsKey(userId))
-                SpacialReader[userId].Read(dto, timestep);
+                SpacialReader[userId].Read(sample, timestep);
             else if (GlobalReader.ContainsKey(userId))
-                GlobalReader[userId].Read(dto, timestep);
+                GlobalReader[userId].Read(sample, timestep);
         }
 
 

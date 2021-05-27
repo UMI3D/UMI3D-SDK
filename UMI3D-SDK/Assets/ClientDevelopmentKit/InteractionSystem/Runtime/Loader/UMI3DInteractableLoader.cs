@@ -50,6 +50,9 @@ namespace umi3d.cdk.interaction
                     dto.nodeId = (string)property.value;
                     setInteractableOnNode(dto);
                     break;
+                case UMI3DPropertyKeys.InteractableHasPriority:
+                    dto.hasPriority = (bool)property.value;
+                    break;
                 default:
                     return false;
             }

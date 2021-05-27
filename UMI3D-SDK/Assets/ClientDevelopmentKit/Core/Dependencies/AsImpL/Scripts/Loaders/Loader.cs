@@ -577,7 +577,7 @@ namespace AsImpL
                 tex = TextureLoader.LoadTextureFromUrl(loader.url);
                 //tex = TgaLoader.LoadTGA(new MemoryStream(loader.bytes));
             }
-            else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg")
+            else if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".PNG" || ext == ".JPG" || ext == ".JPEG")
             {
 #if UNITY_2018_3_OR_NEWER
                 tex = DownloadHandlerTexture.GetContent(loader);

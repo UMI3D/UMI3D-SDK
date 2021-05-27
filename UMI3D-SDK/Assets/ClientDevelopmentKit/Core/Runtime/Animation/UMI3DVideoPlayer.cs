@@ -33,7 +33,7 @@ namespace umi3d.cdk
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
             //init material
-            renderTexture = new RenderTexture(1024, 1024, 16, RenderTextureFormat.RGB565);
+            renderTexture = new RenderTexture(1920, 1080, 16, RenderTextureFormat.RGB565);
             renderTexture.Create();
             renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
             Debug.Log(renderTexture.isReadable);
