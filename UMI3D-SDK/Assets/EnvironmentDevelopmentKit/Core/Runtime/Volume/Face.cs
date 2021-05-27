@@ -243,6 +243,7 @@ namespace umi3d.edk.volume.volumedrawing
                 extrusionPoints.Add(p);
                 newPoints.Add(p);
             }
+            extrusionPoints.Reverse();
 
             GameObject newFaceGO = new GameObject();
             newFaceGO.name = "extrusion";
@@ -261,8 +262,8 @@ namespace umi3d.edk.volume.volumedrawing
             for (int i = 0; i < basePointCount - 1; i++)
             {
                 List<Point> sidePoints = new List<Point>();
-                sidePoints.Add(extrusionPoints[i]);
-                sidePoints.Add(extrusionPoints[i + 1]);
+                sidePoints.Add(extrusionPoints[basePointCount - 1 - i]);
+                sidePoints.Add(extrusionPoints[basePointCount - 1 - i - 1]);
                 sidePoints.Add(points[i + 1]);
                 sidePoints.Add(points[i]);
 
@@ -280,10 +281,10 @@ namespace umi3d.edk.volume.volumedrawing
 
 
             List<Point> lastSidePoints = new List<Point>();
-            lastSidePoints.Add(points[basePointCount - 1]);
-            lastSidePoints.Add(points[0]);
             lastSidePoints.Add(extrusionPoints[0]);
             lastSidePoints.Add(extrusionPoints[basePointCount - 1]);
+            lastSidePoints.Add(points[0]);
+            lastSidePoints.Add(points[basePointCount - 1]);
 
 
             GameObject lastSideFaceGO = new GameObject();

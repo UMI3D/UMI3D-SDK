@@ -11,17 +11,17 @@ namespace umi3d.edk.volume.volumedrawing
         /// <summary>
         /// in local referential.
         /// </summary>
-        private List<Point> points;
+        private List<Point> points = new List<Point>();
 
         /// <summary>
         /// in local referential.
         /// </summary>
-        private List<Edge> edges;
+        private List<Edge> edges = new List<Edge>();
 
         /// <summary>
         /// in local referential.
         /// </summary>
-        private List<Face> faces;
+        private List<Face> faces = new List<Face>();
 
 
         [SerializeField] private bool displayEdges;

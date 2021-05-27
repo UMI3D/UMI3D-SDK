@@ -138,6 +138,7 @@ namespace umi3d.edk.volume.volumedrawing
             displayer.transform.position = Vector3.zero;
 
             filter = displayer.AddComponent<MeshFilter>();
+            filter.gameObject.SetActive(false);//TODO HERE remove
             displayer.AddComponent<MeshRenderer>().material = material;
 
             GameObject colliderGO = new GameObject();
