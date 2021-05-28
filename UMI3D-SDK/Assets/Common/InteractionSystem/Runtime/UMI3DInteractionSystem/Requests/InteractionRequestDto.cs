@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common.interaction
 {
     [System.Serializable]
@@ -44,5 +46,22 @@ namespace umi3d.common.interaction
         /// The type of bone associated to the user's controller.
         /// </summary>
         public string boneType;
+        protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
+
+        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            var fb = base.ToByteArray(parameters);
+            int size = fb.Item1 + 3 * sizeof(ulong) + UMI3DNetworkingHelper.GetSize(boneType);
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fb.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(toolId,b,i);
+                i += UMI3DNetworkingHelper.Write(id, b, i);
+                i += UMI3DNetworkingHelper.Write(hoveredObjectId, b, i);
+                i += UMI3DNetworkingHelper.Write(boneType, b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }

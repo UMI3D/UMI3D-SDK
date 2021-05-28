@@ -151,6 +151,22 @@ namespace umi3d.common
                         return true;
                     }
                     break;
+                case true when typeof(T) == typeof(SerializableMatrix4x4):
+                    if (length >= 4 * 4 * sizeof(float))
+                    {
+                        Vector4 c0, c1, c2, c3;
+
+                        TryRead<Vector4>(array, ref position, ref length, out c0);
+                        TryRead<Vector4>(array, ref position, ref length, out c1);
+                        TryRead<Vector4>(array, ref position, ref length, out c2);
+                        TryRead<Vector4>(array, ref position, ref length, out c3);
+
+                        result = (T)Convert.ChangeType(new SerializableMatrix4x4(c0, c1, c2, c3), typeof(T));
+                        position += 4 * 4 * sizeof(float);
+                        length -= 4 * 4 * sizeof(float);
+                        return true;
+                    }
+                    break;
                 case true when typeof(T) == typeof(string):
                     if (length == 0) throw new Exception($"String length should not be 0");
                     result = (T)Convert.ChangeType(BitConverter.ToString(array, (int)position, (int)length), typeof(T));
@@ -170,7 +186,7 @@ namespace umi3d.common
 
         public static T[] ReadArray<T>(byte[] array, ref int position, ref int length)
         {
-            return ReadList<T>(array, ref position,ref length).ToArray();
+            return ReadList<T>(array, ref position, ref length).ToArray();
         }
         public static List<T> ReadList<T>(byte[] array, ref int position, ref int length)
         {
@@ -191,7 +207,7 @@ namespace umi3d.common
         {
             var res = new List<T>();
             var Length = array.Length;
-            for (int i = 0; position < Length && length > 0 && i < count;i++)
+            for (int i = 0; position < Length && length > 0 && i < count; i++)
             {
                 T result;
                 if (TryRead<T>(array, ref position, ref length, out result))
@@ -204,7 +220,7 @@ namespace umi3d.common
 
         public static T[] ReadArray<T>(byte[] array, int position, int length)
         {
-            return ReadArray<T>(array,ref position, ref length);
+            return ReadArray<T>(array, ref position, ref length);
         }
         public static List<T> ReadList<T>(byte[] array, int position, int length)
         {
@@ -243,6 +259,8 @@ namespace umi3d.common
                 case Quaternion q:
                 case Vector4 v4:
                     return 4 * sizeof(float);
+                case SerializableMatrix4x4 v4:
+                    return 4 * 4 * sizeof(float);
                 case string str:
                     return sizeof(uint) + str.Length * sizeof(char);
                 default:
@@ -327,6 +345,14 @@ namespace umi3d.common
                     BitConverter.GetBytes(q.z).CopyTo(array, pos + 2 * sizeof(float));
                     BitConverter.GetBytes(q.w).CopyTo(array, pos + 3 * sizeof(float));
                     return 4 * sizeof(float);
+                case SerializableMatrix4x4 v4:
+                    position += Write(v4.c0, array, position);
+                    position += Write(v4.c1, array, position);
+                    position += Write(v4.c2, array, position);
+                    position += Write(v4.c3, array, position);
+                    return 4 * 4 * sizeof(float);
+                case Matrix4x4 v4:
+                    return Write((SerializableMatrix4x4)v4, array, position);
                 case string str:
                     return sizeof(uint) + str.Length * sizeof(char);
                 default:
@@ -375,6 +401,7 @@ namespace umi3d.common
                             (s, i, j) = b.Item2(by, i, j);
                             j += UMI3DNetworkingHelper.Write(i, by, j);
                             i += s;
+                            Debug.Log($"{s},{i},{j}");
                             return (s, i, j);
                         };
                         return (a.Item1 + b.Item1, f2);
@@ -383,16 +410,13 @@ namespace umi3d.common
 
                 Func<byte[], int, int> f5 = (byte[] by, int i) =>
                 {
-                    var couple = func.Item2(by, size, i);
-
-                    Debug.Log($"couple.Item2 == length {couple.Item2 == length}");
-
+                    var couple = func.Item2(by, i + size, i);
                     return couple.Item2;
                 };
 
                 return (length, f5);
             }
-            Func<byte[], int,  int> f4 = (byte[] by, int i) =>
+            Func<byte[], int, int> f4 = (byte[] by, int i) =>
             {
                 return 0;
             };

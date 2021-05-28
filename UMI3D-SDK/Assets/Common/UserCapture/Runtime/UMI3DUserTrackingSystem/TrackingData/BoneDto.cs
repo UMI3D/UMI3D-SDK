@@ -22,7 +22,7 @@ namespace umi3d.common.userCapture
     /// Class to describe a bone's 6-D pose in the frame of reference of a user.
     /// </summary>
     [Serializable]
-    public class BoneDto : UMI3DDto
+    public class BoneDto : UMI3DDto, IByte
     {
         /// <summary>
         /// Defines the type of the bone.
@@ -35,5 +35,18 @@ namespace umi3d.common.userCapture
 
         public SerializableVector3 scale;
 
+        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        {
+            int size = UMI3DNetworkingHelper.GetSize(boneType) + UMI3DNetworkingHelper.GetSize(position) + UMI3DNetworkingHelper.GetSize(rotation) + UMI3DNetworkingHelper.GetSize(scale);
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(boneType, b, i);
+                i += UMI3DNetworkingHelper.Write(position, b, i);
+                i += UMI3DNetworkingHelper.Write(rotation, b, i);
+                i += UMI3DNetworkingHelper.Write(scale, b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }

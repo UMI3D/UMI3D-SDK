@@ -18,6 +18,6 @@ namespace umi3d.common.interaction
 {
     public class LinkOpened : InteractionRequestDto
     {
-
+        protected override uint GetOperationId() { return UMI3DOperationKeys.LinkOpened; }
     }
 }

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common.interaction
 {
     /// <summary>
@@ -36,5 +38,23 @@ namespace umi3d.common.interaction
         /// The direction of the browser's selection tool in the Interactable associated object's local frame.
         /// </summary>
         public SerializableVector3 direction;
+
+        protected override uint GetOperationId() { return UMI3DOperationKeys.Hoverred; }
+
+        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            var fb = base.ToByteArray(parameters);
+
+            int size = UMI3DNetworkingHelper.GetSize(position) + UMI3DNetworkingHelper.GetSize(normal) + UMI3DNetworkingHelper.GetSize(direction) + fb.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fb.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(position, b, i);
+                i += UMI3DNetworkingHelper.Write(normal, b, i);
+                i += UMI3DNetworkingHelper.Write(direction, b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }

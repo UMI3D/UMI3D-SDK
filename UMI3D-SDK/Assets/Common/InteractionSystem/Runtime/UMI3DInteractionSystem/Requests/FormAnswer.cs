@@ -14,10 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common.interaction
 {
     public class FormAnswer : InteractionRequestDto
     {
         public FormDto form;
+
+        protected override uint GetOperationId() { return UMI3DOperationKeys.FormAnswer; }
+
+        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            var fb = base.ToByteArray(parameters);
+
+            int size = UMI3DNetworkingHelper.GetSize(form) + fb.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fb.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(form, b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }

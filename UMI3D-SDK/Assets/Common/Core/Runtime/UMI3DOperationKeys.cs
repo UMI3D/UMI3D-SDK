@@ -44,5 +44,21 @@ namespace umi3d.common
         public const uint StartInterpolationProperty =302;
         public const uint StopInterpolationProperty = 303;
 
+
+        public const uint InteractionRequest = 10001;
+        public const uint EventStateChanged = 10002;
+        public const uint EventTriggered = 10003;
+        public const uint FormAnswer = 10004;
+        public const uint Hoverred = 10005;
+        public const uint HoverStateChanged = 10006;
+        public const uint LinkOpened = 10007;
+        public const uint ManipulationRequest = 10008;
+        public const uint ParameterSettingRequest = 10009;
+        public const uint ToolProjected = 10010;
+        public const uint ToolReleased = 10011;
+        public const uint UserCameraProperties = 10012;
+        public const uint UserTrackingFrame = 10013;
+
+
     }
 }

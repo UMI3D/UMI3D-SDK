@@ -14,14 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common.interaction
 {
     public class ToolProjectedDto : AbstractBrowserRequestDto
     {
 
         public ulong toolId;
-
         public string boneType;
+
+        protected override uint GetOperationId() { return UMI3DOperationKeys.ToolProjected; }
+
+        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            var fb = base.ToByteArray(parameters);
+
+            int size = UMI3DNetworkingHelper.GetSize(toolId) + UMI3DNetworkingHelper.GetSize(boneType) + fb.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fb.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(toolId, b, i);
+                i += UMI3DNetworkingHelper.Write(boneType, b, i);
+                return size;
+            };
+            return (size, func);
+        }
 
     }
 }

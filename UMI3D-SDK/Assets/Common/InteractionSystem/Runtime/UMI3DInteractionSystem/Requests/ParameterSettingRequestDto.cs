@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common.interaction
 {
     /// <summary>
@@ -25,5 +27,22 @@ namespace umi3d.common.interaction
         /// The parameter with the requested value.
         /// </summary>
         public AbstractParameterDto parameter;
+
+        protected override uint GetOperationId() { return UMI3DOperationKeys.ParameterSettingRequest; }
+
+        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            var fb = base.ToByteArray(parameters);
+
+            int size = UMI3DNetworkingHelper.GetSize(parameter) + fb.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fb.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(parameter, b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }
+ 

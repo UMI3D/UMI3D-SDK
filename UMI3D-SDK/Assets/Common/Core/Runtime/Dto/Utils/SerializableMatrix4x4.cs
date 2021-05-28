@@ -30,6 +30,15 @@ namespace umi3d.common
             c3 = new SerializableVector4();
         }
 
+        public SerializableMatrix4x4(SerializableVector4 c0, SerializableVector4 c1, SerializableVector4 c2, SerializableVector4 c3) : base()
+        {
+            this.c0 = c0;
+            this.c1 = c1;
+            this.c2 = c2;
+            this.c3 = c3;
+        }
+
+
         public SerializableVector4 c0;
         public SerializableVector4 c1;
         public SerializableVector4 c2;
@@ -43,7 +52,8 @@ namespace umi3d.common
 
         public float this[int r, int c]
         {
-            get {
+            get
+            {
                 if (r >= 0 && r < 4 && c >= 0 && c < 4)
                 {
                     if (c == 0) return c0[r];
@@ -53,7 +63,8 @@ namespace umi3d.common
                 }
                 else throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
             }
-            set {
+            set
+            {
                 if (r >= 0 && r < 4 && c >= 0 && c < 4)
                 {
                     if (c == 0) c0[r] = value;

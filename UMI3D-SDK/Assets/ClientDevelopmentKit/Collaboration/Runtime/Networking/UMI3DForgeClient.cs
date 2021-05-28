@@ -215,7 +215,15 @@ namespace umi3d.cdk.collaboration
 
         public void SendBrowserRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
-            SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
+            if (useDto)
+                SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
+            else
+            {
+                var f = dto.ToByteArray();
+                var data = new byte[f.Item1];
+                f.Item2(data, 0);
+                SendBinaryData((int)DataChannelTypes.Data, data, reliable);
+            }
         }
 
         public void SendVOIP(int length, byte[] sample)

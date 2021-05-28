@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common.interaction
 {
     /// <summary>
@@ -32,5 +34,21 @@ namespace umi3d.common.interaction
         /// </summary>
         public SerializableVector4 rotation;
 
+        protected override uint GetOperationId() { return UMI3DOperationKeys.ManipulationRequest; }
+
+        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            var fb = base.ToByteArray(parameters);
+
+            int size = UMI3DNetworkingHelper.GetSize(translation) + UMI3DNetworkingHelper.GetSize(rotation) + fb.Item1;
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += fb.Item2(b, i);
+                i += UMI3DNetworkingHelper.Write(translation, b, i);
+                i += UMI3DNetworkingHelper.Write(rotation, b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }

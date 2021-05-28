@@ -29,6 +29,17 @@ namespace umi3d.common
         /// </summary>
         protected bool reliable = true;
 
-        public abstract (int, Func<byte[], int, int>) ToByteArray(params object[] parameters);
+
+        protected abstract uint GetOperationId();
+        public virtual (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        {
+            int size = UMI3DNetworkingHelper.GetSize(GetOperationId());
+            Func<byte[], int, int> func = (b, i) =>
+            {
+                i += UMI3DNetworkingHelper.Write(GetOperationId(), b, i);
+                return size;
+            };
+            return (size, func);
+        }
     }
 }
