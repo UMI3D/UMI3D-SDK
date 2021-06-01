@@ -38,6 +38,11 @@ namespace umi3d.common.interaction
 
         public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
         {
+            if (translation == null)
+                translation = new SerializableVector3();
+            if (rotation == null)
+                rotation = new SerializableVector4();
+
             var fb = base.ToByteArray(parameters);
 
             int size = UMI3DNetworkingHelper.GetSize(translation) + UMI3DNetworkingHelper.GetSize(rotation) + fb.Item1;

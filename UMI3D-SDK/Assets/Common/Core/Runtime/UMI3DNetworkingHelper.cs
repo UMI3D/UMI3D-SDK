@@ -263,6 +263,8 @@ namespace umi3d.common
                     return 4 * 4 * sizeof(float);
                 case string str:
                     return sizeof(uint) + str.Length * sizeof(char);
+                case T t when typeof(T) == typeof(string):
+                    return sizeof(uint);
                 default:
                     int result;
                     foreach (var module in modules)
@@ -270,7 +272,8 @@ namespace umi3d.common
                             return result;
                     break;
             }
-            throw new Exception($"Missing case [{value.GetType()} was not catched : value {value}]");
+
+            throw new Exception($"Missing case [{typeof(T)}||{value?.GetType()} was not catched : value {value}]");
         }
         public static int GetSizeArray<T>(IEnumerable<T> value)
         {
@@ -354,7 +357,17 @@ namespace umi3d.common
                 case Matrix4x4 v4:
                     return Write((SerializableMatrix4x4)v4, array, position);
                 case string str:
+                    BitConverter.GetBytes((uint)str.Length).CopyTo(array, pos);
+                    pos += sizeof(uint);
+                    foreach (char c in str)
+                    {
+                        BitConverter.GetBytes(c).CopyTo(array, pos);
+                        pos += sizeof(char);
+                    }
                     return sizeof(uint) + str.Length * sizeof(char);
+                case T t when typeof(T) == typeof(string):
+                    BitConverter.GetBytes((uint)0).CopyTo(array, pos);
+                    return sizeof(uint);
                 default:
                     int result;
                     foreach (var module in modules)
