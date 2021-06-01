@@ -215,7 +215,7 @@ namespace umi3d.edk.collaboration
             if (user != null)
                 MainThreadManager.Run(() =>
                 {
-                    //UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
+                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
                 });
         }
 
