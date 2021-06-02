@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
 
@@ -34,6 +35,11 @@ namespace umi3d.edk.interaction
             public FormEventContent(UMI3DUser user, FormAnswer dto) : base(user, dto)
             {
                 form = dto.form;
+            }
+
+            public FormEventContent(UMI3DUser user, FormDto dto, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType) : base(user, toolId, id, hoveredObjectId, boneType)
+            {
+                form = dto;
             }
         }
 
@@ -66,6 +72,19 @@ namespace umi3d.edk.interaction
             {
                 case FormAnswer formAnswer:
                     onFormCompleted.Invoke(new FormEventContent(user, formAnswer));
+                    break;
+                default:
+                    throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
+            }
+        }
+
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length)
+        {
+            switch (interactionId)
+            {
+                case UMI3DOperationKeys.FormAnswer:
+                    var form = UMI3DNetworkingHelper.Read<FormDto>(array, position, length);
+                    onFormCompleted.Invoke(new FormEventContent(user, form, toolId, interactionId, hoverredId, boneType));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

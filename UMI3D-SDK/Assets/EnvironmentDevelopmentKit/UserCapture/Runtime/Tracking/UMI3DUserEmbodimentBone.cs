@@ -29,13 +29,13 @@ namespace umi3d.edk.userCapture
 
         public ulong userId { get; protected set; }
 
-        public string boneType { get; protected set; }
+        public uint boneType { get; protected set; }
 
         public SpatialPosition spatialPosition;
 
         public bool isTracked;
 
-        public UMI3DUserEmbodimentBone(ulong userId, string boneType)
+        public UMI3DUserEmbodimentBone(ulong userId, uint boneType)
         {
             this.userId = userId;
             this.boneType = boneType;

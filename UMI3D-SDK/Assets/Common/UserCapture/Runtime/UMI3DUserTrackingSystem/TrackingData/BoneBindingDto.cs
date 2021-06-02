@@ -42,7 +42,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The binded BoneType.
         /// </summary>
-        public string boneType;
+        public uint boneType;
 
         /// <summary>
         /// The identifier of the 3D object.

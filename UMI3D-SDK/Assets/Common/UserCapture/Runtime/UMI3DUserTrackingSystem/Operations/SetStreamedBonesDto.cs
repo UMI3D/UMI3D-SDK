@@ -21,6 +21,6 @@ namespace umi3d.common
 {
     public class SetStreamedBonesDto : AbstractOperationDto
     {
-        public List<string> streamedBones;
+        public List<uint> streamedBones;
     }
 }

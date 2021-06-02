@@ -32,7 +32,7 @@ namespace umi3d.edk.userCapture
         [SerializeField, EditorReadOnly]
         bool activeAvatarBindings_ = true;
 
-        public Dictionary<string, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<string, UMI3DUserEmbodimentBone>();
+        public Dictionary<uint, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<uint, UMI3DUserEmbodimentBone>();
 
         public UserCameraPropertiesDto userCameraPropertiesDto;
 
@@ -70,7 +70,7 @@ namespace umi3d.edk.userCapture
 
             List<UMI3DUserEmbodimentBone> oldBoneList = new List<UMI3DUserEmbodimentBone>();
 
-            foreach (KeyValuePair<string, UMI3DUserEmbodimentBone> pair in dicoBones)
+            foreach (KeyValuePair<uint, UMI3DUserEmbodimentBone> pair in dicoBones)
                 oldBoneList.Add(pair.Value);
 
             List<BoneDto> bonesToCreate = new List<BoneDto>();

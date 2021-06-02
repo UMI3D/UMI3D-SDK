@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
         [SerializeField]
         protected float targetTrackingFPS = 15;
 
-        List<string> streamedBonetypes = new List<string>();
+        List<uint> streamedBonetypes = new List<uint>();
 
         public Dictionary<ulong, UserAvatar> embodimentDict = new Dictionary<ulong, UserAvatar>();
 
@@ -186,7 +186,7 @@ namespace umi3d.cdk.userCapture
             targetTrackingFPS = newFPSTarget;
         }
 
-        public void setStreamedBones(List<string> bonesToStream)
+        public void setStreamedBones(List<uint> bonesToStream)
         {
             this.streamedBonetypes = bonesToStream;
         }

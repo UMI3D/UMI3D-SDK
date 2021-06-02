@@ -24,7 +24,7 @@ namespace umi3d.edk.userCapture
 
     public class UMI3DBinding : IByte
     {
-        public string boneType;
+        public uint boneType;
         public bool isBinded = true;
         public UMI3DAbstractNode node;
         public string rigName = "";
@@ -45,7 +45,7 @@ namespace umi3d.edk.userCapture
 
         public (int, Func<byte[], int, int>) ToByte(UMI3DUser user)
         {
-        string boneType = this.boneType;
+        uint boneType = this.boneType;
         bool isBinded = this.isBinded;
         ulong node = this.node?.Id() ?? 0;
         string rigName = this.rigName;

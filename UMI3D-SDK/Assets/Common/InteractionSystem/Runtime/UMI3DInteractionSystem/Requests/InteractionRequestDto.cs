@@ -45,7 +45,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// The type of bone associated to the user's controller.
         /// </summary>
-        public string boneType;
+        public uint boneType;
         protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
 
         public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)

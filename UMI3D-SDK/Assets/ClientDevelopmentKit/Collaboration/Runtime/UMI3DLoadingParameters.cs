@@ -433,7 +433,7 @@ namespace umi3d.cdk
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
-                    var streamedBones = UMI3DNetworkingHelper.ReadList<string>(operation, ref position, ref length);
+                    var streamedBones = UMI3DNetworkingHelper.ReadList<uint>(operation, ref position, ref length);
                     UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones);
                     performed.Invoke();
                     break;

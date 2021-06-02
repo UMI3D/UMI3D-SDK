@@ -82,7 +82,7 @@ namespace umi3d.cdk.interaction
                             var stateChangeDto = new EventStateChangedDto
                             {
                                 active = x,
-                                boneType = "none",
+                                boneType = (uint)0,
                                 id = eventDto.id,
                                 toolId = dto.id,
                                 hoveredObjectId = 0
@@ -93,7 +93,7 @@ namespace umi3d.cdk.interaction
                         {
                             var triggeredDto = new EventTriggeredDto
                             {
-                                boneType = "none",
+                                boneType = (uint)0,
                                 id = eventDto.id,
                                 toolId = dto.id,
                                 hoveredObjectId = 0

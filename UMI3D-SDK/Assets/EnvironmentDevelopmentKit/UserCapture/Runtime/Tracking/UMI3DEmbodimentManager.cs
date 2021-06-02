@@ -29,7 +29,7 @@ namespace umi3d.edk.userCapture
 
         public Dictionary<ulong, UMI3DAvatarNode> embodimentInstances = new Dictionary<ulong, UMI3DAvatarNode>();
         public Dictionary<ulong, Vector3> embodimentSize = new Dictionary<ulong, Vector3>();
-        public Dictionary<ulong, Dictionary<string, bool>> embodimentTrackedBonetypes = new Dictionary<ulong, Dictionary<string, bool>>();
+        public Dictionary<ulong, Dictionary<uint, bool>> embodimentTrackedBonetypes = new Dictionary<ulong, Dictionary<uint, bool>>();
 
         public class EmbodimentEvent : UnityEvent<UMI3DAvatarNode> { };
         public class EmbodimentBoneEvent : UnityEvent<UMI3DUserEmbodimentBone> { };
@@ -57,7 +57,7 @@ namespace umi3d.edk.userCapture
             UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
         }
 
-        public virtual bool BoneTrackedInformation(ulong userId, string bonetype)
+        public virtual bool BoneTrackedInformation(ulong userId, uint bonetype)
         {
             if (embodimentTrackedBonetypes.ContainsKey(userId))
                 return embodimentTrackedBonetypes[userId][bonetype];
@@ -65,7 +65,7 @@ namespace umi3d.edk.userCapture
                 return false;
         }
 
-        public void JoinDtoReception(ulong userId, SerializableVector3 userSize, Dictionary<string, bool> trackedBonetypes)
+        public void JoinDtoReception(ulong userId, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
         {
             if (embodimentSize.ContainsKey(userId))
                 Debug.LogWarning("Internal error : the user size is already registered");
@@ -137,6 +137,11 @@ namespace umi3d.edk.userCapture
             StartCoroutine(_UserCameraReception(dto, user));
         }
 
+        public void UserCameraReception(uint operationKey, byte[] array, int position, int length, UMI3DUser user)
+        {
+            StartCoroutine(_UserCameraReception(operationKey, array, position, length, user));
+        }
+
         IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
@@ -147,6 +152,18 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
             userEmbd.userCameraPropertiesDto = dto;
+        }
+
+        IEnumerator _UserCameraReception(uint operationKey, byte[] array, int position, int length, UMI3DUser user)
+        {
+            while (!embodimentInstances.ContainsKey(user.Id()))
+            {
+                Debug.LogWarning($"Internal error : the user [{user.Id()}] is not registered");
+                yield return new WaitForFixedUpdate();
+            }
+
+            UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
+            userEmbd.userCameraPropertiesDto = UMI3DNetworkingHelper.Read<UserCameraPropertiesDto>(array,position,length);
         }
 
         /// <summary>

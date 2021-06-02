@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -35,6 +36,12 @@ namespace umi3d.edk.interaction
             {
                 translation = dto.translation;
                 rotation = dto.rotation;
+            }
+
+            public ManipulationEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3 translation, Quaternion rotation) : base(user, toolId, id, hoveredObjectId, boneType)
+            {
+                this.translation = translation;
+                this.rotation = rotation;
             }
         }
 
@@ -91,6 +98,18 @@ namespace umi3d.edk.interaction
             {
                 case ManipulationRequestDto manip:
                     onManipulated.Invoke(new ManipulationEventContent(user, manip));
+                    break;
+            }
+        }
+
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length)
+        {
+            switch (interactionId)
+            {
+                case UMI3DOperationKeys.ManipulationRequest:
+                    var translation = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+                    var rotation = UMI3DNetworkingHelper.Read<Quaternion>(array, ref position, ref length);
+                    onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;
             }
         }

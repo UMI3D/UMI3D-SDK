@@ -90,6 +90,13 @@ namespace umi3d.edk.interaction
                 normal = dto.normal;
                 direction = dto.direction;
             }
+
+            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId,id,hoveredObjectId,boneType)
+            {
+                this.position = position;
+                this.normal = normal;
+                this.direction = direction;
+            }
         }
 
         [SerializeField]
@@ -161,10 +168,30 @@ namespace umi3d.edk.interaction
             onHovered?.Invoke(new HoverEventContent(user, dto));
         }
 
+        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        {
+            var pos = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            var norm = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            var dir = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            onHovered?.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
+        }
+
+
+
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
             if (dto.state) onHoverEnter.Invoke(new HoverEventContent(user, dto));
             else onHoverExit.Invoke(new HoverEventContent(user, dto));
+        }
+
+        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        {
+            var pos = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            var norm = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            var dir = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            var state = UMI3DNetworkingHelper.Read<bool>(array, ref position, ref length);
+            if (state) onHoverEnter.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
+            else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }
 
         public IEntity ToEntityDto(UMI3DUser user)

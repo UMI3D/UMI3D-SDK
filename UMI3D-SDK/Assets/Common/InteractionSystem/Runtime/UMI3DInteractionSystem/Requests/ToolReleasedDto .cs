@@ -24,7 +24,7 @@ namespace umi3d.common.interaction
 
         public ulong toolId;
 
-        public string boneType;
+        public uint boneType;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.ToolReleased; }
 

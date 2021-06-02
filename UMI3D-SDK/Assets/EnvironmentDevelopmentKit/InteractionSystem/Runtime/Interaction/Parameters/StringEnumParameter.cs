@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
@@ -75,6 +76,24 @@ namespace umi3d.edk.interaction
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                    break;
+                default:
+                    throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
+            }
+        }
+
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint parameterId, byte[] array, int position, int length)
+        {
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.ParameterSettingRequest:
+                    if (UMI3DParameterKeys.Enum == parameterId)
+                    {
+                        value = UMI3DNetworkingHelper.Read<string>(array, position, length);
+                        onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
+                    }
+                    else
+                        throw new System.Exception($"parameter of type {parameterId}");
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

@@ -61,4 +61,15 @@ namespace umi3d.common
 
 
     }
+    static public class UMI3DParameterKeys
+    {
+        public const uint FloatRange = 1;
+        public const uint intRange = 1;
+        public const uint Bool = 1;
+        public const uint Float = 1;
+        public const uint Int = 1;
+        public const uint String = 1;
+        public const uint Enum = 1;
+
+    }
 }

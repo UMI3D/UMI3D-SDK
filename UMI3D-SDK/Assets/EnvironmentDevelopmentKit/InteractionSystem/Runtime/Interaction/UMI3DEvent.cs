@@ -66,6 +66,11 @@ namespace umi3d.edk.interaction
             }
         }
 
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length)
+        {
+            throw new System.NotImplementedException();
+        }
+
         /// <summary>
         /// Create an empty Dto.
         /// </summary>

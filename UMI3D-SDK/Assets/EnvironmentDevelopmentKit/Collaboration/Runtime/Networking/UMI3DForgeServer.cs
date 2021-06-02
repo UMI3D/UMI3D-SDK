@@ -242,23 +242,44 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
 
-            if (dto is common.userCapture.UserCameraPropertiesDto camera)
+            if (UMI3DEnvironment.Instance.useDto)
             {
-                MainThreadManager.Run(() =>
+                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                if (dto is common.userCapture.UserCameraPropertiesDto camera)
                 {
-                    UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
-                });
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
+                    });
+                }
+                else
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
+                    });
             }
             else
-                MainThreadManager.Run(() =>
+            {
+                var position = 0;
+                var length = frame.StreamData.byteArr.Length;
+                var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                if (id == UMI3DOperationKeys.UserCameraProperties)
                 {
-                    UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
-                });
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DEmbodimentManager.Instance.UserCameraReception(id, frame.StreamData.byteArr, position, length, user);
+                    });
+                }
+                else
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, frame.StreamData.byteArr, position, length);
+                    });
+            }
         }
 
         #endregion

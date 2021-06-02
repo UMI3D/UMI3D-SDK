@@ -44,7 +44,7 @@ namespace umi3d.cdk.userCapture
         protected struct Bound
         {
             public Transform bone;
-            public string bonetype;
+            public uint bonetype;
             public Transform obj;
             public Vector3 offsetPosition;
             public Quaternion offsetRotation;

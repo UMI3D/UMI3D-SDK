@@ -24,10 +24,10 @@ namespace umi3d.cdk.userCapture
 {
     public class UMI3DClientUserTrackingBone : MonoBehaviour
     {
-        public static Dictionary<string, UMI3DClientUserTrackingBone> instances = new Dictionary<string, UMI3DClientUserTrackingBone>();
+        public static Dictionary<uint, UMI3DClientUserTrackingBone> instances = new Dictionary<uint, UMI3DClientUserTrackingBone>();
 
         [ConstStringEnum(typeof(BoneType))]
-        public string boneType;
+        public uint boneType;
 
         public bool isTracked;
 

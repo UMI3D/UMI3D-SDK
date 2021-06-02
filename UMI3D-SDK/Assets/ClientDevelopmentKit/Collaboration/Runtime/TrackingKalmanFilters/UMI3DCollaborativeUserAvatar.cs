@@ -69,9 +69,9 @@ namespace umi3d.cdk.collaboration
         KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
         Vector3 scale = Vector3.one;
 
-        Dictionary<string, KalmanPosition> bonePositionFilters = new Dictionary<string, KalmanPosition>();
-        Dictionary<string, KalmanRotation> boneRotationFilters = new Dictionary<string, KalmanRotation>();
-        Dictionary<string, Vector3> boneScales = new Dictionary<string, Vector3>();
+        Dictionary<uint, KalmanPosition> bonePositionFilters = new Dictionary<uint, KalmanPosition>();
+        Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
+        Dictionary<uint, Vector3> boneScales = new Dictionary<uint, Vector3>();
 
         public float MeasuresPerSecond = 0;
 
@@ -86,7 +86,7 @@ namespace umi3d.cdk.collaboration
             this.transform.localPosition = nodePositionFilter.regressed_position;
             this.transform.localRotation = nodeRotationFilter.RegressedQuaternion();
 
-            foreach (string boneType in bonePositionFilters.Keys)
+            foreach (uint boneType in bonePositionFilters.Keys)
             {
                 RegressionPosition(bonePositionFilters[boneType]);
                 RegressionRotation(boneRotationFilters[boneType]);

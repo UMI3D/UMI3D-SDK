@@ -50,7 +50,7 @@ namespace umi3d.edk.interaction
             /// <summary>
             /// Bonetype use to performe the interaction.
             /// </summary>
-            public string boneType { get; private set; }
+            public uint boneType { get; private set; }
             /// <summary>
             /// The id of the currently hoverred object.
             /// It will be always null for an Interaction inside a Tool.
@@ -73,6 +73,15 @@ namespace umi3d.edk.interaction
                 hoveredId = dto.hoveredObjectId;
                 toolId = dto.toolId;
                 interactionId = dto.id;
+            }
+
+            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType)
+            {
+                this.user = user;
+                this.boneType = boneType;
+                this.hoveredId = hoveredObjectId;
+                this.toolId = toolId;
+                this.interactionId = id;
             }
         }
 
@@ -158,6 +167,8 @@ namespace umi3d.edk.interaction
         /// <param name="user">User interacting</param>
         /// <param name="request">Interaction request</param>
         public abstract void OnUserInteraction(UMI3DUser user, InteractionRequestDto request);
+
+        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length);
 
         /// <summary>
         /// Convert interaction to Data Transfer Object for a given user. 

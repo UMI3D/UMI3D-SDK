@@ -22,7 +22,7 @@ namespace umi3d.edk.userCapture
 {
     public class SetStreamedBones : Operation
     {
-        public List<string> streamedBones;
+        public List<uint> streamedBones;
 
         public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
         {

@@ -68,7 +68,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public UnityEvent onRelease = new UnityEvent();
 
-        public void onProjected(string boneType)
+        public void onProjected(uint boneType)
         {
             onProject.Invoke();
             var projectedDto = new ToolProjectedDto
@@ -79,7 +79,7 @@ namespace umi3d.cdk.interaction
             UMI3DClientServer.SendData(projectedDto, true);
         }
 
-        public void onReleased(string boneType)
+        public void onReleased(uint boneType)
         {
             onRelease.Invoke();
             var releasedDto = new ToolReleasedDto

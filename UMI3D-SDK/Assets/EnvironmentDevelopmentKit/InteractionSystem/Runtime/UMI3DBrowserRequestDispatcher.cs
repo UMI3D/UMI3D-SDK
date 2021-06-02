@@ -51,5 +51,48 @@ namespace umi3d.edk.interaction
                     break;
             }
         }
+
+        static public void DispatchBrowserRequest(UMI3DUser user, uint operationKey, byte[] array, int position, int length)
+        {
+            var toolId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+            ulong interactionId, hoverredId;
+            uint bonetype;
+            switch (operationKey)
+            {
+                case UMI3DOperationKeys.Transaction:
+                    Debug.Log($"receive transaction from browser {user.Id()}");
+                    break;
+                case UMI3DOperationKeys.ToolReleased:
+                    bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    UMI3DEnvironment.GetEntity<AbstractTool>(toolId)?.OnToolReleased(user, bonetype, array, position, length);
+                    break;
+                case UMI3DOperationKeys.ToolProjected:
+                    bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    UMI3DEnvironment.GetEntity<AbstractTool>(toolId)?.OnToolProjected(user, bonetype, array, position, length);
+                    break;
+                case UMI3DOperationKeys.HoverStateChanged:
+                    interactionId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                    hoverredId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                    bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(toolId)?.HoverStateChanged(user, toolId, interactionId, hoverredId, bonetype, array, position, length);
+                    break;
+                case UMI3DOperationKeys.Hoverred:
+                    interactionId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                    hoverredId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                    bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    UMI3DEnvironment.GetEntity<UMI3DInteractable>(toolId)?.Hovered(user, toolId, interactionId, hoverredId, bonetype, array, position, length);
+                    break;
+                case UMI3DOperationKeys.InteractionRequest:
+                    interactionId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                    hoverredId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                    bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    var parameterId = UMI3DNetworkingHelper.Read<uint>(array, position, length);
+                    UMI3DEnvironment.GetEntity<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoverredId, bonetype, parameterId, array, position, length);
+                    break;
+                default:
+                    Debug.LogWarning($"Missing case {operationKey}");
+                    break;
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Defines the type of the bone.
         /// </summary>
-        public string boneType;
+        public uint boneType;
 
         public SerializableVector3 position;
 
