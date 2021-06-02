@@ -49,7 +49,7 @@ namespace umi3d.edk.userCapture
                 active = isBinded,
                 boneType = boneType,
                 offsetPosition = offsetPosition,
-                rotation = offsetRotation,
+                offsetRotation = offsetRotation,
             };
 
             if (node != null)

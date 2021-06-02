@@ -51,7 +51,7 @@ namespace umi3d.common.userCapture
 
         public SerializableVector3 offsetPosition;
 
-        public SerializableVector4 rotation;
+        public SerializableVector4 offsetRotation;
 
     }
 }

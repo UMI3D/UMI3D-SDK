@@ -264,7 +264,7 @@ namespace umi3d.cdk.userCapture
                         bonetype = dto.boneType,
                         obj = obj,
                         offsetPosition = dto.offsetPosition,
-                        offsetRotation = dto.rotation
+                        offsetRotation = dto.offsetRotation
                     });
 
                     if (dto.rigName == "")
@@ -280,7 +280,7 @@ namespace umi3d.cdk.userCapture
                         {
                             Bound bound = bounds[index];
                             bound.offsetPosition = dto.offsetPosition;
-                            bound.offsetRotation = dto.rotation;
+                            bound.offsetRotation = dto.offsetRotation;
                             bounds[index] = bound;
                         }
                         else
@@ -291,7 +291,7 @@ namespace umi3d.cdk.userCapture
                                 bonetype = dto.boneType,
                                 obj = obj,
                                 offsetPosition = dto.offsetPosition,
-                                offsetRotation = dto.rotation
+                                offsetRotation = dto.offsetRotation
                             });
                         }
                     }
@@ -391,7 +391,6 @@ namespace umi3d.cdk.userCapture
 
         protected KalmanPosition nodePositionFilter = new KalmanPosition(50, 0.5);
         protected KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
-        protected Vector3 scale = Vector3.one;
 
         protected float MeasuresPerSecond = 0;
         protected float lastFrameTime = 0;
@@ -497,8 +496,6 @@ namespace umi3d.cdk.userCapture
                 nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
             else
                 nodeRotationFilter.previous_prediction = rotationMeasurement;
-
-            this.scale = scale;
         }
 
         public virtual IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)

@@ -97,9 +97,9 @@ namespace umi3d.cdk.collaboration
                     if (boneBindingDto.active && savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                     {
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
-                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), scale).MultiplyPoint3x4(bonePositionFilters[boneType].regressed_position);
-                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion(), Vector3.Scale(this.scale, boneScales[boneType])).MultiplyPoint3x4((Vector3)boneBindingDto.offsetPosition);
-                        st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion() * (Quaternion)boneBindingDto.rotation;
+                        Vector3 boneposition = Matrix4x4.TRS(nodePositionFilter.regressed_position, nodeRotationFilter.RegressedQuaternion(), this.transform.localScale).MultiplyPoint3x4(bonePositionFilters[boneType].regressed_position);
+                        st.obj.position = Matrix4x4.TRS(boneposition, nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion(), boneScales[boneType]).MultiplyPoint3x4((Vector3)boneBindingDto.offsetPosition);
+                        st.obj.rotation = nodeRotationFilter.RegressedQuaternion() * boneRotationFilters[boneType].RegressedQuaternion() * (Quaternion)boneBindingDto.offsetRotation;
                     }
                 }
             }
@@ -281,7 +281,7 @@ namespace umi3d.cdk.collaboration
                     boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
 
                 if (!boneScales.ContainsKey(boneDto.boneType))
-                    boneScales.Add(boneDto.boneType, boneDto.scale);
+                    boneScales.Add(boneDto.boneType, Vector3.Scale(boneDto.scale, trackingFrameDto.scale));
 
                 BoneKalmanUpdate(boneDto);
 
