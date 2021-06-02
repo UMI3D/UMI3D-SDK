@@ -395,9 +395,30 @@ namespace umi3d.edk.collaboration
                     entity = entity.ToEntityDto(user),
                 };
                 e.Response.WriteContent(load.ToBson());
+
+
+                LoadEntityDto result = null;
+                bool finished = false;
+                UnityMainThreadDispatcher.Instance().Enqueue(
+                    _GetEnvironment(
+                        entity, user,
+                        (res) => { result = res; finished = true; },
+                        () => { finished = true; }
+                    ));
+                while (!finished) System.Threading.Thread.Sleep(1);
+                e.Response.WriteContent(result.ToBson());
             }
             else
                 Return404(e.Response, "Unvalid Id");
+        }
+
+        IEnumerator _GetEnvironment(UMI3DLoadableEntity entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        {
+            callback.Invoke(new LoadEntityDto()
+            {
+                entity = entity.ToEntityDto(user),
+            });
+            yield return null;
         }
 
         /// <summary>

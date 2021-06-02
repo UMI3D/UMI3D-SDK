@@ -30,7 +30,7 @@ namespace umi3d.cdk.userCapture
         public Transform skeletonContainer;
         public Transform viewpoint;
         [ConstStringEnum(typeof(BoneType))]
-        public string viewpointBonetype;
+        public uint viewpointBonetype;
 
         public bool sendTracking = true;
 

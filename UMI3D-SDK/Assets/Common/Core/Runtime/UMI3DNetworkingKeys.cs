@@ -39,8 +39,8 @@ namespace umi3d.common
         //ENVIRONMENT
         public const string environment = "/environment";
         public const string join = "/environment/join";
-        public const string entity = "/environment/entity/:id";
-        public const string scene = "/environment/scene/:id";
+        public const string entity = "/environment/entity";
+        public const string scene = "/environment/scene";
         public const string playerCount = "/environment/player_count";
 
         //Prefix

@@ -21,6 +21,18 @@ namespace umi3d.common
             modules.Remove(module);
         }
 
+        public static void AddModule(List<Umi3dNetworkingHelperModule> moduleList)
+        {
+            foreach(var module in moduleList)
+                modules.Add(module);
+        }
+
+        public static void RemoveModule(List<Umi3dNetworkingHelperModule> moduleList)
+        {
+            foreach (var module in moduleList)
+                modules.Remove(module);
+        }
+
         public static T Read<T>(byte[] array, int position, int length)
         {
             return Read<T>(array, ref position, ref length);
@@ -414,7 +426,6 @@ namespace umi3d.common
                             (s, i, j) = b.Item2(by, i, j);
                             j += UMI3DNetworkingHelper.Write(i, by, j);
                             i += s;
-                            Debug.Log($"{s},{i},{j}");
                             return (s, i, j);
                         };
                         return (a.Item1 + b.Item1, f2);

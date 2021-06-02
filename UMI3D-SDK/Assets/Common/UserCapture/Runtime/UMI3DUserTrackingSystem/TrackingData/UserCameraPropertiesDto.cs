@@ -38,7 +38,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// the bone corresponding to the camera's position
         /// </summary>
-        public string boneType;
+        public uint boneType;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserCameraProperties; }
 

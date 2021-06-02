@@ -118,7 +118,7 @@ namespace umi3d.edk.collaboration
             user.SetStatus(dto.status);
         }
 
-        Umi3dNetworkingHelperModule collaborativeModule;
+        List<Umi3dNetworkingHelperModule> collaborativeModule;
 
         /// <summary>
         /// Initialize the server.
@@ -126,8 +126,8 @@ namespace umi3d.edk.collaboration
         public override void Init()
         {
             base.Init();
-
-            if (collaborativeModule == null) collaborativeModule = new UMI3DEnvironmentNetworkingCollaborationModule();
+            if (collaborativeModule == null)
+                collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
             UMI3DNetworkingHelper.AddModule(collaborativeModule);
 
             if (!useIp)

@@ -58,6 +58,7 @@ namespace umi3d.cdk.collaboration
             connected = false;
             joinning = false;
             UMI3DNetworkingHelper.AddModule(new UMI3DCollaborationNetworkingModule());
+            UMI3DNetworkingHelper.AddModule(new common.collaboration.UMI3DCollaborationNetworkingModule());
         }
 
         public void Init()

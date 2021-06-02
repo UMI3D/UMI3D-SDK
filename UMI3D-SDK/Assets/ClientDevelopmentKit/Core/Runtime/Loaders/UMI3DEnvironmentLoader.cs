@@ -396,7 +396,7 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         void _LoadEntity(byte[] operation, int position, int length, Action performed)
         {
-            var id = UMI3DNetworkingHelper.Read<uint>(operation, ref position, ref length);
+            var id = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
             Action<LoadEntityDto> callback = (load) => {
                 LoadEntity(load.entity, performed);
             };
