@@ -63,7 +63,6 @@ namespace umi3d.edk.collaboration
                     Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
                     return true;
                 case UMI3DCollaborationUser user:
-                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
                     position += UMI3DNetworkingHelper.Write<ulong>(user.Id(), array, position);
                     position += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, position);
                     position += UMI3DNetworkingHelper.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id(), array, position);
@@ -71,7 +70,6 @@ namespace umi3d.edk.collaboration
                     position += UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0, array, position);
                     position += UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0, array, position);
                     result = 2 * sizeof(uint) + 4 * sizeof(ulong);
-                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
                     return true;
             }
             result = 0;
