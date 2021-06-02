@@ -390,13 +390,6 @@ namespace umi3d.edk.collaboration
             var entity = UMI3DEnvironment.GetEntity<UMI3DLoadableEntity>(dto.entityId);
             if (entity != null)
             {
-                var load = new LoadEntityDto()
-                {
-                    entity = entity.ToEntityDto(user),
-                };
-                e.Response.WriteContent(load.ToBson());
-
-
                 LoadEntityDto result = null;
                 bool finished = false;
                 UnityMainThreadDispatcher.Instance().Enqueue(
