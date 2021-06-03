@@ -200,7 +200,7 @@ namespace umi3d.common
                             char c;
                             if (TryRead<char>(array, ref position, ref length, out c))
                             {
-                                s += c;
+                                r += c;
                             }
                             else return false;
                         }
