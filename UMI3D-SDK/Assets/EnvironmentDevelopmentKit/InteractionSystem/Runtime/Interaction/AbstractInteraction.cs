@@ -168,7 +168,7 @@ namespace umi3d.edk.interaction
         /// <param name="request">Interaction request</param>
         public abstract void OnUserInteraction(UMI3DUser user, InteractionRequestDto request);
 
-        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length);
+        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length);
 
         /// <summary>
         /// Convert interaction to Data Transfer Object for a given user. 

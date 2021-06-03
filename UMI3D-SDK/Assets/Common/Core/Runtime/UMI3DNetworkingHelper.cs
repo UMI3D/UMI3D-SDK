@@ -54,6 +54,15 @@ namespace umi3d.common
         {
             switch (true)
             {
+                case true when typeof(T) == typeof(char):
+                    if (length >= sizeof(char))
+                    {
+                        result = (T)Convert.ChangeType(BitConverter.ToChar(array, (int)position), typeof(T));
+                        position += sizeof(char);
+                        length -= sizeof(char);
+                        return true;
+                    }
+                    break;
                 case true when typeof(T) == typeof(bool):
                     if (length >= sizeof(bool))
                     {
@@ -181,9 +190,23 @@ namespace umi3d.common
                     break;
                 case true when typeof(T) == typeof(string):
                     if (length == 0) throw new Exception($"String length should not be 0");
-                    result = (T)Convert.ChangeType(BitConverter.ToString(array, (int)position, (int)length), typeof(T));
-                    position += length;
-                    length = 0;
+                    result = default(T);
+                    uint s;
+                    string r = "";
+                    if (TryRead<uint>(array, ref position, ref length, out s))
+                    {
+                        for (uint i = 0; i < s; i++)
+                        {
+                            char c;
+                            if (TryRead<char>(array, ref position, ref length, out c))
+                            {
+                                s += c;
+                            }
+                            else return false;
+                        }
+                    }
+                    else return false;
+                    result = (T)Convert.ChangeType(r, typeof(T));
                     return true;
                 default:
                     bool read;

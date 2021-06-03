@@ -157,7 +157,8 @@ namespace umi3d.cdk
             /// </summary>
             public string authorization
             {
-                get {
+                get
+                {
                     if (useServerAuthorization)
                         return UMI3DClientServer.getAuthorization();
                     else return _authorization;
@@ -688,7 +689,7 @@ namespace umi3d.cdk
         IEnumerator DownloadResources(AssetLibraryDto assetLibrary, string application)
         {
             List<string> applications = new List<string>() { application };
-            librariesMap[assetLibrary.id] = assetLibrary.libraryId; 
+            librariesMap[assetLibrary.id] = assetLibrary.libraryId;
             string directoryPath = Path.Combine(Application.persistentDataPath, assetLibrary.libraryId);
             if (Directory.Exists(directoryPath))
             {
@@ -743,8 +744,10 @@ namespace umi3d.cdk
 
         public static bool isKnowedLibrary(ulong key)
         {
-            var libraryID = Instance.librariesMap[key];
-            return Instance.libraries.ContainsKey(libraryID);
+            string libraryID;
+            if (Instance.librariesMap.TryGetValue(key, out libraryID))
+                return Instance.libraries.ContainsKey(libraryID);
+            return false;
         }
 
 

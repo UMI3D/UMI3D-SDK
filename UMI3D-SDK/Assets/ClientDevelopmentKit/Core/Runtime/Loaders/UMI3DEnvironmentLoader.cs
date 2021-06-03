@@ -799,7 +799,10 @@ namespace umi3d.cdk
                     {
                         if (SetUMI3DPorperty(node, operationId, propertyKey, operation, position, length)) break;
                         if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey, operation, position, length)) break;
-                        Parameters.SetUMI3DProperty(node, operationId, propertyKey, operation, position, length);
+                        if(!Parameters.SetUMI3DProperty(node, operationId, propertyKey, operation, position, length))
+                        {
+                            Debug.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {operation.ToString<byte>()} {position} {length}");
+                        }
                     }
                 }
                 catch (Exception e)

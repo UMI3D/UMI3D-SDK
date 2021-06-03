@@ -76,21 +76,24 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
-                    if (UMI3DParameterKeys.String == ParameterId)
+
+                    var parameterId = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    if (UMI3DParameterKeys.String == parameterId)
                     {
                         value = UMI3DNetworkingHelper.Read<string>(array, position, length);
+                        UnityEngine.Debug.Log(value);
                         onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
                     }
                     else
-                        throw new System.Exception($"parameter of type {ParameterId}");
+                        throw new System.Exception($"parameter of type {parameterId}");
                     break;
                 default:
-                    throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
+                    throw new System.Exception($"User interaction not supported {operationId} ");
             }
         }
     }

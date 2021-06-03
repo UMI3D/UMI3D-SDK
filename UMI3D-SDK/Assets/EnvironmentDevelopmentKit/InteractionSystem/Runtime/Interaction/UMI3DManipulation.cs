@@ -102,15 +102,18 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
         {
             switch (interactionId)
             {
                 case UMI3DOperationKeys.ManipulationRequest:
                     var translation = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
                     var rotation = UMI3DNetworkingHelper.Read<Quaternion>(array, ref position, ref length);
+                    Debug.Log("here");
                     onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;
+                default:
+                    throw new System.Exception($"User interaction not supported (interactionId) ");
             }
         }
 

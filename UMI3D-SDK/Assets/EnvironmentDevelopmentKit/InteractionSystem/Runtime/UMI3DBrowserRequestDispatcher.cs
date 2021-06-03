@@ -82,14 +82,15 @@ namespace umi3d.edk.interaction
                     bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
                     UMI3DEnvironment.GetEntity<UMI3DInteractable>(toolId)?.Hovered(user, toolId, interactionId, hoverredId, bonetype, array, position, length);
                     break;
-                case UMI3DOperationKeys.InteractionRequest:
-                    interactionId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
-                    hoverredId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
-                    bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
-                    var parameterId = UMI3DNetworkingHelper.Read<uint>(array, position, length);
-                    UMI3DEnvironment.GetEntity<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoverredId, bonetype, parameterId, array, position, length);
-                    break;
                 default:
+                    if (UMI3DOperationKeys.InteractionRequest <= operationKey && operationKey <= UMI3DOperationKeys.UserTrackingFrame)
+                    {
+                        interactionId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                        hoverredId = UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
+                        bonetype = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                        UMI3DEnvironment.GetEntity<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoverredId, bonetype, array, position, length);
+                        break;
+                    }
                     Debug.LogWarning($"Missing case {operationKey}");
                     break;
             }

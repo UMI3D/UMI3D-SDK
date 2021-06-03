@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -66,9 +67,25 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, uint ParameterId, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
         {
-            throw new System.NotImplementedException();
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.EventTriggered:
+                    onTrigger.Invoke(new InteractionEventContent(user, toolId,interactionId,hoverredId,boneType));
+                    break;
+                case UMI3DOperationKeys.EventStateChanged:
+                    var active = UMI3DNetworkingHelper.Read<bool>(array,position,length);
+                    if (active)
+                    {
+                        onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                    }
+                    else
+                    {
+                        onRelease.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                    }
+                    break;
+            }
         }
 
         /// <summary>

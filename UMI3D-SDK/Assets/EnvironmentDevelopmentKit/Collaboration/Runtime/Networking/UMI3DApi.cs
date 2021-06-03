@@ -371,7 +371,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             JoinDto dto = ReadDto(e.Request) as JoinDto;
-            UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), dto.userSize, dto.trackedBonetypes); 
+            UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), dto.userSize, dto.trackedBonetypes);
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
             UMI3DCollaborationServer.NotifyUserJoin(user);
         }
@@ -392,14 +392,18 @@ namespace umi3d.edk.collaboration
             {
                 LoadEntityDto result = null;
                 bool finished = false;
+                bool ok = true;
                 UnityMainThreadDispatcher.Instance().Enqueue(
                     _GetEnvironment(
                         entity, user,
                         (res) => { result = res; finished = true; },
-                        () => { finished = true; }
+                        () => { ok = false; finished = true; }
                     ));
                 while (!finished) System.Threading.Thread.Sleep(1);
-                e.Response.WriteContent(result.ToBson());
+                if (ok)
+                    e.Response.WriteContent(result.ToBson());
+                else
+                    Return404(e.Response, "Unvalid Id, Object seams to be missing");
             }
             else
                 Return404(e.Response, "Unvalid Id");
@@ -407,10 +411,20 @@ namespace umi3d.edk.collaboration
 
         IEnumerator _GetEnvironment(UMI3DLoadableEntity entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
-            callback.Invoke(new LoadEntityDto()
+            try
             {
-                entity = entity.ToEntityDto(user),
-            });
+                var load = new LoadEntityDto()
+                {
+                    entity = entity.ToEntityDto(user),
+                };
+                callback.Invoke(load);
+            }
+            catch
+            {
+                error();
+            }
+
+
             yield return null;
         }
 
