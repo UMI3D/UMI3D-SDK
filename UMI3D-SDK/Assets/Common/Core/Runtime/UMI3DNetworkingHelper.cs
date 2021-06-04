@@ -144,6 +144,7 @@ namespace umi3d.common
                         return true;
                     }
                     break;
+                case true when typeof(T) == typeof(SerializableVector2):
                 case true when typeof(T) == typeof(Vector2):
                     if (length >= 2 * sizeof(float))
                     {
@@ -153,6 +154,7 @@ namespace umi3d.common
                         return true;
                     }
                     break;
+                case true when typeof(T) == typeof(SerializableVector3):
                 case true when typeof(T) == typeof(Vector3):
                     if (length >= 3 * sizeof(float))
                     {
@@ -163,10 +165,44 @@ namespace umi3d.common
                     }
                     break;
                 case true when typeof(T) == typeof(Quaternion):
+                    if (length >= 4 * sizeof(float))
+                    {
+                        float x, y, z, w;
+                        x = BitConverter.ToSingle(array, (int)position);
+                        y = BitConverter.ToSingle(array, (int)position + sizeof(float));
+                        z = BitConverter.ToSingle(array, (int)position + 2 * sizeof(float));
+                        w = BitConverter.ToSingle(array, (int)position + 3 * sizeof(float));
+                        result = (T)Convert.ChangeType(new Quaternion(x, y, z, w), typeof(T));
+                        position += 4 * sizeof(float);
+                        length -= 4 * sizeof(float);
+                        return true;
+                    }
+                    break;
+                case true when typeof(T) == typeof(SerializableColor):
+                case true when typeof(T) == typeof(Color):
+                    if (length >= 4 * sizeof(float))
+                    {
+                        float x, y, z, w;
+                        x = BitConverter.ToSingle(array, (int)position);
+                        y = BitConverter.ToSingle(array, (int)position + sizeof(float));
+                        z = BitConverter.ToSingle(array, (int)position + 2 * sizeof(float));
+                        w = BitConverter.ToSingle(array, (int)position + 3 * sizeof(float));
+                        result = (T)Convert.ChangeType(new Color(x, y, z, w), typeof(T));
+                        position += 4 * sizeof(float);
+                        length -= 4 * sizeof(float);
+                        return true;
+                    }
+                    break;
+                case true when typeof(T) == typeof(SerializableVector4):
                 case true when typeof(T) == typeof(Vector4):
                     if (length >= 4 * sizeof(float))
                     {
-                        result = (T)Convert.ChangeType(new Vector4(BitConverter.ToSingle(array, (int)position), BitConverter.ToSingle(array, (int)position + sizeof(float)), BitConverter.ToSingle(array, (int)position + 2 * sizeof(float)), BitConverter.ToSingle(array, (int)position + 3 * sizeof(float))), typeof(T));
+                        float x, y, z, w;
+                        x = BitConverter.ToSingle(array, (int)position);
+                        y = BitConverter.ToSingle(array, (int)position + sizeof(float));
+                        z = BitConverter.ToSingle(array, (int)position + 2 * sizeof(float));
+                        w = BitConverter.ToSingle(array, (int)position + 3 * sizeof(float));
+                        result = (T)Convert.ChangeType(new Vector4(x, y, z, w), typeof(T));
                         position += 4 * sizeof(float);
                         length -= 4 * sizeof(float);
                         return true;
@@ -290,6 +326,8 @@ namespace umi3d.common
                 case SerializableVector3 V3:
                 case Vector3 v3:
                     return 3 * sizeof(float);
+                case SerializableColor serializableColor:
+                case Color color:
                 case SerializableVector4 V4:
                 case Quaternion q:
                 case Vector4 v4:
@@ -382,6 +420,18 @@ namespace umi3d.common
                     BitConverter.GetBytes(q.y).CopyTo(array, pos + sizeof(float));
                     BitConverter.GetBytes(q.z).CopyTo(array, pos + 2 * sizeof(float));
                     BitConverter.GetBytes(q.w).CopyTo(array, pos + 3 * sizeof(float));
+                    return 4 * sizeof(float);
+                case Color q:
+                    BitConverter.GetBytes(q.r).CopyTo(array, pos);
+                    BitConverter.GetBytes(q.g).CopyTo(array, pos + sizeof(float));
+                    BitConverter.GetBytes(q.b).CopyTo(array, pos + 2 * sizeof(float));
+                    BitConverter.GetBytes(q.a).CopyTo(array, pos + 3 * sizeof(float));
+                    return 4 * sizeof(float);
+                case SerializableColor q:
+                    BitConverter.GetBytes(q.R).CopyTo(array, pos);
+                    BitConverter.GetBytes(q.G).CopyTo(array, pos + sizeof(float));
+                    BitConverter.GetBytes(q.B).CopyTo(array, pos + 2 * sizeof(float));
+                    BitConverter.GetBytes(q.A).CopyTo(array, pos + 3 * sizeof(float));
                     return 4 * sizeof(float);
                 case SerializableMatrix4x4 v4:
                     position += Write(v4.c0, array, position);

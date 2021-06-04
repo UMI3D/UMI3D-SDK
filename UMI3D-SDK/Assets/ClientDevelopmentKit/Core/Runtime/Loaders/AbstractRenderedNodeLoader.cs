@@ -57,7 +57,7 @@ namespace umi3d.cdk
                             {
                                 if (extension.applyCustomMaterial)
                                 {
-                                    var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
+                                    var node = ((UMI3DNodeInstance)entity);
                                     ulong newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
                                     bool shouldAdd = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).addMaterialIfNotExists;
                                     UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node, null, shouldAdd));
@@ -169,7 +169,163 @@ namespace umi3d.cdk
             return true;
         }
 
-        public void SetMaterialOverided(UMI3DRenderedNodeDto dto, UMI3DNodeInstance instance)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+            if (entity == null) return false;
+            var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
+            if (extension == null) return false;
+            var node = entity as UMI3DNodeInstance;
+            switch (propertyKey)
+            {
+
+                case UMI3DPropertyKeys.ApplyCustomMaterial:
+                    extension.applyCustomMaterial = UMI3DNetworkingHelper.Read<bool>(operation,ref position,ref length);
+
+                    if (!extension.applyCustomMaterial) //revert original materials
+                    {
+                        RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                    }
+                    else
+                    {
+                        SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+
+                        //apply submodel overrider if subojects are tracked
+                        if (extension is UMI3DMeshNodeDto && ((UMI3DMeshNodeDto)extension).areSubobjectsTracked)
+                        {
+                            foreach (UMI3DNodeInstance subNode in ((UMI3DNodeInstance)entity).subNodeInstances)
+                            {
+                                SubModelDto subMeshdto = ((GlTFNodeDto)subNode.dto)?.extensions?.umi3d as SubModelDto;
+                                if (subMeshdto.ignoreModelMaterialOverride)
+                                    RevertToOriginalMaterial(subNode);
+
+                                SetMaterialOverided(subMeshdto, subNode);
+                            }
+                        }
+                    }
+                    break;
+                case UMI3DPropertyKeys.OverideMaterialId:
+                    //  Debug.Log("override mat id");
+                    int index;
+                    UMI3DRenderedNodeDto.MaterialOverrideDto mat;
+                    switch (operationId)
+                    {
+                        case UMI3DOperationKeys.SetEntityListAddProperty:
+                            index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                            //  Debug.Log("SetEntityListAddPropertyDto");
+                            if (index == extension.overridedMaterials.Count)
+                            {
+                                if (extension.applyCustomMaterial)
+                                {
+                                    ulong newMatId = mat.newMaterialId;
+                                    bool shouldAdd = mat.addMaterialIfNotExists;
+                                    UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, mat.overridedMaterialsId, node, null, shouldAdd));
+
+                                }
+                                extension.overridedMaterials.Add(mat);
+                            }
+                            else
+                            {
+                                extension.overridedMaterials.Insert(index, mat);
+                                if (extension.applyCustomMaterial)
+                                    SetMaterialOverided(extension, node);
+                            }
+                            //       
+                            break;
+                        case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                            index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                            if (extension.applyCustomMaterial)
+                            {
+                                mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                                RevertOneOverrider((UMI3DNodeInstance)entity, mat);
+                                extension.overridedMaterials.RemoveAt(index);
+
+                                SetMaterialOverided(extension, node); // necessary if multiples overriders override the same removed material
+
+                            }
+                            else
+                            {
+                                extension.overridedMaterials.RemoveAt(index);
+                            }
+                            break;
+                        case UMI3DOperationKeys.SetEntityListProperty:
+                            index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                            if (extension.applyCustomMaterial)
+                            {
+                                //Remove old overrider
+                                RevertOneOverrider((UMI3DNodeInstance)entity, mat);
+
+                                //Change overriders list
+                                extension.overridedMaterials[index] = mat;
+
+                                bool shouldAdd = mat.addMaterialIfNotExists;
+
+                                //Apply new overrider (Apply again the list from the new element to then end of the list)
+                                UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(mat.newMaterialId, mat.overridedMaterialsId, node, () =>
+                                {
+                                    for (int i = index + 1; i < extension.overridedMaterials.Count; i++)
+                                    {
+                                        ApplyMaterialOverrider(extension.overridedMaterials[i].newMaterialId, extension.overridedMaterials[i].overridedMaterialsId, node, null, shouldAdd);
+                                    };
+                                },
+                                shouldAdd));
+                            }
+                            else
+                            {
+                                extension.overridedMaterials[index] = mat;
+                            }
+
+                            break;
+                        case UMI3DOperationKeys.SetEntityProperty:
+                            var list = UMI3DNetworkingHelper.ReadList<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                            if (extension.applyCustomMaterial)
+                            {
+                                RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                                extension.overridedMaterials = list;
+
+                                SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+
+                            }
+                            else
+                            {
+                                extension.overridedMaterials = list;
+                            }
+                            break;
+                        default:
+                            Debug.LogWarning("wrong type in AsyncProperty list ");
+                            break;
+                    }
+
+                    break;
+
+                case UMI3DPropertyKeys.CastShadow:
+                    extension.castShadow = UMI3DNetworkingHelper.Read<bool>(operation,ref position,ref length);
+                    if (entity is UMI3DNodeInstance)
+                    {
+                        foreach (var renderer in node.renderers)
+                            renderer.shadowCastingMode = extension.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                    }
+                    else return false;
+                    break;
+                case UMI3DPropertyKeys.ReceiveShadow:
+                    extension.receiveShadow = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                    if (entity is UMI3DNodeInstance)
+                    {
+                        foreach (var renderer in node.renderers)
+                            renderer.receiveShadows = extension.receiveShadow;
+                    }
+                    else return false;
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+
+            public void SetMaterialOverided(UMI3DRenderedNodeDto dto, UMI3DNodeInstance instance)
         {
             if (dto != null && dto.applyCustomMaterial && dto.overridedMaterials != null)
             {

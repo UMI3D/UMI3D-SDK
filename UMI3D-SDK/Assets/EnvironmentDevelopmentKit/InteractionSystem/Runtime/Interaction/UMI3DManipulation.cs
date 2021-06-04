@@ -113,7 +113,7 @@ namespace umi3d.edk.interaction
                     onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;
                 default:
-                    throw new System.Exception($"User interaction not supported (interactionId) ");
+                    throw new System.Exception($"User interaction not supported ({interactionId}) ");
             }
         }
 

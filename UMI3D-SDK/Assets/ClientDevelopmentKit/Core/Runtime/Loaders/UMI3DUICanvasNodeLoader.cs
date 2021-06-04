@@ -71,5 +71,32 @@ namespace umi3d.cdk
             }
             return true;
         }
+
+        public bool SetUMI3DPorperty(UICanvasDto dto, UMI3DNodeInstance node, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.DynamicPixelsPerUnit:
+                    {
+                        CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
+                        canvasScaler.dynamicPixelsPerUnit = dto.dynamicPixelsPerUnit = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length);
+                    }
+                    break;
+                case UMI3DPropertyKeys.ReferencePixelsPerUnit:
+                    {
+                        CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
+                        canvasScaler.referencePixelsPerUnit = dto.referencePixelsPerUnit = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length);
+                    }
+                    break;
+                case UMI3DPropertyKeys.OrderInLayer:
+                    Canvas canvas = node.gameObject.GetOrAddComponent<Canvas>();
+                    canvas.sortingOrder = dto.orderInLayer = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
     }
 }

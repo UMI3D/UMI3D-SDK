@@ -136,5 +136,63 @@ namespace umi3d.cdk
             }
             return true;
         }
+
+        public bool SetUMI3DPorperty(UIImageDto dto, UMI3DNodeInstance node, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            switch (propertyKey)
+            {
+                //Image
+                case UMI3DPropertyKeys.ImageColor:
+                    {
+                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        image.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(operation,ref position,ref length);
+                    }
+                    break;
+                case UMI3DPropertyKeys.ImageType:
+                    {
+                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        image.type = (dto.type = (ImageType)UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length)).Convert();
+                    }
+                    break;
+                case UMI3DPropertyKeys.Image:
+                    {
+                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        dto.sprite = UMI3DNetworkingHelper.Read<ResourceDto>(operation, ref position, ref length);
+                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.sprite?.variants);
+                        if (fileToLoad == null)
+                        {
+                            image.sprite = null;
+                            dto.sprite.variants = null;
+                            break;
+                        }
+
+                        string url = fileToLoad.url;
+                        string ext = fileToLoad.extension;
+                        string authorization = fileToLoad.authorization;
+                        IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+                        if (loader != null)
+                            UMI3DResourcesManager.LoadFile(
+                                dto.id,
+                                fileToLoad,
+                                loader.UrlToObject,
+                                loader.ObjectFromCache,
+                                (o) =>
+                                {
+                                    var tex = (Texture2D)o;
+                                    if (tex != null)
+                                        image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+                                    else
+                                        Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                                },
+                                Debug.LogWarning,
+                                loader.DeleteObject
+                                );
+                    }
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
     }
 }

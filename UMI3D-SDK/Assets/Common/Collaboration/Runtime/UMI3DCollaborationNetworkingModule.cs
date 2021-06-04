@@ -34,6 +34,9 @@ namespace umi3d.common.collaboration
                 case FloatRangeParameterDto param:
                     size = sizeof(uint) + UMI3DNetworkingHelper.GetSize(param.value)*4;
                     break;
+                case UMI3DRenderedNodeDto.MaterialOverrideDto material:
+                    size = sizeof(ulong) + sizeof(bool) + UMI3DNetworkingHelper.GetSizeArray(material.overridedMaterialsId);
+                    break;
                 default:
                     size = 0;
                     return false;
@@ -145,6 +148,24 @@ namespace umi3d.common.collaboration
                 //    else
                 //        result = default(T);
                 //    return true;
+
+                case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
+                    var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
+                    readable = UMI3DNetworkingHelper.TryRead<ulong>(array, ref position, ref length, out mat.newMaterialId);
+                    if (readable)
+                    {
+                        readable = UMI3DNetworkingHelper.TryRead<bool>(array, ref position, ref length, out mat.addMaterialIfNotExists);
+                        if (readable)
+                        {
+                            mat.overridedMaterialsId = UMI3DNetworkingHelper.ReadList<string>(array, ref position, ref length);
+                            result = (T)Convert.ChangeType(mat, typeof(T));
+                        }
+                        else
+                            result = default(T);
+                    }
+                    else
+                        result = default(T);
+                    return true;
                 default:
                     result = default(T);
                     readable = false;
@@ -202,6 +223,12 @@ namespace umi3d.common.collaboration
                     position += UMI3DNetworkingHelper.Write(param.min, array, position);
                     position += UMI3DNetworkingHelper.Write(param.max, array, position);
                     UMI3DNetworkingHelper.Write(param.increment, array, position);
+                    break;
+                case UMI3DRenderedNodeDto.MaterialOverrideDto material:
+                    size = sizeof(ulong) + sizeof(bool) + UMI3DNetworkingHelper.GetSizeArray(material.overridedMaterialsId);
+                    position += UMI3DNetworkingHelper.Write(material.newMaterialId, array, position);
+                    position += UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists, array, position);
+                    UMI3DNetworkingHelper.WriteArray(material.overridedMaterialsId, array, position);
                     break;
                 default:
                     size = 0;

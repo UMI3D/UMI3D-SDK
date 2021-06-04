@@ -109,7 +109,7 @@ namespace umi3d.cdk
                     catch (Exception e)
                     {
                         Debug.LogError(e);
-                        Debug.LogError("SubModels names of " + rootDto.id + " are different from environment names. " +nodeDto.id + " not found");
+                        Debug.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found");
                     }
                     finished?.Invoke();
                 }
@@ -192,6 +192,39 @@ namespace umi3d.cdk
                 return false;
         }
 
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        {
+            if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
+            {
+                if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+                var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as SubModelDto;
+                if (extension == null) return false;
+                switch (propertyKey)
+                {
+                    case UMI3DPropertyKeys.IgnoreModelMaterialOverride:
+                        extension.ignoreModelMaterialOverride = UMI3DNetworkingHelper.Read<bool>(operation,position,length);
+                        if (extension.ignoreModelMaterialOverride) //revert model override and apply only subModel overriders 
+                        {
+                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+                        }
+                        else
+                        {
+                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                            UMI3DMeshNodeDto parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
+                            SetMaterialOverided(parentDto, (UMI3DNodeInstance)entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+                        }
+                        break;
 
+                    default:
+                        return false;
+                }
+                return true;
+
+            }
+            else
+                return false;
+        }
     }
 }
