@@ -48,18 +48,18 @@ namespace umi3d.common.interaction
         public uint boneType;
         protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
 
-        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        public override (int, Func<byte[], int, int,(int,int)>) ToByteArray(int baseSize,params object[] parameters)
         {
-            var fb = base.ToByteArray(parameters);
+            var fb = base.ToByteArray(baseSize,parameters);
             int size = fb.Item1 + 3 * sizeof(ulong) + UMI3DNetworkingHelper.GetSize(boneType);
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += fb.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(toolId,b,i);
-                i += UMI3DNetworkingHelper.Write(id, b, i);
-                i += UMI3DNetworkingHelper.Write(hoveredObjectId, b, i);
-                i += UMI3DNetworkingHelper.Write(boneType, b, i);
-                return size;
+                (i,bs)= fb.Item2(b, i,bs);
+                bs += UMI3DNetworkingHelper.Write(toolId,b,ref i);
+                bs += UMI3DNetworkingHelper.Write(id, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(hoveredObjectId, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(boneType, b, ref i);
+                return (i, bs);
             };
             return (size, func);
         }

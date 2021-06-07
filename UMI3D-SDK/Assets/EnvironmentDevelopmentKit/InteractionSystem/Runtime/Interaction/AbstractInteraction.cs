@@ -203,16 +203,16 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
         }
 
-        public virtual (int, Func<byte[], int, int>) ToByte(UMI3DUser user)
+        public virtual (int, Func<byte[], int, int, (int, int)>) ToByte(int baseSize, UMI3DUser user)
         {
             throw new NotImplementedException();
         }
 
-        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        (int, Func<byte[], int, int,(int,int)>) IByte.ToByteArray(int baseSize,params object[] parameters)
         {
             if (parameters.Length < 1)
-                return ToByte(null);
-            return ToByte(parameters[0] as UMI3DUser);
+                return ToByte(baseSize, null);
+            return ToByte(baseSize, parameters[0] as UMI3DUser);
         }
 
         #region filter

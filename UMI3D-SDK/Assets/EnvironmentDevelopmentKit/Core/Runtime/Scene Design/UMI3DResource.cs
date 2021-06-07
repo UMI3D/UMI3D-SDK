@@ -36,9 +36,9 @@ namespace umi3d.edk
             return dto;
         }
 
-        public (int, Func<byte[], int, int>) ToByte()
+        public (int, Func<byte[], int, int, (int, int)>) ToByte()
         {
-            return UMI3DNetworkingHelper.ToBytes(variants);
+            return UMI3DNetworkingHelper.ToBytes(variants,0);
         }
 
     }

@@ -31,7 +31,17 @@ namespace umi3d.edk
 
         IEntity ToEntityDto(UMI3DUser user);
 
-        (int, Func<byte[], int, int>) ToBytes(UMI3DUser user);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseSize"></param>
+        /// <param name="user"></param>
+        /// <returns> return a couple (size,func) with size as the required size more the baseSize given,
+        /// and func a method taking a byte array in which the data should be written, a position at which it should be written, a base size.
+        /// This method return the updated position (position + required size) and the (required size + base size);
+        /// The byte array given should be at least of size position + required size;
+        /// </returns>
+        (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize,UMI3DUser user);
     }
 
 }

@@ -62,7 +62,7 @@ namespace umi3d.edk
             };
         }
 
-        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        (int, Func<byte[], int, int, (int,int)>) IByte.ToByteArray(int baseSize,params object[] parameters)
         {
             throw new NotImplementedException();
         }

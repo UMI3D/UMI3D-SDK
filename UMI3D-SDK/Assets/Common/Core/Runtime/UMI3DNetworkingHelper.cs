@@ -302,6 +302,8 @@ namespace umi3d.common
         {
             switch (value)
             {
+                case char b:
+                    return sizeof(char);
                 case bool b:
                     return sizeof(bool);
                 case byte by:
@@ -353,127 +355,162 @@ namespace umi3d.common
             return value.Select(v => GetSize(v)).Aggregate((a, b) => a + b);
         }
 
-        public static int Write<T>(T value, byte[] array, int position)
+        public static int Write<T>(T value, byte[] array, ref int position)
         {
-            var pos = position;
+            int ret;
+            Write<T>(value, array, ref position, out ret);
+            return ret;
+        }
+
+        public static void Write<T>(T value, byte[] array, ref int position, out int size)
+        {
             switch (value)
             {
+                case char c:
+                    BitConverter.GetBytes(c).CopyTo(array, (int)position);
+                    size = sizeof(char);
+                    position += size;
+                    return;
                 case bool b:
-                    BitConverter.GetBytes(b).CopyTo(array, pos);
-                    return sizeof(bool);
+                    BitConverter.GetBytes(b).CopyTo(array, (int)position);
+                    size = sizeof(bool);
+                    position += size;
+                    return;
                 case byte by:
-                    BitConverter.GetBytes(by).CopyTo(array, pos);
-                    return sizeof(byte);
+                    BitConverter.GetBytes(by).CopyTo(array, (int)position);
+                    size = sizeof(byte);
+                    position += size;
+                    return;
                 case short s:
-                    BitConverter.GetBytes(s).CopyTo(array, pos);
-                    return sizeof(short);
+                    BitConverter.GetBytes(s).CopyTo(array, (int)position);
+                    size = sizeof(short);
+                    position += size;
+                    return;
                 case ushort us:
-                    BitConverter.GetBytes(us).CopyTo(array, pos);
-                    return sizeof(ushort);
+                    BitConverter.GetBytes(us).CopyTo(array, (int)position);
+                    size = sizeof(ushort);
+                    position += size;
+                    return;
                 case int i:
-                    BitConverter.GetBytes(i).CopyTo(array, pos);
-                    return sizeof(int);
+                    BitConverter.GetBytes(i).CopyTo(array, (int)position);
+                    size = sizeof(int);
+                    position += size;
+                    return;
                 case uint ui:
-                    BitConverter.GetBytes(ui).CopyTo(array, pos);
-                    return sizeof(uint);
+                    BitConverter.GetBytes(ui).CopyTo(array, (int)position);
+                    size = sizeof(uint);
+                    position += size;
+                    return;
                 case float f:
-                    BitConverter.GetBytes(f).CopyTo(array, pos);
-                    return sizeof(float);
+                    BitConverter.GetBytes(f).CopyTo(array, (int)position);
+                    size = sizeof(float);
+                    position += size;
+                    return;
                 case long l:
-                    BitConverter.GetBytes(l).CopyTo(array, pos);
-                    return sizeof(long);
+                    BitConverter.GetBytes(l).CopyTo(array, (int)position);
+                    size = sizeof(long);
+                    position += size;
+                    return;
                 case ulong ul:
-                    BitConverter.GetBytes(ul).CopyTo(array, pos);
-                    return sizeof(ulong);
+                    BitConverter.GetBytes(ul).CopyTo(array, (int)position);
+                    size = sizeof(ulong);
+                    position += size;
+                    return;
                 case SerializableVector2 v2:
-                    BitConverter.GetBytes(v2.X).CopyTo(array, pos);
-                    BitConverter.GetBytes(v2.Y).CopyTo(array, pos + sizeof(float));
-                    return 2 * sizeof(float);
+                    size = Write(v2.X, array, ref position);
+                    size += Write(v2.Y, array, ref position);
+                    return;
                 case Vector2 v2:
-                    BitConverter.GetBytes(v2.x).CopyTo(array, pos);
-                    BitConverter.GetBytes(v2.y).CopyTo(array, pos + sizeof(float));
-                    return 2 * sizeof(float);
+                    size = Write(v2.x, array, ref position);
+                    size += Write(v2.y, array, ref position);
+                    return;
                 case SerializableVector3 v3:
-                    BitConverter.GetBytes(v3.X).CopyTo(array, pos);
-                    BitConverter.GetBytes(v3.Y).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(v3.Z).CopyTo(array, pos + 2 * sizeof(float));
-                    return 3 * sizeof(float);
+                    size = Write(v3.X, array, ref position);
+                    size += Write(v3.Y, array, ref position);
+                    size += Write(v3.Z, array, ref position);
+                    return;
                 case Vector3 v3:
-                    BitConverter.GetBytes(v3.x).CopyTo(array, pos);
-                    BitConverter.GetBytes(v3.y).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(v3.z).CopyTo(array, pos + 2 * sizeof(float));
-                    return 3 * sizeof(float);
+                    size = Write(v3.x, array, ref position);
+                    size += Write(v3.y, array, ref position);
+                    size += Write(v3.z, array, ref position);
+                    return;
                 case SerializableVector4 v4:
-                    BitConverter.GetBytes(v4.X).CopyTo(array, pos);
-                    BitConverter.GetBytes(v4.Y).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(v4.Z).CopyTo(array, pos + 2 * sizeof(float));
-                    BitConverter.GetBytes(v4.W).CopyTo(array, pos + 3 * sizeof(float));
-                    return 4 * sizeof(float);
+                    size = Write(v4.X, array, ref position);
+                    size += Write(v4.Y, array, ref position);
+                    size += Write(v4.Z, array, ref position);
+                    size += Write(v4.W, array, ref position);
+                    return;
                 case Vector4 v4:
-                    BitConverter.GetBytes(v4.x).CopyTo(array, pos);
-                    BitConverter.GetBytes(v4.y).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(v4.z).CopyTo(array, pos + 2 * sizeof(float));
-                    BitConverter.GetBytes(v4.w).CopyTo(array, pos + 3 * sizeof(float));
-                    return 4 * sizeof(float);
+                    size = Write(v4.x, array, ref position);
+                    size += Write(v4.y, array, ref position);
+                    size += Write(v4.z, array, ref position);
+                    size += Write(v4.w, array, ref position);
+                    return;
                 case Quaternion q:
-                    BitConverter.GetBytes(q.x).CopyTo(array, pos);
-                    BitConverter.GetBytes(q.y).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(q.z).CopyTo(array, pos + 2 * sizeof(float));
-                    BitConverter.GetBytes(q.w).CopyTo(array, pos + 3 * sizeof(float));
-                    return 4 * sizeof(float);
+                    size = Write(q.x, array, ref position);
+                    size += Write(q.y, array, ref position);
+                    size += Write(q.z, array, ref position);
+                    size += Write(q.w, array, ref position);
+                    return;
                 case Color q:
-                    BitConverter.GetBytes(q.r).CopyTo(array, pos);
-                    BitConverter.GetBytes(q.g).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(q.b).CopyTo(array, pos + 2 * sizeof(float));
-                    BitConverter.GetBytes(q.a).CopyTo(array, pos + 3 * sizeof(float));
-                    return 4 * sizeof(float);
+                    size = Write(q.r, array, ref position);
+                    size += Write(q.g, array, ref position);
+                    size += Write(q.b, array, ref position);
+                    size += Write(q.a, array, ref position);
+                    return;
                 case SerializableColor q:
-                    BitConverter.GetBytes(q.R).CopyTo(array, pos);
-                    BitConverter.GetBytes(q.G).CopyTo(array, pos + sizeof(float));
-                    BitConverter.GetBytes(q.B).CopyTo(array, pos + 2 * sizeof(float));
-                    BitConverter.GetBytes(q.A).CopyTo(array, pos + 3 * sizeof(float));
-                    return 4 * sizeof(float);
+                    size = Write(q.R, array, ref position);
+                    size += Write(q.G, array, ref position);
+                    size += Write(q.B, array, ref position);
+                    size += Write(q.A, array, ref position);
+                    return;
                 case SerializableMatrix4x4 v4:
-                    position += Write(v4.c0, array, position);
-                    position += Write(v4.c1, array, position);
-                    position += Write(v4.c2, array, position);
-                    position += Write(v4.c3, array, position);
-                    return 4 * 4 * sizeof(float);
+                    size = Write(v4.c0, array, ref position);
+                    size += Write(v4.c1, array, ref position);
+                    size += Write(v4.c2, array, ref position);
+                    size += Write(v4.c3, array, ref position);
+                    return;
                 case Matrix4x4 v4:
-                    return Write((SerializableMatrix4x4)v4, array, position);
+                    Write((SerializableMatrix4x4)v4, array,ref position,out size);
+                    return;
                 case string str:
-                    BitConverter.GetBytes((uint)str.Length).CopyTo(array, pos);
-                    pos += sizeof(uint);
-                    foreach (char c in str)
+                    Write((uint)str.Length, array, ref position, out size);
+                    foreach (char ch in str)
                     {
-                        BitConverter.GetBytes(c).CopyTo(array, pos);
-                        pos += sizeof(char);
+                        size += Write(ch, array, ref position);
                     }
-                    return sizeof(uint) + str.Length * sizeof(char);
+                    return;
                 case T t when typeof(T) == typeof(string):
-                    BitConverter.GetBytes((uint)0).CopyTo(array, pos);
-                    return sizeof(uint);
+                    Write((uint)0, array, ref position, out size);
+                    return;
                 default:
-                    int result;
                     foreach (var module in modules)
-                        if (module.Write<T>(value, array, position, out result))
-                            return result;
+                        if (module.Write<T>(value, array, ref position, out size))
+                            return;
                     break;
             }
             throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
 
-        public static int WriteArray<T>(IEnumerable<T> value, byte[] array, int position)
+        public static int WriteArray<T>(IEnumerable<T> value, byte[] array, ref int position)
         {
-            int count = 0;
-            foreach (var v in value)
-            {
-                count += Write(v, array, position + count);
-            }
-            return count;
+            int size;
+            WriteArray<T>(value, array, ref position, out size);
+            return size;
         }
 
-        public static (int, Func<byte[], int, int>) ToBytes(IEnumerable<IByte> operations, params object[] parameters)
+        public static void WriteArray<T>(IEnumerable<T> value, byte[] array, ref int position, out int size)
+        {
+            size = 0;
+            int c;
+            foreach (var v in value)
+            {
+                Write(v, array, ref position, out c);
+                size += c;
+            }
+        }
+
+        public static (int, Func<byte[], int, int, (int, int)>) ToBytes(IEnumerable<IByte> operations, int baseSize, params object[] parameters)
         {
             Func<byte[], int, int, (int, int, int)> f3 = (byte[] by, int i, int j) =>
             {
@@ -483,10 +520,10 @@ namespace umi3d.common
             {
                 int size = operations.Count() * sizeof(int);
                 var func = operations
-                    .Select(o => o.ToByteArray(parameters))
+                    .Select(o => o.ToByteArray(0, parameters))
                     .Select(c =>
                     {
-                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => (c.Item2(by, i), i, j);
+                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { var cr = c.Item2(by, i,0); return (cr.Item1, i, j); };
                         return (c.Item1, f1);
                     })
                     .Aggregate((0, f3)
@@ -494,30 +531,29 @@ namespace umi3d.common
                     {
                         Func<byte[], int, int, (int, int, int)> f2 = (byte[] by, int i, int j) =>
                         {
-                            int s;
-                            (s, i, j) = a.Item2(by, i, j);
-                            (s, i, j) = b.Item2(by, i, j);
-                            j += UMI3DNetworkingHelper.Write(i, by, j);
-                            i += s;
-                            return (s, i, j);
+                            int i2,sj;
+                            (i2, i, j) = a.Item2(by, i, j);
+                            (i2, i, j) = b.Item2(by, i, j);
+                            UMI3DNetworkingHelper.Write(i, by, ref j, out sj);
+                            i = i2;
+                            return (i2, i, j);
                         };
                         return (a.Item1 + b.Item1, f2);
                     });
                 var length = size + func.Item1;
 
-                Func<byte[], int, int> f5 = (byte[] by, int i) =>
+                Func<byte[], int, int, (int, int)> f5 = (byte[] by, int i,int bs) =>
                 {
                     var couple = func.Item2(by, i + size, i);
-                    return couple.Item2;
+                    return (i + bs + couple.Item2,bs + couple.Item2);
                 };
-
-                return (length, f5);
+                return (length + baseSize, f5);
             }
-            Func<byte[], int, int> f4 = (byte[] by, int i) =>
+            Func<byte[], int, int, (int, int)> f4 = (byte[] by, int i,int bs) =>
             {
-                return 0;
+                return (i,bs);
             };
-            return (0, f4);
+            return (baseSize, f4);
         }
 
 
@@ -525,12 +561,12 @@ namespace umi3d.common
 
     public interface IByte
     {
-        (int, Func<byte[], int, int>) ToByteArray(params object[] parameters);
+        (int, Func<byte[], int, int, (int,int)>) ToByteArray(int baseSize, params object[] parameters);
     }
 
     public abstract class Umi3dNetworkingHelperModule
     {
-        public abstract bool Write<T>(T value, byte[] array, int position, out int size);
+        public abstract bool Write<T>(T value, byte[] array, ref int position, out int size);
 
         public abstract bool Read<T>(byte[] array, ref int position, ref int length, out bool readable, out T result);
 

@@ -29,7 +29,7 @@ namespace umi3d.edk
 
         private bool registered = false;
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
             throw new NotImplementedException();
         }

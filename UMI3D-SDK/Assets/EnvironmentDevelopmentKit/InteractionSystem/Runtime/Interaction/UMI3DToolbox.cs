@@ -170,9 +170,9 @@ namespace umi3d.edk.interaction
             return dto;
         }
 
-        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public (int, Func<byte[], int, int,(int,int)>) ToBytes(int baseSize,UMI3DUser user)
         {
-            var tool = UMI3DNetworkingHelper.ToBytes(objectTools?.GetValue(user).Where(t => t != null));
+            var tool = UMI3DNetworkingHelper.ToBytes(objectTools?.GetValue(user).Where(t => t != null),baseSize);
             var id = Id();
             var name = display.name;
             var description = display.description;
@@ -188,15 +188,14 @@ namespace umi3d.edk.interaction
                 + tool.Item1
                 + icon2D.Item1
                 + icon3D.Item1;
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(id, b, i);
-                i += UMI3DNetworkingHelper.Write(name, b, i);
-                i += UMI3DNetworkingHelper.Write(description, b, i);
-                i += UMI3DNetworkingHelper.Write(Active, b, i);
-                i += icon2D.Item2(b, i);
-                i += icon3D.Item2(b, i);
-                i += tool.Item2(b, i);
-                return size;
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                bs += UMI3DNetworkingHelper.Write(id, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(name, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(description, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(Active, b, ref i);
+                (i,bs) = icon2D.Item2(b, i, bs);
+                (i, bs) = icon3D.Item2(b, i, bs);
+                return tool.Item2(b, i, bs);
             };
             return (size, func);
         }

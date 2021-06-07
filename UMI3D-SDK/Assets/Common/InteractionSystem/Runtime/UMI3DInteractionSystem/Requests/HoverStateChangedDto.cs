@@ -31,16 +31,16 @@ namespace umi3d.common.interaction
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.HoverStateChanged; }
 
-        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        public override (int, Func<byte[], int, int, (int, int)>) ToByteArray(int baseSize, params object[] parameters)
         {
-            var fb = base.ToByteArray(parameters);
+            var fb = base.ToByteArray(baseSize,parameters);
 
             int size = UMI3DNetworkingHelper.GetSize(state) + fb.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i,bs) =>
             {
-                i += fb.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(state, b, i);
-                return size;
+                (i,bs) = fb.Item2(b, i,bs);
+                bs += UMI3DNetworkingHelper.Write(state, b,ref i);
+                return (i,bs);
             };
             return (size, func);
         }

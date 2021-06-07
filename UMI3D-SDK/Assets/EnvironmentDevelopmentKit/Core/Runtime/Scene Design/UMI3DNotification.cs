@@ -63,9 +63,9 @@ namespace umi3d.edk
             return dto;
         }
 
-        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
-            Func<byte[], int, int> f0 = (byte[] b, int i) => { return 0; };
+            Func<byte[], int, int, (int, int)> f0 = (byte[] b, int i,int bs) => { return (i,bs); };
 
 
             var id = Id();
@@ -78,15 +78,14 @@ namespace umi3d.edk
 
             int size = sizeof(ulong) + sizeof(float) + UMI3DNetworkingHelper.GetSize(title) + UMI3DNetworkingHelper.GetSize(content)
                 + icon2D.Item1 + icon3D.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += UMI3DNetworkingHelper.Write(id, b, i);
-                i += UMI3DNetworkingHelper.Write(title, b, i);
-                i += UMI3DNetworkingHelper.Write(content, b, i);
-                i += UMI3DNetworkingHelper.Write(duration, b, i);
-                i += icon2D.Item2(b, i);
-                i += icon3D.Item2(b, i);
-                return size;
+                bs += UMI3DNetworkingHelper.Write(id, b,ref i);
+                bs += UMI3DNetworkingHelper.Write(title, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(content, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(duration, b, ref i);
+                (i,bs) = icon2D.Item2(b, i, bs);
+                return icon3D.Item2(b, i, bs);
             };
             return (size, func);
         }

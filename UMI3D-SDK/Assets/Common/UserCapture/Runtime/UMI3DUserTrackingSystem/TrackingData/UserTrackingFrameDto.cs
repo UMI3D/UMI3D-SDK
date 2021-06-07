@@ -37,21 +37,21 @@ namespace umi3d.common.userCapture
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingFrame; }
 
-        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        public override (int, Func<byte[], int, int, (int, int)>) ToByteArray(int baseSize, params object[] parameters)
         {
-            var fb = base.ToByteArray(parameters);
-            var fbones = UMI3DNetworkingHelper.ToBytes(bones);
+            var fb = base.ToByteArray(baseSize,parameters);
+            var fbones = UMI3DNetworkingHelper.ToBytes(bones, 0);
 
             int size = fbones.Item1 + UMI3DNetworkingHelper.GetSize(position) + UMI3DNetworkingHelper.GetSize(rotation) + UMI3DNetworkingHelper.GetSize(scale) + fb.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += fb.Item2(b, i);
-                i += fbones.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(position, b, i);
-                i += UMI3DNetworkingHelper.Write(rotation, b, i);
-                i += UMI3DNetworkingHelper.Write(scale, b, i);
-                i += UMI3DNetworkingHelper.Write(refreshFrequency, b, i);
-                return size;
+                (i,bs)= fb.Item2(b, i, bs);
+                (i, bs) = fbones.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(position, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(rotation, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(scale, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(refreshFrequency, b, ref i);
+                return (i, bs);
             };
             return (size, func);
         }

@@ -65,16 +65,16 @@ namespace umi3d.edk.interaction
             return new ToolDto();
         }
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize,UMI3DUser user)
         {
-            return base.ToBytes(user);
+            return base.ToBytes(baseSize, user);
         }
 
-        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        (int, Func<byte[], int, int, (int, int)>) IByte.ToByteArray(int baseSize, params object[] parameters)
         {
             if (parameters.Length < 1)
-                ToBytes(null);
-            return ToBytes(parameters[0] as UMI3DUser);
+                ToBytes(baseSize, null);
+            return ToBytes(baseSize, parameters[0] as UMI3DUser);
         }
     }
 }

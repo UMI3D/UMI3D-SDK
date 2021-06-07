@@ -58,7 +58,7 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
-        public override bool Write<T>(T value, byte[] array, int position, out int size)
+        public override bool Write<T>(T value, byte[] array, ref int position, out int size)
         {
             size = 0;
             return false;

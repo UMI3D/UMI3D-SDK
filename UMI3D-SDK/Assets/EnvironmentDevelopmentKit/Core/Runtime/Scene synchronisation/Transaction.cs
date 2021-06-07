@@ -45,15 +45,15 @@ namespace umi3d.edk
             var operation = Operations.Where((op) => { return op.users.Contains(user); });
             if (operation.Count() > 0)
             {
-                int indexPos = UMI3DNetworkingHelper.GetSize(UMI3DOperationKeys.Transaction);
+                int size = UMI3DNetworkingHelper.GetSize(UMI3DOperationKeys.Transaction);
 
-                var func = UMI3DNetworkingHelper.ToBytes(operation, user);
+                var func = UMI3DNetworkingHelper.ToBytes(operation, size, user);
 
-                var lenght = indexPos + func.Item1;
+                var lenght = func.Item1;
                 var position = 0;
                 var data = new byte[lenght];
-                position = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction, data, position);
-                var couple = func.Item2(data, position);
+                size = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction, data,ref position);
+                var couple = func.Item2(data, position, size);
                 return (data,true);
             }
             return (null,false);

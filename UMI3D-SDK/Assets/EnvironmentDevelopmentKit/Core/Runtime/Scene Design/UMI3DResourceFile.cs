@@ -48,26 +48,27 @@ namespace umi3d.edk
             return dto;
         }
 
-        public (int, Func<byte[], int, int>) ToByte()
+        public (int, Func<byte[], int, int,(int,int)>) ToByte(int baseSize)
         {
             int size =
-                UMI3DNetworkingHelper.GetSize(GetUrl())
+                baseSize
+                + UMI3DNetworkingHelper.GetSize(GetUrl())
                 + UMI3DNetworkingHelper.GetSize(format)
                 + UMI3DNetworkingHelper.GetSize(extension)
                 + UMI3DNetworkingHelper.GetSize(metrics.resolution)
                 + UMI3DNetworkingHelper.GetSize(metrics.size)
                 + UMI3DNetworkingHelper.GetSize(isInBundle ? pathIfInBundle : null)
                 + UMI3DNetworkingHelper.GetSize(isInLibrary ? libraryKey?.id : null);
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += UMI3DNetworkingHelper.Write(GetUrl(), b, i);
-                i += UMI3DNetworkingHelper.Write(format, b, i);
-                i += UMI3DNetworkingHelper.Write(extension, b, i);
-                i += UMI3DNetworkingHelper.Write(metrics.resolution, b, i);
-                i += UMI3DNetworkingHelper.Write(metrics.size, b, i);
-                i += UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null, b, i);
-                i += UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null, b, i);
-                return size;
+                bs += UMI3DNetworkingHelper.Write(GetUrl(), b,ref i);
+                bs += UMI3DNetworkingHelper.Write(format, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(extension, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(metrics.resolution, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(metrics.size, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null, b, ref i);
+                return (i,bs);
             };
             return (size, func);
         }
@@ -85,9 +86,9 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
-        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        (int, Func<byte[], int, int, (int,int)>) IByte.ToByteArray(int baseSize,params object[] parameters)
         {
-            return ToByte();
+            return ToByte(baseSize);
         }
     }
 }

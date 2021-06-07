@@ -25,13 +25,13 @@ namespace umi3d.edk.interaction
     {
         public AbstractTool tool;
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
-            int size = sizeof(uint) + sizeof(ulong);
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
-                i += UMI3DNetworkingHelper.Write(tool.Id(), b, i);
-                return size;
+            int size = baseSize + sizeof(uint) + sizeof(ulong);
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                bs += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(tool.Id(), b,ref  i);
+                return (i,bs);
             };
             return (size, func);
         }

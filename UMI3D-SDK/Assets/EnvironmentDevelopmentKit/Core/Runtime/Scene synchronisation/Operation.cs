@@ -40,13 +40,13 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user"></param>
         /// <returns>the size needed ans a function to set the byte array at a position and return the size again</returns>
-        public abstract (int,Func<byte[],int,int>) ToBytes(UMI3DUser user);
+        public abstract (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user);
 
-        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        (int, Func<byte[], int, int, (int, int)>) IByte.ToByteArray(int baseSize, params object[] parameters)
         {
             if (parameters.Length < 1)
-                return ToBytes(null);
-            return ToBytes(parameters[0] as UMI3DUser);
+                return ToBytes(baseSize, null);
+            return ToBytes(baseSize, parameters[0] as UMI3DUser);
         }
 
         public static Operation operator +(Operation a, Operation b)

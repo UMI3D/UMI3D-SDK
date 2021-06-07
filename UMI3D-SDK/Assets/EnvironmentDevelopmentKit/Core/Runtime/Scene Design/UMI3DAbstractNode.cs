@@ -245,24 +245,25 @@ namespace umi3d.edk
             dto.anchorDto = objectAnchor.GetValue(user);
         }
 
-        public virtual (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public virtual (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize, UMI3DUser user)
         {
             var anchor = objectAnchor.GetValue(user);
-            int size = 2*sizeof(ulong) + 3*sizeof(bool) 
+            int size = baseSize 
+                + 2*sizeof(ulong) + 3*sizeof(bool) 
                 + UMI3DNetworkingHelper.GetSize(anchor.positionOffset)
                 + UMI3DNetworkingHelper.GetSize(anchor.rotationOffset)
                 + UMI3DNetworkingHelper.GetSize(anchor.scaleOffset);
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(Id(), b, i);
-                i += UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0, b, i);
-                i += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, i);
-                i += UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user), b, i);
-                i += UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user), b, i);
-                
-                i += UMI3DNetworkingHelper.Write(anchor.positionOffset, b, i);
-                i += UMI3DNetworkingHelper.Write(anchor.rotationOffset, b, i);
-                i += UMI3DNetworkingHelper.Write(anchor.scaleOffset, b, i);
-                return size;
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                bs += UMI3DNetworkingHelper.Write(Id(), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user), b, ref i);
+
+                bs += UMI3DNetworkingHelper.Write(anchor.positionOffset, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(anchor.rotationOffset, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(anchor.scaleOffset, b, ref i);
+                return (i,bs);
             };
             return (size, func);
         }

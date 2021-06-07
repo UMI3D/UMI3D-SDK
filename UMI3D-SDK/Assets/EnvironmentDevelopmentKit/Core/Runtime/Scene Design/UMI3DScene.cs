@@ -106,23 +106,20 @@ namespace umi3d.edk
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int,(int,int)>) ToBytes(int baseSize, UMI3DUser user)
         {
-            var fp = base.ToBytes(user);
+            var fp = base.ToBytes(baseSize, user);
 
 
 
-            var otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(o => o.ToBytes(user)).ToList();
-            otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(o => o.ToBytes(user)));
-            Func<byte[], int, int> f0 = (byte[] b, int i) => { return 0; };
+            var otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(o => o.ToBytes(0,user)).ToList();
+            otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(o => o.ToBytes(0,user)));
+            Func<byte[], int, int, (int, int)> f0 = (b, i, bs) => { return (i,bs); };
             var f = otherEntities.Aggregate((0, f0), (a, b) => {
-                Func<byte[], int, int> f1 = (byte[] by, int i) =>
+                Func<byte[], int, int, (int, int)> f1 = (by, i, bs) =>
                 {
-                    var i1 = 0;
-                    i1 = a.Item2(by, i);
-                    i += i1;
-                    var i2 = b.Item2(by, i);
-                    return i1 + i2;
+                    (i,bs) = a.Item2(by, i, bs);
+                    return (i, bs) = b.Item2(by, i, bs);
                 };
                 return (a.Item1 + b.Item1, f1); });
 
@@ -138,15 +135,14 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.GetSize(LibrariesId)
                 + f.Item1
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += fp.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(position, b, i);
-                i += UMI3DNetworkingHelper.Write(scale, b, i);
-                i += UMI3DNetworkingHelper.Write(rotation, b, i);
-                i += UMI3DNetworkingHelper.Write(LibrariesId, b, i);
-                i += f.Item2(b, i);
-                return size;
+                (i,bs)= fp.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(position, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(scale, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(rotation, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(LibrariesId, b, ref i);
+                return f.Item2(b, i, bs);
             };
             return (size,func);
         }

@@ -35,24 +35,23 @@ namespace umi3d.edk
                 return new UMI3DNodeAnimationDto.OperationChainDto() { operation = Operation.ToOperationDto(user), startOnProgress = progress };
             }
 
-            public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+            public (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
             {
-                var op = Operation.ToBytes(user);
+                var op = Operation.ToBytes(baseSize, user);
 
                 int size =  sizeof(float) + op.Item1;
-                Func<byte[], int, int> func = (b, i) => {
-                    i += UMI3DNetworkingHelper.Write(progress, b, i);
-                    i += op.Item2(b, i);
-                    return size;
+                Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                    bs += UMI3DNetworkingHelper.Write(progress, b, ref i);
+                    return op.Item2(b, i, bs);
                 };
                 return (size, func);
             }
 
-            (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+            (int, Func<byte[], int, int, (int, int)>) IByte.ToByteArray(int baseSize, params object[] parameters)
             {
                 if (parameters.Length < 1)
-                    return ToBytes(null);
-                return ToBytes(parameters[0] as UMI3DUser);
+                    return ToBytes(baseSize,null);
+                return ToBytes(baseSize,parameters[0] as UMI3DUser);
             }
         }
 
@@ -93,17 +92,17 @@ namespace umi3d.edk
             NAdto.duration = ObjectDuration.GetValue(user);
         }
 
-        protected override (int, Func<byte[], int, int>) ToBytesAux(UMI3DUser user)
+        protected override (int, Func<byte[], int, int, (int, int)>) ToBytesAux(UMI3DUser user)
         {
 
-            var funcChain = UMI3DNetworkingHelper.ToBytes(animationChain, user);
+            var funcChain = UMI3DNetworkingHelper.ToBytes(animationChain, 0, user);
 
             int size = sizeof(float) + funcChain.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += UMI3DNetworkingHelper.Write(objectDuration.GetValue(user), b, i);
-                funcChain.Item2(b, i);
-                return size;
+                bs += UMI3DNetworkingHelper.Write(objectDuration.GetValue(user), b, ref i);
+                (i, bs) = funcChain.Item2(b, i, bs);
+                return (i, bs);
             };
             return (size, func);
         }

@@ -210,7 +210,7 @@ namespace umi3d.edk
             textDto.verticalOverflow = VerticalOverflow.GetValue(user).Convert();
         }
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
             var alignment = Alignment.GetValue(user).Convert();
             var alignByGeometry = AlignByGeometry.GetValue(user);
@@ -228,7 +228,7 @@ namespace umi3d.edk
             if (text != null && text.Length > 0 && text[text.Length - 1] == '\\') text += " ";
             var verticalOverflow = VerticalOverflow.GetValue(user).Convert();
 
-            var fp = base.ToBytes(user);
+            var fp = base.ToBytes(baseSize,user);
 
             int size = sizeof(int)
                 + UMI3DNetworkingHelper.GetSize((int)alignment)
@@ -246,23 +246,23 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.GetSize(text)
                 + UMI3DNetworkingHelper.GetSize((int)verticalOverflow)
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) => {
-                i += fp.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(alignment, b, i);
-                i += UMI3DNetworkingHelper.Write(alignByGeometry, b, i);
-                i += UMI3DNetworkingHelper.Write(color, b, i);
-                i += UMI3DNetworkingHelper.Write(font, b, i);
-                i += UMI3DNetworkingHelper.Write(fontSize, b, i);
-                i += UMI3DNetworkingHelper.Write(fontStyle, b, i);
-                i += UMI3DNetworkingHelper.Write(horizontalOverflow, b, i);
-                i += UMI3DNetworkingHelper.Write(lineSpacing, b, i);
-                i += UMI3DNetworkingHelper.Write(resizeTextForBestFit, b, i);
-                i += UMI3DNetworkingHelper.Write(resizeTextMaxSize, b, i);
-                i += UMI3DNetworkingHelper.Write(resizeTextMinSize, b, i);
-                i += UMI3DNetworkingHelper.Write(supportRichText, b, i);
-                i += UMI3DNetworkingHelper.Write(text, b, i);
-                i += UMI3DNetworkingHelper.Write((int)verticalOverflow, b, i);
-                return size;
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                (i, bs) = fp.Item2(b, i, bs);
+                bs =+ UMI3DNetworkingHelper.Write(alignment, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(alignByGeometry, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(color, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(font, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(fontSize, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(fontStyle, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(horizontalOverflow, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(lineSpacing, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(resizeTextForBestFit, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(resizeTextMaxSize, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(resizeTextMinSize, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(supportRichText, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write(text, b, ref i);
+                bs =+ UMI3DNetworkingHelper.Write((int)verticalOverflow, b, ref i);
+                return (i, bs);
             };
             return (size, func);
         }

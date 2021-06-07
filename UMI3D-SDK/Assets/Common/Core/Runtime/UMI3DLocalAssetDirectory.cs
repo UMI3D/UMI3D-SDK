@@ -42,7 +42,7 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
-        (int, Func<byte[], int, int>) IByte.ToByteArray(params object[] parameters)
+        (int, Func<byte[], int, int, (int, int)>) IByte.ToByteArray(int baseSize, params object[] parameters)
         {
             int size =
                 UMI3DNetworkingHelper.GetSize(name)
@@ -50,16 +50,16 @@ namespace umi3d.common
                 + UMI3DNetworkingHelper.GetSize(metrics.resolution)
                 + UMI3DNetworkingHelper.GetSize(metrics.size)
                 + UMI3DNetworkingHelper.GetSizeArray(formats);
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int,int)> func = (b, i, bs) =>
             {
-                i += UMI3DNetworkingHelper.Write(name, b, i);
-                i += UMI3DNetworkingHelper.Write(path, b, i);
-                i += UMI3DNetworkingHelper.Write(metrics.resolution, b, i);
-                i += UMI3DNetworkingHelper.Write(metrics.size, b, i);
-                i += UMI3DNetworkingHelper.WriteArray(formats, b, i);
-                return size;
+                size = UMI3DNetworkingHelper.Write(name, b, ref i);
+                size += UMI3DNetworkingHelper.Write(path, b, ref i);
+                size += UMI3DNetworkingHelper.Write(metrics.resolution, b, ref i); 
+                size += UMI3DNetworkingHelper.Write(metrics.size, b,ref i);
+                size += UMI3DNetworkingHelper.WriteArray(formats, b, ref i);
+                return (i,size+bs);
             };
-            return (size, func);
+            return (size + baseSize, func);
         }
         //public List<string> dependencies = new List<string>();
     }

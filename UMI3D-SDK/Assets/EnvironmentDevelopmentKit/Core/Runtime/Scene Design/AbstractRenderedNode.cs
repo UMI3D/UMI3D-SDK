@@ -81,21 +81,21 @@ namespace umi3d.edk
             meshDto.overridedMaterials = materialsOverrider.ConvertAll((mat) => mat.ToDto());
         }
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
-            var fp = base.ToBytes(user);
-            var fom = UMI3DNetworkingHelper.ToBytes(materialsOverrider);
+            var fp = base.ToBytes(baseSize, user);
+            var fom = UMI3DNetworkingHelper.ToBytes(materialsOverrider, 0);
 
             int size = 3 * sizeof(bool)
                 + fp.Item1
                 + fom.Item1;
-            Func<byte[], int, int> func = (b, i) => {
-                i += fp.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user), b, i);
-                i += UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user), b, i);
-                i += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, i);
-                i += fom.Item2(b, i);
-                return size;
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
+            {
+                (i, bs) = fp.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, ref i);
+                return fom.Item2(b, i, bs);
             };
             return (size, func);
         }

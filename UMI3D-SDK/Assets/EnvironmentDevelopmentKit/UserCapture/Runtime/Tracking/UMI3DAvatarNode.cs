@@ -161,27 +161,26 @@ namespace umi3d.edk.userCapture
             avatarNodeDto.bindings = bindingDtoList;
         }
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
-            var fp = base.ToBytes(user);
+            var fp = base.ToBytes(baseSize,user);
 
             var userId = this.userId;
             var activeBindings = this.activeBindings.GetValue(user);
 
-            var fb = UMI3DNetworkingHelper.ToBytes(bindings.GetValue(user), user);
+            var fb = UMI3DNetworkingHelper.ToBytes(bindings.GetValue(user),0, user);
 
 
             int size = UMI3DNetworkingHelper.GetSize(userId)
                 + UMI3DNetworkingHelper.GetSize(activeBindings)
                 + fb.Item1
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += fp.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(userId, b, i);
-                i += UMI3DNetworkingHelper.Write(activeBindings, b, i);
-                i += fb.Item2(b, i);
-                return size;
+                (i,bs) = fp.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(userId, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(activeBindings, b,ref i);
+                return fb.Item2(b, i, bs);
             };
 
             return (size, func);

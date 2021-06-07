@@ -76,16 +76,16 @@ namespace umi3d.edk
             return new EntityGroupDto() { id = Id(), entitiesId = entities.GetValue(user).Select(e => e.Id()).ToList() };
         }
 
-        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize,UMI3DUser user)
         {
             var ids = entities.GetValue(user).Select(e => e.Id()).ToList();
 
-            int size = sizeof(ulong) + UMI3DNetworkingHelper.GetSizeArray(ids);
-            Func<byte[], int, int> func = (b, i) => {
-                i += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, i);
-                i += UMI3DNetworkingHelper.Write(entityId, b, i);
-                i += UMI3DNetworkingHelper.WriteArray(ids, b, i);
-                return size;
+            int size = baseSize + sizeof(ulong) + UMI3DNetworkingHelper.GetSizeArray(ids);
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                bs += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(entityId, b, ref i);
+                bs += UMI3DNetworkingHelper.WriteArray(ids, b, ref i);
+                return (i,bs);
             };
             return (size, func);
         }

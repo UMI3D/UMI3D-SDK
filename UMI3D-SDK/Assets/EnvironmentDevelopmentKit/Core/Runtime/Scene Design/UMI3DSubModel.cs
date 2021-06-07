@@ -98,9 +98,9 @@ namespace umi3d.edk
             subDto.isPartOfNavmesh = isPartOfNavmesh;
         }
 
-        public override (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
         {
-            var fp = base.ToBytes(user);
+            var fp = base.ToBytes(baseSize,user);
 
             var modelId = this.parentModel.Id();
             var subModelName = this.subModelName;
@@ -115,15 +115,15 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.GetSize(isTraversable)
                 + UMI3DNetworkingHelper.GetSize(isPartOfNavmesh)
                 + fp.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += fp.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(modelId, b, i);
-                i += UMI3DNetworkingHelper.Write(subModelName, b, i);
-                i += UMI3DNetworkingHelper.Write(ignoreModelMaterialOverride, b, i);
-                i += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, i);
-                i += UMI3DNetworkingHelper.Write(isTraversable, b, i);
-                return size;
+                (i, bs) = fp.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(modelId, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(subModelName, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(ignoreModelMaterialOverride, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(isTraversable, b, ref i);
+                return (i, bs);
             };
 
             return (size, func);

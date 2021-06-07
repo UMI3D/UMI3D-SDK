@@ -31,15 +31,15 @@ namespace umi3d.common
 
 
         protected abstract uint GetOperationId();
-        public virtual (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        public virtual (int, Func<byte[], int, int, (int,int)>) ToByteArray(int baseSize,params object[] parameters)
         {
             int size = UMI3DNetworkingHelper.GetSize(GetOperationId());
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int,int)> func = (b, i, bs) =>
             {
-                i += UMI3DNetworkingHelper.Write(GetOperationId(), b, i);
-                return size;
+                UMI3DNetworkingHelper.Write(GetOperationId(), b, ref i, out size);
+                return (i,size + bs);
             };
-            return (size, func);
+            return (size +baseSize, func);
         }
     }
 }

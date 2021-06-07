@@ -47,28 +47,25 @@ namespace umi3d.edk.collaboration
             return false;
         }
 
-        public override bool Write<T>(T value, byte[] array, int position, out int result)
+        public override bool Write<T>(T value, byte[] array, ref int position, out int result)
         {
             switch (value)
             {
                 case UserDto user:
-                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.id, array, position);
-                    position += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, position);
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.avatarId, array, position);
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.audioSourceId, array, position);
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId, array, position);
-                    position += UMI3DNetworkingHelper.Write<uint>(user.networkId, array, position);
-                    result = 2 * sizeof(uint) + 4 * sizeof(ulong);
-                    Debug.Log($"{position} {array.Length} {array.ToString<byte>()}");
+                    result = UMI3DNetworkingHelper.Write<ulong>(user.id, array,ref position);
+                    result += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<ulong>(user.avatarId, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<ulong>(user.audioSourceId, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<uint>(user.networkId, array, ref position);
                     return true;
                 case UMI3DCollaborationUser user:
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.Id(), array, position);
-                    position += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, position);
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id(), array, position);
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.audioPlayer?.Id() ?? 0, array, position);
-                    position += UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0, array, position);
-                    position += UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0, array, position);
+                    result = UMI3DNetworkingHelper.Write<ulong>(user.Id(), array, ref position);
+                    result += UMI3DNetworkingHelper.Write<uint>((uint)user.status, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id(), array, ref position);
+                    result += UMI3DNetworkingHelper.Write<ulong>(user.audioPlayer?.Id() ?? 0, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0, array, ref position);
+                    result += UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0, array, ref position);
                     result = 2 * sizeof(uint) + 4 * sizeof(ulong);
                     return true;
             }

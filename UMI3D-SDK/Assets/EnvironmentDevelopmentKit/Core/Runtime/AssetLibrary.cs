@@ -51,9 +51,9 @@ namespace umi3d.edk
             return dto;
         }
 
-        public (int, Func<byte[], int, int>) ToBytes(UMI3DUser user)
+        public (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize,UMI3DUser user)
         {
-            var f = UMI3DNetworkingHelper.ToBytes(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
+            var f = UMI3DNetworkingHelper.ToBytes(variants.Select(v => new UMI3DLocalAssetDirectory(v)), baseSize);
 
             int size =
                 UMI3DNetworkingHelper.GetSize(id)
@@ -62,15 +62,15 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.GetSize(date.Culture())
                 + UMI3DNetworkingHelper.GetSize(date.ToString())
                 + f.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
             {
-                i += UMI3DNetworkingHelper.Write(id, b, i);
-                i += UMI3DNetworkingHelper.Write(Id(), b, i);
-                i += UMI3DNetworkingHelper.Write(date.Format(), b, i);
-                i += UMI3DNetworkingHelper.Write(date.Culture(), b, i);
-                i += UMI3DNetworkingHelper.Write(date.ToString(), b, i);
-                i += f.Item2(b, i);
-                return size;
+                bs += UMI3DNetworkingHelper.Write(id, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(Id(), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(date.Format(), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(date.Culture(), b, ref i);
+                bs += UMI3DNetworkingHelper.Write(date.ToString(), b, ref i);
+                (i, bs) = f.Item2(b, i, bs);
+                return (i, bs);
             };
             return (size, func);
         }

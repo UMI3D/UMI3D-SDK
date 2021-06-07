@@ -42,18 +42,18 @@ namespace umi3d.common.userCapture
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserCameraProperties; }
 
-        public override (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+        public override (int, Func<byte[], int, int, (int, int)>) ToByteArray(int baseSize, params object[] parameters)
         {
-            var fb = base.ToByteArray(parameters);
+            var fb = base.ToByteArray(baseSize,parameters);
 
             int size = UMI3DNetworkingHelper.GetSize(scale) + UMI3DNetworkingHelper.GetSize(projectionMatrix) + UMI3DNetworkingHelper.GetSize(boneType) + fb.Item1;
-            Func<byte[], int, int> func = (b, i) =>
+            Func<byte[], int, int, (int, int)> func = (b, i,bs) =>
             {
-                i += fb.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(scale, b, i);
-                i += UMI3DNetworkingHelper.Write(projectionMatrix, b, i);
-                i += UMI3DNetworkingHelper.Write(boneType, b, i);
-                return size;
+                (i,bs) = fb.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(scale, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(projectionMatrix, b, ref i);
+                bs += UMI3DNetworkingHelper.Write(boneType, b, ref i);
+                return (i,bs);
             };
             return (size, func);
         }

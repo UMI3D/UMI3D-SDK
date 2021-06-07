@@ -30,18 +30,18 @@ namespace umi3d.edk
             public UMI3DAbstractAnimation Animation;
             public float Progress;
 
-            public (int, Func<byte[], int, int>) ToByteArray(params object[] parameters)
+            public (int, Func<byte[], int, int, (int, int)>) ToByteArray(int baseSize, params object[] parameters)
             {
-                return ToByte(null);
+                return ToByte(baseSize,null);
             }
 
-            public (int, Func<byte[], int, int>) ToByte(UMI3DUser user)
+            public (int, Func<byte[], int, int, (int, int)>) ToByte(int baseSize, UMI3DUser user)
             {
-                int size = sizeof(ulong) + sizeof(float);
-                Func<byte[], int, int> func = (b, i) => {
-                    i += UMI3DNetworkingHelper.Write(Animation.Id(), b, i);
-                    i += UMI3DNetworkingHelper.Write(Progress, b, i);
-                    return size;
+                int size = baseSize + sizeof(ulong) + sizeof(float);
+                Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                    bs += UMI3DNetworkingHelper.Write(Animation.Id(), b, ref i);
+                    bs += UMI3DNetworkingHelper.Write(Progress, b,ref i);
+                    return (i,bs);
                 };
                 return (size, func);
             }
@@ -90,18 +90,18 @@ namespace umi3d.edk
             Adto.duration = ObjectDuration.GetValue(user);
         }
 
-        protected override (int, Func<byte[], int, int>) ToBytesAux(UMI3DUser user)
+        protected override (int, Func<byte[], int, int, (int, int)>) ToBytesAux(UMI3DUser user)
         {
             var fbase = base.ToBytesAux(user);
-            var fchain = UMI3DNetworkingHelper.ToBytes(ObjectAnimationChain.GetValue(user));
+            var fchain = UMI3DNetworkingHelper.ToBytes(ObjectAnimationChain.GetValue(user),0);
             var duration = ObjectDuration.GetValue(user);
 
             int size = fbase.Item1 + fchain.Item1 + UMI3DNetworkingHelper.GetSize(duration);
-            Func<byte[], int, int> func = (b, i) => {
-                i += fbase.Item2(b, i);
-                i += fchain.Item2(b, i);
-                i += UMI3DNetworkingHelper.Write(duration, b, i);
-                return size;
+            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
+                (i,bs)= fbase.Item2(b, i,bs);
+                (i, bs) = fchain.Item2(b, i, bs);
+                bs += UMI3DNetworkingHelper.Write(duration, b, ref i);
+                return (i, bs);
             };
             return (size, func);
         }
