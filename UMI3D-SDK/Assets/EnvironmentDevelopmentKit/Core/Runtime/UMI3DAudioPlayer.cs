@@ -84,18 +84,13 @@ namespace umi3d.edk
             return new UMI3DAudioPlayerDto();
         }
 
-        protected override (int, Func<byte[], int, int, (int,int)>) ToBytesAux(UMI3DUser user)
+        protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            var fr = ObjectAudioResource.GetValue(user).ToByte();
-            int size = sizeof(ulong) + 3 * sizeof(float) + fr.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                bs += UMI3DNetworkingHelper.Write(ObjectNode.GetValue(user)?.Id() ?? 0, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(ObjectVolume.GetValue(user), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(ObjectPitch.GetValue(user), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(ObjectSpacialBlend.GetValue(user), b, ref i);
-                return fr.Item2(b, i, bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(ObjectNode.GetValue(user)?.Id() ?? 0)
+                + UMI3DNetworkingHelper.Write(ObjectVolume.GetValue(user))
+                + UMI3DNetworkingHelper.Write(ObjectPitch.GetValue(user))
+                + UMI3DNetworkingHelper.Write(ObjectSpacialBlend.GetValue(user))
+                + ObjectAudioResource.GetValue(user).ToByte();
         }
     }
 }

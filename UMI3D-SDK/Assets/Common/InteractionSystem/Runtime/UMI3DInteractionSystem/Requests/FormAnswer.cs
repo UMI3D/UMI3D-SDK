@@ -24,18 +24,10 @@ namespace umi3d.common.interaction
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.FormAnswer; }
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToByteArray(int baseSize, params object[] parameters)
+        public override Bytable ToByteArray(params object[] parameters)
         {
-            var fb = base.ToByteArray(baseSize,parameters);
-
-            int size = UMI3DNetworkingHelper.GetSize(form) + fb.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                (i,bs) = fb.Item2(b, i, bs);
-                bs += UMI3DNetworkingHelper.Write(form, b, ref i);
-                return (i,bs);
-            };
-            return (size, func);
+            return base.ToByteArray(parameters)
+                + UMI3DNetworkingHelper.Write(form);
         }
     }
 }

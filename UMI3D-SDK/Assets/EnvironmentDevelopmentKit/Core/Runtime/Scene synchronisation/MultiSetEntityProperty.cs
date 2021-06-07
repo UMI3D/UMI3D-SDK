@@ -39,23 +39,14 @@ namespace umi3d.edk
         /// </summary>
         public object value;
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            var funcs = entityIds.Select(e => e.Id());
-            uint count = (uint)entityIds.Count();
-
-
-            int size =  (int) (4 * sizeof(uint) + count * sizeof(ulong) + UMI3DNetworkingHelper.GetSize(value));
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                bs += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(entityIds.Count(), b, ref i);
-                bs += UMI3DNetworkingHelper.WriteArray(funcs, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(property, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(value, b, ref i);
-                return (i,bs);
-            };
-            return (baseSize + size, func);
+            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty)
+                + UMI3DNetworkingHelper.Write(entityIds.Count())
+                + UMI3DNetworkingHelper.WriteArray(entityIds.Select(e => e.Id()))
+                + UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
+                + UMI3DNetworkingHelper.Write(property)
+                + UMI3DNetworkingHelper.Write(value);
         }
 
         ///<inheritdoc/>

@@ -46,7 +46,7 @@ namespace umi3d.edk
         public abstract GlTFMaterialDto ToDto();
 
 
-        public abstract (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user);
+        public abstract Bytable ToBytes(UMI3DUser user);
 
         public ulong Id()
         {

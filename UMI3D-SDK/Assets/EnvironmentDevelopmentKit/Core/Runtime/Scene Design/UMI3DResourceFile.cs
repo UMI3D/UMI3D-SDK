@@ -48,29 +48,15 @@ namespace umi3d.edk
             return dto;
         }
 
-        public (int, Func<byte[], int, int,(int,int)>) ToByte(int baseSize)
+        public Bytable ToByte()
         {
-            int size =
-                baseSize
-                + UMI3DNetworkingHelper.GetSize(GetUrl())
-                + UMI3DNetworkingHelper.GetSize(format)
-                + UMI3DNetworkingHelper.GetSize(extension)
-                + UMI3DNetworkingHelper.GetSize(metrics.resolution)
-                + UMI3DNetworkingHelper.GetSize(metrics.size)
-                + UMI3DNetworkingHelper.GetSize(isInBundle ? pathIfInBundle : null)
-                + UMI3DNetworkingHelper.GetSize(isInLibrary ? libraryKey?.id : null);
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                bs += UMI3DNetworkingHelper.Write(GetUrl(), b,ref i);
-                bs += UMI3DNetworkingHelper.Write(format, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(extension, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(metrics.resolution, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(metrics.size, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null, b, ref i);
-                return (i,bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(GetUrl())
+                + UMI3DNetworkingHelper.Write(format)
+                + UMI3DNetworkingHelper.Write(extension)
+                + UMI3DNetworkingHelper.Write(metrics.resolution)
+                + UMI3DNetworkingHelper.Write(metrics.size)
+                + UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null)
+                + UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null);
         }
 
         public string GetUrl()
@@ -86,9 +72,9 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
-        (int, Func<byte[], int, int, (int,int)>) IByte.ToByteArray(int baseSize,params object[] parameters)
+        Bytable IByte.ToByteArray(params object[] parameters)
         {
-            return ToByte(baseSize);
+            return ToByte();
         }
     }
 }

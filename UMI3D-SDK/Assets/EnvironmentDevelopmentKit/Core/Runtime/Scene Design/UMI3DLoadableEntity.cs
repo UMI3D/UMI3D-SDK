@@ -41,7 +41,7 @@ namespace umi3d.edk
         /// This method return the updated position (position + required size) and the (required size + base size);
         /// The byte array given should be at least of size position + required size;
         /// </returns>
-        (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize,UMI3DUser user);
+        Bytable ToBytes(UMI3DUser user);
     }
 
 }

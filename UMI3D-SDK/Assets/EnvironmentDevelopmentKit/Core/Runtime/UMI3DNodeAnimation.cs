@@ -35,23 +35,16 @@ namespace umi3d.edk
                 return new UMI3DNodeAnimationDto.OperationChainDto() { operation = Operation.ToOperationDto(user), startOnProgress = progress };
             }
 
-            public (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+            public Bytable ToBytes(UMI3DUser user)
             {
-                var op = Operation.ToBytes(baseSize, user);
-
-                int size =  sizeof(float) + op.Item1;
-                Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                    bs += UMI3DNetworkingHelper.Write(progress, b, ref i);
-                    return op.Item2(b, i, bs);
-                };
-                return (size, func);
+                return UMI3DNetworkingHelper.Write(progress) + Operation.ToBytes(user);
             }
 
-            (int, Func<byte[], int, int, (int, int)>) IByte.ToByteArray(int baseSize, params object[] parameters)
+            Bytable IByte.ToByteArray(params object[] parameters)
             {
                 if (parameters.Length < 1)
-                    return ToBytes(baseSize,null);
-                return ToBytes(baseSize,parameters[0] as UMI3DUser);
+                    return ToBytes(null);
+                return ToBytes(parameters[0] as UMI3DUser);
             }
         }
 
@@ -92,19 +85,10 @@ namespace umi3d.edk
             NAdto.duration = ObjectDuration.GetValue(user);
         }
 
-        protected override (int, Func<byte[], int, int, (int, int)>) ToBytesAux(UMI3DUser user)
+        protected override Bytable ToBytesAux(UMI3DUser user)
         {
-
-            var funcChain = UMI3DNetworkingHelper.ToBytes(animationChain, 0, user);
-
-            int size = sizeof(float) + funcChain.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                bs += UMI3DNetworkingHelper.Write(objectDuration.GetValue(user), b, ref i);
-                (i, bs) = funcChain.Item2(b, i, bs);
-                return (i, bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.ToBytes(animationChain, user)
+                + UMI3DNetworkingHelper.Write(objectDuration.GetValue(user));
         }
     }
 }

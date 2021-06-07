@@ -38,23 +38,12 @@ namespace umi3d.edk
 
         public (byte[],bool) ToBytes(UMI3DUser user)
         {
-            Func<byte[], int, int, (int, int, int)> f3 = (byte[] by, int i, int j) =>
-            {
-                return (0, i, j);
-            };
             var operation = Operations.Where((op) => { return op.users.Contains(user); });
             if (operation.Count() > 0)
             {
-                int size = UMI3DNetworkingHelper.GetSize(UMI3DOperationKeys.Transaction);
-
-                var func = UMI3DNetworkingHelper.ToBytes(operation, size, user);
-
-                var lenght = func.Item1;
-                var position = 0;
-                var data = new byte[lenght];
-                size = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction, data,ref position);
-                var couple = func.Item2(data, position, size);
-                return (data,true);
+                var b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
+                    + UMI3DNetworkingHelper.ToBytes(operation, user);
+                return (b.ToBytes(),true);
             }
             return (null,false);
         }

@@ -42,24 +42,14 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
-        (int, Func<byte[], int, int, (int, int)>) IByte.ToByteArray(int baseSize, params object[] parameters)
+        Bytable IByte.ToByteArray( params object[] parameters)
         {
-            int size =
-                UMI3DNetworkingHelper.GetSize(name)
-                + UMI3DNetworkingHelper.GetSize(path)
-                + UMI3DNetworkingHelper.GetSize(metrics.resolution)
-                + UMI3DNetworkingHelper.GetSize(metrics.size)
-                + UMI3DNetworkingHelper.GetSizeArray(formats);
-            Func<byte[], int, int, (int,int)> func = (b, i, bs) =>
-            {
-                size = UMI3DNetworkingHelper.Write(name, b, ref i);
-                size += UMI3DNetworkingHelper.Write(path, b, ref i);
-                size += UMI3DNetworkingHelper.Write(metrics.resolution, b, ref i); 
-                size += UMI3DNetworkingHelper.Write(metrics.size, b,ref i);
-                size += UMI3DNetworkingHelper.WriteArray(formats, b, ref i);
-                return (i,size+bs);
-            };
-            return (size + baseSize, func);
+            return
+                UMI3DNetworkingHelper.Write(name)
+                + UMI3DNetworkingHelper.Write(path)
+                + UMI3DNetworkingHelper.Write(metrics.resolution)
+                + UMI3DNetworkingHelper.Write(metrics.size)
+                + UMI3DNetworkingHelper.WriteArray(formats);
         }
         //public List<string> dependencies = new List<string>();
     }

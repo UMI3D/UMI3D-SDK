@@ -9,12 +9,6 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
     {
-        public override bool GetSize<T>(T value, out int size)
-        {
-            size = 0;
-            return false;
-        }
-
         public override bool Read<T>(byte[] array, ref int position, ref int length, out bool readable, out T result)
         {
             switch (true)
@@ -58,9 +52,9 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
-        public override bool Write<T>(T value, byte[] array, ref int position, out int size)
+        public override bool Write<T>(T value, out Bytable bytable)
         {
-            size = 0;
+            bytable = null;
             return false;
         }
     }

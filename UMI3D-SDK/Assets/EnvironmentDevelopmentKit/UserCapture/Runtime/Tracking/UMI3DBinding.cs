@@ -43,41 +43,21 @@ namespace umi3d.edk.userCapture
             offsetRotation = b.offsetRotation;
         }
 
-        public (int, Func<byte[], int, int,(int,int)>) ToByte(int baseSize,UMI3DUser user)
+        public Bytable ToByte(UMI3DUser user)
         {
-        uint boneType = this.boneType;
-        bool isBinded = this.isBinded;
-        ulong node = this.node?.Id() ?? 0;
-        string rigName = this.rigName;
-        Vector3 offsetPosition = this.offsetPosition;
-        Quaternion offsetRotation = this.offsetRotation;
-
-
-            int size = baseSize
-                + UMI3DNetworkingHelper.GetSize(boneType)
-                + UMI3DNetworkingHelper.GetSize(isBinded)
-                + UMI3DNetworkingHelper.GetSize(node)
-                + UMI3DNetworkingHelper.GetSize(rigName)
-                + UMI3DNetworkingHelper.GetSize(offsetPosition)
-                + UMI3DNetworkingHelper.GetSize(offsetRotation);
-            Func<byte[], int, int, (int, int)> func = ( b,  i, bs) =>
-            {
-                bs += UMI3DNetworkingHelper.Write(boneType, b, ref i);
-                bs =+ UMI3DNetworkingHelper.Write(isBinded, b,ref i);
-                bs =+ UMI3DNetworkingHelper.Write(node, b,ref i);
-                bs =+ UMI3DNetworkingHelper.Write(rigName, b,ref  i);
-                bs =+ UMI3DNetworkingHelper.Write(offsetPosition, b,ref  i);
-                bs =+ UMI3DNetworkingHelper.Write(offsetRotation, b,ref i);
-                return (i,bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(boneType)
+                    + UMI3DNetworkingHelper.Write(isBinded)
+                    + UMI3DNetworkingHelper.Write(this.node?.Id() ?? 0)
+                    + UMI3DNetworkingHelper.Write(rigName)
+                    + UMI3DNetworkingHelper.Write(offsetPosition)
+                    + UMI3DNetworkingHelper.Write(offsetRotation);
         }
 
-        (int, Func<byte[], int, int, (int,int)>) IByte.ToByteArray(int baseSize,params object[] parameters)
+        Bytable IByte.ToByteArray(params object[] parameters)
         {
             if (parameters.Length < 1)
-                return ToByte(baseSize, null);
-            return ToByte(baseSize, parameters[0] as UMI3DUser);
+                return ToByte(null);
+            return ToByte(parameters[0] as UMI3DUser);
         }
 
         public BoneBindingDto ToDto(UMI3DUser user)

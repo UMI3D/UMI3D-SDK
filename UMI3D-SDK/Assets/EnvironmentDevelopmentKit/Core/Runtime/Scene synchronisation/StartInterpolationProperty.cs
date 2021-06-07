@@ -30,18 +30,14 @@ namespace umi3d.edk
         /// </summary>
         public object startValue;
 
-        public override (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize,UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            int size = baseSize + 3 * sizeof(uint) + sizeof(ulong) + UMI3DNetworkingHelper.GetSize(startValue);
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                bs += UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StartInterpolationProperty, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(entityId, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(property, b, ref i);
-                bs += UMI3DNetworkingHelper.Write((uint)0, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(startValue, b, ref i);
-                return (i,bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StartInterpolationProperty)
+                + UMI3DNetworkingHelper.Write(entityId)
+                + UMI3DNetworkingHelper.Write(property)
+                + UMI3DNetworkingHelper.Write((uint)0)
+                + UMI3DNetworkingHelper.Write(startValue);
+
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)

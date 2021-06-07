@@ -63,31 +63,14 @@ namespace umi3d.edk
             return dto;
         }
 
-        public (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public Bytable ToBytes(UMI3DUser user)
         {
-            Func<byte[], int, int, (int, int)> f0 = (byte[] b, int i,int bs) => { return (i,bs); };
-
-
-            var id = Id();
-            var title = titleProperty.GetValue(user);
-            var content = contentProperty.GetValue(user);
-            var duration = durationProperty.GetValue(user);
-            var icon2D = icon2dProperty.GetValue(user)?.ToByte() ?? (0, f0);
-            var icon3D = icon3dProperty.GetValue(user)?.ToByte() ?? (0, f0);
-
-
-            int size = sizeof(ulong) + sizeof(float) + UMI3DNetworkingHelper.GetSize(title) + UMI3DNetworkingHelper.GetSize(content)
-                + icon2D.Item1 + icon3D.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                bs += UMI3DNetworkingHelper.Write(id, b,ref i);
-                bs += UMI3DNetworkingHelper.Write(title, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(content, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(duration, b, ref i);
-                (i,bs) = icon2D.Item2(b, i, bs);
-                return icon3D.Item2(b, i, bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(Id())
+                + UMI3DNetworkingHelper.Write(titleProperty.GetValue(user))
+                + UMI3DNetworkingHelper.Write(contentProperty.GetValue(user))
+                + UMI3DNetworkingHelper.Write(durationProperty.GetValue(user))
+                + icon2dProperty.GetValue(user)?.ToByte()
+                + icon3dProperty.GetValue(user)?.ToByte();
         }
 
         /// <summary>

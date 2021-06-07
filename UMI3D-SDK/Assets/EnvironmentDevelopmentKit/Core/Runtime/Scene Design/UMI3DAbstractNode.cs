@@ -245,27 +245,17 @@ namespace umi3d.edk
             dto.anchorDto = objectAnchor.GetValue(user);
         }
 
-        public virtual (int, Func<byte[], int, int, (int,int)>) ToBytes(int baseSize, UMI3DUser user)
+        public virtual Bytable ToBytes(UMI3DUser user)
         {
             var anchor = objectAnchor.GetValue(user);
-            int size = baseSize 
-                + 2*sizeof(ulong) + 3*sizeof(bool) 
-                + UMI3DNetworkingHelper.GetSize(anchor.positionOffset)
-                + UMI3DNetworkingHelper.GetSize(anchor.rotationOffset)
-                + UMI3DNetworkingHelper.GetSize(anchor.scaleOffset);
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                bs += UMI3DNetworkingHelper.Write(Id(), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(objectActive.GetValue(user), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user), b, ref i);
-
-                bs += UMI3DNetworkingHelper.Write(anchor.positionOffset, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(anchor.rotationOffset, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(anchor.scaleOffset, b, ref i);
-                return (i,bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(Id())
+                + UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0)
+                + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
+                + UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user))
+                + UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user))
+                + UMI3DNetworkingHelper.Write(anchor.positionOffset)
+                + UMI3DNetworkingHelper.Write(anchor.rotationOffset)
+                + UMI3DNetworkingHelper.Write(anchor.scaleOffset);
         }
 
 

@@ -93,23 +93,11 @@ namespace umi3d.edk
                 rectDto.sprite = Sprite.GetValue().ToDto();
         }
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            var fp = base.ToBytes(baseSize,user);
-            var fi = Sprite.GetValue().ToByte();
-            var c = Color.GetValue(user);
-
-            int size = sizeof(int)
-                + UMI3DNetworkingHelper.GetSize(c)
-                + fp.Item1
-                + fi.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                (i,bs) = fp.Item2(b, i, bs);
-                bs += UMI3DNetworkingHelper.Write(c, b,ref i);
-                bs += UMI3DNetworkingHelper.Write((int)ImageType.GetValue(user).Convert(), b, ref i);
-                return fi.Item2(b, i, bs);
-            };
-            return (size, func);
+            return base.ToBytes(user)
+                + UMI3DNetworkingHelper.Write(Color.GetValue(user))
+                + UMI3DNetworkingHelper.Write((int)ImageType.GetValue(user).Convert());
         }
 
     }

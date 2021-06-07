@@ -82,21 +82,12 @@ namespace umi3d.edk
             canvasDto.orderInLayer = OrderInLayer.GetValue(user);
         }
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            var fp = base.ToBytes(baseSize, user);
-
-            int size = 2 * sizeof(float) + sizeof(int)
-                + fp.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                (i,bs)= fp.Item2(b, i, bs);
-                bs += UMI3DNetworkingHelper.Write(DynamicPixelPerUnit.GetValue(user), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(ReferencePixelPerUnit.GetValue(user), b, ref i);
-                bs += UMI3DNetworkingHelper.Write(OrderInLayer.GetValue(user), b, ref i);
-                return (i, bs);
-            };
-            return (size, func);
+            return base.ToBytes(user)
+                + UMI3DNetworkingHelper.Write(DynamicPixelPerUnit.GetValue(user))
+                + UMI3DNetworkingHelper.Write(ReferencePixelPerUnit.GetValue(user))
+                + UMI3DNetworkingHelper.Write(OrderInLayer.GetValue(user));
         }
 
         /// <summary>

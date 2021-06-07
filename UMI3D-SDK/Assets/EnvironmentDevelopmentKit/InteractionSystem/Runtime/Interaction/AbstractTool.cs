@@ -233,38 +233,15 @@ namespace umi3d.edk.interaction
         }
 
 
-        public virtual (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public virtual Bytable ToBytes(UMI3DUser user)
         {
-            Func<byte[], int, int, (int, int)> f0 = (b, i, bs) => { return (i, bs); };
-
-            var id = Id();
-            var name = Display.name;
-            var description = Display.description;
-            var icon2D = Display.icon2D?.ToByte() ?? (0, f0);
-            var icon3D = Display.icon3D?.ToByte() ?? (0, f0);
-            var interactions = UMI3DNetworkingHelper.ToBytes(objectInteractions.GetValue(user).Where(i => i != null), 0, user);
-            var active = objectActive.GetValue(user);
-
-            int size =
-                baseSize +
-                sizeof(ulong) + sizeof(bool)
-                + UMI3DNetworkingHelper.GetSize(name) + UMI3DNetworkingHelper.GetSize(description)
-                + icon2D.Item1
-                + icon3D.Item1
-                + interactions.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                bs += UMI3DNetworkingHelper.Write(id, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(name, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(description, b, ref i);
-                (i, bs) = icon2D.Item2(b, i, bs);
-                (i, bs) = icon3D.Item2(b, i, bs);
-                (i, bs) = interactions.Item2(b, i, bs);
-                bs += UMI3DNetworkingHelper.Write(active, b, ref i);
-                return (i, bs);
-            };
-
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(Id())
+                + UMI3DNetworkingHelper.Write(Display.name)
+                + UMI3DNetworkingHelper.Write(Display.description)
+                + Display.icon2D?.ToByte()
+                + Display.icon3D?.ToByte()
+                + UMI3DNetworkingHelper.ToBytes(objectInteractions.GetValue(user).Where(i => i != null), user)
+                + UMI3DNetworkingHelper.Write(objectActive.GetValue(user));
         }
 
         /// <summary>

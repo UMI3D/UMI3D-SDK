@@ -219,10 +219,7 @@ namespace umi3d.cdk.collaboration
                 SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
             else
             {
-                var f = dto.ToByteArray(0);
-                var data = new byte[f.Item1];
-                f.Item2(data, 0,0);
-                SendBinaryData((int)DataChannelTypes.Data, data, reliable);
+                SendBinaryData((int)DataChannelTypes.Data, dto.ToByteArray().ToBytes(), reliable);
             }
         }
 
@@ -243,7 +240,7 @@ namespace umi3d.cdk.collaboration
             {
                 var message = new byte[length + sizeof(uint)];
                 int pos = 0;
-                UMI3DNetworkingHelper.Write(Me, message, ref pos);
+                UMI3DNetworkingHelper.Write(Me).ToBytes(message,pos);
                 sample.CopyRangeTo(message, pos, 0, length - 1);
                 voice = new Binary(client.Time.Timestep, false, message, Receivers.All, MessageGroupIds.VOIP, false);
             }

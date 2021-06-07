@@ -151,45 +151,18 @@ namespace umi3d.edk
             rectDto.rectMask = RectMask.GetValue(user);
         }
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            var fp = base.ToBytes(baseSize,user);
-            var anchoredPosition = AnchoredPosition.GetValue(user);
-            var anchoredPosition3D = AnchoredPosition3D.GetValue(user);
-            var anchorMax = AnchorMax.GetValue(user);
-            var anchorMin = AnchorMin.GetValue(user);
-            var offsetMax = OffsetMax.GetValue(user);
-            var offsetMin = OffsetMin.GetValue(user);
-            var pivot = Pivot.GetValue(user);
-            var sizeDelta = SizeDelta.GetValue(user);
-            var rectMask = RectMask.GetValue(user);
-
-            int size =
-                UMI3DNetworkingHelper.GetSize(anchoredPosition)
-                + UMI3DNetworkingHelper.GetSize(anchoredPosition3D)
-                + UMI3DNetworkingHelper.GetSize(anchorMax)
-                + UMI3DNetworkingHelper.GetSize(anchorMin)
-                + UMI3DNetworkingHelper.GetSize(offsetMax)
-                + UMI3DNetworkingHelper.GetSize(offsetMin)
-                + UMI3DNetworkingHelper.GetSize(pivot)
-                + UMI3DNetworkingHelper.GetSize(sizeDelta)
-                + UMI3DNetworkingHelper.GetSize(rectMask)
-                + fp.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) =>
-            {
-                (i,bs) = fp.Item2(b, i, bs);
-                bs += UMI3DNetworkingHelper.Write(anchoredPosition, b,ref i);
-                bs += UMI3DNetworkingHelper.Write(anchoredPosition3D, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(anchorMax, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(anchorMin, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(offsetMax, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(offsetMin, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(pivot, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(sizeDelta, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(rectMask, b, ref i);
-                return (i, bs);
-            };
-            return (size, func);
+            return base.ToBytes(user)
+                + UMI3DNetworkingHelper.Write(AnchoredPosition.GetValue(user))
+                + UMI3DNetworkingHelper.Write(AnchoredPosition3D.GetValue(user))
+                + UMI3DNetworkingHelper.Write(AnchorMax.GetValue(user))
+                + UMI3DNetworkingHelper.Write(AnchorMin.GetValue(user))
+                + UMI3DNetworkingHelper.Write(OffsetMax.GetValue(user))
+                + UMI3DNetworkingHelper.Write(OffsetMin.GetValue(user))
+                + UMI3DNetworkingHelper.Write(Pivot.GetValue(user))
+                + UMI3DNetworkingHelper.Write(SizeDelta.GetValue(user))
+                + UMI3DNetworkingHelper.Write(RectMask.GetValue(user));
         }
 
     }

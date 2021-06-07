@@ -158,25 +158,15 @@ namespace umi3d.edk
             meshDto.isTraversable = isTraversable;
         }
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            var fm = objectModel.GetValue(user).ToByte();
-            var fp = base.ToBytes(baseSize, user);
-
-            int size = 4 * sizeof(bool)
-                + UMI3DNetworkingHelper.GetSize(idGenerator)
-                + fm.Item1
-                + fp.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                (i,bs) = fp.Item2(b, i, bs);
-                bs += UMI3DNetworkingHelper.Write(areSubobjectsTracked, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(idGenerator, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(isPartOfNavmesh, b, ref i);
-                bs += UMI3DNetworkingHelper.Write(isTraversable, b, ref i);
-                return fm.Item2(b, i,bs);
-            };
-            return (size, func);
+            return base.ToBytes(user)
+                + UMI3DNetworkingHelper.Write(areSubobjectsTracked)
+                + UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true)
+                + UMI3DNetworkingHelper.Write(idGenerator)
+                + UMI3DNetworkingHelper.Write(isPartOfNavmesh)
+                + UMI3DNetworkingHelper.Write(isTraversable)
+                + objectModel.GetValue(user).ToByte();
         }
 
         ///<inheritdoc/>

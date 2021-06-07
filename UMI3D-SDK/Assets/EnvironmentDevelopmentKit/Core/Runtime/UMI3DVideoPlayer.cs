@@ -66,16 +66,11 @@ namespace umi3d.edk
             return new UMI3DVideoPlayerDto();
         }
 
-        protected override (int, Func<byte[], int, int, (int, int)>) ToBytesAux(UMI3DUser user)
+        protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            var fr = ObjectVideoResource.GetValue(user).ToByte();
-            int size = 2*sizeof(ulong) + fr.Item1;
-            Func<byte[], int, int, (int, int)> func = (b, i, bs) => {
-                bs += UMI3DNetworkingHelper.Write(ObjectMaterial.GetValue(user)?.Id() ?? 0, b,ref i);
-                bs += UMI3DNetworkingHelper.Write(audioPlayer?.Id() ?? 0, b,ref i);
-                return fr.Item2(b, i, bs);
-            };
-            return (size, func);
+            return UMI3DNetworkingHelper.Write(ObjectMaterial.GetValue(user)?.Id() ?? 0)
+                + UMI3DNetworkingHelper.Write(audioPlayer?.Id() ?? 0)
+                + ObjectVideoResource.GetValue(user).ToByte();
         }
     }
 }

@@ -223,7 +223,7 @@ namespace umi3d.edk
             return ToDto();
         }
 
-        public override (int, Func<byte[], int, int, (int, int)>) ToBytes(int baseSize, UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
