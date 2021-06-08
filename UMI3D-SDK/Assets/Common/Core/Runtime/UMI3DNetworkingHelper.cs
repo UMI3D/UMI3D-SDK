@@ -544,7 +544,7 @@ namespace umi3d.common
         public byte[] ToBytes(byte[] array, int position = 0)
         {
             var c = function(array, position, 0);
-            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}");
+            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {array.ToString<byte>()}");
             return array;
         }
 
