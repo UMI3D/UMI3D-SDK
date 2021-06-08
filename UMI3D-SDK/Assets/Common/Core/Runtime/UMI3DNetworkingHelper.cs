@@ -501,7 +501,7 @@ namespace umi3d.common
                 Func<byte[], int, int, (int, int)> f5 = (byte[] by, int i,int bs) =>
                 {
                     var couple = func.Item2(by, i + size, i);
-                    return (i + bs + couple.Item2,bs + couple.Item2);
+                    return (couple.Item1,couple.Item2);
                 };
                 return new Bytable(length, f5);
             }
@@ -537,14 +537,14 @@ namespace umi3d.common
         {
             var b = new byte[size];
             var c = function(b, 0, 0);
-            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}");
+            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}");
             return b;
         }
 
         public byte[] ToBytes(byte[] array, int position = 0)
         {
             var c = function(array, position, 0);
-            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}");
+            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}");
             return array;
         }
 
