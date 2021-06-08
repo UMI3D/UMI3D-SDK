@@ -24,6 +24,14 @@ namespace umi3d.edk.interaction
     {
         public AbstractTool toolToReplace;
 
+        public override Bytable ToBytes(UMI3DUser user)
+        {
+            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SwitchTool)
+                + UMI3DNetworkingHelper.Write(tool.Id())
+                + UMI3DNetworkingHelper.Write(toolToReplace.Id())
+                + UMI3DNetworkingHelper.Write(releasable);
+        }
+
         ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {

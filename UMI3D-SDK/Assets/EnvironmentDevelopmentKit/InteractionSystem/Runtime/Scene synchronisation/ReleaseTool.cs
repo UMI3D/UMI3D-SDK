@@ -27,7 +27,7 @@ namespace umi3d.edk.interaction
 
         public override Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
+            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ReleaseTool)
                 + UMI3DNetworkingHelper.Write(tool.Id());
         }
 
