@@ -25,7 +25,7 @@ namespace umi3d.common.userCapture
     [Serializable]
     public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
-        public string userId;
+        public ulong userId;
 
         public List<BoneDto> bones;
 
