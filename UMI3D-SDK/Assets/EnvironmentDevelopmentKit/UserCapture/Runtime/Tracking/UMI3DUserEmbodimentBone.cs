@@ -22,9 +22,7 @@ namespace umi3d.edk.userCapture
     {
         public struct SpatialPosition
         {
-            public Vector3 localPosition;
             public Quaternion localRotation;
-            public Vector3 localScale;
         }
 
         public string userId { get; protected set; }

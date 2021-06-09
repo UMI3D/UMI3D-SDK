@@ -27,7 +27,6 @@ namespace umi3d.cdk.userCapture
 {
     public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
     {
-        public Transform anchor;
         public Transform skeletonContainer;
         public Transform viewpoint;
         [ConstStringEnum(typeof(BoneType))]
@@ -43,14 +42,21 @@ namespace umi3d.cdk.userCapture
 
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
+        [HideInInspector]
         [Tooltip("This event is raised after each analysis of the skeleton.")]
         public UnityEvent skeletonParsedEvent;
 
+        [HideInInspector]
         [Tooltip("This event has to be raised to send a CameraPropertiesDto. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent sendingCameraProperties;
 
+        [HideInInspector]
         [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
+
+        public class AvatarEvent : UnityEvent<string> { };
+
+        public AvatarEvent avatarEvent = new AvatarEvent();
 
         protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
         protected UserCameraPropertiesDto CameraPropertiesDto = null;
@@ -137,7 +143,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (streamedBonetypes.Contains(bone.boneType))
                     {
-                        BoneDto dto = bone.ToDto(anchor);
+                        BoneDto dto = bone.ToDto(this.transform);
                         if (dto != null)
                             bonesList.Add(dto);
                     }
@@ -146,10 +152,9 @@ namespace umi3d.cdk.userCapture
                 LastFrameDto = new UserTrackingFrameDto()
                 {
                     bones = bonesList,
-                    position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
-                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
+                    position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
+                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     refreshFrequency = targetTrackingFPS,
-                    scale = skeletonContainer.localScale,
                     userId = UMI3DClientServer.Instance.GetId(),
                 };
 
@@ -170,6 +175,7 @@ namespace umi3d.cdk.userCapture
             else
             {
                 embodimentDict.Add(id, u);
+                avatarEvent.Invoke(id);
                 return true;
             }
         }

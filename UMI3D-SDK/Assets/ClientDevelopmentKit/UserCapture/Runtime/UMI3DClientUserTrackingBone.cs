@@ -41,11 +41,7 @@ namespace umi3d.cdk.userCapture
             return boneType == BoneType.None ? null : new BoneDto()
             {
                 boneType = boneType,
-                position = Vector3.Scale(
-                    Anchor.InverseTransformPoint(transform.position),
-                    Anchor.lossyScale),
                 rotation = Quaternion.Inverse(Anchor.rotation) * transform.rotation,
-                scale = transform.localScale,
             };
         }
 

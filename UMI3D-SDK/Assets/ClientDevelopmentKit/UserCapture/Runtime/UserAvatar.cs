@@ -16,6 +16,7 @@ limitations under the License.
 
 
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,7 @@ namespace umi3d.cdk.userCapture
 
         public List<Transform> boundRigs = new List<Transform>();
         public string userId { get; protected set; }
+        public Vector3 userSize { get; protected set; }
         public bool activeUserBindings { get; protected set; }
         public List<BoneBindingDto> userBindings { get; protected set; }
 
@@ -74,7 +76,7 @@ namespace umi3d.cdk.userCapture
             RegressionRotation(nodeRotationFilter);
 
             this.transform.localPosition = nodePositionFilter.regressed_position;
-            this.transform.localRotation = nodeRotationFilter.RegressedQuaternion();
+            this.transform.localRotation = nodeRotationFilter.regressed_rotation;
         }
 
         /// <summary>
@@ -84,6 +86,7 @@ namespace umi3d.cdk.userCapture
         public void Set(UMI3DAvatarNodeDto dto)
         {
             userId = dto.userId;
+            userSize = dto.userSize;
             activeUserBindings = dto.activeBindings;
             userBindings = dto.bindings;
 
@@ -368,25 +371,20 @@ namespace umi3d.cdk.userCapture
 
         protected class KalmanRotation
         {
-            public UMI3DUnscentedKalmanFilter KalmanFilter = new UMI3DUnscentedKalmanFilter();
-            public double[] estimations;
-            public double[] previous_prediction;
-            public double[] prediction;
-            public Vector3 regressed_rotation;
+            // forward, up
+            public Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter> KalmanFilters;
+            public Tuple<double[], double[]> estimations;
+            public Tuple<double[], double[]> previous_prediction;
+            public Tuple<double[], double[]> prediction;
+            public Quaternion regressed_rotation;
 
             public KalmanRotation(double q, double r)
             {
-                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
-                estimations = new double[] { };
-                previous_prediction = new double[] { };
-                prediction = new double[] { };
+                KalmanFilters = new Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter>(new UMI3DUnscentedKalmanFilter(q, r), new UMI3DUnscentedKalmanFilter(q, r));
+                estimations = new Tuple<double[], double[]>(new double[] { }, new double[] { });
+                previous_prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
+                prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
             }
-
-            public Quaternion RegressedQuaternion()
-            {
-                return Quaternion.Euler(regressed_rotation.x, regressed_rotation.y, regressed_rotation.z);
-            }
-
         }
 
         protected KalmanPosition nodePositionFilter = new KalmanPosition(50, 0.5);
@@ -428,7 +426,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="tools"></param>
         protected void RegressionRotation(KalmanRotation tools)
         {
-            if (tools.previous_prediction.Length > 0)
+            if (tools.previous_prediction.Item1.Length > 0)
             {
                 double check = lastMessageTime;
                 double now = Time.time;
@@ -437,13 +435,17 @@ namespace umi3d.cdk.userCapture
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * MeasuresPerSecond * delta + tools.previous_prediction[0];
-                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * MeasuresPerSecond * delta + tools.previous_prediction[1];
-                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * MeasuresPerSecond * delta + tools.previous_prediction[2];
+                    var fw_value_x = (tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[0];
+                    var fw_value_y = (tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[1];
+                    var fw_value_z = (tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[2];
 
-                    tools.estimations = new double[] { value_x, value_y, value_z };
+                    var up_value_x = (tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[0];
+                    var up_value_y = (tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[1];
+                    var up_value_z = (tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[2];
 
-                    tools.regressed_rotation = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                    tools.estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
+
+                    tools.regressed_rotation = Quaternion.LookRotation(new Vector3((float)fw_value_x, (float)fw_value_y, (float)fw_value_z), new Vector3((float)up_value_x, (float)up_value_y, (float)up_value_z));
                 }
             }
         }
@@ -453,8 +455,7 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="position"></param>
         /// <param name="rotation"></param>
-        /// <param name="scale"></param>
-        protected void NodeKalmanUpdate(Vector3 position, Quaternion rotation, Vector3 scale)
+        protected void NodeKalmanUpdate(Vector3 position, Quaternion rotation)
         {
             double[] positionMeasurement = new double[] { position.x, position.y, position.z };
 
@@ -468,34 +469,23 @@ namespace umi3d.cdk.userCapture
             else
                 nodePositionFilter.previous_prediction = positionMeasurement;
 
-            Vector3 eulerRotation = rotation.eulerAngles;
+            Quaternion quaternionMeasurment = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 
-            float x_euler; float y_euler; float z_euler;
+            Vector3 targetForward = quaternionMeasurment * Vector3.forward;
+            Vector3 targetUp = quaternionMeasurment * Vector3.up;
 
-            if (nodeRotationFilter.estimations.Length > 0)
-            {
-                x_euler = Mathf.Abs(eulerRotation.x - (float)nodeRotationFilter.estimations[0]) <= 180 ? eulerRotation.x : (eulerRotation.x > (float)nodeRotationFilter.estimations[0] ? eulerRotation.x - 360 : eulerRotation.x + 360);
-                y_euler = Mathf.Abs(eulerRotation.y - (float)nodeRotationFilter.estimations[1]) <= 180 ? eulerRotation.y : (eulerRotation.y > (float)nodeRotationFilter.estimations[1] ? eulerRotation.y - 360 : eulerRotation.y + 360);
-                z_euler = Mathf.Abs(eulerRotation.z - (float)nodeRotationFilter.estimations[2]) <= 180 ? eulerRotation.z : (eulerRotation.z > (float)nodeRotationFilter.estimations[2] ? eulerRotation.z - 360 : eulerRotation.z + 360);
-            }
-            else
-            {
-                x_euler = eulerRotation.x;
-                y_euler = eulerRotation.y;
-                z_euler = eulerRotation.z;
-            }
+            double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
+            double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
 
-            double[] rotationMeasurement = new double[] { x_euler, y_euler, z_euler };
-            nodeRotationFilter.KalmanFilter.Update(rotationMeasurement);
+            nodeRotationFilter.KalmanFilters.Item1.Update(targetForwardMeasurement); // forward
+            nodeRotationFilter.KalmanFilters.Item2.Update(targetUpMeasurement); // up
 
-            double[] newRotationState = nodeRotationFilter.KalmanFilter.getState();
+            nodeRotationFilter.prediction = new System.Tuple<double[], double[]>(nodeRotationFilter.KalmanFilters.Item1.getState(), nodeRotationFilter.KalmanFilters.Item2.getState());
 
-            nodeRotationFilter.prediction = new double[] { newRotationState[0], newRotationState[1], newRotationState[2] };
-
-            if (nodeRotationFilter.estimations.Length > 0)
+            if (nodeRotationFilter.estimations.Item1.Length > 0)
                 nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
             else
-                nodeRotationFilter.previous_prediction = rotationMeasurement;
+                nodeRotationFilter.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
         }
 
         public virtual IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
@@ -504,7 +494,7 @@ namespace umi3d.cdk.userCapture
             lastFrameTime = timeFrame;
             lastMessageTime = Time.time;
 
-            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation, trackingFrameDto.scale);
+            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
 
             yield return null; 
         }

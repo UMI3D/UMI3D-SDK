@@ -29,11 +29,6 @@ namespace umi3d.common.userCapture
         /// </summary>
         public string boneType;
 
-        public SerializableVector3 position;
-
         public SerializableVector4 rotation;
-
-        public SerializableVector3 scale;
-
     }
 }
