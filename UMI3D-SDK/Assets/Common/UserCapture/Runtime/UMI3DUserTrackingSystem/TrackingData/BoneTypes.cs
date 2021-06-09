@@ -25,7 +25,6 @@ namespace umi3d.common.userCapture
         public const string Head = "Head";
         public const string LeftAnkle = "Left Ankle";
         public const string LeftForearm = "Left ForeArm"; 
-        public const string LeftElbow = "Left Elbow";
         public const string LeftHand = "Left Hand";
         public const string LeftHip = "Left Hip"; 
         public const string LeftToeBase = "Left Toe Base";
@@ -35,7 +34,6 @@ namespace umi3d.common.userCapture
         public const string Neck = "Neck";
         public const string Hips = "Hips";
         public const string RightAnkle = "Right Ankle";
-        public const string RightElbow = "Right Elbow"; 
         public const string RightForearm = "Right ForeArm";
         public const string RightHand = "Right Hand";
         public const string RightHip = "Right Hip"; 

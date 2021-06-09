@@ -143,7 +143,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (streamedBonetypes.Contains(bone.boneType))
                     {
-                        BoneDto dto = bone.ToDto(this.transform);
+                        BoneDto dto = bone.ToDto();
                         if (dto != null)
                             bonesList.Add(dto);
                     }

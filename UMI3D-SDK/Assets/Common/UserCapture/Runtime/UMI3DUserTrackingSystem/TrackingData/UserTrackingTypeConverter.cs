@@ -57,9 +57,9 @@ namespace umi3d.common.userCapture
                 case HumanBodyBones.RightUpperArm:
                     return BoneType.RightUpperArm;
                 case HumanBodyBones.LeftLowerArm:
-                    return BoneType.LeftElbow;
+                    return BoneType.LeftForearm;
                 case HumanBodyBones.RightLowerArm:
-                    return BoneType.RightElbow;
+                    return BoneType.RightForearm;
                 case HumanBodyBones.LeftHand:
                     return BoneType.LeftHand;
                 case HumanBodyBones.RightHand:
@@ -177,9 +177,9 @@ namespace umi3d.common.userCapture
                     return HumanBodyBones.LeftUpperArm;
                 case BoneType.RightUpperArm:
                     return HumanBodyBones.RightUpperArm;
-                case BoneType.LeftElbow:
+                case BoneType.LeftForearm:
                     return HumanBodyBones.LeftLowerArm;
-                case BoneType.RightElbow:
+                case BoneType.RightForearm:
                     return HumanBodyBones.RightLowerArm;
                 case BoneType.LeftHand:
                     return HumanBodyBones.LeftHand;

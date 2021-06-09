@@ -36,12 +36,12 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="Anchor">Frame of reference</param>
         /// <returns></returns>
-        public BoneDto ToDto(Transform Anchor)
+        public BoneDto ToDto()
         {
             return boneType == BoneType.None ? null : new BoneDto()
             {
                 boneType = boneType,
-                rotation = Quaternion.Inverse(Anchor.rotation) * transform.rotation,
+                rotation = this.transform.localRotation,
             };
         }
 
