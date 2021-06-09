@@ -306,34 +306,76 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-
-            if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            if (UMI3DEnvironment.Instance.useDto)
             {
-                avatarFrameEvent.Invoke((dto as common.userCapture.UserTrackingFrameDto), server.Time.Timestep);
-                UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
-                MainThreadManager.Run(() =>
-                {
-                    UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
-                });
+                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
 
-                if (user.Avatar != null && user.Avatar.RelayRoom != null)
+                if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
                 {
-                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
+                    avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
+                    });
 
-                    if (relayVolume != null)
-                        MainThreadManager.Run(() =>
-                        {
-                            relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
-                        });
+                    if (user.Avatar != null && user.Avatar.RelayRoom != null)
+                    {
+                        RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
+
+                        if (relayVolume != null)
+                            MainThreadManager.Run(() =>
+                            {
+                                relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
+                            });
+                        else
+                            RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                    }
                     else
                         RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
                 }
-                else
-                    RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+            }
+            else
+            {
+                var trackingFrame = new common.userCapture.UserTrackingFrameDto();
+
+                var position = 0;
+                var length = frame.StreamData.byteArr.Length;
+                var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                if (id == UMI3DOperationKeys.UserTrackingFrame)
+                {
+                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList< common.userCapture.BoneDto> (frame.StreamData.byteArr, ref position, ref length);
+
+                    avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
+
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
+                    });
+
+                    if (user.Avatar != null && user.Avatar.RelayRoom != null)
+                    {
+                        RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
+
+                        if (relayVolume != null)
+                            MainThreadManager.Run(() =>
+                            {
+                                relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
+                            });
+                        else
+                            RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                    }
+                    else
+                        RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+
+                }
             }
         }
-
 
         #endregion
 

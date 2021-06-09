@@ -22,6 +22,7 @@ namespace umi3d.common
         public const uint LoadEntity = 2;
         public const uint DeleteEntity = 3;
         public const uint NavigationRequest = 4;
+        public const uint TeleportationRequest = 5;
 
         public const uint SetEntityProperty = 101;
         public const uint SetEntityDictionnaryProperty = 103;

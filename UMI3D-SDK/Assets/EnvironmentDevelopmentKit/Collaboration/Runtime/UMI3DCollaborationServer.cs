@@ -381,23 +381,6 @@ namespace umi3d.edk.collaboration
                 }
                 if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                 {
-
-                    Func<Operation, string> func = (op) =>
-                    {
-                        {
-                            switch (op)
-                            {
-                                case SetEntityProperty set:
-                                    return set.value.ToString();
-                                case LoadEntity load:
-                                    return load.entity.ToString();
-                                default:
-                                    return op.ToString();
-                            };
-                        }
-                    };
-
-                    Debug.Log($"yo {transaction.Operations.Select(op => func(op)).Aggregate((a,b)=>$"{a};{b}")}");
                     if (!TransactionToBeSend.ContainsKey(user))
                     {
                         TransactionToBeSend[user] = new Transaction();
@@ -410,6 +393,28 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        protected override void _Dispatch(NavigationRequest navigation)
+        {
+            base._Dispatch(navigation);
+            foreach (var u in navigation.users)
+            {
+                if (u is UMI3DCollaborationUser user)
+                {
+                    if (user.status == StatusType.NONE)
+                    {
+                        continue;
+                    }
+                    if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
+                    {
+                        NavigationToBeSend[user] = navigation;
+                        continue;
+                    }
+
+                    SendNavigationRequest(user, navigation);
+                }
+            }
+        }
+
         void SendTransaction(UMI3DCollaborationUser user, Transaction transaction)
         {
             var c = UMI3DEnvironment.Instance.useDto ? transaction.ToBson(user) : transaction.ToBytes(user);
@@ -417,8 +422,14 @@ namespace umi3d.edk.collaboration
                 ForgeServer.SendData(user.networkPlayer, c.Item1, transaction.reliable);
         }
 
+        void SendNavigationRequest(UMI3DCollaborationUser user, NavigationRequest navigationRequest)
+        {
+            var data = UMI3DEnvironment.Instance.useDto ? navigationRequest.ToBson() : navigationRequest.ToBytes();
+            ForgeServer.SendData(user.networkPlayer, data, navigationRequest.reliable);
+        }
 
         Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
+        Dictionary<UMI3DCollaborationUser, NavigationRequest> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, NavigationRequest>();
         private void Update()
         {
             foreach (var kp in TransactionToBeSend.ToList())
@@ -433,6 +444,19 @@ namespace umi3d.edk.collaboration
                 if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY) continue;
                 transaction.Simplify();
                 SendTransaction(user, transaction);
+                TransactionToBeSend.Remove(user);
+            }
+            foreach (var kp in NavigationToBeSend.ToList())
+            {
+                var user = kp.Key;
+                var navigation = kp.Value;
+                if (user.status == StatusType.NONE)
+                {
+                    NavigationToBeSend.Remove(user);
+                    continue;
+                }
+                if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY) continue;
+                SendNavigationRequest(user, navigation);
                 TransactionToBeSend.Remove(user);
             }
         }

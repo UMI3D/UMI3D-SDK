@@ -22,5 +22,6 @@ namespace umi3d.common
         public SerializableVector4 rotation = null;
 
         public TeleportDto() : base() { }
+
     }
 }

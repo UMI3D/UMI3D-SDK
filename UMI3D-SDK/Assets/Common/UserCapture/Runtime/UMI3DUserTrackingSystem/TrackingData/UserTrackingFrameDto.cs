@@ -42,11 +42,12 @@ namespace umi3d.common.userCapture
         public override Bytable ToByteArray(params object[] parameters)
         {
             return base.ToByteArray(parameters)
-                + UMI3DNetworkingHelper.ToBytes(bones)
+                + UMI3DNetworkingHelper.Write(userId)
                 + UMI3DNetworkingHelper.Write(position) 
                 + UMI3DNetworkingHelper.Write(rotation) 
                 + UMI3DNetworkingHelper.Write(scale)
-                + UMI3DNetworkingHelper.Write(refreshFrequency);
+                + UMI3DNetworkingHelper.Write(refreshFrequency)
+                + UMI3DNetworkingHelper.ToBytes(bones);
         }
     }
 }

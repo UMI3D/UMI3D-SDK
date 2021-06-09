@@ -285,8 +285,19 @@ namespace umi3d.cdk.collaboration
                         });
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
-                        
-
+                        {
+                            var pos = UMI3DNetworkingHelper.Read<Vector3>(frame.StreamData.byteArr, ref position, ref length);
+                            var nav = new NavigateDto() { position = pos };
+                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                        }
+                        break;
+                    case UMI3DOperationKeys.TeleportationRequest:
+                        {
+                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
+                            var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
+                            var nav = new TeleportDto() { position = pos, rotation = rot };
+                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                        }
                         break;
                     default:
                         MainThreadManager.Run(() =>
@@ -304,25 +315,60 @@ namespace umi3d.cdk.collaboration
 
         public void SendTrackingFrame(AbstractBrowserRequestDto dto)
         {
-            SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBson(), false);
+            if (useDto)
+                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBson(), false);
+            else
+                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToByteArray().ToBytes(), false);
         }
 
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
+            if (useDto)
             {
-                if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
-                    MainThreadManager.Run(() =>
-                    {
-                        if (client.Time.Timestep - frame.TimeStep < 500)
-                            StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
-                    });
-                else
-                    MainThreadManager.Run(() =>
-                    {
-                        Debug.LogWarning("User Avatar not found.");
-                    });
+                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
+                {
+                    if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                        MainThreadManager.Run(() =>
+                        {
+                            if (client.Time.Timestep - frame.TimeStep < 500)
+                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
+                        });
+                    else
+                        MainThreadManager.Run(() =>
+                        {
+                            Debug.LogWarning("User Avatar not found.");
+                        });
+                }
+            }
+            else
+            {
+                var trackingFrame = new common.userCapture.UserTrackingFrameDto();
+
+                var position = 0;
+                var length = frame.StreamData.byteArr.Length;
+                var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                if (id == UMI3DOperationKeys.UserTrackingFrame)
+                {
+                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(frame.StreamData.byteArr, ref position, ref length);
+
+                    if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                        MainThreadManager.Run(() =>
+                        {
+                            if (client.Time.Timestep - frame.TimeStep < 500)
+                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
+                        });
+                    else
+                        MainThreadManager.Run(() =>
+                        {
+                            Debug.LogWarning("User Avatar not found.");
+                        });
+                }
             }
         }
 

@@ -146,10 +146,17 @@ namespace umi3d.edk
             if (Exists) Instance._Dispatch(transaction);
         }
 
+        static public void Dispatch(NavigationRequest navigation)
+        {
+            if (Exists) Instance._Dispatch(navigation);
+        }
+
         protected virtual void _Dispatch(Transaction transaction)
         {
         }
-
+        protected virtual void _Dispatch(NavigationRequest navigation)
+        {
+        }
 
         #region session
         public UMI3DUserEvent OnUserJoin = new UMI3DUserEvent();
