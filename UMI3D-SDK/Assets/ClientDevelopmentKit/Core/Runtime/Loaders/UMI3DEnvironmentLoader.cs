@@ -917,6 +917,14 @@ namespace umi3d.cdk
                     if (kalmanEntity.property.Equals(UMI3DPropertyKeys.Rotation))
                     {
                         Vector3 eulerRotation = new Quaternion(v.X, v.Y, v.Z, v.W).eulerAngles;
+
+                        if (kalmanEntity.estimations.Length > 0)
+                        {
+                            kalmanEntity.estimations[0] = Mathf.Abs(eulerRotation.x - (float)kalmanEntity.estimations[0]) <= 180 ? kalmanEntity.estimations[0] : eulerRotation.x < (float)kalmanEntity.estimations[0] ? kalmanEntity.estimations[0] - 360 : kalmanEntity.estimations[0] + 360;
+                            kalmanEntity.estimations[1] = Mathf.Abs(eulerRotation.y - (float)kalmanEntity.estimations[1]) <= 180 ? kalmanEntity.estimations[1] : eulerRotation.y < (float)kalmanEntity.estimations[1] ? kalmanEntity.estimations[1] - 360 : kalmanEntity.estimations[1] + 360;
+                            kalmanEntity.estimations[2] = Mathf.Abs(eulerRotation.z - (float)kalmanEntity.estimations[2]) <= 180 ? kalmanEntity.estimations[2] : eulerRotation.z < (float)kalmanEntity.estimations[2] ? kalmanEntity.estimations[2] - 360 : kalmanEntity.estimations[2] + 360;
+                        }
+
                         measurement = new double[] { eulerRotation.x, eulerRotation.y, eulerRotation.z };
                     }
                     else
