@@ -37,6 +37,13 @@ namespace umi3d.cdk.interaction
         [SerializeField]
         protected List<AbstractController> Controllers = new List<AbstractController>();
 
+        /// <summary>
+        /// If true, when a tool with holdable events is projected, InteractionMapper will
+        /// ask to selected AbstractController to project this event on a specific input if
+        /// it can.
+        /// </summary>
+        public bool shouldProjectHoldableEventOnSpecificInput = false;
+
 
         protected virtual void Awake()
         {

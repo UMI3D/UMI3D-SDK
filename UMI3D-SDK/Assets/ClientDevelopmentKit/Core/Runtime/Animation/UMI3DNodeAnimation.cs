@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -79,7 +80,7 @@ namespace umi3d.cdk
 
         IEnumerator WaitForProgress(float waitFor, Action action)
         {
-            yield return new WaitWhile(() => LaunchAnimation(waitFor));
+            yield return new WaitUntil(() => LaunchAnimation(waitFor));
             action.Invoke();
         }
 
@@ -128,7 +129,7 @@ namespace umi3d.cdk
                     dto.animationChain[(int)(Int64)set.index] = (UMI3DNodeAnimationDto.OperationChainDto)set.value;
                     break;
                 default:
-                    dto.animationChain = (List<UMI3DNodeAnimationDto.OperationChainDto>)property.value;
+                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DNodeAnimationDto.OperationChainDto).ToList();
                     break;
             }
             return true;

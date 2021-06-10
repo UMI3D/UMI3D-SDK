@@ -38,7 +38,7 @@ PROJECT_NAME           = "UMI3D Unity SDK"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = 2.1.r.210112
+PROJECT_NUMBER         = 2.2.r.210402
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -935,7 +935,8 @@ RECURSIVE              = YES
 
 EXCLUDE                = ../../UMI3D-SDK/Assets/ClientDevelopmentKit/Core/Dependencies \
                          ../../UMI3D-SDK/Assets/Dependencies \
-                         ../../UMI3D-SDK/Assets/EXCLUDED
+                         ../../UMI3D-SDK/Assets/EXCLUDED \
+                         ../../UMI3D-SDK/Assets/ClientDevelopmentKit/Collaboration/Dependencies
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded

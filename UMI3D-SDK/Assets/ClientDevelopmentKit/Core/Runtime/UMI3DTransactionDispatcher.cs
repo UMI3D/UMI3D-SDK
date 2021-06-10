@@ -43,6 +43,7 @@ namespace umi3d.cdk
 
         static public void PerformOperation(AbstractOperationDto operation, Action performed)
         {
+            if (performed == null) performed = () => { };
             switch (operation)
             {
                 case LoadEntityDto load:

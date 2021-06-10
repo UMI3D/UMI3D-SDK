@@ -31,6 +31,8 @@ namespace umi3d.edk.interaction
         protected bool NotifySubObject;
         [SerializeField, EditorReadOnly]
         protected UMI3DNode Node;
+        [SerializeField, EditorReadOnly]
+        protected bool HasPriority;
 
         ///<inheritdoc/>
         public override void Register()
@@ -106,12 +108,14 @@ namespace umi3d.edk.interaction
         private UMI3DAsyncProperty<bool> objectNotifyHoverPosition1;
         private UMI3DAsyncProperty<bool> objectNotifySubObject1;
         private UMI3DAsyncProperty<UMI3DNode> objectNodeId1;
+        private UMI3DAsyncProperty<bool> _hasPriority;
 
         public bool isHovered { get { return hoveringBones.Count > 0; } }
 
         public UMI3DAsyncProperty<bool> objectNotifyHoverPosition { get { Register(); return objectNotifyHoverPosition1; } protected set => objectNotifyHoverPosition1 = value; }
         public UMI3DAsyncProperty<bool> objectNotifySubObject { get { Register(); return objectNotifySubObject1; } protected set => objectNotifySubObject1 = value; }
         public UMI3DAsyncProperty<UMI3DNode> objectNodeId { get { Register(); return objectNodeId1; } protected set => objectNodeId1 = value; }
+        public UMI3DAsyncProperty<bool> hasPriority { get { Register(); return _hasPriority; } protected set => _hasPriority = value; }
 
         /// <summary>
         /// Create an empty Dto.
@@ -135,6 +139,7 @@ namespace umi3d.edk.interaction
             Idto.notifyHoverPosition = objectNotifyHoverPosition.GetValue(user);
             Idto.notifySubObject = objectNotifySubObject.GetValue(user);
             Idto.nodeId = objectNodeId.GetValue(user).Id();
+            Idto.hasPriority = hasPriority.GetValue(user);
         }
 
         ///<inheritdoc/>
@@ -148,6 +153,7 @@ namespace umi3d.edk.interaction
             objectNotifyHoverPosition.OnValueChanged += (b) => NotifyHoverPosition = b;
             objectNotifySubObject.OnValueChanged += (b) => NotifySubObject = b;
             objectNodeId.OnValueChanged += (n) => Node = n;
+            hasPriority = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.InteractableHasPriority, HasPriority);
         }
 
         public void Hovered(UMI3DUser user, HoveredDto dto)
