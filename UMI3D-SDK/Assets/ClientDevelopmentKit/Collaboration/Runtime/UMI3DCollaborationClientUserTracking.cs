@@ -53,7 +53,7 @@ namespace umi3d.cdk.collaboration
         {
             yield return new WaitUntil(() => UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
 
-            UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);
+            base.DispatchCamera();
         }
     }
 }
