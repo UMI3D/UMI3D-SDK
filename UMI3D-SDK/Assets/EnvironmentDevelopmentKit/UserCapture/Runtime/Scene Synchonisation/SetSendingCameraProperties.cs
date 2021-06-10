@@ -13,31 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
+using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
-    public class UMI3DUserEmbodimentBone
+    public class SetSendingCameraProperties : Operation
     {
-        public struct SpatialPosition
+        public bool activeSending;
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            public Quaternion localRotation;
-        }
-
-        public string userId { get; protected set; }
-
-        public string boneType { get; protected set; }
-
-        public SpatialPosition spatialPosition;
-
-        public bool isTracked;
-
-        public UMI3DUserEmbodimentBone(string userId, string boneType)
-        {
-            this.userId = userId;
-            this.boneType = boneType;
-            spatialPosition = new SpatialPosition();
+            var sendingCamera = new SetSendingCameraPropertiesDto()
+            {
+                activeSending = this.activeSending
+            };
+            return sendingCamera;
         }
     }
 }

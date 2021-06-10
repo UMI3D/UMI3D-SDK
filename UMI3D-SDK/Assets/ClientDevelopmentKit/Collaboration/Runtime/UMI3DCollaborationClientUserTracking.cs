@@ -22,6 +22,14 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
+        public GameObject UnitSkeleton;
+
+        protected override void Start()
+        {
+            base.Start();
+            avatarEvent.AddListener(UMI3DCollaborativeUserAvatar.SkeletonCreation);
+        }
+
         ///<inheritdoc/>
         protected override IEnumerator DispatchTracking()
         {

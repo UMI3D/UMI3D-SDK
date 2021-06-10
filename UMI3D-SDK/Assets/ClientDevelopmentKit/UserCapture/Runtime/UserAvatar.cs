@@ -16,6 +16,7 @@ limitations under the License.
 
 
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,6 +53,7 @@ namespace umi3d.cdk.userCapture
 
         public List<Transform> boundRigs = new List<Transform>();
         public string userId { get; protected set; }
+        public Vector3 userSize { get; protected set; }
         public bool activeUserBindings { get; protected set; }
         public List<BoneBindingDto> userBindings { get; protected set; }
 
@@ -69,6 +71,12 @@ namespace umi3d.cdk.userCapture
                     item.obj.rotation = item.bone.rotation * item.offsetRotation;
                 }
             }
+
+            RegressionPosition(nodePositionFilter);
+            RegressionRotation(nodeRotationFilter);
+
+            this.transform.localPosition = nodePositionFilter.regressed_position;
+            this.transform.localRotation = nodeRotationFilter.regressed_rotation;
         }
 
         /// <summary>
@@ -78,6 +86,7 @@ namespace umi3d.cdk.userCapture
         public void Set(UMI3DAvatarNodeDto dto)
         {
             userId = dto.userId;
+            userSize = dto.userSize;
             activeUserBindings = dto.activeBindings;
             userBindings = dto.bindings;
 
@@ -257,8 +266,8 @@ namespace umi3d.cdk.userCapture
                         bone = bone.transform,
                         bonetype = dto.boneType,
                         obj = obj,
-                        offsetPosition = dto.position,
-                        offsetRotation = dto.rotation
+                        offsetPosition = dto.offsetPosition,
+                        offsetRotation = dto.offsetRotation
                     });
 
                     if (dto.rigName == "")
@@ -273,8 +282,8 @@ namespace umi3d.cdk.userCapture
                         if (index >= 0)
                         {
                             Bound bound = bounds[index];
-                            bound.offsetPosition = dto.position;
-                            bound.offsetRotation = dto.rotation;
+                            bound.offsetPosition = dto.offsetPosition;
+                            bound.offsetRotation = dto.offsetRotation;
                             bounds[index] = bound;
                         }
                         else
@@ -284,8 +293,8 @@ namespace umi3d.cdk.userCapture
                                 bone = bone.transform,
                                 bonetype = dto.boneType,
                                 obj = obj,
-                                offsetPosition = dto.position,
-                                offsetRotation = dto.rotation
+                                offsetPosition = dto.offsetPosition,
+                                offsetRotation = dto.offsetRotation
                             });
                         }
                     }
@@ -341,6 +350,153 @@ namespace umi3d.cdk.userCapture
             {
                 savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
             }
+        }
+
+        protected class KalmanPosition
+        {
+            public UMI3DUnscentedKalmanFilter KalmanFilter;
+            public double[] estimations;
+            public double[] previous_prediction;
+            public double[] prediction;
+            public Vector3 regressed_position;
+
+            public KalmanPosition(double q, double r)
+            {
+                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
+                estimations = new double[] { };
+                previous_prediction = new double[] { };
+                prediction = new double[] { };
+            }
+        }
+
+        protected class KalmanRotation
+        {
+            // forward, up
+            public Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter> KalmanFilters;
+            public Tuple<double[], double[]> estimations;
+            public Tuple<double[], double[]> previous_prediction;
+            public Tuple<double[], double[]> prediction;
+            public Quaternion regressed_rotation;
+
+            public KalmanRotation(double q, double r)
+            {
+                KalmanFilters = new Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter>(new UMI3DUnscentedKalmanFilter(q, r), new UMI3DUnscentedKalmanFilter(q, r));
+                estimations = new Tuple<double[], double[]>(new double[] { }, new double[] { });
+                previous_prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
+                prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
+            }
+        }
+
+        protected KalmanPosition nodePositionFilter = new KalmanPosition(50, 0.5);
+        protected KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
+
+        protected float MeasuresPerSecond = 0;
+        protected float lastFrameTime = 0;
+        protected float lastMessageTime = 0;
+
+        /// <summary>
+        /// Applies linear regression to the filtered position of an object
+        /// </summary>
+        /// <param name="tools"></param>
+        protected void RegressionPosition(KalmanPosition tools)
+        {
+            if (tools.previous_prediction.Length > 0)
+            {
+                double check = lastMessageTime;
+                double now = Time.time;
+
+                double delta = now - check;
+
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
+                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
+
+                    tools.estimations = new double[] { value_x, value_y, value_z };
+
+                    tools.regressed_position = new Vector3((float)value_x, (float)value_y, (float)value_z);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Applies linear regression to the filtered rotation of an object
+        /// </summary>
+        /// <param name="tools"></param>
+        protected void RegressionRotation(KalmanRotation tools)
+        {
+            if (tools.previous_prediction.Item1.Length > 0)
+            {
+                double check = lastMessageTime;
+                double now = Time.time;
+
+                var delta = now - check;
+
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var fw_value_x = (tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[0];
+                    var fw_value_y = (tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[1];
+                    var fw_value_z = (tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[2];
+
+                    var up_value_x = (tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[0];
+                    var up_value_y = (tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[1];
+                    var up_value_z = (tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[2];
+
+                    tools.estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
+
+                    tools.regressed_rotation = Quaternion.LookRotation(new Vector3((float)fw_value_x, (float)fw_value_y, (float)fw_value_z), new Vector3((float)up_value_x, (float)up_value_y, (float)up_value_z));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Filtering a user AvatarNode position
+        /// </summary>
+        /// <param name="position"></param>
+        /// <param name="rotation"></param>
+        protected void NodeKalmanUpdate(Vector3 position, Quaternion rotation)
+        {
+            double[] positionMeasurement = new double[] { position.x, position.y, position.z };
+
+            nodePositionFilter.KalmanFilter.Update(positionMeasurement);
+
+            double[] newPositionState = nodePositionFilter.KalmanFilter.getState();
+            nodePositionFilter.prediction = new double[] { newPositionState[0], newPositionState[1], newPositionState[2] };
+
+            if (nodePositionFilter.estimations.Length > 0)
+                nodePositionFilter.previous_prediction = nodePositionFilter.estimations;
+            else
+                nodePositionFilter.previous_prediction = positionMeasurement;
+
+            Quaternion quaternionMeasurment = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+
+            Vector3 targetForward = quaternionMeasurment * Vector3.forward;
+            Vector3 targetUp = quaternionMeasurment * Vector3.up;
+
+            double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
+            double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
+
+            nodeRotationFilter.KalmanFilters.Item1.Update(targetForwardMeasurement); // forward
+            nodeRotationFilter.KalmanFilters.Item2.Update(targetUpMeasurement); // up
+
+            nodeRotationFilter.prediction = new System.Tuple<double[], double[]>(nodeRotationFilter.KalmanFilters.Item1.getState(), nodeRotationFilter.KalmanFilters.Item2.getState());
+
+            if (nodeRotationFilter.estimations.Item1.Length > 0)
+                nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
+            else
+                nodeRotationFilter.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
+        }
+
+        public virtual IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
+        {
+            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+            lastFrameTime = timeFrame;
+            lastMessageTime = Time.time;
+
+            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
+
+            yield return null; 
         }
     }
 }
