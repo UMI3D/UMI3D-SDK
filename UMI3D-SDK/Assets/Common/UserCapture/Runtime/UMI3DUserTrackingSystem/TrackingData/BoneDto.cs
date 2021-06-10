@@ -29,19 +29,13 @@ namespace umi3d.common.userCapture
         /// </summary>
         public uint boneType;
 
-        public SerializableVector3 position;
-
         public SerializableVector4 rotation;
-
-        public SerializableVector3 scale;
 
         Bytable IByte.ToBytableArray (params object[] parameters)
         {
             return
                 UMI3DNetworkingHelper.Write(boneType)
-                + UMI3DNetworkingHelper.Write(position)
-                + UMI3DNetworkingHelper.Write(rotation)
-                + UMI3DNetworkingHelper.Write(scale);
+                + UMI3DNetworkingHelper.Write(rotation);
         }
     }
 }

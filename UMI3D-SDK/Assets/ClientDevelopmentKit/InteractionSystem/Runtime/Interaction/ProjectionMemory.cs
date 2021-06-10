@@ -454,6 +454,26 @@ namespace umi3d.cdk.interaction
 
             List<AbstractUMI3DInput> selectedInputs = new List<AbstractUMI3DInput>();
 
+            bool foundHoldableEvent = false;
+            if (InteractionMapper.Instance.shouldProjectHoldableEventOnSpecificInput)
+            {
+                List<AbstractInteractionDto> temp = new List<AbstractInteractionDto>();
+
+                foreach (AbstractInteractionDto dto in interactions)
+                {
+                    if (dto is EventDto eventDto && eventDto.hold && !foundHoldableEvent)
+                    {
+                        temp.Insert(0, dto);
+                        foundHoldableEvent = true;
+                    }
+                    else
+                        temp.Add(dto);
+                }
+
+                if (foundHoldableEvent)
+                    interactions = temp.ToArray();
+            }
+
             for (int depth = 0; depth < interactions.Length; depth++)
             {
                 AbstractInteractionDto interaction = interactions[depth];
@@ -508,7 +528,7 @@ namespace umi3d.cdk.interaction
 
                         deepProjectionCreation = () =>
                         {
-                            AbstractUMI3DInput projection = controller.FindInput(eventDto, true);
+                            AbstractUMI3DInput projection = controller.FindInput(eventDto, true, depth == 0 && foundHoldableEvent);
 
                             if (projection == null)
                                 throw new NoInputFoundException();

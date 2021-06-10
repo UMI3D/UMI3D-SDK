@@ -33,8 +33,6 @@ namespace umi3d.common.userCapture
 
         public SerializableVector4 rotation;
 
-        public SerializableVector3 scale;
-
         public float refreshFrequency;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingFrame; }
@@ -44,8 +42,7 @@ namespace umi3d.common.userCapture
             return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(userId)
                 + UMI3DNetworkingHelper.Write(position) 
-                + UMI3DNetworkingHelper.Write(rotation) 
-                + UMI3DNetworkingHelper.Write(scale)
+                + UMI3DNetworkingHelper.Write(rotation)
                 + UMI3DNetworkingHelper.Write(refreshFrequency)
                 + UMI3DNetworkingHelper.ToBytes(bones);
         }

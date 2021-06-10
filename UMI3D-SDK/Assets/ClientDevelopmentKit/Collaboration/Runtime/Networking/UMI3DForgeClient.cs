@@ -331,7 +331,7 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             if (client.Time.Timestep - frame.TimeStep < 500)
-                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
+                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
                         });
                     else
                         MainThreadManager.Run(() =>
@@ -351,7 +351,6 @@ namespace umi3d.cdk.collaboration
                     trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
                     trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
                     trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
 
@@ -359,7 +358,7 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             if (client.Time.Timestep - frame.TimeStep < 500)
-                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
+                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
                         });
                     else
                         MainThreadManager.Run(() =>

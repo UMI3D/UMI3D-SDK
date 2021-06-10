@@ -127,9 +127,7 @@ namespace umi3d.edk.userCapture
         {
             embodimentBone.spatialPosition = new UMI3DUserEmbodimentBone.SpatialPosition()
             {
-                localPosition = dto.position,
                 localRotation = dto.rotation,
-                localScale = Vector3.Scale(dto.scale, UMI3DEmbodimentManager.Instance.embodimentSize[this.userId])
             };
             embodimentBone.isTracked = UMI3DEmbodimentManager.Instance.BoneTrackedInformation(userId, dto.boneType);
         }
@@ -149,6 +147,7 @@ namespace umi3d.edk.userCapture
             UMI3DAvatarNodeDto avatarNodeDto = dto as UMI3DAvatarNodeDto;
 
             avatarNodeDto.userId = userId;
+            avatarNodeDto.userSize = UMI3DEmbodimentManager.Instance.embodimentSize[userId];
             avatarNodeDto.activeBindings = activeBindings.GetValue(user);
 
             List<BoneBindingDto> bindingDtoList = new List<BoneBindingDto>();

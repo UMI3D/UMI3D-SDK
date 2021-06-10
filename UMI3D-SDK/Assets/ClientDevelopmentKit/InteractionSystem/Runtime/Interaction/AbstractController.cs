@@ -93,7 +93,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="evt">EventDto to find input for</param>
         /// <param name="unused">Should the input be unused ?</param>
-        public abstract AbstractUMI3DInput FindInput(EventDto evt, bool unused = true);
+        /// <param name="tryToFindInputForHoldableEvent">Asks controller to find an input dedicated to holdable event if it can ?</param>
+        public abstract AbstractUMI3DInput FindInput(EventDto evt, bool unused = true, bool tryToFindInputForHoldableEvent = false);
 
         /// <summary>
         /// Return an input for a given parameter. Return null if no input is available.

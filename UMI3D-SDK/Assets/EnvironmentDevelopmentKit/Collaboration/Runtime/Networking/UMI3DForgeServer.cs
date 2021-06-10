@@ -345,7 +345,6 @@ namespace umi3d.edk.collaboration
                     trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
                     trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
                     trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto> (container);
 
