@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -106,7 +107,7 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    dto.duration = (float)property.value;
+                    dto.duration = (float)(Double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(property);
@@ -131,7 +132,7 @@ namespace umi3d.cdk
                     dto.animationChain[(int)(Int64)set.index] = (UMI3DAnimationDto.AnimationChainDto)set.value;
                     break;
                 default:
-                    dto.animationChain = (List<UMI3DAnimationDto.AnimationChainDto>)property.value;
+                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DAnimationDto.AnimationChainDto).ToList();
                     break;
             }
             return true;

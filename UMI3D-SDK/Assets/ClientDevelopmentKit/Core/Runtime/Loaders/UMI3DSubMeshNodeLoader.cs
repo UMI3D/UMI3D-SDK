@@ -60,6 +60,8 @@ namespace umi3d.cdk
                                 renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                                 renderer.receiveShadows = nodeDto.receiveShadow;
                             }
+
+                            SetCollider(UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
                         }
                         else
                         {
