@@ -75,13 +75,13 @@ namespace umi3d.cdk
             return true;
         }
 
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
                     bool old = dto.playing;
-                    dto.playing = UMI3DNetworkingHelper.Read<bool>(operation,position,length);
+                    dto.playing = UMI3DNetworkingHelper.Read<bool>(container);
                     if (old != dto.playing)
                     {
                         if (dto.playing)
@@ -97,17 +97,17 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
-                    dto.looping = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    dto.looping = UMI3DNetworkingHelper.Read<bool>(container);
                     if (dto is UMI3DVideoPlayerDto)
                     {
                         (entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    dto.startTime = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    dto.startTime = UMI3DNetworkingHelper.Read<ulong>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    dto.pauseFrame = UMI3DNetworkingHelper.Read<long>(operation, position, length);
+                    dto.pauseFrame = UMI3DNetworkingHelper.Read<long>(container);
                     SetProgress(dto.pauseFrame);
                     break;
                 default:
@@ -116,28 +116,28 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
-                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
-                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<ulong>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    value = UMI3DNetworkingHelper.Read<long>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<long>(container);
                     break;
                 default:
-                    if (UMI3DAnimation.ReadMyUMI3DProperty(ref value, propertyKey, operation, position, length))
+                    if (UMI3DAnimation.ReadMyUMI3DProperty(ref value, propertyKey,container))
                         return true;
-                    if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey, operation, position, length))
+                    if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey,container))
                         return true;
-                    return (UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, operation, position, length));
+                    return (UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey,container));
 
             }
             return true;

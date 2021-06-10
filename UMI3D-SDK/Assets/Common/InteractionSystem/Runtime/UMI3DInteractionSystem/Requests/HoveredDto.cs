@@ -41,9 +41,9 @@ namespace umi3d.common.interaction
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.Hoverred; }
 
-        public override Bytable ToByteArray(params object[] parameters)
+        public override Bytable ToBytableArray(params object[] parameters)
         {
-            return base.ToByteArray(parameters)
+            return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(position)
                 + UMI3DNetworkingHelper.Write(normal)
                 + UMI3DNetworkingHelper.Write(direction);

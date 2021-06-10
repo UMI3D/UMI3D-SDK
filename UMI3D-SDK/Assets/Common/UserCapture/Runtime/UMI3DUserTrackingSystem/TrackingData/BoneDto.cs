@@ -35,7 +35,7 @@ namespace umi3d.common.userCapture
 
         public SerializableVector3 scale;
 
-        Bytable IByte.ToByteArray (params object[] parameters)
+        Bytable IByte.ToBytableArray (params object[] parameters)
         {
             return
                 UMI3DNetworkingHelper.Write(boneType)

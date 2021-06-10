@@ -67,7 +67,7 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
             {
@@ -75,7 +75,7 @@ namespace umi3d.edk.interaction
                     onTrigger.Invoke(new InteractionEventContent(user, toolId,interactionId,hoverredId,boneType));
                     break;
                 case UMI3DOperationKeys.EventStateChanged:
-                    var active = UMI3DNetworkingHelper.Read<bool>(array,position,length);
+                    var active = UMI3DNetworkingHelper.Read<bool>(container);
                     if (active)
                     {
                         onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));

@@ -78,12 +78,12 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (interactionId)
             {
                 case UMI3DOperationKeys.FormAnswer:
-                    var form = UMI3DNetworkingHelper.Read<FormDto>(array, position, length);
+                    var form = UMI3DNetworkingHelper.Read<FormDto>(container);
                     onFormCompleted.Invoke(new FormEventContent(user, form, toolId, interactionId, hoverredId, boneType));
                     break;
                 default:

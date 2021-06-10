@@ -110,14 +110,14 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value</param>
         /// <returns></returns>
-        public virtual bool SetLightPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public virtual bool SetLightPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
             var node = (entity as UMI3DNodeInstance);
             Light light = node?.gameObject?.GetComponent<Light>();
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
-                var lightdto = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(operation,position,length);
+                var lightdto = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(container);
                 if (light != null && lightdto == null) GameObject.Destroy(light);
                 else if (lightdto != null) CreateLight(lightdto, node.gameObject);
                 return true;
@@ -126,16 +126,16 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LightIntensity:
-                    light.intensity = dto.intensity = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    light.intensity = dto.intensity = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightColor:
-                    light.color = dto.color = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
+                    light.color = dto.color = UMI3DNetworkingHelper.Read<Color>(container);
                     break;
                 case UMI3DPropertyKeys.LightRange:
-                    light.range = dto.range = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    light.range = dto.range = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightType:
-                    dto.type = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    dto.type = UMI3DNetworkingHelper.Read<string>(container);
                     if (dto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
                         light.type = LightType.Directional;
                     else if (dto.type == KHR_lights_punctual.LightTypes.Point.ToString())
@@ -148,7 +148,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.LightSpot:
-                    var value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(operation, position, length);
+                    var value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
                     light.innerSpotAngle = dto.spot.innerConeAngle = value.innerConeAngle;
                     light.spotAngle = dto.spot.outerConeAngle = value.outerConeAngle;
                     break;
@@ -158,29 +158,29 @@ namespace umi3d.cdk
             return true;
         }
 
-        public virtual bool ReadLightPorperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        public virtual bool ReadLightPorperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
-                value = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(operation, position, length);
+                value = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(container);
                 return true;
             }
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LightIntensity:
-                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightColor:
-                    value = UMI3DNetworkingHelper.Read<Color>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<Color>(container);
                     break;
                 case UMI3DPropertyKeys.LightRange:
-                    value = UMI3DNetworkingHelper.Read<float>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightType:
-                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.LightSpot:
-                     value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(operation, position, length);
+                     value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
                     break;
                 default:
                     return false;

@@ -144,9 +144,9 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns>state if the property was handled</returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey, operation, position, length))
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey,container))
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
@@ -155,13 +155,13 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<Vector3>(container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(operation, position, length); ;
+                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(container); ;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(container);
                     break;
                 default:
                     return false;
@@ -169,20 +169,20 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey, operation, position, length))
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey,container))
                 return true;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    value = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<Vector3>(container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    value = UMI3DNetworkingHelper.Read<Vector4>(operation, position, length); ;
+                    value = UMI3DNetworkingHelper.Read<Vector4>(container); ;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    value = UMI3DNetworkingHelper.Read<Vector3>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<Vector3>(container);
                     break;
                 default:
                     return false;

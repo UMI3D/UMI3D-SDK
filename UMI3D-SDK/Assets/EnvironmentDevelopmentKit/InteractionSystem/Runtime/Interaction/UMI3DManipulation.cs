@@ -102,13 +102,13 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.ManipulationRequest:
-                    var translation = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
-                    var rotation = UMI3DNetworkingHelper.Read<Quaternion>(array, ref position, ref length);
+                    var translation = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    var rotation = UMI3DNetworkingHelper.Read<Quaternion>(container);
                     Debug.Log("here");
                     onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;

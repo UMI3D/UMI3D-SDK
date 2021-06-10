@@ -219,7 +219,7 @@ namespace umi3d.cdk.collaboration
                 SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
             else
             {
-                SendBinaryData((int)DataChannelTypes.Data, dto.ToByteArray().ToBytes(), reliable);
+                SendBinaryData((int)DataChannelTypes.Data, dto.ToBytableArray().ToBytes(), reliable);
             }
         }
 
@@ -273,28 +273,27 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                int length = frame.StreamData.byteArr.Length;
-                int position = 0;
-                var TransactionId = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                var container = new ByteContainer(frame.StreamData.byteArr);
+                var TransactionId = UMI3DNetworkingHelper.Read<uint>(container);
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(frame.StreamData.byteArr, position, length));
+                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(container));
                         });
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
                         {
-                            var pos = UMI3DNetworkingHelper.Read<Vector3>(frame.StreamData.byteArr, ref position, ref length);
+                            var pos = UMI3DNetworkingHelper.Read<Vector3>(container);
                             var nav = new NavigateDto() { position = pos };
                             StartCoroutine(UMI3DNavigation.Navigate(nav));
                         }
                         break;
                     case UMI3DOperationKeys.TeleportationRequest:
                         {
-                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
-                            var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
+                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                             var nav = new TeleportDto() { position = pos, rotation = rot };
                             StartCoroutine(UMI3DNavigation.Navigate(nav));
                         }
@@ -318,7 +317,7 @@ namespace umi3d.cdk.collaboration
             if (useDto)
                 SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBson(), false);
             else
-                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToByteArray().ToBytes(), false);
+                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBytableArray().ToBytes(), false);
         }
 
         /// <inheritdoc/>
@@ -345,17 +344,16 @@ namespace umi3d.cdk.collaboration
             {
                 var trackingFrame = new common.userCapture.UserTrackingFrameDto();
 
-                var position = 0;
-                var length = frame.StreamData.byteArr.Length;
-                var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                var container = new ByteContainer(frame.StreamData.byteArr);
+                var id = UMI3DNetworkingHelper.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
-                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
+                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
 
                     if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         MainThreadManager.Run(() =>
@@ -396,12 +394,11 @@ namespace umi3d.cdk.collaboration
         {
             VoiceDto dto = null;
             if (useDto) dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
-            var position = 0;
-            var length = frame.StreamData.byteArr.Length;
-            var id = useDto ? dto.senderId : UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position,ref length);
+            var container = new ByteContainer(frame.StreamData.byteArr);
+            var id = useDto ? dto.senderId : UMI3DNetworkingHelper.Read<uint>(container);
             UMI3DUser source = GetUserByNetWorkId(id);
             if (source != null)
-                AudioManager.Instance.Read(source.id, useDto ? dto.data : frame.StreamData.byteArr.Skip(position).SkipLast().ToArray(), client.Time.Timestep);
+                AudioManager.Instance.Read(source.id, useDto ? dto.data : frame.StreamData.byteArr.Skip(container.position).SkipLast().ToArray(), client.Time.Timestep);
         }
 
 

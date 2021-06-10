@@ -323,7 +323,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
@@ -335,13 +335,13 @@ namespace umi3d.cdk
                 switch (propertyKey)
                 {
                     case UMI3DPropertyKeys.Position:
-                        gltfDto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(operation, ref position, ref length);
+                        gltfDto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                         break;
                     case UMI3DPropertyKeys.Rotation:
-                        gltfDto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(operation, ref position, ref length);
+                        gltfDto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                         break;
                     case UMI3DPropertyKeys.Scale:
-                        gltfDto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(operation, ref position, ref length);
+                        gltfDto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                         break;
                     default:
                         break;
@@ -349,14 +349,14 @@ namespace umi3d.cdk
                 return true;
             }
 
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
 
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
             if (dto == null) return false;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.XBillboard:
-                    dto.xBillboard = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                    dto.xBillboard = UMI3DNetworkingHelper.Read<bool>(container);
                     node.gameObject.GetOrAddComponent<Billboard>().X = dto.xBillboard;
                     if (dto.xBillboard || dto.yBillboard)
                     {
@@ -371,7 +371,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.YBillboard:
-                    dto.yBillboard = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                    dto.yBillboard = UMI3DNetworkingHelper.Read<bool>(container);
                     node.gameObject.GetOrAddComponent<Billboard>().Y = dto.yBillboard;
                     if (dto.xBillboard || dto.yBillboard)
                     {
@@ -389,7 +389,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.convex = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                        dto.colliderDto.convex = UMI3DNetworkingHelper.Read<bool>(container);
 
                         foreach (Collider item in node.colliders)
                         {
@@ -403,7 +403,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderCenter = UMI3DNetworkingHelper.Read<SerializableVector3>(operation, ref position, ref length);
+                        dto.colliderDto.colliderCenter = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c != null && !(c is MeshCollider))
                         {
@@ -426,7 +426,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderRadius = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length);
+                        dto.colliderDto.colliderRadius = UMI3DNetworkingHelper.Read<float>(container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is SphereCollider)
                         {
@@ -443,7 +443,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderBoxSize = UMI3DNetworkingHelper.Read<SerializableVector3>(operation, ref position, ref length);
+                        dto.colliderDto.colliderBoxSize = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is BoxCollider)
                         {
@@ -455,7 +455,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderHeight = UMI3DNetworkingHelper.Read<float>(operation, ref position, ref length);
+                        dto.colliderDto.colliderHeight = UMI3DNetworkingHelper.Read<float>(container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
@@ -467,7 +467,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderDirection = (DirectionalType)UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                        dto.colliderDto.colliderDirection = (DirectionalType)UMI3DNetworkingHelper.Read<int>(container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
@@ -479,7 +479,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.isMeshCustom = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                        dto.colliderDto.isMeshCustom = UMI3DNetworkingHelper.Read<bool>(container);
                         //  Collider c = node.gameObject.GetComponent<Collider>();
                         if ((dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null) || !dto.colliderDto.isMeshCustom)
                         {
@@ -497,7 +497,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.customMeshCollider = UMI3DNetworkingHelper.Read<ResourceDto>(operation, ref position, ref length);
+                        dto.colliderDto.customMeshCollider = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                         // Collider c = node.gameObject.GetComponent<Collider>();
                         if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null)
                         {
@@ -516,11 +516,11 @@ namespace umi3d.cdk
                         if (dto.colliderDto == null)
                         {
                             dto.colliderDto = new ColliderDto();
-                            dto.colliderDto.colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length); ;
+                            dto.colliderDto.colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(container); ;
                         }
                         else
                         {
-                            dto.colliderDto.colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length); ;
+                            dto.colliderDto.colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(container); ;
 
                             SetCollider(dto.id, node, dto.colliderDto);
                         }
@@ -529,7 +529,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.HasCollider:
                     {
-                        if (UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length))
+                        if (UMI3DNetworkingHelper.Read<bool>(container))
                         {
                             if (dto.colliderDto == null)
                                 dto.colliderDto = new ColliderDto();

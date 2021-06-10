@@ -42,7 +42,7 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
-        Bytable IByte.ToByteArray( params object[] parameters)
+        Bytable IByte.ToBytableArray( params object[] parameters)
         {
             return
                 UMI3DNetworkingHelper.Write(name)

@@ -33,208 +33,194 @@ namespace umi3d.common
                 modules.Remove(module);
         }
 
-        public static T Read<T>(byte[] array, int position, int length)
-        {
-            return Read<T>(array, ref position, ref length);
-        }
-
-        public static T Read<T>(byte[] array, ref int position, ref int length)
+        public static T Read<T>(ByteContainer container)
         {
             T result;
-            TryRead<T>(array, ref position, ref length, out result);
+            TryRead<T>(container, out result);
             return result;
         }
 
-        public static bool TryRead<T>(byte[] array, int position, int length, out T result)
-        {
-            return TryRead<T>(array, ref position, ref length, out result);
-        }
-
-        public static bool TryRead<T>(byte[] array, ref int position, ref int length, out T result)
+        public static bool TryRead<T>(ByteContainer container, out T result)
         {
             switch (true)
             {
                 case true when typeof(T) == typeof(char):
-                    if (length >= sizeof(char))
+                    if (container.length >= sizeof(char))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToChar(array, (int)position), typeof(T));
-                        position += sizeof(char);
-                        length -= sizeof(char);
+                        result = (T)Convert.ChangeType(BitConverter.ToChar(container.bytes,container.position), typeof(T));
+                        container.position += sizeof(char);
+                        container.length -= sizeof(char);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(bool):
-                    if (length >= sizeof(bool))
+                    if (container.length >= sizeof(bool))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToBoolean(array, (int)position), typeof(T));
-                        position += sizeof(bool);
-                        length -= sizeof(bool);
+                        result = (T)Convert.ChangeType(BitConverter.ToBoolean(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(bool);
+                        container.length -= sizeof(bool);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(byte):
-                    if (length >= sizeof(byte))
+                    if (container.length >= sizeof(byte))
                     {
-                        result = (T)Convert.ChangeType(array[position], typeof(T));
-                        position += 1;
-                        length -= 1;
+                        result = (T)Convert.ChangeType(container.bytes[container.position], typeof(T));
+                        container.position += 1;
+                        container.length -= 1;
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(short):
-                    if (length >= sizeof(short))
+                    if (container.length >= sizeof(short))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToInt16(array, (int)position), typeof(T));
-                        position += sizeof(short);
-                        length -= sizeof(short);
+                        result = (T)Convert.ChangeType(BitConverter.ToInt16(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(short);
+                        container.length -= sizeof(short);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(ushort):
-                    if (length >= sizeof(ushort))
+                    if (container.length >= sizeof(ushort))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToUInt16(array, (int)position), typeof(T));
-                        position += sizeof(ushort);
-                        length -= sizeof(ushort);
+                        result = (T)Convert.ChangeType(BitConverter.ToUInt16(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(ushort);
+                        container.length -= sizeof(ushort);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(int):
-                    if (length >= sizeof(int))
+                    if (container.length >= sizeof(int))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToInt32(array, (int)position), typeof(T));
-                        position += sizeof(int);
-                        length -= sizeof(int);
+                        result = (T)Convert.ChangeType(BitConverter.ToInt32(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(int);
+                        container.length -= sizeof(int);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(uint):
-                    if (length >= sizeof(uint))
+                    if (container.length >= sizeof(uint))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToUInt32(array, (int)position), typeof(T));
-                        position += sizeof(uint);
-                        length -= sizeof(uint);
+                        result = (T)Convert.ChangeType(BitConverter.ToUInt32(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(uint);
+                        container.length -= sizeof(uint);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(float):
-                    if (length >= sizeof(float))
+                    if (container.length >= sizeof(float))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToSingle(array, (int)position), typeof(T));
-                        position += sizeof(float);
-                        length -= sizeof(float);
+                        result = (T)Convert.ChangeType(BitConverter.ToSingle(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(float);
+                        container.length -= sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(long):
-                    if (length >= sizeof(long))
+                    if (container.length >= sizeof(long))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToInt64(array, (int)position), typeof(T));
-                        position += sizeof(long);
-                        length -= sizeof(long);
+                        result = (T)Convert.ChangeType(BitConverter.ToInt64(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(long);
+                        container.length -= sizeof(long);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(ulong):
-                    if (length >= sizeof(ulong))
+                    if (container.length >= sizeof(ulong))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToUInt64(array, (int)position), typeof(T));
-                        position += sizeof(ulong);
-                        length -= sizeof(ulong);
+                        result = (T)Convert.ChangeType(BitConverter.ToUInt64(container.bytes, container.position), typeof(T));
+                        container.position += sizeof(ulong);
+                        container.length -= sizeof(ulong);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableVector2):
                 case true when typeof(T) == typeof(Vector2):
-                    if (length >= 2 * sizeof(float))
+                    if (container.length >= 2 * sizeof(float))
                     {
-                        result = (T)Convert.ChangeType(new Vector2(BitConverter.ToSingle(array, (int)position), BitConverter.ToSingle(array, (int)position + sizeof(float))), typeof(T));
-                        position += 2 * sizeof(float);
-                        length -= 2 * sizeof(float);
+                        result = (T)Convert.ChangeType(new Vector2(BitConverter.ToSingle(container.bytes, container.position), BitConverter.ToSingle(container.bytes, container.position + sizeof(float))), typeof(T));
+                        container.position += 2 * sizeof(float);
+                        container.length -= 2 * sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableVector3):
                 case true when typeof(T) == typeof(Vector3):
-                    if (length >= 3 * sizeof(float))
+                    if (container.length >= 3 * sizeof(float))
                     {
-                        result = (T)Convert.ChangeType(new Vector3(BitConverter.ToSingle(array, (int)position), BitConverter.ToSingle(array, (int)position + sizeof(float)), BitConverter.ToSingle(array, (int)position + 2 * sizeof(float))), typeof(T));
-                        position += 3 * sizeof(float);
-                        length -= 3 * sizeof(float);
+                        result = (T)Convert.ChangeType(new Vector3(BitConverter.ToSingle(container.bytes, container.position), BitConverter.ToSingle(container.bytes, container.position + sizeof(float)), BitConverter.ToSingle(container.bytes, container.position + 2 * sizeof(float))), typeof(T));
+                        container.position += 3 * sizeof(float);
+                        container.length -= 3 * sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(Quaternion):
-                    if (length >= 4 * sizeof(float))
+                    if (container.length >= 4 * sizeof(float))
                     {
                         float x, y, z, w;
-                        x = BitConverter.ToSingle(array, (int)position);
-                        y = BitConverter.ToSingle(array, (int)position + sizeof(float));
-                        z = BitConverter.ToSingle(array, (int)position + 2 * sizeof(float));
-                        w = BitConverter.ToSingle(array, (int)position + 3 * sizeof(float));
+                        x = BitConverter.ToSingle(container.bytes, container.position);
+                        y = BitConverter.ToSingle(container.bytes, container.position + sizeof(float));
+                        z = BitConverter.ToSingle(container.bytes, container.position + 2 * sizeof(float));
+                        w = BitConverter.ToSingle(container.bytes, container.position + 3 * sizeof(float));
                         result = (T)Convert.ChangeType(new Quaternion(x, y, z, w), typeof(T));
-                        position += 4 * sizeof(float);
-                        length -= 4 * sizeof(float);
+                        container.position += 4 * sizeof(float);
+                        container.length -= 4 * sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableColor):
                 case true when typeof(T) == typeof(Color):
-                    if (length >= 4 * sizeof(float))
+                    if (container.length >= 4 * sizeof(float))
                     {
                         float x, y, z, w;
-                        x = BitConverter.ToSingle(array, (int)position);
-                        y = BitConverter.ToSingle(array, (int)position + sizeof(float));
-                        z = BitConverter.ToSingle(array, (int)position + 2 * sizeof(float));
-                        w = BitConverter.ToSingle(array, (int)position + 3 * sizeof(float));
+                        x = BitConverter.ToSingle(container.bytes, container.position);
+                        y = BitConverter.ToSingle(container.bytes, container.position + sizeof(float));
+                        z = BitConverter.ToSingle(container.bytes, container.position + 2 * sizeof(float));
+                        w = BitConverter.ToSingle(container.bytes, container.position + 3 * sizeof(float));
                         result = (T)Convert.ChangeType(new Color(x, y, z, w), typeof(T));
-                        position += 4 * sizeof(float);
-                        length -= 4 * sizeof(float);
+                        container.position += 4 * sizeof(float);
+                        container.length -= 4 * sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableVector4):
                 case true when typeof(T) == typeof(Vector4):
-                    if (length >= 4 * sizeof(float))
+                    if (container.length >= 4 * sizeof(float))
                     {
                         float x, y, z, w;
-                        x = BitConverter.ToSingle(array, (int)position);
-                        y = BitConverter.ToSingle(array, (int)position + sizeof(float));
-                        z = BitConverter.ToSingle(array, (int)position + 2 * sizeof(float));
-                        w = BitConverter.ToSingle(array, (int)position + 3 * sizeof(float));
+                        TryRead(container, out x);
+                        TryRead(container, out y);
+                        TryRead(container, out z);
+                        TryRead(container, out w);
                         result = (T)Convert.ChangeType(new Vector4(x, y, z, w), typeof(T));
-                        position += 4 * sizeof(float);
-                        length -= 4 * sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableMatrix4x4):
-                    if (length >= 4 * 4 * sizeof(float))
+                    if (container.length >= 4 * 4 * sizeof(float))
                     {
                         Vector4 c0, c1, c2, c3;
 
-                        TryRead<Vector4>(array, ref position, ref length, out c0);
-                        TryRead<Vector4>(array, ref position, ref length, out c1);
-                        TryRead<Vector4>(array, ref position, ref length, out c2);
-                        TryRead<Vector4>(array, ref position, ref length, out c3);
+                        TryRead(container, out c0);
+                        TryRead(container, out c1);
+                        TryRead(container, out c2);
+                        TryRead(container, out c3);
 
                         result = (T)Convert.ChangeType(new SerializableMatrix4x4(c0, c1, c2, c3), typeof(T));
-                        position += 4 * 4 * sizeof(float);
-                        length -= 4 * 4 * sizeof(float);
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(string):
-                    if (length == 0) throw new Exception($"String length should not be 0");
+                    if (container.length == 0) throw new Exception($"String length should not be 0");
                     result = default(T);
                     uint s;
                     string r = "";
-                    if (TryRead<uint>(array, ref position, ref length, out s))
+                    if (TryRead<uint>(container, out s))
                     {
                         for (uint i = 0; i < s; i++)
                         {
                             char c;
-                            if (TryRead<char>(array, ref position, ref length, out c))
+                            if (TryRead<char>(container, out c))
                             {
                                 r += c;
                             }
@@ -247,7 +233,7 @@ namespace umi3d.common
                 default:
                     bool read;
                     foreach (var module in modules)
-                        if (module.Read<T>(array, ref position, ref length, out read, out result))
+                        if (module.Read<T>(container, out read, out result))
                             return read;
                     throw new Exception($"Missing case [{typeof(T)} was not catched]");
             }
@@ -255,18 +241,18 @@ namespace umi3d.common
             return false;
         }
 
-        public static T[] ReadArray<T>(byte[] array, ref int position, ref int length)
+        public static T[] ReadArray<T>(ByteContainer container)
         {
-            return ReadList<T>(array, ref position, ref length).ToArray();
+            return ReadList<T>(container).ToArray();
         }
-        public static List<T> ReadList<T>(byte[] array, ref int position, ref int length)
+        public static List<T> ReadList<T>(ByteContainer container)
         {
             var res = new List<T>();
-            var Length = array.Length;
-            for (; position < Length && length > 0;)
+            var Length = container.bytes.Length;
+            for (; container.position < Length && container.length > 0;)
             {
                 T result;
-                if (TryRead<T>(array, ref position, ref length, out result))
+                if (TryRead<T>(container, out result))
                     res.Add(result);
                 else
                     break;
@@ -274,28 +260,19 @@ namespace umi3d.common
             return res;
         }
 
-        public static List<T> ReadList<T>(byte[] array, ref int position, ref int length, int count)
+        public static List<T> ReadList<T>(ByteContainer container, int count)
         {
             var res = new List<T>();
-            var Length = array.Length;
-            for (int i = 0; position < Length && length > 0 && i < count; i++)
+            var Length = container.bytes.Length;
+            for (int i = 0; container.position < Length && container.length > 0 && i < count; i++)
             {
                 T result;
-                if (TryRead<T>(array, ref position, ref length, out result))
+                if (TryRead<T>(container, out result))
                     res.Add(result);
                 else
                     break;
             }
             return res;
-        }
-
-        public static T[] ReadArray<T>(byte[] array, int position, int length)
-        {
-            return ReadArray<T>(array, ref position, ref length);
-        }
-        public static List<T> ReadList<T>(byte[] array, int position, int length)
-        {
-            return ReadList<T>(array, ref position, ref length);
         }
 
         public static Bytable Write<T>(T value)
@@ -476,7 +453,7 @@ namespace umi3d.common
             {
                 int size = operations.Count() * sizeof(int);
                 var func = operations
-                    .Select(o => o.ToByteArray(parameters))
+                    .Select(o => o.ToBytableArray(parameters))
                     .Select(c =>
                     {
                         Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { var cr = c.function(by, i,0); return (cr.Item1, i, j); };
@@ -513,7 +490,26 @@ namespace umi3d.common
 
     public interface IByte
     {
-        Bytable ToByteArray(params object[] parameters);
+        Bytable ToBytableArray(params object[] parameters);
+    }
+
+    public class ByteContainer
+    {
+        public byte[] bytes { get; private set; }
+        public int position;
+        public int length;
+
+        public ByteContainer(byte[] bytes)
+        {
+            this.bytes = bytes;
+            position = 0;
+            length = bytes.Length;
+        }
+
+        public override string ToString()
+        {
+            return $"{bytes.ToString<byte>()} [{position} : {length}]";
+        }
     }
 
     public class Bytable
@@ -541,11 +537,11 @@ namespace umi3d.common
             return b;
         }
 
-        public byte[] ToBytes(byte[] array, int position = 0)
+        public byte[] ToBytes(byte[] bytes, int position = 0)
         {
-            var c = function(array, position, 0);
-            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {array.ToString<byte>()}");
-            return array;
+            var c = function(bytes, position, 0);
+            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}");
+            return bytes;
         }
 
         public static Bytable operator +(Bytable a, Bytable b)
@@ -567,6 +563,6 @@ namespace umi3d.common
     {
         public abstract bool Write<T>(T value, out Bytable bytable);
 
-        public abstract bool Read<T>(byte[] array, ref int position, ref int length, out bool readable, out T result);
+        public abstract bool Read<T>(ByteContainer container, out bool readable, out T result);
     }
 }

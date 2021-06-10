@@ -168,11 +168,11 @@ namespace umi3d.edk.interaction
             onHovered?.Invoke(new HoverEventContent(user, dto));
         }
 
-        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
-            var pos = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
-            var norm = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
-            var dir = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
+            var pos = UMI3DNetworkingHelper.Read<Vector3>(container);
+            var norm = UMI3DNetworkingHelper.Read<Vector3>(container);
+            var dir = UMI3DNetworkingHelper.Read<Vector3>(container);
             onHovered?.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }
 
@@ -184,12 +184,12 @@ namespace umi3d.edk.interaction
             else onHoverExit.Invoke(new HoverEventContent(user, dto));
         }
 
-        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
-            var pos = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
-            var norm = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
-            var dir = UMI3DNetworkingHelper.Read<Vector3>(array, ref position, ref length);
-            var state = UMI3DNetworkingHelper.Read<bool>(array, ref position, ref length);
+            var pos = UMI3DNetworkingHelper.Read<Vector3>(container);
+            var norm = UMI3DNetworkingHelper.Read<Vector3>(container);
+            var dir = UMI3DNetworkingHelper.Read<Vector3>(container);
+            var state = UMI3DNetworkingHelper.Read<bool>(container);
             if (state) onHoverEnter.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
             else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }

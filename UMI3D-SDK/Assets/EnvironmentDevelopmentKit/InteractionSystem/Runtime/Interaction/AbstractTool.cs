@@ -164,14 +164,14 @@ namespace umi3d.edk.interaction
         /// <param name="user">User interacting</param>
         /// <param name="request">Interaction request</param>
         public void OnToolProjected(UMI3DUser user, ToolProjectedDto request) { onProjection.Invoke(new ProjectionContent(user, request.boneType, this)); }
-        public void OnToolProjected(UMI3DUser user, uint boneType, byte[] array, int position, int length) { onProjection.Invoke(new ProjectionContent(user, boneType, this)); }
+        public void OnToolProjected(UMI3DUser user, uint boneType, ByteContainer container) { onProjection.Invoke(new ProjectionContent(user, boneType, this)); }
         /// <summary>
         /// Called by a user on Tool release.
         /// </summary>
         /// <param name="user">User interacting</param>
         /// <param name="request">Interaction request</param>
         public void OnToolReleased(UMI3DUser user, ToolReleasedDto request) { onRelease.Invoke(new ProjectionContent(user, request.boneType, this)); }
-        public void OnToolReleased(UMI3DUser user, uint boneType, byte[] array, int position, int length) { onRelease.Invoke(new ProjectionContent(user, boneType, this)); }
+        public void OnToolReleased(UMI3DUser user, uint boneType, ByteContainer container) { onRelease.Invoke(new ProjectionContent(user, boneType, this)); }
 
         #region event
         /// <summary>

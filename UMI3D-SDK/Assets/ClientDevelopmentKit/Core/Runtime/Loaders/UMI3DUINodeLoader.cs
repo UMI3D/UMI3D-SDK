@@ -155,7 +155,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
@@ -166,53 +166,53 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnchoredPosition:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition = dto.anchoredPosition = UMI3DNetworkingHelper.Read<SerializableVector2>(operation,ref position,ref length);
+                        transform.anchoredPosition = dto.anchoredPosition = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.AnchoredPosition3D:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition3D = dto.anchoredPosition3D = UMI3DNetworkingHelper.Read<SerializableVector3>(operation, ref position, ref length);
+                        transform.anchoredPosition3D = dto.anchoredPosition3D = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMax = dto.anchorMax = UMI3DNetworkingHelper.Read<SerializableVector2>(operation, ref position, ref length);
+                        transform.anchorMax = dto.anchorMax = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMin = dto.anchorMin = UMI3DNetworkingHelper.Read<SerializableVector2>(operation, ref position, ref length);
+                        transform.anchorMin = dto.anchorMin = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMax = dto.offsetMax = UMI3DNetworkingHelper.Read<SerializableVector2>(operation, ref position, ref length);
+                        transform.offsetMax = dto.offsetMax = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMin = dto.offsetMin = UMI3DNetworkingHelper.Read<SerializableVector2>(operation, ref position, ref length);
+                        transform.offsetMin = dto.offsetMin = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.Pivot:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.pivot = dto.pivot = UMI3DNetworkingHelper.Read<SerializableVector2>(operation, ref position, ref length);
+                        transform.pivot = dto.pivot = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.SizeDelta:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.sizeDelta = dto.sizeDelta = UMI3DNetworkingHelper.Read<SerializableVector2>(operation, ref position, ref length);
+                        transform.sizeDelta = dto.sizeDelta = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.RectMask:
-                    dto.rectMask = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                    dto.rectMask = UMI3DNetworkingHelper.Read<bool>(container);
                     if (dto.rectMask)
                         node.gameObject.GetOrAddComponent<RectMask2D>();
                     else
@@ -226,11 +226,11 @@ namespace umi3d.cdk
                     switch (dto)
                     {
                         case UICanvasDto c:
-                            return canvasNodeLoader.SetUMI3DPorperty(c, node, operationId, propertyKey, operation, position, length);
+                            return canvasNodeLoader.SetUMI3DPorperty(c, node, operationId, propertyKey,container);
                         case UIImageDto i:
-                            return imageNodeLoader.SetUMI3DPorperty(i, node, operationId, propertyKey, operation, position, length);
+                            return imageNodeLoader.SetUMI3DPorperty(i, node, operationId, propertyKey,container);
                         case UITextDto t:
-                            return textNodeLoader.SetUMI3DPorperty(t, node, operationId, propertyKey, operation, position, length);
+                            return textNodeLoader.SetUMI3DPorperty(t, node, operationId, propertyKey,container);
                         default:
                             return false;
                     }

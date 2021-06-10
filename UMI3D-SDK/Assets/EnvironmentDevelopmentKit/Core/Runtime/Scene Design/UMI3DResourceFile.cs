@@ -72,7 +72,7 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
-        Bytable IByte.ToByteArray(params object[] parameters)
+        Bytable IByte.ToBytableArray(params object[] parameters)
         {
             return ToByte();
         }

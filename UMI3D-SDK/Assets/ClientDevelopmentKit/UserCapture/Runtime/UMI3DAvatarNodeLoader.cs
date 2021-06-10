@@ -110,9 +110,9 @@ namespace umi3d.cdk
             return true;
         }
 
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
             var node = entity as UMI3DNodeInstance;
             switch (propertyKey)
             {
@@ -126,22 +126,22 @@ namespace umi3d.cdk
                             switch (operationId)
                             {
                                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                                    index = UMI3DNetworkingHelper.Read<int>(operation,ref position,ref length);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(operation, ref position, ref length);
+                                    index = UMI3DNetworkingHelper.Read<int>(container);
+                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(container);
                                     embd.AddBinding(index, bone);
                                     break;
                                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(operation, ref position, ref length);
+                                    index = UMI3DNetworkingHelper.Read<int>(container);
+                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(container);
                                     embd.RemoveBinding(index, bone);
                                     break;
                                 case UMI3DOperationKeys.SetEntityListProperty:
-                                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(operation, ref position, ref length);
+                                    index = UMI3DNetworkingHelper.Read<int>(container);
+                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(container);
                                     embd.UpdateBinding(index, bone);
                                     break;
                                 default:
-                                    embd.SetBindings(UMI3DNetworkingHelper.ReadList<BoneBindingDto>(operation, ref position, ref length));
+                                    embd.SetBindings(UMI3DNetworkingHelper.ReadList<BoneBindingDto>(container));
                                     break;
                             }
                         }
@@ -155,7 +155,7 @@ namespace umi3d.cdk
                         UserAvatar embd = node.gameObject.GetComponent<UserAvatar>();
                         if (embd != null)
                         {
-                            embd.SetActiveBindings(UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length));
+                            embd.SetActiveBindings(UMI3DNetworkingHelper.Read<bool>(container));
                         }
                         else
                             throw new System.Exception("Internal error");

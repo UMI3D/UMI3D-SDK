@@ -53,7 +53,7 @@ namespace umi3d.edk.userCapture
                     + UMI3DNetworkingHelper.Write(offsetRotation);
         }
 
-        Bytable IByte.ToByteArray(params object[] parameters)
+        Bytable IByte.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToByte(null);

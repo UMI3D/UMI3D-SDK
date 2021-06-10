@@ -131,7 +131,7 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
             var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
@@ -145,7 +145,7 @@ namespace umi3d.cdk
                         Debug.Log($"Case not handled {operationId}");
                         break;
                     default:
-                        var newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(operation,position,length);
+                        var newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(container);
                         var oldList = dto.preloadedScenes;
                         var scenesToUnload = new List<PreloadedSceneDto>();
                         var scenesToLoad = new List<PreloadedSceneDto>();
@@ -176,7 +176,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return false;
         }

@@ -41,14 +41,14 @@ namespace umi3d.cdk.interaction
             return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property));
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length));
+            return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey,container));
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            return (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length));
+            return (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey,container));
         }
     }
 }

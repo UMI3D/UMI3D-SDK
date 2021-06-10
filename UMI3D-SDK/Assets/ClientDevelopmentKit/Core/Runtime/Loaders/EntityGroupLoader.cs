@@ -53,19 +53,19 @@ namespace umi3d.cdk
         }
 
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity != null && entity.dto is EntityGroupDto groupDto)
             {
                 switch (propertyKey)
                 {
                     case UMI3DPropertyKeys.EntityGroupIds:
-                        UpdateEntities(entity, groupDto, operationId, propertyKey, operation, position, length);
+                        UpdateEntities(entity, groupDto, operationId, propertyKey,container);
                         break;
                     default:
                         foreach (var e in groupDto.entitiesId)
                         {
-                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, operation, position, length);
+                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey,container);
                         }
                         break;
                 }
@@ -74,7 +74,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return false;
         }
@@ -110,7 +110,7 @@ namespace umi3d.cdk
             }
         }
 
-        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             ulong value;
@@ -119,8 +119,8 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                    value = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+                    index = UMI3DNetworkingHelper.Read<int>(container);
+                    value = UMI3DNetworkingHelper.Read<ulong>(container);
 
                     if (index == list.Count())
                         list.Add(value);
@@ -130,7 +130,7 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Add value ignore for {index} in collection of size {list.Count}");
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                    index = UMI3DNetworkingHelper.Read<int>(container);
 
                     if (index < list.Count && index >= 0)
                         list.RemoveAt(index);
@@ -138,8 +138,8 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Remove value ignore for {index} in collection of size {list.Count}");
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                    value = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+                    index = UMI3DNetworkingHelper.Read<int>(container);
+                    value = UMI3DNetworkingHelper.Read<ulong>(container);
 
                     if (index < list.Count() && index >= 0)
                         list[index] = value;
@@ -147,7 +147,7 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Set value ignore for {index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(operation, ref position, ref length);
+                    groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(container);
                     break;
             }
         }

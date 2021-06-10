@@ -137,9 +137,9 @@ namespace umi3d.edk.userCapture
             StartCoroutine(_UserCameraReception(dto, user));
         }
 
-        public void UserCameraReception(uint operationKey, byte[] array, int position, int length, UMI3DUser user)
+        public void UserCameraReception(uint operationKey, ByteContainer container, UMI3DUser user)
         {
-            StartCoroutine(_UserCameraReception(operationKey, array, position, length, user));
+            StartCoroutine(_UserCameraReception(operationKey, container, user));
         }
 
         IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
@@ -154,7 +154,7 @@ namespace umi3d.edk.userCapture
             userEmbd.userCameraPropertiesDto = dto;
         }
 
-        IEnumerator _UserCameraReception(uint operationKey, byte[] array, int position, int length, UMI3DUser user)
+        IEnumerator _UserCameraReception(uint operationKey, ByteContainer container, UMI3DUser user)
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
             {
@@ -163,7 +163,7 @@ namespace umi3d.edk.userCapture
             }
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
-            userEmbd.userCameraPropertiesDto = UMI3DNetworkingHelper.Read<UserCameraPropertiesDto>(array,position,length);
+            userEmbd.userCameraPropertiesDto = UMI3DNetworkingHelper.Read<UserCameraPropertiesDto>(container);
         }
 
         /// <summary>

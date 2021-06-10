@@ -36,14 +36,14 @@ namespace umi3d.common.interaction
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.ManipulationRequest; }
 
-        public override Bytable ToByteArray(params object[] parameters)
+        public override Bytable ToBytableArray(params object[] parameters)
         {
             if (translation == null)
                 translation = new SerializableVector3();
             if (rotation == null)
                 rotation = new SerializableVector4();
 
-            return base.ToByteArray(parameters) 
+            return base.ToBytableArray(parameters) 
                 + UMI3DNetworkingHelper.Write(translation) 
                 + UMI3DNetworkingHelper.Write(rotation);
         }

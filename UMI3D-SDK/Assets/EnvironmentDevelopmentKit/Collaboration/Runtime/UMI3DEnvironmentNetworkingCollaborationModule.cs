@@ -9,7 +9,7 @@ namespace umi3d.edk.collaboration
     public class UMI3DEnvironmentNetworkingCollaborationModule : Umi3dNetworkingHelperModule
     {
 
-        public override bool Read<T>(byte[] array, ref int position, ref int length, out bool readable, out T result)
+        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             //switch (true)
             //{
@@ -23,11 +23,11 @@ namespace umi3d.edk.collaboration
             //{
             //    case true when typeof(T) == typeof(UMI3DCollaborationUser):
             //        result = sizeof(uint) + sizeof(ulong) + sizeof(ulong) + sizeof(ulong) + sizeof(uint);
-            //        UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
-            //        UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
-            //        UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
-            //        UMI3DNetworkingHelper.Read<ulong>(array, ref position, ref length);
-            //        UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+            //        UMI3DNetworkingHelper.Read<uint>(container);
+            //        UMI3DNetworkingHelper.Read<ulong>(container);
+            //        UMI3DNetworkingHelper.Read<ulong>(container);
+            //        UMI3DNetworkingHelper.Read<ulong>(container);
+            //        UMI3DNetworkingHelper.Read<uint>(container);
 
             //        return true;
             //}

@@ -7,18 +7,18 @@ namespace umi3d.common.collaboration
     public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
     {
 
-        public override bool Read<T>(byte[] array, ref int position, ref int length, out bool readable, out T result)
+        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
             {
                 case true when typeof(T) == typeof(UserCameraPropertiesDto):
-                    readable = length >= 17 * sizeof(float) + sizeof(uint);
+                    readable = container.length >= 17 * sizeof(float) + sizeof(uint);
                     if (readable)
                     {
                         var usercam = new UserCameraPropertiesDto();
-                        usercam.scale = UMI3DNetworkingHelper.Read<float>(array, ref position, ref length);
-                        usercam.projectionMatrix = UMI3DNetworkingHelper.Read<SerializableMatrix4x4>(array, ref position, ref length);
-                        usercam.boneType = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                        usercam.scale = UMI3DNetworkingHelper.Read<float>(container);
+                        usercam.projectionMatrix = UMI3DNetworkingHelper.Read<SerializableMatrix4x4>(container);
+                        usercam.boneType = UMI3DNetworkingHelper.Read<uint>(container);
                         result = (T)Convert.ChangeType(usercam, typeof(T));
                     }
                     else
@@ -28,13 +28,13 @@ namespace umi3d.common.collaboration
                 //    readable = length >= sizeof(uint);
                 //    if (readable)
                 //    {
-                //        var parameter = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                //        var parameter = UMI3DNetworkingHelper.Read<uint>(container);
                 //        switch (parameter)
                 //        {
                 //            case UMI3DParameterKeys.Enum:
                 //                string value;
 
-                //                if (UMI3DNetworkingHelper.TryRead<string>(array, ref position, ref length, out value))
+                //                if (UMI3DNetworkingHelper.TryRead<string>(container, out value))
                 //                {
                 //                    var dto = new EnumParameterDto<string>() { value = value };
                 //                    result = (T)Convert.ChangeType(dto, typeof(T));
@@ -46,7 +46,7 @@ namespace umi3d.common.collaboration
                 //                readable = length >= sizeof(bool);
                 //                if (readable)
                 //                {
-                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<bool>(array, ref position, ref length), typeof(T));
+                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<bool>(container), typeof(T));
                 //                }
                 //                else
                 //                    result = default(T);
@@ -55,7 +55,7 @@ namespace umi3d.common.collaboration
                 //                readable = length >= sizeof(float);
                 //                if (readable)
                 //                {
-                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<float>(array, ref position, ref length), typeof(T));
+                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<float>(container), typeof(T));
                 //                }
                 //                else
                 //                    result = default(T);
@@ -64,14 +64,14 @@ namespace umi3d.common.collaboration
                 //                readable = length >= sizeof(int);
                 //                if (readable)
                 //                {
-                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<int>(array, ref position, ref length), typeof(T));
+                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<int>(container), typeof(T));
                 //                }
                 //                else
                 //                    result = default(T);
                 //                break;
                 //            case UMI3DParameterKeys.String:
                 //                string value;
-                //                readable = UMI3DNetworkingHelper.TryRead<string>(array, position, length, out value);
+                //                readable = UMI3DNetworkingHelper.TryRead<string>(container, out value);
                 //                result = (T)Convert.ChangeType(value, typeof(T));
                 //                break;
                 //            case UMI3DParameterKeys.IntRange:
@@ -79,10 +79,10 @@ namespace umi3d.common.collaboration
                 //                if (readable)
                 //                {
                 //                    var irp = new IntegerRangeParameterDto();
-                //                    irp.value = UMI3DNetworkingHelper.Read<int>(array, ref position, ref length);
-                //                    irp.min = UMI3DNetworkingHelper.Read<int>(array, ref position, ref length);
-                //                    irp.max = UMI3DNetworkingHelper.Read<int>(array, ref position, ref length);
-                //                    irp.increment = UMI3DNetworkingHelper.Read<int>(array, ref position, ref length);
+                //                    irp.value = UMI3DNetworkingHelper.Read<int>(container);
+                //                    irp.min = UMI3DNetworkingHelper.Read<int>(container);
+                //                    irp.max = UMI3DNetworkingHelper.Read<int>(container);
+                //                    irp.increment = UMI3DNetworkingHelper.Read<int>(container);
                 //                    result = (T)Convert.ChangeType(irp, typeof(T));
                 //                }
                 //                else
@@ -93,10 +93,10 @@ namespace umi3d.common.collaboration
                 //                if (readable)
                 //                {
                 //                    var frp = new FloatRangeParameterDto();
-                //                    frp.value = UMI3DNetworkingHelper.Read<float>(array, ref position, ref length);
-                //                    frp.min = UMI3DNetworkingHelper.Read<float>(array, ref position, ref length);
-                //                    frp.max = UMI3DNetworkingHelper.Read<float>(array, ref position, ref length);
-                //                    frp.increment = UMI3DNetworkingHelper.Read<float>(array, ref position, ref length);
+                //                    frp.value = UMI3DNetworkingHelper.Read<float>(container);
+                //                    frp.min = UMI3DNetworkingHelper.Read<float>(container);
+                //                    frp.max = UMI3DNetworkingHelper.Read<float>(container);
+                //                    frp.increment = UMI3DNetworkingHelper.Read<float>(container);
                 //                    result = (T)Convert.ChangeType(frp, typeof(T));
                 //                }
                 //                else
@@ -114,13 +114,13 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
-                    readable = UMI3DNetworkingHelper.TryRead<ulong>(array, ref position, ref length, out mat.newMaterialId);
+                    readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out mat.newMaterialId);
                     if (readable)
                     {
-                        readable = UMI3DNetworkingHelper.TryRead<bool>(array, ref position, ref length, out mat.addMaterialIfNotExists);
+                        readable = UMI3DNetworkingHelper.TryRead<bool>(container, out mat.addMaterialIfNotExists);
                         if (readable)
                         {
-                            mat.overridedMaterialsId = UMI3DNetworkingHelper.ReadList<string>(array, ref position, ref length);
+                            mat.overridedMaterialsId = UMI3DNetworkingHelper.ReadList<string>(container);
                             result = (T)Convert.ChangeType(mat, typeof(T));
                         }
                         else

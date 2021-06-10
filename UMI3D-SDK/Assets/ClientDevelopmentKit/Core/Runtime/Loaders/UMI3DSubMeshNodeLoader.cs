@@ -192,17 +192,17 @@ namespace umi3d.cdk
                 return false;
         }
 
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
             {
-                if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+                if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
                 var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as SubModelDto;
                 if (extension == null) return false;
                 switch (propertyKey)
                 {
                     case UMI3DPropertyKeys.IgnoreModelMaterialOverride:
-                        extension.ignoreModelMaterialOverride = UMI3DNetworkingHelper.Read<bool>(operation,position,length);
+                        extension.ignoreModelMaterialOverride = UMI3DNetworkingHelper.Read<bool>(container);
                         if (extension.ignoreModelMaterialOverride) //revert model override and apply only subModel overriders 
                         {
                             RevertToOriginalMaterial((UMI3DNodeInstance)entity);

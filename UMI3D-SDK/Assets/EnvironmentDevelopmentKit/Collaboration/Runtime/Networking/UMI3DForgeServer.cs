@@ -270,20 +270,19 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                var position = 0;
-                var length = frame.StreamData.byteArr.Length;
-                var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                var container = new ByteContainer(frame.StreamData.byteArr);
+                var id = UMI3DNetworkingHelper.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserCameraProperties)
                 {
                     MainThreadManager.Run(() =>
                     {
-                        UMI3DEmbodimentManager.Instance.UserCameraReception(id, frame.StreamData.byteArr, position, length, user);
+                        UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
                     });
                 }
                 else
                     MainThreadManager.Run(() =>
                     {
-                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, frame.StreamData.byteArr, position, length);
+                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
                     });
             }
         }
@@ -339,17 +338,16 @@ namespace umi3d.edk.collaboration
             {
                 var trackingFrame = new common.userCapture.UserTrackingFrameDto();
 
-                var position = 0;
-                var length = frame.StreamData.byteArr.Length;
-                var id = UMI3DNetworkingHelper.Read<uint>(frame.StreamData.byteArr, ref position, ref length);
+                var container = new ByteContainer(frame.StreamData.byteArr);
+                var id = UMI3DNetworkingHelper.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
-                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto> (frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                    trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
+                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto> (container);
 
                     avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
 

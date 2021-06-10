@@ -82,15 +82,15 @@ namespace umi3d.edk.interaction
             }
         }
 
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, byte[] array, int position, int length)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
-                    var parameterId = UMI3DNetworkingHelper.Read<uint>(array, ref position, ref length);
+                    var parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (UMI3DParameterKeys.Enum == parameterId)
                     {
-                        value = UMI3DNetworkingHelper.Read<string>(array, position, length);
+                        value = UMI3DNetworkingHelper.Read<string>(container);
                         onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
                     }
                     else

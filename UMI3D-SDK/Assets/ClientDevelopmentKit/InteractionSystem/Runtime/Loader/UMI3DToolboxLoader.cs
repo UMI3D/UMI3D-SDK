@@ -67,7 +67,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var dto = (entity.dto as ToolboxDto);
             if (dto == null) return false;
@@ -76,21 +76,21 @@ namespace umi3d.cdk.interaction
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.ToolboxName:
-                    dto.name = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    dto.name = UMI3DNetworkingHelper.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxDescription:
-                    dto.description = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    dto.description = UMI3DNetworkingHelper.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxIcon2D:
-                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxIcon3D:
-                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxTools:
-                    return SetTools(dto, tool, operationId, propertyKey, operation, position, length);
+                    return SetTools(dto, tool, operationId, propertyKey,container);
                 case UMI3DPropertyKeys.ToolActive:
-                    dto.Active = UMI3DNetworkingHelper.Read<bool>(operation, position, length); ;
+                    dto.Active = UMI3DNetworkingHelper.Read<bool>(container); ;
                     break;
                 default:
                     return false;
@@ -98,26 +98,26 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.ToolboxName:
-                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxDescription:
-                    value = UMI3DNetworkingHelper.Read<string>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxIcon2D:
-                    value = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxIcon3D:
-                    value = UMI3DNetworkingHelper.Read<ResourceDto>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxTools:
-                    return SetTools(ref value, propertyKey, operation, position, length);
+                    return SetTools(ref value, propertyKey,container);
                 case UMI3DPropertyKeys.ToolActive:
-                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length); ;
+                    value = UMI3DNetworkingHelper.Read<bool>(container); ;
                     break;
                 default:
                     return false;
@@ -149,7 +149,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetTools(ToolboxDto dto, Toolbox tool, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        static bool SetTools(ToolboxDto dto, Toolbox tool, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             ToolDto value;
@@ -157,33 +157,33 @@ namespace umi3d.cdk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                    value = UMI3DNetworkingHelper.Read<ToolDto>(operation, position, length);
+                    index = UMI3DNetworkingHelper.Read<int>(container);
+                    value = UMI3DNetworkingHelper.Read<ToolDto>(container);
                     dto.tools.Add(value);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                    index = UMI3DNetworkingHelper.Read<int>(container);
                     if (index < dto.tools.Count)
                         dto.tools.RemoveAt(index);
                     else return false;
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                    value = UMI3DNetworkingHelper.Read<ToolDto>(operation, position, length);
+                    index = UMI3DNetworkingHelper.Read<int>(container);
+                    value = UMI3DNetworkingHelper.Read<ToolDto>(container);
                     if (index < dto.tools.Count)
                         dto.tools[index] = (ToolDto)value;
                     else return false;
                     break;
                 default:
-                    dto.tools = UMI3DNetworkingHelper.ReadList<ToolDto>(operation, position, length);
+                    dto.tools = UMI3DNetworkingHelper.ReadList<ToolDto>(container);
                     break;
             }
             return true;
         }
 
-        static bool SetTools(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        static bool SetTools(ref object value, uint propertyKey, ByteContainer container)
         {
-            value = UMI3DNetworkingHelper.ReadList<ToolDto>(operation, position, length);
+            value = UMI3DNetworkingHelper.ReadList<ToolDto>(container);
             return true;
         }
 

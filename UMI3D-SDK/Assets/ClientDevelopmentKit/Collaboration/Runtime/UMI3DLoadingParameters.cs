@@ -148,70 +148,70 @@ namespace umi3d.cdk
         }
 
 
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null)
                 throw new Exception($"Entity should not be null");
-            if (EntityGroupLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (EntityGroupLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (UMI3DAnimationLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (UMI3DAnimationLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (PreloadedSceneLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (PreloadedSceneLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey, operation, position, length))
+            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey,container))
                 return true;
-            if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length))
+            if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, operation, position, length))
+            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey,container))
                 return true;
-            return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, operation, position, length);
+            return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey,container);
         }
 
-        public override bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (UMI3DAnimationLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (UMI3DAnimationLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (PreloadedSceneLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (PreloadedSceneLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (UMI3DInteractableLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (UMI3DInteractableLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (UMI3DToolLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (UMI3DToolLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (UMI3DToolBoxLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (UMI3DToolBoxLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (notificationLoader != null && notificationLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (notificationLoader != null && notificationLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (SubMeshLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (SubMeshLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (meshLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (meshLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (UILoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (UILoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length))
+            if (AnchorLoader != null && AnchorLoader.ReadUMI3DProperty(ref value, propertyKey,container))
                 return true;
-            return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey, operation, position, length);
+            return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey,container);
         }
 
         ///<inheritdoc/>
@@ -402,7 +402,7 @@ namespace umi3d.cdk
             }
         }
 
-        public override void UnknownOperationHandler(uint operationId, byte[] operation, int position, int length, Action performed)
+        public override void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed)
         {
             ulong id;
             bool releasable;
@@ -410,30 +410,30 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.SwitchTool:
-                    id = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
-                    var oldid = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
+                    var oldid = UMI3DNetworkingHelper.Read<ulong>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.ProjectTool:
-                    id = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SelectTool(id, releasable, 0, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.ReleaseTool:
-                    id = UMI3DNetworkingHelper.Read<ulong>(operation, ref position, ref length);
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
                     AbstractInteractionMapper.Instance.ReleaseTool(id, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
-                    var target = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                    var target = UMI3DNetworkingHelper.Read<int>(container);
                     UMI3DClientUserTracking.Instance.setFPSTarget(target);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
-                    var streamedBones = UMI3DNetworkingHelper.ReadList<uint>(operation, ref position, ref length);
+                    var streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
                     UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones);
                     performed.Invoke();
                     break;

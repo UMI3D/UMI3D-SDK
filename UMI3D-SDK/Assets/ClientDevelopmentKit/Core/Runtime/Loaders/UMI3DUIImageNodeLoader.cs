@@ -137,7 +137,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        public bool SetUMI3DPorperty(UIImageDto dto, UMI3DNodeInstance node, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public bool SetUMI3DPorperty(UIImageDto dto, UMI3DNodeInstance node, uint operationId, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -145,19 +145,19 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(operation,ref position,ref length);
+                        image.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.type = (dto.type = (ImageType)UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length)).Convert();
+                        image.type = (dto.type = (ImageType)UMI3DNetworkingHelper.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.Image:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        dto.sprite = UMI3DNetworkingHelper.Read<ResourceDto>(operation, ref position, ref length);
+                        dto.sprite = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                         FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.sprite?.variants);
                         if (fileToLoad == null)
                         {

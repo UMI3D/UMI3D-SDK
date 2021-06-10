@@ -30,7 +30,7 @@ namespace umi3d.edk
             public UMI3DAbstractAnimation Animation;
             public float Progress;
 
-            public Bytable ToByteArray(params object[] parameters)
+            public Bytable ToBytableArray(params object[] parameters)
             {
                 return ToByte(null);
             }

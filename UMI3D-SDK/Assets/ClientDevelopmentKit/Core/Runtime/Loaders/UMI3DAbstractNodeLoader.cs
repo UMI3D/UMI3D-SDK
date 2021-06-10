@@ -114,18 +114,18 @@ namespace umi3d.cdk
             return true;
         }
 
-        public virtual bool ReadUMI3DProperty(ref object value, uint propertyKey, byte[] operation, int position, int length)
+        public virtual bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 case UMI3DPropertyKeys.Active:
-                    value = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    value = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    value = UMI3DNetworkingHelper.Read<ulong>(container);
                     break;
                 default:
                     return false;
@@ -139,7 +139,7 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
@@ -149,17 +149,17 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    dto.isStatic = UMI3DNetworkingHelper.Read<bool>(operation,position,length);
+                    dto.isStatic = UMI3DNetworkingHelper.Read<bool>(container);
                     if (dto.isStatic != node.gameObject.isStatic)
                         node.gameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
-                    dto.active = UMI3DNetworkingHelper.Read<bool>(operation, position, length);
+                    dto.active = UMI3DNetworkingHelper.Read<bool>(container);
                     if (node.gameObject.activeSelf != dto.active)
                         node.gameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(operation, position, length);
+                    ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);

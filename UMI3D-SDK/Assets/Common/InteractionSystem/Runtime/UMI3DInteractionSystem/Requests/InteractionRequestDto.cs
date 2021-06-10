@@ -48,9 +48,9 @@ namespace umi3d.common.interaction
         public uint boneType;
         protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
 
-        public override Bytable ToByteArray(params object[] parameters)
+        public override Bytable ToBytableArray(params object[] parameters)
         {
-            return base.ToByteArray(parameters)
+            return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(toolId)
                 + UMI3DNetworkingHelper.Write(id)
                 + UMI3DNetworkingHelper.Write(hoveredObjectId)

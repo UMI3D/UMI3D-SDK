@@ -169,9 +169,9 @@ namespace umi3d.cdk
             return true;
         }
 
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, byte[] operation, int position, int length)
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,operation,position,length)) return true;
+            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
             if (entity == null) return false;
             var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
             if (extension == null) return false;
@@ -180,7 +180,7 @@ namespace umi3d.cdk
             {
 
                 case UMI3DPropertyKeys.ApplyCustomMaterial:
-                    extension.applyCustomMaterial = UMI3DNetworkingHelper.Read<bool>(operation,ref position,ref length);
+                    extension.applyCustomMaterial = UMI3DNetworkingHelper.Read<bool>(container);
 
                     if (!extension.applyCustomMaterial) //revert original materials
                     {
@@ -211,8 +211,8 @@ namespace umi3d.cdk
                     switch (operationId)
                     {
                         case UMI3DOperationKeys.SetEntityListAddProperty:
-                            index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                            index = UMI3DNetworkingHelper.Read<int>(container);
+                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(container);
                             //  Debug.Log("SetEntityListAddPropertyDto");
                             if (index == extension.overridedMaterials.Count)
                             {
@@ -234,10 +234,10 @@ namespace umi3d.cdk
                             //       
                             break;
                         case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                            index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
+                            index = UMI3DNetworkingHelper.Read<int>(container);
                             if (extension.applyCustomMaterial)
                             {
-                                mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                                mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(container);
                                 RevertOneOverrider((UMI3DNodeInstance)entity, mat);
                                 extension.overridedMaterials.RemoveAt(index);
 
@@ -250,8 +250,8 @@ namespace umi3d.cdk
                             }
                             break;
                         case UMI3DOperationKeys.SetEntityListProperty:
-                            index = UMI3DNetworkingHelper.Read<int>(operation, ref position, ref length);
-                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                            index = UMI3DNetworkingHelper.Read<int>(container);
+                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(container);
                             if (extension.applyCustomMaterial)
                             {
                                 //Remove old overrider
@@ -279,7 +279,7 @@ namespace umi3d.cdk
 
                             break;
                         case UMI3DOperationKeys.SetEntityProperty:
-                            var list = UMI3DNetworkingHelper.ReadList<UMI3DRenderedNodeDto.MaterialOverrideDto>(operation, ref position, ref length);
+                            var list = UMI3DNetworkingHelper.ReadList<UMI3DRenderedNodeDto.MaterialOverrideDto>(container);
                             if (extension.applyCustomMaterial)
                             {
                                 RevertToOriginalMaterial((UMI3DNodeInstance)entity);
@@ -301,7 +301,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.CastShadow:
-                    extension.castShadow = UMI3DNetworkingHelper.Read<bool>(operation,ref position,ref length);
+                    extension.castShadow = UMI3DNetworkingHelper.Read<bool>(container);
                     if (entity is UMI3DNodeInstance)
                     {
                         foreach (var renderer in node.renderers)
@@ -310,7 +310,7 @@ namespace umi3d.cdk
                     else return false;
                     break;
                 case UMI3DPropertyKeys.ReceiveShadow:
-                    extension.receiveShadow = UMI3DNetworkingHelper.Read<bool>(operation, ref position, ref length);
+                    extension.receiveShadow = UMI3DNetworkingHelper.Read<bool>(container);
                     if (entity is UMI3DNodeInstance)
                     {
                         foreach (var renderer in node.renderers)

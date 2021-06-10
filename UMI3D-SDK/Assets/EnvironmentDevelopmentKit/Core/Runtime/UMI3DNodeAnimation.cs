@@ -40,7 +40,7 @@ namespace umi3d.edk
                 return UMI3DNetworkingHelper.Write(progress) + Operation.ToBytes(user);
             }
 
-            Bytable IByte.ToByteArray(params object[] parameters)
+            Bytable IByte.ToBytableArray(params object[] parameters)
             {
                 if (parameters.Length < 1)
                     return ToBytes(null);
