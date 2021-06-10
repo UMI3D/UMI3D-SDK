@@ -283,7 +283,7 @@ namespace umi3d.cdk.collaboration
                     MainThreadManager.Run(() =>
                     {
                         if (client.Time.Timestep - frame.TimeStep < 500)
-                            StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateBonePosition(trackingFrame, frame.TimeStep));
+                            StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
                     });
                 else
                     MainThreadManager.Run(() =>

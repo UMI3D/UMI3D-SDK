@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,13 +27,13 @@ namespace umi3d.cdk.userCapture
 {
     public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
     {
-        public Transform anchor;
         public Transform skeletonContainer;
         public Transform viewpoint;
         [ConstStringEnum(typeof(BoneType))]
         public string viewpointBonetype;
 
-        public bool sendTracking = true;
+        [SerializeField]
+        protected bool sendTracking = true;
 
         [SerializeField]
         protected float targetTrackingFPS = 15;
@@ -41,39 +42,39 @@ namespace umi3d.cdk.userCapture
 
         public Dictionary<string, UserAvatar> embodimentDict = new Dictionary<string, UserAvatar>();
 
+        [HideInInspector]
         [Tooltip("This event is raised after each analysis of the skeleton.")]
         public UnityEvent skeletonParsedEvent;
 
+        [HideInInspector]
         [Tooltip("This event has to be raised to send a CameraPropertiesDto. By default, it is raised at the beginning of Play Mode.")]
-        public UnityEvent cameraHasChanged;
+        public UnityEvent sendingCameraProperties;
 
+        [HideInInspector]
         [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
 
+        public class AvatarEvent : UnityEvent<string> { };
+
+        public AvatarEvent avatarEvent = new AvatarEvent();
+
         protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
-        protected UserCameraPropertiesDto CameraPropertiesDto;
-        protected bool hasCameraChanged;
+        protected UserCameraPropertiesDto CameraPropertiesDto = null;
+        protected bool sendCameraProperties = false;
 
         ///<inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
             skeletonParsedEvent = new UnityEvent();
-            CameraPropertiesDto = new UserCameraPropertiesDto()
-            {
-                scale = 1f,
-                projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
-                boneType = viewpointBonetype,
-            };
-            hasCameraChanged = true;
         }
 
         protected virtual void Start()
         {
             streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
-            cameraHasChanged.AddListener(() => StartCoroutine("DispatchCamera"));
-            cameraHasChanged.Invoke();
-            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine("DispatchTracking"); });
+            sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
+            sendingCameraProperties.Invoke();
+            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
             startingSendingTracking.Invoke();
         }
 
@@ -90,6 +91,12 @@ namespace umi3d.cdk.userCapture
 
                     if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != null)
                         UMI3DClientServer.SendTracking(LastFrameDto);
+
+                    if (embodimentDict.TryGetValue(UMI3DClientServer.Instance.GetId(), out UserAvatar userAvatar))
+                        userAvatar.UpdateAvatarPosition(LastFrameDto, Convert.ToUInt64(Time.time));
+
+                    if (sendCameraProperties)
+                        sendingCameraProperties.Invoke();
 
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
@@ -109,7 +116,19 @@ namespace umi3d.cdk.userCapture
                 yield return null;
             }
 
-            UMI3DClientServer.SendData(CameraPropertiesDto, true);
+            UserCameraPropertiesDto newCameraProperties = new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
+                boneType = viewpointBonetype,
+            };
+
+            if (!newCameraProperties.Equals(CameraPropertiesDto))
+            {
+                UMI3DClientServer.SendData(newCameraProperties, true);
+                CameraPropertiesDto = newCameraProperties;
+            }
+
         }
 
         /// <summary>
@@ -124,7 +143,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (streamedBonetypes.Contains(bone.boneType))
                     {
-                        BoneDto dto = bone.ToDto(anchor);
+                        BoneDto dto = bone.ToDto();
                         if (dto != null)
                             bonesList.Add(dto);
                     }
@@ -133,10 +152,9 @@ namespace umi3d.cdk.userCapture
                 LastFrameDto = new UserTrackingFrameDto()
                 {
                     bones = bonesList,
-                    position = anchor.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
-                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * anchor.rotation, //rotation relative to UMI3DEnvironmentLoader node
+                    position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
+                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     refreshFrequency = targetTrackingFPS,
-                    scale = Vector3.one * 1.2f,
                     userId = UMI3DClientServer.Instance.GetId(),
                 };
 
@@ -157,6 +175,7 @@ namespace umi3d.cdk.userCapture
             else
             {
                 embodimentDict.Add(id, u);
+                avatarEvent.Invoke(id);
                 return true;
             }
         }
@@ -190,6 +209,17 @@ namespace umi3d.cdk.userCapture
         public void setStreamedBones(List<string> bonesToStream)
         {
             this.streamedBonetypes = bonesToStream;
+        }
+
+        public void setCameraPropertiesSending(bool activeSending)
+        {
+            this.sendCameraProperties = activeSending;
+        }
+
+        public void setTrackingSending(bool activeSending)
+        {
+            this.sendTracking = activeSending;
+            startingSendingTracking.Invoke();
         }
     }
 }

@@ -332,6 +332,14 @@ namespace umi3d.cdk
                     UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones.streamedBones);
                     performed.Invoke();
                     break;
+                case SetSendingCameraPropertiesDto sendingCamera:
+                    UMI3DClientUserTracking.Instance.setCameraPropertiesSending(sendingCamera.activeSending);
+                    performed.Invoke();
+                    break;
+                case SetSendingTrackingDto sendingTracking:
+                    UMI3DClientUserTracking.Instance.setTrackingSending(sendingTracking.activeSending);
+                    performed.Invoke();
+                    break;
             }
         }
     }
