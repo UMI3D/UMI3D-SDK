@@ -88,7 +88,7 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Writte the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
+        /// Write the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
         /// </summary>
         /// <param name="scene">The UMI3DNodeDto to be completed</param>
         /// <param name="user">User to convert for</param>
@@ -140,7 +140,7 @@ namespace umi3d.edk
 
 
         /// <summary>
-        /// Writte the scene contents in a GlTFSceneDto.
+        /// Write the scene contents in a GlTFSceneDto.
         /// </summary>
         /// <param name="scene">The GlTFSceneDto with any properties except content arrays ready</param>
         /// <param name="user">User to convert for</param>

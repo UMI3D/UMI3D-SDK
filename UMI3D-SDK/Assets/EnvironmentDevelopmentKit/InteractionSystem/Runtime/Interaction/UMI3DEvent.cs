@@ -98,7 +98,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <summary>
-        /// Writte the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
+        /// Write the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
         /// </summary>
         /// <param name="scene">The UMI3DNodeDto to be completed</param>
         /// <param name="user">User to convert for</param>

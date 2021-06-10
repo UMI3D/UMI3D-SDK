@@ -349,7 +349,7 @@ namespace umi3d.edk.collaboration
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(frame.StreamData.byteArr, ref position, ref length);
                     trackingFrame.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(frame.StreamData.byteArr, ref position, ref length);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(frame.StreamData.byteArr, ref position, ref length);
-                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList< common.userCapture.BoneDto> (frame.StreamData.byteArr, ref position, ref length);
+                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto> (frame.StreamData.byteArr, ref position, ref length);
 
                     avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
 

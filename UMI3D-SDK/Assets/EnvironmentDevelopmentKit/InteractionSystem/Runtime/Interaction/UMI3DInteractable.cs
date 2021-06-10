@@ -134,7 +134,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <summary>
-        /// Writte the AbstractTool properties in an object AbstractToolDto is assignable from.
+        /// Write the AbstractTool properties in an object AbstractToolDto is assignable from.
         /// </summary>
         /// <param name="scene">The AbstractToolDto to be completed</param>
         /// <param name="user">User to convert for</param>
