@@ -41,7 +41,6 @@ namespace umi3d.common.userCapture
         public const string RightKnee = "Right Knee";
         public const string RightShoulder = "Right Shoulder";
         public const string RightUpperArm = "Right Upper Arm";
-        public const string Root = "Root"; 
         public const string Jaw = "Jaw";
         public const string UpperChest = "Upper Chest";
         public const string Chest = "Chest";
