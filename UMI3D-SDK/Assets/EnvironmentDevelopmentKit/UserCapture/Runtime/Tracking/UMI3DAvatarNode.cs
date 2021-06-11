@@ -166,7 +166,7 @@ namespace umi3d.edk.userCapture
                 base.ToBytes(user)
                 + UMI3DNetworkingHelper.Write(userId)
                 + UMI3DNetworkingHelper.Write(activeBindings.GetValue(user))
-                + UMI3DNetworkingHelper.ToBytes(bindings.GetValue(user), user);
+                + UMI3DNetworkingHelper.ListToBytable(bindings.GetValue(user), user);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace umi3d.edk
             if (operation.Count() > 0)
             {
                 var b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
-                    + UMI3DNetworkingHelper.ToBytes(operation, user);
+                    + UMI3DNetworkingHelper.ListToBytable(operation, user);
                 return (b.ToBytes(),true);
             }
             return (null,false);

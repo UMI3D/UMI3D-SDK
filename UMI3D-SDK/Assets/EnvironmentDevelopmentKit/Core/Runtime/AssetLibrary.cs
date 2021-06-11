@@ -58,7 +58,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(date.Format())
                 + UMI3DNetworkingHelper.Write(date.Culture())
                 + UMI3DNetworkingHelper.Write(date.ToString())
-                + UMI3DNetworkingHelper.ToBytes(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
+                + UMI3DNetworkingHelper.ListToBytable(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
         }
 
         public ulong Id()

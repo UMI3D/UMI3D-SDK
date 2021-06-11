@@ -87,7 +87,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user))
                 + UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user))
                 + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
-                + UMI3DNetworkingHelper.ToBytes(materialsOverrider);
+                + UMI3DNetworkingHelper.ListToBytable(materialsOverrider);
         }
     }
 }

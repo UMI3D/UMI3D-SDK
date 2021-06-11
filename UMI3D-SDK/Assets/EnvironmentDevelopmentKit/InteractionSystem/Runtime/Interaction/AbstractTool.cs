@@ -240,7 +240,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(Display.description)
                 + Display.icon2D?.ToByte()
                 + Display.icon3D?.ToByte()
-                + UMI3DNetworkingHelper.ToBytes(objectInteractions.GetValue(user).Where(i => i != null), user)
+                + UMI3DNetworkingHelper.ListToBytable(objectInteractions.GetValue(user).Where(i => i != null), user)
                 + UMI3DNetworkingHelper.Write(objectActive.GetValue(user));
         }
 

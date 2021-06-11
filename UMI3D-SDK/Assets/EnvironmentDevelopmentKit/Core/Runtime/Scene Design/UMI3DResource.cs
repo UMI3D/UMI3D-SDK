@@ -38,7 +38,7 @@ namespace umi3d.edk
 
         public Bytable ToByte()
         {
-            return UMI3DNetworkingHelper.ToBytes(variants);
+            return UMI3DNetworkingHelper.ListToBytable(variants);
         }
 
     }

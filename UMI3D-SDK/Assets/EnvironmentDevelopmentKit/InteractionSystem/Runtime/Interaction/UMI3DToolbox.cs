@@ -178,7 +178,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
                 + display.icon2D.ToByte()
                 + display.icon3D.ToByte()
-                + UMI3DNetworkingHelper.ToBytes(objectTools?.GetValue(user).Where(t => t != null));
+                + UMI3DNetworkingHelper.ListToBytable(objectTools?.GetValue(user).Where(t => t != null));
         }
 
         public IEntity ToEntityDto(UMI3DUser user)

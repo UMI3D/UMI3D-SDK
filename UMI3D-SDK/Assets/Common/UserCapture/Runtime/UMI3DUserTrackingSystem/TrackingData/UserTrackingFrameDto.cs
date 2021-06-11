@@ -44,7 +44,7 @@ namespace umi3d.common.userCapture
                 + UMI3DNetworkingHelper.Write(position) 
                 + UMI3DNetworkingHelper.Write(rotation)
                 + UMI3DNetworkingHelper.Write(refreshFrequency)
-                + UMI3DNetworkingHelper.ToBytes(bones);
+                + UMI3DNetworkingHelper.ListToBytable(bones);
         }
     }
 }
