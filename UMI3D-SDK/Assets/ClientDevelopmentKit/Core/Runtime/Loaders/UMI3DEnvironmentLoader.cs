@@ -781,8 +781,7 @@ namespace umi3d.cdk
         public static bool SetMultiEntity(ByteContainer container)
         {
             if (!Exists) return false;
-            var entityCount = UMI3DNetworkingHelper.Read<uint>(container);
-            var idList = UMI3DNetworkingHelper.ReadList<ulong>(container, (int)entityCount);
+            var idList = UMI3DNetworkingHelper.ReadList<ulong>(container);
             var operationId = UMI3DNetworkingHelper.Read<uint>(container);
             var propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
 

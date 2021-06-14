@@ -35,5 +35,10 @@ namespace umi3d.common
         {
             return UMI3DNetworkingHelper.Write(GetOperationId());
         }
+
+        public bool IsCountable()
+        {
+            return true;
+        }
     }
 }

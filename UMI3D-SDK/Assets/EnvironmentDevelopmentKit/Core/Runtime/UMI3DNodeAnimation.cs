@@ -46,6 +46,11 @@ namespace umi3d.edk
                     return ToBytes(null);
                 return ToBytes(parameters[0] as UMI3DUser);
             }
+
+            bool IByte.IsCountable()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [SerializeField, EditorReadOnly]

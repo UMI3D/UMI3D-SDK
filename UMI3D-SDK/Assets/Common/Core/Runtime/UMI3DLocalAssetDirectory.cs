@@ -42,6 +42,11 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
+        bool IByte.IsCountable()
+        {
+            return true;
+        }
+
         Bytable IByte.ToBytableArray( params object[] parameters)
         {
             return

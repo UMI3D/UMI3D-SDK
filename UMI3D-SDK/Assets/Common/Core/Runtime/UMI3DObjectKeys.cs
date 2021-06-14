@@ -20,8 +20,11 @@ namespace umi3d.common
     {
         public const byte None = 0;
 
+        
         public const byte Array = 1;
         public const byte List = 2;
+        public const byte CountArray = 3;
+        public const byte IndexesArray = 4;
 
         public const byte Bool = 101;
         public const byte Double = 102;

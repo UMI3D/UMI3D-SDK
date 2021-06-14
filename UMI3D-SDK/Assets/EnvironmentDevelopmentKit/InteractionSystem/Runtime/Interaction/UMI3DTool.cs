@@ -76,5 +76,10 @@ namespace umi3d.edk.interaction
                 ToBytes(null);
             return ToBytes(parameters[0] as UMI3DUser);
         }
+        bool IByte.IsCountable()
+        {
+            return true;
+        }
+
     }
 }

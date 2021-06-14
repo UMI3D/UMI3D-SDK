@@ -59,6 +59,11 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null);
         }
 
+        bool IByte.IsCountable()
+        {
+            return true;
+        }
+
         public string GetUrl()
         {
             path = path.Replace(@"\", "/");

@@ -24,6 +24,22 @@ namespace umi3d.common.collaboration
                     else
                         result = default(T);
                     return true;
+                case true when typeof(T) == typeof(BoneDto):
+                    uint type;
+                    SerializableVector4 rot;
+                    if (UMI3DNetworkingHelper.TryRead(container, out type)
+                        && UMI3DNetworkingHelper.TryRead(container, out rot))
+                    {
+                        var bone = new BoneDto() { boneType = type, rotation = rot };
+                        result = (T)Convert.ChangeType(bone, typeof(T));
+                        readable = true;
+                    }
+                    else 
+                    {
+                        result = default(T);
+                        readable = false;
+                    }
+                    return true;
                 //case true when typeof(T) == typeof(AbstractParameterDto):
                 //    readable = length >= sizeof(uint);
                 //    if (readable)

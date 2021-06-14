@@ -60,6 +60,10 @@ namespace umi3d.edk.userCapture
             return ToByte(parameters[0] as UMI3DUser);
         }
 
+        bool IByte.IsCountable()
+        {
+            return true;
+        }
         public BoneBindingDto ToDto(UMI3DUser user)
         {
             BoneBindingDto dto = new BoneBindingDto()

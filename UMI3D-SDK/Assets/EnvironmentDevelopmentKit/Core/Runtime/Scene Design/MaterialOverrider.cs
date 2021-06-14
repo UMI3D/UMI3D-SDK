@@ -66,6 +66,11 @@ namespace umi3d.edk
         {
             throw new NotImplementedException();
         }
+
+        bool IByte.IsCountable()
+        {
+            return false;
+        }
     }
 
 

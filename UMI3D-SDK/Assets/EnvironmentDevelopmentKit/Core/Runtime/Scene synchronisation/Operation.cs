@@ -49,6 +49,11 @@ namespace umi3d.edk
             return ToBytes(parameters[0] as UMI3DUser);
         }
 
+        bool IByte.IsCountable()
+        {
+            return false;
+        }
+
         public static Operation operator +(Operation a, Operation b)
         {
             a.users = new HashSet<UMI3DUser>(a.users.Concat(b.users));

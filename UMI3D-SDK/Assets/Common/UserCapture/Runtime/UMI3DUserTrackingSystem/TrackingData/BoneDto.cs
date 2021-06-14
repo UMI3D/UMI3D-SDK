@@ -31,6 +31,11 @@ namespace umi3d.common.userCapture
 
         public SerializableVector4 rotation;
 
+        bool IByte.IsCountable()
+        {
+            return true;
+        }
+
         Bytable IByte.ToBytableArray (params object[] parameters)
         {
             return

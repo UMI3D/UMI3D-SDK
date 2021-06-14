@@ -45,6 +45,16 @@ namespace umi3d.edk
             {
                 return new UMI3DAnimationDto.AnimationChainDto() { animationId = Animation.Id(), startOnProgress = Progress };
             }
+
+            bool IByte.IsCountable()
+            {
+                throw new NotImplementedException();
+            }
+
+            Bytable IByte.ToBytableArray(params object[] parameters)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [SerializeField, EditorReadOnly]
