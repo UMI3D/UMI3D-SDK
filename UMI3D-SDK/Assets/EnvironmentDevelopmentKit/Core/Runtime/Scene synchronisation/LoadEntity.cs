@@ -26,7 +26,7 @@ namespace umi3d.edk
 
         public UMI3DLoadableEntity entity;
 
-        public override Bytable ToBytes(UMI3DUser user)
+        public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.LoadEntity)
                 + UMI3DNetworkingHelper.Write(entity.Id());

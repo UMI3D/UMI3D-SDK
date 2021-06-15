@@ -37,7 +37,7 @@ namespace umi3d.edk
 
             public Bytable ToBytes(UMI3DUser user)
             {
-                return UMI3DNetworkingHelper.Write(progress) + Operation.ToBytes(user);
+                return UMI3DNetworkingHelper.Write(progress) + Operation.ToBytable(user);
             }
 
             Bytable IByte.ToBytableArray(params object[] parameters)

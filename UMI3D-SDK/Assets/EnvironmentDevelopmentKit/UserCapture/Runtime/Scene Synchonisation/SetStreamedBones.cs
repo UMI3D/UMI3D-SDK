@@ -24,7 +24,7 @@ namespace umi3d.edk.userCapture
     {
         public List<uint> streamedBones;
 
-        public override Bytable ToBytes(UMI3DUser user)
+        public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
                 + UMI3DNetworkingHelper.WriteArray(streamedBones);

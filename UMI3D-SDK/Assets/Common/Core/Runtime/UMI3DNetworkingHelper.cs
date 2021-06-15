@@ -177,7 +177,7 @@ namespace umi3d.common
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableVector2):
-                    if (container.length >= 4 * sizeof(float))
+                    if (container.length >= 2 * sizeof(float))
                     {
                         float x, y;
                         TryRead(container, out x);
@@ -187,7 +187,7 @@ namespace umi3d.common
                     }
                     break;
                 case true when typeof(T) == typeof(Vector2):
-                    if (container.length >= 4 * sizeof(float))
+                    if (container.length >= 2 * sizeof(float))
                     {
                         float x, y;
                         TryRead(container, out x);
@@ -197,7 +197,7 @@ namespace umi3d.common
                     }
                     break;
                 case true when typeof(T) == typeof(SerializableVector3):
-                    if (container.length >= 4 * sizeof(float))
+                    if (container.length >= 3 * sizeof(float))
                     {
                         float x, y, z;
                         TryRead(container, out x);
@@ -208,7 +208,7 @@ namespace umi3d.common
                     }
                     break;
                 case true when typeof(T) == typeof(Vector3):
-                    if (container.length >= 4 * sizeof(float))
+                    if (container.length >= 3 * sizeof(float))
                     {
                         float x, y, z;
                         TryRead(container, out x);
@@ -338,7 +338,7 @@ namespace umi3d.common
                 case UMI3DObjectKeys.IndexesArray:
                     return ReadIndexesList<T>(container);
                 default:
-                    return null;
+                    throw new Exception($"Not a known collection type {container}");
             }
         }
 
@@ -351,27 +351,23 @@ namespace umi3d.common
             for (; container.position < indexMaxPos || indexMaxPos == -1;)
             {
                 int nopIndex = UMI3DNetworkingHelper.Read<int>(container);
-                
+
                 if (indexMaxPos == -1)
                 {
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                Debug.Log($"{valueIndex} {maxLength}");
                 var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 T v;
                 if (!TryRead(SubContainer, out v)) break;
-                Debug.Log(v);
                 result.Add(v);
                 valueIndex = nopIndex;
             }
             {
-                Debug.Log($"{valueIndex} {maxLength}");
                 var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 T v;
                 if (TryRead(SubContainer, out v))
-                result.Add(v);
-                Debug.Log(v);
+                    result.Add(v);
             }
             return result;
         }
@@ -392,6 +388,82 @@ namespace umi3d.common
             return res;
         }
 
+        public static IEnumerable<ByteContainer> ReadIndexesList(ByteContainer container)
+        {
+            byte listType = UMI3DNetworkingHelper.Read<byte>(container);
+            if(listType != UMI3DObjectKeys.IndexesArray)
+                yield break;
+            int indexMaxPos = -1;
+            int maxLength = container.bytes.Length;
+            int valueIndex = -1;
+            for (; container.position < indexMaxPos || indexMaxPos == -1;)
+            {
+                int nopIndex = UMI3DNetworkingHelper.Read<int>(container);
+
+                if (indexMaxPos == -1)
+                {
+                    indexMaxPos = valueIndex = nopIndex;
+                    continue;
+                }
+                var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                yield return SubContainer;
+                valueIndex = nopIndex;
+            }
+            {
+                var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                yield return SubContainer;
+            }
+            yield break;
+        }
+
+        public static Bytable WriteObject<T>(T value)
+        {
+            switch (value)
+            {
+                case Array array:
+                    var bc = Write(UMI3DObjectKeys.Array);
+                    foreach (var e in array)
+                        bc += WriteObject(e);
+                    return bc;
+                case List<object> l:
+                    return Write(UMI3DObjectKeys.Array)
+                        + l.Select(e => WriteObject(e));
+                case bool b:
+                    return Write(UMI3DObjectKeys.Bool)
+                        + Write(b);
+                case double b:
+                    return Write(UMI3DObjectKeys.Double)
+                        + Write(b);
+                case float b:
+                    return Write(UMI3DObjectKeys.Float)
+                        + Write(b);
+                case int b:
+                    return Write(UMI3DObjectKeys.Int)
+                        + Write(b);
+                case SerializableVector2 v:
+                case Vector2 b:
+                    return Write(UMI3DObjectKeys.Vector2)
+                        + Write(value);
+                case SerializableVector3 v:
+                case Vector3 b:
+                    return Write(UMI3DObjectKeys.Vector3)
+                        + Write(value);
+                case Quaternion q:
+                case SerializableVector4 v:
+                case Vector4 b:
+                    return Write(UMI3DObjectKeys.Vector4)
+                        + Write(value);
+                case Color b:
+                    return Write(UMI3DObjectKeys.Color)
+                        + Write(b);
+                case TextureDto b:
+                    return Write(UMI3DObjectKeys.TextureDto)
+                        + Write(b);
+                default:
+                    return new Bytable();
+            }
+        }
+
         public static Bytable Write<T>(T value)
         {
             Func<byte[], int, int, (int, int)> f;
@@ -403,7 +475,7 @@ namespace umi3d.common
                     {
                         BitConverter.GetBytes(c).CopyTo(by, i);
                         var s = sizeof(char);
-                        return ( i +s, bs + s);
+                        return (i + s, bs + s);
                     };
                     return new Bytable(sizeof(char), f);
                 case bool b:
@@ -568,7 +640,8 @@ namespace umi3d.common
                 else return ListToIndexesBytable(operations, parameters);
             }
             Debug.LogWarning("Empty IEnumerable");
-            return new Bytable();
+            return Write(UMI3DObjectKeys.CountArray)
+                + Write(0);
         }
 
         static Bytable ListToIndexesBytable(IEnumerable<IByte> operations, params object[] parameters)

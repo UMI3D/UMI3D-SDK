@@ -866,10 +866,10 @@ namespace umi3d.cdk
         private void Update()
         {
             foreach (var entityId in Instance.entityFilters.Keys)
-                foreach (var propertyId in Instance.entityFilters[entityId].Keys)
+                foreach (var property in Instance.entityFilters[entityId].Keys)
                 {
                     var node = UMI3DEnvironmentLoader.GetEntity(entityId);
-                    KalmanEntity kalmanEntity = Instance.entityFilters[entityId][propertyId];
+                    KalmanEntity kalmanEntity = Instance.entityFilters[entityId][property];
 
                     Instance.PropertyRegression(kalmanEntity);
 

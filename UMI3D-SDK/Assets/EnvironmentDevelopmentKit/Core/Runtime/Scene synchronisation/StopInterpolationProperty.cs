@@ -30,7 +30,7 @@ namespace umi3d.edk
         /// </summary>
         public object stopValue;
 
-        public override Bytable ToBytes(UMI3DUser user)
+        public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StopInterpolationProperty)
                 + UMI3DNetworkingHelper.Write(entityId)

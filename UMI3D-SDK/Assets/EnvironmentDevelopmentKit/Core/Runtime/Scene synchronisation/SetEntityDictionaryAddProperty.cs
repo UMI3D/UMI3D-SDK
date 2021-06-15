@@ -36,6 +36,11 @@ namespace umi3d.edk
             return setEntity;
         }
 
+        public override uint GetOperationKeys()
+        {
+            return UMI3DOperationKeys.SetEntityDictionnaryAddProperty;
+        }
+
         public static SetEntityDictionaryAddProperty operator +(SetEntityDictionaryAddProperty a, IEnumerable<UMI3DUser> b)
         {
             a.users = new HashSet<UMI3DUser>(a.users.Concat(b));

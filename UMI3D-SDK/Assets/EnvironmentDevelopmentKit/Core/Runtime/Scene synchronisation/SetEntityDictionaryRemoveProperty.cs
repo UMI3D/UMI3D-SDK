@@ -36,6 +36,17 @@ namespace umi3d.edk
             return setEntity;
         }
 
+        public override uint GetOperationKeys()
+        {
+            return UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty;
+        }
+
+        public override Bytable ValueToBytes(UMI3DUser user)
+        {
+            return
+                UMI3DNetworkingHelper.WriteObject(key);
+        }
+
         public static SetEntityDictionaryRemoveProperty operator +(SetEntityDictionaryRemoveProperty a, IEnumerable<UMI3DUser> b)
         {
             a.users = new HashSet<UMI3DUser>(a.users.Concat(b));

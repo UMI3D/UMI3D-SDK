@@ -26,7 +26,7 @@ namespace umi3d.edk
 
         public ulong entityId;
 
-        public override Bytable ToBytes(UMI3DUser user)
+        public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.DeleteEntity)
                 + UMI3DNetworkingHelper.Write(entityId);

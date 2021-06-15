@@ -24,7 +24,7 @@ namespace umi3d.edk.userCapture
     {
         public int targetFPS;
 
-        public override Bytable ToBytes(UMI3DUser user)
+        public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
                 + UMI3DNetworkingHelper.Write(targetFPS);

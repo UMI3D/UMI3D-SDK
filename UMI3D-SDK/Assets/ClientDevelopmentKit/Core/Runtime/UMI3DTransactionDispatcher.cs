@@ -44,31 +44,9 @@ namespace umi3d.cdk
         public static IEnumerator PerformTransaction(ByteContainer container)
         {
             yield return new WaitForEndOfFrame();
-            int operationLength = -1;
-            int maxLength = container.bytes.Length;
-            int opIndex = -1;
-            for (; container.position < operationLength || operationLength == -1;)
-            {
-                int nopIndex = UMI3DNetworkingHelper.Read<int>(container);
-                if (operationLength == -1)
-                {
-                    operationLength = opIndex = nopIndex;
-                    continue;
-                }
-
+            foreach (var c in UMI3DNetworkingHelper.ReadIndexesList(container)) {
                 bool performed = false;
-                var SubContainer = new ByteContainer(container.bytes) { position = opIndex, length = nopIndex - opIndex };
-                PerformOperation(SubContainer, () => performed = true);
-                if (performed != true)
-                    yield return new WaitUntil(() => performed);
-
-                opIndex = nopIndex;
-            }
-            {
-                bool performed = false;
-                //maxLength - 1 because we never want to read the last byte of the array which is added by forge
-                var SubContainer = new ByteContainer(container.bytes) { position = opIndex, length = maxLength - 1 - opIndex };
-                PerformOperation(SubContainer, () => performed = true);
+                PerformOperation(c, () => performed = true);
                 if (performed != true)
                     yield return new WaitUntil(() => performed);
             }

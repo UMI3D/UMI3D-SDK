@@ -41,12 +41,22 @@ namespace umi3d.edk
         /// </summary>
         public object value;
 
-        public override Bytable ToBytes(UMI3DUser user)
+        public virtual uint GetOperationKeys()
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
+            return UMI3DOperationKeys.SetEntityProperty;
+        }
+
+        public override Bytable ToBytable(UMI3DUser user)
+        {
+            return UMI3DNetworkingHelper.Write(GetOperationKeys())
                 + UMI3DNetworkingHelper.Write(entityId)
                 + UMI3DNetworkingHelper.Write(property)
-                + UMI3DNetworkingHelper.Write(value);
+                + ValueToBytes(user);
+        }
+
+        public virtual Bytable ValueToBytes(UMI3DUser user)
+        {
+            return UMI3DNetworkingHelper.Write(value);
         }
 
         ///<inheritdoc/>
