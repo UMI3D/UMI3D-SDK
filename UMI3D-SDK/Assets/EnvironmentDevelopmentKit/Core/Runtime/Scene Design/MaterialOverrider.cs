@@ -64,7 +64,9 @@ namespace umi3d.edk
 
         Bytable IByte.ToBytableArray(params object[] parameters)
         {
-            throw new NotImplementedException();
+            return UMI3DNetworkingHelper.Write(newMaterial.Id())
+                + UMI3DNetworkingHelper.Write(addMaterialIfNotExists)
+                + UMI3DNetworkingHelper.WriteArray(overrideAllMaterial ? ANY_mat : overidedMaterials);
         }
 
         bool IByte.IsCountable()

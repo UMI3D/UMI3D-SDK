@@ -49,8 +49,8 @@ namespace umi3d.edk
         public override Bytable ValueToBytes(UMI3DUser user)
         {
             return
-                UMI3DNetworkingHelper.WriteObject(index)
-                + UMI3DNetworkingHelper.WriteObject(value);
+                UMI3DNetworkingHelper.Write(index)
+                + UMI3DNetworkingHelper.Write(value);
         }
 
         public static SetEntityListProperty operator +(SetEntityListProperty a, IEnumerable<UMI3DUser> b)

@@ -416,6 +416,7 @@ namespace umi3d.common
             yield break;
         }
 
+        /*
         public static Bytable WriteObject<T>(T value)
         {
             switch (value)
@@ -463,6 +464,7 @@ namespace umi3d.common
                     return new Bytable();
             }
         }
+        */
 
         public static Bytable Write<T>(T value)
         {
@@ -470,6 +472,8 @@ namespace umi3d.common
             Bytable bc;
             switch (value)
             {
+                case IByte b:
+                    return b.ToBytableArray();
                 case char c:
                     f = (by, i, bs) =>
                     {

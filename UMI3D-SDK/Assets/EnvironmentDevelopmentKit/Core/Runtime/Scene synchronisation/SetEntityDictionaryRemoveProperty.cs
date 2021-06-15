@@ -44,7 +44,7 @@ namespace umi3d.edk
         public override Bytable ValueToBytes(UMI3DUser user)
         {
             return
-                UMI3DNetworkingHelper.WriteObject(key);
+                UMI3DNetworkingHelper.Write(key);
         }
 
         public static SetEntityDictionaryRemoveProperty operator +(SetEntityDictionaryRemoveProperty a, IEnumerable<UMI3DUser> b)
