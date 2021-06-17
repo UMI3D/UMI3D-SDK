@@ -22,7 +22,7 @@ namespace umi3d.cdk.menu.view
     /// <summary>
     /// Base class for boolean input display.
     /// </summary>
-    public abstract class AbstracLocalInfoRequestInputDisplayer : AbstractInputMenuItemDisplayer<(bool,bool)>, IObservable<(bool,bool)>
+    public abstract class AbstractLocalInfoRequestInputDisplayer : AbstractInputMenuItemDisplayer<(bool,bool)>, IObservable<(bool,bool)>
     {
         /// <summary>
         /// Menu item to display.
