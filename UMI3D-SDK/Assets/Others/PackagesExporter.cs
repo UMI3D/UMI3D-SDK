@@ -33,10 +33,10 @@ public class PackagesExporter
     const string pathUserCapture = packageFolder + "module/user-capture.unitypackage";
     const string pathCollaboration = packageFolder + "module/collaboration.unitypackage";
 
-    const string assetDependencies = "Assets/Dependencies";
-    const string assetCommon = "Assets/Common";
-    const string assetCDK = "Assets/ClientDevelopmentKit";
-    const string assetEDK = "Assets/EnvironmentDevelopmentKit";
+    const string assetDependencies = "Assets/UMI3D SDK/Dependencies";
+    const string assetCommon = "Assets/UMI3D SDK/Common";
+    const string assetCDK = "Assets/UMI3D SDK/ClientDevelopmentKit";
+    const string assetEDK = "Assets/UMI3D SDK/EnvironmentDevelopmentKit";
 
     const string coreFolder = "/Core";
     const string collaborationFolder = "/Collaboration";

@@ -26,7 +26,7 @@ namespace umi3d.edk
         public bool isLocalFile = false;
         public string domain = "";
         public string path = "";
-        [ConstStringEnum(typeof(UMI3DAssetFormat))]
+        [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public string format;
         public string extension;
         public bool isInBundle = false;

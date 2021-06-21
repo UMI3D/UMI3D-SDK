@@ -29,7 +29,7 @@ namespace umi3d.cdk.userCapture
     {
         public Transform skeletonContainer;
         public Transform viewpoint;
-        [ConstStringEnum(typeof(BoneType))]
+        [ConstEnum(typeof(BoneType), typeof(uint))]
         public uint viewpointBonetype;
 
         [SerializeField]

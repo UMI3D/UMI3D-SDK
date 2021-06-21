@@ -30,7 +30,7 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
-        [ConstStringEnum(typeof(UMI3DAssetFormat))]
+        [ConstEnum(typeof(UMI3DAssetFormat),typeof(string))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
 

@@ -27,7 +27,7 @@ namespace umi3d.common
         public string path;
         [SerializeField]
         public AssetMetricDto metrics = new AssetMetricDto();
-        [ConstStringEnum(typeof(UMI3DAssetFormat))]
+        [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> formats = new List<string>();
 
         public UMI3DLocalAssetDirectory()
