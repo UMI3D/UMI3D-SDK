@@ -285,7 +285,7 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
                         {
-                            var pos = UMI3DNetworkingHelper.Read<Vector3>(container);
+                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                             var nav = new NavigateDto() { position = pos };
                             StartCoroutine(UMI3DNavigation.Navigate(nav));
                         }

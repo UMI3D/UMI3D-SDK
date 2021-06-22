@@ -129,7 +129,7 @@ namespace umi3d.cdk
                     light.intensity = dto.intensity = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightColor:
-                    light.color = dto.color = UMI3DNetworkingHelper.Read<Color>(container);
+                    light.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(container);
                     break;
                 case UMI3DPropertyKeys.LightRange:
                     light.range = dto.range = UMI3DNetworkingHelper.Read<float>(container);
@@ -171,7 +171,7 @@ namespace umi3d.cdk
                     value = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightColor:
-                    value = UMI3DNetworkingHelper.Read<Color>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableColor>(container);
                     break;
                 case UMI3DPropertyKeys.LightRange:
                     value = UMI3DNetworkingHelper.Read<float>(container);

@@ -155,10 +155,10 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(container); ;
+                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(container);
@@ -176,13 +176,13 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    value = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    value = UMI3DNetworkingHelper.Read<Vector4>(container); ;
+                    value = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    value = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     break;
                 default:
                     return false;

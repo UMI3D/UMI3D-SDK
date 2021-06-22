@@ -145,17 +145,17 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = UMI3DNetworkingHelper.Read<Vector3>(container); ;
+                    dto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
                     if (node.updatePose)
                         node.transform.localPosition = dto.position;
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    dto.rotation = UMI3DNetworkingHelper.Read<Vector4>(container); ;
+                    dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
                     if (node.updatePose)
                         node.transform.localRotation = dto.rotation;
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = UMI3DNetworkingHelper.Read<Vector3>(container); ;
+                    dto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
                     if (node.updatePose)
                         node.transform.localScale = dto.scale;
                     break;
@@ -174,13 +174,13 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    value = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    value = UMI3DNetworkingHelper.Read<Vector4>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    value = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     break;
                 default:
                     return false;
@@ -583,11 +583,11 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    value = UMI3DNetworkingHelper.Read<Color>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableColor>(container);
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    value = UMI3DNetworkingHelper.Read<Color>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableColor>(container);
                     break;
 
                 case UMI3DPropertyKeys.Maintexture:
@@ -627,11 +627,11 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
-                    value = UMI3DNetworkingHelper.Read<Vector2>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
-                    value = UMI3DNetworkingHelper.Read<Vector2>(container);
+                    value = UMI3DNetworkingHelper.Read<SerializableVector2>(container);
                     break;
 
                 case UMI3DPropertyKeys.NormalTextureScale:
