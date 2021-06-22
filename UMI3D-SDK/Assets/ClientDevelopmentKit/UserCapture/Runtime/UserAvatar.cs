@@ -44,7 +44,6 @@ namespace umi3d.cdk.userCapture
 
         protected struct Bound
         {
-            public Transform bone;
             public string bonetype;
             public Transform obj;
             public Vector3 offsetPosition;
@@ -67,8 +66,8 @@ namespace umi3d.cdk.userCapture
             {
                 if (item.obj != null)
                 {
-                    item.obj.position = item.bone.TransformPoint(item.offsetPosition);
-                    item.obj.rotation = item.bone.rotation * item.offsetRotation;
+                    item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(BoneTypeConverter.Convert(item.bonetype).GetValueOrDefault()).TransformPoint(item.offsetPosition);
+                    item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(BoneTypeConverter.Convert(item.bonetype).GetValueOrDefault()).rotation * item.offsetRotation;
                 }
             }
 
@@ -210,6 +209,32 @@ namespace umi3d.cdk.userCapture
                 else
                     UnityEngine.Debug.LogWarning(dto.boneType + "not found in bones instances");
             }
+            else
+            {
+                UMI3DNodeInstance node;
+                var wait = new WaitForFixedUpdate();
+
+                node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
+
+                if (node != null)
+                {
+                    Transform obj = null;
+                    if (dto.rigName != "")
+                    {
+                        obj = UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName);
+                    }
+                    else
+                        obj = node.transform;
+
+                    bounds.Add(new Bound()
+                    {
+                        bonetype = dto.boneType,
+                        obj = obj,
+                        offsetPosition = dto.offsetPosition,
+                        offsetRotation = dto.offsetRotation
+                    });
+                }
+            }
         }
 
         protected Transform InspectBoundRigs(BoneBindingDto dto)
@@ -263,7 +288,6 @@ namespace umi3d.cdk.userCapture
 
                     bounds.Add(new Bound()
                     {
-                        bone = bone.transform,
                         bonetype = dto.boneType,
                         obj = obj,
                         offsetPosition = dto.offsetPosition,
@@ -290,7 +314,6 @@ namespace umi3d.cdk.userCapture
                         {
                             bounds.Add(new Bound()
                             {
-                                bone = bone.transform,
                                 bonetype = dto.boneType,
                                 obj = obj,
                                 offsetPosition = dto.offsetPosition,
