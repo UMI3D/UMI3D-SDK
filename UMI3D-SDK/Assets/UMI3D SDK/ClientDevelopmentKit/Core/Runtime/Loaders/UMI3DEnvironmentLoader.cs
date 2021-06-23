@@ -706,8 +706,9 @@ namespace umi3d.cdk
                 float now = Time.time;
                 Instance.entityFilters[entityId][propertyKey].measuresPerSecond = 1 / (now - Instance.entityFilters[entityId][propertyKey].lastMessageTime);
                 Instance.entityFilters[entityId][propertyKey].lastMessageTime = now;
-                Debug.Log("To Do Kalman");
-                //Instance.PropertyKalmanUpdate(Instance.entityFilters[entityId][propertyKey], dto.value);
+                object value = null;
+                ReadValueEntity(ref value, propertyKey, container);
+                Instance.PropertyKalmanUpdate(Instance.entityFilters[entityId][propertyKey], value);
                 return true;
             }
             else

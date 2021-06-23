@@ -625,7 +625,7 @@ namespace umi3d.common
                             return bc;
                     break;
             }
-            throw new Exception($"Missing case [{typeof(T)} was not catched]");
+            throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
         public static Bytable WriteArray<T>(IEnumerable<T> value)
