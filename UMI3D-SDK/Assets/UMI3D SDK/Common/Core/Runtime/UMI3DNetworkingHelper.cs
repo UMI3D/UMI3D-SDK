@@ -293,8 +293,8 @@ namespace umi3d.common
                     }
                     break;
                 case true when typeof(T) == typeof(string):
-                    if (container.length == 0) throw new Exception($"String length should not be 0");
                     result = default(T);
+                    if (container.length == 0) return false;
                     uint s;
                     string r = "";
                     if (TryRead<uint>(container, out s))

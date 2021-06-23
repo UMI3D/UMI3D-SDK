@@ -40,6 +40,40 @@ namespace umi3d.common.collaboration
                         readable = false;
                     }
                     return true;
+                case true when typeof(T) == typeof(BoneBindingDto):
+                    string bindingId; 
+                    string rigName; 
+                    bool active;
+                    uint boneType;
+                    ulong objectId;
+                    SerializableVector3 offsetPosition;
+                    SerializableVector4 offsetRotation;
+                    if (UMI3DNetworkingHelper.TryRead(container, out bindingId)
+                        && UMI3DNetworkingHelper.TryRead(container, out rigName)
+                        && UMI3DNetworkingHelper.TryRead(container, out active)
+                        && UMI3DNetworkingHelper.TryRead(container, out boneType)
+                        && UMI3DNetworkingHelper.TryRead(container, out objectId)
+                        && UMI3DNetworkingHelper.TryRead(container, out offsetPosition)
+                        && UMI3DNetworkingHelper.TryRead(container, out offsetRotation))
+                    {
+                        var bone = new BoneBindingDto() { 
+                            bindingId = bindingId,
+                            rigName = rigName,
+                            active = active,
+                            boneType = boneType,
+                            objectId = objectId,
+                            offsetPosition = offsetPosition,
+                            offsetRotation = offsetRotation
+                        };
+                        result = (T)Convert.ChangeType(bone, typeof(T));
+                        readable = true;
+                    }
+                    else
+                    {
+                        result = default(T);
+                        readable = false;
+                    }
+                    return true;
                 //case true when typeof(T) == typeof(AbstractParameterDto):
                 //    readable = length >= sizeof(uint);
                 //    if (readable)

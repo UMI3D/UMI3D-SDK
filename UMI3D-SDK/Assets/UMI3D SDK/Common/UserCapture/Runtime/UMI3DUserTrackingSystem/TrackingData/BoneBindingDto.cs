@@ -22,7 +22,7 @@ namespace umi3d.common.userCapture
     /// Class to associate a bone to a node.
     /// </summary>
     [Serializable]
-    public class BoneBindingDto : UMI3DDto
+    public class BoneBindingDto : UMI3DDto, IByte
     {
         /// <summary>
         /// An identifier defined by the designer.
@@ -53,5 +53,21 @@ namespace umi3d.common.userCapture
 
         public SerializableVector4 offsetRotation;
 
+        public bool IsCountable()
+        {
+            return false;
+        }
+
+        public Bytable ToBytableArray(params object[] parameters)
+        {
+
+            return UMI3DNetworkingHelper.Write(bindingId)
+                + UMI3DNetworkingHelper.Write(rigName)
+                + UMI3DNetworkingHelper.Write(active)
+                + UMI3DNetworkingHelper.Write(boneType)
+                + UMI3DNetworkingHelper.Write(objectId)
+                + UMI3DNetworkingHelper.Write(offsetPosition)
+                + UMI3DNetworkingHelper.Write(offsetRotation);
+        }
     }
 }
