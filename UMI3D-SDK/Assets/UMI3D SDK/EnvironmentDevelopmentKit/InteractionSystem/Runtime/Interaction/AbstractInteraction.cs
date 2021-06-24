@@ -205,7 +205,11 @@ namespace umi3d.edk.interaction
 
         public virtual Bytable ToByte( UMI3DUser user)
         {
-            throw new NotImplementedException();
+            return UMI3DNetworkingHelper.Write(Id())
+                    + UMI3DNetworkingHelper.Write(Display.name)
+                    + Display.icon2D.ToByte()
+                    + Display.icon3D.ToByte()
+                    + UMI3DNetworkingHelper.Write(Display.description);
         }
 
         Bytable IByte.ToBytableArray(params object[] parameters)

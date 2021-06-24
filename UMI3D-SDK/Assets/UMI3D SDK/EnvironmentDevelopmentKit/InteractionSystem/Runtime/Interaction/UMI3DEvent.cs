@@ -88,6 +88,12 @@ namespace umi3d.edk.interaction
             }
         }
 
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                    + UMI3DNetworkingHelper.Write(Hold);
+        }
+
         /// <summary>
         /// Create an empty Dto.
         /// </summary>

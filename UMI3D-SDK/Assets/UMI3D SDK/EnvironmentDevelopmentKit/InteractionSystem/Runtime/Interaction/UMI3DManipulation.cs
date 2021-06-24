@@ -86,6 +86,12 @@ namespace umi3d.edk.interaction
                 mDto.dofSeparationOptions.Add(entity.ToDto(user));
         }
 
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                + UMI3DNetworkingHelper.Write(frameOfReference.Id())
+                + UMI3DNetworkingHelper.ListToBytable(dofSeparationOptions);
+        }
 
         /// <summary>
         /// Called by a user on interaction.
@@ -121,10 +127,21 @@ namespace umi3d.edk.interaction
         /// Degree of freedom group.
         /// </summary>
         [System.Serializable]
-        public class DofGroup
+        public class DofGroup : IByte
         {
             public string name;
             public DofGroupEnum dofs;
+
+            public bool IsCountable()
+            {
+                return true;
+            }
+
+            public Bytable ToBytableArray(params object[] parameters)
+            {
+                return UMI3DNetworkingHelper.Write(name)
+                    + UMI3DNetworkingHelper.Write((int)dofs);
+            }
 
             /// <summary>
             /// Convert to dto for a given user.
@@ -144,10 +161,21 @@ namespace umi3d.edk.interaction
         /// List of DofGroup.
         /// </summary>
         [System.Serializable]
-        public class DofGroupOption
+        public class DofGroupOption : IByte
         {
             public string name;
             public List<DofGroup> separations = new List<DofGroup>();
+
+            public bool IsCountable()
+            {
+                return true;
+            }
+
+            public Bytable ToBytableArray(params object[] parameters)
+            {
+                return UMI3DNetworkingHelper.Write(name)
+                    + UMI3DNetworkingHelper.ListToBytable(separations);
+            }
 
             /// <summary>
             /// Convert to dto for a given user.

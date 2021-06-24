@@ -56,6 +56,12 @@ namespace umi3d.edk.interaction
             (dto as StringParameterDto).value = value;
         }
 
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                + UMI3DNetworkingHelper.Write(value);
+        }
+
         ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {

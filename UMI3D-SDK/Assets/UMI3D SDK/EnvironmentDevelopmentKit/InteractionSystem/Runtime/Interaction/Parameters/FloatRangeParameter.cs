@@ -79,6 +79,15 @@ namespace umi3d.edk.interaction
             }
         }
 
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                + UMI3DNetworkingHelper.Write(min)
+                + UMI3DNetworkingHelper.Write(max)
+                + UMI3DNetworkingHelper.Write(increment)
+                + UMI3DNetworkingHelper.Write(value);
+        }
+
         ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
