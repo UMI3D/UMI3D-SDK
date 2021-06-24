@@ -1,4 +1,20 @@
-﻿using System.Collections.Generic;
+﻿/*
+Copyright 2019 - 2021 Inetum
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using umi3d.common.volume;
@@ -6,8 +22,14 @@ using umi3d.common;
 
 namespace umi3d.cdk.volumes
 {
+    /// <summary>
+    /// Centralise volume slice group management.
+    /// </summary>
 	public class VolumeSliceGroupManager : Singleton<VolumeSliceGroupManager>
 	{
+        /// <summary>
+        /// Handle waiting for an item reception.
+        /// </summary>
         public static class PendingManager
         {
             private static Dictionary<List<string>, List<UnityAction>> pendingCallbacks = new Dictionary<List<string>, List<UnityAction>>();
@@ -69,6 +91,8 @@ namespace umi3d.cdk.volumes
         public List<VolumeSliceGroup> GetVolumeSliceGroups() => new List<VolumeSliceGroup>(volumeSliceGroups.Values);
 
 
+        #region Exists
+
         public bool PointExists(string id)
         {
             return points.ContainsKey(id);
@@ -89,6 +113,10 @@ namespace umi3d.cdk.volumes
             return volumeSliceGroups.ContainsKey(id);
         }
 
+        #endregion
+
+        #region Create
+
         public Point GetPoint(string id)
         {
             return points[id];
@@ -108,6 +136,10 @@ namespace umi3d.cdk.volumes
         {
             return volumeSliceGroups[id];
         }
+
+        #endregion
+
+        #region Create
 
         public void CreatePoint(PointDto dto, UnityAction<Point> finished)
         {
@@ -208,11 +240,16 @@ namespace umi3d.cdk.volumes
             else
                 PendingManager.SubscribeToVolumeItemReception(idsNeeded, creation);
         }
+        
+        #endregion
 
-
+        #region Update
         /*
          * TODO : update functions
          */
+        #endregion
+
+        #region Delete
 
         public void DeletePoint(string id)
         {
@@ -242,12 +279,14 @@ namespace umi3d.cdk.volumes
         {
             volumeSliceGroups.Remove(id);
         }
+
         public void DeleteVolumeSlice(string id)
         {
             volumeSlices.Remove(id);
 
         }
 
+        #endregion
 
         public void OnDrawGizmos()
         {
