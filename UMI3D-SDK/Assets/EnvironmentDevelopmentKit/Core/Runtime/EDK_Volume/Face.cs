@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.edk.volume.volumedrawing
 {
-    public class Face : AbstractMovableObject
+    public class Face : AbstractMovableObject, IVolumeDescriptor
     {
 
         public Material material
@@ -237,7 +239,7 @@ namespace umi3d.edk.volume.volumedrawing
             List<Point> extrusionPoints = new List<Point>();
             for (int i = 0; i < basePointCount; i++)
             {
-                Point p = Instantiate(pointPrefab);
+                Point p = Instantiate(pointPrefab, this.transform);
                 p.transform.position = points[i].transform.position + surfaceNormal;
 
                 extrusionPoints.Add(p);
@@ -246,6 +248,7 @@ namespace umi3d.edk.volume.volumedrawing
             extrusionPoints.Reverse();
 
             GameObject newFaceGO = new GameObject();
+            newFaceGO.transform.parent = this.transform.parent;
             newFaceGO.name = "extrusion";
             Face newFace = newFaceGO.AddComponent<Face>();
             newFace.Setup();
@@ -269,6 +272,7 @@ namespace umi3d.edk.volume.volumedrawing
 
 
                 GameObject sideFaceGO = new GameObject();
+                sideFaceGO.transform.parent = this.transform.parent;
                 sideFaceGO.name = "sideFace";
                 Face sideFace = sideFaceGO.AddComponent<Face>();
                 sideFace.Setup();
@@ -288,6 +292,7 @@ namespace umi3d.edk.volume.volumedrawing
 
 
             GameObject lastSideFaceGO = new GameObject();
+            lastSideFaceGO.transform.parent = this.transform.parent;
             lastSideFaceGO.name = "sideFace";
             Face lastSideFace = lastSideFaceGO.AddComponent<Face>();
             lastSideFace.Setup();
@@ -432,5 +437,73 @@ namespace umi3d.edk.volume.volumedrawing
             });
             return face3;
         }
+
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new LoadEntity()
+            {
+                entity = this,
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
+            };
+            return operation;
+        }
+
+
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+            };
+            return operation;
+        }
+
+        public IEntity ToEntityDto(UMI3DUser user)
+        {
+            FaceDto dto = new FaceDto()
+            {
+                id = Id(),
+                pointsIds = points.ConvertAll(p => p.Id())
+            };
+
+            return dto;
+        }
+
+        private string id = "";
+        public string Id()
+        {
+            if (id.Equals(""))
+                id = Random.Range(0, 10000000000000000).ToString();
+            return id;
+        }
+
+
+        #region filter
+        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+        #endregion
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
 
@@ -37,6 +39,7 @@ namespace umi3d.edk.volume.volumedrawing
             else
             {
                 GameObject newLineGO = new GameObject("line from " + from + " to " + to);
+                newLineGO.transform.parent = from.transform;
                 Edge edge = newLineGO.AddComponent<Edge>();
                 edge.from = from;
                 edge.to = to;
@@ -278,5 +281,6 @@ namespace umi3d.edk.volume.volumedrawing
         {
             this.gameObject.SetActive(false);
         }
+
     }
 }

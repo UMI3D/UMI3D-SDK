@@ -16,6 +16,8 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.interaction;
+using umi3d.common.volume;
+using umi3d.edk.volume;
 using UnityEngine;
 
 
@@ -45,6 +47,15 @@ namespace umi3d.edk.interaction
                     break;
                 case InteractionRequestDto interaction:
                     UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.id)?.OnUserInteraction(user, interaction);
+                    break;
+                case VolumeUserTransitDto volumeTransit:
+                    IVolume volume = VolumeManager.Instance.volumes[volumeTransit.volumeId];
+                    if (volume == null)
+                        throw new System.Exception("Volume not found");
+                    if (volumeTransit.direction)
+                        volume.GetUserEnter().Invoke(user);
+                    else
+                        volume.GetUserExit().Invoke(user);
                     break;
                 default:
                     Debug.LogWarning($"Missing case {dto.GetType()}");

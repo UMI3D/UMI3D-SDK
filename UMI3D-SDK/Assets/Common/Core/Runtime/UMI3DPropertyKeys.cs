@@ -203,5 +203,14 @@ namespace umi3d.common
 
 
         #endregion
+
+        #region Volume
+        public const string PointPosition = "umi3D_volume_point_position";
+        public const string FacePointsIds = "umi3D_volume_face_pointsIds";
+        public const string VolumeSlices = "umi3D_volume_slices";
+        public const string VolumeSlicePoints = "umi3D_volume_slice_points";
+        public const string VolumeSliceEdges = "umi3D_volume_slice_edges";
+        public const string VolumeSliceFaces = "umi3D_volume_slice_faces";
+        #endregion
     }
 }

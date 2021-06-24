@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace umi3d.common.volume
 {
-	public class VolumeDto : VolumePartDto
+	public class VolumeSlicesGroupDto : AbstractVolumeCellDto
 	{
 		/// <summary>
 		/// List of ths volume's slices.
 		/// </summary>
-		public List<VolumeSliceDto> slices;
+		public List<string> slicesIds;
 	}
 }
