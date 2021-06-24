@@ -416,6 +416,8 @@ namespace umi3d.cdk
         /// </summary>
         static public void Clear()
         {
+            Instance.entityFilters.Clear();
+
             foreach (var entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
                 DeleteEntity(entity, null);
