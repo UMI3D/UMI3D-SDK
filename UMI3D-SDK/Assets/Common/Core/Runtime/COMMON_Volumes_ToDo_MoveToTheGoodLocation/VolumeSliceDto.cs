@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace umi3d.common.volume
 {
-	public class VolumeSliceDto : AbstractEntityDto, IEntity
+	public class VolumeSliceDto : AbstractVolumeDescriptor
 	{
 		public List<string> points;
 		public List<int> edges;
