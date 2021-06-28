@@ -122,7 +122,8 @@ namespace umi3d.edk.volume.volumedrawing
 
         protected virtual void OnDestroy()
         {
-            VolumeManager.Instance.volumes.Remove(Id());
+            if (VolumeManager.Instance != null) 
+                VolumeManager.Instance.volumes.Remove(Id());
         }
     }
 }
