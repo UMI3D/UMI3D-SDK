@@ -637,12 +637,6 @@ namespace umi3d.common.volume
             return surfaceNormal.normalized;
         }
 
-
-
-
-
-
-
         /// <summary>
         /// Get the faces of the base of a volume. 
         /// </summary>
@@ -752,7 +746,57 @@ namespace umi3d.common.volume
             return baseSurface;
         }
 
+        public static Mesh GetCylinder(Vector3 position, Quaternion rotation, Vector3 scale, float radius, float height, int subdiv = 16)
+        {
+            Mesh mesh = new Mesh();
 
+            List<Vector3> vertices = new List<Vector3>();
+            List<int> faces = new List<int>();
+
+            for (int i = 0; i < subdiv; i++)
+            {
+                vertices.Add(position + Vector3.Scale(scale, rotation * Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius));
+            }
+            for (int i = 0; i < subdiv; i++)
+            {
+                vertices.Add(position + Vector3.Scale(scale, rotation * (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
+            }
+
+            for(int i = 0; i < subdiv - 1; i++)
+            {
+                faces.Add(i);
+                faces.Add(i + 1);
+                faces.Add(i + subdiv);
+
+                faces.Add(i + 1);
+                faces.Add(i + subdiv + 1);
+                faces.Add(i + subdiv);
+
+                faces.Add(subdiv - 1);
+                faces.Add(i + 1);
+                faces.Add(i);
+
+                faces.Add(2 * subdiv - 1);
+                faces.Add(subdiv + i);
+                faces.Add(subdiv + i + 1);
+            }
+
+            faces.Add(subdiv - 1);
+            faces.Add(0);
+            faces.Add(subdiv + subdiv - 1);
+
+            faces.Add(0);
+            faces.Add(subdiv);
+            faces.Add(subdiv - 1 + subdiv);
+
+            mesh.vertices = vertices.ToArray();
+            mesh.triangles = faces.ToArray();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            mesh.RecalculateBounds();
+            mesh.OptimizeReorderVertexBuffer();
+            return mesh;
+        }
         
 
     }
