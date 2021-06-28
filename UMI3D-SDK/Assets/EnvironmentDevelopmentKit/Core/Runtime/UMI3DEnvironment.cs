@@ -25,6 +25,9 @@ namespace umi3d.edk
 {
     public class UMI3DEnvironment : Singleton<UMI3DEnvironment>
     {
+        [EditorReadOnly]
+        public bool useDto = false;
+
         #region initialization
         ///<inheritdoc/>
         protected override void Awake()
@@ -116,7 +119,7 @@ namespace umi3d.edk
 
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user) };
+            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user), usedDto = Instance.useDto };
         }
 
 

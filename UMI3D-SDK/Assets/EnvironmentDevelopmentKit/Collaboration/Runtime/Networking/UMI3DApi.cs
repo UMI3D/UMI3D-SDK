@@ -23,6 +23,7 @@ using System.Linq;
 using System.Text;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.userCapture;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -368,9 +369,9 @@ namespace umi3d.edk.collaboration
         [HttpPost(UMI3DNetworkingKeys.join, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void JoinEnvironment(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             JoinDto dto = ReadDto(e.Request) as JoinDto;
+            UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), dto.userSize, dto.trackedBonetypes); 
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
             UMI3DCollaborationServer.NotifyUserJoin(user);
         }

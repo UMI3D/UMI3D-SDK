@@ -13,31 +13,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using System;
 using System.Collections.Generic;
+using System.Linq;
+using umi3d.common;
 
-namespace umi3d.common.userCapture
+namespace umi3d.edk
 {
     /// <summary>
-    /// Abstract class to represent the root node of one user's representation.
+    /// An opertion to stop interpolation on a property's entity
     /// </summary>
-    [Serializable]
-    public class UMI3DAvatarNodeDto : UMI3DNodeDto
+    public class StopInterpolationProperty : AbstractInterpolationProperty
     {
         /// <summary>
-        /// The unique identifier of the user.
+        /// The value with which to stop interpolation
         /// </summary>
-        public string userId;
+        public object stopValue;
 
-        /// <summary>
-        /// A bool to enable or disable bindings
-        /// </summary>
-        public bool activeBindings;
-
-        /// <summary>
-        /// A list of bindings between the user's bones and their representations.
-        /// </summary>
-        public List<BoneBindingDto> bindings;
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            var stopInterpolation = new StopInterpolationPropertyDto();
+            stopInterpolation.property = property;
+            stopInterpolation.entityId = entityId;
+            stopInterpolation.stopValue = stopValue;
+            return stopInterpolation;
+        }
     }
 }

@@ -41,6 +41,18 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private UDPServer server;
 
+       
+
+        /// <summary>
+        /// Forge server environmentType
+        /// </summary>
+        public string environmentType="";
+
+        /// <summary>
+        /// Port given to clients if they find this server via a master server.
+        /// </summary>
+        public ushort connectionPort;
+
         /// <inheritdoc/>
         public override NetWorker GetNetWorker()
         {
@@ -58,7 +70,7 @@ namespace umi3d.edk.collaboration
         /// <param name="natServerPort"></param>
         /// <param name="maxNbPlayer"></param>
         /// <returns></returns>
-        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64)
+        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64)
         {
             UMI3DForgeServer server = (new GameObject("UMI3DForgeServer")).AddComponent<UMI3DForgeServer>();
             server.ip = ip;
@@ -68,6 +80,7 @@ namespace umi3d.edk.collaboration
             server.natServerHost = natServerHost;
             server.natServerPort = natServerPort;
             server.maxNbPlayer = maxNbPlayer;
+            server.connectionPort = connectionPort;
             return server;
         }
 
@@ -108,22 +121,22 @@ namespace umi3d.edk.collaboration
             {
                 Debug.LogWarning("A network manager was not provided, generating a new one instead");
                 networkManager = new GameObject("Network Manager");
-                mgr = networkManager.AddComponent<NetworkManager>();
+                mgr = networkManager.AddComponent<UMI3DNetworkManager>();
             }
             else if (mgr == null)
-                mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+                mgr = Instantiate(networkManager).GetComponent<UMI3DNetworkManager>();
 
             // If we are using the master server we need to get the registration data
             JSONNode masterServerData = null;
             if (!string.IsNullOrEmpty(masterServerHost))
             {
-                string serverId = "myGame";
-                string serverName = "Forge Game";
-                string type = "Deathmatch";
-                string mode = "Teams";
-                string comment = "Demo comment...";
+                string serverId = UMI3DCollaborationServer.Instance.sessionId;
+                string serverName = UMI3DCollaborationEnvironment.Instance.environmentName;// ok
+                string type = string.IsNullOrEmpty(environmentType) ? UMI3DCollaborationEnvironment.Instance.environmentName : environmentType;
+                string mode = string.IsNullOrEmpty(UMI3DCollaborationServer.Instance.iconServerUrl) ? "public/picture.png" : UMI3DCollaborationServer.Instance.iconServerUrl;
+                string comment = UMI3DCollaborationServer.Instance.descriptionComment;
 
-                masterServerData = mgr.MasterServerRegisterData(server, serverId, serverName, type, mode, comment);
+                masterServerData = (mgr as UMI3DNetworkManager).MasterServerRegisterData(server, connectionPort.ToString(), serverId, serverName, type, mode, comment);
             }
             mgr.Initialize(server, masterServerHost, masterServerPort, masterServerData);
             NetworkObject.Flush(server); //Called because we are already in the correct scene!
@@ -195,14 +208,14 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log("Player " + player.NetworkId + " disconnected");
+                Debug.Log($"Player [{player.NetworkId}] disconnected");
             });
             playerCount = server.Players.Count;
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user != null)
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
+                    //UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
                 });
         }
 
@@ -214,7 +227,10 @@ namespace umi3d.edk.collaboration
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (dto is StatusDto sts)
             {
-                Debug.Log(sts.status);
+                MainThreadManager.Run(() =>
+                {
+                    Debug.Log(sts.status);
+                });
                 UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
             }
         }
@@ -274,11 +290,26 @@ namespace umi3d.edk.collaboration
             if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
             {
                 avatarFrameEvent.Invoke((dto as common.userCapture.UserTrackingFrameDto), server.Time.Timestep);
+                UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame);
+                    UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
                 });
-                RelayMessage(player, frame, Receivers.OthersProximity);
+
+                if (user.Avatar != null && user.Avatar.RelayRoom != null)
+                {
+                    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
+
+                    if (relayVolume != null)
+                        MainThreadManager.Run(() =>
+                        {
+                            relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
+                        });
+                    else
+                        RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                }
+                else
+                    RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
             }
         }
 
@@ -290,7 +321,10 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVideoFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            Debug.LogError("Video frame not implemented!");
+            MainThreadManager.Run(() =>
+            {
+                Debug.LogError("Video frame not implemented!");
+            });
         }
 
         #endregion
@@ -300,7 +334,22 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            RelayMessage(player, frame);
+
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            if (user.Avatar != null && user.Avatar.RelayRoom != null)
+            {
+                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.VolumeId()];
+
+                if (relayVolume != null)
+                    MainThreadManager.Run(() =>
+                    {
+                        relayVolume.RelayVoIPRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
+                    });
+                else
+                    RelayMessage(player, frame);
+            }
+            else
+                RelayMessage(player, frame);
         }
 
         #endregion
@@ -310,17 +359,21 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        static readonly List<Receivers> Proximity = new List<Receivers> { Receivers.AllProximity, Receivers.AllProximityGrid, Receivers.OthersProximity, Receivers.OthersProximityGrid };
+        static readonly List<BeardedManStudios.Forge.Networking.Receivers> Proximity = new List<BeardedManStudios.Forge.Networking.Receivers> { BeardedManStudios.Forge.Networking.Receivers.AllProximity, BeardedManStudios.Forge.Networking.Receivers.AllProximityGrid, BeardedManStudios.Forge.Networking.Receivers.OthersProximity, BeardedManStudios.Forge.Networking.Receivers.OthersProximityGrid };
 
         /// <summary>
         /// 
         /// </summary>
         protected ulong minProximityRelay = 200;
 
+        protected uint maxFPSRelay = 5;
+
         /// <summary>
         /// 
         /// </summary>
         protected ulong maxProximityRelay = 1000;
+
+        protected uint minFPSRelay = 1;
 
         /// <summary>
         /// 
@@ -361,10 +414,11 @@ namespace umi3d.edk.collaboration
         /// <param name="player"></param>
         /// <param name="frame"></param>
         /// <param name="strategy"></param>
-        protected void RelayMessage(NetworkingPlayer player, Binary frame, Receivers strategy = Receivers.Others)
+        protected void RelayMessage(NetworkingPlayer player, Binary frame, BeardedManStudios.Forge.Networking.Receivers strategy = BeardedManStudios.Forge.Networking.Receivers.Others)
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
-            Binary message = new Binary(time, false, frame.StreamData, Receivers.Target, frame.GroupId, frame.IsReliable);
+            Binary message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
+            //message.SetSender(player);
             if (UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId)?.status == StatusType.ACTIVE)
                 lock (server.Players)
                 {
@@ -386,7 +440,7 @@ namespace umi3d.edk.collaboration
         /// <param name="timestep"></param>
         /// <param name="strategy"></param>
         /// <returns></returns>
-        protected bool ShouldRelay(int groupId, NetworkingPlayer from, NetworkingPlayer to, ulong timestep, Receivers strategy)
+        protected bool ShouldRelay(int groupId, NetworkingPlayer from, NetworkingPlayer to, ulong timestep, BeardedManStudios.Forge.Networking.Receivers strategy)
         {
             if (to.IsHost || from == to || UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(to.NetworkId)?.status != StatusType.ACTIVE)
                 return false;
@@ -396,7 +450,8 @@ namespace umi3d.edk.collaboration
                 if (last > 0)
                 {
                     ulong diff = timestep - last;
-                    if (diff < GetCurrentDelay(from, to))
+                    var currentDelay = GetCurrentDelay(from, to);
+                    if (diff < currentDelay)
                         return false;
                 }
             }
@@ -420,8 +475,8 @@ namespace umi3d.edk.collaboration
                 coeff = (dist - startProximityAt) / (proximityCutout - startProximityAt);
             }
             else if (dist >= proximityCutout)
-                coeff = 0f;
-            return (ulong)Mathf.RoundToInt((1f - coeff) * minProximityRelay + coeff * maxProximityRelay);
+                coeff = 1f;
+            return (ulong)Mathf.RoundToInt(1000 / Mathf.Floor((1f - coeff) * maxFPSRelay + coeff * minFPSRelay));
         }
 
         //relayMemory[p1][p2][gi] = a ulong corresponding to the last time player p1 sent a message to p2 in the gi channel
@@ -494,8 +549,7 @@ namespace umi3d.edk.collaboration
             bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-            Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Target, channel, isTcp);
-
+            Binary bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.Target, channel, isTcp);
             try
             {
                 server.Send(player, bin, isReliable);
@@ -504,9 +558,21 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log($"Error on send binary to {player.NetworkId} on channel {channel} [{e}]");
+                    Debug.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]");
                 });
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="channel"></param>
+        /// <param name="player"></param>
+        /// <param name="data"></param>
+        /// <param name="isRealiable"></param>
+        public void RelayBinaryDataTo(int channel, NetworkingPlayer player, byte[] data, bool isRealiable)
+        {
+            SendBinaryDataTo(channel, player, data, isRealiable);
         }
 
         /// <summary>
@@ -520,7 +586,7 @@ namespace umi3d.edk.collaboration
             ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
             bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
-            Binary bin = new Binary(timestep, isTcpClient, data, Receivers.Others, channel, isTcp);
+            Binary bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.Others, channel, isTcp);
             server.Send(bin, isReliable);
         }
 

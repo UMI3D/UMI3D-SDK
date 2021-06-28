@@ -22,6 +22,14 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
+        public GameObject UnitSkeleton;
+
+        protected override void Start()
+        {
+            base.Start();
+            avatarEvent.AddListener(UMI3DCollaborativeUserAvatar.SkeletonCreation);
+        }
+
         ///<inheritdoc/>
         protected override IEnumerator DispatchTracking()
         {
@@ -45,7 +53,7 @@ namespace umi3d.cdk.collaboration
         {
             yield return new WaitUntil(() => UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected());
 
-            UMI3DCollaborationClientServer.Instance.ForgeClient.SendBrowserRequest(CameraPropertiesDto, true);
+            base.DispatchCamera();
         }
     }
 }

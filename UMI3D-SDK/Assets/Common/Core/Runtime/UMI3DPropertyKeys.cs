@@ -170,6 +170,9 @@ namespace umi3d.common
         public const string AnimationDuration = "umi3d_animation_duration";
         public const string AnimationChain = "umi3d_animation_chain";
 
+        public const string AnimationNodeId = "umi3d_animation_node_id";
+        public const string AnimationStateName = "umi3d_animation_state_name";
+
         #endregion
 
         #region Material

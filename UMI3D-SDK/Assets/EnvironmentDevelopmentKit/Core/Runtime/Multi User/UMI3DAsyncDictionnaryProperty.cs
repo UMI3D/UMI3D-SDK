@@ -160,11 +160,12 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="key">the index</param>
         /// <param name="value">the new property's value</param>
-        public SetEntityProperty SetValue(T key, L value)
+        /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        public SetEntityProperty SetValue(T key, L value, bool forceOperation = false)
         {
             var oldValue = GetValue()[key];
 
-            if (oldValue == null && value == null || oldValue != null && Equal(oldValue, value))
+            if ((oldValue == null && value == null || oldValue != null && Equal(oldValue, value)) || !forceOperation)
                 return null;
             GetValue()[key] = value;
 
@@ -200,7 +201,8 @@ namespace umi3d.edk
         /// <param name="user">the user</param>
         /// <param name="key">the index</param>
         /// <param name="value">the new property's value</param>
-        public SetEntityProperty SetValue(UMI3DUser user, T key, L value)
+        /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        public SetEntityProperty SetValue(UMI3DUser user, T key, L value, bool forceOperation = false)
         {
             var oldValue = GetValue(user)[key];
 
@@ -216,14 +218,14 @@ namespace umi3d.edk
 
             if (asyncValues.ContainsKey(user))
             {
-                if (oldValue == null && value == null || Equal(oldValue, value))
+                if ((oldValue == null && value == null || Equal(oldValue, value) ) && !forceOperation )
                     return null;
                 else
                 {
                     GetValue(user)[key] = value;
                     if (OnUserInnerValueChanged != null)
                         OnUserInnerValueChanged.Invoke(key, user, value);
-                    if (!UserDesync.Contains(user))
+                    if (!UserDesync.Contains(user) || forceOperation)
                         return operation;
                     else
                         return null;
@@ -235,7 +237,7 @@ namespace umi3d.edk
                 GetValue(user)[key] = value;
                 if (OnUserInnerValueChanged != null)
                     OnUserInnerValueChanged.Invoke(key, user, value);
-                if (!UserDesync.Contains(user))
+                if (!UserDesync.Contains(user) || forceOperation)
                     return operation;
                 else
                     return null;

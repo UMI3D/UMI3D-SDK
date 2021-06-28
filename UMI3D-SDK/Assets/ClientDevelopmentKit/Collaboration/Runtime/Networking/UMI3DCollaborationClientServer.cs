@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
@@ -31,6 +32,8 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
         public static new UMI3DCollaborationClientServer Instance { get { return UMI3DClientServer.Instance as UMI3DCollaborationClientServer; } set { UMI3DClientServer.Instance = value; } }
+
+        public static bool useDto { protected set; get; } = false;
 
         static public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
@@ -304,7 +307,8 @@ namespace umi3d.cdk.collaboration
 
             JoinDto joinDto = new JoinDto()
             {
-                bonesList = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => trackingBone.ToDto(UMI3DCollaborationClientUserTracking.Instance.anchor)).ToList(),
+                trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<string, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(x => x.Key, x => x.Value),
+                userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
             };
 
             Instance.HttpClient.SendPostJoin(
@@ -367,6 +371,7 @@ namespace umi3d.cdk.collaboration
 
         void EnterScene(EnterDto enter)
         {
+            useDto = enter.usedDto;
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {

@@ -15,26 +15,11 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
-    /// <summary>
-    /// A request to inform about the current pose of the user.
-    /// </summary>
-    [Serializable]
-    public class UserTrackingFrameDto : AbstractBrowserRequestDto
+    public class SetSendingTrackingDto : AbstractOperationDto
     {
-        public string userId;
-
-        public List<BoneDto> bones;
-
-        public SerializableVector3 position;
-
-        public SerializableVector4 rotation;
-
-        public SerializableVector3 scale;
-
-        public float refreshFrequency;
+        public bool activeSending;
     }
 }

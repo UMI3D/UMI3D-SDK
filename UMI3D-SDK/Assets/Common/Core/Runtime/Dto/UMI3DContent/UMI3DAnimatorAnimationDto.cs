@@ -14,28 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using System.Collections.Generic;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
-    /// <summary>
-    /// Class to describe a bone's 6-D pose in the frame of reference of a user.
-    /// </summary>
-    [Serializable]
-    public class BoneDto : UMI3DDto
+    [System.Serializable]
+    public class UMI3DAnimatorAnimationDto : UMI3DAbstractAnimationDto
     {
-        /// <summary>
-        /// Defines the type of the bone.
-        /// </summary>
-        public string boneType;
-
-        public bool tracked;
-
-        public SerializableVector3 position;
-
-        public SerializableVector4 rotation;
-
-        public SerializableVector3 scale;
-
+        public string nodeId = "";
+        public string stateName = "";
     }
 }

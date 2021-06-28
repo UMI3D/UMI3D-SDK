@@ -31,24 +31,17 @@ namespace umi3d.cdk.userCapture
 
         public bool isTracked;
 
-        //public virtual string id { get { return this.gameObject.GetInstanceID().ToString(); } }
-
         /// <summary>
         /// Convert this bone to a dto.
         /// </summary>
         /// <param name="Anchor">Frame of reference</param>
         /// <returns></returns>
-        public BoneDto ToDto(Transform Anchor)
+        public BoneDto ToDto()
         {
             return boneType == BoneType.None ? null : new BoneDto()
             {
                 boneType = boneType,
-                position = Vector3.Scale(
-                    Anchor.InverseTransformPoint(transform.position),
-                    Anchor.lossyScale),
-                rotation = Quaternion.Inverse(Anchor.rotation) * transform.rotation,
-                scale = transform.lossyScale,
-                tracked = isTracked
+                rotation = this.transform.localRotation,
             };
         }
 

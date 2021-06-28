@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ConfigServer xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <nameParam>UMI3D server</nameParam>
+  <ipParam>localhost</ipParam>
+  <authParam>None</authParam>
+  <tokenLifeParam>10</tokenLifeParam>
+  <httpPortParam>0</httpPortParam>
+  <udpportParam>0</udpportParam>
+  <masterIpParam></masterIpParam>
+  <masterPortParam>0</masterPortParam>
+  <natIpParam></natIpParam>
+  <natPortParam>0</natPortParam>
+  <playersParam>42</playersParam>
+  <sessionIdParam></sessionIdParam>
+  <sessionCommentParam>comment</sessionCommentParam>
+  <iconUrlParam></iconUrlParam>
+</ConfigServer>
