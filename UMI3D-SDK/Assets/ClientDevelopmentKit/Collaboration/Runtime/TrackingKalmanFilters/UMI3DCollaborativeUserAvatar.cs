@@ -42,7 +42,7 @@ namespace umi3d.cdk.collaboration
             {
                 RegressionRotation(boneRotationFilters[boneType]);
 
-                Transform boneTransform = userAnimator.GetBoneTransform(BoneTypeConverter.Convert(boneType).GetValueOrDefault());
+                Transform boneTransform = userAnimator.GetBoneTransform(boneType.Convert().GetValueOrDefault());
                 boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
 
                 List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
