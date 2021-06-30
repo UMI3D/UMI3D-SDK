@@ -488,29 +488,35 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ShaderProperties:
                     Debug.LogWarning("not totaly implemented");
                     var extension = glTFMaterialDto.extensions.umi3d;
+                    string key;
+                    object value;
                     //TODO
                     switch (operationId)
                     {
-                        //case UMI3DOperationKeys.SetEntityDictionnaryAddProperty:
-                        //    //  string key = (string)p.key;
-                        //    if (extension.shaderProperties.ContainsKey((string)p.key))
-                        //    {
-                        //        extension.shaderProperties[(string)p.key] = p.value;
-                        //        Debug.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value");
-                        //    }
-                        //    else
-                        //        extension.shaderProperties.Add((string)p.key, p.value);
-                        //    break;
-                        //case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
-                        //    extension.shaderProperties.Remove((string)p.key);
-                        //    Debug.LogWarning("Warning a property is removed but it cannot be applied");
-                        //    break;
-                        //case UMI3DOperationKeys.SetEntityDictionnaryProperty:
-                        //    extension.shaderProperties[(string)p.key] = p.value;
-                        //    break;
-                        //case UMI3DOperationKeys.SetEntityProperty:
-                        //    extension.shaderProperties = (Dictionary<string, object>)p.value;
-                        //    break;
+                        case UMI3DOperationKeys.SetEntityDictionnaryAddProperty:
+                            key = UMI3DNetworkingHelper.Read<string>(container);
+                            value = UMI3DNetworkingHelper.ReadObject(container);
+                            if (extension.shaderProperties.ContainsKey(key))
+                            {
+                                extension.shaderProperties[key] = value;
+                                Debug.LogWarning($"this key [{key}] already exists. Update old value");
+                            }
+                            else
+                                extension.shaderProperties.Add(key, value);
+                            break;
+                        case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
+                            key = UMI3DNetworkingHelper.Read<string>(container);
+                            extension.shaderProperties.Remove((string)p.key);
+                            Debug.LogWarning("Warning a property is removed but it cannot be applied");
+                            break;
+                        case UMI3DOperationKeys.SetEntityDictionnaryProperty:
+                            key = UMI3DNetworkingHelper.Read<string>(container);
+                            value = UMI3DNetworkingHelper.ReadObject(container);
+                            extension.shaderProperties[key] = value;
+                            break;
+                        case UMI3DOperationKeys.SetEntityProperty:
+                            extension.shaderProperties = UMI3DNetworkingHelper.Read<Dictionary<string, object>>(container);
+                            break;
 
                         default:
                             break;
