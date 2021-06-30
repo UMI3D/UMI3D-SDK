@@ -54,7 +54,7 @@ namespace umi3d.common
                 + UMI3DNetworkingHelper.Write(path)
                 + UMI3DNetworkingHelper.Write(metrics.resolution)
                 + UMI3DNetworkingHelper.Write(metrics.size)
-                + UMI3DNetworkingHelper.Write((IEnumerable<string>)formats);
+                + UMI3DNetworkingHelper.WriteCollection(formats);
         }
         //public List<string> dependencies = new List<string>();
     }

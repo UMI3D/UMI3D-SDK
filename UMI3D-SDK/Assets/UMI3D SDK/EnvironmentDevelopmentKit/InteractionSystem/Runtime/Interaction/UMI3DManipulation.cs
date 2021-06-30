@@ -90,7 +90,7 @@ namespace umi3d.edk.interaction
         {
             return base.ToByte(user)
                 + UMI3DNetworkingHelper.Write(frameOfReference.Id())
-                + UMI3DNetworkingHelper.Write((IEnumerable<IBytable>)dofSeparationOptions);
+                + UMI3DNetworkingHelper.WriteIBytableCollection(dofSeparationOptions);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace umi3d.edk.interaction
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return UMI3DNetworkingHelper.Write(name)
-                    + UMI3DNetworkingHelper.Write((IEnumerable<IBytable>)separations);
+                    + UMI3DNetworkingHelper.WriteIBytableCollection((IEnumerable<IBytable>)separations);
             }
 
             /// <summary>

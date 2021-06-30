@@ -92,7 +92,7 @@ namespace umi3d.edk
 
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(animationChain, user)
+            return UMI3DNetworkingHelper.WriteIBytableCollection(animationChain, user)
                 + UMI3DNetworkingHelper.Write(objectDuration.GetValue(user));
         }
     }

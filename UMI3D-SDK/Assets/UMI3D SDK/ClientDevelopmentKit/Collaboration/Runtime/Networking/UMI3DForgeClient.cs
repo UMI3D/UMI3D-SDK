@@ -238,7 +238,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var bytable = UMI3DNetworkingHelper.Write(Me) + UMI3DNetworkingHelper.Write(sample.Take(length));
+                var bytable = UMI3DNetworkingHelper.Write(Me) + UMI3DNetworkingHelper.WriteCollection(sample.Take(length));
                 voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), Receivers.All, MessageGroupIds.VOIP, false);
             }
             client.Send(voice);

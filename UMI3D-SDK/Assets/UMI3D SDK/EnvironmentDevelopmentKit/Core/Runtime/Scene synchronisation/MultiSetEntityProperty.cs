@@ -42,7 +42,7 @@ namespace umi3d.edk
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty)
-                + UMI3DNetworkingHelper.Write(entityIds.Select(e => e.Id()))
+                + UMI3DNetworkingHelper.WriteCollection(entityIds.Select(e => e.Id()))
                 + UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
                 + UMI3DNetworkingHelper.Write(property)
                 + UMI3DNetworkingHelper.Write(value);

@@ -66,7 +66,7 @@ namespace umi3d.edk.interaction
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write((IEnumerable<string>)options)
+                + UMI3DNetworkingHelper.WriteCollection(options)
                 + UMI3DNetworkingHelper.Write(value);
         }
 

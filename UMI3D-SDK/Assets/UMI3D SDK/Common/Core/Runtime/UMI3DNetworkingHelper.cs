@@ -637,7 +637,7 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
-        public static Bytable Write<T>(IEnumerable<T> value)
+        public static Bytable WriteCollection<T>(IEnumerable<T> value)
         {
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
             foreach (var v in value)
@@ -645,7 +645,7 @@ namespace umi3d.common
             return b;
         }
 
-        public static Bytable Write(IEnumerable<byte> value)
+        public static Bytable WriteCollection(IEnumerable<byte> value)
         {
             var count = value.Count();
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(count);
@@ -657,7 +657,7 @@ namespace umi3d.common
             return b + new Bytable(count, f);
         }
 
-        public static Bytable Write(IEnumerable<IBytable> ibytes, params object[] parameters)
+        public static Bytable WriteIBytableCollection(IEnumerable<IBytable> ibytes, params object[] parameters)
         {
             if (ibytes.Count() > 0)
             {
