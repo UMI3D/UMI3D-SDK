@@ -40,12 +40,13 @@ namespace umi3d.edk.collaboration
 
         DateTime lastUpdate = new DateTime();
 
-        public void SetLastUpdate(UMI3DCollaborationUser user) { if(users.ContainsValue(user)) SetLastUpdate(); }
-        void SetLastUpdate() {  lastUpdate = DateTime.UtcNow; }
+        public void SetLastUpdate(UMI3DCollaborationUser user) { if (users.ContainsValue(user)) SetLastUpdate(); }
+        void SetLastUpdate() { lastUpdate = DateTime.UtcNow; }
         public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
-            get {
-                if (_objectUserList == null) _objectUserList =  new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(),  (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto() : (object)u);
+            get
+            {
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto() : (object)u);
                 return _objectUserList;
             }
         }
@@ -62,12 +63,12 @@ namespace umi3d.edk.collaboration
         public PlayerCountDto GetPlayerCount()
         {
             var pc = new PlayerCountDto();
-            pc.count = users.Count(k=>k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY);
+            pc.count = users.Count(k => k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY);
             pc.lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss");
             return pc;
         }
 
-        
+
 
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
@@ -116,7 +117,8 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public IEnumerable<UMI3DCollaborationUser> Users
         {
-            get {
+            get
+            {
                 lock (users)
                 {
                     return users.Values.ToList();

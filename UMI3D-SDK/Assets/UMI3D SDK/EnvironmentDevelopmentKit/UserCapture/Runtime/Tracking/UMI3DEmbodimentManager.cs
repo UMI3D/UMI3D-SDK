@@ -69,7 +69,7 @@ namespace umi3d.edk.userCapture
         {
             if (embodimentSize.ContainsKey(userId))
                 Debug.LogWarning("Internal error : the user size is already registered");
-            else 
+            else
                 embodimentSize.Add(userId, (Vector3)userSize);
 
             if (embodimentTrackedBonetypes.ContainsKey(userId))

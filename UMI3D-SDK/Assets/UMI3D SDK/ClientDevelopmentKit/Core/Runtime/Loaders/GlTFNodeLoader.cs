@@ -146,7 +146,7 @@ namespace umi3d.cdk
         /// <returns>state if the property was handled</returns>
         static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey,container))
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey, container))
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
@@ -171,7 +171,7 @@ namespace umi3d.cdk
 
         static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey,container))
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey, container))
                 return true;
             switch (propertyKey)
             {

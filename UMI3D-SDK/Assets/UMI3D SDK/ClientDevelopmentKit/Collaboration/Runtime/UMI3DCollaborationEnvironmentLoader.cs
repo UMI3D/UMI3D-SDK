@@ -55,14 +55,14 @@ namespace umi3d.cdk.collaboration
 
         protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if( base._SetUMI3DPorperty(entity, operationId, propertyKey,container)) return true;
+            if (base._SetUMI3DPorperty(entity, operationId, propertyKey, container)) return true;
             if (entity == null) return false;
             var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return false;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.UserList:
-                    return SetUserList(dto, operationId, propertyKey,container);
+                    return SetUserList(dto, operationId, propertyKey, container);
                 default:
                     return false;
             }

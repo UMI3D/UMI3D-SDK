@@ -218,7 +218,7 @@ namespace umi3d.edk
 
             if (asyncValues.ContainsKey(user))
             {
-                if ((oldValue == null && value == null || Equal(oldValue, value) ) && !forceOperation )
+                if ((oldValue == null && value == null || Equal(oldValue, value)) && !forceOperation)
                     return null;
                 else
                 {

@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture
     {
         public static Dictionary<uint, UMI3DClientUserTrackingBone> instances = new Dictionary<uint, UMI3DClientUserTrackingBone>();
 
-        [ConstEnum(typeof(BoneType),typeof(uint))]
+        [ConstEnum(typeof(BoneType), typeof(uint))]
         public uint boneType;
 
         public bool isTracked;

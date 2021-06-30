@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
 namespace umi3d.common.interaction
 {
     /// <summary>
@@ -43,8 +41,8 @@ namespace umi3d.common.interaction
             if (rotation == null)
                 rotation = new SerializableVector4();
 
-            return base.ToBytableArray(parameters) 
-                + UMI3DNetworkingHelper.Write(translation) 
+            return base.ToBytableArray(parameters)
+                + UMI3DNetworkingHelper.Write(translation)
                 + UMI3DNetworkingHelper.Write(rotation);
         }
     }

@@ -80,7 +80,8 @@ namespace umi3d.common.collaboration
         /// </summary>
         public ulong Timestep
         {
-            get {
+            get
+            {
                 if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
                     return 0;
                 return NetworkManager.Instance.Networker.Time.Timestep;
@@ -92,7 +93,8 @@ namespace umi3d.common.collaboration
         /// </summary>
         public ulong BandwidthIn
         {
-            get {
+            get
+            {
                 if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
                     return 0;
                 return NetworkManager.Instance.Networker.BandwidthIn;
@@ -104,7 +106,8 @@ namespace umi3d.common.collaboration
         /// </summary>
         public ulong BandwidthOut
         {
-            get {
+            get
+            {
                 if (NetworkManager.Instance == null || NetworkManager.Instance.Networker == null)
                     return 0;
                 return NetworkManager.Instance.Networker.BandwidthOut;

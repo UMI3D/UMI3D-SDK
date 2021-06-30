@@ -400,7 +400,8 @@ namespace umi3d.cdk.collaboration
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
-        protected override void _GetEntity(ulong id,Action<LoadEntityDto> callback, Action<string> onError)
+        ///<inheritdoc/>
+        protected override void _GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError)
         {
             var dto = new EntityRequestDto() { entityId = id };
             HttpClient.SendPostEntity(dto, callback, onError);
@@ -415,6 +416,7 @@ namespace umi3d.cdk.collaboration
             return ForgeClient.GetNetWorker().Time.Timestep;
         }
 
+        ///<inheritdoc/>
         protected override string _getAuthorization() { return HttpClient.ComputedToken; }
     }
 }

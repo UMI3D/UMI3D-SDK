@@ -31,10 +31,12 @@ namespace umi3d.cdk
         /// </summary>
         public static MediaDto Media
         {
-            get {
+            get
+            {
                 return Exists ? Instance.environment : null;
             }
-            set {
+            set
+            {
                 if (Exists)
                     Instance.environment = value;
             }
@@ -72,13 +74,13 @@ namespace umi3d.cdk
 
         protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { onError.Invoke("GetFile Not Implemented"); }
 
-        static public void GetEntity(ulong id,Action<LoadEntityDto> callback, Action<string> onError)
+        static public void GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError)
         {
             if (Exists)
-                Instance._GetEntity(id,callback, onError);
+                Instance._GetEntity(id, callback, onError);
         }
 
-        protected virtual void _GetEntity(ulong id,Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
+        protected virtual void _GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
 
         public virtual ulong GetId() { return 0; }
 

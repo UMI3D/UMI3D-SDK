@@ -64,7 +64,7 @@ namespace umi3d.cdk.interaction
         {
             var dto = (entity?.dto as InteractableDto);
             if (dto == null) return false;
-            if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey,container)) return true;
+            if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.InteractableNotifyHoverPosition:
@@ -89,7 +89,7 @@ namespace umi3d.cdk.interaction
 
         static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey,container)) return true;
+            if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.InteractableNotifyHoverPosition:

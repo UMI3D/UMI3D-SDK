@@ -88,7 +88,7 @@ namespace umi3d.cdk.interaction
                     dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxTools:
-                    return SetTools(dto, tool, operationId, propertyKey,container);
+                    return SetTools(dto, tool, operationId, propertyKey, container);
                 case UMI3DPropertyKeys.ToolActive:
                     dto.Active = UMI3DNetworkingHelper.Read<bool>(container); ;
                     break;
@@ -115,7 +115,7 @@ namespace umi3d.cdk.interaction
                     value = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     break;
                 case UMI3DPropertyKeys.ToolboxTools:
-                    return SetTools(ref value, propertyKey,container);
+                    return SetTools(ref value, propertyKey, container);
                 case UMI3DPropertyKeys.ToolActive:
                     value = UMI3DNetworkingHelper.Read<bool>(container); ;
                     break;

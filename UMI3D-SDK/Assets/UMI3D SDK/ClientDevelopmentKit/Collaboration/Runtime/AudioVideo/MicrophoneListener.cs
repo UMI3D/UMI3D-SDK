@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using umi3d.common;
 using UnityEngine;
@@ -33,7 +31,8 @@ namespace umi3d.cdk.collaboration
         public static bool IsMute
         {
             get { return Exists ? Instance.muted : false; }
-            set {
+            set
+            {
                 if (Exists)
                 {
                     if (Instance.muted != value)

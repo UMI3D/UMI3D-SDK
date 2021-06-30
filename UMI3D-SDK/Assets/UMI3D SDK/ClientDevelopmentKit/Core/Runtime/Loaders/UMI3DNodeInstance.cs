@@ -32,7 +32,8 @@ namespace umi3d.cdk
         private List<Renderer> _renderers;
         public List<Renderer> renderers
         {
-            get {
+            get
+            {
                 if (_renderers == null)
                     _renderers = new List<Renderer>();
                 return _renderers;
@@ -43,7 +44,8 @@ namespace umi3d.cdk
         private List<Collider> _colliders;
         public List<Collider> colliders
         {
-            get {
+            get
+            {
                 if (_colliders == null)
                     _colliders = new List<Collider>();
                 return _colliders;
@@ -57,7 +59,8 @@ namespace umi3d.cdk
         private List<UMI3DNodeInstance> _subNodeInstances;
         public List<UMI3DNodeInstance> subNodeInstances
         {
-            get {
+            get
+            {
                 if (_subNodeInstances == null)
                     _subNodeInstances = new List<UMI3DNodeInstance>();
                 return _subNodeInstances;

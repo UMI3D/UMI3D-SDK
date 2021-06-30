@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.common;
+﻿using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.userCapture;
-using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {

@@ -17,8 +17,6 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.SimpleJSON;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class LaucherOnMasterServer
@@ -41,7 +39,7 @@ public class LaucherOnMasterServer
         else
         {
             ushort port;
-            if( ushort.TryParse(tab[1], out port))
+            if (ushort.TryParse(tab[1], out port))
             {
                 ConnectToMasterServer(callback, tab[0], port);
             }
@@ -103,7 +101,7 @@ public class LaucherOnMasterServer
             // Send the request to the server
             Debug.Log("send request to master server");
             //client.binaryMessageReceived += (x,y,z) => { Debug.Log("bin massage received"); };
-            client.textMessageReceived += (player, frame, sender) => { Debug.Log("Receive message from master server");  ReceiveMasterDatas(player, frame, sender, UIcallback); };
+            client.textMessageReceived += (player, frame, sender) => { Debug.Log("Receive message from master server"); ReceiveMasterDatas(player, frame, sender, UIcallback); };
             client.Send(BeardedManStudios.Forge.Networking.Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
             Debug.Log("request send to master server... ");
 
@@ -139,12 +137,12 @@ public class LaucherOnMasterServer
                         Debug.Log("Name: " + server.Name);
                         Debug.Log("Address: " + server.Address);
                         Debug.Log("Port: " + server.Port);
-                    /*    Debug.Log("Comment: " + server.Comment);
-                        Debug.Log("Type: " + server.Type);
-                        Debug.Log("Mode: " + server.Mode);
-                        Debug.Log("Players: " + server.PlayerCount);
-                        Debug.Log("Max Players: " + server.MaxPlayers);
-                        Debug.Log("Protocol: " + server.Protocol);*/
+                        /*    Debug.Log("Comment: " + server.Comment);
+                            Debug.Log("Type: " + server.Type);
+                            Debug.Log("Mode: " + server.Mode);
+                            Debug.Log("Players: " + server.PlayerCount);
+                            Debug.Log("Max Players: " + server.MaxPlayers);
+                            Debug.Log("Protocol: " + server.Protocol);*/
 
                         // Update UI or something with the above data
                         UICallback.Invoke(server);
@@ -170,7 +168,7 @@ public class LaucherOnMasterServer
     // disconnect TCPMasterClient
     ~LaucherOnMasterServer()
     {
-        if(client != null)
+        if (client != null)
         {
             // If anything fails, then this client needs to be disconnected
             client.Disconnect(true);

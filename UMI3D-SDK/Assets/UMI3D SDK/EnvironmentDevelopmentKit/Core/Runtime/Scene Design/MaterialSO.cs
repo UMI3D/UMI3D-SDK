@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -56,7 +55,7 @@ namespace umi3d.edk
 
         protected void RegisterMaterial(AbstractEntityDto mat)
         {
-            if ( mat.id != 0 || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
+            if (mat.id != 0 || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
             {
                 mat.id = UMI3DEnvironment.Register(this);
                 SetId(mat.id);

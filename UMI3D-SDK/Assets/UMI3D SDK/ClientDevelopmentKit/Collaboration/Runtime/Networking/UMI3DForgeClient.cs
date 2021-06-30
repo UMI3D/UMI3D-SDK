@@ -383,7 +383,7 @@ namespace umi3d.cdk.collaboration
 
         #region VoIP
 
-        
+
 
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
@@ -405,7 +405,7 @@ namespace umi3d.cdk.collaboration
                     AudioManager.Instance.Read(source.id, UMI3DNetworkingHelper.ReadByteArray(container), client.Time.Timestep);
             }
 
-           
+
         }
 
 

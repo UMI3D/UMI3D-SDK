@@ -126,7 +126,7 @@ namespace umi3d.cdk
                             if (extension.applyCustomMaterial)
                             {
                                 RevertToOriginalMaterial((UMI3DNodeInstance)entity);
-                                extension.overridedMaterials = (prop.value as List<object>)?.Select(i => i as UMI3DRenderedNodeDto.MaterialOverrideDto).Where(i=>i!=null).ToList();
+                                extension.overridedMaterials = (prop.value as List<object>)?.Select(i => i as UMI3DRenderedNodeDto.MaterialOverrideDto).Where(i => i != null).ToList();
 
                                 SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
 
@@ -171,7 +171,7 @@ namespace umi3d.cdk
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
+            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             if (entity == null) return false;
             var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
             if (extension == null) return false;
@@ -325,7 +325,7 @@ namespace umi3d.cdk
         }
 
 
-            public void SetMaterialOverided(UMI3DRenderedNodeDto dto, UMI3DNodeInstance instance)
+        public void SetMaterialOverided(UMI3DRenderedNodeDto dto, UMI3DNodeInstance instance)
         {
             if (dto != null && dto.applyCustomMaterial && dto.overridedMaterials != null)
             {

@@ -14,12 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using BeardedManStudios.Forge.Networking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.collaboration;
-using umi3d.edk;
 using umi3d.edk.userCapture;
 using UnityEngine;
 

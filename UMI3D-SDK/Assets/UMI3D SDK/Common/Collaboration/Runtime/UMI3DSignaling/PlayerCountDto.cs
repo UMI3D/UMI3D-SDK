@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
-
 namespace umi3d.common.collaboration
 {
     public class PlayerCountDto : UMI3DDto
@@ -29,6 +26,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Last change date with format "MM:dd:yyyy:HH:mm:ss";
         /// </summary>
-        public string lastUpdate; 
+        public string lastUpdate;
     }
 }

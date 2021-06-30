@@ -41,12 +41,12 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private UDPServer server;
 
-       
+
 
         /// <summary>
         /// Forge server environmentType
         /// </summary>
-        public string environmentType="";
+        public string environmentType = "";
 
         /// <summary>
         /// Port given to clients if they find this server via a master server.
@@ -346,7 +346,7 @@ namespace umi3d.edk.collaboration
                     trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
-                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto> (container);
+                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
 
                     avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
 

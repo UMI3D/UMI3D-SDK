@@ -16,9 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using umi3d.edk.collaboration;
 using UnityEditor;
-using UnityEngine;
 
 
 namespace umi3d.edk.collaboration.editor
@@ -28,7 +26,7 @@ namespace umi3d.edk.collaboration.editor
     public class RelayDescriptionEditor : Editor
     {
         static bool showInsideVolume = false;
-        static bool showOutsideVolume = false; 
+        static bool showOutsideVolume = false;
 
         SerializedProperty insideVolumeSendData;
         SerializedProperty insideSendingStrategy;

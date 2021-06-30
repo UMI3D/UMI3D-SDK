@@ -30,7 +30,7 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
-        [ConstEnum(typeof(UMI3DAssetFormat),typeof(string))]
+        [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
 
@@ -152,66 +152,66 @@ namespace umi3d.cdk
         {
             if (entity == null)
                 throw new Exception($"Entity should not be null");
-            if (EntityGroupLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (EntityGroupLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DAnimationLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (UMI3DAnimationLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (PreloadedSceneLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (PreloadedSceneLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey,container))
+            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
                 return true;
-            if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey,container))
+            if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey,container))
+            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
                 return true;
-            return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey,container);
+            return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container);
         }
 
         public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UMI3DAnimationLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (UMI3DAnimationLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (PreloadedSceneLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (PreloadedSceneLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UMI3DInteractableLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (UMI3DInteractableLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UMI3DToolLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (UMI3DToolLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UMI3DToolBoxLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (UMI3DToolBoxLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (notificationLoader != null && notificationLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (notificationLoader != null && notificationLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (SubMeshLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (SubMeshLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (meshLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (meshLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UILoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (UILoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.ReadUMI3DProperty(ref value, propertyKey,container))
+            if (AnchorLoader != null && AnchorLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey,container);
+            return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 
         ///<inheritdoc/>

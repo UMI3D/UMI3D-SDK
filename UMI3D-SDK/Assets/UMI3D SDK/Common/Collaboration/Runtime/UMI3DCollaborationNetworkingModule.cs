@@ -34,15 +34,15 @@ namespace umi3d.common.collaboration
                         result = (T)Convert.ChangeType(bone, typeof(T));
                         readable = true;
                     }
-                    else 
+                    else
                     {
                         result = default(T);
                         readable = false;
                     }
                     return true;
                 case true when typeof(T) == typeof(BoneBindingDto):
-                    string bindingId; 
-                    string rigName; 
+                    string bindingId;
+                    string rigName;
                     bool active;
                     uint boneType;
                     ulong objectId;
@@ -56,7 +56,8 @@ namespace umi3d.common.collaboration
                         && UMI3DNetworkingHelper.TryRead(container, out offsetPosition)
                         && UMI3DNetworkingHelper.TryRead(container, out offsetRotation))
                     {
-                        var bone = new BoneBindingDto() { 
+                        var bone = new BoneBindingDto()
+                        {
                             bindingId = bindingId,
                             rigName = rigName,
                             active = active,

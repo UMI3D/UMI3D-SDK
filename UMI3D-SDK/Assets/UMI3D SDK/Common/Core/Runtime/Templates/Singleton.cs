@@ -41,7 +41,8 @@ namespace umi3d.common
         /// </summary>
         public static T Instance
         {
-            get {
+            get
+            {
                 if (applicationIsQuitting)
                     return null;
                 if (instance == null)
@@ -61,7 +62,8 @@ namespace umi3d.common
                 }
                 return instance;
             }
-            set {
+            set
+            {
                 if (instance == null) instance = value;
                 else Debug.LogError("Instance of " + typeof(T) + " already exist, Instance could not be set");
             }

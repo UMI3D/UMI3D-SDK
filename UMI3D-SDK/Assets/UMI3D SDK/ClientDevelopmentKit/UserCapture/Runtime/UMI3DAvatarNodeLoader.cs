@@ -112,7 +112,7 @@ namespace umi3d.cdk
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
+            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             var node = entity as UMI3DNodeInstance;
             switch (propertyKey)
             {

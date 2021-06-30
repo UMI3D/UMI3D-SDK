@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.IO;
 using System.Collections;
+using System.IO;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -101,7 +101,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetName(string arg) { UMI3DCollaborationEnvironment.Instance.environmentName = arg; }
-        
+
         /// <summary>
         /// method called when param <see cref="sessionId"/> is found
         /// </summary>
@@ -113,7 +113,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetSessionComment(string arg) { UMI3DCollaborationServer.Instance.descriptionComment = arg; }
-        
+
         /// <summary>
         /// method called when param <see cref="sessionId"/> is found
         /// </summary>
@@ -238,7 +238,7 @@ namespace umi3d.edk.collaboration
                 return ConfigServer.ReadXml(arg);
             }
             else
-                return null;             
+                return null;
         }
 
         /// <summary>

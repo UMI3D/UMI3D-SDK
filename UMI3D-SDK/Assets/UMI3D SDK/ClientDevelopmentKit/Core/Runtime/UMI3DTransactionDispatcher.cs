@@ -44,7 +44,8 @@ namespace umi3d.cdk
         public static IEnumerator PerformTransaction(ByteContainer container)
         {
             yield return new WaitForEndOfFrame();
-            foreach (var c in UMI3DNetworkingHelper.ReadIndexesList(container)) {
+            foreach (var c in UMI3DNetworkingHelper.ReadIndexesList(container))
+            {
                 bool performed = false;
                 PerformOperation(c, () => performed = true);
                 if (performed != true)
@@ -97,7 +98,7 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
-                    UMI3DEnvironmentLoader.LoadEntity(container,performed);
+                    UMI3DEnvironmentLoader.LoadEntity(container, performed);
                     break;
                 case UMI3DOperationKeys.DeleteEntity:
                     {
@@ -119,16 +120,16 @@ namespace umi3d.cdk
                     break;
 
                 default:
-                    if(UMI3DOperationKeys.SetEntityProperty <= operationId && operationId <= UMI3DOperationKeys.SetEntityMatrixProperty)
+                    if (UMI3DOperationKeys.SetEntityProperty <= operationId && operationId <= UMI3DOperationKeys.SetEntityMatrixProperty)
                     {
                         var entityId = UMI3DNetworkingHelper.Read<ulong>(container);
                         var propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
-                        UMI3DEnvironmentLoader.SetEntity(operationId,entityId, propertyKey,container);
+                        UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
                         performed.Invoke();
                     }
                     else
                     {
-                        UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operationId,container, performed);
+                        UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operationId, container, performed);
                     }
                     break;
             }

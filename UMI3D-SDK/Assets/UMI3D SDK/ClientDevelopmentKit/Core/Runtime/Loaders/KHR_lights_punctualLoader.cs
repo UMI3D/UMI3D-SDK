@@ -180,7 +180,7 @@ namespace umi3d.cdk
                     value = UMI3DNetworkingHelper.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.LightSpot:
-                     value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
+                    value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
                     break;
                 default:
                     return false;

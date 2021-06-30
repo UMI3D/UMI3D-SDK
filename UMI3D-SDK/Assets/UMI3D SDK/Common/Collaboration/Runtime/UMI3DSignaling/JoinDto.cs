@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.userCapture;
 
 namespace umi3d.common.collaboration
 {

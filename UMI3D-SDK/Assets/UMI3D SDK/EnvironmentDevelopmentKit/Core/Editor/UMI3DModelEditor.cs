@@ -63,7 +63,7 @@ namespace umi3d.edk.editor
 
             EditorGUILayout.PropertyField(variants, true);
             EditorGUILayout.PropertyField(areSubobjectsTracked);
-            if(areSubobjectsTracked.boolValue)
+            if (areSubobjectsTracked.boolValue)
                 EditorGUILayout.PropertyField(isRightHanded);
             EditorGUILayout.PropertyField(isTraversable);
             EditorGUILayout.PropertyField(isPartOfNavmesh);

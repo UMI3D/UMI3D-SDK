@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using umi3d.common;
-using umi3d.edk;
+﻿using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk

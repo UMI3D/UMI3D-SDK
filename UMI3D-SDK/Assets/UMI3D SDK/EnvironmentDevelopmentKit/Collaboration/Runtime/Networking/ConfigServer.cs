@@ -14,17 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using UnityEngine;
 
 [Serializable]
-public class ConfigServer 
+public class ConfigServer
 {
-    
+
     /// <summary>
     /// Set the name of the environment.
     /// </summary>

@@ -85,14 +85,16 @@ namespace umi3d.edk
         /// </summary>
         public IEnumerable<UMI3DUser> AsynchronousUser
         {
-            get {
+            get
+            {
                 return asyncValues.Keys;
             }
         }
 
         public IEnumerable<UMI3DUser> DesynchronousUser
         {
-            get {
+            get
+            {
                 return UserDesync.ToList();
             }
         }

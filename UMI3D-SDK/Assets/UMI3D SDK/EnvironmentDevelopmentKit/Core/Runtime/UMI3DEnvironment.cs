@@ -319,7 +319,8 @@ namespace umi3d.edk
 
             public A this[ulong key]
             {
-                get {
+                get
+                {
                     if (key == 0)
                         return default;
                     else if (objects.ContainsKey(key))
@@ -333,7 +334,7 @@ namespace umi3d.edk
             ulong NewID()
             {
                 ulong value = LongRandom(100010);
-                while(objects.ContainsKey(value)) value = LongRandom(100010);
+                while (objects.ContainsKey(value)) value = LongRandom(100010);
                 return value;
             }
 

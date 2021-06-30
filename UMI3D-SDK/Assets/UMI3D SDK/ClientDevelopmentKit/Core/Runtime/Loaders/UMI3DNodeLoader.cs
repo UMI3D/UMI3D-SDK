@@ -276,7 +276,7 @@ namespace umi3d.cdk
                         // Collider c = node.gameObject.GetComponent<Collider>();
                         if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null)
                         {
-                            SetCustomCollider(dto.id,node.gameObject, dto.colliderDto.customMeshCollider);
+                            SetCustomCollider(dto.id, node.gameObject, dto.colliderDto.customMeshCollider);
                         }
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
@@ -349,7 +349,7 @@ namespace umi3d.cdk
                 return true;
             }
 
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
+            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
 
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
             if (dto == null) return false;
@@ -549,8 +549,8 @@ namespace umi3d.cdk
         }
 
 
-            #region Collider
-            protected void SetCustomCollider(ulong id, GameObject node, ResourceDto resourceDto)
+        #region Collider
+        protected void SetCustomCollider(ulong id, GameObject node, ResourceDto resourceDto)
         {
             if (resourceDto == null) return;
 
@@ -599,7 +599,7 @@ namespace umi3d.cdk
             }
         }
 
-        protected virtual void SetCollider(ulong id,UMI3DNodeInstance nodeInstance, ColliderDto dto)
+        protected virtual void SetCollider(ulong id, UMI3DNodeInstance nodeInstance, ColliderDto dto)
         {
             //UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(pid);// go.GetComponent<UMI3DNodeInstance>();
             GameObject go = nodeInstance.gameObject;

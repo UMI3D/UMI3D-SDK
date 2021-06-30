@@ -21,7 +21,8 @@ namespace umi3d.cdk
     {
         public Material[] oldMats
         {
-            get {
+            get
+            {
                 if (_oldMats == null)
                 {
                     InitOldMats();

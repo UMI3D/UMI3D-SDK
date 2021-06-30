@@ -496,7 +496,7 @@ namespace umi3d.cdk.userCapture
 
             NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
 
-            yield return null; 
+            yield return null;
         }
     }
 }

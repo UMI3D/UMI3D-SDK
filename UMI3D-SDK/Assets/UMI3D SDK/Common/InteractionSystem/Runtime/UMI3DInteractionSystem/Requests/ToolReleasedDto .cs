@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
 namespace umi3d.common.interaction
 {
     [System.Serializable]
@@ -30,7 +28,7 @@ namespace umi3d.common.interaction
 
         public override Bytable ToBytableArray(params object[] parameters)
         {
-            return base.ToBytableArray( parameters)
+            return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(toolId)
                 + UMI3DNetworkingHelper.Write(boneType);
         }

@@ -29,7 +29,8 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         public AbstractMenu menu
         {
-            get {
+            get
+            {
                 if (menuAsset.menu == null)
                     menuAsset.menu = new Menu();
                 return menuAsset.menu;

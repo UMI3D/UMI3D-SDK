@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -47,7 +46,7 @@ namespace umi3d.common
             return true;
         }
 
-        Bytable IBytable.ToBytableArray( params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return
                 UMI3DNetworkingHelper.Write(name)

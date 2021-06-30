@@ -80,7 +80,7 @@ namespace umi3d.cdk
                             }
                             else
                                 failed?.Invoke($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto");
-                            
+
                         },
                         failed,
                         loader.DeleteObject
@@ -129,7 +129,7 @@ namespace umi3d.cdk
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
-                root = SetSubObjectsReferences(go, dto,  rotationOffsetByLoader );
+                root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
             }
             else
             {

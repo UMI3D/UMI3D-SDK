@@ -25,7 +25,7 @@ namespace umi3d.common.collaboration
     public class UserDto : AbstractEntityDto
     {
         public StatusType status;
-        public ulong  avatarId;
+        public ulong avatarId;
         public ulong audioSourceId;
         public ulong videoSourceId;
         public uint networkId;
@@ -40,7 +40,7 @@ namespace umi3d.common.collaboration
             this.id = source.id;
         }
 
-        public UserDto(){ }
+        public UserDto() { }
     }
 
 

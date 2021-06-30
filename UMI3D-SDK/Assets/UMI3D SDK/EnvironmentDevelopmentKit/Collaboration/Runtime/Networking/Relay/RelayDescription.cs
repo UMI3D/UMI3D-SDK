@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
 using System;
+using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
@@ -46,7 +46,7 @@ namespace umi3d.edk.collaboration
             public float stoppingProximityDistance;
         }
 
-        public Strategy InsideVolume; 
+        public Strategy InsideVolume;
 
         public Strategy OutsideVolume;
 

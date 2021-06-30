@@ -91,7 +91,7 @@ namespace umi3d.edk.interaction
                 direction = dto.direction;
             }
 
-            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId,id,hoveredObjectId,boneType)
+            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId, id, hoveredObjectId, boneType)
             {
                 this.position = position;
                 this.normal = normal;

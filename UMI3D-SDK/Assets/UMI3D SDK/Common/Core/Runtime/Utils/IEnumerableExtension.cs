@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace umi3d.common
 {
@@ -24,7 +24,7 @@ namespace umi3d.common
     {
 
 
-        public static void Debug<A>(this IEnumerable<A> source, Func<A,string> action)
+        public static void Debug<A>(this IEnumerable<A> source, Func<A, string> action)
         {
             UnityEngine.Debug.Log(source.ToString<A>(action));
         }
@@ -97,7 +97,7 @@ namespace umi3d.common
         public static A[] Filled<A>(this A[] source, A value)
         {
             int length = source.Length;
-            for(int i = 0; i < length; i++)
+            for (int i = 0; i < length; i++)
             {
                 source[i] = value;
             }
@@ -109,7 +109,7 @@ namespace umi3d.common
         /// </summary>
         /// <param name="action">The given function</param>
         /// <returns>the source array.</returns>
-        public static A[] Filled<A>(this A[] source, Func<int,A,A> action)
+        public static A[] Filled<A>(this A[] source, Func<int, A, A> action)
         {
             int length = source.Length;
             for (int i = 0; i < length; i++)
@@ -140,11 +140,11 @@ namespace umi3d.common
         /// <param name="at">The starting position to copy the data in target</param>
         /// <param name="from">the index of the first value to copy from source into target</param>
         /// <param name="to">the index of the last value to copy from source into target</param>
-        public static void CopyRangeTo<A>(this IEnumerable<A> source, A[] target,ref int at, int from, int to)
+        public static void CopyRangeTo<A>(this IEnumerable<A> source, A[] target, ref int at, int from, int to)
         {
             if (from >= to)
                 throw new Exception($"'from' [{from}] should be inferior to 'to' [{to}]");
-            if(at >= target.Length)
+            if (at >= target.Length)
                 throw new Exception($"'at' [{at}] should be inferior to target Length [{target.Length}]");
             if (target.Length - at <= to - from)
                 throw new Exception($" target.Length - at [{target.Length} - {at}= {target.Length - at}] should be superior to to - from  [{to} - {from}= {to - from}]");
@@ -168,7 +168,7 @@ namespace umi3d.common
         /// <param name="to"></param>
         /// <param name="zipFunction"></param>
         /// <returns></returns>
-        public static IEnumerable<C> ZipOverflow<A,B,C>(this IEnumerable<A> source, IEnumerable<B> to,Func<A,B,C> zipFunction)
+        public static IEnumerable<C> ZipOverflow<A, B, C>(this IEnumerable<A> source, IEnumerable<B> to, Func<A, B, C> zipFunction)
         {
             using (var it = source.GetEnumerator())
             using (var toIt = to.GetEnumerator())
@@ -195,9 +195,9 @@ namespace umi3d.common
         /// <param name="source"></param>
         /// <param name="to"></param>
         /// <returns>a bool to state if all element are equal and a string displaying all element paired.</returns>
-        public static (bool,string) Compare<A>(this IEnumerable<A> source, IEnumerable<A> to)
+        public static (bool, string) Compare<A>(this IEnumerable<A> source, IEnumerable<A> to)
         {
-           return source.ZipOverflow(to, (a, b) => (a, b)).Select(c=>(c.a.Equals(c.b),$"({c.a}:{c.b})")).Aggregate((a,b)=>(a.Item1&&b.Item1,$"{a.Item2};{b.Item2}"));
+            return source.ZipOverflow(to, (a, b) => (a, b)).Select(c => (c.a.Equals(c.b), $"({c.a}:{c.b})")).Aggregate((a, b) => (a.Item1 && b.Item1, $"{a.Item2};{b.Item2}"));
         }
 
     }

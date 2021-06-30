@@ -13,8 +13,6 @@ limitations under the License.
 
 using BeardedManStudios.Forge.Networking.Unity;
 using System;
-using System.Linq;
-using umi3d.common.collaboration;
 using UnityEngine;
 using UnityOpus;
 

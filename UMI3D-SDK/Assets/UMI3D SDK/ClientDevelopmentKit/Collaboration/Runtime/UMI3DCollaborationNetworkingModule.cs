@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System;
 using umi3d.common;
 using umi3d.common.collaboration;
-using System;
 
 namespace umi3d.cdk.collaboration
 {

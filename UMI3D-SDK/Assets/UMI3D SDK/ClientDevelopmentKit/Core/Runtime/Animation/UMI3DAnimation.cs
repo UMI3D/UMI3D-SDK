@@ -120,14 +120,14 @@ namespace umi3d.cdk
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
+            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
                     dto.duration = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
-                    return UpdateChain(operationId, propertyKey,container);
+                    return UpdateChain(operationId, propertyKey, container);
                 default:
                     return false;
             }
@@ -135,14 +135,15 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) {
+        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        {
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
                     value = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
-                    return UpdateChain(ref value, propertyKey,container);
+                    return UpdateChain(ref value, propertyKey, container);
                 default:
                     return false;
             }
@@ -193,10 +194,10 @@ namespace umi3d.cdk
             return true;
         }
 
-        static bool UpdateChain(ref object value,  uint propertyKey, ByteContainer container)
+        static bool UpdateChain(ref object value, uint propertyKey, ByteContainer container)
         {
             value = UMI3DNetworkingHelper.ReadList<UMI3DAnimationDto.AnimationChainDto>(container);
-            return true; 
+            return true;
         }
 
         ///<inheritdoc/>

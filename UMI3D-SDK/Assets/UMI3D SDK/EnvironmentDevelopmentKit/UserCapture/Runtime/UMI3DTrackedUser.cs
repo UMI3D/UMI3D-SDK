@@ -25,7 +25,8 @@ namespace umi3d.edk.userCapture
         public UMI3DAvatarNode Avatar
         {
             get { return avatar; }
-            set {
+            set
+            {
                 if (avatar == value)
                     return;
                 if (avatar != null)

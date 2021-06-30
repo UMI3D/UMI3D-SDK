@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -26,7 +25,8 @@ namespace umi3d.edk
         public bool reliable;
         public List<Operation> Operations = new List<Operation>();
 
-        public (byte[], bool) ToBson(UMI3DUser user) {
+        public (byte[], bool) ToBson(UMI3DUser user)
+        {
             var transactionDto = new TransactionDto();
             transactionDto.operations = new List<AbstractOperationDto>(Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }));
             if (transactionDto.operations.Count > 0)
@@ -36,16 +36,16 @@ namespace umi3d.edk
             return (null, false);
         }
 
-        public (byte[],bool) ToBytes(UMI3DUser user)
+        public (byte[], bool) ToBytes(UMI3DUser user)
         {
             var operation = Operations.Where((op) => { return op.users.Contains(user); });
             if (operation.Count() > 0)
             {
                 var b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
                     + UMI3DNetworkingHelper.WriteIBytableCollection(operation, user);
-                return (b.ToBytes(),true);
+                return (b.ToBytes(), true);
             }
-            return (null,false);
+            return (null, false);
         }
 
         public static Transaction operator +(Transaction a, Transaction b)

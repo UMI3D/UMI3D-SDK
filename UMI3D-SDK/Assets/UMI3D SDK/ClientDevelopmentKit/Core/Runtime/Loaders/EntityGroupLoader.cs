@@ -60,12 +60,12 @@ namespace umi3d.cdk
                 switch (propertyKey)
                 {
                     case UMI3DPropertyKeys.EntityGroupIds:
-                        UpdateEntities(entity, groupDto, operationId, propertyKey,container);
+                        UpdateEntities(entity, groupDto, operationId, propertyKey, container);
                         break;
                     default:
                         foreach (var e in groupDto.entitiesId)
                         {
-                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey,container);
+                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, container);
                         }
                         break;
                 }

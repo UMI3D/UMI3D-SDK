@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
 namespace umi3d.common.interaction
 {
     public class ToolProjectedDto : AbstractBrowserRequestDto
@@ -28,8 +26,8 @@ namespace umi3d.common.interaction
 
         public override Bytable ToBytableArray(params object[] parameters)
         {
-            return base.ToBytableArray(parameters) 
-                + UMI3DNetworkingHelper.Write(toolId) 
+            return base.ToBytableArray(parameters)
+                + UMI3DNetworkingHelper.Write(toolId)
                 + UMI3DNetworkingHelper.Write(boneType);
         }
 

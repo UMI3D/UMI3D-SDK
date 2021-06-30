@@ -396,15 +396,17 @@ namespace umi3d.cdk
         void _LoadEntity(ByteContainer container, Action performed)
         {
             var id = UMI3DNetworkingHelper.Read<ulong>(container);
-            Action<LoadEntityDto> callback = (load) => {
+            Action<LoadEntityDto> callback = (load) =>
+            {
                 LoadEntity(load.entity, performed);
             };
-            Action<string> error = (s) => {
+            Action<string> error = (s) =>
+            {
                 Debug.Log(s);
                 performed.Invoke();
             };
             UMI3DClientServer.GetEntity(id, callback, error);
-            
+
 
             //switch (entity)
             //{
@@ -555,7 +557,7 @@ namespace umi3d.cdk
         public static bool ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (Exists)
-                return Instance._ReadUMI3DPorperty(ref value, propertyKey,container);
+                return Instance._ReadUMI3DPorperty(ref value, propertyKey, container);
             else
                 return false;
         }
@@ -570,7 +572,7 @@ namespace umi3d.cdk
         public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (Exists)
-                return Instance._SetUMI3DPorperty(entity, operationId, propertyKey,container);
+                return Instance._SetUMI3DPorperty(entity, operationId, propertyKey, container);
             else
                 return false;
         }
@@ -612,7 +614,7 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
-                    return Parameters.SetUMI3DProperty(entity, operationId, propertyKey,container);
+                    return Parameters.SetUMI3DProperty(entity, operationId, propertyKey, container);
                 default:
                     return false;
             }
@@ -623,7 +625,7 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
-                    return Parameters.ReadUMI3DProperty(ref value, propertyKey,container);
+                    return Parameters.ReadUMI3DProperty(ref value, propertyKey, container);
                 default:
                     return false;
             }
@@ -654,17 +656,17 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static bool SetEntity( uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
+        public static bool SetEntity(uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
         {
             var node = UMI3DEnvironmentLoader.GetEntity(entityId);
             if (node == null)
             {
-                Instance.StartCoroutine(Instance._SetEntity(operationId, entityId, propertyKey,container));
+                Instance.StartCoroutine(Instance._SetEntity(operationId, entityId, propertyKey, container));
                 return false;
             }
             else
             {
-                return SetEntity(node, operationId, entityId, propertyKey,container);
+                return SetEntity(node, operationId, entityId, propertyKey, container);
             }
         }
 
@@ -712,17 +714,17 @@ namespace umi3d.cdk
             }
             else
             {
-                if (SetUMI3DPorperty(node, operationId, propertyKey,container)) return true;
-                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey,container)) return true;
-                return Parameters.SetUMI3DProperty(node, operationId, propertyKey,container);
+                if (SetUMI3DPorperty(node, operationId, propertyKey, container)) return true;
+                if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey, container)) return true;
+                return Parameters.SetUMI3DProperty(node, operationId, propertyKey, container);
             }
         }
 
         public static bool ReadValueEntity(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (ReadUMI3DPorperty(ref value, propertyKey,container)) return true;
-            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey,container)) return true;
-            return Parameters.ReadUMI3DProperty(ref value, propertyKey,container);
+            if (ReadUMI3DPorperty(ref value, propertyKey, container)) return true;
+            if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
+            return Parameters.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 
 
@@ -792,13 +794,13 @@ namespace umi3d.cdk
                     var node = UMI3DEnvironmentLoader.GetEntity(id);
                     if (node == null)
                     {
-                        Instance.StartCoroutine(Instance._SetEntity(operationId, id,propertyKey,container));
+                        Instance.StartCoroutine(Instance._SetEntity(operationId, id, propertyKey, container));
                     }
                     else
                     {
-                        if (SetUMI3DPorperty(node, operationId, propertyKey,container)) break;
-                        if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey,container)) break;
-                        if(!Parameters.SetUMI3DProperty(node, operationId, propertyKey,container))
+                        if (SetUMI3DPorperty(node, operationId, propertyKey, container)) break;
+                        if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey, container)) break;
+                        if (!Parameters.SetUMI3DProperty(node, operationId, propertyKey, container))
                         {
                             Debug.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {container}");
                         }
@@ -834,7 +836,7 @@ namespace umi3d.cdk
             {
                 yield return wait;
             }
-            SetEntity(node, operationId, entityId, propertyKey,container);
+            SetEntity(node, operationId, entityId, propertyKey, container);
         }
 
         #region interpolation
@@ -919,12 +921,12 @@ namespace umi3d.cdk
             var node = UMI3DEnvironmentLoader.GetEntity(entityId);
             if (node == null)
             {
-                Instance.StartCoroutine(Instance._StartInterpolation(entityId,propertyKey,frequence,container));
+                Instance.StartCoroutine(Instance._StartInterpolation(entityId, propertyKey, frequence, container));
                 return false;
             }
             else
             {
-                StartInterpolation(node,entityId, propertyKey, frequence,container);
+                StartInterpolation(node, entityId, propertyKey, frequence, container);
             }
             return true;
         }
@@ -950,7 +952,7 @@ namespace umi3d.cdk
             {
                 yield return wait;
             }
-            StartInterpolation(node,id, property, frequence,container);
+            StartInterpolation(node, id, property, frequence, container);
         }
 
         /// <summary>
@@ -1011,7 +1013,7 @@ namespace umi3d.cdk
                 Instance.entityFilters[entityId].Add(property, newKalmanEntity);
 
                 object value = null;
-                ReadValueEntity(ref value, property,container);
+                ReadValueEntity(ref value, property, container);
 
                 Instance.PropertyKalmanUpdate(newKalmanEntity, value);
 
@@ -1057,12 +1059,12 @@ namespace umi3d.cdk
             var node = UMI3DEnvironmentLoader.GetEntity(entityId);
             if (node == null)
             {
-                Instance.StartCoroutine(Instance._StopInterpolation(entityId,propertyKey,container));
+                Instance.StartCoroutine(Instance._StopInterpolation(entityId, propertyKey, container));
                 return false;
             }
             else
             {
-                StopInterpolation(node, entityId, propertyKey,container);
+                StopInterpolation(node, entityId, propertyKey, container);
             }
             return true;
         }
@@ -1079,7 +1081,7 @@ namespace umi3d.cdk
             StopInterpolation(node, dto);
         }
 
-        IEnumerator _StopInterpolation(ulong entityId,uint propertyKey,ByteContainer container)
+        IEnumerator _StopInterpolation(ulong entityId, uint propertyKey, ByteContainer container)
         {
             WaitForFixedUpdate wait = new WaitForFixedUpdate();
             UMI3DEntityInstance node = null;
@@ -1088,7 +1090,7 @@ namespace umi3d.cdk
             {
                 yield return wait;
             }
-            StopInterpolation(node, entityId, propertyKey,container);
+            StopInterpolation(node, entityId, propertyKey, container);
         }
 
         /// <summary>
@@ -1121,7 +1123,7 @@ namespace umi3d.cdk
             if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(property))
             {
                 object value = null;
-                ReadValueEntity(ref value, property,container);
+                ReadValueEntity(ref value, property, container);
 
                 Instance.entityFilters[entityId].Remove(property);
                 SetEntityPropertyDto entityPropertyDto = new SetEntityPropertyDto()

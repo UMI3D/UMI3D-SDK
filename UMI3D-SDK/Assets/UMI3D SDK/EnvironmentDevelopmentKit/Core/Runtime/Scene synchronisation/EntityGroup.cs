@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -76,7 +75,7 @@ namespace umi3d.edk
             return new EntityGroupDto() { id = Id(), entitiesId = entities.GetValue(user).Select(e => e.Id()).ToList() };
         }
 
-        public  Bytable ToBytes(UMI3DUser user)
+        public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
                 + UMI3DNetworkingHelper.Write(entityId)

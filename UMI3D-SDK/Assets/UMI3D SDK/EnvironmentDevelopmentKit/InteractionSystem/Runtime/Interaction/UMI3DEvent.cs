@@ -72,7 +72,7 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.EventTriggered:
-                    onTrigger.Invoke(new InteractionEventContent(user, toolId,interactionId,hoverredId,boneType));
+                    onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
                     break;
                 case UMI3DOperationKeys.EventStateChanged:
                     var active = UMI3DNetworkingHelper.Read<bool>(container);

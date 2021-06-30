@@ -11,11 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace umi3d.common
 {
@@ -48,7 +47,7 @@ namespace umi3d.common
         /// <param name="moduleList"></param>
         public static void AddModule(List<Umi3dNetworkingHelperModule> moduleList)
         {
-            foreach(var module in moduleList)
+            foreach (var module in moduleList)
                 modules.Add(module);
         }
 
@@ -89,7 +88,7 @@ namespace umi3d.common
                 case true when typeof(T) == typeof(char):
                     if (container.length >= sizeof(char))
                     {
-                        result = (T)Convert.ChangeType(BitConverter.ToChar(container.bytes,container.position), typeof(T));
+                        result = (T)Convert.ChangeType(BitConverter.ToChar(container.bytes, container.position), typeof(T));
                         container.position += sizeof(char);
                         container.length -= sizeof(char);
                         return true;
@@ -393,14 +392,14 @@ namespace umi3d.common
             byte type = UMI3DNetworkingHelper.Read<byte>(container);
             int count = UMI3DNetworkingHelper.Read<int>(container);
             var res = new byte[count];
-            container.bytes.CopyRangeTo(res, 0, container.position, container.position + count -1 );
+            container.bytes.CopyRangeTo(res, 0, container.position, container.position + count - 1);
             return res;
         }
 
         public static IEnumerable<ByteContainer> ReadIndexesList(ByteContainer container)
         {
             byte listType = UMI3DNetworkingHelper.Read<byte>(container);
-            if(listType != UMI3DObjectKeys.IndexesArray)
+            if (listType != UMI3DObjectKeys.IndexesArray)
                 yield break;
             int indexMaxPos = -1;
             int maxLength = container.bytes.Length;
@@ -661,7 +660,7 @@ namespace umi3d.common
         {
             if (ibytes.Count() > 0)
             {
-                if (ibytes.First().IsCountable()) return ListToCountBytable(ibytes, parameters); 
+                if (ibytes.First().IsCountable()) return ListToCountBytable(ibytes, parameters);
                 else return ListToIndexesBytable(ibytes, parameters);
             }
             Debug.LogWarning("Empty IEnumerable");
@@ -684,7 +683,7 @@ namespace umi3d.common
                     .Select(o => o.ToBytableArray(parameters))
                     .Select(c =>
                     {
-                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { var cr = c.function(by, i,0); return (cr.Item1, i, j); };
+                        Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { var cr = c.function(by, i, 0); return (cr.Item1, i, j); };
                         return (c.size, f1);
                     })
                     .Aggregate((0, f3)
@@ -692,10 +691,10 @@ namespace umi3d.common
                     {
                         Func<byte[], int, int, (int, int, int)> f2 = (byte[] by, int i, int j) =>
                         {
-                            int i2,sj;
+                            int i2, sj;
                             (i2, i, j) = a.Item2(by, i, j);
                             (i2, i, j) = b.Item2(by, i, j);
-                            (j,sj) = UMI3DNetworkingHelper.Write(i).function(by,j,0);
+                            (j, sj) = UMI3DNetworkingHelper.Write(i).function(by, j, 0);
                             i = i2;
                             return (i2, i, j);
                         };
@@ -703,10 +702,10 @@ namespace umi3d.common
                     });
                 var length = size + func.Item1;
 
-                Func<byte[], int, int, (int, int)> f5 = (byte[] by, int i,int bs) =>
+                Func<byte[], int, int, (int, int)> f5 = (byte[] by, int i, int bs) =>
                 {
                     var couple = func.Item2(by, i + size, i);
-                    return (couple.Item1,couple.Item2);
+                    return (couple.Item1, couple.Item2);
                 };
                 return ret + new Bytable(length, f5);
             }
@@ -785,7 +784,7 @@ namespace umi3d.common
 
             Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
             {
-                (i,bs) = a.function(by, i, bs);
+                (i, bs) = a.function(by, i, bs);
                 return b.function(by, i, bs);
             };
             return new Bytable(a.size + b.size, f);
@@ -795,7 +794,7 @@ namespace umi3d.common
         {
             if (b == null || b.Count() == 0) return a;
             if (a == null) return b.Aggregate((c, d) => c + d);
-            
+
 
             var b2 = b.Aggregate((c, d) => c + d);
 

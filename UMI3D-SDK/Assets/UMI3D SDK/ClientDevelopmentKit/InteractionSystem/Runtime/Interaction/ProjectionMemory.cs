@@ -26,7 +26,8 @@ namespace umi3d.cdk.interaction
         protected string id_ = "";
         public string id
         {
-            get {
+            get
+            {
                 if (id_.Equals(""))
                     id_ = (this.gameObject.GetInstanceID() + Random.Range(0, 1000)).ToString();
                 return id_;
@@ -779,7 +780,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public List<ProjectionTreeNode> children
         {
-            get {
+            get
+            {
                 List<ProjectionTreeNode> buffer = new List<ProjectionTreeNode>();
                 foreach (ulong id in childrensId)
                 {

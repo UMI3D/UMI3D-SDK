@@ -226,11 +226,11 @@ namespace umi3d.cdk
                     switch (dto)
                     {
                         case UICanvasDto c:
-                            return canvasNodeLoader.SetUMI3DPorperty(c, node, operationId, propertyKey,container);
+                            return canvasNodeLoader.SetUMI3DPorperty(c, node, operationId, propertyKey, container);
                         case UIImageDto i:
-                            return imageNodeLoader.SetUMI3DPorperty(i, node, operationId, propertyKey,container);
+                            return imageNodeLoader.SetUMI3DPorperty(i, node, operationId, propertyKey, container);
                         case UITextDto t:
-                            return textNodeLoader.SetUMI3DPorperty(t, node, operationId, propertyKey,container);
+                            return textNodeLoader.SetUMI3DPorperty(t, node, operationId, propertyKey, container);
                         default:
                             return false;
                     }

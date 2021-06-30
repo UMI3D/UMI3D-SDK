@@ -133,11 +133,11 @@ namespace umi3d.cdk
                     value = UMI3DNetworkingHelper.Read<long>(container);
                     break;
                 default:
-                    if (UMI3DAnimation.ReadMyUMI3DProperty(ref value, propertyKey,container))
+                    if (UMI3DAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container))
                         return true;
-                    if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey,container))
+                    if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey, container))
                         return true;
-                    return (UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey,container));
+                    return (UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container));
 
             }
             return true;

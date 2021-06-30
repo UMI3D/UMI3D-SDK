@@ -203,7 +203,7 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
         }
 
-        public virtual Bytable ToByte( UMI3DUser user)
+        public virtual Bytable ToByte(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(Id())
                     + UMI3DNetworkingHelper.Write(Display.name)
@@ -215,8 +215,8 @@ namespace umi3d.edk.interaction
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
-                return ToByte( null);
-            return ToByte( parameters[0] as UMI3DUser);
+                return ToByte(null);
+            return ToByte(parameters[0] as UMI3DUser);
         }
 
         bool IBytable.IsCountable()

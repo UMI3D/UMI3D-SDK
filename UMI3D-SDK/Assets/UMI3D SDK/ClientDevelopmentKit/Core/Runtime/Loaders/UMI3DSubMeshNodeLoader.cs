@@ -212,7 +212,7 @@ namespace umi3d.cdk
         {
             if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
             {
-                if (base.SetUMI3DProperty(entity, operationId,propertyKey,container)) return true;
+                if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
                 var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as SubModelDto;
                 if (extension == null) return false;
                 switch (propertyKey)

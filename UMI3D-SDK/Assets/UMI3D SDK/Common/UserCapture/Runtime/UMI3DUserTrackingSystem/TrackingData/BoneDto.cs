@@ -36,7 +36,7 @@ namespace umi3d.common.userCapture
             return true;
         }
 
-        Bytable IBytable.ToBytableArray (params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return
                 UMI3DNetworkingHelper.Write(boneType)

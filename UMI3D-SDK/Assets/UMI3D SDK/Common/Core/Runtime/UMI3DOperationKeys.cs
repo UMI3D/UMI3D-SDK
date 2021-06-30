@@ -42,7 +42,7 @@ namespace umi3d.common
 
         public const uint SetUTSTargetFPS = 300;
         public const uint SetStreamedBones = 301;
-        public const uint StartInterpolationProperty =302;
+        public const uint StartInterpolationProperty = 302;
         public const uint StopInterpolationProperty = 303;
         public const uint SetSendingCameraProperty = 304;
         public const uint SetSendingTracking = 305;

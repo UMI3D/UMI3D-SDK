@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -106,12 +105,12 @@ namespace umi3d.edk
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
 
-        public override Bytable ToBytes( UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
             var fp = base.ToBytes(user);
             var otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(o => o.ToBytes(user)).ToList();
             otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(o => o.ToBytes(user)));
-            var f = otherEntities.Aggregate((a, b) => {return a + b; });
+            var f = otherEntities.Aggregate((a, b) => { return a + b; });
 
             var position = objectPosition.GetValue(user);
             var scale = objectScale.GetValue(user);
