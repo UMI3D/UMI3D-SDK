@@ -834,11 +834,11 @@ namespace umi3d.common.volume
 
             for (int i = 0; i < subdiv; i++)
             {
-                vertices.Add(position + Vector3.Scale(scale, rotation * Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius));
+                vertices.Add(position + rotation * Vector3.Scale(scale, Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius));
             }
             for (int i = 0; i < subdiv; i++)
             {
-                vertices.Add(position + Vector3.Scale(scale, rotation * (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
+                vertices.Add(position + rotation * Vector3.Scale(scale, (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
             }
 
             for (int i = 0; i < subdiv - 1; i++)
