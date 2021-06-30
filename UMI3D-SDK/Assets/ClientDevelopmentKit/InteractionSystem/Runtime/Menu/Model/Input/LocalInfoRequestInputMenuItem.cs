@@ -78,6 +78,10 @@ namespace umi3d.cdk.menu
                     sub.Invoke(newValue.Item2);
                 }
             }
+            foreach (UnityAction<(bool,bool)> sub in subscribers)
+            {
+                sub.Invoke(newValue);
+            }
             (readValue, writeValue) = newValue;
             
         }

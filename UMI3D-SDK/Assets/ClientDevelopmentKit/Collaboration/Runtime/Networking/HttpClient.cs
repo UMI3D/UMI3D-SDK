@@ -275,6 +275,42 @@ namespace umi3d.cdk.collaboration
 
         }
 
+        #region Local Info
+        /// <summary>
+        /// Send request using POST method to send to the server Local Info.
+        /// </summary>
+        /// <param name="callback">Action to be call when the request succeed.</param>
+        /// <param name="onError">Action to be call when the request fail.</param>
+        /// <param name="key">Local data file key.</param>
+        public void SendPostLocalInfo(Action callback, Action<string> onError, string key, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                callback.Invoke();
+            };
+            string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
+            client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true)); 
+        }
+
+        /// <summary>
+        /// Send request using GET method to get datas from server then save its in local file.
+        /// </summary>
+        /// <param name="url">Url</param>
+        /// <param name="callback">Action to be call when the request succeed.</param>
+        /// <param name="onError">Action to be call when the request fail.</param>
+        public void SendGetLocalInfo(string key, Action<byte[]> callback, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                var bytes = uwr.downloadHandler.data;
+                callback.Invoke(bytes);
+            };
+            string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
+            client.StartCoroutine(_GetRequest(url, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
+        }
+
+        #endregion
+
         #region utils
         /// <summary>
         /// Ienumerator to send GET request.

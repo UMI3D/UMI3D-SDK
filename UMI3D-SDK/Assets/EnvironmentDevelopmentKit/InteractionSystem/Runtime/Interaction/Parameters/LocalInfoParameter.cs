@@ -97,15 +97,8 @@ namespace umi3d.edk.interaction
                 case ParameterSettingRequestDto settingRequestDto:
                     if (settingRequestDto.parameter is LocalInfoRequestParameterDto parameter)
                     {
-                        //(readValue, writeValue) = parameter.value;
                         ChageUserLocalInfo(user, parameter); 
-                        /* TODO
-                                onChange.Invoke(new ParameterEventContent<bool>(user, settingRequestDto, value));
-                                if (parameter.value)
-                                    onChangeTrue.Invoke(new InteractionEventContent(user, interactionRequest));
-                                else
-                                    onChangeFalse.Invoke(new InteractionEventContent(user, interactionRequest));
-                                    */
+                        
                         Debug.Log("receive new authorisaation : " + key + "   " + parameter.value);
                     }
                     else
@@ -128,17 +121,11 @@ namespace umi3d.edk.interaction
             }
         }
 
-        private void Update()
-        {
-            //Debug.Log(userResponses.Count);
-            if (userResponses.Count > 0)
-                Debug.Log(userResponses.Select(kvp => (kvp.Key, kvp.Value)).ToList());
-        }
 
         private void Start()
         {
             appName = PlayerSettings.productName;
         }
-
+        
     }
 }
