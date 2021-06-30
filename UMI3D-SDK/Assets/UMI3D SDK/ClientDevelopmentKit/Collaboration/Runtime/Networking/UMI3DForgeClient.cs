@@ -238,11 +238,8 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var message = new byte[length + sizeof(uint)];
-                int pos = 0;
-                UMI3DNetworkingHelper.Write(Me).ToBytes(message,pos);
-                sample.CopyRangeTo(message, pos, 0, length - 1);
-                voice = new Binary(client.Time.Timestep, false, message, Receivers.All, MessageGroupIds.VOIP, false);
+                var bytable = UMI3DNetworkingHelper.Write(Me) + UMI3DNetworkingHelper.Write(sample.Take(length));
+                voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), Receivers.All, MessageGroupIds.VOIP, false);
             }
             client.Send(voice);
         }
@@ -391,13 +388,24 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            VoiceDto dto = null;
-            if (useDto) dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
-            var container = new ByteContainer(frame.StreamData.byteArr);
-            var id = useDto ? dto.senderId : UMI3DNetworkingHelper.Read<uint>(container);
-            UMI3DUser source = GetUserByNetWorkId(id);
-            if (source != null)
-                AudioManager.Instance.Read(source.id, useDto ? dto.data : frame.StreamData.byteArr.Skip(container.position).SkipLast().ToArray(), client.Time.Timestep);
+            if (useDto)
+            {
+                VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
+                var id = dto.senderId;
+                UMI3DUser source = GetUserByNetWorkId(id);
+                if (source != null)
+                    AudioManager.Instance.Read(source.id, dto.data, client.Time.Timestep);
+            }
+            else
+            {
+                var container = new ByteContainer(frame.StreamData.byteArr);
+                var id = UMI3DNetworkingHelper.Read<uint>(container);
+                UMI3DUser source = GetUserByNetWorkId(id);
+                if (source != null)
+                    AudioManager.Instance.Read(source.id, UMI3DNetworkingHelper.ReadByteArray(container), client.Time.Timestep);
+            }
+
+           
         }
 
 

@@ -90,7 +90,7 @@ namespace umi3d.edk.interaction
         {
             return base.ToByte(user)
                 + UMI3DNetworkingHelper.Write(frameOfReference.Id())
-                + UMI3DNetworkingHelper.ListToBytable(dofSeparationOptions);
+                + UMI3DNetworkingHelper.Write((IEnumerable<IBytable>)dofSeparationOptions);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace umi3d.edk.interaction
         /// Degree of freedom group.
         /// </summary>
         [System.Serializable]
-        public class DofGroup : IByte
+        public class DofGroup : IBytable
         {
             public string name;
             public DofGroupEnum dofs;
@@ -161,7 +161,7 @@ namespace umi3d.edk.interaction
         /// List of DofGroup.
         /// </summary>
         [System.Serializable]
-        public class DofGroupOption : IByte
+        public class DofGroupOption : IBytable
         {
             public string name;
             public List<DofGroup> separations = new List<DofGroup>();
@@ -174,7 +174,7 @@ namespace umi3d.edk.interaction
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return UMI3DNetworkingHelper.Write(name)
-                    + UMI3DNetworkingHelper.ListToBytable(separations);
+                    + UMI3DNetworkingHelper.Write((IEnumerable<IBytable>)separations);
             }
 
             /// <summary>

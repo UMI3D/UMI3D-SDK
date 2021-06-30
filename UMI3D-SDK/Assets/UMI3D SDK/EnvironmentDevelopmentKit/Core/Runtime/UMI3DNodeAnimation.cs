@@ -25,7 +25,7 @@ namespace umi3d.edk
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
         [Serializable]
-        public class OperationChain : IByte
+        public class OperationChain : IBytable
         {
             public Operation Operation;
             public float progress;
@@ -40,14 +40,14 @@ namespace umi3d.edk
                 return UMI3DNetworkingHelper.Write(progress) + Operation.ToBytable(user);
             }
 
-            Bytable IByte.ToBytableArray(params object[] parameters)
+            Bytable IBytable.ToBytableArray(params object[] parameters)
             {
                 if (parameters.Length < 1)
                     return ToBytes(null);
                 return ToBytes(parameters[0] as UMI3DUser);
             }
 
-            bool IByte.IsCountable()
+            bool IBytable.IsCountable()
             {
                 throw new NotImplementedException();
             }
@@ -92,7 +92,7 @@ namespace umi3d.edk
 
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.ListToBytable(animationChain, user)
+            return UMI3DNetworkingHelper.Write(animationChain, user)
                 + UMI3DNetworkingHelper.Write(objectDuration.GetValue(user));
         }
     }

@@ -21,7 +21,7 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-    public class UMI3DTool : AbstractTool, UMI3DLoadableEntity, IByte
+    public class UMI3DTool : AbstractTool, UMI3DLoadableEntity, IBytable
     {
         /// <summary>
         /// Return load operation
@@ -70,13 +70,13 @@ namespace umi3d.edk.interaction
             return base.ToBytes(user);
         }
 
-        Bytable IByte.ToBytableArray(params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 ToBytes(null);
             return ToBytes(parameters[0] as UMI3DUser);
         }
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return true;
         }

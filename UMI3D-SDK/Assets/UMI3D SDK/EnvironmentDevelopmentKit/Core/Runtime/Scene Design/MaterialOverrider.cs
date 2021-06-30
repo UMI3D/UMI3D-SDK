@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     [Serializable]
-    public class MaterialOverrider : IByte
+    public class MaterialOverrider : IBytable
     {
         public MaterialSO newMaterial;
         [SerializeField]
@@ -62,14 +62,14 @@ namespace umi3d.edk
             };
         }
 
-        Bytable IByte.ToBytableArray(params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return UMI3DNetworkingHelper.Write(newMaterial.Id())
                 + UMI3DNetworkingHelper.Write(addMaterialIfNotExists)
-                + UMI3DNetworkingHelper.WriteArray(overrideAllMaterial ? ANY_mat : overidedMaterials);
+                + UMI3DNetworkingHelper.Write((IEnumerable<string>)(overrideAllMaterial ? ANY_mat : overidedMaterials));
         }
 
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return false;
         }

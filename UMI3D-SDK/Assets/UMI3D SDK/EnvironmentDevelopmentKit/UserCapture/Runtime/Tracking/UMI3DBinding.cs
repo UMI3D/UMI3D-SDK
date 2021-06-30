@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.edk.userCapture
 {
 
-    public class UMI3DBinding : IByte
+    public class UMI3DBinding : IBytable
     {
         public uint boneType;
         public bool isBinded = true;
@@ -53,14 +53,14 @@ namespace umi3d.edk.userCapture
                     + UMI3DNetworkingHelper.Write(offsetRotation);
         }
 
-        Bytable IByte.ToBytableArray(params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToByte(null);
             return ToByte(parameters[0] as UMI3DUser);
         }
 
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return true;
         }

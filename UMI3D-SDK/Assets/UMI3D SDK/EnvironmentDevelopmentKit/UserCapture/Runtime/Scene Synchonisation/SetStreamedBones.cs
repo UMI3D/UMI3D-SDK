@@ -27,7 +27,7 @@ namespace umi3d.edk.userCapture
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
-                + UMI3DNetworkingHelper.WriteArray(streamedBones);
+                + UMI3DNetworkingHelper.Write((IEnumerable<uint>)streamedBones);
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)

@@ -232,7 +232,7 @@ namespace umi3d.common.collaboration
                 case UMI3DRenderedNodeDto.MaterialOverrideDto material:
                     bytable = UMI3DNetworkingHelper.Write(material.newMaterialId);
                     bytable += UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists);
-                    bytable += UMI3DNetworkingHelper.WriteArray(material.overridedMaterialsId);
+                    bytable += UMI3DNetworkingHelper.Write((System.Collections.Generic.IEnumerable<string>)material.overridedMaterialsId);
                     break;
                 default:
                     bytable = null;

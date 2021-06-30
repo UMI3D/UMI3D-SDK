@@ -80,7 +80,7 @@ namespace umi3d.edk
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
                 + UMI3DNetworkingHelper.Write(entityId)
-                + UMI3DNetworkingHelper.WriteArray(entities.GetValue(user).Select(e => e.Id()).ToList());
+                + UMI3DNetworkingHelper.Write((IEnumerable<ulong>)entities.GetValue(user).Select(e => e.Id()).ToList());
         }
 
         public void Destroy()

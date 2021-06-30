@@ -22,7 +22,7 @@ namespace umi3d.common
     /// Abstract class to represent any message sent by a UMI3D Browser.
     /// </summary>
     [Serializable]
-    public abstract class AbstractBrowserRequestDto : UMI3DDto, IByte
+    public abstract class AbstractBrowserRequestDto : UMI3DDto, IBytable
     {
         /// <summary>
         /// Defines if the message have to be reliable.

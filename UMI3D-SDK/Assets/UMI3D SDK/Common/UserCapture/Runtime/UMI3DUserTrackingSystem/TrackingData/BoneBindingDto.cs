@@ -22,7 +22,7 @@ namespace umi3d.common.userCapture
     /// Class to associate a bone to a node.
     /// </summary>
     [Serializable]
-    public class BoneBindingDto : UMI3DDto, IByte
+    public class BoneBindingDto : UMI3DDto, IBytable
     {
         /// <summary>
         /// An identifier defined by the designer.

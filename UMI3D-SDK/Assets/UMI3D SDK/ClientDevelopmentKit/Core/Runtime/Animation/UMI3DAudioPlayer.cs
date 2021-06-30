@@ -42,7 +42,7 @@ namespace umi3d.cdk
                 while (gameObject == null)
                 {
                     yield return wait;
-                    gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID).gameObject;
+                    gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID)?.gameObject;
                 }
             }
             audioSource = gameObject.AddComponent<AudioSource>();

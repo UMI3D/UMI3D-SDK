@@ -77,8 +77,6 @@ namespace umi3d.edk.userCapture
             List<BoneDto> bonesToUpdate = new List<BoneDto>();
             List<UMI3DUserEmbodimentBone> bonesToDelete = new List<UMI3DUserEmbodimentBone>();
 
-            Debug.Log(newBoneList.Count());
-
             bonesToCreate = newBoneList.FindAll(newBoneDto => !dicoBones.ContainsKey(newBoneDto.boneType));
             bonesToUpdate = newBoneList.FindAll(newBoneDto => dicoBones.ContainsKey(newBoneDto.boneType));
             bonesToDelete = oldBoneList.FindAll(embodimentBone => !newBoneList.Exists(newBoneDto => newBoneDto.boneType.Equals(embodimentBone.boneType)));
@@ -168,7 +166,7 @@ namespace umi3d.edk.userCapture
                 base.ToBytes(user)
                 + UMI3DNetworkingHelper.Write(userId)
                 + UMI3DNetworkingHelper.Write(activeBindings.GetValue(user))
-                + UMI3DNetworkingHelper.ListToBytable(bindings.GetValue(user), user);
+                + UMI3DNetworkingHelper.Write(bindings.GetValue(user), user);
         }
     }
 }

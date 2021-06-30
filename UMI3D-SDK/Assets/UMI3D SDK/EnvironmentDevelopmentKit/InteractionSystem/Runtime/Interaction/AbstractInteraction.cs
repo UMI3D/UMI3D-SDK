@@ -28,7 +28,7 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IByte
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IBytable
     {
 
         /// <summary>
@@ -212,14 +212,14 @@ namespace umi3d.edk.interaction
                     + UMI3DNetworkingHelper.Write(Display.description);
         }
 
-        Bytable IByte.ToBytableArray(params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToByte( null);
             return ToByte( parameters[0] as UMI3DUser);
         }
 
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return true;
         }

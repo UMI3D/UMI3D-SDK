@@ -25,7 +25,7 @@ namespace umi3d.edk
     public class UMI3DAnimation : UMI3DAbstractAnimation
     {
         [Serializable]
-        public class AnimationChain : IByte
+        public class AnimationChain : IBytable
         {
             public UMI3DAbstractAnimation Animation;
             public float Progress;
@@ -46,12 +46,12 @@ namespace umi3d.edk
                 return new UMI3DAnimationDto.AnimationChainDto() { animationId = Animation.Id(), startOnProgress = Progress };
             }
 
-            bool IByte.IsCountable()
+            bool IBytable.IsCountable()
             {
                 throw new NotImplementedException();
             }
 
-            Bytable IByte.ToBytableArray(params object[] parameters)
+            Bytable IBytable.ToBytableArray(params object[] parameters)
             {
                 throw new NotImplementedException();
             }
@@ -98,7 +98,7 @@ namespace umi3d.edk
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return base.ToBytesAux(user) 
-                + UMI3DNetworkingHelper.ListToBytable(ObjectAnimationChain.GetValue(user)) 
+                + UMI3DNetworkingHelper.Write((IEnumerable<IBytable>)ObjectAnimationChain.GetValue(user)) 
                 + UMI3DNetworkingHelper.Write(ObjectDuration.GetValue(user));
         }
     }

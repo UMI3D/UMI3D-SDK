@@ -21,7 +21,7 @@ namespace umi3d.edk
 {
 
     [System.Serializable]
-    public class UMI3DResourceFile : IByte
+    public class UMI3DResourceFile : IBytable
     {
         public bool isLocalFile = false;
         public string domain = "";
@@ -59,7 +59,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null);
         }
 
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return true;
         }
@@ -77,7 +77,7 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
-        Bytable IByte.ToBytableArray(params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return ToByte();
         }

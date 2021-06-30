@@ -21,7 +21,7 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
-    public abstract class Operation : IByte
+    public abstract class Operation : IBytable
     {
         /// <summary>
         /// List of users to which this operation should be send.
@@ -42,14 +42,14 @@ namespace umi3d.edk
         /// <returns>the size needed ans a function to set the byte array at a position and return the size again</returns>
         public abstract Bytable ToBytable(UMI3DUser user);
 
-        Bytable IByte.ToBytableArray(params object[] parameters)
+        Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToBytable(null);
             return ToBytable(parameters[0] as UMI3DUser);
         }
 
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return false;
         }

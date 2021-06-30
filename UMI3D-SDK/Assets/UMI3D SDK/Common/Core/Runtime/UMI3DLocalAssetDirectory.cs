@@ -21,7 +21,7 @@ using UnityEngine;
 namespace umi3d.common
 {
     [System.Serializable]
-    public class UMI3DLocalAssetDirectory : IByte
+    public class UMI3DLocalAssetDirectory : IBytable
     {
         public string name = "new variant";
         public string path;
@@ -42,19 +42,19 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
-        bool IByte.IsCountable()
+        bool IBytable.IsCountable()
         {
             return true;
         }
 
-        Bytable IByte.ToBytableArray( params object[] parameters)
+        Bytable IBytable.ToBytableArray( params object[] parameters)
         {
             return
                 UMI3DNetworkingHelper.Write(name)
                 + UMI3DNetworkingHelper.Write(path)
                 + UMI3DNetworkingHelper.Write(metrics.resolution)
                 + UMI3DNetworkingHelper.Write(metrics.size)
-                + UMI3DNetworkingHelper.WriteArray(formats);
+                + UMI3DNetworkingHelper.Write((IEnumerable<string>)formats);
         }
         //public List<string> dependencies = new List<string>();
     }
