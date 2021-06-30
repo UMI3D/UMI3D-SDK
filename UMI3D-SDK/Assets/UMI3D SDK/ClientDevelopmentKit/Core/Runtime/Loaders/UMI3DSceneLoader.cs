@@ -506,7 +506,7 @@ namespace umi3d.cdk
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
-                            extension.shaderProperties.Remove((string)p.key);
+                            extension.shaderProperties.Remove((string)key);
                             Debug.LogWarning("Warning a property is removed but it cannot be applied");
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryProperty:
