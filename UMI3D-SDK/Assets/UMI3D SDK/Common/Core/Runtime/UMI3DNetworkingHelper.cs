@@ -12,6 +12,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -291,6 +292,10 @@ namespace umi3d.common
                         return true;
                     }
                     break;
+                case true when typeof(T) == typeof(UMI3DShaderPropertyDto):
+                    var shader = UMI3DShaderPropertyDto.FromByte(container);
+                    result = (T)Convert.ChangeType(shader, typeof(T));
+                    return true;
                 case true when typeof(T) == typeof(string):
                     result = default(T);
                     if (container.length == 0) return false;
@@ -316,11 +321,6 @@ namespace umi3d.common
                     foreach (var module in modules)
                         if (module.Read<T>(container, out read, out result))
                             return read;
-                    if (typeof(T) == typeof(object))
-                    {
-                        result = (T)Convert.ChangeType(ReadObject(container), typeof(T));
-                        return true;
-                    }
                     throw new Exception($"Missing case [{typeof(T)} was not catched]");
             }
             result = default(T);
@@ -344,6 +344,11 @@ namespace umi3d.common
                 default:
                     throw new Exception($"Not a known collection type {container}");
             }
+        }
+
+        public static Dictionary<T,K> ReadDictionary<T,K>(ByteContainer container)
+        {
+            return ReadList<KeyValuePair<T,K>>(container).ToDictionary();
         }
 
         static List<T> ReadIndexesList<T>(ByteContainer container)
@@ -429,61 +434,6 @@ namespace umi3d.common
             yield break;
         }
 
-        
-        public static Bytable WriteObject<T>(T value)
-        {
-            switch (value)
-            {
-                case Array array:
-                    var bc = Write(UMI3DObjectKeys.Array);
-                    bc += Write(array.Length);
-                    var ea = array.GetEnumerator();
-                    if(ea.MoveNext())
-                        bc += GetType(ea.Current);
-                    foreach (var e in array)
-                        bc += Write(e);
-                    return bc;
-                case List<object> l:
-                    return Write(UMI3DObjectKeys.List)
-                        + Write(l.Count)
-                        + GetType(l.First())
-                        + l.Select(e => Write(e));
-                case bool b:
-                    return Write(UMI3DObjectKeys.Bool)
-                        + Write(b);
-                case double b:
-                    return Write(UMI3DObjectKeys.Double)
-                        + Write(b);
-                case float b:
-                    return Write(UMI3DObjectKeys.Float)
-                        + Write(b);
-                case int b:
-                    return Write(UMI3DObjectKeys.Int)
-                        + Write(b);
-                case SerializableVector2 v:
-                case Vector2 b:
-                    return Write(UMI3DObjectKeys.Vector2)
-                        + Write(value);
-                case SerializableVector3 v:
-                case Vector3 b:
-                    return Write(UMI3DObjectKeys.Vector3)
-                        + Write(value);
-                case Quaternion q:
-                case SerializableVector4 v:
-                case Vector4 b:
-                    return Write(UMI3DObjectKeys.Vector4)
-                        + Write(value);
-                case Color b:
-                    return Write(UMI3DObjectKeys.Color)
-                        + Write(b);
-                case TextureDto b:
-                    return Write(UMI3DObjectKeys.TextureDto)
-                        + Write(b);
-                default:
-                    return new Bytable();
-            }
-        }
-
         static Bytable GetType<T>(T value)
         {
             switch (value)
@@ -515,99 +465,15 @@ namespace umi3d.common
             }
         }
 
-
-        public static object ReadObject(ByteContainer container)
+        public static Bytable Write<T>(IEnumerable<T> value)
         {
-            byte type = Read<byte>(container);
-
-            switch (type)
-            {
-                case UMI3DObjectKeys.Array:
-                    {
-                        int length = Read<int>(container);
-                        byte subtype = Read<byte>(container);
-                        Array value;
-                        switch (type)
-                        {
-                            case UMI3DObjectKeys.Bool:
-                                value = new bool[length];
-                                break;
-                            case UMI3DObjectKeys.Double:
-                                value = new double[length];
-                                break;
-                            case UMI3DObjectKeys.Float:
-                                value = new float[length];
-                                break;
-                            case UMI3DObjectKeys.Int:
-                                value = new int[length];
-                                break;
-                            case UMI3DObjectKeys.Vector2:
-                                value = new Vector2[length];
-                                break;
-                            case UMI3DObjectKeys.Vector3:
-                                value = new Vector3[length];
-                                break;
-                            case UMI3DObjectKeys.Vector4:
-                                value = new Vector4[length];
-                                break;
-                            case UMI3DObjectKeys.Color:
-                                value = new Color[length];
-                                break;
-                            case UMI3DObjectKeys.TextureDto:
-                                value = new TextureDto[length];
-                                break;
-                            default:
-                                return null;
-                        }
-                        for(int i = 0; i < length; i++)
-                        {
-                            value.SetValue(ReadObject(subtype, container),i);
-                        }
-                        return value;
-                    }
-                case UMI3DObjectKeys.List:
-                    {
-                        int length = Read<int>(container);
-                        byte subtype = Read<byte>(container);
-                        var value = new List<object>();
-                        for (int i = 0; i < length; i++)
-                        {
-                            value.Add(ReadObject(subtype, container));
-                        }
-                        return value;
-                    }
-                default:
-                    return ReadObject(type, container);
-            }
+            return WriteCollection(value);
         }
 
-        static object ReadObject(byte type, ByteContainer container)
+        public static Bytable Write<T,K>(KeyValuePair<T,K> value)
         {
-            switch (type)
-            {
-                case UMI3DObjectKeys.Bool:
-                    return Read<bool>(container);
-                case UMI3DObjectKeys.Double:
-                    return Read<double>(container);
-                case UMI3DObjectKeys.Float:
-                    return Read<float>(container);
-                case UMI3DObjectKeys.Int:
-                    return Read<int>(container);
-                case UMI3DObjectKeys.Vector2:
-                    return Read<Vector2>(container);
-                case UMI3DObjectKeys.Vector3:
-                    return Read<Vector3>(container);
-                case UMI3DObjectKeys.Vector4:
-                    return Read<Vector4>(container);
-                case UMI3DObjectKeys.Color:
-                    return Read<Color>(container);
-                case UMI3DObjectKeys.TextureDto:
-                    return Read<TextureDto>(container);
-                default:
-                    return new Bytable();
-            }
+            return Write(value.Key) + Write(value.Value);
         }
-
 
         public static Bytable Write<T>(T value)
         {
@@ -772,6 +638,14 @@ namespace umi3d.common
         }
 
         public static Bytable WriteCollection<T>(IEnumerable<T> value)
+        {
+            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
+            foreach (var v in value)
+                b += Write(v);
+            return b;
+        }
+
+        public static Bytable WriteCollection<T,K>(IEnumerable<KeyValuePair<T,K>> value)
         {
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
             foreach (var v in value)

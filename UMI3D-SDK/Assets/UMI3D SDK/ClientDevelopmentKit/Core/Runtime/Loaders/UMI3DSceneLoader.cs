@@ -17,6 +17,7 @@ limitations under the License.
 using MrtkShader;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -332,21 +333,21 @@ namespace umi3d.cdk
                             //  string key = (string)p.key;
                             if (extension.shaderProperties.ContainsKey((string)p.key))
                             {
-                                extension.shaderProperties[(string)p.key] = p.value;
+                                extension.shaderProperties[(string)p.key] = ((UMI3DShaderPropertyDto)p.value).value;
                                 Debug.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value");
                             }
                             else
-                                extension.shaderProperties.Add((string)p.key, p.value);
+                                extension.shaderProperties.Add((string)p.key, ((UMI3DShaderPropertyDto)p.value).value);
                             break;
                         case SetEntityDictionaryRemovePropertyDto p:
                             extension.shaderProperties.Remove((string)p.key);
                             Debug.LogWarning("Warning a property is removed but it cannot be applied");
                             break;
                         case SetEntityDictionaryPropertyDto p:
-                            extension.shaderProperties[(string)p.key] = p.value;
+                            extension.shaderProperties[(string)p.key] = ((UMI3DShaderPropertyDto)p.value).value;
                             break;
                         case SetEntityPropertyDto p:
-                            extension.shaderProperties = (Dictionary<string, object>)p.value;
+                            extension.shaderProperties = ((Dictionary<string, UMI3DShaderPropertyDto>)p.value).Select(k => new KeyValuePair<string, object>(k.Key, k.Value.value)).ToDictionary();
                             break;
 
                         default:
@@ -495,7 +496,7 @@ namespace umi3d.cdk
                     {
                         case UMI3DOperationKeys.SetEntityDictionnaryAddProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
-                            value = UMI3DNetworkingHelper.ReadObject(container);
+                            value = UMI3DNetworkingHelper.Read<UMI3DShaderPropertyDto>(container).value;
                             if (extension.shaderProperties.ContainsKey(key))
                             {
                                 extension.shaderProperties[key] = value;
@@ -511,13 +512,12 @@ namespace umi3d.cdk
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
-                            value = UMI3DNetworkingHelper.ReadObject(container);
+                            value = UMI3DNetworkingHelper.Read<UMI3DShaderPropertyDto>(container).value;
                             extension.shaderProperties[key] = value;
                             break;
                         case UMI3DOperationKeys.SetEntityProperty:
-                            extension.shaderProperties = UMI3DNetworkingHelper.Read<Dictionary<string, object>>(container);
+                            extension.shaderProperties = UMI3DNetworkingHelper.ReadDictionary<string, UMI3DShaderPropertyDto>(container).Select(k=> new KeyValuePair<string,object>(k.Key,k.Value.value)).ToDictionary();
                             break;
-
                         default:
                             break;
                     }

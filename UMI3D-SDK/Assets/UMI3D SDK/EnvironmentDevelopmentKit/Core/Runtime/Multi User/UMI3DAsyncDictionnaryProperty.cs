@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 
 namespace umi3d.edk
 {
@@ -177,7 +178,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                key = key,
+                key = SerializerT(key, null),
                 value = SerializerL(value, null)
             };
             if (UMI3DEnvironment.Exists)
@@ -211,7 +212,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                key = key,
+                key = SerializerT(key, user),
                 value = SerializerL(value, user)
             };
             operation.users.Add(user);
@@ -254,7 +255,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                key = key,
+                key = SerializerT(key, null),
                 value = SerializerL(value, null)
             };
             if (UMI3DEnvironment.Exists)
@@ -279,7 +280,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                key = key,
+                key = SerializerT(key, user),
                 value = SerializerL(value, user)
             };
             operation.users.Add(user);
@@ -320,7 +321,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                key = key,
+                key = SerializerT(key, null),
                 value = SerializerL(value, null)
             };
             if (UMI3DEnvironment.Exists)
@@ -348,7 +349,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
                 property = propertyId,
-                key = key,
+                key = SerializerT(key, user),
                 value = SerializerL(value, user)
             };
             operation.users.Add(user);

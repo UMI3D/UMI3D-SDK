@@ -200,5 +200,14 @@ namespace umi3d.common
             return source.ZipOverflow(to, (a, b) => (a, b)).Select(c => (c.a.Equals(c.b), $"({c.a}:{c.b})")).Aggregate((a, b) => (a.Item1 && b.Item1, $"{a.Item2};{b.Item2}"));
         }
 
+        /// <summary>
+        /// Convert a IEnumerable<KeyValuePair<T,K>> to a Dictionary<T,K>
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<T,K> ToDictionary<T,K>(this IEnumerable<KeyValuePair<T,K>> source)
+        {
+            return source.ToDictionary(k => k.Key, k => k.Value);
+        }
+
     }
 }
