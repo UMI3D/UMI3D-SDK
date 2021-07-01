@@ -15,9 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.interaction;
-using UnityEditor;
 using UnityEngine;
 
 namespace umi3d.edk.interaction
@@ -124,7 +122,7 @@ namespace umi3d.edk.interaction
 
         private void Start()
         {
-            appName = PlayerSettings.productName;
+            appName = Application.productName;
         }
         
     }
