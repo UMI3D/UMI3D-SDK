@@ -35,6 +35,9 @@ namespace umi3d.cdk
                 case UMI3DAnimationDto animation:
                     new UMI3DAnimation(animation);
                     break;
+                case UMI3DAnimatorAnimationDto animatorAnimation:
+                    new UMI3DAnimatorAnimation(animatorAnimation);
+                    break;
                 case UMI3DNodeAnimationDto nodeAnimation:
                     new UMI3DNodeAnimation(nodeAnimation);
                     break;

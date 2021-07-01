@@ -23,6 +23,7 @@ namespace umi3d.common
         public const string identity_update = "/me/update";
         public const string status_update = "/me/status_update";
         public const string logout = "/logout";
+        public const string localData = "/LocalData/key/:param";
 
         //MEDIA
         public const string root = "/";

@@ -478,6 +478,8 @@ namespace umi3d.cdk
         /// </summary>
         static public void Clear()
         {
+            Instance.entityFilters.Clear();
+
             foreach (var entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
                 DeleteEntity(entity, null);
@@ -1115,6 +1117,9 @@ namespace umi3d.cdk
 
                 return true;
             }
+
+            Debug.LogWarning("Need to determine what happens when not in interpolation");
+
             return false;
         }
 

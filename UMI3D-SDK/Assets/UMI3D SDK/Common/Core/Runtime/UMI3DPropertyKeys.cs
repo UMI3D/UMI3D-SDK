@@ -193,6 +193,9 @@ namespace umi3d.common
         public const uint AnimationDuration = 13301;
         public const uint AnimationChain = 13302;
 
+        public const uint AnimationNodeId = 13401;
+        public const uint AnimationStateName = 13402;
+
         #endregion
 
         #region Material

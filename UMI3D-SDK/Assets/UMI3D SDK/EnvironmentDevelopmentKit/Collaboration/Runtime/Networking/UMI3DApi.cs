@@ -24,6 +24,8 @@ using System.Text;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
+using UnityEngine;
+using UnityEngine.Events;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -478,6 +480,58 @@ namespace umi3d.edk.collaboration
 
         #endregion
 
+        #region LocalData
+
+        /// <summary>
+        /// POST "LocalData/key/:param"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        /// <param name="uriparam"></param>
+        [HttpPost(UMI3DNetworkingKeys.localData, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void PostPlayerLocalInfo(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            //Debug.Log("Receive local data from : " + user);
+            if(receiveLocalInfoListener != null)
+            {
+                receiveLocalInfoListener.Invoke(uriparam["param"], user, ReadObject(e.Request));
+            }
+        }
+
+        /// <summary>
+        /// GET "LocalData/key/:param"
+        /// get the cookies for client
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <param name="uriparam"></param>
+        [HttpGet(UMI3DNetworkingKeys.localData, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void GetPlayerLocalInfo(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            Debug.Log( user + " wants to get datas from : " + uriparam["param"]);
+            if (sendLocalInfoListener != null)
+            {
+                sendLocalInfoListener.Invoke(uriparam["param"], user, e.Response);
+            }
+        }
+
+
+        [Serializable]
+        public class ReceiveLocalInfoEvent : UnityEvent<string, UMI3DUser, byte[]> // key, user, data. 
+        {
+        }
+        public static ReceiveLocalInfoEvent receiveLocalInfoListener = new ReceiveLocalInfoEvent();
+
+        [Serializable]
+        public class SendLocalinfoEvent : UnityEvent<string, UMI3DUser, HttpListenerResponse> // key, user, response to send. 
+        {
+        }
+        public static SendLocalinfoEvent sendLocalInfoListener = new SendLocalinfoEvent();
+        
+        #endregion
+
         #region utils
         UMI3DDto ReadDto(HttpListenerRequest request)
         {
@@ -490,6 +544,20 @@ namespace umi3d.edk.collaboration
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
                 return UMI3DDto.FromBson(bytes);
+            }
+        }
+
+        byte[] ReadObject(HttpListenerRequest request)
+        {
+            var bytes = default(byte[]);
+            using (var memstream = new MemoryStream())
+            {
+                var buffer = new byte[512];
+                var bytesRead = default(int);
+                while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
+                    memstream.Write(buffer, 0, bytesRead);
+                bytes = memstream.ToArray();
+                return bytes;
             }
         }
 

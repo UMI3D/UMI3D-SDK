@@ -418,5 +418,11 @@ namespace umi3d.cdk.collaboration
 
         ///<inheritdoc/>
         protected override string _getAuthorization() { return HttpClient.ComputedToken; }
+
+        /// <summary>
+        /// return HTTPClient if the server is a collaboration server.
+        /// </summary>
+        public override object GetHttpClient() { return HttpClient; }
+
     }
 }
