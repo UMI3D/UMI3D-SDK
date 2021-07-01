@@ -23,6 +23,7 @@ namespace umi3d.common
         public const uint DeleteEntity = 3;
         public const uint NavigationRequest = 4;
         public const uint TeleportationRequest = 5;
+        public const uint RequestHttpGet = 6;
 
         public const uint SetEntityProperty = 101;
         public const uint SetEntityDictionnaryProperty = 103;
@@ -60,7 +61,6 @@ namespace umi3d.common
         public const uint ToolReleased = 10011;
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
-
 
     }
     static public class UMI3DParameterKeys

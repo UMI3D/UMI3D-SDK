@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -107,6 +108,11 @@ namespace umi3d.edk.interaction
             }
         }
 
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public static void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterDto parameter)
         {
             if (userResponses.ContainsKey((user, parameter.key)))
@@ -124,6 +130,7 @@ namespace umi3d.edk.interaction
         {
             appName = Application.productName;
         }
-        
+
+
     }
 }

@@ -24,7 +24,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
-        new public static UMI3DAnimatorAnimation Get(string id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
+        new public static UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
         protected new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; set => base.dto = value; }
 
         bool started = false;
@@ -85,7 +85,7 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationNodeId:
-                    dto.nodeId = (string)property.value;
+                    dto.nodeId = (ulong)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = (string)property.value;

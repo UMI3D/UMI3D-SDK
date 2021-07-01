@@ -21,7 +21,7 @@ namespace umi3d.common
     [System.Serializable]
     public class UMI3DAnimatorAnimationDto : UMI3DAbstractAnimationDto
     {
-        public string nodeId = "";
+        public ulong nodeId = 0;
         public string stateName = "";
     }
 }
