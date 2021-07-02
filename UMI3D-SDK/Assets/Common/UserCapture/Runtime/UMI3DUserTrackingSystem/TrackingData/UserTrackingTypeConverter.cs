@@ -111,7 +111,7 @@ namespace umi3d.common.userCapture
                 case HumanBodyBones.RightThumbDistal:
                     return BoneType.RightThumbDistal;
                 case HumanBodyBones.RightIndexProximal:
-                    return BoneType.RightThumbProximal;
+                    return BoneType.RightIndexProximal;
                 case HumanBodyBones.RightIndexIntermediate:
                     return BoneType.RightIndexIntermediate;
                 case HumanBodyBones.RightIndexDistal:
@@ -232,7 +232,7 @@ namespace umi3d.common.userCapture
                 case BoneType.RightThumbDistal:
                     return HumanBodyBones.RightThumbDistal;
                 case BoneType.RightIndexProximal:
-                    return HumanBodyBones.RightThumbProximal;
+                    return HumanBodyBones.RightIndexProximal;
                 case BoneType.RightIndexIntermediate:
                     return HumanBodyBones.RightIndexIntermediate;
                 case BoneType.RightIndexDistal:

@@ -14,15 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d
+namespace umi3d.common
 {
-    static public class UMI3DVersion
+    [System.Serializable]
+    public class RequestHttpGetDto : UMI3DDto
     {
-        public static string version { get { return major + "." + minor + "." + status + "." + date; } }
-        public readonly static string major = "2";
-        public readonly static string minor = "3";
-        public readonly static string status = "b";
-        public readonly static string date = "210701";
+        /// <summary>
+        /// Local file id. Used in the http Get request. /!\ Warning : Contains only lower case letter or number 
+        /// </summary>
+        public string key;
 
+        public RequestHttpGetDto() : base() { }
     }
 }
