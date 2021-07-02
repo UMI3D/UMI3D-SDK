@@ -4,19 +4,15 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-    public class NavigationRequest
+    public class NavigationRequest : DispatchableRequest
     {
-        /// <summary>
-        /// List of users to which this operation should be send.
-        /// </summary>
-        public HashSet<UMI3DUser> users = new HashSet<UMI3DUser>();
-        public SerializableVector3 position;
-        public bool reliable;
 
-        public NavigationRequest(Vector3 position, bool reliable)
+        public SerializableVector3 position;
+
+        public NavigationRequest(Vector3 position, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
         {
             this.position = position;
-            this.reliable = reliable;
+            
         }
 
         protected virtual uint GetOperationKey()
@@ -31,12 +27,12 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(position);
         }
 
-        public byte[] ToBytes()
+        public override byte[] ToBytes()
         {
             return ToBytable().ToBytes();
         }
 
-        public byte[] ToBson()
+        public override byte[] ToBson()
         {
             var dto = CreateDto();
             WriteProperties(dto);

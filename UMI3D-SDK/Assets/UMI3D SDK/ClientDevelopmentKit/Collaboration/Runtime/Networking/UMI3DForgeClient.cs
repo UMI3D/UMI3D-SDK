@@ -304,7 +304,7 @@ namespace umi3d.cdk.collaboration
                         }
                         break;
 
-                    case UMI3DOperationKeys.RequestHttpGet:
+                    case UMI3DOperationKeys.GetLocalInfoRequest:
                         var key = UMI3DNetworkingHelper.Read<string>(container);
                         UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                             key,

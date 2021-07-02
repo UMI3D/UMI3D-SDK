@@ -146,15 +146,15 @@ namespace umi3d.edk
             if (Exists) Instance._Dispatch(transaction);
         }
 
-        static public void Dispatch(NavigationRequest navigation)
+        static public void Dispatch(DispatchableRequest dispatchableRequest)
         {
-            if (Exists) Instance._Dispatch(navigation);
+            if (Exists) Instance._Dispatch(dispatchableRequest);
         }
 
         protected virtual void _Dispatch(Transaction transaction)
         {
         }
-        protected virtual void _Dispatch(NavigationRequest navigation)
+        protected virtual void _Dispatch(DispatchableRequest dispatchable)
         {
         }
 

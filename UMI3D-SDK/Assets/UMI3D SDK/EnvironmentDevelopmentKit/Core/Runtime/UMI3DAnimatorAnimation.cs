@@ -61,5 +61,12 @@ namespace umi3d.edk
             Adto.nodeId = ObjectNode.GetValue(user).Id();
             Adto.stateName = ObjectStateName.GetValue(user);
         }
+
+        protected override Bytable ToBytesAux(UMI3DUser user)
+        {
+            return base.ToBytesAux(user)
+                + UMI3DNetworkingHelper.Write(ObjectNode.GetValue(user).Id())
+                + UMI3DNetworkingHelper.Write(ObjectStateName.GetValue(user));
+        }
     }
 }

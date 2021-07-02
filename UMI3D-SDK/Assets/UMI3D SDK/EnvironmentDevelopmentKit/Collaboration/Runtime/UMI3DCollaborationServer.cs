@@ -393,10 +393,10 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected override void _Dispatch(NavigationRequest navigation)
+        protected override void _Dispatch(DispatchableRequest dispatchableRequest)
         {
-            base._Dispatch(navigation);
-            foreach (var u in navigation.users)
+            base._Dispatch(dispatchableRequest);
+            foreach (var u in dispatchableRequest.users)
             {
                 if (u is UMI3DCollaborationUser user)
                 {
@@ -406,11 +406,11 @@ namespace umi3d.edk.collaboration
                     }
                     if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                     {
-                        NavigationToBeSend[user] = navigation;
+                        NavigationToBeSend[user] = dispatchableRequest;
                         continue;
                     }
 
-                    SendNavigationRequest(user, navigation);
+                    SendNavigationRequest(user, dispatchableRequest);
                 }
             }
         }
@@ -422,14 +422,14 @@ namespace umi3d.edk.collaboration
                 ForgeServer.SendData(user.networkPlayer, c.Item1, transaction.reliable);
         }
 
-        void SendNavigationRequest(UMI3DCollaborationUser user, NavigationRequest navigationRequest)
+        void SendNavigationRequest(UMI3DCollaborationUser user, DispatchableRequest dispatchableRequest)
         {
-            var data = UMI3DEnvironment.Instance.useDto ? navigationRequest.ToBson() : navigationRequest.ToBytes();
-            ForgeServer.SendData(user.networkPlayer, data, navigationRequest.reliable);
+            var data = UMI3DEnvironment.Instance.useDto ? dispatchableRequest.ToBson() : dispatchableRequest.ToBytes();
+            ForgeServer.SendData(user.networkPlayer, data, dispatchableRequest.reliable);
         }
 
         Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        Dictionary<UMI3DCollaborationUser, NavigationRequest> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, NavigationRequest>();
+        Dictionary<UMI3DCollaborationUser, DispatchableRequest> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, DispatchableRequest>();
         private void Update()
         {
             foreach (var kp in TransactionToBeSend.ToList())
