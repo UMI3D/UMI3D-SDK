@@ -25,7 +25,8 @@ namespace umi3d.edk.userCapture
 {
     public class UMI3DEmbodimentManager : PersistentSingleton<UMI3DEmbodimentManager>
     {
-        public UMI3DScene embodimentsScene;
+        public UMI3DScene EmbodimentsScene;
+        public GameObject SkeletonPrefab;
 
         public Dictionary<string, UMI3DAvatarNode> embodimentInstances = new Dictionary<string, UMI3DAvatarNode>();
         public Dictionary<string, Vector3> embodimentSize = new Dictionary<string, Vector3>();
@@ -92,12 +93,16 @@ namespace umi3d.edk.userCapture
             }
 
             GameObject embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
-            embd.transform.SetParent(embodimentsScene.transform);
+            embd.transform.SetParent(EmbodimentsScene.transform);
             trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
             LoadAvatarNode(trackedUser.Avatar);
 
+            GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
+            skeleton.transform.localScale = embodimentSize[user.Id()];
+
             trackedUser.Avatar.userId = user.Id();
+            trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
 
             embodimentInstances.Add(user.Id(), trackedUser.Avatar);
 
