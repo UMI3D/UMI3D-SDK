@@ -65,5 +65,10 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual ulong GetTime() { return (ulong)DateTime.Now.Millisecond; }
 
+        /// <summary>
+        /// return HTTPClient if the server is a collaboration server. return null in that case
+        /// </summary>
+        public virtual Object GetHttpClient() { return null; }
+
     }
 }

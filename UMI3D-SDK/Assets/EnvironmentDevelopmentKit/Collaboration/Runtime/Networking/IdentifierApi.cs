@@ -19,6 +19,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
+using umi3d.edk.interaction;
 
 namespace umi3d.edk.collaboration
 {
@@ -39,7 +40,17 @@ namespace umi3d.edk.collaboration
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<string, bool>();
             librariesUpdateStatus[user.Id()] = identity.librariesUpdated;
+            SetUserLocalInfoAuthorization(user, identity.parameters);
             return librariesUpdateStatus[user.Id()] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
+        }
+
+
+        void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, FormDto param)
+        {
+            if (param != null)
+                foreach (var dto in param.fields)
+                    if (dto is LocalInfoRequestParameterDto)
+                        LocalInfoParameter.ChageUserLocalInfo(user, dto as LocalInfoRequestParameterDto);
         }
 
         /// <summary>
