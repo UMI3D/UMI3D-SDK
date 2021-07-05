@@ -32,26 +32,34 @@ namespace umi3d.edk.userCapture
         public Vector3 HandLocalEulerRotation;
 
         [Serializable]
-        public class PhalanxRotations
+        public class PhalanxRotations : IBytable
         {
-            [ConstStringEnum(typeof(BoneType))]
+            [ConstEnum(typeof(BoneType),typeof(uint))]
             public string Phalanx;
             public Vector3 PhalanxEulerRotation;
+
+            public bool IsCountable()
+            {
+                return true;
+            }
+
+            public Bytable ToBytableArray(params object[] parameters)
+            {
+                return UMI3DNetworkingHelper.Write(Phalanx)
+                    + UMI3DNetworkingHelper.Write(PhalanxEulerRotation);
+            }
         }
 
         // set up with gizmos
         public List<PhalanxRotations> Phalanxes;
 
-        // Start is called before the first frame update
-        void Start()
+        protected override Bytable ToBytesAux(UMI3DUser user)
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            return UMI3DNetworkingHelper.Write(isRight) 
+                + UMI3DNetworkingHelper.Write(HandLocalPosition)
+                + UMI3DNetworkingHelper.Write(HandLocalEulerRotation)
+                + UMI3DNetworkingHelper.Write(HandLocalPosition)
+                + UMI3DNetworkingHelper.Write(Phalanxes); 
         }
 
         void OnDrawGizmosSelected()
