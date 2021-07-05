@@ -32,6 +32,8 @@ namespace umi3d.edk.userCapture
 
         public Dictionary<uint, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<uint, UMI3DUserEmbodimentBone>();
 
+        public Animator skeletonAnimator;
+
         public UserCameraPropertiesDto userCameraPropertiesDto;
 
         public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
@@ -128,6 +130,8 @@ namespace umi3d.edk.userCapture
                 localRotation = dto.rotation,
             };
             embodimentBone.isTracked = UMI3DEmbodimentManager.Instance.BoneTrackedInformation(userId, dto.boneType);
+            Transform transform = skeletonAnimator.GetBoneTransform(dto.boneType.ConvertToBoneType().GetValueOrDefault());
+            transform.localRotation = dto.rotation;
         }
 
         #endregion

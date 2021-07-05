@@ -38,6 +38,7 @@ namespace umi3d.cdk.collaboration
                 if (targetTrackingFPS > 0)
                 {
                     BonesIterator();
+
                     if (UMI3DCollaborationClientServer.Instance.ForgeClient != null && UMI3DCollaborationClientServer.Connected())
                         UMI3DCollaborationClientServer.Instance.ForgeClient.SendTrackingFrame(LastFrameDto);
 

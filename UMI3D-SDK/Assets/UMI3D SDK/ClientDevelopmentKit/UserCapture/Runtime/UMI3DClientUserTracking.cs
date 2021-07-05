@@ -92,8 +92,8 @@ namespace umi3d.cdk.userCapture
                     if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != 0)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
-                    if (embodimentDict.TryGetValue(UMI3DClientServer.Instance.GetId(), out UserAvatar userAvatar))
-                        userAvatar.UpdateAvatarPosition(LastFrameDto, Convert.ToUInt64(Time.time));
+                    //if (embodimentDict.TryGetValue(UMI3DClientServer.Instance.GetId(), out UserAvatar userAvatar))
+                        //userAvatar.UpdateAvatarPosition(LastFrameDto, Convert.ToUInt64(Time.time * 1000));
 
                     if (sendCameraProperties)
                         sendingCameraProperties.Invoke();
