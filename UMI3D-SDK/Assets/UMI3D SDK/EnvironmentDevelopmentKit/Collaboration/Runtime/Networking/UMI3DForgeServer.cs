@@ -165,7 +165,17 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerTimeout(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log("Player " + player.NetworkId + " timed out");
+            MainThreadManager.Run(() =>
+            {
+                Debug.Log($"Player [{player.NetworkId}] timeout");
+            });
+            playerCount = server.Players.Count;
+            var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            if (user != null)
+                MainThreadManager.Run(() =>
+                {
+                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user);
+                });
         }
 
         /// <summary>
@@ -208,14 +218,14 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"Player [{player.NetworkId}] disconnected");
+                Debug.Log($"Player [{player.NetworkId}] disconected");
             });
             playerCount = server.Players.Count;
             var user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user != null)
                 MainThreadManager.Run(() =>
                 {
-                    //UMI3DCollaborationServer.Collaboration.ConnectionClose(user.Id());
+                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user);
                 });
         }
 

@@ -149,14 +149,9 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public void ConnectionClose(ulong id)
+        public void ConnectionClose(UMI3DCollaborationUser user)
         {
-            if (users.ContainsKey(id))
-            {
-                var user = users[id];
-                user.SetStatus(StatusType.MISSING);
-            }
-            else Debug.Log($"{id} not found");
+            user?.SetStatus(StatusType.MISSING);
         }
 
         /// <summary>
