@@ -31,7 +31,7 @@ namespace umi3d.edk
             return dto.ToBson();
         }
 
-        protected virtual RequestHttpGetDto CreateDto() { return new RequestHttpGetDto(); }
-        protected virtual void WriteProperties(RequestHttpGetDto dto) { dto.key = key; }
+        protected virtual GetLocalInfoRequestDto CreateDto() { return new GetLocalInfoRequestDto(); }
+        protected virtual void WriteProperties(GetLocalInfoRequestDto dto) { dto.key = key; }
     }
 }
