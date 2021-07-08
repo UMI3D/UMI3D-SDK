@@ -292,7 +292,10 @@ namespace umi3d.cdk.collaboration
                         {
                             var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                             var nav = new NavigateDto() { position = pos };
-                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            MainThreadManager.Run(() =>
+                            {
+                                StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            });
                         }
                         break;
                     case UMI3DOperationKeys.TeleportationRequest:
@@ -300,17 +303,23 @@ namespace umi3d.cdk.collaboration
                             var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                             var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                             var nav = new TeleportDto() { position = pos, rotation = rot };
-                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            MainThreadManager.Run(() =>
+                            {
+                                StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            });
                         }
                         break;
 
                     case UMI3DOperationKeys.GetLocalInfoRequest:
                         var key = UMI3DNetworkingHelper.Read<string>(container);
-                        UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                             key,
                             (bytes) => LocalInfoSender.SetLocalInfo(key, bytes),
                             (error) => { Debug.Log("error on get local info : " + key); }
-                        );   
+                            );
+                        });
                         break;
                     default:
                         MainThreadManager.Run(() =>
