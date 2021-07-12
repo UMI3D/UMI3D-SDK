@@ -1,6 +1,8 @@
 ﻿using System;
+using umi3d.cdk.interaction;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.interaction;
 
 namespace umi3d.cdk.collaboration
 {
@@ -28,20 +30,46 @@ namespace umi3d.cdk.collaboration
                     readable = true;
                     return true;
                 case true when typeof(T) == typeof(UMI3DAnimationDto.AnimationChainDto):
-                    if (container.length < sizeof(ulong) + sizeof(float))
                     {
-                        result = default(T);
-                        readable = false;
+                        if (container.length < sizeof(ulong) + sizeof(float))
+                        {
+                            result = default(T);
+                            readable = false;
+                            return true;
+                        }
+                        var value = new UMI3DAnimationDto.AnimationChainDto()
+                        {
+                            animationId = UMI3DNetworkingHelper.Read<ulong>(container),
+                            startOnProgress = UMI3DNetworkingHelper.Read<float>(container),
+                        };
+                        result = (T)Convert.ChangeType(value, typeof(T));
+                        readable = true;
                         return true;
                     }
-                    var value = new UMI3DAnimationDto.AnimationChainDto()
+                case true when typeof(T) == typeof(AbstractInteractionDto):
                     {
-                        animationId = UMI3DNetworkingHelper.Read<ulong>(container),
-                        startOnProgress = UMI3DNetworkingHelper.Read<float>(container),
-                    };
-                    result = (T)Convert.ChangeType(value, typeof(T));
-                    readable = true;
-                    return true;
+                        var value = UMI3DAbstractToolLoader.ReadAbstractInteractionDto(container, out readable);
+                        result = (T)Convert.ChangeType(value, typeof(T));
+                        return true;
+                    }
+                case true when typeof(T) == typeof(DofGroupOptionDto):
+                    {
+                        var value = new DofGroupOptionDto();
+                        value.name = UMI3DNetworkingHelper.Read<string>(container);
+                        value.separations = UMI3DNetworkingHelper.ReadList<DofGroupDto>(container);
+                        result = (T)Convert.ChangeType(value, typeof(T));
+                        readable = true;
+                        return true;
+                    }
+                case true when typeof(T) == typeof(DofGroupDto):
+                    {
+                        var value = new DofGroupDto();
+                        value.name = UMI3DNetworkingHelper.Read<string>(container);
+                        value.dofs = (DofGroupEnum)UMI3DNetworkingHelper.Read<int>(container);
+                        result = (T)Convert.ChangeType(value, typeof(T));
+                        readable = true;
+                        return true;
+                    }
             }
 
             result = default(T);

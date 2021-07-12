@@ -71,6 +71,11 @@ namespace umi3d.edk.interaction
             return new LocalInfoRequestParameterDto();
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.LocalInfoParameter;
+        }
+
         /// <summary>
         /// Writte the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
         /// </summary>
@@ -86,6 +91,17 @@ namespace umi3d.edk.interaction
             LIRPdto.reason = reason;
             LIRPdto.key = key;
             LIRPdto.value = (readValue, writeValue);
+        }
+
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                + UMI3DNetworkingHelper.Write(appName)
+                + UMI3DNetworkingHelper.Write(serverName)
+                + UMI3DNetworkingHelper.Write(reason)
+                + UMI3DNetworkingHelper.Write(key)
+                + UMI3DNetworkingHelper.Write(readValue)
+                + UMI3DNetworkingHelper.Write(writeValue);
         }
 
         ///<inheritdoc/>
@@ -130,7 +146,5 @@ namespace umi3d.edk.interaction
         {
             appName = Application.productName;
         }
-
-
     }
 }

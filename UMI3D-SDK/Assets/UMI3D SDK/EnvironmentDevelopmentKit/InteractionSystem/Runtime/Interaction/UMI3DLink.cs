@@ -46,6 +46,12 @@ namespace umi3d.edk.interaction
             }
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.Link;
+        }
+
+
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
