@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using umi3d.common.volume;
 using UnityEngine;
 
-namespace umi3d.edk.volume.volumedrawing
+namespace umi3d.edk.volume
 {
     /// <summary>
     /// Edge of a volume slice.

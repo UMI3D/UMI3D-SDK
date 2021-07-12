@@ -20,7 +20,7 @@ using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
 
-namespace umi3d.edk.volume.volumedrawing
+namespace umi3d.edk.volume
 {
     /// <summary>
     /// Class describing slices used to construct a volume slice group cell.

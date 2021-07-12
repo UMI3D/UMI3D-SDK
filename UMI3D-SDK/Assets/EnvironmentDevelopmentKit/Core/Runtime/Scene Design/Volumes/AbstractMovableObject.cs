@@ -17,7 +17,7 @@ limitations under the License.
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.edk.volume.volumedrawing
+namespace umi3d.edk.volume
 {
     public abstract class AbstractMovableObject : AbstractSelectable
     {

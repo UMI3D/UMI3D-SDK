@@ -22,16 +22,8 @@ using UnityEngine;
 
 namespace umi3d.edk.volume
 {
-    /// <summary>
-    /// Class grouping volume slices into a volume cell.
-    /// </summary>
-    public class VolumeSlicesGroup : MonoBehaviour, IVolume
+    public class OBJVolume : MonoBehaviour, IVolume
     {
-        /// <summary>
-        /// Slices composing the cell.
-        /// </summary>
-        public List<VolumeSlice> volumeSlices = new List<VolumeSlice>();
-
         /// <summary>
         /// Event raised when a user enter the cell.
         /// </summary>
@@ -41,6 +33,8 @@ namespace umi3d.edk.volume
         /// Event raised when a user exit the cell.
         /// </summary>
         [SerializeField] private UMI3DUserEvent onUserExit = new UMI3DUserEvent();
+
+        [SerializeField] private string fileURL;
 
         ///<inheritdoc/>
         public UMI3DUserEvent GetUserEnter() => onUserEnter;
@@ -106,24 +100,22 @@ namespace umi3d.edk.volume
 
         public virtual IEntity ToEntityDto(UMI3DUser user)
         {
-            VolumeSlicesGroupDto volumeDto = new VolumeSlicesGroupDto()
+            //Taken from UMI3DResourceFile.GetUrl()
+            string path = fileURL;
+            path = path.Replace(@"\", "/");
+            if (path != null && path != "" && !(path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
+            {
+                path = "/" + path;
+            }
+            path = System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));           
+
+            OBJVolumeDto dto = new OBJVolumeDto()
             {
                 id = Id(),
-                slicesIds = this.volumeSlices.ConvertAll(s => s.Id())
+                objFile = path
             };
-
-            return volumeDto;
+            return dto;
         }
 
-        protected virtual void Awake()
-        {
-            VolumeManager.Instance.volumes.Add(Id(), this);
-        }
-
-        protected virtual void OnDestroy()
-        {
-            if (VolumeManager.Instance != null) 
-                VolumeManager.Instance.volumes.Remove(Id());
-        }
     }
 }

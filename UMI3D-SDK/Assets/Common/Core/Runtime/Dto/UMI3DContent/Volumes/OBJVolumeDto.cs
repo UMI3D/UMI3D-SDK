@@ -14,13 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common;
-
-namespace umi3d.edk.volume
+namespace umi3d.common.volume
 {
-    public class VolumeManager : Singleton<VolumeManager>
+    public class OBJVolumeDto : AbstractVolumeCellDto
     {
-        public Dictionary<string, IVolume> volumes = new Dictionary<string, IVolume>(); 
+        public string objFile;
     }
 }

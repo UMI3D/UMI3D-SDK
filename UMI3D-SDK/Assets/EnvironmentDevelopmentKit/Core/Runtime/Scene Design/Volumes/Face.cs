@@ -21,7 +21,7 @@ using umi3d.common.volume;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.edk.volume.volumedrawing
+namespace umi3d.edk.volume
 {
     /// <summary>
     /// Face of a volume slice.

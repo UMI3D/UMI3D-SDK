@@ -17,7 +17,7 @@ limitations under the License.
 using umi3d.common;
 using UnityEngine;
 
-namespace umi3d.edk.volume.volumedrawing
+namespace umi3d.edk.volume
 {
     public abstract class AbstractSelectable : MonoBehaviour, IEntity
     {
