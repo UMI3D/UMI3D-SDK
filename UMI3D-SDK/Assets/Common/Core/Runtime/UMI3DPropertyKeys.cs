@@ -142,6 +142,8 @@ namespace umi3d.common
         #region UserTracking
         public const string UserBindings = "umi3d_user_bones";
         public const string ActiveBindings = "umi3d_active_bindings";
+
+        public const string ActiveHandPose = "umi3d_active_hand_pose";
         #endregion
 
         #region notification

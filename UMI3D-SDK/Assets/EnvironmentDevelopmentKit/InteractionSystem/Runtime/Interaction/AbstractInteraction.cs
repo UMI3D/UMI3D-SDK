@@ -87,6 +87,8 @@ namespace umi3d.edk.interaction
             name = null
         };
 
+        public UMI3DNodeAnimation StartAnimation;
+        public UMI3DNodeAnimation StopAnimation;
 
         /// <summary>
         /// The interaction's unique id. 

@@ -101,6 +101,9 @@ namespace umi3d.edk.interaction
         [SerializeField]
         public HoverEvent onHoverExit = new HoverEvent();
 
+        public UMI3DNodeAnimation StartAnimation;
+        public UMI3DNodeAnimation StopAnimation;
+
         /// <summary>
         /// List of bones hovering this object (if any).
         /// </summary>

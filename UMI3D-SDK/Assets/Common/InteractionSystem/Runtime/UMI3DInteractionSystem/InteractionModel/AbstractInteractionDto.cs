@@ -41,5 +41,9 @@ namespace umi3d.common.interaction
         /// 3D Icon that can be used to display the interaction
         /// </summary>
         public ResourceDto icon3D;
+
+        public UMI3DNodeAnimationDto startAnimationDto;
+
+        public UMI3DNodeAnimationDto stopAnimationDto;
     }
 }
