@@ -52,7 +52,7 @@ namespace umi3d.edk.userCapture
                 //float totalLapTime = 1f / lapPerSec;
 
 
-                var op = new List<umi3d.edk.UMI3DNodeAnimation.OperationChain>();
+                var op = new List<UMI3DNodeAnimation.OperationChain>();
                 //float curProgress = 0f;
                 //float deltaProgress = totalLapTime / lapSubdivision;
                 //Vector3 curRot = Vector3.zero;

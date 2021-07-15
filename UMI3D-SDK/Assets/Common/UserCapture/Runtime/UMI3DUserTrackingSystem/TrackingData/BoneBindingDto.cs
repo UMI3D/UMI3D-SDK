@@ -40,6 +40,11 @@ namespace umi3d.common.userCapture
         public bool active;
 
         /// <summary>
+        /// Define if the binding has to synchronize the object position with the bone position.
+        /// </summary>
+        public bool syncPosition;
+
+        /// <summary>
         /// The binded BoneType.
         /// </summary>
         public string boneType;

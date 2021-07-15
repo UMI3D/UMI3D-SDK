@@ -24,6 +24,7 @@ namespace umi3d.edk.userCapture
     {
         public string boneType;
         public bool isBinded = true;
+        public bool syncPosition = true;
         public UMI3DAbstractNode node;
         public string rigName = "";
         public Vector3 offsetPosition = Vector3.zero;
@@ -35,6 +36,7 @@ namespace umi3d.edk.userCapture
         {
             boneType = b.boneType;
             isBinded = b.isBinded;
+            syncPosition = b.syncPosition;
             node = b.node;
             rigName = b.rigName;
             offsetPosition = b.offsetPosition;
@@ -47,6 +49,7 @@ namespace umi3d.edk.userCapture
             {
                 rigName = rigName,
                 active = isBinded,
+                syncPosition = syncPosition,
                 boneType = boneType,
                 offsetPosition = offsetPosition,
                 offsetRotation = offsetRotation,
