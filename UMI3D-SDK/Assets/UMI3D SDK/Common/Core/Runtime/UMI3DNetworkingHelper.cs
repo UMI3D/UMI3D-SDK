@@ -626,14 +626,15 @@ namespace umi3d.common
                         bc += Write(ch);
                     }
                     return bc;
-                case T t when typeof(T) == typeof(string):
-                    return Write((uint)0);
                 default:
+                    if(typeof(T) == typeof(string))
+                        return Write((uint)0);
                     foreach (var module in modules)
                         if (module.Write<T>(value, out bc))
                             return bc;
                     break;
             }
+
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
