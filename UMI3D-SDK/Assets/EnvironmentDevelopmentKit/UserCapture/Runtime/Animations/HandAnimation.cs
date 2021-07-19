@@ -23,7 +23,7 @@ using UnityEngine;
 namespace umi3d.edk.userCapture
 {
     [RequireComponent(typeof(umi3d.edk.UMI3DNodeAnimation))]
-    //[RequireComponent(typeof(umi3d.edk.UMI3DNode))]
+    [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
         //public UMI3DNode AnimatedNode;
@@ -37,47 +37,29 @@ namespace umi3d.edk.userCapture
         {
             if (NodeAnimation != null && HandPose != null)
             {
-
-                //UMI3DNodeAnimation nodeAnimation = new UMI3DNodeAnimation();
-
-                //umi3d.edk.UMI3DNodeAnimation _animation = GetComponent<umi3d.edk.UMI3DNodeAnimation>();
-                //umi3d.edk.UMI3DNode node = GetComponent<umi3d.edk.UMI3DNode>();
-
-                //ToUMI3DSerializable.ToSerializableVector4()
+                if (HandPose.isRelativeToNode)
+                    HandPose.RelativeNodeId = this.GetComponent<UMI3DNode>().Id();
+                else
+                    HandPose.RelativeNodeId = null;
 
                 HashSet<UMI3DUser> users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
 
-                //if (lapPerSec <= 0) lapPerSec = 1;
-                //if (lapSubdivision <= 0) lapSubdivision = 1;
-                //float totalLapTime = 1f / lapPerSec;
+                List<UMI3DNodeAnimation.OperationChain> op = new List<UMI3DNodeAnimation.OperationChain>();
 
-
-                var op = new List<UMI3DNodeAnimation.OperationChain>();
-                //float curProgress = 0f;
-                //float deltaProgress = totalLapTime / lapSubdivision;
-                //Vector3 curRot = Vector3.zero;
-                //Vector3 deltaRot = axis * 360 / lapSubdivision;
-                //Quaternion defaultRot = node.objectRotation.GetValue();
-
-                //for (int i = 0; i < lapSubdivision; i++)
-                //{
-                var operation = new SetEntityProperty()
+                SetEntityProperty operation = new SetEntityProperty()
                 {
                     users = users,
                     entityId = HandPose.Id(),
                     property = UMI3DPropertyKeys.ActiveHandPose,
                     value = ActivePose
                 };
+
                 op.Add(
-                    new umi3d.edk.UMI3DNodeAnimation.OperationChain()
+                    new UMI3DNodeAnimation.OperationChain()
                     {
                         Operation = operation,
-                            //progress = curProgress
                         });
-                //curProgress += deltaProgress;
-                //curRot += deltaRot;
-                //}
-                //_animation.ObjectDuration.SetValue(totalLapTime);
+
                 NodeAnimation.ObjectAnimationChain.SetValue(op);
             }
         }

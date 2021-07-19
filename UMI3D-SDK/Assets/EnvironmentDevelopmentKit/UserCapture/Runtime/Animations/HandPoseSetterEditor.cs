@@ -41,23 +41,23 @@ public class HandPoseSetterEditor : Editor
 
             Handles.color = handAnimation.HandColor;
 
-            Handles.SphereHandleCap(0, handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), 0.02f, EventType.Repaint);
+            Handles.SphereHandleCap(0, handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), 0.02f, EventType.Repaint);
 
             Vector3 HandLocalPos = Vector3.zero;
             Quaternion HandLocalRot = Quaternion.identity;
 
             if (handAnimation.EditHandPosition)
             {
-                HandLocalPos = Handles.PositionHandle(handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation));
-                HandLocalRot = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition);
+                HandLocalPos = Handles.PositionHandle(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation));
+                HandLocalRot = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition);
             }
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditHandPosition)
                 {
-                    handAnimation.ScriptableHand.HandLocalPosition = HandLocalPos - handAnimation.transform.position;
-                    handAnimation.ScriptableHand.HandLocalEulerRotation = (Quaternion.Inverse(handAnimation.transform.rotation) * HandLocalRot).eulerAngles;
+                    handAnimation.ScriptableHand.HandPosition = HandLocalPos - handAnimation.transform.position;
+                    handAnimation.ScriptableHand.HandEulerRotation = (Quaternion.Inverse(handAnimation.transform.rotation) * HandLocalRot).eulerAngles;
                 }
             }
 
@@ -86,7 +86,7 @@ public class HandPoseSetterEditor : Editor
                 ThumbLastPhalanx = handAnimation.ScriptableHand.Get("LeftThumbEnd");
             }
 
-            var matrixThumbProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), Vector3.one);
+            var matrixThumbProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posThumbProximal = matrixThumbProximal.MultiplyPoint3x4(ThumbFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -97,13 +97,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotThumbProximal = Quaternion.identity;
 
             if (handAnimation.EditThumb)
-                rotThumbProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot), matrixThumbProximal.MultiplyPoint3x4(ThumbFirstPhalanx.Pos));
+                rotThumbProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot), matrixThumbProximal.MultiplyPoint3x4(ThumbFirstPhalanx.Pos));
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditThumb)
                 {
-                    var newTuple = new SpatialDataInfo(ThumbFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation)) * rotThumbProximal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(ThumbFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotThumbProximal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightThumbProximal, newTuple);
                     else
@@ -111,7 +111,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixThumbIntermediate = Matrix4x4.TRS(posThumbProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixThumbIntermediate = Matrix4x4.TRS(posThumbProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posThumbIntermediate = matrixThumbIntermediate.MultiplyPoint3x4(ThumbSecondPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -121,13 +121,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotThumbIntermediate = Quaternion.identity;
 
             if (handAnimation.EditThumb)
-                rotThumbIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot), posThumbIntermediate);
+                rotThumbIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot), posThumbIntermediate);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditThumb)
                 {
-                    var newTuple = new SpatialDataInfo(ThumbSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot)) * rotThumbIntermediate).eulerAngles);
+                    var newTuple = new SpatialDataInfo(ThumbSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot)) * rotThumbIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightThumbIntermediate, newTuple);
                     else
@@ -135,7 +135,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixThumbDistal = Matrix4x4.TRS(posThumbIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixThumbDistal = Matrix4x4.TRS(posThumbIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posThumbDistal = matrixThumbDistal.MultiplyPoint3x4(ThumbThirdPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -145,13 +145,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotThumbDistal = Quaternion.identity;
 
             if (handAnimation.EditThumb)
-                rotThumbDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot) * Quaternion.Euler(ThumbThirdPhalanx.Rot), posThumbDistal);
+                rotThumbDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot) * Quaternion.Euler(ThumbThirdPhalanx.Rot), posThumbDistal);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditThumb)
                 {
-                    var newTuple = new SpatialDataInfo(ThumbThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot)) * rotThumbDistal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(ThumbThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot)) * rotThumbDistal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightThumbDistal, newTuple);
                     else
@@ -159,7 +159,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixThumbEnd = Matrix4x4.TRS(posThumbDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot) * Quaternion.Euler(ThumbThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixThumbEnd = Matrix4x4.TRS(posThumbDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot) * Quaternion.Euler(ThumbThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posThumbEnd = matrixThumbEnd.MultiplyPoint3x4(ThumbLastPhalanx.Pos);
 
             Handles.SphereHandleCap(0, posThumbEnd, Quaternion.identity, 0.01f, EventType.Repaint);
@@ -189,7 +189,7 @@ public class HandPoseSetterEditor : Editor
                 IndexLastPhalanx = handAnimation.ScriptableHand.Get("LeftIndexEnd");
             }
 
-            var matrixIndexProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), Vector3.one);
+            var matrixIndexProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posIndexProximal = matrixThumbProximal.MultiplyPoint3x4(IndexFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -200,13 +200,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotIndexProximal = Quaternion.identity;
 
             if (handAnimation.EditIndex)
-                rotIndexProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot), matrixIndexProximal.MultiplyPoint3x4(IndexFirstPhalanx.Pos));
+                rotIndexProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot), matrixIndexProximal.MultiplyPoint3x4(IndexFirstPhalanx.Pos));
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditIndex)
                 {
-                    var newTuple = new SpatialDataInfo(IndexFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation)) * rotIndexProximal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(IndexFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotIndexProximal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightIndexProximal, newTuple);
                     else
@@ -214,7 +214,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixIndexIntermediate = Matrix4x4.TRS(posIndexProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixIndexIntermediate = Matrix4x4.TRS(posIndexProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posIndexIntermediate = matrixIndexIntermediate.MultiplyPoint3x4(IndexSecondPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -224,13 +224,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotIndexIntermediate = Quaternion.identity;
 
             if (handAnimation.EditIndex)
-                rotIndexIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot), posIndexIntermediate);
+                rotIndexIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot), posIndexIntermediate);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditIndex)
                 {
-                    var newTuple = new SpatialDataInfo(IndexSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot)) * rotIndexIntermediate).eulerAngles);
+                    var newTuple = new SpatialDataInfo(IndexSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot)) * rotIndexIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightIndexIntermediate, newTuple);
                     else
@@ -238,7 +238,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixIndexDistal = Matrix4x4.TRS(posIndexIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixIndexDistal = Matrix4x4.TRS(posIndexIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posIndexDistal = matrixIndexDistal.MultiplyPoint3x4(IndexThirdPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -248,13 +248,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotIndexDistal = Quaternion.identity;
 
             if (handAnimation.EditIndex)
-                rotIndexDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot) * Quaternion.Euler(IndexThirdPhalanx.Rot), posIndexDistal);
+                rotIndexDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot) * Quaternion.Euler(IndexThirdPhalanx.Rot), posIndexDistal);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditIndex)
                 {
-                    var newTuple = new SpatialDataInfo(IndexThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot)) * rotIndexDistal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(IndexThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot)) * rotIndexDistal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightIndexDistal, newTuple);
                     else
@@ -262,7 +262,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixIndexEnd = Matrix4x4.TRS(posIndexDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot) * Quaternion.Euler(IndexThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixIndexEnd = Matrix4x4.TRS(posIndexDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot) * Quaternion.Euler(IndexThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posIndexEnd = matrixIndexEnd.MultiplyPoint3x4(IndexLastPhalanx.Pos);
 
             Handles.SphereHandleCap(0, posIndexEnd, Quaternion.identity, 0.01f, EventType.Repaint);
@@ -292,7 +292,7 @@ public class HandPoseSetterEditor : Editor
                 MiddleLastPhalanx = handAnimation.ScriptableHand.Get("LeftMiddleEnd");
             }
 
-            var matrixMiddleProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), Vector3.one);
+            var matrixMiddleProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posMiddleProximal = matrixMiddleProximal.MultiplyPoint3x4(MiddleFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -303,13 +303,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotMiddleProximal = Quaternion.identity;
 
             if (handAnimation.EditMiddle)
-                rotMiddleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot), matrixMiddleProximal.MultiplyPoint3x4(MiddleFirstPhalanx.Pos));
+                rotMiddleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot), matrixMiddleProximal.MultiplyPoint3x4(MiddleFirstPhalanx.Pos));
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditMiddle)
                 {
-                    var newTuple = new SpatialDataInfo(MiddleFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation)) * rotMiddleProximal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(MiddleFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotMiddleProximal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightMiddleProximal, newTuple);
                     else
@@ -317,7 +317,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixMiddleIntermediate = Matrix4x4.TRS(posMiddleProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixMiddleIntermediate = Matrix4x4.TRS(posMiddleProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posMiddleIntermediate = matrixMiddleIntermediate.MultiplyPoint3x4(MiddleSecondPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -327,13 +327,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotMiddleIntermediate = Quaternion.identity;
 
             if (handAnimation.EditMiddle)
-                rotMiddleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot), posMiddleIntermediate);
+                rotMiddleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot), posMiddleIntermediate);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditMiddle)
                 {
-                    var newTuple = new SpatialDataInfo(MiddleSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot)) * rotMiddleIntermediate).eulerAngles);
+                    var newTuple = new SpatialDataInfo(MiddleSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot)) * rotMiddleIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightMiddleIntermediate, newTuple);
                     else
@@ -341,7 +341,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixMiddleDistal = Matrix4x4.TRS(posMiddleIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixMiddleDistal = Matrix4x4.TRS(posMiddleIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posMiddleDistal = matrixMiddleDistal.MultiplyPoint3x4(MiddleThirdPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -351,13 +351,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotMiddleDistal = Quaternion.identity;
 
             if (handAnimation.EditMiddle)
-                rotMiddleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot) * Quaternion.Euler(MiddleThirdPhalanx.Rot), posMiddleDistal);
+                rotMiddleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot) * Quaternion.Euler(MiddleThirdPhalanx.Rot), posMiddleDistal);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditMiddle)
                 {
-                    var newTuple = new SpatialDataInfo(MiddleThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot)) * rotMiddleDistal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(MiddleThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot)) * rotMiddleDistal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightMiddleDistal, newTuple);
                     else
@@ -365,7 +365,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixMiddleEnd = Matrix4x4.TRS(posMiddleDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot) * Quaternion.Euler(MiddleThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixMiddleEnd = Matrix4x4.TRS(posMiddleDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot) * Quaternion.Euler(MiddleThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posMiddleEnd = matrixMiddleEnd.MultiplyPoint3x4(MiddleLastPhalanx.Pos);
 
             Handles.SphereHandleCap(0, posMiddleEnd, Quaternion.identity, 0.01f, EventType.Repaint);
@@ -395,7 +395,7 @@ public class HandPoseSetterEditor : Editor
                 RingLastPhalanx = handAnimation.ScriptableHand.Get("LeftRingEnd");
             }
 
-            var matrixRingProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), Vector3.one);
+            var matrixRingProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posRingProximal = matrixRingProximal.MultiplyPoint3x4(RingFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -406,13 +406,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotRingProximal = Quaternion.identity;
 
             if (handAnimation.EditRing)
-                rotRingProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot), matrixRingProximal.MultiplyPoint3x4(RingFirstPhalanx.Pos));
+                rotRingProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot), matrixRingProximal.MultiplyPoint3x4(RingFirstPhalanx.Pos));
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditRing)
                 {
-                    var newTuple = new SpatialDataInfo(RingFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation)) * rotRingProximal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(RingFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotRingProximal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightRingProximal, newTuple);
                     else
@@ -420,7 +420,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixRingIntermediate = Matrix4x4.TRS(posRingProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixRingIntermediate = Matrix4x4.TRS(posRingProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posRingIntermediate = matrixRingIntermediate.MultiplyPoint3x4(RingSecondPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -430,13 +430,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotRingIntermediate = Quaternion.identity;
 
             if (handAnimation.EditRing)
-                rotRingIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot), posRingIntermediate);
+                rotRingIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot), posRingIntermediate);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditRing)
                 {
-                    var newTuple = new SpatialDataInfo(RingSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot)) * rotRingIntermediate).eulerAngles);
+                    var newTuple = new SpatialDataInfo(RingSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot)) * rotRingIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightRingIntermediate, newTuple);
                     else
@@ -444,7 +444,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixRingDistal = Matrix4x4.TRS(posRingIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixRingDistal = Matrix4x4.TRS(posRingIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posRingDistal = matrixRingDistal.MultiplyPoint3x4(RingThirdPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -454,13 +454,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotRingDistal = Quaternion.identity;
 
             if (handAnimation.EditRing)
-                rotRingDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot) * Quaternion.Euler(RingThirdPhalanx.Rot), posRingDistal);
+                rotRingDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot) * Quaternion.Euler(RingThirdPhalanx.Rot), posRingDistal);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditRing)
                 {
-                    var newTuple = new SpatialDataInfo(RingThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot)) * rotRingDistal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(RingThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot)) * rotRingDistal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightRingDistal, newTuple);
                     else
@@ -468,7 +468,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixRingEnd = Matrix4x4.TRS(posRingDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot) * Quaternion.Euler(RingThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixRingEnd = Matrix4x4.TRS(posRingDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot) * Quaternion.Euler(RingThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posRingEnd = matrixRingEnd.MultiplyPoint3x4(RingLastPhalanx.Pos);
 
             Handles.SphereHandleCap(0, posRingEnd, Quaternion.identity, 0.01f, EventType.Repaint);
@@ -498,7 +498,7 @@ public class HandPoseSetterEditor : Editor
                 LittleLastPhalanx = handAnimation.ScriptableHand.Get("LeftLittleEnd");
             }
 
-            var matrixLittleProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandLocalPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation), Vector3.one);
+            var matrixLittleProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posLittleProximal = matrixLittleProximal.MultiplyPoint3x4(LittleFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -509,13 +509,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotLittleProximal = Quaternion.identity;
 
             if (handAnimation.EditLittle)
-                rotLittleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot), matrixLittleProximal.MultiplyPoint3x4(LittleFirstPhalanx.Pos));
+                rotLittleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot), matrixLittleProximal.MultiplyPoint3x4(LittleFirstPhalanx.Pos));
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditLittle)
                 {
-                    var newTuple = new SpatialDataInfo(LittleFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation)) * rotLittleProximal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(LittleFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotLittleProximal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightLittleProximal, newTuple);
                     else
@@ -523,7 +523,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixLittleIntermediate = Matrix4x4.TRS(posLittleProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixLittleIntermediate = Matrix4x4.TRS(posLittleProximal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posLittleIntermediate = matrixLittleIntermediate.MultiplyPoint3x4(LittleSecondPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -533,13 +533,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotLittleIntermediate = Quaternion.identity;
 
             if (handAnimation.EditLittle)
-                rotLittleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot), posLittleIntermediate);
+                rotLittleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot), posLittleIntermediate);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditLittle)
                 {
-                    var newTuple = new SpatialDataInfo(LittleSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot)) * rotLittleIntermediate).eulerAngles);
+                    var newTuple = new SpatialDataInfo(LittleSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot)) * rotLittleIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightLittleIntermediate, newTuple);
                     else
@@ -547,7 +547,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixLittleDistal = Matrix4x4.TRS(posLittleIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixLittleDistal = Matrix4x4.TRS(posLittleIntermediate, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posLittleDistal = matrixLittleDistal.MultiplyPoint3x4(LittleThirdPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -557,13 +557,13 @@ public class HandPoseSetterEditor : Editor
             Quaternion rotLittleDistal = Quaternion.identity;
 
             if (handAnimation.EditLittle)
-                rotLittleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot) * Quaternion.Euler(LittleThirdPhalanx.Rot), posLittleDistal);
+                rotLittleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot) * Quaternion.Euler(LittleThirdPhalanx.Rot), posLittleDistal);
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditLittle)
                 {
-                    var newTuple = new SpatialDataInfo(LittleThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot)) * rotLittleDistal).eulerAngles);
+                    var newTuple = new SpatialDataInfo(LittleThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot)) * rotLittleDistal).eulerAngles);
                     if (handAnimation.IsRight)
                         handAnimation.ScriptableHand.Set(BoneType.RightLittleDistal, newTuple);
                     else
@@ -571,7 +571,7 @@ public class HandPoseSetterEditor : Editor
                 }
             }
 
-            var matrixLittleEnd = Matrix4x4.TRS(posLittleDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandLocalEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot) * Quaternion.Euler(LittleThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
+            var matrixLittleEnd = Matrix4x4.TRS(posLittleDistal, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot) * Quaternion.Euler(LittleThirdPhalanx.Rot), new Vector3(0.01f, 0.01f, 0.01f));
             var posLittleEnd = matrixLittleEnd.MultiplyPoint3x4(LittleLastPhalanx.Pos);
 
             Handles.SphereHandleCap(0, posLittleEnd, Quaternion.identity, 0.01f, EventType.Repaint);

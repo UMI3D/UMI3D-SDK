@@ -18,13 +18,11 @@ namespace umi3d.edk.userCapture
         }
     }
 
-    //[CreateAssetMenu(fileName = "HandDescription", menuName = "UMI3D/Hand Description")]
-
     public class HandDescription : ScriptableObject
     {
         public bool IsRight = false;
-        public Vector3 HandLocalPosition = Vector3.zero;
-        public Vector3 HandLocalEulerRotation = Vector3.zero;
+        public Vector3 HandPosition = Vector3.zero;
+        public Vector3 HandEulerRotation = Vector3.zero;
 
 
         [System.Serializable]

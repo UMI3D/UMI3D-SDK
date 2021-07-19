@@ -32,14 +32,17 @@ namespace umi3d.edk.userCapture
         [HideInInspector]
         public bool IsActive = false;
 
+        [HideInInspector]
+        public bool isRelativeToNode = true;
+
         public string Name;
 
         public bool IsRight = true;
 
-        public UMI3DNode RelativeNode;
+        public string RelativeNodeId;
 
-        public Vector3 HandLocalPosition = Vector3.zero;
-        public Vector3 HandLocalEulerRotation = Vector3.zero;
+        public Vector3 HandPosition = Vector3.zero;
+        public Vector3 HandEulerRotation = Vector3.zero;
 
         [Serializable]
         public class PhalanxRotation
@@ -131,9 +134,9 @@ namespace umi3d.edk.userCapture
             return new UMI3DHandPoseDto()
             {
                 IsRight = IsRight,
-                objectId = RelativeNode != null ? RelativeNode.Id() : null,
-                HandLocalPosition = HandLocalPosition,
-                HandLocalEulerRotation = HandLocalEulerRotation,
+                objectId = RelativeNodeId,
+                HandPosition = HandPosition,
+                HandEulerRotation = HandEulerRotation,
                 PhalanxRotations = PhalanxRotations.ToDictionary(x => x.Phalanx, x => (SerializableVector3)x.PhalanxEulerRotation)
             };
         }

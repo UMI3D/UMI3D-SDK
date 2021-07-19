@@ -11,9 +11,12 @@ using System.Linq;
 
 namespace umi3d.edk.userCapture
 {
+    [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandPoseSetter : MonoBehaviour
     {
         public string Name;
+
+        public bool IsRelativeToNode = true;
 
         public bool IsRight = true;
 
@@ -133,8 +136,8 @@ namespace umi3d.edk.userCapture
         {
             ScriptableHand.PhalangesData.Clear();
             SetHandDictionary();
-            ScriptableHand.HandLocalPosition = Vector3.zero;
-            ScriptableHand.HandLocalEulerRotation = Vector3.zero;
+            ScriptableHand.HandPosition = Vector3.zero;
+            ScriptableHand.HandEulerRotation = Vector3.zero;
             SceneView.RepaintAll();
         }
 
@@ -144,9 +147,15 @@ namespace umi3d.edk.userCapture
             {
                 HandPose.Name = Name;
                 HandPose.IsRight = IsRight;
+                HandPose.isRelativeToNode = IsRelativeToNode;
 
-                HandPose.HandLocalPosition = ScriptableHand.HandLocalPosition;
-                HandPose.HandLocalEulerRotation = ScriptableHand.HandLocalEulerRotation;
+                HandPose.HandPosition = ScriptableHand.HandPosition;
+
+                if (IsRelativeToNode)
+                    HandPose.HandEulerRotation = ScriptableHand.HandEulerRotation;
+                else
+                    HandPose.HandEulerRotation = (this.transform.rotation * Quaternion.Euler(ScriptableHand.HandEulerRotation)).eulerAngles;
+
 
                 HandPose.PhalanxRotations.Clear();
 
@@ -204,11 +213,17 @@ namespace umi3d.edk.userCapture
             {
                 IsVisible = true;
                 IsRight = ScriptableHand.IsRight = HandPose.IsRight;
+                IsRelativeToNode = HandPose.isRelativeToNode;
 
                 ScriptableHand.IsRight = HandPose.IsRight;
 
-                ScriptableHand.HandLocalPosition = HandPose.HandLocalPosition;
-                ScriptableHand.HandLocalEulerRotation = HandPose.HandLocalEulerRotation;
+                ScriptableHand.HandPosition = HandPose.HandPosition;
+
+                if (IsRelativeToNode)
+                    ScriptableHand.HandEulerRotation = HandPose.HandEulerRotation;
+                else
+                    ScriptableHand.HandEulerRotation = (Quaternion.Inverse(this.transform.rotation) * Quaternion.Euler(HandPose.HandEulerRotation)).eulerAngles;
+
 
                 foreach (UMI3DHandPose.PhalanxRotation pr in HandPose.PhalanxRotations)
                 {

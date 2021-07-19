@@ -28,8 +28,8 @@ namespace umi3d.common
 
         public string objectId;
 
-        public SerializableVector3 HandLocalPosition;
-        public SerializableVector3 HandLocalEulerRotation;
+        public SerializableVector3 HandPosition;
+        public SerializableVector3 HandEulerRotation;
 
         public Dictionary<string, SerializableVector3> PhalanxRotations = new Dictionary<string, SerializableVector3>();
     }
