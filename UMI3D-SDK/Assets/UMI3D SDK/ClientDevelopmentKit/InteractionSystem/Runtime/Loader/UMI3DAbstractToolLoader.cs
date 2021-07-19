@@ -175,5 +175,93 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+
+        public static AbstractInteractionDto ReadAbstractInteractionDto(ByteContainer container, out bool readable)
+        {
+            AbstractInteractionDto interaction;
+            var interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
+            switch (interactionCase)
+            {
+                case UMI3DInteractionKeys.Event:
+                    var Event = new EventDto();
+                    ReadAbstractInteractionDto(Event, container);
+                    Event.hold = UMI3DNetworkingHelper.Read<bool>(container);
+                    interaction = Event;
+                    break;
+                case UMI3DInteractionKeys.Manipulation:
+                    var Manipulation = new ManipulationDto();
+                    ReadAbstractInteractionDto(Manipulation, container);
+                    Manipulation.frameOfReference = UMI3DNetworkingHelper.Read<ulong>(container);
+                    Manipulation.dofSeparationOptions = UMI3DNetworkingHelper.ReadList<DofGroupOptionDto>(container);
+                    interaction = Manipulation;
+                    break;
+                case UMI3DInteractionKeys.Form:
+                    var Form = new FormDto();
+                    ReadAbstractInteractionDto(Form, container);
+                    Form.fields = UMI3DNetworkingHelper.ReadList<AbstractParameterDto>(container);
+                    interaction = Form;
+                    break;
+                case UMI3DInteractionKeys.Link:
+                    var Link = new LinkDto();
+                    ReadAbstractInteractionDto(Link, container);
+                    Link.url = UMI3DNetworkingHelper.Read<string>(container);
+                    interaction = Link;
+                    break;
+                case UMI3DInteractionKeys.BooleanParameter:
+                    var Bool = new BooleanParameterDto();
+                    ReadAbstractInteractionDto(Bool, container);
+                    Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
+                    interaction = Bool;
+                    break;
+                case UMI3DInteractionKeys.StringParameter:
+                    var String = new StringParameterDto();
+                    ReadAbstractInteractionDto(String, container);
+                    String.value = UMI3DNetworkingHelper.Read<string>(container);
+                    interaction = String;
+                    break;
+                case UMI3DInteractionKeys.LocalInfoParameter:
+                    var LocalInfo = new LocalInfoRequestParameterDto();
+                    ReadAbstractInteractionDto(LocalInfo, container);
+                    LocalInfo.app_id = UMI3DNetworkingHelper.Read<string>(container);
+                    LocalInfo.serverName = UMI3DNetworkingHelper.Read<string>(container);
+                    LocalInfo.reason = UMI3DNetworkingHelper.Read<string>(container);
+                    LocalInfo.key = UMI3DNetworkingHelper.Read<string>(container);
+                    LocalInfo.value = (UMI3DNetworkingHelper.Read<bool>(container), UMI3DNetworkingHelper.Read<bool>(container));
+                    interaction = LocalInfo;
+                    break;
+                case UMI3DInteractionKeys.StringEnumParameter:
+                    var EString = new EnumParameterDto<string>();
+                    ReadAbstractInteractionDto(EString, container);
+                    EString.possibleValues = UMI3DNetworkingHelper.ReadList<string>(container);
+                    EString.value = UMI3DNetworkingHelper.Read<string>(container);
+                    interaction = EString;
+                    break;
+                case UMI3DInteractionKeys.FloatRangeParameter:
+                    var RFloat = new FloatRangeParameterDto();
+                    ReadAbstractInteractionDto(RFloat, container);
+                    RFloat.min = UMI3DNetworkingHelper.Read<float>(container);
+                    RFloat.max = UMI3DNetworkingHelper.Read<float>(container);
+                    RFloat.increment = UMI3DNetworkingHelper.Read<float>(container);
+                    RFloat.value = UMI3DNetworkingHelper.Read<float>(container);
+                    interaction = RFloat;
+                    break;
+                default:
+                    interaction = null;
+                    readable = false;
+                    return null;
+            }
+            readable = true;
+            return interaction;
+        }
+
+        static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto,ByteContainer container)
+        {
+            interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);
+            interactionDto.name = UMI3DNetworkingHelper.Read<string>(container);
+            interactionDto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+            interactionDto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+            interactionDto.description = UMI3DNetworkingHelper.Read<string>(container);
+        }
+
     }
 }

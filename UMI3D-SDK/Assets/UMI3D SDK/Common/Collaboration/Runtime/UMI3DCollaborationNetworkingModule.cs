@@ -162,7 +162,6 @@ namespace umi3d.common.collaboration
                 //    else
                 //        result = default(T);
                 //    return true;
-
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
                     readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out mat.newMaterialId);
@@ -176,6 +175,29 @@ namespace umi3d.common.collaboration
                         }
                         else
                             result = default(T);
+                    }
+                    else
+                        result = default(T);
+                    return true;
+                case true when typeof(T) == typeof(ResourceDto):
+                    var resource = new ResourceDto();
+                    resource.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                    readable = true;
+                    result = (T)Convert.ChangeType(resource, typeof(T));
+                    return true;
+                case true when typeof(T) == typeof(FileDto):
+                    var file = new FileDto();
+                    file.metrics = new AssetMetricDto();
+                    readable = UMI3DNetworkingHelper.TryRead<string>(container, out file.url)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.format)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.extension)
+                               && UMI3DNetworkingHelper.TryRead<int>(container, out file.metrics.resolution)
+                               && UMI3DNetworkingHelper.TryRead<float>(container, out file.metrics.size)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.pathIfInBundle)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.libraryKey);
+                    if (readable)
+                    {
+                        result = (T)Convert.ChangeType(file, typeof(T));
                     }
                     else
                         result = default(T);

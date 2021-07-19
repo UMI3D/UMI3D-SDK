@@ -56,6 +56,11 @@ namespace umi3d.edk.interaction
             (dto as StringParameterDto).value = value;
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.StringParameter;
+        }
+
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)

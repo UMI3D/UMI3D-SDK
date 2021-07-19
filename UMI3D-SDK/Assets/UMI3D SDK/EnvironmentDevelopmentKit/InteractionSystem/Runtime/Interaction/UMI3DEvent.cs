@@ -103,6 +103,11 @@ namespace umi3d.edk.interaction
             return new EventDto();
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.Event;
+        }
+
         /// <summary>
         /// Write the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
         /// </summary>

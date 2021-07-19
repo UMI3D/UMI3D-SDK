@@ -86,6 +86,11 @@ namespace umi3d.edk.interaction
                 mDto.dofSeparationOptions.Add(entity.ToDto(user));
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.Manipulation;
+        }
+
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
