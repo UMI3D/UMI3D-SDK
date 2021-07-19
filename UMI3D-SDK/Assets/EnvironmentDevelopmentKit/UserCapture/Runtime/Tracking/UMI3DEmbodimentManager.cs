@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -55,7 +56,10 @@ namespace umi3d.edk.userCapture
         {
             UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
             UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
+            WriteCollections();
         }
+
+        #region Tracking Data
 
         public virtual bool BoneTrackedInformation(string userId, string bonetype)
         {
@@ -69,7 +73,7 @@ namespace umi3d.edk.userCapture
         {
             if (embodimentSize.ContainsKey(userId))
                 Debug.LogWarning("Internal error : the user size is already registered");
-            else 
+            else
                 embodimentSize.Add(userId, (Vector3)userSize);
 
             if (embodimentTrackedBonetypes.ContainsKey(userId))
@@ -207,6 +211,9 @@ namespace umi3d.edk.userCapture
             obj.objectRotation.SetValue(obj.transform.localRotation);
             obj.objectScale.SetValue(obj.transform.localScale);
         }
+        #endregion
+
+        #region Bindings
 
         /// <summary>
         /// Set the activation of Bindings of an Avatar Node.
@@ -411,5 +418,29 @@ namespace umi3d.edk.userCapture
             operations.Insert(0, obj.bindings.RemoveAt(user, index));
             return operations;
         }
+
+        #endregion
+
+        #region Hand Animation
+
+        [HideInInspector]
+        public List<string> handPoseIds = new List<string>();
+
+        [EditorReadOnly]
+        public List<UMI3DHandPose> PreloadedHandPoses = new List<UMI3DHandPose>();
+
+        protected virtual void WriteCollections()
+        {
+            handPoseIds.Clear();
+
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.ToDto().id));
+        }
+
+        public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
+        {
+            if (avatarNodeDto.id.Equals(user.Id()))
+                avatarNodeDto.handPoses.AddRange(PreloadedHandPoses.Select(hp => hp.ToDto()));
+        }
+        #endregion
     }
 }

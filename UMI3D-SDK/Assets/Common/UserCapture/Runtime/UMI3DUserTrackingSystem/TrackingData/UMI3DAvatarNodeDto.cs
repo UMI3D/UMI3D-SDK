@@ -44,5 +44,7 @@ namespace umi3d.common.userCapture
         /// A list of bindings between the user's bones and their representations.
         /// </summary>
         public List<BoneBindingDto> bindings;
+
+        public List<UMI3DHandPoseDto> handPoses;
     }
 }

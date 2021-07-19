@@ -156,7 +156,8 @@ namespace umi3d.edk.userCapture
             }
 
             avatarNodeDto.bindings = bindingDtoList;
-        }
 
+            UMI3DEmbodimentManager.Instance.WriteNodeCollections(avatarNodeDto, user);
+        }
     }
 }
