@@ -26,7 +26,7 @@ namespace umi3d.cdk.collaboration
                     user.audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container);
                     user.videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container);
                     user.networkId = UMI3DNetworkingHelper.Read<uint>(container);
-                    result = (T)Convert.ChangeType(user, typeof(T));
+                    result = (T)(object)user;
                     readable = true;
                     return true;
                 case true when typeof(T) == typeof(UMI3DAnimationDto.AnimationChainDto):
@@ -42,14 +42,14 @@ namespace umi3d.cdk.collaboration
                             animationId = UMI3DNetworkingHelper.Read<ulong>(container),
                             startOnProgress = UMI3DNetworkingHelper.Read<float>(container),
                         };
-                        result = (T)Convert.ChangeType(value, typeof(T));
+                        result = (T)(object)value;
                         readable = true;
                         return true;
                     }
                 case true when typeof(T) == typeof(AbstractInteractionDto):
                     {
                         var value = UMI3DAbstractToolLoader.ReadAbstractInteractionDto(container, out readable);
-                        result = (T)Convert.ChangeType(value, typeof(T));
+                        result = (T)(object)value;
                         return true;
                     }
                 case true when typeof(T) == typeof(DofGroupOptionDto):
@@ -57,7 +57,7 @@ namespace umi3d.cdk.collaboration
                         var value = new DofGroupOptionDto();
                         value.name = UMI3DNetworkingHelper.Read<string>(container);
                         value.separations = UMI3DNetworkingHelper.ReadList<DofGroupDto>(container);
-                        result = (T)Convert.ChangeType(value, typeof(T));
+                        result = (T)(object)value;
                         readable = true;
                         return true;
                     }
@@ -66,7 +66,7 @@ namespace umi3d.cdk.collaboration
                         var value = new DofGroupDto();
                         value.name = UMI3DNetworkingHelper.Read<string>(container);
                         value.dofs = (DofGroupEnum)UMI3DNetworkingHelper.Read<int>(container);
-                        result = (T)Convert.ChangeType(value, typeof(T));
+                        result = (T)(object)value;
                         readable = true;
                         return true;
                     }
