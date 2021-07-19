@@ -42,8 +42,8 @@ namespace umi3d.common.interaction
         /// </summary>
         public ResourceDto icon3D;
 
-        public UMI3DNodeAnimationDto startAnimationDto;
+        public UMI3DNodeAnimationDto TriggerAnimationDto;
 
-        public UMI3DNodeAnimationDto stopAnimationDto;
+        public UMI3DNodeAnimationDto ReleaseAnimationDto;
     }
 }

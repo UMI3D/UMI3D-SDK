@@ -72,5 +72,12 @@ namespace umi3d.edk
             NAdto.animationChain = ObjectAnimationChain.GetValue(user)?.Select(op => op?.Todto(user)).ToList();
             NAdto.duration = ObjectDuration.GetValue(user);
         }
+
+        public UMI3DNodeAnimationDto ToDto(UMI3DUser user)
+        {
+            UMI3DNodeAnimationDto dto = CreateDto() as UMI3DNodeAnimationDto;
+            WriteProperties(dto, user);
+            return dto;
+        }
     }
 }
