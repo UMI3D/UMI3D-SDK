@@ -52,8 +52,11 @@ namespace umi3d.cdk
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var chain in dto.animationChain)
             {
-                if (GetProgress() < chain.startOnProgress)
+                var p = GetProgress();
+                if ( p < chain.startOnProgress)
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Start(chain.animationId); })));
+                if( p == chain.startOnProgress )
+                    UMI3DAnimationManager.Start(chain.animationId);
             }
 
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
@@ -208,8 +211,11 @@ namespace umi3d.cdk
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var chain in dto.animationChain)
             {
-                if (GetProgress() < chain.startOnProgress)
+                var p = GetProgress();
+                if (p < chain.startOnProgress)
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Start(chain.animationId); })));
+                if (p == chain.startOnProgress)
+                    UMI3DAnimationManager.Start(chain.animationId);
             }
 
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
@@ -217,6 +223,7 @@ namespace umi3d.cdk
 
         public override void SetProgress(long frame)
         {
+            progress = frame;
         }
     }
 }
