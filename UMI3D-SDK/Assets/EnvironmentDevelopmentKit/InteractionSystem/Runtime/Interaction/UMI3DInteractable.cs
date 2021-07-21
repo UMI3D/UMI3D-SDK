@@ -101,8 +101,9 @@ namespace umi3d.edk.interaction
         [SerializeField]
         public HoverEvent onHoverExit = new HoverEvent();
 
-        public UMI3DNodeAnimation StartAnimation;
-        public UMI3DNodeAnimation StopAnimation;
+        public bool UseAnimations = false;
+        public UMI3DNodeAnimation HoverEnterAnimation;
+        public UMI3DNodeAnimation HoverExitAnimation;
 
         /// <summary>
         /// List of bones hovering this object (if any).
@@ -143,6 +144,8 @@ namespace umi3d.edk.interaction
             Idto.notifySubObject = objectNotifySubObject.GetValue(user);
             Idto.nodeId = objectNodeId.GetValue(user).Id();
             Idto.hasPriority = hasPriority.GetValue(user);
+            Idto.HoverEnterAnimationId = HoverEnterAnimation != null ? HoverEnterAnimation.Id() : null;
+            Idto.HoverExitAnimationId = HoverExitAnimation != null ? HoverExitAnimation.Id() : null;
         }
 
         ///<inheritdoc/>

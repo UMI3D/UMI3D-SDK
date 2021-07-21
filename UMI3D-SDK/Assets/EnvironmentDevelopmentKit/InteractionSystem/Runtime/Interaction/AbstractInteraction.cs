@@ -191,8 +191,6 @@ namespace umi3d.edk.interaction
             dto.icon3D = Display.icon3D.ToDto();
             dto.id = Id();
             dto.description = Display.description;
-            dto.TriggerAnimationDto = TriggerAnimation != null ? TriggerAnimation.ToDto(user) : null;
-            dto.ReleaseAnimationDto = ReleaseAnimation != null ? ReleaseAnimation.ToDto(user) : null;
         }
 
         #region filter
