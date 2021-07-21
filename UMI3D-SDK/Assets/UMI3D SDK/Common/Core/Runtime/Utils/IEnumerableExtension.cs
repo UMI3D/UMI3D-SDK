@@ -48,6 +48,8 @@ namespace umi3d.common
         /// <returns></returns>
         public static string ToString<A>(this IEnumerable<A> source)
         {
+            if (source == null) return ($"[NULL]");
+            if (source.Count() == 0) return ($"[]");
             return ($"[{source.Select(v => v.ToString()).Aggregate((a, b) => $"{a};{b}")}]");
         }
 

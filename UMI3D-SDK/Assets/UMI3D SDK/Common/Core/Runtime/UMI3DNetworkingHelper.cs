@@ -316,6 +316,15 @@ namespace umi3d.common
                     else return false;
                     result = (T)Convert.ChangeType(r, typeof(T));
                     return true;
+                case true when typeof(T).IsSubclassOf(typeof(TypedDictionaryEntry)):
+                    result = default(T);
+                    TypedDictionaryEntry entry = (TypedDictionaryEntry)Activator.CreateInstance(typeof(T));
+                    if (entry.Read(container))
+                    {
+                        result = (T)(object)entry;
+                        return true;
+                    }
+                    return false;
                 default:
                     bool read;
                     foreach (var module in modules)
@@ -346,11 +355,50 @@ namespace umi3d.common
             }
         }
 
-        public static Dictionary<T,K> ReadDictionary<T,K>(ByteContainer container)
+        /// <summary>
+        /// Generic class to describe a Dictionary entry that can be read from a ByteContainer
+        /// </summary>
+        abstract class TypedDictionaryEntry
         {
-            return ReadList<KeyValuePair<T,K>>(container).ToDictionary();
+            public abstract bool Read(ByteContainer container);
         }
 
+        /// <summary>
+        /// class to describe a Dictionary<K,V> entry that can be read from a ByteContainer
+        /// </summary>
+        /// <typeparam name="K">Key Type</typeparam>
+        /// <typeparam name="V">Value Type</typeparam>
+        class TypedDictionaryEntry<K, V> : TypedDictionaryEntry
+        {
+            public V value;
+            public K key;
+
+            public KeyValuePair<K, V> keyValuePair { get => new KeyValuePair<K, V>(key, value); }
+
+            public override bool Read(ByteContainer container)
+            {
+                return TryRead(container,out key) && TryRead(container, out value);
+            }
+        }
+
+        /// <summary>
+        /// Read a Dictionary<K,V> From a ByteContainer
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public static Dictionary<K, V> ReadDictionary<K, V>(ByteContainer container)
+        {
+            return ReadList<TypedDictionaryEntry<K, V>>(container).Select(k => k.keyValuePair).ToDictionary();
+        }
+
+        /// <summary>
+        /// Read a List from a container where starting indexes are given for each values at the begining of the list. 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="container"></param>
+        /// <returns></returns>
         static List<T> ReadIndexesList<T>(ByteContainer container)
         {
             var result = new List<T>();
@@ -376,7 +424,7 @@ namespace umi3d.common
                 var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 T v;
                 if (TryRead(SubContainer, out v))
-                    result.Add(v);
+                    result.Add(v); 
             }
             return result;
         }
@@ -465,14 +513,14 @@ namespace umi3d.common
             }
         }
 
-        public static Bytable Write<T>(IEnumerable<T> value)
+        public static Bytable Write(IEnumerable value)
         {
-            return WriteCollection(value);
+            return WriteCollection(value.Cast<object>());
         }
 
-        public static Bytable Write<T,K>(KeyValuePair<T,K> value)
+        public static Bytable Write(IDictionary value)
         {
-            return Write(value.Key) + Write(value.Value);
+            return WriteCollection(value);
         }
 
         public static Bytable Write<T>(T value)
@@ -626,6 +674,12 @@ namespace umi3d.common
                         bc += Write(ch);
                     }
                     return bc;
+                case IDictionary Id:
+                    return Write(Id);
+                case IEnumerable Ie:
+                    return Write(Ie);
+                case DictionaryEntry De:
+                    return Write(De.Key) + Write(De.Value);
                 default:
                     if(typeof(T) == typeof(string))
                         return Write((uint)0);
@@ -646,9 +700,9 @@ namespace umi3d.common
             return b;
         }
 
-        public static Bytable WriteCollection<T,K>(IEnumerable<KeyValuePair<T,K>> value)
+        public static Bytable WriteCollection(IDictionary value)
         {
-            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
+            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count);
             foreach (var v in value)
                 b += Write(v);
             return b;
