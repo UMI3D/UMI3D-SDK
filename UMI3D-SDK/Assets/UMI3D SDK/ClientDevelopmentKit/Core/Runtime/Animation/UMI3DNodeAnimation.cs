@@ -110,7 +110,7 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    ADto.duration = (float)property.value;
+                    ADto.duration = (float)(Double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(dto, property);
