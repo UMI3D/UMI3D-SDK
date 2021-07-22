@@ -60,6 +60,14 @@ namespace umi3d.cdk
                          MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
                      }
 
+                     if(nodeDto.skinnedRendererLinks != null)
+                     {
+                         foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
+                         {
+                             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(link.Key, link.Value, node.transform));
+                         }
+                     }
+
 
                      finished?.Invoke();
                  }
@@ -67,6 +75,34 @@ namespace umi3d.cdk
              }, failed);
         }
 
+        IEnumerator BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node)
+        => BindSkinnedMeshBone(skinMeshEntityId, boneId, node, 300);
+
+
+        IEnumerator BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
+        {
+            if (maxDelay < 0)
+                yield return null;
+            if (UMI3DEnvironmentLoader.GetNode(skinMeshEntityId) == null)
+            {
+                maxDelay -= 0.3f;
+                Debug.Log(maxDelay);
+                yield return new WaitForSeconds(0.3f);
+            }
+
+
+            if (UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>() == null)
+            {
+                maxDelay -= 0.3f;
+                Debug.Log(maxDelay);
+                yield return new WaitForSeconds(0.3f);
+            }
+
+            var tab = UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>().bones;
+            tab[boneId] = node;
+            UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>().bones = tab;
+
+        }
 
         IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
         {

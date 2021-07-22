@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     [System.Serializable]
@@ -23,6 +25,13 @@ namespace umi3d.common
         public bool yBillboard = false;
         public ColliderDto colliderDto = null;
         public UMI3DLodDto lodDto;
+
+        /// <summary>
+        /// Contains a collection of UMI3DId refering entities with skinnedMeshRenderer and an interger that is the position of this node in the bones array of the skinnedMeshRenderer.
+        /// Used only with Model with tracked sub object and skinnedMeshRenderer
+        /// </summary>
+        public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();
+
     }
 
 }
