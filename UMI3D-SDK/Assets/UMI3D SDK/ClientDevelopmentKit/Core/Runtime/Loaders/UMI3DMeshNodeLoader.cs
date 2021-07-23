@@ -135,10 +135,10 @@ namespace umi3d.cdk
             {
                 root = go;
             }
-            var instance = GameObject.Instantiate(root, parent, true);
+            GameObject instance = GameObject.Instantiate(root, parent, true);
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
-            var renderers = instance.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
 
             foreach (var renderer in renderers)
