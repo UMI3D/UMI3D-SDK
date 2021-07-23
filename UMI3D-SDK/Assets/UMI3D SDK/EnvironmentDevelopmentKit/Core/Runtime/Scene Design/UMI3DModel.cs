@@ -60,6 +60,18 @@ namespace umi3d.edk
             if (areSubobjectsTracked)
             {
                 SetSubHierarchy();
+
+                var skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+                foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
+                {
+                    for (int i = 0; i < skinnedMeshRenderer.bones.Length; i++)
+                    {
+                        if (skinnedMeshRenderer.bones[i].TryGetComponent(out UMI3DNode node))
+                        {
+                            node.skinnedRendererLinks.Add(skinnedMeshRenderer.gameObject.GetComponent<UMI3DNode>().Id(), i);
+                        }
+                    }
+                }
             }
 
             objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r, u) => r.ToDto());

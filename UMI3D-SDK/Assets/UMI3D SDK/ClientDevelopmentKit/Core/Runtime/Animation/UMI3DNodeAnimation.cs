@@ -51,8 +51,14 @@ namespace umi3d.cdk
             progress = 0;
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var chain in dto.animationChain)
-                if (GetProgress() < chain.startOnProgress)
+            {
+                var p = GetProgress();
+                if (p < chain.startOnProgress)
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
+                if (p == chain.startOnProgress)
+                    UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+            }
+
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
@@ -104,7 +110,7 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    ADto.duration = (float)property.value;
+                    ADto.duration = (float)(Double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(dto, property);
@@ -144,8 +150,13 @@ namespace umi3d.cdk
             progress = atTime;
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
             foreach (var chain in dto.animationChain)
-                if (GetProgress() < chain.startOnProgress)
+            {
+                var p = GetProgress();
+                if (p < chain.startOnProgress)
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
+                if (p == chain.startOnProgress)
+                    UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+            }
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
