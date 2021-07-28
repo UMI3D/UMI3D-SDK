@@ -438,8 +438,8 @@ namespace umi3d.edk.userCapture
 
         public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
         {
-            if (avatarNodeDto.id.Equals(user.Id()))
-                avatarNodeDto.handPoses.AddRange(PreloadedHandPoses.Select(hp => hp.ToDto()));
+            if (avatarNodeDto.userId.Equals(user.Id()))
+                avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
         }
         #endregion
     }

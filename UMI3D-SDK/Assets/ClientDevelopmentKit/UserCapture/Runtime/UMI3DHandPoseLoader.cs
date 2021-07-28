@@ -51,7 +51,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.ActiveHandPose:
                     dto.IsActive = (bool)property.value;
-                    // activate hand pose algorithm
+                    UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
                     break;
                 default:
                     return false;

@@ -33,13 +33,14 @@ namespace umi3d.edk.userCapture
         public bool IsActive = false;
 
         [HideInInspector]
+        public bool HoverAnimation = false;
+
+        [HideInInspector]
         public bool isRelativeToNode = true;
 
-        public string Name;
+        public string PoseName;
 
         public bool IsRight = true;
-
-        public string RelativeNodeId;
 
         public Vector3 HandPosition = Vector3.zero;
         public Vector3 HandEulerRotation = Vector3.zero;
@@ -85,7 +86,7 @@ namespace umi3d.edk.userCapture
         {
             if (!registered)
             {
-                UMI3DHandPoseDto poseDto = new UMI3DHandPoseDto(){ };
+                UMI3DHandPoseDto poseDto = new UMI3DHandPoseDto() { };
                 RegisterPose(poseDto);
             }
             return PoseId;
@@ -97,7 +98,6 @@ namespace umi3d.edk.userCapture
             {
                 pose.id = UMI3DEnvironment.Register(this);
                 SetId(pose.id);
-                //InitDefinition(pose.id);
             }
         }
 
@@ -119,11 +119,6 @@ namespace umi3d.edk.userCapture
             PoseId = id;
         }
 
-        //protected void InitDefinition(string id)
-        //{
-
-        //}
-
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
@@ -133,8 +128,12 @@ namespace umi3d.edk.userCapture
         {
             return new UMI3DHandPoseDto()
             {
+                id = PoseId,
+                Name = PoseName,
+                IsActive = IsActive,
                 IsRight = IsRight,
-                objectId = RelativeNodeId,
+                HoverPose = HoverAnimation,
+                isRelativeToNode = isRelativeToNode,
                 HandPosition = HandPosition,
                 HandEulerRotation = HandEulerRotation,
                 PhalanxRotations = PhalanxRotations.ToDictionary(x => x.Phalanx, x => (SerializableVector3)x.PhalanxEulerRotation)

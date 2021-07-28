@@ -54,6 +54,10 @@ namespace umi3d.cdk.userCapture
         [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
 
+        public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
+
+        public HandPoseEvent handPoseEvent = new HandPoseEvent();
+
         public class AvatarEvent : UnityEvent<string> { };
 
         public AvatarEvent avatarEvent = new AvatarEvent();

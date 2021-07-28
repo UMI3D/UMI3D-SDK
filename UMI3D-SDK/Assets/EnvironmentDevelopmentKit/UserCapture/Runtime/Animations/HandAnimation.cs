@@ -26,21 +26,18 @@ namespace umi3d.edk.userCapture
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
-        //public UMI3DNode AnimatedNode;
         public UMI3DNodeAnimation NodeAnimation;
         public bool ActivePose = false;
-        public UMI3DHandPose HandPose;
-
+        public bool HoverPose = false;
+        public UMI3DHandPose RightHandPose;
+        public UMI3DHandPose LeftHandPose;
 
         // Start is called before the first frame update
         void Start()
         {
-            if (NodeAnimation != null && HandPose != null)
+            if (NodeAnimation != null && RightHandPose != null)
             {
-                if (HandPose.isRelativeToNode)
-                    HandPose.RelativeNodeId = this.GetComponent<UMI3DNode>().Id();
-                else
-                    HandPose.RelativeNodeId = null;
+                RightHandPose.HoverAnimation = HoverPose;
 
                 HashSet<UMI3DUser> users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
 
@@ -49,7 +46,7 @@ namespace umi3d.edk.userCapture
                 SetEntityProperty operation = new SetEntityProperty()
                 {
                     users = users,
-                    entityId = HandPose.Id(),
+                    entityId = RightHandPose.Id(),
                     property = UMI3DPropertyKeys.ActiveHandPose,
                     value = ActivePose
                 };
@@ -58,7 +55,8 @@ namespace umi3d.edk.userCapture
                     new UMI3DNodeAnimation.OperationChain()
                     {
                         Operation = operation,
-                        });
+                        progress = 0f
+                    });
 
                 NodeAnimation.ObjectAnimationChain.SetValue(op);
             }

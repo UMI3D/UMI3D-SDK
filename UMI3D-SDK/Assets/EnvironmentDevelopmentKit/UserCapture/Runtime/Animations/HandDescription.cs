@@ -68,7 +68,5 @@ namespace umi3d.edk.userCapture
         {
             return PhalangesData.Find(d => d.PhalanxName.Equals(phalanx)).Data;
         }
-
-        //public Dictionary<string, Tuple<Vector3, Vector3>> HandData = new Dictionary<string, Tuple<Vector3, Vector3>>(); // phalanxLocalPos, rot
     }
 }

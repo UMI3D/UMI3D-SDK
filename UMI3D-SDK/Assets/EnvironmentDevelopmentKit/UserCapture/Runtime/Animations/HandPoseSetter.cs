@@ -14,7 +14,7 @@ namespace umi3d.edk.userCapture
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandPoseSetter : MonoBehaviour
     {
-        public string Name;
+        public string PoseName;
 
         public bool IsRelativeToNode = true;
 
@@ -27,7 +27,8 @@ namespace umi3d.edk.userCapture
         public bool EditIndex = false;
         public bool EditMiddle = false;
         public bool EditRing = false;
-        public bool EditLittle = false; 
+        public bool EditLittle = false;
+        public bool DrawLine = false;
 
         //[HideInInspector]
         //public Vector3 HandLocalPosition = Vector3.zero;
@@ -38,6 +39,8 @@ namespace umi3d.edk.userCapture
         public Color HandColor = Color.blue;
         [HideInInspector]
         public Color PhalanxColor = new Color(1f, 0.5f, 0f);
+        [HideInInspector]
+        public Color LineColor = Color.green;
 
         //[System.Serializable]
         //public class PhalanxRotation
@@ -56,7 +59,7 @@ namespace umi3d.edk.userCapture
         //public HandDescription ScriptableHandSave;
         [HideInInspector]
         public HandDescription ScriptableHand;
-        public UMI3DHandPose HandPose; 
+        public UMI3DHandPose HandPose;
 
         //public Dictionary<string, Tuple<Vector3, Vector3>> HandDictionary = new Dictionary<string, Tuple<Vector3, Vector3>>(); // phalanxLocalPos, rot
 
@@ -68,7 +71,7 @@ namespace umi3d.edk.userCapture
             ScriptableHand = ScriptableObject.CreateInstance<HandDescription>();
             ScriptableHand.name = "Hand Pose Information";
             ScriptableHand.IsRight = IsRight;
-            SetHandDictionary(); // doit etre remplacé par un truc en dur
+            SetHandDictionary();
         }
 
         private void OnDestroy()
@@ -145,7 +148,7 @@ namespace umi3d.edk.userCapture
         {
             if (HandPose != null)
             {
-                HandPose.Name = Name;
+                HandPose.PoseName = PoseName;
                 HandPose.IsRight = IsRight;
                 HandPose.isRelativeToNode = IsRelativeToNode;
 
@@ -164,19 +167,19 @@ namespace umi3d.edk.userCapture
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightThumbProximal, ScriptableHand.Get(BoneType.RightThumbProximal).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightThumbIntermediate, ScriptableHand.Get(BoneType.RightThumbIntermediate).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightThumbDistal, ScriptableHand.Get(BoneType.RightThumbDistal).Rot));
-                    
+
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightIndexProximal, ScriptableHand.Get(BoneType.RightIndexProximal).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightIndexIntermediate, ScriptableHand.Get(BoneType.RightIndexIntermediate).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightIndexDistal, ScriptableHand.Get(BoneType.RightIndexDistal).Rot));
-                    
+
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightMiddleProximal, ScriptableHand.Get(BoneType.RightMiddleProximal).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightMiddleIntermediate, ScriptableHand.Get(BoneType.RightMiddleIntermediate).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightMiddleDistal, ScriptableHand.Get(BoneType.RightMiddleDistal).Rot));
-                    
+
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightRingProximal, ScriptableHand.Get(BoneType.RightRingProximal).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightRingIntermediate, ScriptableHand.Get(BoneType.RightRingIntermediate).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightRingDistal, ScriptableHand.Get(BoneType.RightRingDistal).Rot));
-                    
+
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightLittleProximal, ScriptableHand.Get(BoneType.RightLittleProximal).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightLittleIntermediate, ScriptableHand.Get(BoneType.RightLittleIntermediate).Rot));
                     HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightLittleDistal, ScriptableHand.Get(BoneType.RightLittleDistal).Rot));
@@ -214,6 +217,7 @@ namespace umi3d.edk.userCapture
                 IsVisible = true;
                 IsRight = ScriptableHand.IsRight = HandPose.IsRight;
                 IsRelativeToNode = HandPose.isRelativeToNode;
+                PoseName = HandPose.PoseName;
 
                 ScriptableHand.IsRight = HandPose.IsRight;
 
@@ -224,11 +228,17 @@ namespace umi3d.edk.userCapture
                 else
                     ScriptableHand.HandEulerRotation = (Quaternion.Inverse(this.transform.rotation) * Quaternion.Euler(HandPose.HandEulerRotation)).eulerAngles;
 
-
-                foreach (UMI3DHandPose.PhalanxRotation pr in HandPose.PhalanxRotations)
+                if (HandPose.PhalanxRotations.Count > 0)
+                    foreach (UMI3DHandPose.PhalanxRotation pr in HandPose.PhalanxRotations)
+                    {
+                        ScriptableHand.SetRotation(pr.Phalanx, pr.PhalanxEulerRotation);
+                    }
+                else
                 {
-                    ScriptableHand.SetRotation(pr.Phalanx, pr.PhalanxEulerRotation);
+                    ScriptableHand.PhalangesData.Clear();
+                    SetHandDictionary();
                 }
+
 
                 SceneView.RepaintAll();
             }

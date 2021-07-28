@@ -16,17 +16,19 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.common
+namespace umi3d.common.userCapture
 {
     public class UMI3DHandPoseDto : AbstractEntityDto, IEntity
     {
-        public string PoseId;
+        public string Name;
 
         public bool IsActive;
 
         public bool IsRight;
 
-        public string objectId;
+        public bool isRelativeToNode;
+
+        public bool HoverPose;
 
         public SerializableVector3 HandPosition;
         public SerializableVector3 HandEulerRotation;

@@ -38,7 +38,7 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public virtual bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var dto = entity.dto as NotificationDto;
             if (dto == null) return false;

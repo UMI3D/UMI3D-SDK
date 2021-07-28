@@ -13,19 +13,20 @@ public class HandPoseSetterEditor : Editor
     {
         DrawDefaultInspector();
         HandPoseSetter handAnimation = (HandPoseSetter)target;
-        if (GUILayout.Button("Reset Hand"))
+
+        if (GUILayout.Button("Save Pose"))
         {
-            handAnimation.ResetDictionary();
+            handAnimation.SavePose();
         }
 
         if (GUILayout.Button("Load Pose"))
         {
             handAnimation.LoadPose();
         }
-        
-        if (GUILayout.Button("Save Pose"))
+
+        if (GUILayout.Button("Reset Hand"))
         {
-            handAnimation.SavePose();
+            handAnimation.ResetDictionary();
         }
     }
 
@@ -41,22 +42,22 @@ public class HandPoseSetterEditor : Editor
 
             Handles.color = handAnimation.HandColor;
 
-            Handles.SphereHandleCap(0, handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), 0.02f, EventType.Repaint);
+            Handles.SphereHandleCap(0, handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), 0.02f, EventType.Repaint);
 
             Vector3 HandLocalPos = Vector3.zero;
             Quaternion HandLocalRot = Quaternion.identity;
 
             if (handAnimation.EditHandPosition)
             {
-                HandLocalPos = Handles.PositionHandle(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation));
-                HandLocalRot = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition);
+                HandLocalPos = Handles.PositionHandle(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation));
+                HandLocalRot = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition));
             }
 
             if (EditorGUI.EndChangeCheck())
             {
                 if (handAnimation.EditHandPosition)
                 {
-                    handAnimation.ScriptableHand.HandPosition = HandLocalPos - handAnimation.transform.position;
+                    handAnimation.ScriptableHand.HandPosition = handAnimation.transform.InverseTransformPoint(HandLocalPos);
                     handAnimation.ScriptableHand.HandEulerRotation = (Quaternion.Inverse(handAnimation.transform.rotation) * HandLocalRot).eulerAngles;
                 }
             }
@@ -86,7 +87,7 @@ public class HandPoseSetterEditor : Editor
                 ThumbLastPhalanx = handAnimation.ScriptableHand.Get("LeftThumbEnd");
             }
 
-            var matrixThumbProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
+            var matrixThumbProximal = Matrix4x4.TRS(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posThumbProximal = matrixThumbProximal.MultiplyPoint3x4(ThumbFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -189,7 +190,7 @@ public class HandPoseSetterEditor : Editor
                 IndexLastPhalanx = handAnimation.ScriptableHand.Get("LeftIndexEnd");
             }
 
-            var matrixIndexProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
+            var matrixIndexProximal = Matrix4x4.TRS(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posIndexProximal = matrixThumbProximal.MultiplyPoint3x4(IndexFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -292,7 +293,7 @@ public class HandPoseSetterEditor : Editor
                 MiddleLastPhalanx = handAnimation.ScriptableHand.Get("LeftMiddleEnd");
             }
 
-            var matrixMiddleProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
+            var matrixMiddleProximal = Matrix4x4.TRS(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posMiddleProximal = matrixMiddleProximal.MultiplyPoint3x4(MiddleFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -395,7 +396,7 @@ public class HandPoseSetterEditor : Editor
                 RingLastPhalanx = handAnimation.ScriptableHand.Get("LeftRingEnd");
             }
 
-            var matrixRingProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
+            var matrixRingProximal = Matrix4x4.TRS(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posRingProximal = matrixRingProximal.MultiplyPoint3x4(RingFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -498,7 +499,7 @@ public class HandPoseSetterEditor : Editor
                 LittleLastPhalanx = handAnimation.ScriptableHand.Get("LeftLittleEnd");
             }
 
-            var matrixLittleProximal = Matrix4x4.TRS(handAnimation.transform.position + handAnimation.ScriptableHand.HandPosition, handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
+            var matrixLittleProximal = Matrix4x4.TRS(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation), Vector3.one);
             var posLittleProximal = matrixLittleProximal.MultiplyPoint3x4(LittleFirstPhalanx.Pos);
 
             EditorGUI.BeginChangeCheck();
@@ -577,8 +578,54 @@ public class HandPoseSetterEditor : Editor
             Handles.SphereHandleCap(0, posLittleEnd, Quaternion.identity, 0.01f, EventType.Repaint);
 
             #endregion
-        }
 
+
+            #region lines
+
+            Handles.color = handAnimation.LineColor;
+
+            if (handAnimation.EditThumb || handAnimation.DrawLine)
+            {
+                Handles.DrawLine(posThumbDistal, posThumbEnd);
+                Handles.DrawLine(posThumbIntermediate, posThumbDistal);
+                Handles.DrawLine(posThumbProximal, posThumbIntermediate);
+                Handles.DrawLine(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), posThumbProximal);
+            }
+
+            if (handAnimation.EditIndex || handAnimation.DrawLine)
+            {
+                Handles.DrawLine(posIndexDistal, posIndexEnd);
+                Handles.DrawLine(posIndexIntermediate, posIndexDistal);
+                Handles.DrawLine(posIndexProximal, posIndexIntermediate);
+                Handles.DrawLine(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), posIndexProximal);
+            }
+
+            if (handAnimation.EditMiddle || handAnimation.DrawLine)
+            {
+                Handles.DrawLine(posMiddleDistal, posMiddleEnd);
+                Handles.DrawLine(posMiddleIntermediate, posMiddleDistal);
+                Handles.DrawLine(posMiddleProximal, posMiddleIntermediate);
+                Handles.DrawLine(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), posMiddleProximal);
+            }
+
+            if (handAnimation.EditRing || handAnimation.DrawLine)
+            {
+                Handles.DrawLine(posRingDistal, posRingEnd);
+                Handles.DrawLine(posRingIntermediate, posRingDistal);
+                Handles.DrawLine(posRingProximal, posRingIntermediate);
+                Handles.DrawLine(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), posRingProximal);
+            }
+
+            if (handAnimation.EditLittle || handAnimation.DrawLine)
+            {
+                Handles.DrawLine(posLittleDistal, posLittleEnd);
+                Handles.DrawLine(posLittleIntermediate, posLittleDistal);
+                Handles.DrawLine(posLittleProximal, posLittleIntermediate);
+                Handles.DrawLine(handAnimation.transform.TransformPoint(handAnimation.ScriptableHand.HandPosition), posLittleProximal);
+            }
+
+            #endregion
+        }
     }
-   
+
 }

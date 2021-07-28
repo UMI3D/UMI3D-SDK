@@ -126,7 +126,6 @@ namespace umi3d.cdk.userCapture
                             ResetObject(dto);
                 }
             }
-
         }
 
         /// <summary>

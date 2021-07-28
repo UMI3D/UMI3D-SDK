@@ -135,7 +135,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, property))
+            if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -149,7 +149,7 @@ namespace umi3d.cdk
                 return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, property))
+            if (AnchorLoader != null && AnchorLoader.SetUMI3DProperty(entity, property))
                 return true;
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
