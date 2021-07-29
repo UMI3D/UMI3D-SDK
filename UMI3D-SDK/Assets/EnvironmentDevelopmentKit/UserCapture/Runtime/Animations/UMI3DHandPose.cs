@@ -36,7 +36,7 @@ namespace umi3d.edk.userCapture
         public bool HoverAnimation = false;
 
         [HideInInspector]
-        public bool isRelativeToNode = true;
+        public bool isRelativeToNode = false;
 
         public string PoseName;
 

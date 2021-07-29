@@ -433,7 +433,7 @@ namespace umi3d.edk.userCapture
         {
             handPoseIds.Clear();
 
-            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.ToDto().id));
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()));
         }
 
         public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
