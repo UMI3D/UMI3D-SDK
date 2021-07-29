@@ -446,7 +446,7 @@ namespace umi3d.edk.userCapture
         #region Hand Animation
 
         [HideInInspector]
-        public List<string> handPoseIds = new List<string>();
+        public List<ulong> handPoseIds = new List<ulong>();
 
         [EditorReadOnly]
         public List<UMI3DHandPose> PreloadedHandPoses = new List<UMI3DHandPose>();

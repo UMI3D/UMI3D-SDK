@@ -118,8 +118,8 @@ namespace umi3d.edk.interaction
         {
             base.WriteProperties(dto, user);
             (dto as EventDto).hold = Hold;
-            (dto as EventDto).TriggerAnimationId = TriggerAnimation != null ? TriggerAnimation.Id() : null;
-            (dto as EventDto).ReleaseAnimationId = ReleaseAnimation != null ? ReleaseAnimation.Id() : null;
+            (dto as EventDto).TriggerAnimationId = TriggerAnimation != null ? TriggerAnimation.Id() : 0;
+            (dto as EventDto).ReleaseAnimationId = ReleaseAnimation != null ? ReleaseAnimation.Id() : 0;
         }
 
     }

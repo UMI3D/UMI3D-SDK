@@ -37,9 +37,9 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool hasPriority = false;
 
-        public string HoverEnterAnimationId;
+        public ulong HoverEnterAnimationId;
 
-        public string HoverExitAnimationId;
+        public ulong HoverExitAnimationId;
 
         public InteractableDto() : base() { }
     }

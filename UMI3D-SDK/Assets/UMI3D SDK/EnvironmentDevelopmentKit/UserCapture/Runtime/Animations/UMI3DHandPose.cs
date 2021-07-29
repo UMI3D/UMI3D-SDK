@@ -27,7 +27,7 @@ namespace umi3d.edk.userCapture
     public class UMI3DHandPose : ScriptableObject, UMI3DLoadableEntity
     {
         [HideInInspector]
-        public string PoseId;
+        public ulong PoseId;
 
         [HideInInspector]
         public bool IsActive = false;
@@ -82,7 +82,7 @@ namespace umi3d.edk.userCapture
 
         private bool registered = false;
 
-        protected string GetId()
+        protected ulong GetId()
         {
             if (!registered)
             {
@@ -94,26 +94,26 @@ namespace umi3d.edk.userCapture
 
         protected void RegisterPose(AbstractEntityDto pose)
         {
-            if (string.IsNullOrEmpty(pose.id) || UMI3DEnvironment.GetEntity<UMI3DHandPose>(pose.id) == null)
+            if (pose.id != 0 || UMI3DEnvironment.GetEntity<UMI3DHandPose>(pose.id) == null)
             {
                 pose.id = UMI3DEnvironment.Register(this);
                 SetId(pose.id);
             }
         }
 
-        public string Id()
+        public ulong Id()
         {
             return GetId();
         }
 
         protected void OnEnable()
         {
-            PoseId = null;
+            PoseId = 0;
             registered = false;
         }
 
 
-        protected void SetId(string id)
+        protected void SetId(ulong id)
         {
             registered = true;
             PoseId = id;
@@ -122,6 +122,11 @@ namespace umi3d.edk.userCapture
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
+        }
+
+        public Bytable ToBytes(UMI3DUser user)
+        {
+            throw new NotImplementedException();
         }
 
         public UMI3DHandPoseDto ToDto()

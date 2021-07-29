@@ -74,16 +74,16 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.IsRight)
             {
-                ThumbFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightThumbProximal);
-                ThumbSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightThumbIntermediate);
-                ThumbThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightThumbDistal);
+                ThumbFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightThumbProximal.ToString());
+                ThumbSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightThumbIntermediate.ToString());
+                ThumbThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightThumbDistal.ToString());
                 ThumbLastPhalanx = handAnimation.ScriptableHand.Get("RightThumbEnd");
             }
             else
             {
-                ThumbFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftThumbProximal);
-                ThumbSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftThumbIntermediate);
-                ThumbThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftThumbDistal);
+                ThumbFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftThumbProximal.ToString());
+                ThumbSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftThumbIntermediate.ToString());
+                ThumbThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftThumbDistal.ToString());
                 ThumbLastPhalanx = handAnimation.ScriptableHand.Get("LeftThumbEnd");
             }
 
@@ -106,9 +106,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(ThumbFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotThumbProximal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightThumbProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightThumbProximal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftThumbProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftThumbProximal.ToString(), newTuple);
                 }
             }
 
@@ -130,9 +130,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(ThumbSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot)) * rotThumbIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightThumbIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightThumbIntermediate.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftThumbIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftThumbIntermediate.ToString(), newTuple);
                 }
             }
 
@@ -154,9 +154,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(ThumbThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(ThumbFirstPhalanx.Rot) * Quaternion.Euler(ThumbSecondPhalanx.Rot)) * rotThumbDistal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightThumbDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightThumbDistal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftThumbDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftThumbDistal.ToString(), newTuple);
                 }
             }
 
@@ -177,16 +177,16 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.IsRight)
             {
-                IndexFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightIndexProximal);
-                IndexSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightIndexIntermediate);
-                IndexThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightIndexDistal);
+                IndexFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightIndexProximal.ToString());
+                IndexSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightIndexIntermediate.ToString());
+                IndexThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightIndexDistal.ToString());
                 IndexLastPhalanx = handAnimation.ScriptableHand.Get("RightIndexEnd");
             }
             else
             {
-                IndexFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftIndexProximal);
-                IndexSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftIndexIntermediate);
-                IndexThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftIndexDistal);
+                IndexFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftIndexProximal.ToString());
+                IndexSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftIndexIntermediate.ToString());
+                IndexThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftIndexDistal.ToString());
                 IndexLastPhalanx = handAnimation.ScriptableHand.Get("LeftIndexEnd");
             }
 
@@ -209,9 +209,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(IndexFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotIndexProximal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightIndexProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightIndexProximal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftIndexProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftIndexProximal.ToString(), newTuple);
                 }
             }
 
@@ -233,9 +233,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(IndexSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot)) * rotIndexIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightIndexIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightIndexIntermediate.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftIndexIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftIndexIntermediate.ToString(), newTuple);
                 }
             }
 
@@ -257,9 +257,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(IndexThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(IndexFirstPhalanx.Rot) * Quaternion.Euler(IndexSecondPhalanx.Rot)) * rotIndexDistal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightIndexDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightIndexDistal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftIndexDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftIndexDistal.ToString(), newTuple);
                 }
             }
 
@@ -280,16 +280,16 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.IsRight)
             {
-                MiddleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightMiddleProximal);
-                MiddleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightMiddleIntermediate);
-                MiddleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightMiddleDistal);
+                MiddleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightMiddleProximal.ToString());
+                MiddleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightMiddleIntermediate.ToString());
+                MiddleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightMiddleDistal.ToString());
                 MiddleLastPhalanx = handAnimation.ScriptableHand.Get("RightMiddleEnd");
             }
             else
             {
-                MiddleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftMiddleProximal);
-                MiddleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftMiddleIntermediate);
-                MiddleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftMiddleDistal);
+                MiddleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftMiddleProximal.ToString());
+                MiddleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftMiddleIntermediate.ToString());
+                MiddleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftMiddleDistal.ToString());
                 MiddleLastPhalanx = handAnimation.ScriptableHand.Get("LeftMiddleEnd");
             }
 
@@ -312,9 +312,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(MiddleFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotMiddleProximal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightMiddleProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightMiddleProximal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftMiddleProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftMiddleProximal.ToString(), newTuple);
                 }
             }
 
@@ -336,9 +336,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(MiddleSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot)) * rotMiddleIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightMiddleIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightMiddleIntermediate.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftMiddleIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftMiddleIntermediate.ToString(), newTuple);
                 }
             }
 
@@ -360,9 +360,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(MiddleThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(MiddleFirstPhalanx.Rot) * Quaternion.Euler(MiddleSecondPhalanx.Rot)) * rotMiddleDistal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightMiddleDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightMiddleDistal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftMiddleDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftMiddleDistal.ToString(), newTuple);
                 }
             }
 
@@ -383,16 +383,16 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.IsRight)
             {
-                RingFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightRingProximal);
-                RingSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightRingIntermediate);
-                RingThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightRingDistal);
+                RingFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightRingProximal.ToString());
+                RingSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightRingIntermediate.ToString());
+                RingThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightRingDistal.ToString());
                 RingLastPhalanx = handAnimation.ScriptableHand.Get("RightRingEnd");
             }
             else
             {
-                RingFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftRingProximal);
-                RingSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftRingIntermediate);
-                RingThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftRingDistal);
+                RingFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftRingProximal.ToString());
+                RingSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftRingIntermediate.ToString());
+                RingThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftRingDistal.ToString());
                 RingLastPhalanx = handAnimation.ScriptableHand.Get("LeftRingEnd");
             }
 
@@ -415,9 +415,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(RingFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotRingProximal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightRingProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightRingProximal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftRingProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftRingProximal.ToString(), newTuple);
                 }
             }
 
@@ -439,9 +439,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(RingSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot)) * rotRingIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightRingIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightRingIntermediate.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftRingIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftRingIntermediate.ToString(), newTuple);
                 }
             }
 
@@ -463,9 +463,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(RingThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(RingFirstPhalanx.Rot) * Quaternion.Euler(RingSecondPhalanx.Rot)) * rotRingDistal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightRingDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightRingDistal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftRingDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftRingDistal.ToString(), newTuple);
                 }
             }
 
@@ -486,16 +486,16 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.IsRight)
             {
-                LittleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightLittleProximal);
-                LittleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightLittleIntermediate);
-                LittleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightLittleDistal);
+                LittleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightLittleProximal.ToString());
+                LittleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightLittleIntermediate.ToString());
+                LittleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.RightLittleDistal.ToString());
                 LittleLastPhalanx = handAnimation.ScriptableHand.Get("RightLittleEnd");
             }
             else
             {
-                LittleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftLittleProximal);
-                LittleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftLittleIntermediate);
-                LittleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftLittleDistal);
+                LittleFirstPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftLittleProximal.ToString());
+                LittleSecondPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftLittleIntermediate.ToString());
+                LittleThirdPhalanx = handAnimation.ScriptableHand.Get(BoneType.LeftLittleDistal.ToString());
                 LittleLastPhalanx = handAnimation.ScriptableHand.Get("LeftLittleEnd");
             }
 
@@ -518,9 +518,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(LittleFirstPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation)) * rotLittleProximal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightLittleProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightLittleProximal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftLittleProximal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftLittleProximal.ToString(), newTuple);
                 }
             }
 
@@ -542,9 +542,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(LittleSecondPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot)) * rotLittleIntermediate).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightLittleIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightLittleIntermediate.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftLittleIntermediate, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftLittleIntermediate.ToString(), newTuple);
                 }
             }
 
@@ -566,9 +566,9 @@ public class HandPoseSetterEditor : Editor
                 {
                     var newTuple = new SpatialDataInfo(LittleThirdPhalanx.Pos, (Quaternion.Inverse(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.HandEulerRotation) * Quaternion.Euler(LittleFirstPhalanx.Rot) * Quaternion.Euler(LittleSecondPhalanx.Rot)) * rotLittleDistal).eulerAngles);
                     if (handAnimation.IsRight)
-                        handAnimation.ScriptableHand.Set(BoneType.RightLittleDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.RightLittleDistal.ToString(), newTuple);
                     else
-                        handAnimation.ScriptableHand.Set(BoneType.LeftLittleDistal, newTuple);
+                        handAnimation.ScriptableHand.Set(BoneType.LeftLittleDistal.ToString(), newTuple);
                 }
             }
 
