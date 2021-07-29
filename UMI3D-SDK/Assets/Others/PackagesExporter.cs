@@ -33,10 +33,10 @@ public class PackagesExporter
     const string pathUserCapture = packageFolder + "module/user-capture.unitypackage";
     const string pathCollaboration = packageFolder + "module/collaboration.unitypackage";
 
-    const string assetDependencies = "Assets/Dependencies";
-    const string assetCommon = "Assets/Common";
-    const string assetCDK = "Assets/ClientDevelopmentKit";
-    const string assetEDK = "Assets/EnvironmentDevelopmentKit";
+    const string assetDependencies = "Assets/UMI3D SDK/Dependencies";
+    const string assetCommon = "Assets/UMI3D SDK/Common";
+    const string assetCDK = "Assets/UMI3D SDK/ClientDevelopmentKit";
+    const string assetEDK = "Assets/UMI3D SDK/EnvironmentDevelopmentKit";
 
     const string coreFolder = "/Core";
     const string collaborationFolder = "/Collaboration";
@@ -95,9 +95,20 @@ public class PackagesExporter
     }
 
     [MenuItem("UMI3D/Export Packages")]
-    static void ExportPackages()
+    static void ExportPackagesAll()
     {
-        var core = new List<string>{ assetCommon + coreFolder, assetEDK + coreFolder, assetCDK + coreFolder };
+        ExportPackages(true);
+    }
+
+    [MenuItem("UMI3D/Export Packages (EDK & CDK only)")]
+    static void ExportPackagesEDKCDK()
+    {
+        ExportPackages(false);
+    }
+
+    static void ExportPackages(bool all)
+    {
+        var core = new List<string> { assetCommon + coreFolder, assetEDK + coreFolder, assetCDK + coreFolder };
         var interaction = new List<string> { assetCommon + interactionSystemFolder, assetEDK + interactionSystemFolder, assetCDK + interactionSystemFolder };
         var userCapture = new List<string> { assetCommon + userCaptureFolder, assetEDK + userCaptureFolder, assetCDK + userCaptureFolder };
         var collaboration = new List<string> { assetCommon + collaborationFolder, assetEDK + collaborationFolder, assetCDK + collaborationFolder };
@@ -117,21 +128,24 @@ public class PackagesExporter
             assetEDK + coreFolder, assetEDK + interactionSystemFolder, assetEDK + userCaptureFolder, assetEDK + collaborationFolder
         };
 
-        if(! Directory.Exists(Application.dataPath + "/../" + packageFolder))
+        if (!Directory.Exists(Application.dataPath + "/../" + packageFolder))
         {
             Directory.CreateDirectory(Application.dataPath + "/../" + packageFolder);
         }
 
-        if (!Directory.Exists(Application.dataPath + "/../" + packageFolder +"/module"))
+        if (!Directory.Exists(Application.dataPath + "/../" + packageFolder + "/module"))
         {
             Directory.CreateDirectory(Application.dataPath + "/../" + packageFolder + "/module");
         }
         Debug.Log(Application.dataPath + packageFolder);
-        AssetDatabase.ExportPackage( assetDependencies, pathDependencies, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
-        AssetDatabase.ExportPackage( core.ToArray() , pathCore, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
-        AssetDatabase.ExportPackage(interaction.ToArray(), pathInteractionSystem, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
-        AssetDatabase.ExportPackage(userCapture.ToArray(), pathUserCapture, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
-        AssetDatabase.ExportPackage(collaboration.ToArray(), pathCollaboration, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+        if (all)
+        {
+            AssetDatabase.ExportPackage(assetDependencies, pathDependencies, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+            AssetDatabase.ExportPackage(core.ToArray(), pathCore, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+            AssetDatabase.ExportPackage(interaction.ToArray(), pathInteractionSystem, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+            AssetDatabase.ExportPackage(userCapture.ToArray(), pathUserCapture, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+            AssetDatabase.ExportPackage(collaboration.ToArray(), pathCollaboration, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+        }
         AssetDatabase.ExportPackage(cdk, pathCdk, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
         AssetDatabase.ExportPackage(edk, pathEdk, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
     }
