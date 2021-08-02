@@ -24,15 +24,16 @@ namespace umi3d.common.userCapture
 
         public bool IsActive;
 
-        public bool IsRight;
-
         public bool isRelativeToNode;
 
         public bool HoverPose;
 
-        public SerializableVector3 HandPosition;
-        public SerializableVector3 HandEulerRotation;
+        public SerializableVector3 RightHandPosition;
+        public SerializableVector3 RightHandEulerRotation;
 
-        public Dictionary<string, SerializableVector3> PhalanxRotations = new Dictionary<string, SerializableVector3>();
+        public SerializableVector3 LeftHandPosition;
+        public SerializableVector3 LeftHandEulerRotation;
+
+        public Dictionary<uint, SerializableVector3> PhalanxRotations = new Dictionary<uint, SerializableVector3>();
     }
 }

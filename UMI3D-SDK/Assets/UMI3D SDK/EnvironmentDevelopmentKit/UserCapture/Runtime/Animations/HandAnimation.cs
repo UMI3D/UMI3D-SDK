@@ -29,15 +29,14 @@ namespace umi3d.edk.userCapture
         public UMI3DNodeAnimation NodeAnimation;
         public bool ActivePose = false;
         public bool HoverPose = false;
-        public UMI3DHandPose RightHandPose;
-        public UMI3DHandPose LeftHandPose;
+        public UMI3DHandPose HandPose;
 
         // Start is called before the first frame update
         void Start()
         {
-            if (NodeAnimation != null && RightHandPose != null)
+            if (NodeAnimation != null && HandPose != null)
             {
-                RightHandPose.HoverAnimation = HoverPose;
+                HandPose.HoverAnimation = HoverPose;
 
                 HashSet<UMI3DUser> users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
 
@@ -46,7 +45,7 @@ namespace umi3d.edk.userCapture
                 SetEntityProperty operation = new SetEntityProperty()
                 {
                     users = users,
-                    entityId = RightHandPose.Id(),
+                    entityId = HandPose.Id(),
                     property = UMI3DPropertyKeys.ActiveHandPose,
                     value = ActivePose
                 };

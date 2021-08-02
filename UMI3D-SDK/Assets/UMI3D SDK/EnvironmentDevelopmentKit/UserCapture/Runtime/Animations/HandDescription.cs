@@ -20,10 +20,11 @@ namespace umi3d.edk.userCapture
 
     public class HandDescription : ScriptableObject
     {
-        public bool IsRight = false;
-        public Vector3 HandPosition = Vector3.zero;
-        public Vector3 HandEulerRotation = Vector3.zero;
+        public Vector3 RightHandPosition = Vector3.zero;
+        public Vector3 RightHandEulerRotation = Vector3.zero;
 
+        public Vector3 LeftHandPosition = Vector3.zero;
+        public Vector3 LeftHandEulerRotation = Vector3.zero;
 
         [System.Serializable]
         public class PhalanxData

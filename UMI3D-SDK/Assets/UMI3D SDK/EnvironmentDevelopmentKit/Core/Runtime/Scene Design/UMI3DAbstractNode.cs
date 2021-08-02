@@ -136,7 +136,7 @@ namespace umi3d.edk
         /// <summary>
         /// Id of the Volume in which the node is present
         /// </summary>
-        public string VolumeId;
+        public ulong VolumeId;
 
         /// <summary>
         /// Room object used to relay data

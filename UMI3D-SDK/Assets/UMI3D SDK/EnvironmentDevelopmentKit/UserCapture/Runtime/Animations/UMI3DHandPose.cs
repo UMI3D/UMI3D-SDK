@@ -42,18 +42,24 @@ namespace umi3d.edk.userCapture
 
         public bool IsRight = true;
 
-        public Vector3 HandPosition = Vector3.zero;
-        public Vector3 HandEulerRotation = Vector3.zero;
+        public Vector3 RightHandPosition = Vector3.zero;
+        public Vector3 RightHandEulerRotation = Vector3.zero;
+
+        public Vector3 LeftHandPosition = Vector3.zero;
+        public Vector3 LeftHandEulerRotation = Vector3.zero;
 
         [Serializable]
         public class PhalanxRotation
         {
+            [HideInInspector]
+            public uint phalanxId;
             public string Phalanx;
             public Vector3 PhalanxEulerRotation;
 
-            public PhalanxRotation(string BoneType, Vector3 rotation)
+            public PhalanxRotation(uint id, string boneType, Vector3 rotation)
             {
-                Phalanx = BoneType;
+                phalanxId = id;
+                Phalanx = boneType;
                 PhalanxEulerRotation = rotation;
             }
         }
@@ -136,12 +142,12 @@ namespace umi3d.edk.userCapture
                 id = PoseId,
                 Name = PoseName,
                 IsActive = IsActive,
-                IsRight = IsRight,
+                //IsRight = IsRight,
                 HoverPose = HoverAnimation,
                 isRelativeToNode = isRelativeToNode,
-                HandPosition = HandPosition,
-                HandEulerRotation = HandEulerRotation,
-                PhalanxRotations = PhalanxRotations.ToDictionary(x => x.Phalanx, x => (SerializableVector3)x.PhalanxEulerRotation)
+                RightHandPosition = RightHandPosition,
+                RightHandEulerRotation = RightHandEulerRotation,
+                PhalanxRotations = PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation)
             };
         }
 
