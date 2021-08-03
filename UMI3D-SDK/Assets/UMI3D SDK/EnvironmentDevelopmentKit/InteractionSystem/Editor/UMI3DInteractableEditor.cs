@@ -31,6 +31,9 @@ namespace umi3d.edk.editor
         SerializedProperty onHoverEnter;
         SerializedProperty onHoverExit;
         SerializedProperty onHovered;
+        SerializedProperty UseAnimations;
+        SerializedProperty HoverEnterAnimation;
+        SerializedProperty HoverExitAnimation;
 
         ///<inheritdoc/>
         protected override void OnEnable()
@@ -43,6 +46,9 @@ namespace umi3d.edk.editor
             onHoverEnter = serializedObject.FindProperty("onHoverEnter");
             onHovered = serializedObject.FindProperty("onHovered");
             onHoverExit = serializedObject.FindProperty("onHoverExit");
+            UseAnimations = serializedObject.FindProperty("UseAnimations");
+            HoverEnterAnimation = serializedObject.FindProperty("HoverEnterAnimation");
+            HoverExitAnimation = serializedObject.FindProperty("HoverExitAnimation");
         }
 
         static bool displayEvent = false;
@@ -62,6 +68,12 @@ namespace umi3d.edk.editor
                 EditorGUILayout.PropertyField(onHoverExit, true);
                 if (NotifyHoverPosition.boolValue)
                     EditorGUILayout.PropertyField(onHovered, true);
+                EditorGUILayout.PropertyField(UseAnimations, true);
+                if (UseAnimations.boolValue)
+                {
+                    EditorGUILayout.PropertyField(HoverEnterAnimation, true);
+                    EditorGUILayout.PropertyField(HoverExitAnimation, true);
+                }
             }
             serializedObject.ApplyModifiedProperties();
         }

@@ -58,7 +58,6 @@ namespace umi3d.cdk
                 if (p == chain.startOnProgress)
                     UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
             }
-
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 

@@ -31,7 +31,7 @@ namespace umi3d.cdk
             finished.Invoke();
         }
 
-        public virtual bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             return false;
         }

@@ -89,6 +89,10 @@ namespace umi3d.cdk.userCapture
             activeUserBindings = dto.activeBindings;
             userBindings = dto.bindings;
 
+            if (dto.handPoses != null)
+                foreach (UMI3DHandPoseDto pose in dto.handPoses)
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null);
+
             if (activeUserBindings && userBindings != null)
             {
                 foreach (BoneBindingDto boneDto in userBindings)
@@ -122,7 +126,6 @@ namespace umi3d.cdk.userCapture
                             ResetObject(dto);
                 }
             }
-
         }
 
         /// <summary>

@@ -53,9 +53,9 @@ namespace umi3d.cdk
             foreach (var chain in dto.animationChain)
             {
                 var p = GetProgress();
-                if ( p < chain.startOnProgress)
+                if (p < chain.startOnProgress)
                     Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Start(chain.animationId); })));
-                if( p == chain.startOnProgress )
+                if (p == chain.startOnProgress)
                     UMI3DAnimationManager.Start(chain.animationId);
             }
 

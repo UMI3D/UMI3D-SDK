@@ -39,6 +39,7 @@ namespace umi3d.cdk
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
         public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
+        public virtual UMI3DHandPoseLoader handPoseLoader { get; } = new UMI3DHandPoseLoader();
         public virtual UMI3DSubMeshNodeLoader SubMeshLoader { get; } = new UMI3DSubMeshNodeLoader();
 
         public NotificationLoader notificationLoader;
@@ -95,6 +96,10 @@ namespace umi3d.cdk
                 case UMI3DAvatarNodeDto a:
                     avatarLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
+                case UMI3DHandPoseDto h:
+                    handPoseLoader.Load(h);
+                    finished?.Invoke();
+                    break;
                 case NotificationDto n:
                     notificationLoader.Load(n);
                     finished?.Invoke();
@@ -130,7 +135,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, property))
+            if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -140,9 +145,11 @@ namespace umi3d.cdk
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (handPoseLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, property))
+            if (AnchorLoader != null && AnchorLoader.SetUMI3DProperty(entity, property))
                 return true;
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
@@ -166,7 +173,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
+            if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
