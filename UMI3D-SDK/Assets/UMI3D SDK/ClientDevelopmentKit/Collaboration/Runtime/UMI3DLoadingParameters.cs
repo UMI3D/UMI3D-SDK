@@ -173,7 +173,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
+            if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
