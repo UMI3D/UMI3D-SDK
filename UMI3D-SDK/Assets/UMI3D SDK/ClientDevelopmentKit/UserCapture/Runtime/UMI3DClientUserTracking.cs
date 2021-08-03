@@ -73,9 +73,9 @@ namespace umi3d.cdk.userCapture
         {
             streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
             sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
-            sendingCameraProperties.Invoke();
             startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
-            startingSendingTracking.Invoke();
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
         }
 
         /// <summary>
