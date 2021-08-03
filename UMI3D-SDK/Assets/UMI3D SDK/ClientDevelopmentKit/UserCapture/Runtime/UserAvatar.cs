@@ -213,31 +213,7 @@ namespace umi3d.cdk.userCapture
                     UnityEngine.Debug.LogWarning(dto.boneType + "not found in bones instances");
             }
             else
-            {
-                UMI3DNodeInstance node;
-                var wait = new WaitForFixedUpdate();
-
-                node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
-
-                if (node != null)
-                {
-                    Transform obj = null;
-                    if (dto.rigName != "")
-                    {
-                        obj = UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName);
-                    }
-                    else
-                        obj = node.transform;
-
-                    bounds.Add(new Bound()
-                    {
-                        bonetype = dto.boneType,
-                        obj = obj,
-                        offsetPosition = dto.offsetPosition,
-                        offsetRotation = dto.offsetRotation
-                    });
-                }
-            }
+                StartCoroutine(WaitForOtherRig(dto));
         }
 
         protected Transform InspectBoundRigs(BoneBindingDto dto)
@@ -249,6 +225,36 @@ namespace umi3d.cdk.userCapture
                     return obj;
             }
             return obj;
+        }
+
+        protected IEnumerator WaitForOtherRig(BoneBindingDto dto)
+        {
+            UMI3DNodeInstance node;
+            var wait = new WaitForFixedUpdate();
+
+            while ((node = UMI3DEnvironmentLoader.GetNode(dto.objectId)) == null)
+            {
+                yield return wait;
+            }
+            
+            if (node != null)
+            {
+                Transform obj = null;
+                if (dto.rigName != "")
+                {
+                    obj = UMI3DEnvironmentLoader.GetNode(dto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName);
+                }
+                else
+                    obj = node.transform;
+
+                bounds.Add(new Bound()
+                {
+                    bonetype = dto.boneType,
+                    obj = obj,
+                    offsetPosition = dto.offsetPosition,
+                    offsetRotation = dto.offsetRotation
+                });
+            }
         }
 
         protected IEnumerator WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
