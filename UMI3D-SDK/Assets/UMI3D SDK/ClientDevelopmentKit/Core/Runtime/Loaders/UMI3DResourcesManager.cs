@@ -27,7 +27,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
 using WebSocketSharp;
-using Path = umi3d.common.Path;
+using Path = inetum.unityUtils.Path;
 
 namespace umi3d.cdk
 {

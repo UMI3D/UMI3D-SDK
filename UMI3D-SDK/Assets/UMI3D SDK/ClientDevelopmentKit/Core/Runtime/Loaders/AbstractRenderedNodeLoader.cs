@@ -1,4 +1,5 @@
-﻿using MainThreadDispatcher;
+﻿using inetum.unityUtils;
+using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;

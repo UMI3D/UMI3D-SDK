@@ -42,7 +42,7 @@ namespace umi3d.cdk.collaboration
                 return null;
             }
 
-            string path = common.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
+            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
             if (File.Exists(path))
             {
                 return File.ReadAllBytes(path);
@@ -68,7 +68,7 @@ namespace umi3d.cdk.collaboration
                 Debug.LogWarning("Unautorized to write this local data : " + key);
                 return;
             }
-            string path = common.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
+            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
             if(!File.Exists(path))
             {
                 File.Create(path).Dispose();

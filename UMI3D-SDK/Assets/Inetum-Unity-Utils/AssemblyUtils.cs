@@ -25,16 +25,7 @@ public class AssemblyUtils : MonoBehaviour
 {
     public static void ExportAssembliesTo(IEnumerable<string> assemblyNames, string ouputDirectory)
     {
-        Debug.Log("====== Exporting Aseemblies to [" + ouputDirectory + "]:" + assemblyNames);
-
         Assembly[] playerAssemblies = CompilationPipeline.GetAssemblies(AssembliesType.Player);
-
-        //TODO: Check if any requested assembly exists
-        foreach(var s in assemblyNames)
-        {
-            Debug.Log(s);
-        }
-
         foreach (var assembly in playerAssemblies)
         {
             if (assemblyNames.Contains(assembly.name))
@@ -47,18 +38,8 @@ public class AssemblyUtils : MonoBehaviour
                         File.Delete(outputfile);
                     File.Copy(assembly.outputPath, outputfile);
                 }
-                else
-                {
-                    Debug.LogError("dll not found: " + assembly.outputPath);
-                }
-            }
-            else
-            {
-                Debug.Log($"not found {assembly.name}");
             }
         }
-
-        Debug.Log("====== Done");
     }
 }
 #endif

@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace umi3d.common
+namespace inetum.unityUtils
 {
     public static class IEnumerableExtension
     {

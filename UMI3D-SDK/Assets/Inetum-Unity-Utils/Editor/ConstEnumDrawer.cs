@@ -20,7 +20,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace umi3d.common.editor
+namespace inetum.unityUtils.editor
 {
     [CustomPropertyDrawer(typeof(ConstEnumAttribute))]
     public class ConstEnumDrawer : PropertyDrawer

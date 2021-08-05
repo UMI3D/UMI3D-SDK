@@ -16,6 +16,7 @@ limitations under the License.
 
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System;
 using System.Collections;

@@ -18,7 +18,7 @@ limitations under the License.
 using UnityEditor;
 using UnityEngine;
 
-namespace umi3d.common.editor
+namespace inetum.unityUtils.editor
 {
     // <summary>Property will be editable only is the application isn't running.</summary>
     [CustomPropertyDrawer(typeof(EditorReadOnlyAttribute))]

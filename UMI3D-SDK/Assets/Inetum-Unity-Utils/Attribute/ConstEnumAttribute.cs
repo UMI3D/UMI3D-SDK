@@ -22,7 +22,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace umi3d.common
+namespace inetum.unityUtils
 {
     public class ConstEnumAttribute : PropertyAttribute
     {

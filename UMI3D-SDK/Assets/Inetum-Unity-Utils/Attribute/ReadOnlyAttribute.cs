@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.common
+namespace inetum.unityUtils
 {
     public class ReadOnlyAttribute : PropertyAttribute
     {

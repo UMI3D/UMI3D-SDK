@@ -20,7 +20,7 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
-using Path = umi3d.common.Path;
+using Path = inetum.unityUtils.Path;
 
 namespace umi3d.edk.editor
 {
