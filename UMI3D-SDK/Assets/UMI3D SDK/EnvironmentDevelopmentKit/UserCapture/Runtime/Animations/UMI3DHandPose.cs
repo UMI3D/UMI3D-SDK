@@ -40,8 +40,6 @@ namespace umi3d.edk.userCapture
 
         public string PoseName;
 
-        public bool IsRight = true;
-
         public Vector3 RightHandPosition = Vector3.zero;
         public Vector3 RightHandEulerRotation = Vector3.zero;
 

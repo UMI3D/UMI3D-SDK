@@ -48,6 +48,7 @@ namespace umi3d.cdk.userCapture
             public Transform obj;
             public Vector3 offsetPosition;
             public Quaternion offsetRotation;
+            public bool syncPos;
         }
 
         public List<Transform> boundRigs = new List<Transform>();
@@ -62,20 +63,18 @@ namespace umi3d.cdk.userCapture
 
         private void Update()
         {
+            this.transform.position = UMI3DClientUserTracking.Instance.transform.position;
+            this.transform.rotation = UMI3DClientUserTracking.Instance.transform.rotation;
+
             foreach (var item in bounds)
             {
                 if (item.obj != null)
                 {
-                    item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
+                    if (item.syncPos)
+                        item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
                     item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
                 }
             }
-
-            RegressionPosition(nodePositionFilter);
-            RegressionRotation(nodeRotationFilter);
-
-            this.transform.localPosition = nodePositionFilter.regressed_position;
-            this.transform.localRotation = nodeRotationFilter.regressed_rotation;
         }
 
         /// <summary>
@@ -236,7 +235,7 @@ namespace umi3d.cdk.userCapture
             {
                 yield return wait;
             }
-            
+
             if (node != null)
             {
                 Transform obj = null;
@@ -300,7 +299,8 @@ namespace umi3d.cdk.userCapture
                         bonetype = dto.boneType,
                         obj = obj,
                         offsetPosition = dto.offsetPosition,
-                        offsetRotation = dto.offsetRotation
+                        offsetRotation = dto.offsetRotation,
+                        syncPos = dto.syncPosition
                     });
 
                     if (dto.rigName == "")
@@ -317,6 +317,7 @@ namespace umi3d.cdk.userCapture
                             Bound bound = bounds[index];
                             bound.offsetPosition = dto.offsetPosition;
                             bound.offsetRotation = dto.offsetRotation;
+                            bound.syncPos = dto.syncPosition;
                             bounds[index] = bound;
                         }
                         else
@@ -326,7 +327,8 @@ namespace umi3d.cdk.userCapture
                                 bonetype = dto.boneType,
                                 obj = obj,
                                 offsetPosition = dto.offsetPosition,
-                                offsetRotation = dto.offsetRotation
+                                offsetRotation = dto.offsetRotation,
+                                syncPos = dto.syncPosition
                             });
                         }
                     }
@@ -518,17 +520,6 @@ namespace umi3d.cdk.userCapture
                 nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
             else
                 nodeRotationFilter.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
-        }
-
-        public virtual IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
-        {
-            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
-            lastFrameTime = timeFrame;
-            lastMessageTime = Time.time;
-
-            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
-
-            yield return null;
         }
     }
 }
