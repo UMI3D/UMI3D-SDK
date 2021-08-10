@@ -106,7 +106,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="trackingFrameDto">a dto containing the tracking data</param>
         /// <param name="timeFrame">sending time in ms</param>
-        public override IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
+        public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
             MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
             lastFrameTime = timeFrame;
