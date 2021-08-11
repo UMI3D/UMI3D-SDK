@@ -88,7 +88,7 @@ namespace umi3d.cdk
         /// return time server in millisecond, use synchronised time in collaborative cases.
         /// </summary>
         /// <returns></returns>
-        public virtual ulong GetTime() { return (ulong)DateTime.Now.Millisecond; }
+        public virtual ulong GetTime() { return (ulong)(long)DateTime.Now.Millisecond; }
 
         /// <summary>
         /// return HTTPClient if the server is a collaboration server. return null in that case

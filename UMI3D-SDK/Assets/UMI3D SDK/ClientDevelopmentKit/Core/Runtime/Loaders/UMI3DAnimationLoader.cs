@@ -68,9 +68,6 @@ namespace umi3d.cdk
 
         static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container))
-                return true;
-
             return UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 

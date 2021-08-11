@@ -46,6 +46,15 @@ namespace umi3d.cdk.collaboration
                         readable = true;
                         return true;
                     }
+                case true when typeof(T) == typeof(UMI3DNodeAnimation.OperationChain):
+                    {
+                        var at = UMI3DNetworkingHelper.Read<float>(container);
+                        var op = new ByteContainer(container);
+                        var value = new UMI3DNodeAnimation.OperationChain(op, at);
+                        result = (T)(object)value;
+                        readable = true;
+                        return true;
+                    }
                 case true when typeof(T) == typeof(AbstractInteractionDto):
                     {
                         var value = UMI3DAbstractToolLoader.ReadAbstractInteractionDto(container, out readable);

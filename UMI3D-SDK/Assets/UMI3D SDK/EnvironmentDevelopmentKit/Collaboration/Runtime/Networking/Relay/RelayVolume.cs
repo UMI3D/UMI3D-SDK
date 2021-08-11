@@ -42,7 +42,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The objects's unique id. 
         /// </summary>
-        protected ulong volumeId;
+        protected ulong volumeId = 0;
 
         protected Dictionary<ulong, Dictionary<ulong, float>> relayDataMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
         protected Dictionary<ulong, Dictionary<ulong, float>> relayTrackingMemory = new Dictionary<ulong, Dictionary<ulong, float>>();

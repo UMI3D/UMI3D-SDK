@@ -804,6 +804,13 @@ namespace umi3d.common
             length = bytes.Length;
         }
 
+        public ByteContainer(ByteContainer container)
+        {
+            this.bytes = container.bytes;
+            position = container.position;
+            length = container.length;
+        }
+
         public override string ToString()
         {
             return $"{bytes.ToString<byte>()} [{position} : {length}]";

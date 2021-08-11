@@ -48,7 +48,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.InteractableNodeId:
                     RemoveInteractableOnNode(dto);
-                    dto.nodeId = (ulong)property.value;
+                    dto.nodeId = (ulong)(long)property.value;
                     setInteractableOnNode(dto);
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:

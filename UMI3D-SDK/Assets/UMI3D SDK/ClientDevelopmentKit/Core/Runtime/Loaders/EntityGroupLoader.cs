@@ -86,9 +86,9 @@ namespace umi3d.cdk
             {
                 case SetEntityListAddPropertyDto add:
                     if (add.index == list.Count())
-                        list.Add((ulong)add.value);
+                        list.Add((ulong)(long)add.value);
                     else if (add.index < list.Count() && add.index >= 0)
-                        list.Insert(add.index, (ulong)add.value);
+                        list.Insert(add.index, (ulong)(long)add.value);
                     else
                         Debug.LogWarning($"Add value ignore for {add.index} in collection of size {list.Count}");
                     break;
@@ -100,12 +100,12 @@ namespace umi3d.cdk
                     break;
                 case SetEntityListPropertyDto set:
                     if (set.index < list.Count() && set.index >= 0)
-                        list[set.index] = (ulong)set.value;
+                        list[set.index] = (ulong)(long)set.value;
                     else
                         Debug.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId = property.value as List<ulong>;
+                    groupDto.entitiesId =(property.value as List<object>).Select(o => (ulong)(long)o).ToList();
                     break;
             }
         }
