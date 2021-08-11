@@ -81,7 +81,7 @@ namespace umi3d.edk
             var equality = new UMI3DAsyncPropertyEquality();
             base.InitDefinition(id);
             ObjectDuration = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationDuration, duration, null, equality.FloatEquality);
-            ObjectAnimationChain = new UMI3DAsyncListProperty<AnimationChain>(id, UMI3DPropertyKeys.AnimationChain, animationChain, (o, u) => UMI3DEnvironment.Instance.useDto ? o?.Todto(u) : o);
+            ObjectAnimationChain = new UMI3DAsyncListProperty<AnimationChain>(id, UMI3DPropertyKeys.AnimationChain, animationChain, (o, u) => UMI3DEnvironment.Instance.useDto ? o?.Todto(u) : (object)o);
 
             ObjectDuration.OnValueChanged += (d) => duration = d;
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;
