@@ -271,9 +271,9 @@ namespace umi3d.edk.collaboration
                                     coeff = (dist - strategy.startingProximityDistance) / (strategy.stoppingProximityDistance - strategy.startingProximityDistance);
                                 }
                                 else if (dist >= strategy.stoppingProximityDistance)
-                                    coeff = 0f;
+                                    coeff = 1f;
 
-                                float StrategyDelay = Mathf.RoundToInt((1f - coeff) * (1 / strategy.maxProximityFPS) + coeff * (1 / strategy.minProximityFPS));
+                                float StrategyDelay = (1f - coeff) * (1 / strategy.maxProximityFPS) + coeff * (1 / strategy.minProximityFPS);
                                 float CurrentDelay = now - relayMemory[sender.Id()][to.Id()];
 
                                 return StrategyDelay <= CurrentDelay;
