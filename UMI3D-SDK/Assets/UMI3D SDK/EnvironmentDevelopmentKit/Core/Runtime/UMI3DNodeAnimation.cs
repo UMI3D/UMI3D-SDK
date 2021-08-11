@@ -50,7 +50,7 @@ namespace umi3d.edk
 
             bool IBytable.IsCountable()
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 

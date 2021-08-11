@@ -49,12 +49,12 @@ namespace umi3d.edk
 
             bool IBytable.IsCountable()
             {
-                throw new NotImplementedException();
+                return true;
             }
 
             Bytable IBytable.ToBytableArray(params object[] parameters)
             {
-                throw new NotImplementedException();
+                return ToByte(null);
             }
         }
 
