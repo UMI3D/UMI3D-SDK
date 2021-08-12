@@ -19,24 +19,27 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor.Compilation;
-using UnityEngine;
 
-public class AssemblyUtils : MonoBehaviour
+namespace inetum.unityUtils.editor
 {
-    public static void ExportAssembliesTo(IEnumerable<string> assemblyNames, string ouputDirectory)
+
+    public class AssemblyUtils
     {
-        Assembly[] playerAssemblies = CompilationPipeline.GetAssemblies(AssembliesType.Player);
-        foreach (var assembly in playerAssemblies)
+        public static void ExportAssembliesTo(IEnumerable<string> assemblyNames, string ouputDirectory)
         {
-            if (assemblyNames.Contains(assembly.name))
+            Assembly[] playerAssemblies = CompilationPipeline.GetAssemblies(AssembliesType.Player);
+            foreach (var assembly in playerAssemblies)
             {
-                if (File.Exists(assembly.outputPath))
+                if (assemblyNames.Contains(assembly.name))
                 {
-                    string filename = Path.GetFileName(assembly.outputPath);
-                    string outputfile = Path.Combine(ouputDirectory, filename);
-                    if (File.Exists(outputfile))
-                        File.Delete(outputfile);
-                    File.Copy(assembly.outputPath, outputfile);
+                    if (File.Exists(assembly.outputPath))
+                    {
+                        string filename = System.IO.Path.GetFileName(assembly.outputPath);
+                        string outputfile = Path.Combine(ouputDirectory, filename);
+                        if (File.Exists(outputfile))
+                            File.Delete(outputfile);
+                        File.Copy(assembly.outputPath, outputfile);
+                    }
                 }
             }
         }
