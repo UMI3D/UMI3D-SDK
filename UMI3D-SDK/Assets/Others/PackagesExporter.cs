@@ -20,6 +20,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Linq;
+using inetum.unityUtils.editor;
 #if UNITY_EDITOR
 public class PackagesExporter 
 {
