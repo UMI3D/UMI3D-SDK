@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -328,6 +329,31 @@ namespace umi3d.cdk.collaboration
 
         #endregion
 
+        #region upload
+        /// <summary>
+        /// Send request using POST method to send file to the server.
+        /// </summary>
+        /// <param name="callback">Action to be call when the request succeed.</param>
+        /// <param name="onError">Action to be call when the request fail.</param>
+        /// <param name="token">Authorization token, given by the server.</param>
+        /// <param name="fileName">Name of the uploaded file.</param>
+        /// <param name="bytes">the file in bytes.</param>
+        /// <param name="shouldTryAgain"></param>
+        public void SendPostFile(Action callback, Action<string> onError, string token, string fileName, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                if (callback != null)
+                    callback.Invoke();
+            };
+            string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.uploadFile, ":param", token);
+            //Header
+            List<(string, string)> headers = new List<(string, string)>();
+            headers.Add((UMI3DNetworkingKeys.contentHeader, fileName));
+            client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers));
+        }
+        #endregion
+
         #region utils
         /// <summary>
         /// Ienumerator to send GET request.
@@ -336,16 +362,23 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        IEnumerator _GetRequest(string url, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, int tryCount = 0)
+        IEnumerator _GetRequest(string url, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             UnityWebRequest www = UnityWebRequest.Get(url);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
+            if (headers != null)
+            {
+                foreach ((string, string) item in headers)
+                {
+                    www.SetRequestHeader(item.Item1, item.Item2);
+                }
+            }
             DateTime date = DateTime.UtcNow;
             yield return www.SendWebRequest();
 
             if (www.isNetworkError || www.isHttpError)
             {
-                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_GetRequest(url, callback, onError, ShouldTryAgain, UseCredential, tryCount + 1)), tryCount, date, ShouldTryAgain)))
+                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_GetRequest(url, callback, onError, ShouldTryAgain, UseCredential, headers, tryCount + 1)), tryCount, date, ShouldTryAgain)))
                 {
                     if (onError != null)
                     {
@@ -370,15 +403,22 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        IEnumerator _PostRequest(string url, byte[] bytes, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, int tryCount = 0)
+        IEnumerator _PostRequest(string url, byte[] bytes, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             UnityWebRequest www = CreatePostRequest(url, bytes, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
+            if (headers != null)
+            {
+                foreach ((string, string) item in headers)
+                {
+                    www.SetRequestHeader(item.Item1, item.Item2);
+                }
+            }
             DateTime date = DateTime.UtcNow;
             yield return www.SendWebRequest();
             if (www.isNetworkError || www.isHttpError)
             {
-                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_PostRequest(url, bytes, callback, onError, ShouldTryAgain, UseCredential, tryCount + 1)), tryCount, date, ShouldTryAgain)))
+                if (!client.TryAgainOnHttpFail(new RequestFailedArgument(www, () => client.StartCoroutine(_PostRequest(url, bytes, callback, onError, ShouldTryAgain, UseCredential, headers, tryCount + 1)), tryCount, date, ShouldTryAgain)))
                 {
                     if (onError != null)
                     {

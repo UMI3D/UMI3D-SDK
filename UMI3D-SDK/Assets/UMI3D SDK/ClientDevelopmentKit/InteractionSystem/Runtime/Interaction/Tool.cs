@@ -154,6 +154,28 @@ namespace umi3d.cdk.interaction
                     );
                     result = en;
                     break;
+                case UploadFileParameterDto uploadParameterDto:
+                    Debug.Log("new UploadFileRequestDto 1");
+
+                    var u = new UploadInputMenuItem() { dto = uploadParameterDto, authorizedExtensions = uploadParameterDto.authorizedExtensions };
+                    u.Subscribe((x) =>
+                    {
+                        uploadParameterDto.value = x;
+                        Debug.Log("new UploadFileRequestDto 1");
+
+                        var pararmeterDto = new UploadFileRequestDto()
+                        {
+                            toolId = dto.id,
+                            id = uploadParameterDto.id,
+                            parameter = uploadParameterDto,
+                            hoveredObjectId = 0,
+                            fileId = FileUploader.AddFileToUpload(x)
+                        };
+                        UMI3DClientServer.SendData(pararmeterDto, true);
+                    }
+                    );
+                    result = u;
+                    break;
                 case StringParameterDto stringParameterDto:
                     var s = new TextInputMenuItem() { dto = stringParameterDto };
                     s.Subscribe((x) =>

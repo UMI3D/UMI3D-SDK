@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration
             this.security = security;
             this.type = type;
             //compute regex
-            string pathFormat = new Regex("(:([a-z]+))\\b").Replace(path, "(?<$2>[a-z0-9]+)");
+            string pathFormat = new Regex("(:([a-zA-Z0-9_\\-]+))\\b").Replace(path, "(?<$2>[a-zA-Z0-9_\\-=]+)");
             this.regex = new Regex(pathFormat);
         }
 

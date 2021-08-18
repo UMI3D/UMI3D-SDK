@@ -23,7 +23,8 @@ namespace umi3d.common
         public const uint DeleteEntity = 3;
         public const uint NavigationRequest = 4;
         public const uint TeleportationRequest = 5;
-        public const uint GetLocalInfoRequest = 6;
+        public const uint UploadFileRequest = 6;
+        public const uint GetLocalInfoRequest = 7;
 
         public const uint SetEntityProperty = 101;
         public const uint SetEntityDictionnaryProperty = 103;
@@ -71,7 +72,7 @@ namespace umi3d.common
         public const uint Float = 4;
         public const uint Int = 5;
         public const uint String = 6;
-        public const uint Enum = 7;
-
+        public const uint StringUploadFile = 7;
+        public const uint Enum = 8;
     }
 }

@@ -18,19 +18,22 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
-    public class GetLocalInfoRequest : DispatchableRequest
+    public class UploadFileRequest : DispatchableRequest
     {
-        public string key;
+        public string token;
+        public string fileId;
 
-        public GetLocalInfoRequest(string key, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
+        public UploadFileRequest( bool reliable, string fileId, HashSet<UMI3DUser> users = null) : base(reliable, users)
         {
-            this.key = key;
+            this.token = System.Guid.NewGuid().ToString();//.Replace('-','0');
+            UnityEngine.Debug.LogWarning("token : " + this.token);
+            this.fileId = fileId;
         }
 
         protected virtual Bytable ToBytable()
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.GetLocalInfoRequest)
-                + UMI3DNetworkingHelper.Write(key);
+            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.UploadFileRequest)
+                + UMI3DNetworkingHelper.Write(token) + UMI3DNetworkingHelper.Write(fileId);
         }
 
         public override byte[] ToBytes()
@@ -44,8 +47,8 @@ namespace umi3d.edk
             WriteProperties(dto);
             return dto.ToBson();
         }
-
-        protected virtual GetLocalInfoRequestDto CreateDto() { return new GetLocalInfoRequestDto(); }
-        protected virtual void WriteProperties(GetLocalInfoRequestDto dto) { dto.key = key; }
+        
+        protected virtual RequestHttpUploadDto CreateDto() { return new RequestHttpUploadDto(); }
+        protected virtual void WriteProperties(RequestHttpUploadDto dto) { dto.uploadToken = token; dto.fileId = fileId; }
     }
 }
