@@ -46,6 +46,7 @@ namespace umi3d.common.collaboration
                     bool active;
                     uint boneType;
                     ulong objectId;
+                    bool syncPosition;
                     SerializableVector3 offsetPosition;
                     SerializableVector4 offsetRotation;
                     if (UMI3DNetworkingHelper.TryRead(container, out bindingId)
@@ -54,7 +55,8 @@ namespace umi3d.common.collaboration
                         && UMI3DNetworkingHelper.TryRead(container, out boneType)
                         && UMI3DNetworkingHelper.TryRead(container, out objectId)
                         && UMI3DNetworkingHelper.TryRead(container, out offsetPosition)
-                        && UMI3DNetworkingHelper.TryRead(container, out offsetRotation))
+                        && UMI3DNetworkingHelper.TryRead(container, out offsetRotation)
+                        && UMI3DNetworkingHelper.TryRead(container, out syncPosition))
                     {
                         var bone = new BoneBindingDto()
                         {
@@ -64,7 +66,8 @@ namespace umi3d.common.collaboration
                             boneType = boneType,
                             objectId = objectId,
                             offsetPosition = offsetPosition,
-                            offsetRotation = offsetRotation
+                            offsetRotation = offsetRotation,
+                            syncPosition = syncPosition
                         };
                         result = (T)Convert.ChangeType(bone, typeof(T));
                         readable = true;
