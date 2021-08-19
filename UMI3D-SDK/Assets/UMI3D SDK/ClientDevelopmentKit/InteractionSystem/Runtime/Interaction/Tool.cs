@@ -155,8 +155,6 @@ namespace umi3d.cdk.interaction
                     result = en;
                     break;
                 case UploadFileParameterDto uploadParameterDto:
-                    Debug.Log("new UploadFileRequestDto 1");
-
                     var u = new UploadInputMenuItem() { dto = uploadParameterDto, authorizedExtensions = uploadParameterDto.authorizedExtensions };
                     u.Subscribe((x) =>
                     {
