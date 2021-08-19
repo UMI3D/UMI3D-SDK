@@ -83,15 +83,6 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public static string GetFileName(string fileId)
         {
-            /*Debug.Log("file to upload count : "+filesToUpload.Count);
-            if(filesToUpload.Count>0)
-            {
-                foreach (var item in filesToUpload)
-                {
-                    Debug.Log("file to upload : " + item.Key + "  " + item.Value);
-
-                }
-            }*/
             if (!filesToUpload.ContainsKey(fileId))
             {
                 Debug.LogWarning("Server asked client to upload a file without its request, or the client already upload the file");
@@ -99,7 +90,6 @@ namespace umi3d.cdk.interaction
                 return null;
             }
             return System.IO.Path.GetFileName( filesToUpload[fileId]);
-
         }
 
         /// <summary>
