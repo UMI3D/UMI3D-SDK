@@ -281,7 +281,6 @@ namespace umi3d.cdk.collaboration
                     case RequestHttpUploadDto uploadFileRequest:
                         string token = uploadFileRequest.uploadToken;
                         string fileId = uploadFileRequest.fileId;
-                        Debug.Log("fileId : " + fileId);
 
                         string fileName = FileUploader.GetFileName(fileId);
                         byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
@@ -352,8 +351,6 @@ namespace umi3d.cdk.collaboration
                     case UMI3DOperationKeys.UploadFileRequest:
                         string token = UMI3DNetworkingHelper.Read<string>(container);
                         string fileId = UMI3DNetworkingHelper.Read<string>(container);
-                        Debug.Log("fileId : " + fileId);
-                        Debug.Log("token : " + token);
                         string name = FileUploader.GetFileName(fileId);
                         byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
                         if (bytesToUpload != null)
