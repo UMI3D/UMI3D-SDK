@@ -213,6 +213,13 @@ namespace umi3d.cdk.interaction
                     Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
                     interaction = Bool;
                     break;
+                case UMI3DInteractionKeys.UploadParameter:
+                    var Upload = new UploadFileParameterDto();
+                    ReadAbstractInteractionDto(Upload, container);
+                    Upload.value = UMI3DNetworkingHelper.Read<string>(container);
+                    Upload.authorizedExtensions = UMI3DNetworkingHelper.Read<List<string>>(container);
+                    interaction = Upload;
+                    break;
                 case UMI3DInteractionKeys.StringParameter:
                     var String = new StringParameterDto();
                     ReadAbstractInteractionDto(String, container);

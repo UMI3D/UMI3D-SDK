@@ -151,6 +151,11 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.String);
                     bytable += UMI3DNetworkingHelper.Write(param.value);
                     break;
+                case UploadFileParameterDto param:
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.StringUploadFile);
+                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable += UMI3DNetworkingHelper.Write(param.authorizedExtensions);
+                    break;
                 case IntegerRangeParameterDto param:
                     bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.IntRange);
                     bytable += UMI3DNetworkingHelper.Write(param.value);

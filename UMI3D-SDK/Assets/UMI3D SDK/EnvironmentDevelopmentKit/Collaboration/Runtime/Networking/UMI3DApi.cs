@@ -24,6 +24,7 @@ using System.Text;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
+using umi3d.edk.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
@@ -478,6 +479,51 @@ namespace umi3d.edk.collaboration
             e.Response.WriteContent(UMI3DCollaborationServer.Collaboration.GetPlayerCount().ToBson());
         }
 
+        #endregion
+
+        #region UploadFile
+
+        /// <summary>
+        /// POST "uploadFile/:param"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        /// <param name="uriparam"></param>
+        [HttpPost(UMI3DNetworkingKeys.uploadFile, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void PostUploadFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            if (!uriparam.ContainsKey("param"))
+            {
+                Debug.LogWarning("unvalide upload request, wrong networking key");
+                return;
+            }
+            string token = uriparam["param"];
+            if (!UploadFileParameter.uploadTokens.ContainsKey(token))
+            {
+                Debug.LogWarning("unvalide token (upload request)");
+                return;
+            }
+            if (!e.Request.Headers.Contains(UMI3DNetworkingKeys.contentHeader))
+            {
+                Debug.LogWarning("unvalide header (upload request)");
+                return;
+            }
+            string fileName = e.Request.Headers[UMI3DNetworkingKeys.contentHeader];
+            UploadFileParameter uploadParam = UploadFileParameter.uploadTokens[token];
+            if (uploadParam.authorizedExtensions.Contains(System.IO.Path.GetExtension(fileName)) || uploadParam.authorizedExtensions.Count == 0)
+            {
+                UploadFileParameter.RemoveToken(token);
+                uploadParam.onReceive.Invoke(token, fileName, ReadObject(e.Request));
+
+            }
+            else
+            {
+                Debug.LogWarning("unauthorized extension : " + fileName + " (upload request)");
+                return;
+            }
+
+        }
         #endregion
 
         #region LocalData

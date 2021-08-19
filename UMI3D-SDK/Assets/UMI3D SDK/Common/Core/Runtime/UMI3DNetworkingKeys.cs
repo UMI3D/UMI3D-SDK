@@ -24,6 +24,7 @@ namespace umi3d.common
         public const string status_update = "/me/status_update";
         public const string logout = "/logout";
         public const string localData = "/LocalData/key/:param";
+        public const string uploadFile = "/uploadFile/:param";
 
         //MEDIA
         public const string root = "/";
@@ -57,6 +58,7 @@ namespace umi3d.common
         public const string websocketProtocol = "echo-protocol";//"access_token";
         public const string Authorization = "AUTHORIZATION";
         public const string bearer = "BEARER";
+        public const string contentHeader = "FileName";
 
     }
 }
