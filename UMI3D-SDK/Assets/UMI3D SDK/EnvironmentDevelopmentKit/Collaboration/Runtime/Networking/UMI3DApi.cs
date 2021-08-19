@@ -85,11 +85,11 @@ namespace umi3d.edk.collaboration
         public void UpdateIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UserConnectionDto dto = ReadDto(e.Request) as UserConnectionDto;
+            UserConnectionAnswerDto dto = ReadDto(e.Request) as UserConnectionAnswerDto;
             UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, dto));
         }
 
-        IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionDto dto)
+        IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
             user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());

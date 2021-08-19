@@ -14,23 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.interaction
+using System;
+using umi3d.common.interaction;
+
+namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Dto to request the setting of one parameter.
+    /// Abstract class to describe an operation
     /// </summary>
-    public class ParameterSettingRequestDto : InteractionRequestDto
+    [Serializable]
+    public class UserConnectionAnswerDto : UserDto
     {
-        /// <summary>
-        /// The parameter with the requested value.
-        /// </summary>
-        public object parameter;
 
-        protected override uint GetOperationId() { return UMI3DOperationKeys.ParameterSettingRequest; }
+        public FormAnswerDto parameters;
+        public bool librariesUpdated = false;
 
-        public override Bytable ToBytableArray(params object[] parameters)
+        public UserConnectionAnswerDto() : base()
         {
-            return base.ToBytableArray(parameters) + UMI3DNetworkingHelper.Write(parameter);
+        }
+
+        public UserConnectionAnswerDto(UserDto user) : base(user)
+        {
+        }
+
+        public UserConnectionAnswerDto(UserConnectionDto user) : base(user)
+        {
+            librariesUpdated = user.librariesUpdated;
         }
     }
 }

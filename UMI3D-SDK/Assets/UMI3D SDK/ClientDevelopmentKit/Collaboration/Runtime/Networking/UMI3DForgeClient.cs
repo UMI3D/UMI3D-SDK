@@ -30,7 +30,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DForgeClient : ForgeSocketBase
     {
-        uint Me { get { return UMI3DCollaborationClientServer.UserDto.networkId; } }
+        uint Me { get { return UMI3DCollaborationClientServer.UserDto.dto.networkId; } }
         bool useDto { get { return UMI3DCollaborationClientServer.useDto; } }
 
         UMI3DUser GetUserByNetWorkId(uint nid)

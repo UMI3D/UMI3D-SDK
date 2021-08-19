@@ -233,7 +233,7 @@ namespace umi3d.cdk.interaction
                     LocalInfo.serverName = UMI3DNetworkingHelper.Read<string>(container);
                     LocalInfo.reason = UMI3DNetworkingHelper.Read<string>(container);
                     LocalInfo.key = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.value = (UMI3DNetworkingHelper.Read<bool>(container), UMI3DNetworkingHelper.Read<bool>(container));
+                    LocalInfo.value = new LocalInfoRequestParameterValue(UMI3DNetworkingHelper.Read<bool>(container), UMI3DNetworkingHelper.Read<bool>(container));
                     interaction = LocalInfo;
                     break;
                 case UMI3DInteractionKeys.StringEnumParameter:

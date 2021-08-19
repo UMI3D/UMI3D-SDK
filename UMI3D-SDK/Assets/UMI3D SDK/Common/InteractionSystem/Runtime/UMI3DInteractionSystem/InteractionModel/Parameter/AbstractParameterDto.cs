@@ -21,6 +21,11 @@ namespace umi3d.common.interaction
     {
         public V value;
 
+        public override object GetValue()
+        {
+            return value;
+        }
+
         public AbstractParameterDto() : base() { }
     }
 
@@ -28,6 +33,9 @@ namespace umi3d.common.interaction
     /// Parameter dto.
     /// </summary>
     [System.Serializable]
-    public abstract class AbstractParameterDto : AbstractInteractionDto { }
+    public abstract class AbstractParameterDto : AbstractInteractionDto {
+        abstract public object GetValue();
+    
+    }
 
 }

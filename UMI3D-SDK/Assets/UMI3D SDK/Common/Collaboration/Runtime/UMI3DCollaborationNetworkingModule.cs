@@ -129,6 +129,10 @@ namespace umi3d.common.collaboration
         {
             switch (value)
             {
+                case LocalInfoRequestParameterValue localInfovalue:
+                    bytable = UMI3DNetworkingHelper.Write(localInfovalue.read);
+                    bytable += UMI3DNetworkingHelper.Write(localInfovalue.write);
+                    break;
                 case UserCameraPropertiesDto camera:
                     bytable = UMI3DNetworkingHelper.Write(camera.scale);
                     bytable += UMI3DNetworkingHelper.Write(camera.projectionMatrix);

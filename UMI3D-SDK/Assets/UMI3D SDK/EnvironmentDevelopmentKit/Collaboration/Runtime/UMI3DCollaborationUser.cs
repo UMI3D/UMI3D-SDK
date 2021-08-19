@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            UserConnectionDto ucDto = new UserConnectionDto(ToUserDto());
+            UserConnectionAnswerDto ucDto = new UserConnectionAnswerDto(ToUserDto());
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
             RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));

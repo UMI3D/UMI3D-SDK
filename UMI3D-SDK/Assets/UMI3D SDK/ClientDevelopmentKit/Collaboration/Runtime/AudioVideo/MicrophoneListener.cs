@@ -197,7 +197,7 @@ namespace umi3d.cdk.collaboration
                     var encodedLength = encoder.Encode(frameBuffer, outputBuffer);
                     if (UMI3DCollaborationClientServer.Exists
                         && UMI3DCollaborationClientServer.Instance?.ForgeClient != null
-                        && UMI3DCollaborationClientServer.UserDto.status == StatusType.ACTIVE)
+                        && UMI3DCollaborationClientServer.UserDto.dto.status == StatusType.ACTIVE)
                     {
                         UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
                     }

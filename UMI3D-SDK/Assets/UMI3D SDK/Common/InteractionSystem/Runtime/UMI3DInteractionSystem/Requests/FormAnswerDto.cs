@@ -14,18 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common.interaction
 {
-    public class FormAnswer : InteractionRequestDto
+    public class FormAnswerDto : InteractionRequestDto
     {
-        public FormDto form;
+        public List<ParameterSettingRequestDto> answers;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.FormAnswer; }
 
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
-                + UMI3DNetworkingHelper.Write(form);
+                + UMI3DNetworkingHelper.Write(answers);
         }
     }
 }

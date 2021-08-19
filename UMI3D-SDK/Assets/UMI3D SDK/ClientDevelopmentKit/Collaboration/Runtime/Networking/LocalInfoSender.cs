@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
 {
     public class LocalInfoSender
     {
-        private static Dictionary<string, (bool, bool)> autorizations = new Dictionary<string, (bool, bool)>();
+        private static Dictionary<string, LocalInfoRequestParameterValue> autorizations = new Dictionary<string, LocalInfoRequestParameterValue>();
 
         /// <summary>
         /// Read local info in order to send to server.
@@ -36,7 +36,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public static byte[] GetLocalInfo(string key)
         {
-            if (!(autorizations.ContainsKey(key) && autorizations[key].Item1))
+            if (!(autorizations.ContainsKey(key) && autorizations[key].read))
             {
                 Debug.LogWarning("Unautorized to read this local data : " + key);
                 return null;
@@ -63,7 +63,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="bytesToWrite"></param>
         public static void SetLocalInfo(string key, byte[] bytesToWrite)
         {
-            if (!(autorizations.ContainsKey(key) && autorizations[key].Item2))
+            if (!(autorizations.ContainsKey(key) && autorizations[key].write))
             {
                 Debug.LogWarning("Unautorized to write this local data : " + key);
                 return;
@@ -99,7 +99,7 @@ namespace umi3d.cdk.collaboration
                         autorizations.Add(key, (param as LocalInfoRequestParameterDto).value);
                     }
 
-                    if (sendLocalInfo && autorizations[key].Item1)
+                    if (sendLocalInfo && autorizations[key].read)
                     {
                         var bytes = GetLocalInfo(key);
                         if (bytes != null)

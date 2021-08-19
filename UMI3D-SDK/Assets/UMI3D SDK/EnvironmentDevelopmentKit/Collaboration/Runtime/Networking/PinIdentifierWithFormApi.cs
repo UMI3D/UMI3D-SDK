@@ -32,7 +32,7 @@ namespace umi3d.edk.collaboration
             return form.ToDto(user) as FormDto;
         }
 
-        public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
+        public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto identity)
         {
             return base.UpdateIdentity(user, identity);
         }

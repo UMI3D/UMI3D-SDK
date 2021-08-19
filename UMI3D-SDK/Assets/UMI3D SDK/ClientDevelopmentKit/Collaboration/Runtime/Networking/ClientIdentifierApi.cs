@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -37,9 +38,16 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>
-        public virtual void GetParameterDtos(FormDto parameter, Action<FormDto> callback)
+        public virtual void GetParameterDtos(FormDto parameter, Action<FormAnswerDto> callback)
         {
-            callback.Invoke(parameter);
+            callback.Invoke(new FormAnswerDto()
+            {
+                id = parameter.id,
+                toolId = 0,
+                boneType = 0,
+                hoveredObjectId = 0,
+                answers = parameter.fields.Select(a => new ParameterSettingRequestDto() { toolId = 0, id = a.id, boneType = 0, hoveredObjectId = 0, parameter = a.GetValue() }).ToList()
+            });
         }
 
         /// <summary>

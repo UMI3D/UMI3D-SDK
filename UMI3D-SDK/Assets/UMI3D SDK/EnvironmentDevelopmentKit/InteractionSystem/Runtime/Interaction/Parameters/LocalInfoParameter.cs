@@ -23,7 +23,7 @@ namespace umi3d.edk.interaction
 {
     public class LocalInfoParameter : AbstractParameter
     {
-        public static Dictionary<(UMI3DUser, string), (bool, bool)> userResponses { get; private set; } = new Dictionary<(UMI3DUser, string), (bool, bool)>();
+        public static Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue> userResponses { get; private set; } = new Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue>();
 
         /// <summary>
         /// Current input value for reading authorization.
@@ -80,7 +80,7 @@ namespace umi3d.edk.interaction
             LIRPdto.serverName = serverName;
             LIRPdto.reason = reason;
             LIRPdto.key = key;
-            LIRPdto.value = (readValue, writeValue);
+            LIRPdto.value = new LocalInfoRequestParameterValue(readValue, writeValue);
         }
 
         public override Bytable ToByte(UMI3DUser user)
@@ -100,11 +100,11 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case ParameterSettingRequestDto settingRequestDto:
-                    if (settingRequestDto.parameter is LocalInfoRequestParameterDto parameter)
+                    if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter )
                     {
                         ChageUserLocalInfo(user, parameter); 
                         
-                        Debug.Log("receive new authorisaation : " + key + "   " + parameter.value);
+                        Debug.Log($"receive new authorisaation : {key} {parameter}");
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
@@ -120,15 +120,15 @@ namespace umi3d.edk.interaction
             //change user access authorization isn't supported after connexion.
         }
 
-        public static void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterDto parameter)
+        public void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterValue value)
         {
-            if (userResponses.ContainsKey((user, parameter.key)))
+            if (userResponses.ContainsKey((user, key)))
             {
-                userResponses[(user, parameter.key)] = parameter.value;
+                userResponses[(user, key)] = value;
             }
             else
             {
-                userResponses.Add((user, parameter.key), parameter.value);
+                userResponses.Add((user, key), value);
             }
         }
 

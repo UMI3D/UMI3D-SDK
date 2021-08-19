@@ -21,6 +21,7 @@ using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -40,7 +41,28 @@ namespace umi3d.cdk.collaboration
         public UMI3DForgeClient ForgeClient { get; private set; }
 
         static public IdentityDto Identity = new IdentityDto();
-        static public UserConnectionDto UserDto = new UserConnectionDto();
+
+        public class UserInfo
+        {
+            public FormDto formdto;
+            public UserConnectionAnswerDto dto;
+
+            public UserInfo()
+            {
+                formdto = new FormDto();
+                dto = new UserConnectionAnswerDto();
+            }
+
+            public void Set(UserConnectionDto dto)
+            {
+                var param = this.dto.parameters;
+                this.dto = new UserConnectionAnswerDto(dto);
+                this.dto.parameters = param;
+                this.formdto = dto.parameters;
+            }
+        }
+
+        static public UserInfo UserDto = new UserInfo();
 
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
@@ -211,7 +233,7 @@ namespace umi3d.cdk.collaboration
                     if (Identity.userId == 0)
                         Instance.HttpClient.SendGetIdentity((user) =>
                         {
-                            UserDto = user;
+                            UserDto.Set(user);
                             Identity.userId = user.id;
                             Instance.Join();
 
@@ -285,7 +307,7 @@ namespace umi3d.cdk.collaboration
                             if (Identity.userId == 0)
                                 Instance.HttpClient.SendGetIdentity((user) =>
                                 {
-                                    UserDto = user;
+                                    UserDto.Set(user);
                                     Identity.userId = user.id;
                                     Instance.Join();
 
@@ -326,12 +348,12 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         IEnumerator UpdateIdentity(UserConnectionDto user)
         {
-            UserDto = user;
+            UserDto.Set(user);
             Identity.userId = user.id;
             bool Ok = true;
-            bool librariesUpdated = UserDto.librariesUpdated;
+            bool librariesUpdated = UserDto.dto.librariesUpdated;
 
-            if (!UserDto.librariesUpdated)
+            if (!UserDto.dto.librariesUpdated)
             {
                 HttpClient.SendGetLibraries(
                     (LibrariesDto) =>
@@ -359,12 +381,12 @@ namespace umi3d.cdk.collaboration
                     );
 
                 yield return new WaitUntil(() => { return librariesUpdated || !Ok; });
-                UserDto.librariesUpdated = librariesUpdated;
+                UserDto.dto.librariesUpdated = librariesUpdated;
             }
             if (Ok)
-                Instance.Identifier.GetParameterDtos(user.parameters, (param) =>
+                Instance.Identifier.GetParameterDtos(UserDto.formdto, (param) =>
                 {
-                    user.parameters = param;
+                    UserDto.dto.parameters = param;
                     Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { Debug.Log("error on post id :" + error); });
                 });
             else
@@ -380,7 +402,7 @@ namespace umi3d.cdk.collaboration
                     Action setStatus = () =>
                     {
                         UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
-                        UserDto.status = StatusType.ACTIVE;
+                        UserDto.dto.status = StatusType.ACTIVE;
                         HttpClient.SendPostUpdateIdentity(null, null);
                     };
                     StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
