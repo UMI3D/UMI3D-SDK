@@ -50,16 +50,6 @@ namespace umi3d.edk.interaction
         /// </summary>
         public string key = "";
 
-        /// <summary>
-        /// Event raised when value changes to true.
-        /// </summary>
-        public InteractionEvent onChangeTrue = new InteractionEvent();
-
-        /// <summary>
-        /// Event raised when value changes to false.
-        /// </summary>
-        public InteractionEvent onChangeFalse = new InteractionEvent();
-
         private string appName;
 
         /// <summary>
@@ -127,6 +117,7 @@ namespace umi3d.edk.interaction
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             throw new System.NotImplementedException();
+            //change user access authorization isn't supported after connexion.
         }
 
         public static void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterDto parameter)

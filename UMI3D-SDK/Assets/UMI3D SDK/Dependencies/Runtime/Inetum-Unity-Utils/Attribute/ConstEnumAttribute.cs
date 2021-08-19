@@ -32,16 +32,6 @@ namespace inetum.unityUtils
         public Action<object, object> writer;
         public Func<object, object> reader;
 
-        //public ConstEnumAttribute(Type type)
-        //{
-
-
-        //    this.type = type;
-        //    values = options = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-        //                    .Where(fi => fi.IsLiteral && !fi.IsInitOnly)
-        //                    .Select(fi => fi.GetValue(null) as string).ToArray();
-        //}
-
         public ConstEnumAttribute(Type type, Type valueType)
         {
             switch (true)

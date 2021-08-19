@@ -31,10 +31,9 @@ namespace umi3d.common
 
         public const byte LocalInfoParameter = 22;
         public const byte StringEnumParameter = 23;
-        public const byte FloatRangeParameter = 24;
+        public const byte UploadParameter = 24;
 
-
-        public const byte RangeParameter = 24;
+        public const byte FloatRangeParameter = 25;
 
     }
 }
