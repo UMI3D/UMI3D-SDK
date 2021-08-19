@@ -79,7 +79,7 @@ namespace umi3d.cdk
                                     embd.AddBinding(add.index, (property.value as BoneBindingDto));
                                     break;
                                 case SetEntityListRemovePropertyDto rem:
-                                    embd.RemoveBinding(rem.index, (property.value as BoneBindingDto));
+                                    embd.RemoveBinding(rem.index);
                                     break;
                                 case SetEntityListPropertyDto set:
                                     embd.UpdateBinding(set.index, (property.value as BoneBindingDto));
@@ -133,8 +133,7 @@ namespace umi3d.cdk
                                     break;
                                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                                     index = UMI3DNetworkingHelper.Read<int>(container);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(container);
-                                    embd.RemoveBinding(index, bone);
+                                    embd.RemoveBinding(index);
                                     break;
                                 case UMI3DOperationKeys.SetEntityListProperty:
                                     index = UMI3DNetworkingHelper.Read<int>(container);

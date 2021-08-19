@@ -175,8 +175,9 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="index">the index in the list of bindings</param>
         /// <param name="dto"></param>
-        public void RemoveBinding(int index, BoneBindingDto dto)
+        public void RemoveBinding(int index)
         {
+            BoneBindingDto dto = userBindings[index];
             userBindings.RemoveAt(index);
             ResetObject(dto);
         }

@@ -51,7 +51,8 @@ namespace umi3d.edk.userCapture
                     + UMI3DNetworkingHelper.Write(this.node?.Id() ?? 0)
                     + UMI3DNetworkingHelper.Write(rigName)
                     + UMI3DNetworkingHelper.Write(offsetPosition)
-                    + UMI3DNetworkingHelper.Write(offsetRotation);
+                    + UMI3DNetworkingHelper.Write(offsetRotation)
+                    + UMI3DNetworkingHelper.Write(syncPosition);
         }
 
         Bytable IBytable.ToBytableArray(params object[] parameters)
