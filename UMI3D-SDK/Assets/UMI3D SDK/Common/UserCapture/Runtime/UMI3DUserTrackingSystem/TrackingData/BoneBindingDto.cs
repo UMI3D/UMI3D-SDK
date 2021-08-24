@@ -72,7 +72,8 @@ namespace umi3d.common.userCapture
                 + UMI3DNetworkingHelper.Write(boneType)
                 + UMI3DNetworkingHelper.Write(objectId)
                 + UMI3DNetworkingHelper.Write(offsetPosition)
-                + UMI3DNetworkingHelper.Write(offsetRotation);
+                + UMI3DNetworkingHelper.Write(offsetRotation)
+                + UMI3DNetworkingHelper.Write(syncPosition);
         }
     }
 }
