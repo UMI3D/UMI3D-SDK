@@ -226,5 +226,14 @@ namespace umi3d.common
         //List of overided materials
         public const uint OverideMaterialId = 14401;
         #endregion
+
+        #region Volumes
+        public const uint PointPosition = 15001;
+        public const uint FacePointsIds = 15002;
+        public const uint VolumeSlices = 15003;
+        public const uint VolumeSlicePoints = 15004;
+        public const uint VolumeSliceEdges = 15005;
+        public const uint VolumeSliceFaces = 15006;
+        #endregion
     }
 }
