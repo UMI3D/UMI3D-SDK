@@ -159,12 +159,6 @@ public class LaucherOnMasterServer
                         Debug.Log("Name: " + server.Name);
                         Debug.Log("Address: " + server.Address);
                         Debug.Log("Port: " + server.Port);
-                        /*    Debug.Log("Comment: " + server.Comment);
-                            Debug.Log("Type: " + server.Type);
-                            Debug.Log("Mode: " + server.Mode);
-                            Debug.Log("Players: " + server.PlayerCount);
-                            Debug.Log("Max Players: " + server.MaxPlayers);
-                            Debug.Log("Protocol: " + server.Protocol);*/
 
                         // Update UI or something with the above data
                         UICallback.Invoke(server);
@@ -173,11 +167,11 @@ public class LaucherOnMasterServer
                 }
             }
         }
-        finally
+        catch(Exception e)
         {
+            Debug.Log(e);
             if (client != null)
             {
-                // If we succeed or fail the client needs to disconnect from the Master Server
                 client.Disconnect(true);
                 client = null;
             }
@@ -198,11 +192,11 @@ public class LaucherOnMasterServer
                 UICallback.Invoke(data["name"], data["icon"]);
             }
         }
-        finally
+        catch (Exception e)
         {
+            Debug.Log(e);
             if (client != null)
             {
-                // If we succeed or fail the client needs to disconnect from the Master Server
                 client.Disconnect(true);
                 client = null;
             }
