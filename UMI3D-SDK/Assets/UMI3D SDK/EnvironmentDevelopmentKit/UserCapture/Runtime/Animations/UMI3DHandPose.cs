@@ -130,7 +130,16 @@ namespace umi3d.edk.userCapture
 
         public Bytable ToBytes(UMI3DUser user)
         {
-            throw new NotImplementedException();
+            return UMI3DNetworkingHelper.Write(PoseId)
+                + UMI3DNetworkingHelper.Write(PoseName)
+                + UMI3DNetworkingHelper.Write(IsActive)
+                + UMI3DNetworkingHelper.Write(HoverAnimation)
+                + UMI3DNetworkingHelper.Write(isRelativeToNode)
+                + UMI3DNetworkingHelper.Write(RightHandPosition)
+                + UMI3DNetworkingHelper.Write(RightHandEulerRotation)
+                + UMI3DNetworkingHelper.Write(LeftHandPosition)
+                + UMI3DNetworkingHelper.Write(LeftHandEulerRotation)
+                + UMI3DNetworkingHelper.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation));
         }
 
         public UMI3DHandPoseDto ToDto()
@@ -145,6 +154,8 @@ namespace umi3d.edk.userCapture
                 isRelativeToNode = isRelativeToNode,
                 RightHandPosition = RightHandPosition,
                 RightHandEulerRotation = RightHandEulerRotation,
+                LeftHandPosition = LeftHandPosition,
+                LeftHandEulerRotation = LeftHandEulerRotation,
                 PhalanxRotations = PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation)
             };
         }

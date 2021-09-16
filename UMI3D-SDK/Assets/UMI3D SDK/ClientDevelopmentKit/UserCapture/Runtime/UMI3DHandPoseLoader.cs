@@ -26,13 +26,13 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for UMI3DHandPose
     /// </summary>
-    public class UMI3DHandPoseLoader : UMI3DNodeLoader
+    public class UMI3DHandPoseLoader
     {
         /// <summary>
         /// Load a UMI3DHandPose
         /// </summary>
         /// <param name="dto"></param>
-        public virtual void Load(UMI3DHandPoseDto dto)
+        public static void Load(UMI3DHandPoseDto dto)
         {
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null);
         }
@@ -43,7 +43,7 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var dto = entity.dto as UMI3DHandPoseDto;
             if (dto == null) return false;
@@ -51,6 +51,42 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.ActiveHandPose:
                     dto.IsActive = (bool)property.value;
+                    UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        {
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.ActiveHandPose:
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    break;
+
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">entity to be updated.</param>
+        /// <param name="property">property containing the new value.</param>
+        /// <returns></returns>
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        {
+            var dto = entity.dto as UMI3DHandPoseDto;
+            if (dto == null) return false;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.ActiveHandPose:
+                    dto.IsActive = UMI3DNetworkingHelper.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
                     break;
                 default:

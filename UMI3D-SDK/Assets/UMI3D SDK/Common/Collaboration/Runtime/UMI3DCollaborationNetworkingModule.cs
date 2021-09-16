@@ -78,6 +78,47 @@ namespace umi3d.common.collaboration
                         readable = false;
                     }
                     return true;
+                case true when typeof(T) == typeof(UMI3DHandPoseDto):
+                    ulong id;
+                    string Name;
+                    bool IsActive;
+                    bool HoverPose;
+                    bool isRelativeToNode;
+                    SerializableVector3 RightHandPosition;
+                    SerializableVector3 RightHandEulerRotation;
+                    SerializableVector3 LeftHandPosition;
+                    SerializableVector3 LeftHandEulerRotation;
+                    if (UMI3DNetworkingHelper.TryRead(container, out id)
+                        && UMI3DNetworkingHelper.TryRead(container, out Name)
+                        && UMI3DNetworkingHelper.TryRead(container, out IsActive)
+                        && UMI3DNetworkingHelper.TryRead(container, out HoverPose)
+                        && UMI3DNetworkingHelper.TryRead(container, out isRelativeToNode)
+                        && UMI3DNetworkingHelper.TryRead(container, out RightHandPosition)
+                        && UMI3DNetworkingHelper.TryRead(container, out RightHandEulerRotation)
+                        && UMI3DNetworkingHelper.TryRead(container, out LeftHandPosition)
+                        && UMI3DNetworkingHelper.TryRead(container, out LeftHandEulerRotation))
+                    {
+                        var HandPose = new UMI3DHandPoseDto()
+                        {
+                            id = id,
+                            Name = Name,
+                            IsActive = IsActive,
+                            HoverPose = HoverPose,
+                            isRelativeToNode = isRelativeToNode,
+                            RightHandPosition = RightHandPosition,
+                            RightHandEulerRotation = RightHandEulerRotation,
+                            LeftHandPosition = LeftHandPosition,
+                            LeftHandEulerRotation = LeftHandEulerRotation
+                        };
+                        result = (T)Convert.ChangeType(HandPose, typeof(T));
+                        readable = true;
+                    }
+                    else
+                    {
+                        result = default(T);
+                        readable = false;
+                    }
+                    return true;
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
                     readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out mat.newMaterialId);

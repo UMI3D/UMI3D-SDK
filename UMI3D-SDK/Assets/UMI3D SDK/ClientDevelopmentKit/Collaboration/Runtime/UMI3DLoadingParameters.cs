@@ -40,7 +40,6 @@ namespace umi3d.cdk
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
         public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
-        public virtual UMI3DHandPoseLoader handPoseLoader { get; } = new UMI3DHandPoseLoader();
         public virtual UMI3DSubMeshNodeLoader SubMeshLoader { get; } = new UMI3DSubMeshNodeLoader();
 
         public NotificationLoader notificationLoader;
@@ -98,7 +97,7 @@ namespace umi3d.cdk
                     avatarLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
                 case UMI3DHandPoseDto h:
-                    handPoseLoader.Load(h);
+                    UMI3DHandPoseLoader.Load(h);
                     finished?.Invoke();
                     break;
                 case NotificationDto n:
@@ -146,7 +145,7 @@ namespace umi3d.cdk
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (handPoseLoader.SetUMI3DProperty(entity, property))
+            if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -184,6 +183,8 @@ namespace umi3d.cdk
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
@@ -214,6 +215,8 @@ namespace umi3d.cdk
             if (UILoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DHandPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
