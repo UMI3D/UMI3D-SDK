@@ -552,7 +552,6 @@ namespace umi3d.cdk
                     };
                     Action<Umi3dExecption> error2 = (reason) =>
                     {
-                        //Debug.LogWarning($"error {reason}");
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
                     };

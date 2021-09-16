@@ -530,7 +530,6 @@ namespace umi3d.cdk
 
                         case UMI3DPropertyKeys.HeightTextureScale:
                             var hts = UMI3DNetworkingHelper.Read<ScalableTextureDto>(container);
-                            //Debug.LogWarning("Height Texture not supported");
                             AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, hts, MRTKShaderUtils.BumpMap, materialToModify);
                             uMI3DMaterialDto.heightTexture = hts;
                             break;

@@ -97,7 +97,6 @@ namespace umi3d.edk.interaction
                     if (UMI3DParameterKeys.String == parameterId)
                     {
                         value = UMI3DNetworkingHelper.Read<string>(container);
-                        UnityEngine.Debug.Log(value);
                         onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
                     }
                     else

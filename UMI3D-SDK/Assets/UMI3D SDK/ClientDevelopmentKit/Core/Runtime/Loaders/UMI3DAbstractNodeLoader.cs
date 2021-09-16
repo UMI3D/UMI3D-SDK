@@ -104,7 +104,6 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = (ulong)(long)property.value;
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
 
                     break;
@@ -161,7 +160,6 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
 
                     break;

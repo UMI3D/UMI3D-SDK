@@ -406,44 +406,6 @@ namespace umi3d.cdk
                 performed.Invoke();
             };
             UMI3DClientServer.GetEntity(id, callback, error);
-
-
-            //switch (entity)
-            //{
-            //    case GlTFSceneDto scene:
-            //        StartCoroutine(_InstantiateNodes(new List<GlTFSceneDto>() { scene }, performed));
-            //        break;
-            //    case GlTFNodeDto node:
-            //        StartCoroutine(nodeLoader.LoadNodes(new List<GlTFNodeDto>() { node }, performed));
-            //        break;
-            //    case AssetLibraryDto library:
-            //        UMI3DResourcesManager.DownloadLibrary(library,
-            //            UMI3DClientServer.Media.name,
-            //            () =>
-            //            {
-            //                UMI3DResourcesManager.LoadLibrary(library.libraryId, performed);
-            //            });
-            //        break;
-            //    case AbstractEntityDto dto:
-            //        Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { Debug.Log(s); performed.Invoke(); });
-            //        break;
-            //    case GlTFMaterialDto matDto:
-            //        Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
-            //        {
-
-            //            if (matDto.name != null && matDto.name.Length > 0)
-            //                m.name = matDto.name;
-            //            //register the material
-            //            RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
-            //            performed.Invoke();
-            //        });
-            //        break;
-            //    default:
-            //        Debug.Log($"load entity fail missing case {entity.GetType()}");
-            //        performed.Invoke();
-            //        break;
-
-            //}
         }
 
         /// <summary>

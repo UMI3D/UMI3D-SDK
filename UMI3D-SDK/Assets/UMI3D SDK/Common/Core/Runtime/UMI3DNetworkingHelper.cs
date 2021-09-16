@@ -728,7 +728,6 @@ namespace umi3d.common
                 if (ibytes.First().IsCountable()) return ListToCountBytable(ibytes, parameters);
                 else return ListToIndexesBytable(ibytes, parameters);
             }
-            Debug.LogWarning("Empty IEnumerable");
             return Write(UMI3DObjectKeys.CountArray)
                 + Write(0);
         }

@@ -42,7 +42,6 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start()
         {
-            Debug.Log("Start");
             if (started) return;
             GameObject go = (UMI3DEnvironmentLoader.GetEntity(dto.nodeId) as UMI3DNodeInstance)?.gameObject;
             

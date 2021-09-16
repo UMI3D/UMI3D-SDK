@@ -32,10 +32,7 @@ namespace umi3d.common
         public UMI3DShaderPropertyDto(object value)
         {
             this.value = value;
-            Debug.Log($"{GetType(value)}");
-
             (this.CollectionType, this.Type) = GetType(value);
-            Debug.Log($"{this.CollectionType} {Type}");
         }
 
         public bool IsCountable()

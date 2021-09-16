@@ -103,8 +103,6 @@ namespace umi3d.edk.interaction
                     if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter )
                     {
                         ChageUserLocalInfo(user, parameter); 
-                        
-                        Debug.Log($"receive new authorisaation : {key} {parameter}");
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
