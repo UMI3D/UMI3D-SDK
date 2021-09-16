@@ -42,7 +42,7 @@ namespace umi3d.cdk
         /// <param name="authorization">authorization string use when file isn't local.</param>
         /// <param name="callback">Function to call when loading is done.</param>
         /// <param name="failCallback">Funtion to call when loading fail.</param>
-        void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectIsInBundle = "");
+        void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectIsInBundle = "");
 
         /// <summary>
         /// convert functio. Should test if the loaded object is an object or a bundle of objects, then return the object at pathIfObjectInBundle  

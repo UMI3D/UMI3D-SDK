@@ -50,6 +50,16 @@ namespace umi3d.cdk
         }
         protected virtual string _getAuthorization() { return null; }
 
+        /// <summary>
+        /// Retry a failed http request
+        /// </summary>
+        /// <param name="argument">failed request argument</param>
+        /// <returns></returns>
+        public virtual bool TryAgainOnHttpFail(RequestFailedArgument argument)
+        {
+            return false;
+        }
+
         static public void SendData(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)

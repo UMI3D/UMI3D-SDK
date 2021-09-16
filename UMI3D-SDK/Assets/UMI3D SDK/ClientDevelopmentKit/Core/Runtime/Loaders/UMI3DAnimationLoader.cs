@@ -22,11 +22,11 @@ namespace umi3d.cdk
 {
     static public class UMI3DAnimationLoader
     {
-        static public void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<string> failed)
+        static public void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             if (dto == null)
             {
-                failed?.Invoke("dto shouldn't be null");
+                failed?.Invoke(new Umi3dExecption("dto shouldn't be null"));
                 return;
             }
 

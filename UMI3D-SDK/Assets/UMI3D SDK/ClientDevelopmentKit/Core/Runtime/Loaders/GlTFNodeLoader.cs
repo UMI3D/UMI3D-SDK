@@ -63,7 +63,9 @@ namespace umi3d.cdk
 
                 // Read glTF extensions
                 count += 1;
-                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject, () => { count -= 1; LoadedNodesCount?.Invoke(total - count); }, (s) => { count -= 1; Debug.LogWarning(s); });
+                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
+                    () => { count -= 1; LoadedNodesCount?.Invoke(total - count); }, 
+                    (s) => { count -= 1; Debug.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}"); });
                 ReadLightingExtensions(dto, node.gameObject);
 
                 // Important: all nodes in the scene must be registred before to handle hierarchy. 

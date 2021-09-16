@@ -503,7 +503,6 @@ namespace AsImpL
 
         protected virtual void OnLoadFailed(string absolutePath)
         {
-            Debug.Log($"hello {absolutePath}");
             if (ModelError != null)
             {
                 ModelError(absolutePath);
