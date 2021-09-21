@@ -60,7 +60,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="node"></param>
         /// <param name="dto"></param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             base.ReadUMI3DExtension(dto, node, () =>
             {
@@ -530,7 +530,6 @@ namespace umi3d.cdk
 
                         case UMI3DPropertyKeys.HeightTextureScale:
                             var hts = UMI3DNetworkingHelper.Read<ScalableTextureDto>(container);
-                            //Debug.LogWarning("Height Texture not supported");
                             AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, hts, MRTKShaderUtils.BumpMap, materialToModify);
                             uMI3DMaterialDto.heightTexture = hts;
                             break;

@@ -42,7 +42,7 @@ namespace umi3d.cdk
 
 
         ///<inheritdoc/>
-        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
+        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();
             GltfAssetBase gltfComp = createdObj.AddComponent<GltfAssetBase>();
@@ -66,12 +66,12 @@ namespace umi3d.cdk
                     }
                     catch
                     {
-                        failCallback("Importing failed with : " + url);
+                        failCallback(new Umi3dExecption(0, "Importing failed with : " + url));
                     }
                 }
                 else
                 {
-                    failCallback("Importing failed with : " + url);
+                    failCallback(new Umi3dExecption(0, "Importing failed with : " + url));
                 }
                 GameObject.Destroy(gltfComp.gameObject, 1);
             };

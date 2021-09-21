@@ -34,12 +34,12 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke("dto should be an  UMI3DAbstractNodeDto");
+                failed.Invoke(new Umi3dExecption(0,"dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
             if (dto != null)
@@ -104,7 +104,6 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = (ulong)(long)property.value;
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
 
                     break;
@@ -161,7 +160,6 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    UnityEngine.Debug.Log(parent);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
 
                     break;

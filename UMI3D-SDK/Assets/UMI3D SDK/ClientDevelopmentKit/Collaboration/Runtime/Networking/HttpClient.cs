@@ -263,35 +263,8 @@ namespace umi3d.cdk.collaboration
             };
             client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.scene, null, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
-        #endregion
 
-        /// <summary>
-        /// Class to be send to try to send a request again.
-        /// </summary>
-        public class RequestFailedArgument
-        {
-
-            Action tryAgain;
-            public DateTime date { get; private set; }
-            public UnityWebRequest request { get; private set; }
-            public Func<RequestFailedArgument, bool> ShouldTryAgain { get; private set; }
-            public RequestFailedArgument(UnityWebRequest request, Action tryAgain, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
-            {
-                this.request = request;
-                this.tryAgain = tryAgain;
-                this.count = count;
-                this.date = date;
-                this.ShouldTryAgain = ShouldTryAgain;
-            }
-
-            public int count { get; private set; }
-
-            public virtual void TryAgain()
-            {
-                tryAgain.Invoke();
-            }
-
-        }
+#endregion
 
         #region Local Info
         /// <summary>

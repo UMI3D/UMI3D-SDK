@@ -166,7 +166,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="argument">failed request argument</param>
         /// <returns></returns>
-        public bool TryAgainOnHttpFail(HttpClient.RequestFailedArgument argument)
+        public override bool TryAgainOnHttpFail(RequestFailedArgument argument)
         {
             if (argument.ShouldTryAgain(argument))
             {
@@ -176,19 +176,25 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
+
+
+        double maxMillisecondToWait = 10000;
         /// <summary>
         /// launch a new request
         /// </summary>
         /// <param name="argument">argument used in the request</param>
         /// <returns></returns>
-        IEnumerator TryAgain(HttpClient.RequestFailedArgument argument)
+        IEnumerator TryAgain(RequestFailedArgument argument)
         {
-            bool newToken = argument.request.responseCode != 401 || (lastTokenUpdate - argument.date).TotalMilliseconds > 0;
-            if (!newToken)
+            bool newToken = argument.GetRespondCode() == 401 && (lastTokenUpdate - argument.date).TotalMilliseconds < 0;
+            if (newToken)
             {
                 UnityAction a = () => newToken = true;
                 OnNewToken.AddListener(a);
-                yield return new WaitUntil(() => newToken);
+                yield return new WaitUntil(() => {
+                    bool tooLong = ((DateTime.UtcNow - argument.date).TotalMilliseconds > maxMillisecondToWait);
+                    return newToken || tooLong;
+                });
                 OnNewToken.RemoveListener(a);
             }
             argument.TryAgain();
@@ -201,7 +207,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="url">Url used for the get request.</param>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<HttpClient.RequestFailedArgument, bool> shouldTryAgain = null)
+        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
             {
@@ -253,15 +259,21 @@ namespace umi3d.cdk.collaboration
         {
             if (Exists)
             {
-                //Debug.Log($"<color=magenta> new token { token}</color>");
                 lastTokenUpdate = DateTime.UtcNow;
                 Instance?.HttpClient?.SetToken(token);
                 BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
                 {
-                    Instance?.OnNewToken?.Invoke();
+                    Instance?.StartCoroutine(Instance.OnNewTokenNextFrame());
                 });
             }
         }
+
+        IEnumerator OnNewTokenNextFrame()
+        {
+            yield return new WaitForFixedUpdate();
+            OnNewToken?.Invoke();
+        }
+
 
         /// <summary>
         /// Send a BrowserRequestDto on a RTC

@@ -48,12 +48,10 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.OverideMaterialId:
-                    //  Debug.Log("override mat id");
 
                     switch (property)
                     {
                         case SetEntityListAddPropertyDto addProperty:
-                            //  Debug.Log("SetEntityListAddPropertyDto");
                             if (((SetEntityListAddPropertyDto)property).index == extension.overridedMaterials.Count)
                             {
                                 if (extension.applyCustomMaterial)
@@ -206,7 +204,6 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.OverideMaterialId:
-                    //  Debug.Log("override mat id");
                     int index;
                     UMI3DRenderedNodeDto.MaterialOverrideDto mat;
                     switch (operationId)
@@ -214,7 +211,6 @@ namespace umi3d.cdk
                         case UMI3DOperationKeys.SetEntityListAddProperty:
                             index = UMI3DNetworkingHelper.Read<int>(container);
                             mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(container);
-                            //  Debug.Log("SetEntityListAddPropertyDto");
                             if (index == extension.overridedMaterials.Count)
                             {
                                 if (extension.applyCustomMaterial)
@@ -476,7 +472,6 @@ namespace umi3d.cdk
             if (newMat == null)
             {
                 // apply shader properties 
-                Debug.LogWarning("test");
                 shaderProperties = (matEntity.dto as GlTFMaterialDto)?.extensions.umi3d.shaderProperties;
             }
             if (listToOverride.Contains("ANY_mat"))

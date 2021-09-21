@@ -89,7 +89,6 @@ namespace umi3d.edk.interaction
         ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
-            Debug.Log("on user interaction");
             switch (interactionRequest)
             {
                 case UploadFileRequestDto settingRequestDto: 
@@ -145,8 +144,6 @@ namespace umi3d.edk.interaction
                         value = UMI3DNetworkingHelper.Read<string>(container);
                         var exts = UMI3DNetworkingHelper.ReadList<string>(container);
                         string fileId = UMI3DNetworkingHelper.Read<string>(container);
-                        Debug.Log("----------");
-                        Debug.Log(fileId);
                         //authorizedExtensions = UMI3DNetworkingHelper.ReadList<string>(container);
                         //UnityEngine.Debug.Log(value);
                         //if (System.IO.File.Exists(value))
@@ -188,7 +185,6 @@ namespace umi3d.edk.interaction
         protected virtual void OnChange(ParameterEventContent<(string,string)> responseContainer)
         {
             //RequestHttpUploadDto httpDto = new RequestHttpUploadDto();
-            Debug.Log(responseContainer.value);
             UploadFileRequest request = new UploadFileRequest(true,responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
             uploadTokens.Add(request.token, this);
 
@@ -212,12 +208,10 @@ namespace umi3d.edk.interaction
                 dir.Create();
             }
             string path = inetum.unityUtils.Path.Combine(pathToSaveFile, fileName);
-            Debug.Log(path);
             if(File.Exists(path))
             {
                 //path += "_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToLongTimeString();
                 path = inetum.unityUtils.Path.Combine(pathToSaveFile, System.IO.Path.GetFileNameWithoutExtension(path) + "_" + DateTime.Now.ToShortDateString().Replace(@"/", "-") + "_" + DateTime.Now.ToLongTimeString().Replace(':','-') + System.IO.Path.GetExtension(path));
-                Debug.Log("new path  " + path);
 
             }
             File.WriteAllBytes(path, bytes);

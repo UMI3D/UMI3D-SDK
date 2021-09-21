@@ -53,7 +53,7 @@ namespace umi3d.cdk
         }
 
         /// <see cref="IResourcesLoader.UrlToObject"/>
-        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<string> failCallback, string pathIfObjectInBundle = "")
+        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectInBundle = "")
         {
 
             // add bundle in the cache
@@ -66,9 +66,18 @@ namespace umi3d.cdk
             UMI3DResourcesManager.DownloadObject(www,
                 () =>
                 {
-                    AssetBundle bundle = ((DownloadHandlerAssetBundle)www.downloadHandler).assetBundle;
-
-                    callback.Invoke(bundle);
+                    try
+                    {
+                        AssetBundle bundle = ((DownloadHandlerAssetBundle)www.downloadHandler)?.assetBundle;
+                        if (bundle != null)
+                            callback.Invoke(bundle);
+                        else
+                            failCallback.Invoke(new Umi3dExecption(0, "Bundle was empty"));
+                    }
+                    catch (Exception e)
+                    {
+                        failCallback.Invoke(new Umi3dExecption(0, e.Message));
+                    }
                 },
                 s => failCallback.Invoke(s)
             );
@@ -89,7 +98,6 @@ namespace umi3d.cdk
                     var objectInBundle = ((AssetBundle)o).LoadAsset(pathIfObjectInBundle);
                     if (objectInBundle is GameObject)
                     {
-                        //Debug.Log("load game object from bundle");
                         AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
                     }
 

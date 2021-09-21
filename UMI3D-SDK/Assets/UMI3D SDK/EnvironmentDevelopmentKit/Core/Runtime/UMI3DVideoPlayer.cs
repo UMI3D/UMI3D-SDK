@@ -52,7 +52,6 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             var Adto = dto as UMI3DVideoPlayerDto;
             Adto.materialId = ObjectMaterial.GetValue(user)?.Id() ?? 0;
-            //Debug.Log(" env : " + Adto.materialId);
             Adto.videoResource = ObjectVideoResource.GetValue(user)?.ToDto();
             if (audioPlayer != null)
             {

@@ -498,7 +498,7 @@ namespace umi3d.cdk
                     loader.UrlToObject,
                     loader.ObjectFromCache,
                     (mat) => SetBaseMaterial((Material)mat),
-                    Debug.LogWarning,
+                    (e)=>Debug.LogWarning(e.Message),
                     loader.DeleteObject
                     );
 

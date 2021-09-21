@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
 
             base.ReadUMI3DExtension(dto, node, () =>
@@ -72,7 +72,7 @@ namespace umi3d.cdk
 
                      finished?.Invoke();
                  }
-                 else failed?.Invoke("nodeDto should not be null");
+                 else failed?.Invoke(new Umi3dExecption(0,"nodeDto should not be null"));
              }, failed);
         }
 
@@ -87,7 +87,6 @@ namespace umi3d.cdk
             if (UMI3DEnvironmentLoader.GetNode(skinMeshEntityId) == null)
             {
                 maxDelay -= 0.3f;
-                Debug.Log(maxDelay);
                 yield return new WaitForSeconds(0.3f);
             }
 
@@ -95,7 +94,6 @@ namespace umi3d.cdk
             if (UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>() == null)
             {
                 maxDelay -= 0.3f;
-                Debug.Log(maxDelay);
                 yield return new WaitForSeconds(0.3f);
             }
 

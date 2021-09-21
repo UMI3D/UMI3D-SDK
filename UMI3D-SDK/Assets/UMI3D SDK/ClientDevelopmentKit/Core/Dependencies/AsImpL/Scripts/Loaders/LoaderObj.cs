@@ -94,11 +94,11 @@ namespace AsImpL
         protected override IEnumerator LoadModelFile(string absolutePath)
         {
             string url = absolutePath.Contains("//") ? absolutePath : "file:///" + absolutePath;
-            yield return LoadOrDownloadText(url);
+            yield return LoadOrDownloadText(url,false);
 
             if (objLoadingProgress.error || string.IsNullOrEmpty(loadedText))
             {
-                Debug.LogError("Failed to load: empty path. " + absolutePath + "   lt: " + loadedText);
+                //Debug.LogError("Failed to load: empty path. " + absolutePath + "   lt: " + loadedText);
                 // remove this progress to let complete the total loading process
                 totalProgress.singleProgress.Remove(objLoadingProgress);
                 yield break;
@@ -635,6 +635,7 @@ namespace AsImpL
 
         protected virtual IEnumerator LoadOrDownloadText(string url, bool notifyErrors = true)
         {
+            Debug.LogWarning($"base load {url}");
             loadedText = null;
 
             var enumerable = Filesystem.DownloadUri(url, notifyErrors);
