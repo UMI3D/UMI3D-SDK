@@ -143,11 +143,18 @@ namespace umi3d.edk.userCapture
                 HandPose.isRelativeToNode = IsRelativeToNode;
 
                 HandPose.RightHandPosition = ScriptableHand.RightHandPosition;
+                HandPose.LeftHandPosition = ScriptableHand.LeftHandPosition;
 
                 if (IsRelativeToNode)
+                {
                     HandPose.RightHandEulerRotation = ScriptableHand.RightHandEulerRotation;
+                    HandPose.LeftHandEulerRotation = ScriptableHand.LeftHandEulerRotation;
+                }
                 else
+                {
                     HandPose.RightHandEulerRotation = (this.transform.rotation * Quaternion.Euler(ScriptableHand.RightHandEulerRotation)).eulerAngles;
+                    HandPose.LeftHandEulerRotation = (this.transform.rotation * Quaternion.Euler(ScriptableHand.LeftHandEulerRotation)).eulerAngles;
+                }
 
                 HandPose.PhalanxRotations.Clear();
 
@@ -201,11 +208,18 @@ namespace umi3d.edk.userCapture
                 PoseName = HandPose.PoseName;
 
                 ScriptableHand.RightHandPosition = HandPose.RightHandPosition;
+                ScriptableHand.LeftHandPosition = HandPose.LeftHandPosition;
 
                 if (IsRelativeToNode)
+                {
                     ScriptableHand.RightHandEulerRotation = HandPose.RightHandEulerRotation;
+                    ScriptableHand.LeftHandEulerRotation = HandPose.LeftHandEulerRotation;
+                }
                 else
+                {
                     ScriptableHand.RightHandEulerRotation = (Quaternion.Inverse(this.transform.rotation) * Quaternion.Euler(HandPose.RightHandEulerRotation)).eulerAngles;
+                    ScriptableHand.LeftHandEulerRotation = (Quaternion.Inverse(this.transform.rotation) * Quaternion.Euler(HandPose.RightHandEulerRotation)).eulerAngles;
+                }
 
                 if (HandPose.PhalanxRotations.Count > 0)
                     foreach (UMI3DHandPose.PhalanxRotation pr in HandPose.PhalanxRotations)
