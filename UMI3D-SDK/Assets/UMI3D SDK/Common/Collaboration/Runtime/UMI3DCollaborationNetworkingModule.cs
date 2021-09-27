@@ -136,6 +136,53 @@ namespace umi3d.common.collaboration
                     else
                         result = default(T);
                     return true;
+                case true when typeof(T) == typeof(ScalableTextureDto):
+                    {
+                        var scalableTexture = new ScalableTextureDto();
+                        scalableTexture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                        string animationId;
+                        string audioSourceId;
+                        string streamingFromUserId;
+                        float scale;
+                        if (UMI3DNetworkingHelper.TryRead(container, out animationId)
+                            && UMI3DNetworkingHelper.TryRead(container, out audioSourceId)
+                            && UMI3DNetworkingHelper.TryRead(container, out streamingFromUserId)
+                            && UMI3DNetworkingHelper.TryRead(container, out scale))
+                        {
+                            scalableTexture.animationId = animationId;
+                            scalableTexture.audioSourceId = audioSourceId;
+                            scalableTexture.streamingFromUserId = streamingFromUserId;
+                            scalableTexture.scale = scale;
+                            readable = true;
+                            result = (T)Convert.ChangeType(scalableTexture, typeof(T));
+                            return true;
+                        }
+                        readable = false;
+                        result = default(T);
+                        return true;
+                    }
+                case true when typeof(T) == typeof(TextureDto):
+                    {
+                        var texture = new TextureDto();
+                        texture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                        string animationId;
+                        string audioSourceId;
+                        string streamingFromUserId;
+                        if (UMI3DNetworkingHelper.TryRead(container, out animationId)
+                            && UMI3DNetworkingHelper.TryRead(container, out audioSourceId)
+                            && UMI3DNetworkingHelper.TryRead(container, out streamingFromUserId))
+                        {
+                            texture.animationId = animationId;
+                            texture.audioSourceId = audioSourceId;
+                            texture.streamingFromUserId = streamingFromUserId;
+                            readable = true;
+                            result = (T)Convert.ChangeType(texture, typeof(T));
+                            return true;
+                        }
+                        readable = false;
+                        result = default(T);
+                        return true;
+                    }
                 case true when typeof(T) == typeof(ResourceDto):
                     var resource = new ResourceDto();
                     resource.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
@@ -223,6 +270,19 @@ namespace umi3d.common.collaboration
                     bytable += UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists);
                     bytable += UMI3DNetworkingHelper.WriteCollection(material.overridedMaterialsId);
                     break;
+                case ScalableTextureDto scalableTextureDto:
+                    bytable = UMI3DNetworkingHelper.WriteCollection(scalableTextureDto.variants)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.animationId)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.audioSourceId)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.streamingFromUserId)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.scale);
+                    break;
+                case TextureDto textureDto:
+                    bytable = UMI3DNetworkingHelper.WriteCollection(textureDto.variants)
+                        + UMI3DNetworkingHelper.Write(textureDto.animationId)
+                        + UMI3DNetworkingHelper.Write(textureDto.audioSourceId)
+                        + UMI3DNetworkingHelper.Write(textureDto.streamingFromUserId);
+                    break;
                 case ResourceDto resourceDto:
                     bytable = UMI3DNetworkingHelper.WriteCollection(resourceDto.variants);
                     break;
@@ -230,8 +290,8 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DNetworkingHelper.Write(fileDto.url)
                         + UMI3DNetworkingHelper.Write(fileDto.format)
                         + UMI3DNetworkingHelper.Write(fileDto.extension)
-                        + UMI3DNetworkingHelper.Write(fileDto.metrics.resolution)
-                        + UMI3DNetworkingHelper.Write(fileDto.metrics.size)
+                        + UMI3DNetworkingHelper.Write(fileDto.metrics?.resolution ?? 0)
+                        + UMI3DNetworkingHelper.Write(fileDto.metrics?.size ?? 0f)
                         + UMI3DNetworkingHelper.Write(fileDto.pathIfInBundle)
                         + UMI3DNetworkingHelper.Write(fileDto.libraryKey);
                     break;
