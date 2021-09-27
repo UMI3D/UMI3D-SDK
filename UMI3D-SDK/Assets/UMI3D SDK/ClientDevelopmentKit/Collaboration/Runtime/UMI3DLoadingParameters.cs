@@ -418,6 +418,10 @@ namespace umi3d.cdk
                     UMI3DClientUserTracking.Instance.setTrackingSending(sendingTracking.activeSending);
                     performed.Invoke();
                     break;
+                case SetVehicleDto vehicleDto:
+
+                    performed.Invoke();
+                    break;
             }
         }
 
@@ -464,6 +468,10 @@ namespace umi3d.cdk
                 case UMI3DOperationKeys.SetSendingTracking:
                     var sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.setTrackingSending(sendTracking);
+                    performed.Invoke();
+                    break;
+                case UMI3DOperationKeys.Vehicle:
+
                     performed.Invoke();
                     break;
             }
