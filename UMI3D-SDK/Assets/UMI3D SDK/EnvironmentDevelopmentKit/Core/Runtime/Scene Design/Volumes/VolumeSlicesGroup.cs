@@ -80,7 +80,7 @@ namespace umi3d.edk.volume
         public ulong Id()
         {
             if (id == null)
-                id = (ulong)Random.Range(long.MinValue, long.MaxValue);
+                id = UMI3DEnvironment.Register(this);
             return id.Value;
         }
 

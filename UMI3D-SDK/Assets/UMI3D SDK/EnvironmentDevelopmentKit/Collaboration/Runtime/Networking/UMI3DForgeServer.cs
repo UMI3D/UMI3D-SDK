@@ -21,6 +21,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
+using umi3d.edk.volume;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -282,18 +283,30 @@ namespace umi3d.edk.collaboration
             {
                 var container = new ByteContainer(frame.StreamData.byteArr);
                 var id = UMI3DNetworkingHelper.Read<uint>(container);
-                if (id == UMI3DOperationKeys.UserCameraProperties)
+                switch (id)
                 {
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
-                    });
+                    case UMI3DOperationKeys.UserCameraProperties:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
+                        });
+                        break;
+
+                    case UMI3DOperationKeys.VolumeUserTransit: //add here future other volume related keys.
+                        MainThreadManager.Run(() =>
+                        {
+                            VolumeManager.DispatchBrowserRequest(user, id, container);
+                        });
+                        break;
+
+                    default:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
+                        });
+                        break;
                 }
-                else
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
-                    });
+                
             }
         }
 

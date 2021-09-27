@@ -21,6 +21,22 @@ namespace umi3d.edk.volume
 {
     public class VolumeManager : Singleton<VolumeManager>
     {
-        public Dictionary<ulong, IVolume> volumes = new Dictionary<ulong, IVolume>(); 
+        public Dictionary<ulong, IVolume> volumes = new Dictionary<ulong, IVolume>();
+
+
+        static public void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
+        {
+            switch (operationKey)
+            {
+                case UMI3DOperationKeys.VolumeUserTransit:
+                    ulong volumeId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    bool direction = UMI3DNetworkingHelper.Read<bool>(container);
+
+                    UnityEngine.Debug.Log("volume:" + volumeId + "  dir:" + direction);
+                    break;
+                default:
+                    throw new System.Exception("Unknown volume operation key (" + operationKey + ")");
+            }
+        }
     }
 }

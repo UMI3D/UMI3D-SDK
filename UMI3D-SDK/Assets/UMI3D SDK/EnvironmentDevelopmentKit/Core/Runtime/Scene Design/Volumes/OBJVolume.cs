@@ -75,7 +75,7 @@ namespace umi3d.edk.volume
         public ulong Id()
         {
             if (id == null)
-                id = (ulong)Random.Range(long.MinValue, long.MaxValue);
+                id = UMI3DEnvironment.Register(this);
             return id.Value;
         }
 
@@ -108,7 +108,7 @@ namespace umi3d.edk.volume
             {
                 path = "/" + path;
             }
-            path = System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));           
+            path = System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));
 
             OBJVolumeDto dto = new OBJVolumeDto()
             {
@@ -122,5 +122,7 @@ namespace umi3d.edk.volume
         {
             throw new System.NotImplementedException();
         }
+
+
     }
 }

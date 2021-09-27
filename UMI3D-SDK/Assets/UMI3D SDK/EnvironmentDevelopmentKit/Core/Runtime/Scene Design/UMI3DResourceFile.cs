@@ -44,6 +44,7 @@ namespace umi3d.edk
             dto.metrics = metrics;
             dto.pathIfInBundle = isInBundle ? pathIfInBundle : null;
             dto.libraryKey = isInLibrary ? libraryKey?.id : null;
+
             return dto;
         }
 

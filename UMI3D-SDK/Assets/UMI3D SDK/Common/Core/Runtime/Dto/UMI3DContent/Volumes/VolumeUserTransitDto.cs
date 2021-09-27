@@ -28,9 +28,6 @@ namespace umi3d.common.volume
         /// </summary>
         public bool direction;
 
-        protected override uint GetOperationId()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override uint GetOperationId() { return UMI3DOperationKeys.VolumeUserTransit; }
     }
 }
