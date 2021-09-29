@@ -6,6 +6,8 @@ UMI3D is a web protocol that enables the creation of 3D media in which users of 
 <br>
 For more information about UMI3D, visit the [UMI3D Consortium's website](https://umi3d-consortium.org)
 
+---
+
 ### Version And Documentation
 
 The Current UMI3D-SDK version is 2.3<br>
@@ -66,7 +68,7 @@ Open Your project manifest ('.\Packages\manifest.json')
 The tag (#2.3.b.210525) can be set to any branch or tag on the sdk repo. Example: '#master', '#development', '#2.1.b.210104'
 
 To activate the intelsence of UMI3D-SDK in Visual Studio 2019, navigate to the menu :
-> **Edit > Preferences > External Tools** and check the option **Git packages**. It will be necesary to regenerate the project files.
+- **Edit > Preferences > External Tools** and check the option **Git packages**. It will be necesary to regenerate the project files.
 
 
 
