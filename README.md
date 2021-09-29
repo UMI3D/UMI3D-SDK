@@ -22,7 +22,7 @@ The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f
 
 ### Unity Project Settings
 
-- **File > Build Settings**: The architecture for Windows Standalone is x86_64.<br><br>
+- **File > Build Settings**: The architecture for Windows Standalone is x86_64.
 - **Edit > Project Settings > Player > Other Settings**: Api compatibility Level is .NET 4.x
 
 ---
