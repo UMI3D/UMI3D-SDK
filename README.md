@@ -16,8 +16,8 @@ The documentation can be found [here](https://umi3d.github.io/UMI3D-SDK/index.ht
 
 ### Installation through .unitypackage
 
-* [UMI3D Virtual World Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.3.b.210525/cdk.unitypackage)
-* [UMI3D Browser Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.3.b.210525/edk.unitypackage)
+* [UMI3D Virtual World Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.3.b.210916/edk.unitypackage)
+* [UMI3D Browser Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.3.b.210916/cdk.unitypackage)
 
 ### Installation through Unity's Package Manager 
 
