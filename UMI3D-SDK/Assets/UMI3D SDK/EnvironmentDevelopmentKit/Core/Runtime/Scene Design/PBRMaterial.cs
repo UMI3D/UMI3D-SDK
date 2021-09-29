@@ -136,7 +136,6 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
-            Debug.Log("id mat " + id);
             objectRoughnessFactor = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.RoughnessFactor, this.roughnessFactor, null, pCompare.FloatEquality);
             objectRoughnessFactor.OnValueChanged += (float f) =>
             {
