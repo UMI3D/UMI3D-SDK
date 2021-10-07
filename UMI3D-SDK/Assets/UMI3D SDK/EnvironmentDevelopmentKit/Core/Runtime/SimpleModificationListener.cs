@@ -69,6 +69,8 @@ namespace umi3d.edk
                     UMI3DServer.Dispatch(transaction);
                     sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
                 }
+                nodes = GetComponentsInChildren<UMI3DNode>();
+                scenes = GetComponentsInChildren<UMI3DScene>();
             }
         }
 
@@ -90,6 +92,7 @@ namespace umi3d.edk
 
         private void Update(UMI3DNode obj)
         {
+            if (obj == null) return;
             if (sets == null) sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
             if (!sets.ContainsKey(obj.Id())) sets[obj.Id()] = new Dictionary<ulong, SetEntityProperty>();
 
@@ -107,6 +110,7 @@ namespace umi3d.edk
 
         private void MaterialUpdate(UMI3DScene scene)
         {
+            if (scene == null) return;
             if (sets == null) sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
 
 

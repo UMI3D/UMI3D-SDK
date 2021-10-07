@@ -22,6 +22,7 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<uint>((uint)user.status)
                     + UMI3DNetworkingHelper.Write<ulong>(user.avatarId)
                     + UMI3DNetworkingHelper.Write<ulong>(user.audioSourceId)
+                    + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkId);
                     return true;
@@ -30,6 +31,7 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<uint>((uint)user.status)
                     + UMI3DNetworkingHelper.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id())
                     + UMI3DNetworkingHelper.Write<ulong>(user.audioPlayer?.Id() ?? 0)
+                    + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0);
                     return true;

@@ -37,6 +37,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.AddListener(OnUserDisconected);
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
+            UMI3DUser.OnUserAudioFrequencyUpdated.AddListener(OnAudioFrequencyChanged);
         }
 
         /// <summary>
@@ -76,6 +77,20 @@ namespace umi3d.cdk.collaboration
 
         /// <summary>
         /// MAnage user update
+        /// </summary>
+        /// <param name="user"></param>
+        void OnAudioFrequencyChanged(UMI3DUser user)
+        {
+            if (user.id == UMI3DCollaborationClientServer.UserDto.dto.id)
+                MicrophoneListener.UpdateFrequency(user.audioFrequency);
+            if (GlobalReader.ContainsKey(user.id))
+                GlobalReader[user.id].UpdateFrequency(user.audioFrequency);
+            if (SpacialReader.ContainsKey(user.id))
+                SpacialReader[user.id].UpdateFrequency(user.audioFrequency);
+        }
+
+        /// <summary>
+        /// Manage user update
         /// </summary>
         /// <param name="user"></param>
         void OnAudioChanged(UMI3DUser user)

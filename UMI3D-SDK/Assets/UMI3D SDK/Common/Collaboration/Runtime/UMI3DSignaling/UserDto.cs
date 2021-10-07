@@ -27,6 +27,7 @@ namespace umi3d.common.collaboration
         public StatusType status;
         public ulong avatarId;
         public ulong audioSourceId;
+        public int audioFrequency;
         public ulong videoSourceId;
         public uint networkId;
 
@@ -35,6 +36,7 @@ namespace umi3d.common.collaboration
             this.status = source.status;
             this.avatarId = source.avatarId;
             this.audioSourceId = source.audioSourceId;
+            this.audioFrequency = source.audioFrequency;
             this.videoSourceId = source.videoSourceId;
             this.networkId = source.networkId;
             this.id = source.id;
