@@ -97,9 +97,14 @@ namespace umi3d.cdk
                 yield return new WaitForSeconds(0.3f);
             }
 
-            var tab = UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>().bones;
+            if (maxDelay <= 0)
+                yield break;
+
+            var skmr = UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+            skmr.updateWhenOffscreen = true;
+            var tab = skmr.bones;
             tab[boneId] = node;
-            UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>().bones = tab;
+            skmr.bones = tab;
 
         }
 
