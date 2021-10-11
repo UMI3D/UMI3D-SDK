@@ -29,6 +29,8 @@ namespace umi3d.common.userCapture
 
         public List<BoneDto> bones;
 
+        public float skeletonHighOffset;
+
         public SerializableVector3 position;
 
         public SerializableVector4 rotation;
@@ -41,6 +43,7 @@ namespace umi3d.common.userCapture
         {
             return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(userId)
+                + UMI3DNetworkingHelper.Write(skeletonHighOffset)
                 + UMI3DNetworkingHelper.Write(position)
                 + UMI3DNetworkingHelper.Write(rotation)
                 + UMI3DNetworkingHelper.Write(refreshFrequency)

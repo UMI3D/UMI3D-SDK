@@ -103,7 +103,7 @@ namespace umi3d.edk.userCapture
                 embd.transform.SetParent(EmbodimentsScene.transform);
             else
                 Debug.LogWarning("The embodiments scene is not set !");
-            
+
             trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
             LoadAvatarNode(trackedUser.Avatar);
@@ -135,7 +135,9 @@ namespace umi3d.edk.userCapture
             UMI3DAvatarNode userEmbd = embodimentInstances[userId];
             userEmbd.transform.localPosition = dto.position;
             userEmbd.transform.localRotation = dto.rotation;
-            userEmbd.transform.localScale = Vector3.one;
+            // userEmbd.transform.localScale = Vector3.one;
+
+            userEmbd.skeletonAnimator.transform.parent.position = userEmbd.transform.position + new Vector3(0, dto.skeletonHighOffset, 0);
 
             UpdateNodeTransform(userEmbd);
 

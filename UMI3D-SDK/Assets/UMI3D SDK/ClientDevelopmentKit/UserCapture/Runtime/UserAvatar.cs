@@ -70,9 +70,18 @@ namespace umi3d.cdk.userCapture
             {
                 if (item.obj != null)
                 {
-                    if (item.syncPos)
-                        item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
-                    item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
+                    if (!item.bonetype.Equals(BoneType.CenterFeet))
+                    {
+                        if (item.syncPos)
+                            item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
+                        item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
+                    }
+                    else
+                    {
+                        if (item.syncPos)
+                            item.obj.position = UMI3DClientUserTracking.Instance.skeletonContainer.TransformPoint(item.offsetPosition);
+                        item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.offsetRotation;
+                    }
                 }
             }
         }
