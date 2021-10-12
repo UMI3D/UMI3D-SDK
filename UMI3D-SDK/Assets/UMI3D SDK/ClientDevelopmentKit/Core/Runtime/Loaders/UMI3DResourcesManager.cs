@@ -205,15 +205,13 @@ namespace umi3d.cdk
             /// </summary>
             /// <param name="url">Url to match.</param>
             /// <returns></returns>
-            public bool MatchUrl(string url, string libraryId = null)
+            public bool MatchUrl(Match matchUrl, string libraryId = null)
             {
-                if (url == this.url) return true;
 
                 //Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
                 //Match a = rx.Match(this.url);
-                Match b = rx.Match(url);
-                if (a.Success && b.Success)
-                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && libraryIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == b.Groups[3].Captures[0].Value;
+                if (a.Success && matchUrl.Success)
+                    return (a.Groups[1].Captures[0].Value == matchUrl.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == matchUrl.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && libraryIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == matchUrl.Groups[3].Captures[0].Value;
                 return false;
             }
 
@@ -415,7 +413,14 @@ namespace umi3d.cdk
                 {
                     foreach (var file in data.files)
                     {
-                        ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(file.url, data.key); });
+                        Match matchUrl = ObjectData.rx.Match(file.url);
+                        ObjectData objectData = CacheCollection.Find((o) =>
+                        {
+                            if (file.url == o.url)
+                                return true;
+                            else
+                                return o.MatchUrl(matchUrl, data.key);
+                        });
                         if (objectData != null)
                             objectData.downloadedPath = file.path;
                         else
@@ -555,7 +560,7 @@ namespace umi3d.cdk
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
                     };
-                    StartCoroutine( urlToObjectWithPolicy(sucess2, error2, path, objectData.extension, objectData, null, urlToObject));
+                    StartCoroutine(urlToObjectWithPolicy(sucess2, error2, path, objectData.extension, objectData, null, urlToObject));
                 };
 
                 Action<Umi3dExecption> error = (reason) =>
@@ -571,7 +576,7 @@ namespace umi3d.cdk
 
         IEnumerator urlToObjectWithPolicy(Action<object> succes, Action<Umi3dExecption> error, string path, string extension, ObjectData objectData, string bundlePath, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Func<RequestFailedArgument, bool> ShouldTryAgain = null, int tryCount = 0)
         {
-            if(ShouldTryAgain == null)
+            if (ShouldTryAgain == null)
                 ShouldTryAgain = DefaultShouldTryAgain;
             if (tryCount > 0)
                 yield return new WaitForEndOfFrame();
@@ -589,7 +594,15 @@ namespace umi3d.cdk
 
         void _LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dExecption> failCallback, Action<object, string> deleteAction)
         {
-            ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(file.url, file.libraryKey); });
+            Match matchUrl = ObjectData.rx.Match(file.url);
+            ObjectData objectData = CacheCollection.Find((o) =>
+            {
+                if (file.url == o.url)
+                    return true;
+                else
+                    return o.MatchUrl(matchUrl, file.libraryKey);
+            });
+
             if (objectData == null)
             {
                 objectData = new ObjectData(file.url, file.extension, file.authorization, id);
@@ -601,7 +614,14 @@ namespace umi3d.cdk
 
         void GetFilePath(string url, Action<string> callback, Action<Umi3dExecption> error, string libraryKey = null)
         {
-            ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(url, libraryKey); });
+            Match matchUrl = ObjectData.rx.Match(url);
+            ObjectData objectData = CacheCollection.Find((o) =>
+            {
+                if (url == o.url)
+                    return true;
+                else
+                    return o.MatchUrl(matchUrl, libraryKey);
+            });
             if (objectData != null && objectData.downloadedPath != null)
             {
                 callback.Invoke(objectData.downloadedPath);
@@ -614,7 +634,15 @@ namespace umi3d.cdk
 
         static public void GetFile(string url, Action<byte[]> callback, Action<string> error, string libraryKey = null)
         {
-            ObjectData objectData = Instance.CacheCollection.Find((o) => { return o.MatchUrl(url, libraryKey); });
+            //ObjectData objectData = Instance.CacheCollection.Find((o) => { return o.MatchUrl(url, libraryKey); });
+            Match matchUrl = ObjectData.rx.Match(url);
+            ObjectData objectData = Instance.CacheCollection.Find((o) =>
+            {
+                if (url == o.url)
+                    return true;
+                else
+                    return o.MatchUrl(matchUrl, libraryKey);
+            });
             if (objectData != null && objectData.downloadedPath != null)
             {
                 callback.Invoke(File.ReadAllBytes(objectData.downloadedPath));
@@ -848,7 +876,14 @@ namespace umi3d.cdk
                 finished = true;
                 error.Invoke(s);
             };
-            ObjectData objectData = Instance.CacheCollection.Find((o) => { return o.MatchUrl(url, key); });
+            Match matchUrl = ObjectData.rx.Match(url);
+            ObjectData objectData = CacheCollection.Find((o) =>
+            {
+                if (url == o.url)
+                    return true;
+                else
+                    return o.MatchUrl(matchUrl, key);
+            });
             if (objectData != null)
             {
                 if (objectData.downloadedPath != null)
@@ -878,7 +913,14 @@ namespace umi3d.cdk
 
         void UnloadFile(string url, string id, bool delete = false)
         {
-            ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(url, id); });
+            Match matchUrl = ObjectData.rx.Match(url);
+            ObjectData objectData = CacheCollection.Find((o) =>
+            {
+                if (url == o.url)
+                    return true;
+                else
+                    return o.MatchUrl(matchUrl, id);
+            });
             if (objectData != null)
             {
                 objectData.libraryIds.Remove(id);
@@ -910,15 +952,15 @@ namespace umi3d.cdk
                 //DateTime date = DateTime.UtcNow;
                 //if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, () => StartCoroutine(_DownloadObject(www, callback, failCallback,ShouldTryAgain,tryCount + 1)), tryCount, date, ShouldTryAgain)))
                 //{
-                    if (failCallback != null)
-                    {
-                        failCallback.Invoke(new Umi3dExecption(www.responseCode,$"failed to load {www.url} [{www.error}]"));
-                    }
-                    else
-                    {
-                        Debug.LogWarning(www.error);
-                        Debug.LogWarning("Failed to load " + www.url);
-                    }
+                if (failCallback != null)
+                {
+                    failCallback.Invoke(new Umi3dExecption(www.responseCode, $"failed to load {www.url} [{www.error}]"));
+                }
+                else
+                {
+                    Debug.LogWarning(www.error);
+                    Debug.LogWarning("Failed to load " + www.url);
+                }
                 //}
                 yield break;
             }
@@ -937,8 +979,14 @@ namespace umi3d.cdk
             }
             else
             {
-                ObjectData objectData = CacheCollection.Find((o) => { return o.MatchUrl(modelUrlInCache); });
-                if (objectData == null)
+                Match matchUrl = ObjectData.rx.Match(modelUrlInCache);
+                ObjectData objectData = CacheCollection.Find((o) =>
+                {
+                    if (modelUrlInCache == o.url)
+                        return true;
+                    else
+                        return o.MatchUrl(matchUrl);
+                }); if (objectData == null)
                     Debug.LogError("not found in cache");
                 objectData.loadCallback.Add((o) =>
                 {
