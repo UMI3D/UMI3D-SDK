@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-    public class Singleton<T> : MonoBehaviour where T : Singleton<T>
+    public class Singleton<T> : QuittingManager where T : Singleton<T>
     {
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>
@@ -32,8 +32,6 @@ namespace umi3d.common
         {
             get { return instance != null; }
         }
-
-        static bool applicationIsQuitting = false;
 
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>.
@@ -91,11 +89,5 @@ namespace umi3d.common
             if (instance == this)
                 instance = null;
         }
-
-        void OnApplicationQuit()
-        {
-            applicationIsQuitting = true;
-        }
-
     }
 }

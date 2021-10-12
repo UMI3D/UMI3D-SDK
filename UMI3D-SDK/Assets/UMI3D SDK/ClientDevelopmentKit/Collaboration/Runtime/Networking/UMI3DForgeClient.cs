@@ -514,6 +514,9 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void OnApplicationQuit()
         {
+            if (!QuittingManager.applicationIsQuitting)
+                return;
+            NetworkManager.Instance.ApplicationQuit();
             Stop();
         }
 
