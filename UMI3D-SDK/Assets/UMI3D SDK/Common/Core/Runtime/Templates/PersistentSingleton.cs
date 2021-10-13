@@ -37,7 +37,7 @@ namespace umi3d.common
         {
             get
             {
-                if (applicationIsQuitting)
+                if (ApplicationIsQuitting)
                 {
                     return null;
                 }

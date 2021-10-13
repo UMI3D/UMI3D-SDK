@@ -41,7 +41,7 @@ namespace umi3d.common
         {
             get
             {
-                if (applicationIsQuitting)
+                if (ApplicationIsQuitting)
                     return null;
                 if (instance == null)
                 {
@@ -72,7 +72,6 @@ namespace umi3d.common
         /// </summary>
         protected virtual void Awake()
         {
-            applicationIsQuitting = false;
             if (instance != null && instance != this)
             {
                 Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated");

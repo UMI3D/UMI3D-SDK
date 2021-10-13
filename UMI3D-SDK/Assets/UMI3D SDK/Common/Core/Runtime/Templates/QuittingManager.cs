@@ -14,16 +14,42 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.common
 {
     public class QuittingManager : MonoBehaviour
     {
-        public static bool applicationIsQuitting = false;
+        private static bool applicationIsQuitting = false;
+        /// <summary>
+        /// Should be set to true when the application is quitting.
+        /// </summary>
+        public static bool ApplicationIsQuitting { 
+            get => applicationIsQuitting;
+            set
+            {
+                applicationIsQuitting = value;
+                if (value)
+                    OnApplicationIsQuitting.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Should be set to true in the client and the server when they deal with quitting the application.
+        /// </summary>
+        public static bool ShouldWaitForApplicationToQuit = false;
+
+        /// <summary>
+        /// Raised when ApplicationIsQuitting is set to true.
+        /// </summary>
+        public static UnityEvent OnApplicationIsQuitting = new UnityEvent();
 
         protected virtual void OnApplicationQuit()
         {
+            if (!ShouldWaitForApplicationToQuit)
+                ApplicationIsQuitting = true;
         }
     }
 }

@@ -355,6 +355,9 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			Destroy(gameObject);
 		}
 
+		/// <summary>
+		/// EndSession when application quit
+		/// </summary>
 		public void ApplicationQuit()
 		{
 			if (Networker != null)
