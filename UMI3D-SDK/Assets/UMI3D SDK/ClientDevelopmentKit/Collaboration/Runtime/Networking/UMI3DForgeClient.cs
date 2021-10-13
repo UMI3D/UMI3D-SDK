@@ -507,13 +507,17 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
+            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        private void OnApplicationQuit()
+        private void ApplicationQuit()
         {
+            if (!QuittingManager.ApplicationIsQuitting)
+                return;
+            NetworkManager.Instance.ApplicationQuit();
             Stop();
         }
 
