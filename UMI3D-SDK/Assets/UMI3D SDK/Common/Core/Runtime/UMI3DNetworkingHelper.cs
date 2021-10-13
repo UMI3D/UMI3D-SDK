@@ -707,11 +707,38 @@ namespace umi3d.common
 
         public static Bytable WriteCollection(IDictionary value)
         {
+            if (value.Count > 0 && !value.Cast<DictionaryEntry>().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
+            {
+                return WriteIBytableCollection(value.Cast<DictionaryEntry>().Select((e) => new DictionaryEntryBytable(e)));
+            }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count);
             foreach (var v in value)
                 b += Write(v);
             return b;
         }
+
+        class DictionaryEntryBytable : IBytable
+        {
+            object key;
+            IBytable value;
+
+            public DictionaryEntryBytable(DictionaryEntry entry)
+            {
+                this.key = entry.Key;
+                this.value = entry.Value as IBytable;
+            }
+
+            public bool IsCountable()
+            {
+                return value.IsCountable();
+            }
+
+            public Bytable ToBytableArray(params object[] parameters)
+            {
+                return Write(key) + Write(value);
+            }
+        }
+
 
         public static Bytable WriteCollection(IEnumerable<byte> value)
         {
