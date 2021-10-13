@@ -23,10 +23,775 @@ using umi3d.common.userCapture;
 public class HandPoseSetterEditor : Editor
 {
     // custom inspector
+
+    static GUIStyle foldoutStyle;
+
+    #region Inspector Properties
+
+    static bool editPose = false;
+    static bool editPosition = false;
+
+    public bool handSettings = false;
+    public bool fingerRotations = false;
+
+    static bool foldoutLeftHand = false;
+    static bool foldoutRightHand = false;
+
+    static bool foldoutLeftThumb = false;
+    static bool foldoutLeftIndex = false;
+    static bool foldoutLeftMiddle = false;
+    static bool foldoutLeftRing = false;
+    static bool foldoutLeftLittle = false;
+
+    static bool foldoutRightThumb = false;
+    static bool foldoutRightIndex = false;
+    static bool foldoutRightMiddle = false;
+    static bool foldoutRightRing = false;
+    static bool foldoutRightLittle = false;
+
+    #region Finger Foldouts
+    static bool rightThumbProximal = true;
+    static bool rightThumbIntermediate = true;
+    static bool rightThumbDistal = true;
+
+    static bool leftThumbProximal = true;
+    static bool leftThumbIntermediate = true;
+    static bool leftThumbDistal = true;
+
+    static bool rightIndexProximal = true;
+    static bool rightIndexIntermediate = true;
+    static bool rightIndexDistal = true;
+
+    static bool leftIndexProximal = true;
+    static bool leftIndexIntermediate = true;
+    static bool leftIndexDistal = true;
+
+    static bool rightMiddleProximal = true;
+    static bool rightMiddleIntermediate = true;
+    static bool rightMiddleDistal = true;
+
+    static bool leftMiddleProximal = true;
+    static bool leftMiddleIntermediate = true;
+    static bool leftMiddleDistal = true;
+
+    static bool rightRingProximal = true;
+    static bool rightRingIntermediate = true;
+    static bool rightRingDistal = true;
+
+    static bool leftRingProximal = true;
+    static bool leftRingIntermediate = true;
+    static bool leftRingDistal = true;
+
+    static bool rightLittleProximal = true;
+    static bool rightLittleIntermediate = true;
+    static bool rightLittleDistal = true;
+
+    static bool leftLittleProximal = true;
+    static bool leftLittleIntermediate = true;
+    static bool leftLittleDistal = true;
+    #endregion
+
+    #region Finger Gizmos
+    static bool rightThumbProxGizmo = false;
+    static bool rightThumbInterGizmo = false;
+    static bool rightThumbDistGizmo = false;
+
+    static bool leftThumbProxGizmo = false;
+    static bool leftThumbInterGizmo = false;
+    static bool leftThumbDistGizmo = false;
+
+    static bool rightIndexProxGizmo = false;
+    static bool rightIndexInterGizmo = false;
+    static bool rightIndexDistGizmo = false;
+
+    static bool leftIndexProxGizmo = false;
+    static bool leftIndexInterGizmo = false;
+    static bool leftIndexDistGizmo = false;
+
+    static bool rightMiddleProxGizmo = false;
+    static bool rightMiddleInterGizmo = false;
+    static bool rightMiddleDistGizmo = false;
+
+    static bool leftMiddleProxGizmo = false;
+    static bool leftMiddleInterGizmo = false;
+    static bool leftMiddleDistGizmo = false;
+
+    static bool rightRingProxGizmo = false;
+    static bool rightRingInterGizmo = false;
+    static bool rightRingDistGizmo = false;
+
+    static bool leftRingProxGizmo = false;
+    static bool leftRingInterGizmo = false;
+    static bool leftRingDistGizmo = false;
+
+    static bool rightLittleProxGizmo = false;
+    static bool rightLittleInterGizmo = false;
+    static bool rightLittleDistGizmo = false;
+
+    static bool leftLittleProxGizmo = false;
+    static bool leftLittleInterGizmo = false;
+    static bool leftLittleDistGizmo = false;
+    #endregion
+
+    #endregion
+
+    SerializedProperty PoseName;
+    SerializedProperty IsRelativeToNode;
+    SerializedProperty ShowRightHand;
+    SerializedProperty ShowLeftHand;
+    SerializedProperty EditHandPosition;
+    SerializedProperty EditThumb;
+    SerializedProperty EditIndex;
+    SerializedProperty EditMiddle;
+    SerializedProperty EditRing;
+    SerializedProperty EditLittle;
+    SerializedProperty DrawLine;
+    SerializedProperty HandPose;
+
+    SerializedProperty TempValue;
+
+    protected virtual void OnEnable()
+    {
+        PoseName = serializedObject.FindProperty("PoseName");
+        IsRelativeToNode = serializedObject.FindProperty("IsRelativeToNode");
+        ShowRightHand = serializedObject.FindProperty("ShowRightHand");
+        ShowLeftHand = serializedObject.FindProperty("ShowLeftHand");
+        EditHandPosition = serializedObject.FindProperty("EditHandPosition");
+        EditThumb = serializedObject.FindProperty("EditThumb");
+        EditIndex = serializedObject.FindProperty("EditIndex");
+        EditMiddle = serializedObject.FindProperty("EditMiddle");
+        EditRing = serializedObject.FindProperty("EditRing");
+        EditLittle = serializedObject.FindProperty("EditLittle");
+        DrawLine = serializedObject.FindProperty("DrawLine");
+        HandPose = serializedObject.FindProperty("HandPose");
+
+        TempValue = serializedObject.FindProperty("tempValueForTest");
+    }
+
     public override void OnInspectorGUI()
     {
-        DrawDefaultInspector();
+        //DrawDefaultInspector();
+
+        foldoutStyle = EditorStyles.foldout;
+        FontStyle previousStyle = foldoutStyle.fontStyle;
+        foldoutStyle.fontStyle = FontStyle.Bold;
+
+        editPose = ShowLeftHand.boolValue || ShowRightHand.boolValue;
+
         HandPoseSetter handAnimation = (HandPoseSetter)target;
+        EditorGUILayout.PropertyField(HandPose);
+
+        EditorGUILayout.Space(8f);
+
+        EditorGUILayout.PropertyField(PoseName);
+
+        EditorGUILayout.PropertyField(IsRelativeToNode);
+
+        EditorGUILayout.PropertyField(ShowLeftHand);
+        EditorGUILayout.PropertyField(ShowRightHand);
+
+        EditorGUILayout.Space(1f);
+
+        if (editPose)
+        {
+            handSettings = EditorGUILayout.Foldout(handSettings, "Hand Settings", foldoutStyle);
+
+            if (handSettings)
+            {
+                EditorGUI.indentLevel++;
+
+                EditorGUILayout.PropertyField(DrawLine);
+                EditorGUILayout.PropertyField(EditHandPosition);
+
+                editPosition = EditHandPosition.boolValue;
+
+                if (editPosition)
+                {
+                    Tools.current = Tool.View;
+
+                    if (ShowLeftHand.boolValue)
+                    {
+                        foldoutLeftHand = EditorGUILayout.Foldout(foldoutLeftHand, "Left Hand", foldoutStyle);
+
+                        if (foldoutLeftHand)
+                        {
+                            handAnimation.ScriptableHand.LeftHandPosition = EditorGUILayout.Vector3Field("Left Hand Position", handAnimation.ScriptableHand.LeftHandPosition);
+                            handAnimation.ScriptableHand.LeftHandEulerRotation = EditorGUILayout.Vector3Field("Left Hand Rotation", handAnimation.ScriptableHand.LeftHandEulerRotation);
+                        }
+                    }
+
+                    if (ShowRightHand.boolValue)
+                    {
+
+                        foldoutRightHand = EditorGUILayout.Foldout(foldoutRightHand, "Right Hand", foldoutStyle);
+
+                        if (foldoutRightHand)
+                        {
+                            handAnimation.ScriptableHand.RightHandPosition = EditorGUILayout.Vector3Field("Right Hand Position", handAnimation.ScriptableHand.RightHandPosition);
+                            handAnimation.ScriptableHand.RightHandEulerRotation = EditorGUILayout.Vector3Field("Right Hand Rotation", handAnimation.ScriptableHand.RightHandEulerRotation);
+                        }
+                    }
+                }
+                EditorGUI.indentLevel--;
+            }
+
+            EditorGUILayout.Space(1f);
+
+            fingerRotations = EditorGUILayout.Foldout(fingerRotations, "Finger Rotations", foldoutStyle);
+
+            if (fingerRotations)
+            {
+                if (EditThumb.boolValue || EditIndex.boolValue || EditMiddle.boolValue || EditRing.boolValue || EditLittle.boolValue)
+                    Tools.current = Tool.View;
+
+                EditorGUI.indentLevel++;
+
+                EditorGUILayout.PropertyField(EditThumb);
+
+                if (EditThumb.boolValue)
+                {
+                    EditorGUI.indentLevel++;
+
+                    if (ShowLeftHand.boolValue)
+                    {
+                        foldoutLeftThumb = EditorGUILayout.Foldout(foldoutLeftThumb, "Left Thumb Rotations", foldoutStyle);
+
+                        if (foldoutLeftThumb)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (leftThumbProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftThumbProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", leftThumbProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftThumbProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftThumbProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Thumb Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftThumbIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftThumbInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", leftThumbInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftThumbIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftThumbIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Thumb Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftThumbDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftThumbDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", leftThumbDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftThumbDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftThumbDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Thumb Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    if (ShowRightHand.boolValue)
+                    {
+                        foldoutRightThumb = EditorGUILayout.Foldout(foldoutRightThumb, "Right Thumb Rotations", foldoutStyle);
+
+                        if (foldoutRightThumb)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (rightThumbProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightThumbProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", rightThumbProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightThumbProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightThumbProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Thumb Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightThumbIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightThumbInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", rightThumbInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightThumbIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightThumbIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Thumb Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightThumbDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightThumbDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", rightThumbDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightThumbDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightThumbDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Thumb Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    EditorGUI.indentLevel--;
+                }
+
+                EditorGUILayout.PropertyField(EditIndex);
+
+                if (EditIndex.boolValue)
+                {
+                    EditorGUI.indentLevel++;
+
+                    if (ShowLeftHand.boolValue)
+                    {
+                        foldoutLeftIndex = EditorGUILayout.Foldout(foldoutLeftIndex, "Left Index Rotations", foldoutStyle);
+
+                        if (foldoutLeftIndex)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (leftIndexProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftIndexProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", leftIndexProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftIndexProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftIndexProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Index Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftIndexIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftIndexInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", leftIndexInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftIndexIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftIndexIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Index Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftIndexDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftIndexDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", leftIndexDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftIndexDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftIndexDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Index Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    if (ShowRightHand.boolValue)
+                    {
+                        foldoutRightIndex = EditorGUILayout.Foldout(foldoutRightIndex, "Right Index Rotations", foldoutStyle);
+
+                        if (foldoutRightIndex)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (rightIndexProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightIndexProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", rightIndexProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightIndexProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightIndexProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Index Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightIndexIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightIndexInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", rightIndexInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightIndexIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightIndexIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Index Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightIndexDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightIndexDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", rightIndexDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightIndexDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightIndexDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Index Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    EditorGUI.indentLevel--;
+                }
+
+                EditorGUILayout.PropertyField(EditMiddle);
+
+                if (EditMiddle.boolValue)
+                {
+                    EditorGUI.indentLevel++;
+
+                    if (ShowLeftHand.boolValue)
+                    {
+                        foldoutLeftMiddle = EditorGUILayout.Foldout(foldoutLeftMiddle, "Left Middle Rotations", foldoutStyle);
+
+                        if (foldoutLeftMiddle)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (leftMiddleProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftMiddleProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", leftMiddleProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftMiddleProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftMiddleProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Middle Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftMiddleIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftMiddleInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", leftMiddleInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftMiddleIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftMiddleIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Middle Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftMiddleDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftMiddleDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", leftMiddleDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftMiddleDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftMiddleDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Middle Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    if (ShowRightHand.boolValue)
+                    {
+                        foldoutRightMiddle = EditorGUILayout.Foldout(foldoutRightMiddle, "Right Middle Rotations", foldoutStyle);
+
+                        if (foldoutRightMiddle)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (rightMiddleProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightMiddleProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", rightMiddleProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightMiddleProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightMiddleProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Middle Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightMiddleIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightMiddleInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", rightMiddleInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightMiddleIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightMiddleIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Middle Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightMiddleDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightMiddleDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", rightMiddleDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightMiddleDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightMiddleDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Middle Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    EditorGUI.indentLevel--;
+                }
+
+                EditorGUILayout.PropertyField(EditRing);
+
+                if (EditRing.boolValue)
+                {
+                    EditorGUI.indentLevel++;
+
+                    if (ShowLeftHand.boolValue)
+                    {
+                        foldoutLeftRing = EditorGUILayout.Foldout(foldoutLeftRing, "Left Ring Rotations", foldoutStyle);
+
+                        if (foldoutLeftRing)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (leftRingProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftRingProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", leftRingProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftRingProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftRingProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Ring Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftRingIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftRingInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", leftRingInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftRingIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftRingIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Ring Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftRingDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftRingDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", leftRingDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftRingDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftRingDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Ring Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    if (ShowRightHand.boolValue)
+                    {
+                        foldoutRightRing = EditorGUILayout.Foldout(foldoutRightRing, "Right Ring Rotations", foldoutStyle);
+
+                        if (foldoutRightRing)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (rightRingProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightRingProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", rightRingProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightRingProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightRingProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Ring Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightRingIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightRingInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", rightRingInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightRingIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightRingIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Ring Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightRingDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightRingDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", rightRingDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightRingDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightRingDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Ring Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    EditorGUI.indentLevel--;
+                }
+
+                EditorGUILayout.PropertyField(EditLittle);
+
+                if (EditLittle.boolValue)
+                {
+                    EditorGUI.indentLevel++;
+
+                    if (ShowLeftHand.boolValue)
+                    {
+                        foldoutLeftLittle = EditorGUILayout.Foldout(foldoutLeftLittle, "Left Little Rotations", foldoutStyle);
+
+                        if (foldoutLeftLittle)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (leftLittleProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftLittleProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", leftLittleProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftLittleProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftLittleProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Little Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftLittleIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftLittleInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", leftLittleInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftLittleIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftLittleIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Little Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (leftLittleDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = leftLittleDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", leftLittleDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.LeftLittleDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.LeftLittleDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Little Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    if (ShowRightHand.boolValue)
+                    {
+                        foldoutRightLittle = EditorGUILayout.Foldout(foldoutRightLittle, "Right Little Rotations", foldoutStyle);
+
+                        if (foldoutRightLittle)
+                        {
+                            EditorGUI.indentLevel++;
+
+                            if (rightLittleProximal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightLittleProxGizmo = EditorGUILayout.ToggleLeft("Prox. Gizmo", rightLittleProxGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightLittleProximal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightLittleProximal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Little Prox. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightLittleIntermediate)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightLittleInterGizmo = EditorGUILayout.ToggleLeft("Inter. Gizmo", rightLittleInterGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightLittleIntermediate));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightLittleIntermediate), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Little Inter. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            if (rightLittleDistal)
+                            {
+                                EditorGUILayout.BeginHorizontal();
+
+                                TempValue.boolValue = rightLittleDistGizmo = EditorGUILayout.ToggleLeft("Dist. Gizmo", rightLittleDistGizmo, GUILayout.Width(140));
+
+                                var data = handAnimation.ScriptableHand.Get(nameof(BoneType.RightLittleDistal));
+                                handAnimation.ScriptableHand.Set(nameof(BoneType.RightLittleDistal), new SpatialDataInfo(data.Pos, EditorGUILayout.Vector3Field("Little Dist. Rotation", data.Rot)));
+
+                                EditorGUILayout.EndHorizontal();
+                            }
+
+                            EditorGUI.indentLevel--;
+                        }
+                    }
+
+                    EditorGUI.indentLevel--;
+                }
+
+            }
+
+            EditorGUILayout.Space(3f);
+
+            GUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Left Symmetry"))
+            {
+
+            }
+
+            if (GUILayout.Button("Right Symmetry"))
+            {
+
+            }
+
+            GUILayout.EndHorizontal();
+
+        }
+
+        GUILayout.BeginHorizontal();
 
         if (GUILayout.Button("Save Pose"))
         {
@@ -42,6 +807,10 @@ public class HandPoseSetterEditor : Editor
         {
             handAnimation.ResetDictionary();
         }
+
+        GUILayout.EndHorizontal();
+
+        serializedObject.ApplyModifiedProperties();
     }
 
     private void OnSceneGUI()
@@ -140,10 +909,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditThumb)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightThumbProxGizmo)
                     rotRightThumbProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightThumbFirstPhalanx.Rot), matrixRightThumbProximal.MultiplyPoint3x4(RightThumbFirstPhalanx.Pos));
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftThumbProxGizmo)
                     rotLeftThumbProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftThumbFirstPhalanx.Rot), matrixLeftThumbProximal.MultiplyPoint3x4(LeftThumbFirstPhalanx.Pos));
             }
 
@@ -185,10 +954,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditThumb)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightThumbInterGizmo)
                     rotRightThumbIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightThumbFirstPhalanx.Rot) * Quaternion.Euler(RightThumbSecondPhalanx.Rot), posRightThumbIntermediate);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftThumbInterGizmo)
                     rotLeftThumbIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftThumbFirstPhalanx.Rot) * Quaternion.Euler(LeftThumbSecondPhalanx.Rot), posLeftThumbIntermediate);
             }
 
@@ -230,10 +999,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditThumb)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightThumbDistGizmo)
                     rotRightThumbDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightThumbFirstPhalanx.Rot) * Quaternion.Euler(RightThumbSecondPhalanx.Rot) * Quaternion.Euler(RightThumbThirdPhalanx.Rot), posRightThumbDistal);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftThumbDistGizmo)
                     rotLeftThumbDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftThumbFirstPhalanx.Rot) * Quaternion.Euler(LeftThumbSecondPhalanx.Rot) * Quaternion.Euler(LeftThumbThirdPhalanx.Rot), posLeftThumbDistal);
             }
 
@@ -306,10 +1075,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditIndex)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightIndexProxGizmo)
                     rotRightIndexProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightIndexFirstPhalanx.Rot), matrixRightIndexProximal.MultiplyPoint3x4(RightIndexFirstPhalanx.Pos));
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftIndexProxGizmo)
                     rotLeftIndexProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftIndexFirstPhalanx.Rot), matrixLeftIndexProximal.MultiplyPoint3x4(LeftIndexFirstPhalanx.Pos));
             }
 
@@ -350,10 +1119,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditIndex)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightIndexInterGizmo)
                     rotRightIndexIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightIndexFirstPhalanx.Rot) * Quaternion.Euler(RightIndexSecondPhalanx.Rot), posRightIndexIntermediate);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftIndexInterGizmo)
                     rotLeftIndexIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftIndexFirstPhalanx.Rot) * Quaternion.Euler(LeftIndexSecondPhalanx.Rot), posLeftIndexIntermediate);
             }
 
@@ -394,10 +1163,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditIndex)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightIndexDistGizmo)
                     rotRightIndexDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightIndexFirstPhalanx.Rot) * Quaternion.Euler(RightIndexSecondPhalanx.Rot) * Quaternion.Euler(RightIndexThirdPhalanx.Rot), posRightIndexDistal);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftIndexDistGizmo)
                     rotLeftIndexDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftIndexFirstPhalanx.Rot) * Quaternion.Euler(LeftIndexSecondPhalanx.Rot) * Quaternion.Euler(LeftIndexThirdPhalanx.Rot), posLeftIndexDistal);
             }
 
@@ -471,10 +1240,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditMiddle)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightMiddleProxGizmo)
                     rotRightMiddleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightMiddleFirstPhalanx.Rot), matrixRightMiddleProximal.MultiplyPoint3x4(RightMiddleFirstPhalanx.Pos));
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftMiddleProxGizmo)
                     rotLeftMiddleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftMiddleFirstPhalanx.Rot), matrixLeftMiddleProximal.MultiplyPoint3x4(LeftMiddleFirstPhalanx.Pos));
             }
 
@@ -516,10 +1285,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditMiddle)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightMiddleInterGizmo)
                     rotRightMiddleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightMiddleFirstPhalanx.Rot) * Quaternion.Euler(RightMiddleSecondPhalanx.Rot), posRightMiddleIntermediate);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftMiddleInterGizmo)
                     rotLeftMiddleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftMiddleFirstPhalanx.Rot) * Quaternion.Euler(LeftMiddleSecondPhalanx.Rot), posLeftMiddleIntermediate);
             }
 
@@ -560,10 +1329,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditMiddle)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightMiddleDistGizmo)
                     rotRightMiddleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightMiddleFirstPhalanx.Rot) * Quaternion.Euler(RightMiddleSecondPhalanx.Rot) * Quaternion.Euler(RightMiddleThirdPhalanx.Rot), posRightMiddleDistal);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftMiddleDistGizmo)
                     rotLeftMiddleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftMiddleFirstPhalanx.Rot) * Quaternion.Euler(LeftMiddleSecondPhalanx.Rot) * Quaternion.Euler(LeftMiddleThirdPhalanx.Rot), posLeftMiddleDistal);
             }
 
@@ -637,10 +1406,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditRing)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightRingProxGizmo)
                     rotRightRingProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightRingFirstPhalanx.Rot), matrixRightRingProximal.MultiplyPoint3x4(RightRingFirstPhalanx.Pos));
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftRingProxGizmo)
                     rotLeftRingProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftRingFirstPhalanx.Rot), matrixLeftRingProximal.MultiplyPoint3x4(LeftRingFirstPhalanx.Pos));
             }
 
@@ -681,10 +1450,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditRing)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightRingInterGizmo)
                     rotRightRingIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightRingFirstPhalanx.Rot) * Quaternion.Euler(RightRingSecondPhalanx.Rot), posRightRingIntermediate);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftRingInterGizmo)
                     rotLeftRingIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftRingFirstPhalanx.Rot) * Quaternion.Euler(LeftRingSecondPhalanx.Rot), posLeftRingIntermediate);
             }
 
@@ -725,10 +1494,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditRing)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightRingDistGizmo)
                     rotRightRingDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightRingFirstPhalanx.Rot) * Quaternion.Euler(RightRingSecondPhalanx.Rot) * Quaternion.Euler(RightRingThirdPhalanx.Rot), posRightRingDistal);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftRingDistGizmo)
                     rotLeftRingDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftRingFirstPhalanx.Rot) * Quaternion.Euler(LeftRingSecondPhalanx.Rot) * Quaternion.Euler(LeftRingThirdPhalanx.Rot), posLeftRingDistal);
             }
 
@@ -801,10 +1570,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditLittle)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightLittleProxGizmo)
                     rotRightLittleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightLittleFirstPhalanx.Rot), matrixRightLittleProximal.MultiplyPoint3x4(RightLittleFirstPhalanx.Pos));
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftLittleProxGizmo)
                     rotLeftLittleProximal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftLittleFirstPhalanx.Rot), matrixLeftLittleProximal.MultiplyPoint3x4(LeftLittleFirstPhalanx.Pos));
             }
 
@@ -845,10 +1614,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditLittle)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightLittleInterGizmo)
                     rotRightLittleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightLittleFirstPhalanx.Rot) * Quaternion.Euler(RightLittleSecondPhalanx.Rot), posRightLittleIntermediate);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftLittleInterGizmo)
                     rotLeftLittleIntermediate = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftLittleFirstPhalanx.Rot) * Quaternion.Euler(LeftLittleSecondPhalanx.Rot), posLeftLittleIntermediate);
             }
 
@@ -889,10 +1658,10 @@ public class HandPoseSetterEditor : Editor
 
             if (handAnimation.EditLittle)
             {
-                if (handAnimation.ShowRightHand)
+                if (handAnimation.ShowRightHand && rightLittleDistGizmo)
                     rotRightLittleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.RightHandEulerRotation) * Quaternion.Euler(RightLittleFirstPhalanx.Rot) * Quaternion.Euler(RightLittleSecondPhalanx.Rot) * Quaternion.Euler(RightLittleThirdPhalanx.Rot), posRightLittleDistal);
 
-                if (handAnimation.ShowLeftHand)
+                if (handAnimation.ShowLeftHand && leftLittleDistGizmo)
                     rotLeftLittleDistal = Handles.RotationHandle(handAnimation.transform.rotation * Quaternion.Euler(handAnimation.ScriptableHand.LeftHandEulerRotation) * Quaternion.Euler(LeftLittleFirstPhalanx.Rot) * Quaternion.Euler(LeftLittleSecondPhalanx.Rot) * Quaternion.Euler(LeftLittleThirdPhalanx.Rot), posLeftLittleDistal);
             }
 

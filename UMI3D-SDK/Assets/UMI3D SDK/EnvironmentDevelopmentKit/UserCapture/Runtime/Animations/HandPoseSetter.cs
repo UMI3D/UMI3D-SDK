@@ -47,6 +47,8 @@ namespace umi3d.edk.userCapture
 
         public bool DrawLine = false;
 
+        public bool tempValueForTest = true;
+
         [HideInInspector]
         public Color HandColor = Color.blue;
         [HideInInspector]
