@@ -121,6 +121,11 @@ namespace umi3d.edk.collaboration
 
         List<Umi3dNetworkingHelperModule> collaborativeModule;
 
+        private void Start()
+        {
+            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+        }
+
         /// <summary>
         /// Initialize the server.
         /// </summary>
@@ -226,7 +231,7 @@ namespace umi3d.edk.collaboration
             throw new Exception("Local IP Address Not Found!");
         }
 
-        void OnApplicationQuit()
+        void ApplicationQuit()
         {
             Clear();
         }
