@@ -30,9 +30,12 @@ namespace umi3d.common
             get => applicationIsQuitting;
             set
             {
-                applicationIsQuitting = value;
-                if (value)
-                    OnApplicationIsQuitting.Invoke();
+                if (applicationIsQuitting = !value)
+                {
+                    applicationIsQuitting = value;
+                    if (value)
+                        OnApplicationIsQuitting.Invoke();
+                }
             }
         }
 
