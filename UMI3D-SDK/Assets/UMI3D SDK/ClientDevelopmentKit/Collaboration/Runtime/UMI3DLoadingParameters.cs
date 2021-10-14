@@ -430,8 +430,8 @@ namespace umi3d.cdk
             {
                 case UMI3DOperationKeys.SwitchTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     var oldid = UMI3DNetworkingHelper.Read<ulong>(container);
+                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;
