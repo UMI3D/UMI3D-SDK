@@ -142,7 +142,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DVolumeLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, property))
+            if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
