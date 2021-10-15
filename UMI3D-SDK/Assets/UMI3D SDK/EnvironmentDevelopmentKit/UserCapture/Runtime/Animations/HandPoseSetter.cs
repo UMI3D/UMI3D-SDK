@@ -47,8 +47,6 @@ namespace umi3d.edk.userCapture
 
         public bool DrawLine = false;
 
-        public bool tempValueForTest = true;
-
         [HideInInspector]
         public Color HandColor = Color.blue;
         [HideInInspector]
@@ -59,6 +57,8 @@ namespace umi3d.edk.userCapture
         [HideInInspector]
         public HandDescription ScriptableHand;
         public UMI3DHandPose HandPose;
+
+        public bool tempValueForTest = true;
 
         private void Reset()
         {
@@ -236,6 +236,102 @@ namespace umi3d.edk.userCapture
 
                 SceneView.RepaintAll();
             }
+        }
+
+        public void CreateLeftSymmetry()
+        {
+            Vector3 tempData;
+
+            tempData = ScriptableHand.Get(nameof(BoneType.RightThumbProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftThumbProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftThumbProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightThumbIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftThumbIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftThumbIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightThumbDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftThumbDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftThumbDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.RightIndexProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftIndexProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftIndexProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightIndexIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftIndexIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftIndexIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightIndexDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftIndexDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftIndexDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.RightMiddleDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftMiddleDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftMiddleDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightMiddleIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftMiddleIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftMiddleIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightMiddleProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftMiddleProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftMiddleProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.RightRingDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftRingDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftRingDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightRingIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftRingIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftRingIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightRingProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftRingProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftRingProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.RightLittleDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftLittleDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftLittleDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightLittleIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftLittleIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftLittleIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.RightLittleProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.LeftLittleProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.LeftLittleProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.RightHandPosition;
+            ScriptableHand.LeftHandPosition = new Vector3(-tempData.x, tempData.y, tempData.z);
+
+            tempData = ScriptableHand.RightHandEulerRotation;
+            ScriptableHand.LeftHandEulerRotation = new Vector3(tempData.x, -tempData.y, -tempData.z);
+
+            SceneView.RepaintAll();
+        }
+
+        public void CreateRightSymmetry()
+        {
+            Vector3 tempData;
+
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftThumbProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightThumbProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightThumbProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftThumbIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightThumbIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightThumbIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftThumbDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightThumbDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightThumbDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftIndexProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightIndexProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightIndexProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftIndexIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightIndexIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightIndexIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftIndexDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightIndexDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightIndexDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftMiddleDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightMiddleDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightMiddleDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftMiddleIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightMiddleIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightMiddleIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftMiddleProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightMiddleProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightMiddleProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftRingDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightRingDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightRingDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftRingIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightRingIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightRingIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftRingProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightRingProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightRingProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftLittleDistal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightLittleDistal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightLittleDistal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftLittleIntermediate)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightLittleIntermediate), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightLittleIntermediate)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+            tempData = ScriptableHand.Get(nameof(BoneType.LeftLittleProximal)).Rot;
+            ScriptableHand.Set(nameof(BoneType.RightLittleProximal), new SpatialDataInfo(ScriptableHand.Get(nameof(BoneType.RightLittleProximal)).Pos, new Vector3(tempData.x, -tempData.y, -tempData.z)));
+
+            tempData = ScriptableHand.LeftHandPosition;
+            ScriptableHand.RightHandPosition = new Vector3(-tempData.x, tempData.y, tempData.z);
+
+            tempData = ScriptableHand.LeftHandEulerRotation;
+            ScriptableHand.RightHandEulerRotation = new Vector3(tempData.x, -tempData.y, -tempData.z);
+
+            SceneView.RepaintAll();
         }
     }
 }
