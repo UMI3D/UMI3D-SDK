@@ -53,7 +53,7 @@ namespace umi3d.cdk
         }
 
         /// <see cref="IResourcesLoader.UrlToObject"/>
-        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectInBundle = "")
+        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
 
             // add bundle in the cache
@@ -72,11 +72,11 @@ namespace umi3d.cdk
                         if (bundle != null)
                             callback.Invoke(bundle);
                         else
-                            failCallback.Invoke(new Umi3dExecption(0, "Bundle was empty"));
+                            failCallback.Invoke(new Umi3dException(0, "Bundle was empty"));
                     }
                     catch (Exception e)
                     {
-                        failCallback.Invoke(new Umi3dExecption(0, e.Message));
+                        failCallback.Invoke(new Umi3dException(0, e.Message));
                     }
                 },
                 s => failCallback.Invoke(s)

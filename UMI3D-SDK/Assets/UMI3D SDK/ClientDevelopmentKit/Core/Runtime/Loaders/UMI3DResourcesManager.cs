@@ -185,7 +185,7 @@ namespace umi3d.cdk
             /// <summary>
             /// Callback to call when the object finish loading with an error.
             /// </summary>
-            public List<Action<Umi3dExecption>> loadFailCallback;
+            public List<Action<Umi3dException>> loadFailCallback;
             /// <summary>
             /// Action to invoke when the object need to be deleted.
             /// </summary>
@@ -250,7 +250,7 @@ namespace umi3d.cdk
                 entityIds = entityId;
                 libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
-                loadFailCallback = new List<Action<Umi3dExecption>>();
+                loadFailCallback = new List<Action<Umi3dException>>();
                 state = Estate.Loaded;
                 downloadedPath = null;
                 this.url = url;
@@ -263,14 +263,14 @@ namespace umi3d.cdk
                 entityIds = new HashSet<ulong>() { entityId };
                 libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
-                loadFailCallback = new List<Action<Umi3dExecption>>();
+                loadFailCallback = new List<Action<Umi3dException>>();
                 state = Estate.Loaded;
                 downloadedPath = null;
                 this.url = url;
                 a = rx.Match(url);
             }
 
-            public ObjectData(string url, string extension, string authorization, HashSet<ulong> entityId, List<Action<object>> loadCallback, List<Action<Umi3dExecption>> loadFailCallback)
+            public ObjectData(string url, string extension, string authorization, HashSet<ulong> entityId, List<Action<object>> loadCallback, List<Action<Umi3dException>> loadFailCallback)
             {
                 value = null;
                 entityIds = entityId;
@@ -285,13 +285,13 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string authorization, ulong entityId, Action<object> loadCallback, Action<Umi3dExecption> loadFailCallback)
+            public ObjectData(string url, string extension, string authorization, ulong entityId, Action<object> loadCallback, Action<Umi3dException> loadFailCallback)
             {
                 value = null;
                 entityIds = new HashSet<ulong>() { entityId };
                 libraryIds = new HashSet<string>();
                 this.loadCallback = new List<Action<object>>() { loadCallback };
-                this.loadFailCallback = new List<Action<Umi3dExecption>>() { loadFailCallback };
+                this.loadFailCallback = new List<Action<Umi3dException>>() { loadFailCallback };
                 state = Estate.NotLoaded;
                 downloadedPath = null;
                 this.url = url;
@@ -306,7 +306,7 @@ namespace umi3d.cdk
                 entityIds = new HashSet<ulong>() { entityId };
                 libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
-                loadFailCallback = new List<Action<Umi3dExecption>>();
+                loadFailCallback = new List<Action<Umi3dException>>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
                 this.url = url;
@@ -321,7 +321,7 @@ namespace umi3d.cdk
                 entityIds = new HashSet<ulong>();
                 libraryIds = new HashSet<string>() { libraryId };
                 loadCallback = new List<Action<object>>();
-                loadFailCallback = new List<Action<Umi3dExecption>>();
+                loadFailCallback = new List<Action<Umi3dException>>();
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
                 this.url = url;
@@ -336,7 +336,7 @@ namespace umi3d.cdk
                 entityIds = new HashSet<ulong>() { entityId };
                 libraryIds = new HashSet<string>();
                 loadCallback = new List<Action<object>>();
-                loadFailCallback = new List<Action<Umi3dExecption>>();
+                loadFailCallback = new List<Action<Umi3dException>>();
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
                 this.url = url;
@@ -371,7 +371,7 @@ namespace umi3d.cdk
                     if (ObjectValue.state == ObjectData.Estate.Loading && ObjectValue.loadFailCallback != null)
                         foreach (var failback in ObjectValue.loadFailCallback)
                         {
-                            failback.Invoke(new Umi3dExecption(0, "clear all cache"));
+                            failback.Invoke(new Umi3dException(0, "clear all cache"));
                         }
                     ObjectValue.DeleteAction?.Invoke(ObjectValue.value, "clear all cache");
                 }
@@ -508,17 +508,17 @@ namespace umi3d.cdk
         #endregion
         #region file Load
 
-        static public void LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dExecption> failCallback, Action<object, string> deleteAction)
+        static public void LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {
             Instance._LoadFile(id, file, urlToObject, objectFromCache, callback, failCallback, deleteAction);
         }
 
-        static void LoadFile(ulong id, ObjectData file, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dExecption> failCallback, Action<object, string> deleteAction)
+        static void LoadFile(ulong id, ObjectData file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {
             Instance._LoadFile(id, file, urlToObject, objectFromCache, callback, failCallback, deleteAction);
         }
 
-        void _LoadFile(ulong id, ObjectData objectData, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dExecption> failCallback, Action<object, string> deleteAction, string PathIfInBundle = null)
+        void _LoadFile(ulong id, ObjectData objectData, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction, string PathIfInBundle = null)
         {
             bool shouldLoad = true;
 
@@ -555,7 +555,7 @@ namespace umi3d.cdk
                         foreach (var back in objectData.loadCallback)
                             back.Invoke(obj);
                     };
-                    Action<Umi3dExecption> error2 = (reason) =>
+                    Action<Umi3dException> error2 = (reason) =>
                     {
                         foreach (var back in objectData.loadFailCallback)
                             back.Invoke(reason);
@@ -563,7 +563,7 @@ namespace umi3d.cdk
                     StartCoroutine(urlToObjectWithPolicy(sucess2, error2, path, objectData.extension, objectData, null, urlToObject));
                 };
 
-                Action<Umi3dExecption> error = (reason) =>
+                Action<Umi3dException> error = (reason) =>
                 {
                     //Debug.LogWarning($"error {reason}");
                     foreach (var back in objectData.loadFailCallback)
@@ -574,14 +574,14 @@ namespace umi3d.cdk
             }
         }
 
-        IEnumerator urlToObjectWithPolicy(Action<object> succes, Action<Umi3dExecption> error, string path, string extension, ObjectData objectData, string bundlePath, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Func<RequestFailedArgument, bool> ShouldTryAgain = null, int tryCount = 0)
+        IEnumerator urlToObjectWithPolicy(Action<object> succes, Action<Umi3dException> error, string path, string extension, ObjectData objectData, string bundlePath, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Func<RequestFailedArgument, bool> ShouldTryAgain = null, int tryCount = 0)
         {
             if (ShouldTryAgain == null)
                 ShouldTryAgain = DefaultShouldTryAgain;
             if (tryCount > 0)
                 yield return new WaitForEndOfFrame();
             DateTime date = DateTime.UtcNow;
-            Action<Umi3dExecption> error2 = (reason) =>
+            Action<Umi3dException> error2 = (reason) =>
             {
                 //Debug.Log($"here try again {reason.Message} [{reason.errorCode}] {tryCount}");
                 if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(reason.errorCode, () => StartCoroutine(urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)), tryCount, date, ShouldTryAgain)))
@@ -592,7 +592,7 @@ namespace umi3d.cdk
             yield break;
         }
 
-        void _LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dExecption>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dExecption> failCallback, Action<object, string> deleteAction)
+        void _LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {
             Match matchUrl = ObjectData.rx.Match(file.url);
             ObjectData objectData = CacheCollection.Find((o) =>
@@ -612,7 +612,7 @@ namespace umi3d.cdk
         }
 
 
-        void GetFilePath(string url, Action<string> callback, Action<Umi3dExecption> error, string libraryKey = null)
+        void GetFilePath(string url, Action<string> callback, Action<Umi3dException> error, string libraryKey = null)
         {
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = CacheCollection.Find((o) =>
@@ -939,12 +939,12 @@ namespace umi3d.cdk
             return argument.GetRespondCode() == 401 && argument.count < 3;
         }
 
-        static public void DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dExecption> failCallback, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        static public void DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             Instance.StartCoroutine(Instance._DownloadObject(www, callback, failCallback, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)));
         }
 
-        IEnumerator _DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dExecption> failCallback, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
+        IEnumerator _DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
         {
             yield return www.SendWebRequest();
             if (www.isNetworkError || www.isHttpError)
@@ -954,7 +954,7 @@ namespace umi3d.cdk
                 //{
                 if (failCallback != null)
                 {
-                    failCallback.Invoke(new Umi3dExecption(www.responseCode, $"failed to load {www.url} [{www.error}]"));
+                    failCallback.Invoke(new Umi3dException(www.responseCode, $"failed to load {www.url} [{www.error}]"));
                 }
                 else
                 {

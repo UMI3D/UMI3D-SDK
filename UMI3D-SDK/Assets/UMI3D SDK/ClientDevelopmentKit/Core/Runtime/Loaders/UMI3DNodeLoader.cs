@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
 
             base.ReadUMI3DExtension(dto, node, () =>
@@ -72,7 +72,7 @@ namespace umi3d.cdk
 
                      finished?.Invoke();
                  }
-                 else failed?.Invoke(new Umi3dExecption(0,"nodeDto should not be null"));
+                 else failed?.Invoke(new Umi3dException(0,"nodeDto should not be null"));
              }, failed);
         }
 

@@ -65,14 +65,14 @@ namespace umi3d.cdk
 
     }
 
-    public class Umi3dExecption : Exception
+    public class Umi3dException : Exception
     {
-        public Umi3dExecption(long errorCode, string message) : base(message)
+        public Umi3dException(long errorCode, string message) : base(message)
         {
             this.errorCode = errorCode;
         }
 
-        public Umi3dExecption(string message) : base(message)
+        public Umi3dException(string message) : base(message)
         {
             this.errorCode = 0;
         }
