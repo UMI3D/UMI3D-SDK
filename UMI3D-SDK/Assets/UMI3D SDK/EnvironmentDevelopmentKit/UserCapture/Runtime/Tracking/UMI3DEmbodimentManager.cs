@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -56,7 +58,10 @@ namespace umi3d.edk.userCapture
         {
             UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
             UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
+            WriteCollections();
         }
+
+        #region Tracking Data
 
         public virtual bool BoneTrackedInformation(ulong userId, uint bonetype)
         {
@@ -93,7 +98,12 @@ namespace umi3d.edk.userCapture
             }
 
             GameObject embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
-            embd.transform.SetParent(EmbodimentsScene.transform);
+
+            if (EmbodimentsScene != null)
+                embd.transform.SetParent(EmbodimentsScene.transform);
+            else
+                Debug.LogWarning("The embodiments scene is not set !");
+            
             trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
             LoadAvatarNode(trackedUser.Avatar);
@@ -229,6 +239,9 @@ namespace umi3d.edk.userCapture
             obj.objectRotation.SetValue(obj.transform.localRotation);
             obj.objectScale.SetValue(obj.transform.localScale);
         }
+        #endregion
+
+        #region Bindings
 
         /// <summary>
         /// Set the activation of Bindings of an Avatar Node.
@@ -433,5 +446,29 @@ namespace umi3d.edk.userCapture
             operations.Insert(0, obj.bindings.RemoveAt(user, index));
             return operations;
         }
+
+        #endregion
+
+        #region Hand Animation
+
+        [HideInInspector]
+        public List<ulong> handPoseIds = new List<ulong>();
+
+        [EditorReadOnly]
+        public List<UMI3DHandPose> PreloadedHandPoses = new List<UMI3DHandPose>();
+
+        protected virtual void WriteCollections()
+        {
+            handPoseIds.Clear();
+
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()));
+        }
+
+        public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
+        {
+            if (avatarNodeDto.userId.Equals(user.Id()))
+                avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
+        }
+        #endregion
     }
 }

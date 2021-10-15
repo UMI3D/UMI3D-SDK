@@ -26,12 +26,12 @@ namespace umi3d.cdk
     public class UMI3DAbstractAnchorLoader
     {
 
-        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             finished.Invoke();
         }
 
-        public virtual bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             return false;
         }

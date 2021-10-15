@@ -23,7 +23,7 @@ namespace umi3d.edk.interaction
 {
     public class LocalInfoParameter : AbstractParameter
     {
-        public static Dictionary<(UMI3DUser, string), (bool, bool)> userResponses { get; private set; } = new Dictionary<(UMI3DUser, string), (bool, bool)>();
+        public static Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue> userResponses { get; private set; } = new Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue>();
 
         /// <summary>
         /// Current input value for reading authorization.
@@ -50,16 +50,6 @@ namespace umi3d.edk.interaction
         /// </summary>
         public string key = "";
 
-        /// <summary>
-        /// Event raised when value changes to true.
-        /// </summary>
-        public InteractionEvent onChangeTrue = new InteractionEvent();
-
-        /// <summary>
-        /// Event raised when value changes to false.
-        /// </summary>
-        public InteractionEvent onChangeFalse = new InteractionEvent();
-
         private string appName;
 
         /// <summary>
@@ -69,6 +59,11 @@ namespace umi3d.edk.interaction
         protected override AbstractInteractionDto CreateDto()
         {
             return new LocalInfoRequestParameterDto();
+        }
+
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.LocalInfoParameter;
         }
 
         /// <summary>
@@ -85,7 +80,18 @@ namespace umi3d.edk.interaction
             LIRPdto.serverName = serverName;
             LIRPdto.reason = reason;
             LIRPdto.key = key;
-            LIRPdto.value = (readValue, writeValue);
+            LIRPdto.value = new LocalInfoRequestParameterValue(readValue, writeValue);
+        }
+
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                + UMI3DNetworkingHelper.Write(appName)
+                + UMI3DNetworkingHelper.Write(serverName)
+                + UMI3DNetworkingHelper.Write(reason)
+                + UMI3DNetworkingHelper.Write(key)
+                + UMI3DNetworkingHelper.Write(readValue)
+                + UMI3DNetworkingHelper.Write(writeValue);
         }
 
         ///<inheritdoc/>
@@ -94,11 +100,9 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case ParameterSettingRequestDto settingRequestDto:
-                    if (settingRequestDto.parameter is LocalInfoRequestParameterDto parameter)
+                    if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter )
                     {
                         ChageUserLocalInfo(user, parameter); 
-                        
-                        Debug.Log("receive new authorisaation : " + key + "   " + parameter.value);
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
@@ -111,17 +115,18 @@ namespace umi3d.edk.interaction
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             throw new System.NotImplementedException();
+            //change user access authorization isn't supported after connexion.
         }
 
-        public static void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterDto parameter)
+        public void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterValue value)
         {
-            if (userResponses.ContainsKey((user, parameter.key)))
+            if (userResponses.ContainsKey((user, key)))
             {
-                userResponses[(user, parameter.key)] = parameter.value;
+                userResponses[(user, key)] = value;
             }
             else
             {
-                userResponses.Add((user, parameter.key), parameter.value);
+                userResponses.Add((user, key), value);
             }
         }
 
@@ -130,7 +135,5 @@ namespace umi3d.edk.interaction
         {
             appName = Application.productName;
         }
-
-
     }
 }

@@ -42,12 +42,12 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke("dto should be an  UMI3DAbstractNodeDto");
+                failed.Invoke(new Umi3dExecption(0,"dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
 
@@ -79,7 +79,7 @@ namespace umi3d.cdk
                                 finished.Invoke();
                             }
                             else
-                                failed?.Invoke($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto");
+                                failed?.Invoke(new Umi3dExecption(0, $"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
 
                         },
                         failed,
@@ -135,10 +135,10 @@ namespace umi3d.cdk
             {
                 root = go;
             }
-            var instance = GameObject.Instantiate(root, parent, true);
+            GameObject instance = GameObject.Instantiate(root, parent, true);
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
-            var renderers = instance.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
 
             foreach (var renderer in renderers)

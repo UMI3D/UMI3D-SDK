@@ -351,10 +351,10 @@ namespace BeardedManStudios.Forge.Networking
 
 					if (udpPlayers.TryGetValue(incomingEndpoint, out player))
 					{
-						Unity.MainThreadManager.Run(() =>
-						{
-							UnityEngine.Debug.LogWarning($"Error while reading data from a client. A client might have been killed. Last read client (might not be the one that deconected) was {incomingEndpoint} [id:{player.NetworkId}] {e}");
-						});
+						//Unity.MainThreadManager.Run(() =>
+						//{
+						//	UnityEngine.Debug.LogWarning($"Error while reading data from a client. A client might have been killed. Last read client (might not be the one that deconected) was {incomingEndpoint} [id:{player.NetworkId}] {e}");
+						//});
 						//FinalizeRemovePlayer(player, true);
 					}
 

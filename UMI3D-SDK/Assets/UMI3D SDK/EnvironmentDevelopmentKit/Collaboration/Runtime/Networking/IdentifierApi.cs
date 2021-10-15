@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration
         /// <param name="user">User.</param>
         /// <param name="identity">Identity Dto send by the user.</param>
         /// <returns></returns>
-        public virtual StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionDto identity)
+        public virtual StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto identity)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<ulong, bool>();
             librariesUpdateStatus[user.Id()] = identity.librariesUpdated;
@@ -45,12 +45,15 @@ namespace umi3d.edk.collaboration
         }
 
 
-        void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, FormDto param)
+        void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, FormAnswerDto param)
         {
             if (param != null)
-                foreach (var dto in param.fields)
-                    if (dto is LocalInfoRequestParameterDto)
-                        LocalInfoParameter.ChageUserLocalInfo(user, dto as LocalInfoRequestParameterDto);
+                foreach (var dto in param.answers)
+                {
+                    var interaction = UMI3DEnvironment.GetEntity<AbstractInteraction>(dto.id);
+                    if (interaction is LocalInfoParameter local)
+                        local.ChageUserLocalInfo(user, dto.parameter as LocalInfoRequestParameterValue);
+                }
         }
 
         /// <summary>

@@ -123,7 +123,6 @@ namespace umi3d.cdk
             {
                 matToApply.ApplyShaderProperty(property, newValue);
                 int propertyId = matToApply.shader.FindPropertyIndex(property.propertyName);
-                //Debug.Log("property : " + property.propertyName + "   " + propertyId);
 
                 if (propertyId > -1 && property == MRTKShaderUtils.MainTex)
                 {
@@ -143,7 +142,6 @@ namespace umi3d.cdk
             bool flipY = false
             )
         {
-            //Debug.Log("try set transform with property id : " + propertyId);
 
             Vector2 offset = Vector2.zero;
             Vector2 scale = Vector2.one;

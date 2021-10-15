@@ -20,6 +20,7 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Linq;
+using inetum.unityUtils.editor;
 #if UNITY_EDITOR
 public class PackagesExporter 
 {
@@ -137,7 +138,7 @@ public class PackagesExporter
         {
             Directory.CreateDirectory(Application.dataPath + "/../" + packageFolder + "/module");
         }
-        Debug.Log(Application.dataPath + packageFolder);
+        Debug.Log($"Export package at {Application.dataPath + packageFolder}");
         if (all)
         {
             AssetDatabase.ExportPackage(assetDependencies, pathDependencies, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);

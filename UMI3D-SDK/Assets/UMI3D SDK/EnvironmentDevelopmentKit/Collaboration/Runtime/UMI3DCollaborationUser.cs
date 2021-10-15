@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            UserConnectionDto ucDto = new UserConnectionDto(ToUserDto());
+            UserConnectionAnswerDto ucDto = new UserConnectionAnswerDto(ToUserDto());
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
             RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
@@ -66,7 +66,14 @@ namespace umi3d.edk.collaboration
         public UMI3DForgeServer forgeServer;
 
         public UMI3DAudioPlayer audioPlayer;
+        public int audioFrequency = 12000;
         public UMI3DAudioPlayer videoPlayer;
+
+        public void NotifyUpdate()
+        {
+            UMI3DCollaborationServer.Collaboration.NotifyUserStatusChanged(this);
+        }
+
 
         public string RenewToken()
         {
@@ -104,6 +111,9 @@ namespace umi3d.edk.collaboration
             user.status = status;
             user.avatarId = Avatar == null ? 0 : Avatar.Id();
             user.networkId = networkPlayer?.NetworkId ?? 0;
+            user.audioSourceId = audioPlayer?.Id() ?? 0;
+            user.audioFrequency = audioFrequency;
+            user.videoSourceId = videoPlayer?.Id() ?? 0;
             return user;
         }
 

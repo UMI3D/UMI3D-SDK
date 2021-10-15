@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -54,6 +55,10 @@ namespace umi3d.cdk.userCapture
         [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
 
+        public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
+
+        public HandPoseEvent handPoseEvent = new HandPoseEvent();
+
         public class AvatarEvent : UnityEvent<ulong> { };
 
         public AvatarEvent avatarEvent = new AvatarEvent();
@@ -73,9 +78,9 @@ namespace umi3d.cdk.userCapture
         {
             streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
             sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
-            sendingCameraProperties.Invoke();
             startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
-            startingSendingTracking.Invoke();
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
         }
 
         /// <summary>
@@ -91,9 +96,6 @@ namespace umi3d.cdk.userCapture
 
                     if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != 0)
                         UMI3DClientServer.SendTracking(LastFrameDto);
-
-                    //if (embodimentDict.TryGetValue(UMI3DClientServer.Instance.GetId(), out UserAvatar userAvatar))
-                        //userAvatar.UpdateAvatarPosition(LastFrameDto, Convert.ToUInt64(Time.time * 1000));
 
                     if (sendCameraProperties)
                         sendingCameraProperties.Invoke();

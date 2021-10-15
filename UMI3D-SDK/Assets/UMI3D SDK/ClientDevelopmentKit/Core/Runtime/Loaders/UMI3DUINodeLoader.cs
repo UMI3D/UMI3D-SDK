@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using umi3d.common;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the UMI3D UI will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             base.ReadUMI3DExtension(dto, node, () =>
              {

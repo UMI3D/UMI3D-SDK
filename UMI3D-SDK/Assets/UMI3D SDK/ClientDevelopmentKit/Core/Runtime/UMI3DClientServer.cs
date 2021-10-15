@@ -50,6 +50,16 @@ namespace umi3d.cdk
         }
         protected virtual string _getAuthorization() { return null; }
 
+        /// <summary>
+        /// Retry a failed http request
+        /// </summary>
+        /// <param name="argument">failed request argument</param>
+        /// <returns></returns>
+        public virtual bool TryAgainOnHttpFail(RequestFailedArgument argument)
+        {
+            return false;
+        }
+
         static public void SendData(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
@@ -88,7 +98,7 @@ namespace umi3d.cdk
         /// return time server in millisecond, use synchronised time in collaborative cases.
         /// </summary>
         /// <returns></returns>
-        public virtual ulong GetTime() { return (ulong)DateTime.Now.Millisecond; }
+        public virtual ulong GetTime() { return (ulong)(long)DateTime.Now.Millisecond; }
 
         /// <summary>
         /// return HTTPClient if the server is a collaboration server. return null in that case

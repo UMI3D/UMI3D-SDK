@@ -16,12 +16,32 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// local info request acces parameter dto.
+    /// </summary>
+    [System.Serializable]
+    public class LocalInfoRequestParameterValue
+    {
+        public bool read;
+        public bool write;
+
+        public LocalInfoRequestParameterValue(bool read, bool write)
+        {
+            this.read = read;
+            this.write = write;
+        }
+
+        public override string ToString()
+        {
+            return $"LocalInfoRequestParameterValue [Read:{read}|Write:{write}]";
+        }
+    }
 
     /// <summary>
     /// local info request acces parameter dto.
     /// </summary>
     [System.Serializable]
-    public class LocalInfoRequestParameterDto : AbstractParameterDto<(bool,bool)> //read authorization, write authorization
+    public class LocalInfoRequestParameterDto : AbstractParameterDto<LocalInfoRequestParameterValue> //read authorization, write authorization
     {
         public LocalInfoRequestParameterDto() : base() { }
 

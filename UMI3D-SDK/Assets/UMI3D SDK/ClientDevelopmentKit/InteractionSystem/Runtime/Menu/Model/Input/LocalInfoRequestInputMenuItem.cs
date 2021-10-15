@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using umi3d.common.interaction;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.menu
@@ -21,17 +22,12 @@ namespace umi3d.cdk.menu
     /// <summary>
     /// Boolean input menu item.
     /// </summary>
-    public class LocalInfoRequestInputMenuItem : AbstractInputMenuItem<(bool,bool)> // (read,write)
+    public class LocalInfoRequestInputMenuItem : AbstractInputMenuItem<LocalInfoRequestParameterValue> // (read,write)
     {
         /// <summary>
         /// Input read authorization value.
         /// </summary>
-        private bool readValue = false;
-
-        /// <summary>
-        /// Input write authorization value.
-        /// </summary>
-        private bool writeValue = false;
+        private LocalInfoRequestParameterValue value = new LocalInfoRequestParameterValue(false,false);
 
 
         /// <summary>
@@ -42,7 +38,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<(bool,bool)>> subscribers = new List<UnityAction<(bool,bool)>>();
+        private List<UnityAction<LocalInfoRequestParameterValue>> subscribers = new List<UnityAction<LocalInfoRequestParameterValue>>();
 
         /// <summary>
         /// Subscribers on value change
@@ -53,36 +49,36 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Get displayed value.
         /// </summary>
-        public override (bool,bool) GetValue()
+        public override LocalInfoRequestParameterValue GetValue()
         {
-            return (readValue,writeValue);
+            return value;
         }
 
         /// <summary>
         /// Notify a change of the input value.
         /// </summary>
         /// <param name="newValue"></param>
-        public override void NotifyValueChange((bool,bool) newValue)
+        public override void NotifyValueChange(LocalInfoRequestParameterValue newValue)
         {
-            if(readValue != newValue.Item1)
+            if(value.read != newValue.read)
             {
                 foreach (UnityAction<bool> sub in readSubscribers)
                 {
-                    sub.Invoke(newValue.Item1);
+                    sub.Invoke(newValue.read);
                 }
             }
-            if (writeValue != newValue.Item2)
+            if (value.write != newValue.write)
             {
                 foreach (UnityAction<bool> sub in writeSubscribers)
                 {
-                    sub.Invoke(newValue.Item2);
+                    sub.Invoke(newValue.write);
                 }
             }
-            foreach (UnityAction<(bool,bool)> sub in subscribers)
+            foreach (var sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
-            (readValue, writeValue) = newValue;
+            value = newValue;
             
         }
 
@@ -91,7 +87,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
         /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        public override void Subscribe(UnityAction<(bool,bool)> callback)
+        public override void Subscribe(UnityAction<LocalInfoRequestParameterValue> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -110,7 +106,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction{bool})"/>
-        public override void UnSubscribe(UnityAction<(bool,bool)> callback)
+        public override void UnSubscribe(UnityAction<LocalInfoRequestParameterValue> callback)
         {
             subscribers.Remove(callback);
         }

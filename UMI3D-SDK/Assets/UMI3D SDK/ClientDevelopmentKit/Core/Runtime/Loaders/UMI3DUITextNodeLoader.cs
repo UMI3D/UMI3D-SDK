@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 
+using inetum.unityUtils;
 using System;
 using umi3d.common;
 using UnityEngine;

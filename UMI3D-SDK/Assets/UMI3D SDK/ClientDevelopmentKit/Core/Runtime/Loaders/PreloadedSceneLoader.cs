@@ -34,7 +34,7 @@ namespace umi3d.cdk
         /// <param name="node">node on which the scene should be loaded.</param>
         /// <param name="finished">finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public static void ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node, Action finished, Action<string> failed)
+        public static void ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             CreatePreloadedScene(dto, node);
             finished?.Invoke();

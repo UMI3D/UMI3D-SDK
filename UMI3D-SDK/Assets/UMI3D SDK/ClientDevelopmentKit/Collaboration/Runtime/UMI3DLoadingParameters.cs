@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +61,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             Action callback = () => { if (AnchorLoader != null) AnchorLoader.ReadUMI3DExtension(dto, node, finished, failed); else finished.Invoke(); };
             switch (dto)
@@ -99,6 +100,10 @@ namespace umi3d.cdk
                     break;
                 case UMI3DAvatarNodeDto a:
                     avatarLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    break;
+                case UMI3DHandPoseDto h:
+                    UMI3DHandPoseLoader.Load(h);
+                    finished?.Invoke();
                     break;
                 case NotificationDto n:
                     notificationLoader.Load(n);
@@ -147,9 +152,11 @@ namespace umi3d.cdk
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, property))
+            if (AnchorLoader != null && AnchorLoader.SetUMI3DProperty(entity, property))
                 return true;
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
@@ -173,7 +180,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (notificationLoader != null && notificationLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
+            if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
@@ -182,6 +189,8 @@ namespace umi3d.cdk
             if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
@@ -213,6 +222,8 @@ namespace umi3d.cdk
             if (UILoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DHandPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
@@ -426,8 +437,8 @@ namespace umi3d.cdk
             {
                 case UMI3DOperationKeys.SwitchTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     var oldid = UMI3DNetworkingHelper.Read<ulong>(container);
+                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;

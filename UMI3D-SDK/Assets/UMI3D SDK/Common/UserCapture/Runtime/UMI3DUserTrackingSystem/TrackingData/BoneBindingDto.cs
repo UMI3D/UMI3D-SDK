@@ -40,6 +40,11 @@ namespace umi3d.common.userCapture
         public bool active;
 
         /// <summary>
+        /// Define if the binding has to synchronize the object position with the bone position.
+        /// </summary>
+        public bool syncPosition;
+
+        /// <summary>
         /// The binded BoneType.
         /// </summary>
         public uint boneType;
@@ -67,7 +72,8 @@ namespace umi3d.common.userCapture
                 + UMI3DNetworkingHelper.Write(boneType)
                 + UMI3DNetworkingHelper.Write(objectId)
                 + UMI3DNetworkingHelper.Write(offsetPosition)
-                + UMI3DNetworkingHelper.Write(offsetRotation);
+                + UMI3DNetworkingHelper.Write(offsetRotation)
+                + UMI3DNetworkingHelper.Write(syncPosition);
         }
     }
 }

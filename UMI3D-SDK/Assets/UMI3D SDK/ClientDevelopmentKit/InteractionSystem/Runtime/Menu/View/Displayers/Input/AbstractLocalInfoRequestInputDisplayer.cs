@@ -15,6 +15,7 @@ limitations under the License.
 */
 using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.interaction;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.view
@@ -22,7 +23,7 @@ namespace umi3d.cdk.menu.view
     /// <summary>
     /// Base class for boolean input display.
     /// </summary>
-    public abstract class AbstractLocalInfoRequestInputDisplayer : AbstractInputMenuItemDisplayer<(bool,bool)>, IObservable<(bool,bool)>
+    public abstract class AbstractLocalInfoRequestInputDisplayer : AbstractInputMenuItemDisplayer<LocalInfoRequestParameterValue>, IObservable<LocalInfoRequestParameterValue>
     {
         /// <summary>
         /// Menu item to display.
@@ -33,12 +34,12 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private List<UnityAction<(bool, bool)>> subscribers = new List<UnityAction<(bool, bool)>>();
+        private List<UnityAction<LocalInfoRequestParameterValue>> subscribers = new List<UnityAction<LocalInfoRequestParameterValue>>();
 
         /// <summary>
         /// Get displayed value.
         /// </summary>
-        public (bool,bool) GetValue()
+        public LocalInfoRequestParameterValue GetValue()
         {
             return menuItem.GetValue();
         }
@@ -47,10 +48,10 @@ namespace umi3d.cdk.menu.view
         /// Notify a value change.
         /// </summary>
         /// <param name="newValue">New value</param>
-        public void NotifyValueChange((bool, bool) newValue)
+        public void NotifyValueChange(LocalInfoRequestParameterValue newValue)
         {
             menuItem.NotifyValueChange(newValue);
-            foreach (UnityAction<(bool, bool)> sub in subscribers)
+            foreach (UnityAction<LocalInfoRequestParameterValue> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -61,7 +62,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
         /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        public void Subscribe(UnityAction<(bool, bool)> callback)
+        public void Subscribe(UnityAction<LocalInfoRequestParameterValue> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -74,7 +75,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction{bool})"/>
-        public void UnSubscribe(UnityAction<(bool, bool)> callback)
+        public void UnSubscribe(UnityAction<LocalInfoRequestParameterValue> callback)
         {
             subscribers.Remove(callback);
         }

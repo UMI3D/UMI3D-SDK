@@ -68,7 +68,6 @@ public class LaucherOnMasterServer
 
         client.serverAccepted += (netWorker) =>
         {
-            Debug.Log("server accepted");
             callback.Invoke();
         };
 
@@ -99,11 +98,9 @@ public class LaucherOnMasterServer
             sendData.Add("get", getData);
 
             // Send the request to the server
-            Debug.Log("send request to master server");
             //client.binaryMessageReceived += (x,y,z) => { Debug.Log("bin massage received"); };
-            client.textMessageReceived += (player, frame, sender) => { Debug.Log("Receive message from master server"); ReceiveMasterDatas(player, frame, sender, UIcallback); };
+            client.textMessageReceived += (player, frame, sender) => { ReceiveMasterDatas(player, frame, sender, UIcallback); };
             client.Send(BeardedManStudios.Forge.Networking.Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
-            Debug.Log("request send to master server... ");
 
         }
         catch (Exception e)
@@ -117,9 +114,30 @@ public class LaucherOnMasterServer
 
     }
 
+    public void RequestInfo(Action<string, string> UIcallback)
+    {
+        try
+        {
+            // Create the get request with the desired filters
+            JSONNode sendData = JSONNode.Parse("{}");
+            JSONClass getData = new JSONClass();
+            sendData.Add("info", getData);
+
+            // Send the request to the server
+            client.textMessageReceived += (player, frame, sender) => {ReceiveMasterInfo(player, frame, sender, UIcallback); };
+            client.Send(BeardedManStudios.Forge.Networking.Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning(e);
+            // If anything fails, then this client needs to be disconnected
+            client.Disconnect(true);
+            client = null;
+        }
+    }
+
     private void ReceiveMasterDatas(NetworkingPlayer player, BeardedManStudios.Forge.Networking.Frame.Text frame, NetWorker sender, Action<MasterServerResponse.Server> UICallback)
     {
-        Debug.Log("Receive datas from master server");
         try
         {
             // Get the list of hosts to iterate through from the frame payload
@@ -134,16 +152,6 @@ public class LaucherOnMasterServer
                     // Go through all of the available hosts and add them to the server browser
                     foreach (MasterServerResponse.Server server in response.serverResponse)
                     {
-                        Debug.Log("Name: " + server.Name);
-                        Debug.Log("Address: " + server.Address);
-                        Debug.Log("Port: " + server.Port);
-                        /*    Debug.Log("Comment: " + server.Comment);
-                            Debug.Log("Type: " + server.Type);
-                            Debug.Log("Mode: " + server.Mode);
-                            Debug.Log("Players: " + server.PlayerCount);
-                            Debug.Log("Max Players: " + server.MaxPlayers);
-                            Debug.Log("Protocol: " + server.Protocol);*/
-
                         // Update UI or something with the above data
                         UICallback.Invoke(server);
 
@@ -151,16 +159,39 @@ public class LaucherOnMasterServer
                 }
             }
         }
-        finally
+        catch(Exception e)
         {
+            Debug.Log(e);
             if (client != null)
             {
-                // If we succeed or fail the client needs to disconnect from the Master Server
                 client.Disconnect(true);
                 client = null;
             }
         }
 
+    }
+
+
+    private void ReceiveMasterInfo(NetworkingPlayer player, BeardedManStudios.Forge.Networking.Frame.Text frame, NetWorker sender, Action<string, string> UICallback)
+    {
+        try
+        {
+            // Get the list of hosts to iterate through from the frame payload
+            JSONNode data = JSONNode.Parse(frame.ToString());
+            if (data["name"] != null)
+            {
+                UICallback.Invoke(data["name"], data["icon"]);
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.Log(e);
+            if (client != null)
+            {
+                client.Disconnect(true);
+                client = null;
+            }
+        }
     }
 
 

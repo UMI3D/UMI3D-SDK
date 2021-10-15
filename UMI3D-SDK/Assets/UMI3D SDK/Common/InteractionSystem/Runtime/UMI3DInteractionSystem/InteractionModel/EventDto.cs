@@ -27,6 +27,10 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool hold = false;
 
+        public ulong TriggerAnimationId;
+
+        public ulong ReleaseAnimationId;
+
         public EventDto() : base() { }
     }
 }

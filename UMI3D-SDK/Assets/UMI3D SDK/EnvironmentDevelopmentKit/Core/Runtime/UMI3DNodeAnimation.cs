@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace umi3d.edk
 
             bool IBytable.IsCountable()
             {
-                throw new NotImplementedException();
+                return false;
             }
         }
 
@@ -75,7 +76,7 @@ namespace umi3d.edk
             var equality = new UMI3DAsyncPropertyEquality();
             base.InitDefinition(id);
             ObjectDuration = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationDuration, duration, null, equality.FloatEquality);
-            ObjectAnimationChain = new UMI3DAsyncListProperty<OperationChain>(id, UMI3DPropertyKeys.AnimationChain, animationChain, (o, u) => o?.Todto(u));
+            ObjectAnimationChain = new UMI3DAsyncListProperty<OperationChain>(id, UMI3DPropertyKeys.AnimationChain, animationChain, (o, u) => UMI3DEnvironment.Instance.useDto ? o?.Todto(u) : (object)o);
 
             ObjectDuration.OnValueChanged += (d) => duration = d;
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;

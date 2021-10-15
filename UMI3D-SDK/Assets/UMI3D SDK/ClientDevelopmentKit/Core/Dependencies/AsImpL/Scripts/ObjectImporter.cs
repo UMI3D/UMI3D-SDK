@@ -261,6 +261,11 @@ namespace AsImpL
                 loader.buildOptions = buildOptions;
                 yield return StartCoroutine(loader.Load(newName, absolutePath, parentObject, baseMaterial));
 
+                if (loader.error)
+                {
+                    yield break;
+                }
+
                 importMessage = "Saving assets...";
                 AssetDatabase.SaveAssets();
                 importMessage = "Refreshing assets...";

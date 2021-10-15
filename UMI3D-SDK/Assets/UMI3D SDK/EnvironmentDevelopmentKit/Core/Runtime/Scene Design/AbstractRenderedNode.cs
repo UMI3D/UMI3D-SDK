@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
@@ -77,7 +78,7 @@ namespace umi3d.edk
             meshDto.castShadow = objectCastShadow.GetValue(user);
 
             meshDto.applyCustomMaterial = overrideModelMaterials;
-            meshDto.overridedMaterials = materialsOverrider.ConvertAll((mat) => mat.ToDto());
+            meshDto.overridedMaterials = objectMaterialOverriders.GetValue(user).ConvertAll((mat) => mat.ToDto());
         }
 
         public override Bytable ToBytes(UMI3DUser user)
@@ -86,7 +87,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user))
                 + UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user))
                 + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
-                + UMI3DNetworkingHelper.WriteIBytableCollection(materialsOverrider);
+                + UMI3DNetworkingHelper.WriteIBytableCollection(objectMaterialOverriders.GetValue(user));
         }
     }
 }

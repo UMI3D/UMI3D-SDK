@@ -27,6 +27,16 @@ namespace umi3d.cdk.collaboration
 
         ulong lastTimeStep = 0;
 
+        public void UpdateFrequency(int frequency)
+        {
+            this.frequency = frequency;
+            if (decoder != null)
+            {
+                OnDisable();
+                OnEnable();
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -38,7 +48,7 @@ namespace umi3d.cdk.collaboration
 
         #region Read
         const NumChannels channels = NumChannels.Mono;
-        const SamplingFrequency frequency = SamplingFrequency.Frequency_12000;
+        int frequency = (int)SamplingFrequency.Frequency_12000;
         const int audioClipLength = 1024 * 6;
         AudioSource source;
         int head = 0;
@@ -47,10 +57,12 @@ namespace umi3d.cdk.collaboration
         void OnEnable()
         {
             source = GetComponent<AudioSource>();
-            source.clip = AudioClip.Create("Loopback", audioClipLength, (int)channels, (int)frequency, false);
+            source.clip = AudioClip.Create("Loopback", audioClipLength, (int)channels, frequency, false);
             source.loop = false;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            var freq = (SamplingFrequency)frequency;
             decoder = new Decoder(
-                frequency,
+                freq,
                 channels);
         }
 

@@ -28,6 +28,35 @@ namespace umi3d.cdk
         new public static UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
         protected new UMI3DNodeAnimationDto dto { get => base.dto as UMI3DNodeAnimationDto; set => base.dto = value; }
 
+        public class OperationChain
+        {
+            public AbstractOperationDto operation;
+            public ByteContainer byteOperation;
+            public float startOnProgress;
+
+            public bool IsByte { get { return byteOperation != null; } }
+
+            public OperationChain(AbstractOperationDto operation, float startOnProgress)
+            {
+                this.operation = operation;
+                this.startOnProgress = startOnProgress;
+            }
+
+            public OperationChain(UMI3DNodeAnimationDto.OperationChainDto chainDto)
+            {
+                this.operation = chainDto.operation;
+                this.startOnProgress = chainDto.startOnProgress;
+            }
+
+            public OperationChain(ByteContainer operation, float startOnProgress)
+            {
+                this.byteOperation = operation;
+                this.startOnProgress = startOnProgress;
+            }
+        }
+
+        List<OperationChain> operationChains;
+
         List<Coroutine> Coroutines = new List<Coroutine>();
         Coroutine PlayingCoroutines;
         float progress;
@@ -35,7 +64,7 @@ namespace umi3d.cdk
 
         public UMI3DNodeAnimation(UMI3DNodeAnimationDto dto) : base(dto)
         {
-
+            operationChains = dto.animationChain.Select(chain => new OperationChain(chain)).ToList();
         }
 
         ///<inheritdoc/>
@@ -50,9 +79,22 @@ namespace umi3d.cdk
             if (started) return;
             progress = 0;
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
-            foreach (var chain in dto.animationChain)
-                if (GetProgress() < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
+            foreach (var chain in operationChains)
+            {
+                var p = GetProgress();
+                if (p < chain.startOnProgress)
+                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => {
+                        if(chain.IsByte)
+                            UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null); 
+                        else
+                            UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+                    })));
+                if (p == chain.startOnProgress)
+                    if (chain.IsByte)
+                        UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
+                    else
+                        UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+            }
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
@@ -104,7 +146,7 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    ADto.duration = (float)property.value;
+                    ADto.duration = (float)(Double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(dto, property);
@@ -115,6 +157,24 @@ namespace umi3d.cdk
             return true;
         }
 
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        {
+            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationDuration:
+                    dto.duration = UMI3DNetworkingHelper.Read<float>(container);
+                    break;
+                case UMI3DPropertyKeys.AnimationChain:
+                    return UpdateChain(operationId, propertyKey, container);
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+
         static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
 
         bool UpdateChain(UMI3DNodeAnimationDto dto, SetEntityPropertyDto property)
@@ -122,16 +182,39 @@ namespace umi3d.cdk
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
-                    dto.animationChain.Add((UMI3DNodeAnimationDto.OperationChainDto)add.value);
+                    operationChains.Add(new OperationChain((UMI3DNodeAnimationDto.OperationChainDto)add.value));
                     break;
                 case SetEntityListRemovePropertyDto rem:
-                    dto.animationChain.RemoveAt((int)(Int64)rem.index);
+                    operationChains.RemoveAt((int)(Int64)rem.index);
                     break;
                 case SetEntityListPropertyDto set:
-                    dto.animationChain[(int)(Int64)set.index] = (UMI3DNodeAnimationDto.OperationChainDto)set.value;
+                    operationChains[(int)(Int64)set.index] = new OperationChain((UMI3DNodeAnimationDto.OperationChainDto)set.value);
                     break;
                 default:
-                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DNodeAnimationDto.OperationChainDto).ToList();
+                    operationChains = ((List<object>)property.value).Select(o => o as UMI3DNodeAnimationDto.OperationChainDto).Select(o => new OperationChain(o)).ToList();
+                    break;
+            }
+            return true;
+        }
+
+        bool UpdateChain(uint operationId, uint propertyKey, ByteContainer container)
+        {
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.SetEntityListAddProperty:
+                    var value = UMI3DNetworkingHelper.Read<OperationChain>(container);
+                    operationChains.Add(value);
+                    break;
+                case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    operationChains.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
+                    break;
+                case UMI3DOperationKeys.SetEntityListProperty:
+                    var index = UMI3DNetworkingHelper.Read<int>(container);
+                    var v = UMI3DNetworkingHelper.Read<OperationChain>(container);
+                    operationChains[index] = v;
+                    break;
+                default:
+                    operationChains = UMI3DNetworkingHelper.ReadList<OperationChain>(container);
                     break;
             }
             return true;
@@ -143,9 +226,22 @@ namespace umi3d.cdk
             if (started) return;
             progress = atTime;
             if (PlayingCoroutines != null) UMI3DAnimationManager.Instance.StopCoroutine(PlayingCoroutines);
-            foreach (var chain in dto.animationChain)
-                if (GetProgress() < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DTransactionDispatcher.PerformOperation(chain.operation, null); })));
+            foreach (var chain in operationChains)
+            {
+                var p = GetProgress();
+                if (p < chain.startOnProgress)
+                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => {
+                        if (chain.IsByte)
+                            UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
+                        else
+                            UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+                    })));
+                if (p == chain.startOnProgress)
+                    if (chain.IsByte)
+                        UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
+                    else
+                        UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+            }
             PlayingCoroutines = UMI3DAnimationManager.Instance.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 

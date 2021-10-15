@@ -86,6 +86,11 @@ namespace umi3d.edk.interaction
                 mDto.dofSeparationOptions.Add(entity.ToDto(user));
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.Manipulation;
+        }
+
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -115,7 +120,6 @@ namespace umi3d.edk.interaction
                 case UMI3DOperationKeys.ManipulationRequest:
                     var translation = UMI3DNetworkingHelper.Read<Vector3>(container);
                     var rotation = UMI3DNetworkingHelper.Read<Quaternion>(container);
-                    Debug.Log("here");
                     onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;
                 default:

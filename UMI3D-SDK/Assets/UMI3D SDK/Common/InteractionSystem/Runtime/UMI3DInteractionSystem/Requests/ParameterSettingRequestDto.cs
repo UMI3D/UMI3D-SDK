@@ -24,7 +24,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// The parameter with the requested value.
         /// </summary>
-        public AbstractParameterDto parameter;
+        public object parameter;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.ParameterSettingRequest; }
 

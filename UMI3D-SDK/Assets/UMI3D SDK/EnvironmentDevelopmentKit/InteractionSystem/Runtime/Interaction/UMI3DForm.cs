@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -31,15 +32,12 @@ namespace umi3d.edk.interaction
 
         public class FormEventContent : InteractionEventContent
         {
-            public FormDto form;
-            public FormEventContent(UMI3DUser user, FormAnswer dto) : base(user, dto)
+            public FormEventContent(UMI3DUser user, FormAnswerDto dto) : base(user, dto)
             {
-                form = dto.form;
             }
 
-            public FormEventContent(UMI3DUser user, FormDto dto, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType) : base(user, toolId, id, hoveredObjectId, boneType)
+            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType) : base(user, toolId, id, hoveredObjectId, boneType)
             {
-                form = dto;
             }
         }
 
@@ -65,6 +63,11 @@ namespace umi3d.edk.interaction
             dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
         }
 
+        protected override byte GetInteractionKey()
+        {
+            return UMI3DInteractionKeys.Form;
+        }
+
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -76,7 +79,8 @@ namespace umi3d.edk.interaction
         {
             switch (interactionRequest)
             {
-                case FormAnswer formAnswer:
+                case FormAnswerDto formAnswer:
+                    formAnswer.answers.ForEach(a => UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user,a));
                     onFormCompleted.Invoke(new FormEventContent(user, formAnswer));
                     break;
                 default:
@@ -89,8 +93,8 @@ namespace umi3d.edk.interaction
             switch (interactionId)
             {
                 case UMI3DOperationKeys.FormAnswer:
-                    var form = UMI3DNetworkingHelper.Read<FormDto>(container);
-                    onFormCompleted.Invoke(new FormEventContent(user, form, toolId, interactionId, hoverredId, boneType));
+                    UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, UMI3DOperationKeys.ParameterSettingRequest, container);
+                    onFormCompleted.Invoke(new FormEventContent(user, toolId, interactionId, hoverredId, boneType));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture;
@@ -35,12 +36,12 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<string> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke("dto should be an  UMI3DAbstractNodeDto");
+                failed.Invoke(new Umi3dExecption(0,"dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
             base.ReadUMI3DExtension(dto, node, () =>
@@ -78,7 +79,7 @@ namespace umi3d.cdk
                                     embd.AddBinding(add.index, (property.value as BoneBindingDto));
                                     break;
                                 case SetEntityListRemovePropertyDto rem:
-                                    embd.RemoveBinding(rem.index, (property.value as BoneBindingDto));
+                                    embd.RemoveBinding(rem.index);
                                     break;
                                 case SetEntityListPropertyDto set:
                                     embd.UpdateBinding(set.index, (property.value as BoneBindingDto));
@@ -132,8 +133,7 @@ namespace umi3d.cdk
                                     break;
                                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                                     index = UMI3DNetworkingHelper.Read<int>(container);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(container);
-                                    embd.RemoveBinding(index, bone);
+                                    embd.RemoveBinding(index);
                                     break;
                                 case UMI3DOperationKeys.SetEntityListProperty:
                                     index = UMI3DNetworkingHelper.Read<int>(container);

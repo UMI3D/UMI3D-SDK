@@ -166,7 +166,7 @@ namespace umi3d.edk
         {
             var oldValue = GetValue()[key];
 
-            if ((oldValue == null && value == null || oldValue != null && Equal(oldValue, value)) || !forceOperation)
+            if ((oldValue == null && value == null || oldValue != null && Equal(oldValue, value)) && !forceOperation)
                 return null;
             GetValue()[key] = value;
 

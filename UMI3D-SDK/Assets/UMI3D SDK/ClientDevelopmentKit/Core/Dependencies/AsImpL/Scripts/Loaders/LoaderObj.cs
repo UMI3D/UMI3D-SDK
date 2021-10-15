@@ -57,7 +57,7 @@ namespace AsImpL
             {
                 //mtlDepPathList.Add(mtlLibName);
                 string mtlPath = basePath + mtlLibName;
-                string[] lines = File.ReadAllLines(mtlPath);
+                string[] lines = Filesystem.ReadAllLines(mtlPath);
                 List<MaterialData> mtlData = new List<MaterialData>();
                 ParseMaterialData(lines, mtlData);
                 foreach (MaterialData mtl in mtlData)
@@ -94,11 +94,11 @@ namespace AsImpL
         protected override IEnumerator LoadModelFile(string absolutePath)
         {
             string url = absolutePath.Contains("//") ? absolutePath : "file:///" + absolutePath;
-            yield return LoadOrDownloadText(url);
+            yield return LoadOrDownloadText(url,false);
 
-            if (string.IsNullOrEmpty(loadedText))
+            if (objLoadingProgress.error || string.IsNullOrEmpty(loadedText))
             {
-                Debug.LogError("Failed to load: empty path. " + absolutePath + "   lt: " + loadedText);
+                //Debug.LogError("Failed to load: empty path. " + absolutePath + "   lt: " + loadedText);
                 // remove this progress to let complete the total loading process
                 totalProgress.singleProgress.Remove(objLoadingProgress);
                 yield break;
@@ -373,7 +373,7 @@ namespace AsImpL
         /// <returns></returns>
         private string ParseMaterialLibName(string path)
         {
-            string[] lines = File.ReadAllLines(path);
+            string[] lines = Filesystem.ReadAllLines(path);
 
             objLoadingProgress.message = "Parsing geometry data...";
 
@@ -635,38 +635,21 @@ namespace AsImpL
 
         protected virtual IEnumerator LoadOrDownloadText(string url, bool notifyErrors = true)
         {
+            Debug.LogWarning($"base load {url}");
             loadedText = null;
-#if UNITY_2018_3_OR_NEWER
-            UnityWebRequest uwr = UnityWebRequest.Get(url);
-            yield return uwr.SendWebRequest();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            var enumerable = Filesystem.DownloadUri(url, notifyErrors);
+
+            yield return enumerable;
+
+            if (enumerable.Current != null)
             {
-                if (notifyErrors)
-                {
-                    Debug.LogError(uwr.error);
-                }
+                loadedText = (string)enumerable.Current;
             }
             else
             {
-                // Get downloaded asset bundle
-                loadedText = uwr.downloadHandler.text;
+                objLoadingProgress.error = true;
             }
-#else
-            WWW www = new WWW(url);
-            yield return www;
-            if (www.error != null)
-            {
-                if (notifyErrors)
-                {
-                    Debug.LogError("Error loading " + url + "\n" + www.error);
-                }
-            }
-            else
-            {
-                loadedText = www.text;
-            }
-#endif
         }
 
 

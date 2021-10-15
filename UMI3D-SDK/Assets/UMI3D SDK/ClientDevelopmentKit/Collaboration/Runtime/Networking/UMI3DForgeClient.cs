@@ -15,6 +15,7 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections;
+using umi3d.cdk.interaction;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
@@ -29,7 +30,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DForgeClient : ForgeSocketBase
     {
-        uint Me { get { return UMI3DCollaborationClientServer.UserDto.networkId; } }
+        uint Me { get { return UMI3DCollaborationClientServer.UserDto.dto.networkId; } }
         bool useDto { get { return UMI3DCollaborationClientServer.useDto; } }
 
         UMI3DUser GetUserByNetWorkId(uint nid)
@@ -250,31 +251,57 @@ namespace umi3d.cdk.collaboration
             if (useDto)
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-                MainThreadManager.Run(() =>
+
+                switch (dto)
                 {
-                    switch (dto)
-                    {
-                        case TransactionDto transaction:
+                    case TransactionDto transaction:
+                        MainThreadManager.Run(() =>
+                        {
                             StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
+                        });
 
-                            break;
-                        case NavigateDto navigate:
+                        break;
+                    case NavigateDto navigate:
+                        MainThreadManager.Run(() =>
+                        {
                             StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                        });
 
-                            break;
-                        case GetLocalInfoRequestDto requestGet:
+                        break;
+                    case GetLocalInfoRequestDto requestGet:
+                        MainThreadManager.Run(() =>
+                        {
                             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                                 requestGet.key,
                                 (bytes) => LocalInfoSender.SetLocalInfo(requestGet.key, bytes),
-                                (error) => { Debug.Log("error on get local info : " + requestGet.key); }
-                            );
+                                (error) => { Debug.Log("error on get local info : " + requestGet.key); });
+                        });
 
-                            break;
-                        default:
-                            Debug.Log($"Type not catch {dto.GetType()}");
-                            break;
-                    }
-                });
+                        break;
+                    case RequestHttpUploadDto uploadFileRequest:
+                        string token = uploadFileRequest.uploadToken;
+                        string fileId = uploadFileRequest.fileId;
+
+                        string fileName = FileUploader.GetFileName(fileId);
+                        byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
+                        if (bytesToUpload != null)
+                        {
+                            MainThreadManager.Run(() =>
+                            {
+                                UMI3DCollaborationClientServer.Instance.HttpClient.SendPostFile(
+                                    null,
+                                       (error) => { Debug.Log("error on upload file : " + fileName); },
+                                       token,
+                                       fileName,
+                                       bytesToUpload);
+                            });
+                        }
+                        break;
+                    default:
+                        Debug.Log($"Type not catch {dto.GetType()}");
+                        break;
+                }
+
             }
             else
             {
@@ -320,6 +347,24 @@ namespace umi3d.cdk.collaboration
                             (error) => { Debug.Log("error on get local info : " + key); }
                             );
                         });
+                        break;
+                    case UMI3DOperationKeys.UploadFileRequest:
+                        string token = UMI3DNetworkingHelper.Read<string>(container);
+                        string fileId = UMI3DNetworkingHelper.Read<string>(container);
+                        string name = FileUploader.GetFileName(fileId);
+                        byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
+                        if (bytesToUpload != null)
+                        {
+                            MainThreadManager.Run(() =>
+                            {
+                                UMI3DCollaborationClientServer.Instance.HttpClient.SendPostFile(
+                                    null,
+                                   (error) => { Debug.Log("error on upload file : " + name); },
+                                   token,
+                                   name,
+                                   bytesToUpload);
+                            });
+                        }
                         break;
                     default:
                         MainThreadManager.Run(() =>
@@ -462,13 +507,17 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
+            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
         /// <summary>
         /// 
         /// </summary>
-        private void OnApplicationQuit()
+        private void ApplicationQuit()
         {
+            if (!QuittingManager.ApplicationIsQuitting)
+                return;
+            NetworkManager.Instance.ApplicationQuit();
             Stop();
         }
 

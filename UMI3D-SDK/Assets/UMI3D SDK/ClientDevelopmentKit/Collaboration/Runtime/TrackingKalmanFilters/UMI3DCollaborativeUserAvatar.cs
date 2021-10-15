@@ -51,7 +51,8 @@ namespace umi3d.cdk.collaboration
                     if (boneBindingDto.active && savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                     {
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
-                        st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
+                        if (boneBindingDto.syncPosition)
+                            st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
                         st.obj.rotation = boneTransform.rotation * (Quaternion)boneBindingDto.offsetRotation;
                     }
                 }
@@ -105,7 +106,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="trackingFrameDto">a dto containing the tracking data</param>
         /// <param name="timeFrame">sending time in ms</param>
-        public override IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
+        public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
             MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
             lastFrameTime = timeFrame;

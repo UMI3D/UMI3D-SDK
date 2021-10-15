@@ -97,6 +97,8 @@ namespace umi3d.edk.interaction
             name = null
         };
 
+        public UMI3DNodeAnimation TriggerAnimation;
+        public UMI3DNodeAnimation ReleaseAnimation;
 
         /// <summary>
         /// The interaction's unique id. 
@@ -203,9 +205,12 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
         }
 
+        protected abstract byte GetInteractionKey();
+
         public virtual Bytable ToByte(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(Id())
+            return UMI3DNetworkingHelper.Write(GetInteractionKey())
+                    + UMI3DNetworkingHelper.Write(Id())
                     + UMI3DNetworkingHelper.Write(Display.name)
                     + Display.icon2D.ToByte()
                     + Display.icon3D.ToByte()

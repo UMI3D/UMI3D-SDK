@@ -42,7 +42,6 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start()
         {
-            Debug.Log("Start");
             if (started) return;
             GameObject go = (UMI3DEnvironmentLoader.GetEntity(dto.nodeId) as UMI3DNodeInstance)?.gameObject;
             
@@ -85,7 +84,7 @@ namespace umi3d.cdk
             switch (property.property)
             {
                 case UMI3DPropertyKeys.AnimationNodeId:
-                    dto.nodeId = (ulong)property.value;
+                    dto.nodeId = (ulong)(long)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = (string)property.value;

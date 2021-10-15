@@ -39,6 +39,13 @@ namespace umi3d.cdk.menu
         /// <param name="hoveredObjectId">Id of the </param>
         public abstract void NotifyValueChange(T newValue);
 
+        public System.Func<T, ParameterSettingRequestDto> GetParameterFunc;
+
+        public override ParameterSettingRequestDto GetParameter()
+        {
+            return GetParameterFunc?.Invoke(GetValue());
+        }
+
         /// <summary>
         /// Subscribe a callback to the value change.
         /// </summary>
@@ -59,5 +66,6 @@ namespace umi3d.cdk.menu
     /// </summary>
     public abstract class AbstractInputMenuItem : MenuItem
     {
+        public abstract ParameterSettingRequestDto GetParameter();
     }
 }

@@ -30,7 +30,10 @@ namespace umi3d.cdk.collaboration
         public ulong id;
         public uint networkId;
         public StatusType status;
+        public ulong audioPlayerId { get => dto.audioSourceId; }
+        public int audioFrequency { get => dto.audioFrequency; }
         public UMI3DAudioPlayer audioplayer { get => UMI3DAudioPlayer.Get(dto.audioSourceId); }
+        public ulong videoPlayerId { get => dto.videoSourceId; }
         public UMI3DVideoPlayer videoPlayer { get => UMI3DVideoPlayer.Get(dto.videoSourceId); }
         public UserAvatar avatar { get => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar; }
 
@@ -58,12 +61,14 @@ namespace umi3d.cdk.collaboration
             bool avatarUpdate = dto.avatarId != user.avatarId;
             bool audioUpdate = dto.audioSourceId != user.audioSourceId;
             bool videoUpdate = dto.videoSourceId != user.videoSourceId;
+            bool audioFrequencyUpdate = dto.audioFrequency != user.audioFrequency;
             dto = user;
             status = user.status;
             if (statusUpdate) OnUserStatusUpdated.Invoke(this);
             if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
             if (audioUpdate) OnUserAudioUpdated.Invoke(this);
             if (videoUpdate) OnUserVideoUpdated.Invoke(this);
+            if (audioFrequencyUpdate) OnUserAudioFrequencyUpdated.Invoke(this);
         }
 
         /// <summary>
@@ -78,5 +83,6 @@ namespace umi3d.cdk.collaboration
         static public UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
         static public UMI3DUserEvent OnUserStatusUpdated = new UMI3DUserEvent();
+        static public UMI3DUserEvent OnUserAudioFrequencyUpdated = new UMI3DUserEvent();
     }
 }

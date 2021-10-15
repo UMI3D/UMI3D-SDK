@@ -16,6 +16,7 @@ limitations under the License.
 
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System;
 using System.Collections;
@@ -119,6 +120,11 @@ namespace umi3d.edk.collaboration
         }
 
         List<Umi3dNetworkingHelperModule> collaborativeModule;
+
+        private void Start()
+        {
+            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+        }
 
         /// <summary>
         /// Initialize the server.
@@ -225,7 +231,7 @@ namespace umi3d.edk.collaboration
             throw new Exception("Local IP Address Not Found!");
         }
 
-        void OnApplicationQuit()
+        void ApplicationQuit()
         {
             Clear();
         }

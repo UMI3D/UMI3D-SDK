@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -160,6 +161,8 @@ namespace umi3d.edk.userCapture
             }
 
             avatarNodeDto.bindings = bindingDtoList;
+
+            UMI3DEmbodimentManager.Instance.WriteNodeCollections(avatarNodeDto, user);
         }
 
         public override Bytable ToBytes(UMI3DUser user)

@@ -42,7 +42,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The objects's unique id. 
         /// </summary>
-        protected ulong volumeId;
+        protected ulong volumeId = 0;
 
         protected Dictionary<ulong, Dictionary<ulong, float>> relayDataMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
         protected Dictionary<ulong, Dictionary<ulong, float>> relayTrackingMemory = new Dictionary<ulong, Dictionary<ulong, float>>();
@@ -271,9 +271,9 @@ namespace umi3d.edk.collaboration
                                     coeff = (dist - strategy.startingProximityDistance) / (strategy.stoppingProximityDistance - strategy.startingProximityDistance);
                                 }
                                 else if (dist >= strategy.stoppingProximityDistance)
-                                    coeff = 0f;
+                                    coeff = 1f;
 
-                                float StrategyDelay = Mathf.RoundToInt((1f - coeff) * (1 / strategy.maxProximityFPS) + coeff * (1 / strategy.minProximityFPS));
+                                float StrategyDelay = (1f - coeff) * (1 / strategy.maxProximityFPS) + coeff * (1 / strategy.minProximityFPS);
                                 float CurrentDelay = now - relayMemory[sender.Id()][to.Id()];
 
                                 return StrategyDelay <= CurrentDelay;

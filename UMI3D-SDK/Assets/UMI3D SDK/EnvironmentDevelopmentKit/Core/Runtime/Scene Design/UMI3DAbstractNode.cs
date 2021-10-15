@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -136,7 +137,7 @@ namespace umi3d.edk
         /// <summary>
         /// Id of the Volume in which the node is present
         /// </summary>
-        public string VolumeId;
+        public ulong VolumeId;
 
         /// <summary>
         /// Room object used to relay data

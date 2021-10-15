@@ -25,7 +25,7 @@ namespace umi3d.cdk.interaction
     static public class UMI3DToolBoxLoader
     {
 
-        public static void ReadUMI3DExtension(ToolboxDto dto, GameObject node, Action finished, Action<string> failed)
+        public static void ReadUMI3DExtension(ToolboxDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             Toolbox toolbox = new Toolbox(dto);
             AbstractInteractionMapper.Instance?.CreateToolbox(toolbox);

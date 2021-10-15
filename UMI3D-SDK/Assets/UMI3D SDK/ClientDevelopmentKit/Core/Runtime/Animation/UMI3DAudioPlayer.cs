@@ -165,7 +165,7 @@ namespace umi3d.cdk
                     var clip = audioSource?.clip;
                     var g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
-                    ADto.nodeID = (ulong)property.value;
+                    ADto.nodeID = (ulong)(long)property.value;
                     g = UMI3DEnvironmentLoader.Instance.gameObject;
                     if (ADto.nodeID != 0)
                     {

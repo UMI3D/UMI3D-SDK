@@ -24,6 +24,7 @@ using System.Text;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
+using umi3d.edk.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
@@ -84,11 +85,11 @@ namespace umi3d.edk.collaboration
         public void UpdateIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UserConnectionDto dto = ReadDto(e.Request) as UserConnectionDto;
+            UserConnectionAnswerDto dto = ReadDto(e.Request) as UserConnectionAnswerDto;
             UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, dto));
         }
 
-        IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionDto dto)
+        IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
             user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
@@ -154,7 +155,7 @@ namespace umi3d.edk.collaboration
         public void GetPublicFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.publicFiles.Length);
-            file = common.Path.Combine(
+            file = inetum.unityUtils.Path.Combine(
                 UMI3DServer.publicRepository, file);
             file = System.Uri.UnescapeDataString(file);
             //Validate url.
@@ -182,7 +183,7 @@ namespace umi3d.edk.collaboration
         public void GetPrivateFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.privateFiles.Length);
-            file = common.Path.Combine(UMI3DServer.privateRepository, file);
+            file = inetum.unityUtils.Path.Combine(UMI3DServer.privateRepository, file);
             file = System.Uri.UnescapeDataString(file);
             //Validate url.
             HttpListenerResponse res = e.Response;
@@ -211,7 +212,7 @@ namespace umi3d.edk.collaboration
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
             rawDirectory = System.Uri.UnescapeDataString(rawDirectory);
-            string directory = common.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
+            string directory = inetum.unityUtils.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
             //Validate url.
             HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInDataRepository(directory))
@@ -221,7 +222,7 @@ namespace umi3d.edk.collaboration
                     FileListDto dto = new FileListDto()
                     {
                         files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
-                        baseUrl = System.Uri.EscapeUriString(common.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
+                        baseUrl = System.Uri.EscapeUriString(inetum.unityUtils.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 
                     res.WriteContent(dto.ToBson());
@@ -249,7 +250,7 @@ namespace umi3d.edk.collaboration
         public void GetDirectoryAsZip(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string directory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory_zip.Length);
-            directory = common.Path.Combine(UMI3DServer.dataRepository, directory);
+            directory = inetum.unityUtils.Path.Combine(UMI3DServer.dataRepository, directory);
             directory = System.Uri.UnescapeDataString(directory);
 
             //Validate url.
@@ -306,11 +307,11 @@ namespace umi3d.edk.collaboration
         {
             List<string> files = new List<string>();
             IEnumerable<string> localFiles = Directory.GetFiles(directory).Select(full => System.IO.Path.GetFileName(full));
-            IEnumerable<string> uris = localFiles.Select(f => common.Path.Combine(localpath, f));
+            IEnumerable<string> uris = localFiles.Select(f => inetum.unityUtils.Path.Combine(localpath, f));
             files.AddRange(uris);
             foreach (string susdir in Directory.GetDirectories(directory))
             {
-                files.AddRange(GetDir(susdir, common.Path.Combine(localpath, System.IO.Path.GetFileName(System.IO.Path.GetFileName(susdir)))));
+                files.AddRange(GetDir(susdir, inetum.unityUtils.Path.Combine(localpath, System.IO.Path.GetFileName(System.IO.Path.GetFileName(susdir)))));
             }
 
             return files;
@@ -478,6 +479,51 @@ namespace umi3d.edk.collaboration
             e.Response.WriteContent(UMI3DCollaborationServer.Collaboration.GetPlayerCount().ToBson());
         }
 
+        #endregion
+
+        #region UploadFile
+
+        /// <summary>
+        /// POST "uploadFile/:param"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        /// <param name="uriparam"></param>
+        [HttpPost(UMI3DNetworkingKeys.uploadFile, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void PostUploadFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            if (!uriparam.ContainsKey("param"))
+            {
+                Debug.LogWarning("unvalide upload request, wrong networking key");
+                return;
+            }
+            string token = uriparam["param"];
+            if (!UploadFileParameter.uploadTokens.ContainsKey(token))
+            {
+                Debug.LogWarning("unvalide token (upload request)");
+                return;
+            }
+            if (!e.Request.Headers.Contains(UMI3DNetworkingKeys.contentHeader))
+            {
+                Debug.LogWarning("unvalide header (upload request)");
+                return;
+            }
+            string fileName = e.Request.Headers[UMI3DNetworkingKeys.contentHeader];
+            UploadFileParameter uploadParam = UploadFileParameter.uploadTokens[token];
+            if (uploadParam.authorizedExtensions.Contains(System.IO.Path.GetExtension(fileName)) || uploadParam.authorizedExtensions.Count == 0)
+            {
+                UploadFileParameter.RemoveToken(token);
+                uploadParam.onReceive.Invoke(token, fileName, ReadObject(e.Request));
+
+            }
+            else
+            {
+                Debug.LogWarning("unauthorized extension : " + fileName + " (upload request)");
+                return;
+            }
+
+        }
         #endregion
 
         #region LocalData

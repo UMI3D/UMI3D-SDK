@@ -105,7 +105,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case BooleanParameterDto booleanParameterDto:
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
-                    b.Subscribe((x) =>
+                    b.GetParameterFunc = (x) =>
                     {
                         booleanParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -115,14 +115,17 @@ namespace umi3d.cdk.interaction
                             parameter = booleanParameterDto,
                             hoveredObjectId = 0
                         };
-                        UMI3DClientServer.SendData(pararmeterDto, true);
-                    }
+                        return pararmeterDto;
+                    };
+                    b.Subscribe((x) =>
+                        UMI3DClientServer.SendData(b.GetParameter(), true)
+
                     );
                     result = b;
                     break;
                 case FloatRangeParameterDto floatRangeParameterDto:
                     var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
-                    f.Subscribe((x) =>
+                    f.GetParameterFunc = (x) =>
                     {
                         floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -132,14 +135,16 @@ namespace umi3d.cdk.interaction
                             parameter = floatRangeParameterDto,
                             hoveredObjectId = 0
                         };
-                        UMI3DClientServer.SendData(pararmeterDto, true);
-                    }
+                        return pararmeterDto;
+                    };
+                    f.Subscribe((x) =>
+                        UMI3DClientServer.SendData(f.GetParameter(), true)
                     );
                     result = f;
                     break;
                 case EnumParameterDto<string> enumParameterDto:
                     var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
-                    en.Subscribe((x) =>
+                    en.GetParameterFunc = (x) =>
                     {
                         enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -149,14 +154,36 @@ namespace umi3d.cdk.interaction
                             parameter = enumParameterDto,
                             hoveredObjectId = 0
                         };
-                        UMI3DClientServer.SendData(pararmeterDto, true);
-                    }
+                        return pararmeterDto;
+                    };
+                    en.Subscribe((x) =>
+                        UMI3DClientServer.SendData(en.GetParameter(), true)
                     );
                     result = en;
                     break;
+                case UploadFileParameterDto uploadParameterDto:
+                    var u = new UploadInputMenuItem() { dto = uploadParameterDto, authorizedExtensions = uploadParameterDto.authorizedExtensions };
+                    u.GetParameterFunc = (x) =>
+                    {
+                        uploadParameterDto.value = x;
+                        var pararmeterDto = new UploadFileRequestDto()
+                        {
+                            toolId = dto.id,
+                            id = uploadParameterDto.id,
+                            parameter = uploadParameterDto,
+                            hoveredObjectId = 0,
+                            fileId = FileUploader.AddFileToUpload(x)
+                        };
+                        return pararmeterDto;
+                    };
+                    u.Subscribe((x) =>
+                        UMI3DClientServer.SendData(u.GetParameter(), true)
+                    );
+                    result = u;
+                    break;
                 case StringParameterDto stringParameterDto:
                     var s = new TextInputMenuItem() { dto = stringParameterDto };
-                    s.Subscribe((x) =>
+                    s.GetParameterFunc = (x) =>
                     {
                         stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
@@ -166,8 +193,10 @@ namespace umi3d.cdk.interaction
                             parameter = stringParameterDto,
                             hoveredObjectId = 0
                         };
-                        UMI3DClientServer.SendData(pararmeterDto, true);
-                    }
+                        return pararmeterDto;
+                    };
+                    s.Subscribe((x) =>
+                        UMI3DClientServer.SendData(s.GetParameter(), true)
                     );
                     result = s;
                     break;
@@ -175,11 +204,11 @@ namespace umi3d.cdk.interaction
                     var form = new FormMenuItem() { dto = formDto };
                     form.Subscribe((x) =>
                     {
-                        var FormAnswer = new FormAnswer()
+                        var FormAnswer = new FormAnswerDto()
                         {
                             toolId = dto.id,
                             id = formDto.id,
-                            form = x,
+                            answers = x,
                             hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(FormAnswer, true);

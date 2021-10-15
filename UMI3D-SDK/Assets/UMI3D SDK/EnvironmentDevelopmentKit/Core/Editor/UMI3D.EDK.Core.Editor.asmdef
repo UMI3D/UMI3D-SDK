@@ -2,7 +2,8 @@
     "name": "UMI3D.EDK.Core.Editor",
     "references": [
         "GUID:260f6d2a9a3243446ba8d9c686824226",
-        "GUID:6e34c4b4c3202a14eb95e0a784041765"
+        "GUID:6e34c4b4c3202a14eb95e0a784041765",
+        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b"
     ],
     "includePlatforms": [
         "Editor"

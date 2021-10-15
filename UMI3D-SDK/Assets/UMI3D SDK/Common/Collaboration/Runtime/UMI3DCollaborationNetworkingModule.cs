@@ -46,6 +46,7 @@ namespace umi3d.common.collaboration
                     bool active;
                     uint boneType;
                     ulong objectId;
+                    bool syncPosition;
                     SerializableVector3 offsetPosition;
                     SerializableVector4 offsetRotation;
                     if (UMI3DNetworkingHelper.TryRead(container, out bindingId)
@@ -54,7 +55,8 @@ namespace umi3d.common.collaboration
                         && UMI3DNetworkingHelper.TryRead(container, out boneType)
                         && UMI3DNetworkingHelper.TryRead(container, out objectId)
                         && UMI3DNetworkingHelper.TryRead(container, out offsetPosition)
-                        && UMI3DNetworkingHelper.TryRead(container, out offsetRotation))
+                        && UMI3DNetworkingHelper.TryRead(container, out offsetRotation)
+                        && UMI3DNetworkingHelper.TryRead(container, out syncPosition))
                     {
                         var bone = new BoneBindingDto()
                         {
@@ -64,7 +66,8 @@ namespace umi3d.common.collaboration
                             boneType = boneType,
                             objectId = objectId,
                             offsetPosition = offsetPosition,
-                            offsetRotation = offsetRotation
+                            offsetRotation = offsetRotation,
+                            syncPosition = syncPosition
                         };
                         result = (T)Convert.ChangeType(bone, typeof(T));
                         readable = true;
@@ -75,94 +78,47 @@ namespace umi3d.common.collaboration
                         readable = false;
                     }
                     return true;
-                //case true when typeof(T) == typeof(AbstractParameterDto):
-                //    readable = length >= sizeof(uint);
-                //    if (readable)
-                //    {
-                //        var parameter = UMI3DNetworkingHelper.Read<uint>(container);
-                //        switch (parameter)
-                //        {
-                //            case UMI3DParameterKeys.Enum:
-                //                string value;
-
-                //                if (UMI3DNetworkingHelper.TryRead<string>(container, out value))
-                //                {
-                //                    var dto = new EnumParameterDto<string>() { value = value };
-                //                    result = (T)Convert.ChangeType(dto, typeof(T));
-                //                    readable = true;
-                //                }
-                //                else { readable = false; result = default(T); return false; }
-                //                break;
-                //            case UMI3DParameterKeys.Bool:
-                //                readable = length >= sizeof(bool);
-                //                if (readable)
-                //                {
-                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<bool>(container), typeof(T));
-                //                }
-                //                else
-                //                    result = default(T);
-                //                break;
-                //            case UMI3DParameterKeys.Float:
-                //                readable = length >= sizeof(float);
-                //                if (readable)
-                //                {
-                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<float>(container), typeof(T));
-                //                }
-                //                else
-                //                    result = default(T);
-                //                break;
-                //            case UMI3DParameterKeys.Int:
-                //                readable = length >= sizeof(int);
-                //                if (readable)
-                //                {
-                //                    result = (T)Convert.ChangeType(UMI3DNetworkingHelper.Read<int>(container), typeof(T));
-                //                }
-                //                else
-                //                    result = default(T);
-                //                break;
-                //            case UMI3DParameterKeys.String:
-                //                string value;
-                //                readable = UMI3DNetworkingHelper.TryRead<string>(container, out value);
-                //                result = (T)Convert.ChangeType(value, typeof(T));
-                //                break;
-                //            case UMI3DParameterKeys.IntRange:
-                //                readable = length >= sizeof(int) * 4;
-                //                if (readable)
-                //                {
-                //                    var irp = new IntegerRangeParameterDto();
-                //                    irp.value = UMI3DNetworkingHelper.Read<int>(container);
-                //                    irp.min = UMI3DNetworkingHelper.Read<int>(container);
-                //                    irp.max = UMI3DNetworkingHelper.Read<int>(container);
-                //                    irp.increment = UMI3DNetworkingHelper.Read<int>(container);
-                //                    result = (T)Convert.ChangeType(irp, typeof(T));
-                //                }
-                //                else
-                //                    result = default(T);
-                //                break;
-                //            case UMI3DParameterKeys.FloatRange:
-                //                readable = length >= sizeof(float) * 4;
-                //                if (readable)
-                //                {
-                //                    var frp = new FloatRangeParameterDto();
-                //                    frp.value = UMI3DNetworkingHelper.Read<float>(container);
-                //                    frp.min = UMI3DNetworkingHelper.Read<float>(container);
-                //                    frp.max = UMI3DNetworkingHelper.Read<float>(container);
-                //                    frp.increment = UMI3DNetworkingHelper.Read<float>(container);
-                //                    result = (T)Convert.ChangeType(frp, typeof(T));
-                //                }
-                //                else
-                //                    result = default(T);
-                //                break;
-                //            default:
-                //                result = default(T);
-                //                readable = false;
-                //                return false;
-                //        }
-                //    }
-                //    else
-                //        result = default(T);
-                //    return true;
-
+                case true when typeof(T) == typeof(UMI3DHandPoseDto):
+                    ulong id;
+                    string Name;
+                    bool IsActive;
+                    bool HoverPose;
+                    bool isRelativeToNode;
+                    SerializableVector3 RightHandPosition;
+                    SerializableVector3 RightHandEulerRotation;
+                    SerializableVector3 LeftHandPosition;
+                    SerializableVector3 LeftHandEulerRotation;
+                    if (UMI3DNetworkingHelper.TryRead(container, out id)
+                        && UMI3DNetworkingHelper.TryRead(container, out Name)
+                        && UMI3DNetworkingHelper.TryRead(container, out IsActive)
+                        && UMI3DNetworkingHelper.TryRead(container, out HoverPose)
+                        && UMI3DNetworkingHelper.TryRead(container, out isRelativeToNode)
+                        && UMI3DNetworkingHelper.TryRead(container, out RightHandPosition)
+                        && UMI3DNetworkingHelper.TryRead(container, out RightHandEulerRotation)
+                        && UMI3DNetworkingHelper.TryRead(container, out LeftHandPosition)
+                        && UMI3DNetworkingHelper.TryRead(container, out LeftHandEulerRotation))
+                    {
+                        var HandPose = new UMI3DHandPoseDto()
+                        {
+                            id = id,
+                            Name = Name,
+                            IsActive = IsActive,
+                            HoverPose = HoverPose,
+                            isRelativeToNode = isRelativeToNode,
+                            RightHandPosition = RightHandPosition,
+                            RightHandEulerRotation = RightHandEulerRotation,
+                            LeftHandPosition = LeftHandPosition,
+                            LeftHandEulerRotation = LeftHandEulerRotation
+                        };
+                        result = (T)Convert.ChangeType(HandPose, typeof(T));
+                        readable = true;
+                    }
+                    else
+                    {
+                        result = default(T);
+                        readable = false;
+                    }
+                    return true;
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
                     readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out mat.newMaterialId);
@@ -180,6 +136,76 @@ namespace umi3d.common.collaboration
                     else
                         result = default(T);
                     return true;
+                case true when typeof(T) == typeof(ScalableTextureDto):
+                    {
+                        var scalableTexture = new ScalableTextureDto();
+                        scalableTexture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                        string animationId;
+                        string audioSourceId;
+                        string streamingFromUserId;
+                        float scale;
+                        if (UMI3DNetworkingHelper.TryRead(container, out animationId)
+                            && UMI3DNetworkingHelper.TryRead(container, out audioSourceId)
+                            && UMI3DNetworkingHelper.TryRead(container, out streamingFromUserId)
+                            && UMI3DNetworkingHelper.TryRead(container, out scale))
+                        {
+                            scalableTexture.animationId = animationId;
+                            scalableTexture.audioSourceId = audioSourceId;
+                            scalableTexture.streamingFromUserId = streamingFromUserId;
+                            scalableTexture.scale = scale;
+                            readable = true;
+                            result = (T)Convert.ChangeType(scalableTexture, typeof(T));
+                            return true;
+                        }
+                        readable = false;
+                        result = default(T);
+                        return true;
+                    }
+                case true when typeof(T) == typeof(TextureDto):
+                    {
+                        var texture = new TextureDto();
+                        texture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                        string animationId;
+                        string audioSourceId;
+                        string streamingFromUserId;
+                        if (UMI3DNetworkingHelper.TryRead(container, out animationId)
+                            && UMI3DNetworkingHelper.TryRead(container, out audioSourceId)
+                            && UMI3DNetworkingHelper.TryRead(container, out streamingFromUserId))
+                        {
+                            texture.animationId = animationId;
+                            texture.audioSourceId = audioSourceId;
+                            texture.streamingFromUserId = streamingFromUserId;
+                            readable = true;
+                            result = (T)Convert.ChangeType(texture, typeof(T));
+                            return true;
+                        }
+                        readable = false;
+                        result = default(T);
+                        return true;
+                    }
+                case true when typeof(T) == typeof(ResourceDto):
+                    var resource = new ResourceDto();
+                    resource.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                    readable = true;
+                    result = (T)Convert.ChangeType(resource, typeof(T));
+                    return true;
+                case true when typeof(T) == typeof(FileDto):
+                    var file = new FileDto();
+                    file.metrics = new AssetMetricDto();
+                    readable = UMI3DNetworkingHelper.TryRead<string>(container, out file.url)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.format)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.extension)
+                               && UMI3DNetworkingHelper.TryRead<int>(container, out file.metrics.resolution)
+                               && UMI3DNetworkingHelper.TryRead<float>(container, out file.metrics.size)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.pathIfInBundle)
+                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.libraryKey);
+                    if (readable)
+                    {
+                        result = (T)Convert.ChangeType(file, typeof(T));
+                    }
+                    else
+                        result = default(T);
+                    return true;
                 default:
                     result = default(T);
                     readable = false;
@@ -191,6 +217,10 @@ namespace umi3d.common.collaboration
         {
             switch (value)
             {
+                case LocalInfoRequestParameterValue localInfovalue:
+                    bytable = UMI3DNetworkingHelper.Write(localInfovalue.read);
+                    bytable += UMI3DNetworkingHelper.Write(localInfovalue.write);
+                    break;
                 case UserCameraPropertiesDto camera:
                     bytable = UMI3DNetworkingHelper.Write(camera.scale);
                     bytable += UMI3DNetworkingHelper.Write(camera.projectionMatrix);
@@ -216,6 +246,11 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.String);
                     bytable += UMI3DNetworkingHelper.Write(param.value);
                     break;
+                case UploadFileParameterDto param:
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.StringUploadFile);
+                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable += UMI3DNetworkingHelper.Write(param.authorizedExtensions);
+                    break;
                 case IntegerRangeParameterDto param:
                     bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.IntRange);
                     bytable += UMI3DNetworkingHelper.Write(param.value);
@@ -234,6 +269,31 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DNetworkingHelper.Write(material.newMaterialId);
                     bytable += UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists);
                     bytable += UMI3DNetworkingHelper.WriteCollection(material.overridedMaterialsId);
+                    break;
+                case ScalableTextureDto scalableTextureDto:
+                    bytable = UMI3DNetworkingHelper.WriteCollection(scalableTextureDto.variants)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.animationId)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.audioSourceId)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.streamingFromUserId)
+                        + UMI3DNetworkingHelper.Write(scalableTextureDto.scale);
+                    break;
+                case TextureDto textureDto:
+                    bytable = UMI3DNetworkingHelper.WriteCollection(textureDto.variants)
+                        + UMI3DNetworkingHelper.Write(textureDto.animationId)
+                        + UMI3DNetworkingHelper.Write(textureDto.audioSourceId)
+                        + UMI3DNetworkingHelper.Write(textureDto.streamingFromUserId);
+                    break;
+                case ResourceDto resourceDto:
+                    bytable = UMI3DNetworkingHelper.WriteCollection(resourceDto.variants);
+                    break;
+                case FileDto fileDto:
+                    bytable = UMI3DNetworkingHelper.Write(fileDto.url)
+                        + UMI3DNetworkingHelper.Write(fileDto.format)
+                        + UMI3DNetworkingHelper.Write(fileDto.extension)
+                        + UMI3DNetworkingHelper.Write(fileDto.metrics?.resolution ?? 0)
+                        + UMI3DNetworkingHelper.Write(fileDto.metrics?.size ?? 0f)
+                        + UMI3DNetworkingHelper.Write(fileDto.pathIfInBundle)
+                        + UMI3DNetworkingHelper.Write(fileDto.libraryKey);
                     break;
                 default:
                     bytable = null;

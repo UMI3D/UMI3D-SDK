@@ -25,8 +25,9 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<FormDto>> subscribers = new List<UnityAction<FormDto>>();
+        private List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
 
+        public List<ParameterSettingRequestDto> answers;
         public FormDto dto;
 
         /// <summary>
@@ -40,11 +41,11 @@ namespace umi3d.cdk.menu.interaction
         /// </summary>
         /// <param name="newValue">New value</param>
         /// <param name="hoveredObjectId">Id of the </param>
-        public void NotifyValueChange(FormDto newValue)
+        public void NotifyValueChange(List<ParameterSettingRequestDto> newValue)
         {
-            dto = newValue;
+            answers = newValue;
             foreach (var callback in subscribers)
-                callback(dto);
+                callback(answers);
         }
 
         /// <summary>
@@ -52,7 +53,7 @@ namespace umi3d.cdk.menu.interaction
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
         /// <see cref="UnSubscribe(UnityAction{FormDto})"/>
-        public void Subscribe(UnityAction<FormDto> callback)
+        public void Subscribe(UnityAction<List<ParameterSettingRequestDto>> callback)
         {
             if (callback != null && !subscribers.Contains(callback))
                 subscribers.Add(callback);
@@ -63,7 +64,7 @@ namespace umi3d.cdk.menu.interaction
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction{T})"/>
-        public void UnSubscribe(UnityAction<FormDto> callback)
+        public void UnSubscribe(UnityAction<List<ParameterSettingRequestDto>> callback)
         {
             if (callback != null)
                 subscribers.Remove(callback);

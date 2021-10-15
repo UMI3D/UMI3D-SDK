@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using inetum.unityUtils;
 
 namespace umi3d.common
 {
@@ -316,6 +317,15 @@ namespace umi3d.common
                     else return false;
                     result = (T)Convert.ChangeType(r, typeof(T));
                     return true;
+                case true when typeof(T).IsSubclassOf(typeof(TypedDictionaryEntry)):
+                    result = default(T);
+                    TypedDictionaryEntry entry = (TypedDictionaryEntry)Activator.CreateInstance(typeof(T));
+                    if (entry.Read(container))
+                    {
+                        result = (T)(object)entry;
+                        return true;
+                    }
+                    return false;
                 default:
                     bool read;
                     foreach (var module in modules)
@@ -346,11 +356,50 @@ namespace umi3d.common
             }
         }
 
-        public static Dictionary<T,K> ReadDictionary<T,K>(ByteContainer container)
+        /// <summary>
+        /// Generic class to describe a Dictionary entry that can be read from a ByteContainer
+        /// </summary>
+        abstract class TypedDictionaryEntry
         {
-            return ReadList<KeyValuePair<T,K>>(container).ToDictionary();
+            public abstract bool Read(ByteContainer container);
         }
 
+        /// <summary>
+        /// class to describe a Dictionary<K,V> entry that can be read from a ByteContainer
+        /// </summary>
+        /// <typeparam name="K">Key Type</typeparam>
+        /// <typeparam name="V">Value Type</typeparam>
+        class TypedDictionaryEntry<K, V> : TypedDictionaryEntry
+        {
+            public V value;
+            public K key;
+
+            public KeyValuePair<K, V> keyValuePair { get => new KeyValuePair<K, V>(key, value); }
+
+            public override bool Read(ByteContainer container)
+            {
+                return TryRead(container, out key) && TryRead(container, out value);
+            }
+        }
+
+        /// <summary>
+        /// Read a Dictionary<K,V> From a ByteContainer
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public static Dictionary<K, V> ReadDictionary<K, V>(ByteContainer container)
+        {
+            return ReadList<TypedDictionaryEntry<K, V>>(container).Select(k => k.keyValuePair).ToDictionary();
+        }
+
+        /// <summary>
+        /// Read a List from a container where starting indexes are given for each values at the begining of the list. 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="container"></param>
+        /// <returns></returns>
         static List<T> ReadIndexesList<T>(ByteContainer container)
         {
             var result = new List<T>();
@@ -465,14 +514,14 @@ namespace umi3d.common
             }
         }
 
-        public static Bytable Write<T>(IEnumerable<T> value)
+        public static Bytable Write(IEnumerable value)
         {
-            return WriteCollection(value);
+            return WriteCollection(value.Cast<object>());
         }
 
-        public static Bytable Write<T,K>(KeyValuePair<T,K> value)
+        public static Bytable Write(IDictionary value)
         {
-            return Write(value.Key) + Write(value.Value);
+            return WriteCollection(value);
         }
 
         public static Bytable Write<T>(T value)
@@ -626,32 +675,70 @@ namespace umi3d.common
                         bc += Write(ch);
                     }
                     return bc;
-                case T t when typeof(T) == typeof(string):
-                    return Write((uint)0);
+                case IDictionary Id:
+                    return Write(Id);
+                case IEnumerable Ie:
+                    return Write(Ie);
+                case DictionaryEntry De:
+                    return Write(De.Key) + Write(De.Value);
                 default:
+                    if (typeof(T) == typeof(string))
+                        return Write((uint)0);
                     foreach (var module in modules)
                         if (module.Write<T>(value, out bc))
                             return bc;
                     break;
             }
+
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
         public static Bytable WriteCollection<T>(IEnumerable<T> value)
         {
+            if (typeof(IBytable).IsAssignableFrom(typeof(T)) || value.Count() > 0 && !value.Any(e => !typeof(IBytable).IsAssignableFrom(e.GetType())))
+            {
+                return WriteIBytableCollection(value.Select((e) => e as IBytable));
+            }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
             foreach (var v in value)
                 b += Write(v);
             return b;
         }
 
-        public static Bytable WriteCollection<T,K>(IEnumerable<KeyValuePair<T,K>> value)
+        public static Bytable WriteCollection(IDictionary value)
         {
-            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
+            if (value.Count > 0 && !value.Cast<DictionaryEntry>().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
+            {
+                return WriteIBytableCollection(value.Cast<DictionaryEntry>().Select((e) => new DictionaryEntryBytable(e)));
+            }
+            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count);
             foreach (var v in value)
                 b += Write(v);
             return b;
         }
+
+        class DictionaryEntryBytable : IBytable
+        {
+            object key;
+            IBytable value;
+
+            public DictionaryEntryBytable(DictionaryEntry entry)
+            {
+                this.key = entry.Key;
+                this.value = entry.Value as IBytable;
+            }
+
+            public bool IsCountable()
+            {
+                return value.IsCountable();
+            }
+
+            public Bytable ToBytableArray(params object[] parameters)
+            {
+                return Write(key) + Write(value);
+            }
+        }
+
 
         public static Bytable WriteCollection(IEnumerable<byte> value)
         {
@@ -672,7 +759,6 @@ namespace umi3d.common
                 if (ibytes.First().IsCountable()) return ListToCountBytable(ibytes, parameters);
                 else return ListToIndexesBytable(ibytes, parameters);
             }
-            Debug.LogWarning("Empty IEnumerable");
             return Write(UMI3DObjectKeys.CountArray)
                 + Write(0);
         }
@@ -746,6 +832,13 @@ namespace umi3d.common
             this.bytes = bytes;
             position = 0;
             length = bytes.Length;
+        }
+
+        public ByteContainer(ByteContainer container)
+        {
+            this.bytes = container.bytes;
+            position = container.position;
+            length = container.length;
         }
 
         public override string ToString()

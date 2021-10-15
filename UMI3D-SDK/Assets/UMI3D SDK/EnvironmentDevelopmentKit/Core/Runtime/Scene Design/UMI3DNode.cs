@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAsyncProperty<bool> objectYBillboard { get { Register(); return _objectYBillboard; } protected set => _objectYBillboard = value; }
 
+        /// <summary>
+        /// Contains a collection of UMI3DId refering entities with skinnedMeshRenderer and an interger that is the position of this node in the bones array of the skinnedMeshRenderer.
+        /// Used only with Model with tracked sub object and skinnedMeshRenderer
+        /// </summary>
+        public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();
 
 
         /// <summary>
@@ -288,6 +294,7 @@ namespace umi3d.edk
             nodeDto.yBillboard = objectYBillboard.GetValue(user);
             nodeDto.colliderDto = GetColliderDto();
             nodeDto.lodDto = GetLod();
+            nodeDto.skinnedRendererLinks = skinnedRendererLinks;
         }
 
         public override Bytable ToBytes(UMI3DUser user)

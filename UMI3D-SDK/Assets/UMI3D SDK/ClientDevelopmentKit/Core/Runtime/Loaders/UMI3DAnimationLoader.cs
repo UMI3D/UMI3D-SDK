@@ -22,11 +22,11 @@ namespace umi3d.cdk
 {
     static public class UMI3DAnimationLoader
     {
-        static public void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<string> failed)
+        static public void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
         {
             if (dto == null)
             {
-                failed?.Invoke("dto shouldn't be null");
+                failed?.Invoke(new Umi3dExecption("dto shouldn't be null"));
                 return;
             }
 
@@ -68,9 +68,6 @@ namespace umi3d.cdk
 
         static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container))
-                return true;
-
             return UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 

@@ -21,6 +21,7 @@ using umi3d.edk;
 using umi3d.common;
 using umi3d.common.userCapture;
 using System;
+using inetum.unityUtils;
 
 namespace umi3d.edk.userCapture
 {

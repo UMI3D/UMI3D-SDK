@@ -690,6 +690,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private void Start()
         {
+            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
@@ -698,7 +699,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        private void OnApplicationQuit()
+        private void ApplicationQuit()
         {
             Stop();
         }
