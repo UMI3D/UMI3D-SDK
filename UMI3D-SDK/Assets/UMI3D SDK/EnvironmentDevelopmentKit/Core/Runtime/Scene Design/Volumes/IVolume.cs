@@ -21,6 +21,8 @@ namespace umi3d.edk.volume
     /// </summary>
     public interface IVolume : IVolumeDescriptor
     {
+        bool IsTraversable();
+
         /// <summary>
         /// Return the event raised when a user enters the volume cell.
         /// </summary>

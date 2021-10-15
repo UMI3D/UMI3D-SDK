@@ -75,7 +75,10 @@ namespace umi3d.edk.volume
         public ulong Id()
         {
             if (id == null)
+            {
                 id = UMI3DEnvironment.Register(this);
+                VolumeManager.volumes.Add(Id(), this);
+            }
             return id.Value;
         }
 
@@ -110,10 +113,16 @@ namespace umi3d.edk.volume
             }
             path = System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));
 
+            UMI3DScene scene = this.GetComponentInParent<UMI3DScene>();
+
+
             OBJVolumeDto dto = new OBJVolumeDto()
             {
                 id = Id(),
-                objFile = path
+                objFile = path,
+                rootNodeId = scene.Id(),
+                rootNodeToLocalMatrix = scene.transform.localToWorldMatrix * this.transform.worldToLocalMatrix,
+                isTraversable = IsTraversable()
             };
             return dto;
         }
@@ -123,6 +132,9 @@ namespace umi3d.edk.volume
             throw new System.NotImplementedException();
         }
 
+        [SerializeField]
+        private bool isTraversable = true;
+        public bool IsTraversable() => isTraversable;
 
     }
 }

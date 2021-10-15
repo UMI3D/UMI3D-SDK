@@ -31,11 +31,11 @@ namespace umi3d.edk.volume
             return new CylinderDto()
             {
                 id = Id(),
-                center = this.transform.position,
-                rotation = this.transform.rotation,
-                scale = this.transform.localScale,
                 height = height,
-                radius = radius
+                radius = radius,
+                rootNodeId = GetRootNode().Id(),
+                rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
+                isTraversable = IsTraversable()
             };
         }
 

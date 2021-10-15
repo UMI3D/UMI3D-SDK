@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace umi3d.common.volume
 {
-	public class FaceDto : AbstractVolumeDescriptor
+	public class FaceDto : AbstractVolumeDescriptorDto
 	{
 		public List<ulong> pointsIds;
 	}

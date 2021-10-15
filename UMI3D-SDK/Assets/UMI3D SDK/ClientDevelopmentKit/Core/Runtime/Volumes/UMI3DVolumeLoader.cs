@@ -26,7 +26,7 @@ namespace umi3d.cdk.volumes
     /// </summary>
 	static public class UMI3DVolumeLoader 
 	{
-        static public void ReadUMI3DExtension(AbstractVolumeDescriptor dto, Action finished, Action<string> failed)
+        static public void ReadUMI3DExtension(AbstractVolumeDescriptorDto dto, Action finished, Action<string> failed)
         {
             switch (dto)
             {

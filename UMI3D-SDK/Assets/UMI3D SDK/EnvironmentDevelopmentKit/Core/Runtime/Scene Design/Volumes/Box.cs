@@ -25,22 +25,33 @@ namespace umi3d.edk.volume
     /// </summary>
     public class Box : AbstractPrimitive
     {
-        public Bounds bounds;
+        public bool extendFromBottom = false;
+        public Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
 
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new BoxDto()
             {
                 id = Id(),
-                center = this.transform.TransformPoint(bounds.center),
-                size = this.transform.TransformVector(bounds.size)
+                center = bounds.center + (extendFromBottom ? bounds.extents.y * Vector3.up : Vector3.zero),
+                size = bounds.size,
+                rootNodeId = GetRootNode().Id(),
+                rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
+                isTraversable = IsTraversable()
             };
         }
 
         public void OnDrawGizmos()
         {
+            Bounds displayBound = bounds;
+            if (extendFromBottom)
+                displayBound.center += bounds.extents.y * Vector3.up;
+
+            Gizmos.matrix = this.transform.localToWorldMatrix;
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(this.transform.TransformPoint(bounds.center), this.transform.TransformVector(bounds.size));
+            Gizmos.DrawWireCube(displayBound.center, displayBound.size);
+            Gizmos.color = new Color(1, 0, 0, 0.2f);
+            Gizmos.DrawCube(displayBound.center, displayBound.size);
         }
     }
 }

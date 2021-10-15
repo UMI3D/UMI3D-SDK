@@ -877,6 +877,5 @@ namespace umi3d.common.volume
             return mesh;
         }
 
-
     }
 }

@@ -18,9 +18,6 @@ namespace umi3d.common.volume
 { 
     public class CylinderDto : AbstractPrimitiveDto
     {
-        public SerializableVector3 center;
-        public SerializableVector4 rotation;
-        public SerializableVector3 scale;
         public float radius;
         public float height;
     }

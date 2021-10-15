@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
-	public class PointDto : AbstractVolumeDescriptor
+	public class PointDto : AbstractVolumeDescriptorDto
 	{
 		public SerializableVector3 position;
 	}

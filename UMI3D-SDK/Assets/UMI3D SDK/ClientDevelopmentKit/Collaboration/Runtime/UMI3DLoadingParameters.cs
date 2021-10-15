@@ -81,7 +81,7 @@ namespace umi3d.cdk
                 case ToolboxDto t:
                     UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
                     break;
-                case AbstractVolumeDescriptor v:
+                case AbstractVolumeDescriptorDto v:
                     UMI3DVolumeLoader.ReadUMI3DExtension(v, callback, failed);
                     break;
                 case ToolDto t:

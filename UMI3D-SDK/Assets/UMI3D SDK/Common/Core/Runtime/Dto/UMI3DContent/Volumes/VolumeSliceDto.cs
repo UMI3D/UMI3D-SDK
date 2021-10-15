@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace umi3d.common.volume
 {
-	public class VolumeSliceDto : AbstractVolumeDescriptor
+	public class VolumeSliceDto : AbstractVolumeDescriptorDto
 	{
 		public List<ulong> points;
 		public List<int> edges;

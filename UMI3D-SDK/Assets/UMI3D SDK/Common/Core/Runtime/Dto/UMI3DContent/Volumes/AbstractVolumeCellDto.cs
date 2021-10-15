@@ -17,8 +17,19 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
-    public abstract class AbstractVolumeCellDto : AbstractVolumeDescriptor
+    public abstract class AbstractVolumeCellDto : AbstractVolumeDescriptorDto
     {
-        
+        /// <summary>
+        /// Node to position the cell in relation to.
+        /// </summary>
+        public ulong rootNodeId;
+
+        /// <summary>
+        /// Relative to the node linked to AbstractVolumeCellDto.nodeId.
+        /// vectorInRootNodeCoordinates = transform * vectorInBoxCordinate
+        /// </summary>
+        public SerializableMatrix4x4 rootNodeToLocalMatrix;
+
+        public bool isTraversable = true;
     }
 }

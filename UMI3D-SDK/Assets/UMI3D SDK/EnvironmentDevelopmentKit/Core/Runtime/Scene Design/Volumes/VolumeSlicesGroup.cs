@@ -109,7 +109,8 @@ namespace umi3d.edk.volume
             VolumeSlicesGroupDto volumeDto = new VolumeSlicesGroupDto()
             {
                 id = Id(),
-                slicesIds = this.volumeSlices.ConvertAll(s => s.Id())
+                slicesIds = this.volumeSlices.ConvertAll(s => s.Id()),
+                isTraversable = IsTraversable()
             };
 
             return volumeDto;
@@ -117,18 +118,22 @@ namespace umi3d.edk.volume
 
         protected virtual void Awake()
         {
-            VolumeManager.Instance.volumes.Add(Id(), this);
+            VolumeManager.volumes.Add(Id(), this);
         }
 
         protected virtual void OnDestroy()
         {
-            if (VolumeManager.Instance != null) 
-                VolumeManager.Instance.volumes.Remove(Id());
+            VolumeManager.volumes.Remove(Id());
         }
 
         public Bytable ToBytes(UMI3DUser user)
         {
             throw new System.NotImplementedException();
         }
+
+
+        [SerializeField]
+        private bool isTraversable = true;
+        public bool IsTraversable() => isTraversable;
     }
 }

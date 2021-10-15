@@ -266,18 +266,28 @@ namespace umi3d.edk.collaboration
             if (UMI3DEnvironment.Instance.useDto)
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-                if (dto is common.userCapture.UserCameraPropertiesDto camera)
+
+                if (dto is common.userCapture.UserCameraPropertiesDto cam)
                 {
                     MainThreadManager.Run(() =>
                     {
-                        UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
+                        UMI3DEmbodimentManager.Instance.UserCameraReception(cam, user);
+                    });
+                }
+                else if (dto is common.volume.VolumeUserTransitDto vutdto) 
+                {
+                    MainThreadManager.Run(() =>
+                    {
+                        VolumeManager.DispatchBrowserRequest(user, vutdto.volumeId, vutdto.direction);
                     });
                 }
                 else
+                {
                     MainThreadManager.Run(() =>
                     {
                         UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
                     });
+                }
             }
             else
             {

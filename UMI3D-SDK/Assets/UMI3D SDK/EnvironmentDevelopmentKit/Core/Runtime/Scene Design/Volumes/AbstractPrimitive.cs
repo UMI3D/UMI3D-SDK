@@ -35,7 +35,13 @@ namespace umi3d.edk.volume
         ///<inheritdoc/>
         public UMI3DUserEvent GetUserExit() => onUserExit;
 
+        /// <summary>
+        /// Return the root node to position the primitive in relation to.
+        /// </summary>
+        /// <returns></returns>
+        public UMI3DAbstractNode GetRootNode() => this.gameObject.GetComponentInParent<UMI3DAbstractNode>();
 
+        public Matrix4x4 GetRootNodeToLocalMatrix() => GetRootNode().transform.localToWorldMatrix * this.transform.worldToLocalMatrix;
 
         /// <summary>
         /// Return delete operation
@@ -72,7 +78,7 @@ namespace umi3d.edk.volume
             if (id == null)
             {
                 id = UMI3DEnvironment.Register(this);
-                VolumeManager.Instance.volumes.Add(Id(), this);
+                VolumeManager.volumes.Add(Id(), this);
             }
             return id.Value;
         }
@@ -106,5 +112,9 @@ namespace umi3d.edk.volume
         {
             throw new System.NotImplementedException();
         }
+
+        [SerializeField]
+        private bool isTraversable = true;
+        public bool IsTraversable() => isTraversable;
     }
 }
