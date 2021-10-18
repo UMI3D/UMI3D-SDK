@@ -367,5 +367,10 @@ namespace umi3d.edk
             return Operations.Count();
         }
 
+        public void Dispatch()
+        {
+            if (Count() > 0) UMI3DServer.Dispatch(this);
+        }
+
     }
 }
