@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using umi3d.common;
 
 namespace umi3d.cdk
@@ -84,13 +85,13 @@ namespace umi3d.cdk
 
         protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { onError.Invoke("GetFile Not Implemented"); }
 
-        static public void GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError)
+        static public void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
         {
             if (Exists)
-                Instance._GetEntity(id, callback, onError);
+                Instance._GetEntity(ids, callback, onError);
         }
 
-        protected virtual void _GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
+        protected virtual void _GetEntity(List<ulong> id, Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
 
         public virtual ulong GetId() { return 0; }
 
