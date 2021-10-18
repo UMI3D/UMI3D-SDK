@@ -51,20 +51,20 @@ namespace umi3d.edk
 
         public static Transaction operator +(Transaction a, Transaction b)
         {
-            a.Operations.AddRange(b.Operations);
+            a.AddIfNotNull(b.Operations);
             a.reliable |= b.reliable;
             return a;
         }
 
         public static Transaction operator +(Transaction a, List<Operation> b)
         {
-            a.Operations.AddRange(b);
+            a.AddIfNotNull(b);
             return a;
         }
 
         public static Transaction operator +(Transaction a, Operation b)
         {
-            a.Operations.Add(b);
+            a.AddIfNotNull(b);
             return a;
         }
 
