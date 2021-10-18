@@ -305,7 +305,7 @@ namespace umi3d.edk
         {
             if (b != null)
             {
-                AddOperation(b);
+                Add(b);
                 return true;
             }
 
@@ -320,7 +320,7 @@ namespace umi3d.edk
                 {
                     if (c != null)
                     {
-                        AddOperation(c);
+                        Add(c);
                     }
                 }
                 return true;
@@ -328,16 +328,25 @@ namespace umi3d.edk
             return false;
         }
 
-        public void AddOperation(IEnumerable<Operation> ops)
+        /// <summary>
+        /// Add a list of operation to the transaction and apply merge between LoadEntity if next to each other with the same user list.
+        /// </summary>
+        /// <param name="ops"></param>
+        public void Add(IEnumerable<Operation> ops)
         {
             foreach (Operation op in ops)
             {
-                AddOperation(op);
+                Add(op);
             }
         }
 
         private Operation lastOperation;
-        public void AddOperation(Operation op)
+
+        /// <summary>
+        /// Add an operation to the transaction and apply merge between LoadEntity if next to each other with the same user list.
+        /// </summary>
+        /// <param name="op"></param>
+        public void Add(Operation op)
         {
             if (op is LoadEntity)
             {
