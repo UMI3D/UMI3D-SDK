@@ -230,7 +230,9 @@ namespace umi3d.edk.collaboration
             yield return new WaitForFixedUpdate();
             var op = objectUserList.Add(user);
             op.users.Remove(user);
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
+            Transaction tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(op);
+            UMI3DServer.Dispatch(tr);
         }
 
         IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
@@ -241,7 +243,9 @@ namespace umi3d.edk.collaboration
                 yield break;
             if (user != null)
                 op.users.Remove(user);
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
+            Transaction tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(op);
+            UMI3DServer.Dispatch(tr);
         }
 
         IEnumerator UpdateUser(UMI3DCollaborationUser user)
@@ -257,7 +261,9 @@ namespace umi3d.edk.collaboration
                 value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
             };
             operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
-            UMI3DCollaborationServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { operation } });
+            Transaction tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(operation);
+            UMI3DServer.Dispatch(tr);
         }
 
 

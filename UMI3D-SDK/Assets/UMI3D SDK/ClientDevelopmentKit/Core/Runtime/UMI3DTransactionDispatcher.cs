@@ -62,7 +62,13 @@ namespace umi3d.cdk
             switch (operation)
             {
                 case LoadEntityDto load:
-                    UMI3DEnvironmentLoader.LoadEntity(load.entity, performed);
+                    int count = load.entities.Count;
+                    int performedCount = 0;
+                    Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
+                    foreach (var entity in load.entities)
+                    {
+                        UMI3DEnvironmentLoader.LoadEntity(entity, performed2);
+                    }
                     break;
                 case DeleteEntityDto delete:
                     UMI3DEnvironmentLoader.DeleteEntity(delete.entityId, performed);

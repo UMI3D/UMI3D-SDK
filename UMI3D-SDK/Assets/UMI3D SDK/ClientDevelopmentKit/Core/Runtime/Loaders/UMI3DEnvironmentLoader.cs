@@ -395,17 +395,23 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         void _LoadEntity(ByteContainer container, Action performed)
         {
-            var id = UMI3DNetworkingHelper.Read<ulong>(container);
+            List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
+            int count = ids.Count;
+            int performedCount = 0;
+            Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
             Action<LoadEntityDto> callback = (load) =>
             {
-                LoadEntity(load.entity, performed);
+                foreach (IEntity item in load.entities)
+                {
+                    LoadEntity(item, performed2);
+                }
             };
             Action<string> error = (s) =>
             {
                 Debug.Log(s);
-                performed.Invoke();
+                performed2.Invoke();
             };
-            UMI3DClientServer.GetEntity(id, callback, error);
+            UMI3DClientServer.GetEntity(ids, callback, error);
         }
 
         /// <summary>

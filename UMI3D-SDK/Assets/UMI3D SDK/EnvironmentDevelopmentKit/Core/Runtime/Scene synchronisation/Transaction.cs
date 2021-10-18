@@ -14,16 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 
 namespace umi3d.edk
 {
-    public class Transaction
+    public class Transaction : IEnumerable<Operation>
     {
         public bool reliable;
-        public List<Operation> Operations = new List<Operation>();
+        private List<Operation> Operations = new List<Operation>();
 
         public (byte[], bool) ToBson(UMI3DUser user)
         {
@@ -80,173 +81,277 @@ namespace umi3d.edk
 
         public void Simplify()
         {
+            Operation lastOperation = null;
+
             List<Operation> newOperations = new List<Operation>();
             foreach (Operation op in Operations)
             {
-                switch (op)
+                //concatenate entities in LoadEntitie operations
+                if (lastOperation != null && lastOperation is LoadEntity && op is LoadEntity && lastOperation.users == op.users)
                 {
-                    case StartInterpolationProperty starti:
-                    case StopInterpolationProperty stopi:
-                    case SetEntityDictionaryAddProperty a:
-                    case SetEntityDictionaryRemoveProperty r:
-                    case SetEntityListAddProperty al:
-                    case SetEntityListRemoveProperty rl:
-                        newOperations.Add(op);
-                        break;
+                    (lastOperation as LoadEntity).entities.AddRange((op as LoadEntity).entities);
+                }
+                else
+                {
+                    switch (op)
+                    {
+                        case StartInterpolationProperty starti:
+                        case StopInterpolationProperty stopi:
+                        case SetEntityDictionaryAddProperty a:
+                        case SetEntityDictionaryRemoveProperty r:
+                        case SetEntityListAddProperty al:
+                        case SetEntityListRemoveProperty rl:
+                            newOperations.Add(op);
+                            break;
 
-                    case SetEntityListProperty sl:
-                        var inverted = newOperations.ToList();
-                        inverted.Reverse();
-                        foreach (var nop in inverted)
-                        {
-                            if (nop is SetEntityListAddProperty || nop is SetEntityListRemoveProperty)
-                                break;
-                            else if (nop is SetEntityListProperty ne)
+                        case SetEntityListProperty sl:
+                            var inverted = newOperations.ToList();
+                            inverted.Reverse();
+                            foreach (var nop in inverted)
                             {
-                                if (ne.entityId == sl.entityId && ne.property == sl.property && ne.index == sl.index)
+                                if (nop is SetEntityListAddProperty || nop is SetEntityListRemoveProperty)
+                                    break;
+                                else if (nop is SetEntityListProperty ne)
                                 {
-                                    ne -= sl.users;
-                                    if (ne.users.Count == 0)
-                                        newOperations.Remove(ne);
+                                    if (ne.entityId == sl.entityId && ne.property == sl.property && ne.index == sl.index)
+                                    {
+                                        ne -= sl.users;
+                                        if (ne.users.Count == 0)
+                                            newOperations.Remove(ne);
+                                    }
                                 }
                             }
-                        }
-                        newOperations.Add(sl);
-                        break;
+                            newOperations.Add(sl);
+                            break;
 
-                    case SetEntityDictionaryProperty sd:
-                        var inverted2 = newOperations.ToList();
-                        inverted2.Reverse();
-                        foreach (var nop in inverted2)
-                        {
-                            if (nop is SetEntityDictionaryAddProperty || nop is SetEntityDictionaryRemoveProperty)
-                                break;
-                            else if (nop is SetEntityDictionaryProperty)
+                        case SetEntityDictionaryProperty sd:
+                            var inverted2 = newOperations.ToList();
+                            inverted2.Reverse();
+                            foreach (var nop in inverted2)
                             {
-                                var ne = nop as SetEntityDictionaryProperty;
-                                if (ne.entityId == sd.entityId && ne.property == sd.property && ne.key == sd.key)
+                                if (nop is SetEntityDictionaryAddProperty || nop is SetEntityDictionaryRemoveProperty)
+                                    break;
+                                else if (nop is SetEntityDictionaryProperty)
                                 {
-                                    ne -= sd.users;
-                                    if (ne.users.Count == 0)
-                                        newOperations.Remove(ne);
+                                    var ne = nop as SetEntityDictionaryProperty;
+                                    if (ne.entityId == sd.entityId && ne.property == sd.property && ne.key == sd.key)
+                                    {
+                                        ne -= sd.users;
+                                        if (ne.users.Count == 0)
+                                            newOperations.Remove(ne);
+                                    }
                                 }
                             }
-                        }
-                        newOperations.Add(sd);
-                        break;
+                            newOperations.Add(sd);
+                            break;
 
-                    case SetEntityProperty e:
-                        foreach (var nop in newOperations.ToList())
-                        {
-                            if (nop is SetEntityProperty)
+                        case SetEntityProperty e:
+                            foreach (var nop in newOperations.ToList())
                             {
-                                var ne = nop as SetEntityProperty;
-                                if (ne.entityId == e.entityId && ne.property == e.property)
+                                if (nop is SetEntityProperty)
                                 {
-                                    ne -= e.users;
-                                    if (ne.users.Count == 0)
-                                        newOperations.Remove(ne);
+                                    var ne = nop as SetEntityProperty;
+                                    if (ne.entityId == e.entityId && ne.property == e.property)
+                                    {
+                                        ne -= e.users;
+                                        if (ne.users.Count == 0)
+                                            newOperations.Remove(ne);
+                                    }
                                 }
                             }
-                        }
-                        newOperations.Add(e);
-                        break;
+                            newOperations.Add(e);
+                            break;
 
-                    case DeleteEntity d:
-                        foreach (var nop in newOperations.ToList())
-                        {
-                            switch (nop)
+                        case DeleteEntity d:
+                            foreach (var nop in newOperations.ToList())
                             {
-                                case DeleteEntity nd:
-                                    {
-                                        if (nd.entityId == d.entityId)
+                                switch (nop)
+                                {
+                                    case DeleteEntity nd:
                                         {
-                                            nd -= d.users;
-                                            if (nd.users.Count == 0)
-                                                newOperations.Remove(nd);
+                                            if (nd.entityId == d.entityId)
+                                            {
+                                                nd -= d.users;
+                                                if (nd.users.Count == 0)
+                                                    newOperations.Remove(nd);
+                                            }
+
+                                            break;
                                         }
 
-                                        break;
-                                    }
-
-                                case SetEntityProperty ne:
-                                    {
-                                        if (ne.entityId == d.entityId)
+                                    case SetEntityProperty ne:
                                         {
-                                            ne -= d.users;
-                                            if (ne.users.Count == 0)
-                                                newOperations.Remove(ne);
+                                            if (ne.entityId == d.entityId)
+                                            {
+                                                ne -= d.users;
+                                                if (ne.users.Count == 0)
+                                                    newOperations.Remove(ne);
+                                            }
+
+                                            break;
                                         }
 
-                                        break;
-                                    }
-
-                                case LoadEntity nl:
-                                    {
-                                        if (nl.entity.Id() == d.entityId)
+                                    case LoadEntity nl:
                                         {
-                                            nl -= d.users;
-                                            if (nl.users.Count == 0)
-                                                newOperations.Remove(nl);
-                                        }
+                                            if (nl.users.SequenceEqual(lastOperation.users))
+                                            {
+                                                var entityToDelete = new List<UMI3DLoadableEntity>();
+                                                foreach (var entity in nl.entities)
+                                                {
+                                                    if (entity.Id() == d.entityId)
+                                                    {
+                                                        entityToDelete.Add(entity);
+                                                    }
+                                                }
+                                                foreach (var item in entityToDelete)
+                                                {
+                                                    nl.entities.Remove(item);
+                                                }
+                                            }
 
-                                        break;
-                                    }
+                                            break;
+                                        }
+                                }
                             }
-                        }
-                        newOperations.Add(d);
-                        break;
+                            newOperations.Add(d);
+                            break;
 
-                    case LoadEntity l:
-                        foreach (var nop in newOperations.ToList())
-                        {
-                            switch (nop)
+                        case LoadEntity l:
+                            foreach (var nop in newOperations.ToList())
                             {
-                                case DeleteEntity nd:
-                                    {
-                                        if (nd.entityId == l.entity.Id())
+                                switch (nop)
+                                {
+                                    case DeleteEntity nd:
                                         {
-                                            nd -= l.users;
-                                            if (nd.users.Count == 0)
-                                                newOperations.Remove(nd);
+                                            foreach (UMI3DLoadableEntity entity in l.entities)
+                                            {
+                                                if (nd.entityId == entity.Id())
+                                                {
+                                                    nd -= l.users;
+                                                    if (nd.users.Count == 0)
+                                                        newOperations.Remove(nd);
+                                                }
+                                            }
+                                            break;
                                         }
 
-                                        break;
-                                    }
-
-                                case SetEntityProperty ne:
-                                    {
-                                        if (ne.entityId == l.entity.Id())
+                                    case SetEntityProperty ne:
                                         {
-                                            ne -= l.users;
-                                            if (ne.users.Count == 0)
-                                                newOperations.Remove(ne);
+                                            foreach (UMI3DLoadableEntity entity in l.entities)
+                                            {
+                                                if (ne.entityId == entity.Id())
+                                                {
+                                                    ne -= l.users;
+                                                    if (ne.users.Count == 0)
+                                                        newOperations.Remove(ne);
+                                                }
+                                            }
+
+                                            break;
                                         }
 
-                                        break;
-                                    }
-
-                                case LoadEntity nl:
-                                    {
-                                        if (nl.entity.Id() == l.entity.Id())
+                                    case LoadEntity nl:
                                         {
-                                            nl -= l.users;
-                                            if (nl.users.Count == 0)
-                                                newOperations.Remove(nl);
-                                        }
+                                            var entityToRemove = new List<UMI3DLoadableEntity>();
+                                            if (nl.users.SequenceEqual(l.users))
+                                            {
+                                                foreach (var NOEntity in nl.entities)
+                                                {
+                                                    foreach (var newEntity in l.entities)
+                                                    {
+                                                        if (NOEntity.Id() == newEntity.Id())
+                                                        {
+                                                            entityToRemove.Add(newEntity);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            foreach (var item in entityToRemove)
+                                            {
+                                                l.entities.Remove(item);
+                                            }
+                                            if (nl.entities.SequenceEqual(l.entities))
+                                            {
+                                                l -= nl.users;
+                                            }
 
-                                        break;
-                                    }
+                                            break;
+                                        }
+                                }
                             }
-                        }
-                        newOperations.Add(l);
-                        break;
+                            newOperations.Add(l);
+                            break;
 
-                    default:
-                        throw new System.Exception($"Missing type {op.GetType()}");
+                        default:
+                            throw new System.Exception($"Missing type {op.GetType()}");
+                    }
+                    lastOperation = op;
                 }
             }
             Operations = newOperations;
         }
+
+        public IEnumerator<Operation> GetEnumerator()
+        {
+            return ((IEnumerable<Operation>)Operations).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<Operation>)Operations).GetEnumerator();
+        }
+
+        public bool AddIfNotNull(Operation b)
+        {
+            if (b != null)
+            {
+                AddOperation(b);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool AddIfNotNull(IEnumerable<Operation> b)
+        {
+            if (b != null)
+            {
+                foreach (Operation c in b)
+                {
+                    if (c != null)
+                    {
+                        AddOperation(c);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public void AddOperation(IEnumerable<Operation> ops)
+        {
+            foreach (Operation op in ops)
+            {
+                AddOperation(op);
+            }
+        }
+
+        private Operation lastOperation;
+        public void AddOperation(Operation op)
+        {
+            if (op is LoadEntity)
+            {
+                lastOperation = Operations.LastOrDefault();
+                if (lastOperation != null && lastOperation is LoadEntity && lastOperation.users != null && lastOperation.users.SequenceEqual(op.users))
+                {
+                    (lastOperation as LoadEntity).entities.AddRange((op as LoadEntity).entities);
+                    return;
+                }
+
+            }
+            Operations.Add(op);
+
+        }
+
     }
 }

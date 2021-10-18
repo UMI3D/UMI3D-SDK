@@ -63,13 +63,19 @@ namespace umi3d.edk.collaboration
                 user.audioPlayer = user.Avatar.gameObject.AddComponent<UMI3DAudioPlayer>();
                 user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
                 user.audioPlayer.ObjectNode.SetValue(user.Avatar);
-                UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { user.audioPlayer.GetLoadEntity() } });
+                Transaction tr = new Transaction() { reliable = true };
+                tr.AddIfNotNull(user.audioPlayer.GetLoadEntity());
+                UMI3DServer.Dispatch(tr);
             }
             if (user.audioPlayer.ObjectNode.GetValue() == null)
             {
                 var op = user.audioPlayer.ObjectNode.SetValue(user.Avatar);
                 if (op != null)
-                    UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
+                {
+                    Transaction tr = new Transaction() { reliable = true };
+                    tr.AddIfNotNull(op);
+                    UMI3DServer.Dispatch(tr);
+                }
             }
             UMI3DServer.Instance.NotifyUserChanged(user);
         }
@@ -81,7 +87,11 @@ namespace umi3d.edk.collaboration
                 yield return wait;
             var op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
             if (op != null)
-                UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
+            {
+                Transaction tr = new Transaction() { reliable = true };
+                tr.AddIfNotNull(op);
+                UMI3DServer.Dispatch(tr);
+            }
         }
 
         void UpdateSpacial()
@@ -90,7 +100,11 @@ namespace umi3d.edk.collaboration
             {
                 var op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
                 if (op != null)
-                    UMI3DServer.Dispatch(new Transaction() { reliable = true, Operations = new List<Operation>() { op } });
+                {
+                    Transaction tr = new Transaction() { reliable = true };
+                    tr.AddIfNotNull(op);
+                    UMI3DServer.Dispatch(tr);
+                }
             }
         }
 
