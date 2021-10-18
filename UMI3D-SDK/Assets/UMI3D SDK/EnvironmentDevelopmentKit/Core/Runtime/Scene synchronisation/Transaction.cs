@@ -362,5 +362,10 @@ namespace umi3d.edk
 
         }
 
+        public int Count()
+        {
+            return Operations.Count();
+        }
+
     }
 }
