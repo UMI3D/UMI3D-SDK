@@ -70,11 +70,10 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
-            Debug.Log("id external mat " + id);
-            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o,u) => new UMI3DShaderPropertyDto(o), null, (d) =>
-           {
-               return new Dictionary<string, object>(d);
-           }); ;
+            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
+            {
+                return new Dictionary<string, object>(d);
+            }); ;
             //   objectShaderProperties.OnInnerValueChanged += (string s, object o) => { shaderProperties[s] = o; };
             //      objectShaderProperties.OnInnerValueAdded += (string s, object o) => { shaderProperties.Add(s, o); };
             //    objectShaderProperties.OnInnerValueRemoved += (string s) => { shaderProperties.Remove(s); };
