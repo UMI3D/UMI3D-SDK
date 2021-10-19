@@ -127,6 +127,17 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
+        /// Return a hashset copy of all UMI3D users.
+        /// </summary>
+        public HashSet<UMI3DUser> UsersSet()
+        {
+            lock (users)
+            {
+                return new HashSet<UMI3DUser>(users.Values);
+            }
+        }
+
+        /// <summary>
         /// logout a user
         /// </summary>
         /// <param name="user"></param>
@@ -260,7 +271,7 @@ namespace umi3d.edk.collaboration
                 index = index,
                 value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
             };
-            operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
+            operation += UMI3DCollaborationServer.Collaboration.Users;
             Transaction tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(operation);
             UMI3DServer.Dispatch(tr);

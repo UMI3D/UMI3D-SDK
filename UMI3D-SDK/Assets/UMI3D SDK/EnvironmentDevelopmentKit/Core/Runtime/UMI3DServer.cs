@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -109,6 +111,19 @@ namespace umi3d.edk
 
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
+        }
+
+        public virtual HashSet<UMI3DUser> UserSet()
+        {
+            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
+        }
+        public virtual HashSet<UMI3DUser> UserSetWhenHasJoined()
+        {
+            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where( (u) => u.hasJoined));
+        }
+        public virtual IEnumerable<UMI3DUser> Users()
+        {
+            return UMI3DEnvironment.GetEntities<UMI3DUser>();
         }
 
         /// <summary>

@@ -132,7 +132,7 @@ namespace umi3d.edk.interaction
         /// <returns></returns>
         public ProjectTool GetProjectTool(bool releasable = true, HashSet<UMI3DUser> users = null)
         {
-            return new ProjectTool() { tool = this, releasable = releasable, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+            return new ProjectTool() { tool = this, releasable = releasable, users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()};
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace umi3d.edk.interaction
         /// <returns></returns>
         public ReleaseTool GetReleaseTool(HashSet<UMI3DUser> users = null)
         {
-            return new ReleaseTool() { tool = this, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+            return new ReleaseTool() { tool = this, users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()};
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace umi3d.edk.interaction
         /// <returns></returns>
         public SwitchTool GetSwitchTool(AbstractTool toolToReplace, bool releasable = true, HashSet<UMI3DUser> users = null)
         {
-            return new SwitchTool() { tool = this, toolToReplace = toolToReplace, releasable = releasable, users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>()) };
+            return new SwitchTool() { tool = this, toolToReplace = toolToReplace, releasable = releasable, users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()};
         }
 
 
