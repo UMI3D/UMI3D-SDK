@@ -30,7 +30,7 @@ namespace umi3d.common
             get => applicationIsQuitting;
             set
             {
-                if (applicationIsQuitting = !value)
+                if (applicationIsQuitting != value)
                 {
                     applicationIsQuitting = value;
                     if (value)
