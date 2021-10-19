@@ -20,7 +20,7 @@ using inetum.unityUtils;
 namespace umi3d.common
 {
 
-    public static class VectorExtension
+    public static class Umi3dVectorExtension
     {
         public static SerializableVector2 Unscaled(this SerializableVector2 v2, SerializableVector2 scale)
         {
