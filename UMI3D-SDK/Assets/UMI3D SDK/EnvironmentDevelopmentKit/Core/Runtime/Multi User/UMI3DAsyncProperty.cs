@@ -181,7 +181,7 @@ namespace umi3d.edk
                 }
                 else
                 {
-                    operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
+                    operation += UMI3DServer.Instance.Users();
                 }
             }
             return operation;
@@ -242,7 +242,7 @@ namespace umi3d.edk
             {
                 operation = new SetEntityProperty()
                 {
-                    users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>()),
+                    users = UMI3DServer.Instance.UserSet(),
                     entityId = entityId,
                     property = propertyId,
                     value = Serializer(value, null)
