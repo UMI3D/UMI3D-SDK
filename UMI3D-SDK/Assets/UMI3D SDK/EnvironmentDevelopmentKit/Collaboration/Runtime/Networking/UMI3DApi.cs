@@ -390,15 +390,15 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             EntityRequestDto dto = ReadDto(e.Request) as EntityRequestDto;
-            var entity = UMI3DEnvironment.GetEntity<UMI3DLoadableEntity>(dto.entityId);
-            if (entity != null)
+            var entities = UMI3DEnvironment.GetEntitiesWhere<UMI3DLoadableEntity>((item) => dto.entitiesId.Contains(item.Id()));
+            if (entities != null)
             {
                 LoadEntityDto result = null;
                 bool finished = false;
                 bool ok = true;
                 UnityMainThreadDispatcher.Instance().Enqueue(
                     _GetEnvironment(
-                        entity, user,
+                        entities, user,
                         (res) => { result = res; finished = true; },
                         () => { ok = false; finished = true; }
                     ));
@@ -414,11 +414,16 @@ namespace umi3d.edk.collaboration
 
         IEnumerator _GetEnvironment(UMI3DLoadableEntity entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
+            return _GetEnvironment(new List<UMI3DLoadableEntity>() { entity }, user, callback, error);
+        }
+
+        IEnumerator _GetEnvironment(IEnumerable<UMI3DLoadableEntity> entities, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        {
             try
             {
                 var load = new LoadEntityDto()
                 {
-                    entity = entity.ToEntityDto(user),
+                    entities = entities.Select((e) => e.ToEntityDto(user)).ToList(),
                 };
                 callback.Invoke(load);
             }

@@ -107,11 +107,12 @@ namespace umi3d.cdk.interaction
                     var b = new BooleanInputMenuItem() { dto = booleanParameterDto };
                     b.GetParameterFunc = (x) =>
                     {
+                        booleanParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
                             toolId = dto.id,
                             id = booleanParameterDto.id,
-                            parameter = x,
+                            parameter = booleanParameterDto,
                             hoveredObjectId = 0
                         };
                         return pararmeterDto;
@@ -126,11 +127,12 @@ namespace umi3d.cdk.interaction
                     var f = new FloatRangeInputMenuItem() { dto = floatRangeParameterDto, max = floatRangeParameterDto.max, min = floatRangeParameterDto.min, value = floatRangeParameterDto.value, increment = floatRangeParameterDto.increment };
                     f.GetParameterFunc = (x) =>
                     {
+                        floatRangeParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
                             toolId = dto.id,
                             id = floatRangeParameterDto.id,
-                            parameter = x,
+                            parameter = floatRangeParameterDto,
                             hoveredObjectId = 0
                         };
                         return pararmeterDto;
@@ -144,11 +146,12 @@ namespace umi3d.cdk.interaction
                     var en = new DropDownInputMenuItem() { dto = enumParameterDto, options = enumParameterDto.possibleValues };
                     en.GetParameterFunc = (x) =>
                     {
+                        enumParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
                             toolId = dto.id,
                             id = enumParameterDto.id,
-                            parameter = x,
+                            parameter = enumParameterDto,
                             hoveredObjectId = 0
                         };
                         return pararmeterDto;
@@ -162,11 +165,12 @@ namespace umi3d.cdk.interaction
                     var u = new UploadInputMenuItem() { dto = uploadParameterDto, authorizedExtensions = uploadParameterDto.authorizedExtensions };
                     u.GetParameterFunc = (x) =>
                     {
+                        uploadParameterDto.value = x;
                         var pararmeterDto = new UploadFileRequestDto()
                         {
                             toolId = dto.id,
                             id = uploadParameterDto.id,
-                            parameter = x,
+                            parameter = uploadParameterDto,
                             hoveredObjectId = 0,
                             fileId = FileUploader.AddFileToUpload(x)
                         };
@@ -181,11 +185,12 @@ namespace umi3d.cdk.interaction
                     var s = new TextInputMenuItem() { dto = stringParameterDto };
                     s.GetParameterFunc = (x) =>
                     {
+                        stringParameterDto.value = x;
                         var pararmeterDto = new ParameterSettingRequestDto()
                         {
                             toolId = dto.id,
                             id = stringParameterDto.id,
-                            parameter = x,
+                            parameter = stringParameterDto,
                             hoveredObjectId = 0
                         };
                         return pararmeterDto;

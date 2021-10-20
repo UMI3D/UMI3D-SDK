@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-    public class PersistentSingleton<T> : MonoBehaviour where T : PersistentSingleton<T>
+    public class PersistentSingleton<T> : QuittingManager where T : PersistentSingleton<T>
     {
         static T instance;
 
@@ -30,8 +30,6 @@ namespace umi3d.common
             get { return instance != null; }
         }
 
-        static bool applicationIsQuitting = false;
-
         /// <summary>
         /// static rteference to the only instance of <typeparamref name="T"/>
         /// </summary>
@@ -39,7 +37,7 @@ namespace umi3d.common
         {
             get
             {
-                if (applicationIsQuitting)
+                if (ApplicationIsQuitting)
                 {
                     return null;
                 }
@@ -92,11 +90,6 @@ namespace umi3d.common
         {
             if (instance == this)
                 instance = null;
-        }
-
-        void OnApplicationQuit()
-        {
-            applicationIsQuitting = true;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace inetum.unityUtils
         /// <typeparam name="A"></typeparam>
         /// <param name="source"></param>
         /// <param name="action"></param>
-        public static void ForEach<A>(this IEnumerable<A> source, Action<A> action)
+        public static IEnumerable<A> ForEach<A>(this IEnumerable<A> source, Action<A> action)
         {
             if (action == null)
                 throw new Exception("action should not be null");
@@ -88,6 +88,7 @@ namespace inetum.unityUtils
                 while (it.MoveNext())
                 {
                     action.Invoke(it.Current);
+                    yield return it.Current;
                 }
         }
 

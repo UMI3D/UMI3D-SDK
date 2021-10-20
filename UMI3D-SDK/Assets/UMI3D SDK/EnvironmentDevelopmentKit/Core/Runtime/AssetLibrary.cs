@@ -80,8 +80,8 @@ namespace umi3d.edk
         {
             var operation = new LoadEntity()
             {
-                entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
@@ -95,7 +95,7 @@ namespace umi3d.edk
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
             };
             return operation;
         }

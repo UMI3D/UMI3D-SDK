@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-    public class Singleton<T> : MonoBehaviour where T : Singleton<T>
+    public class Singleton<T> : QuittingManager where T : Singleton<T>
     {
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>
@@ -33,8 +33,6 @@ namespace umi3d.common
             get { return instance != null; }
         }
 
-        static bool applicationIsQuitting = false;
-
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>.
         /// This will instanciate an instance if null.
@@ -43,7 +41,7 @@ namespace umi3d.common
         {
             get
             {
-                if (applicationIsQuitting)
+                if (ApplicationIsQuitting)
                     return null;
                 if (instance == null)
                 {
@@ -74,7 +72,6 @@ namespace umi3d.common
         /// </summary>
         protected virtual void Awake()
         {
-            applicationIsQuitting = false;
             if (instance != null && instance != this)
             {
                 Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated");
@@ -91,11 +88,5 @@ namespace umi3d.common
             if (instance == this)
                 instance = null;
         }
-
-        void OnApplicationQuit()
-        {
-            applicationIsQuitting = true;
-        }
-
     }
 }

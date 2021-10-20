@@ -25,7 +25,7 @@ namespace umi3d.cdk.interaction
     static public class UMI3DInteractableLoader
     {
 
-        public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             node = UMI3DEnvironmentLoader.GetNode(dto.nodeId).gameObject;
             var interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);

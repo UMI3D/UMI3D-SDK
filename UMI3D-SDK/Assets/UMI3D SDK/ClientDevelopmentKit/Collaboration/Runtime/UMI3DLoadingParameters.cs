@@ -59,7 +59,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             Action callback = () => { if (AnchorLoader != null) AnchorLoader.ReadUMI3DExtension(dto, node, finished, failed); else finished.Invoke(); };
             switch (dto)
@@ -430,8 +430,8 @@ namespace umi3d.cdk
             {
                 case UMI3DOperationKeys.SwitchTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     var oldid = UMI3DNetworkingHelper.Read<ulong>(container);
+                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
                     performed.Invoke();
                     break;

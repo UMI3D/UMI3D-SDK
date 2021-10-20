@@ -121,6 +121,11 @@ namespace umi3d.edk.collaboration
 
         List<Umi3dNetworkingHelperModule> collaborativeModule;
 
+        private void Start()
+        {
+            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+        }
+
         /// <summary>
         /// Initialize the server.
         /// </summary>
@@ -226,7 +231,7 @@ namespace umi3d.edk.collaboration
             throw new Exception("Local IP Address Not Found!");
         }
 
-        void OnApplicationQuit()
+        void ApplicationQuit()
         {
             Clear();
         }
@@ -479,6 +484,20 @@ namespace umi3d.edk.collaboration
         public override void NotifyUserChanged(UMI3DUser user)
         {
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
+        }
+
+        public override HashSet<UMI3DUser> UserSet()
+        {
+            return Collaboration.UsersSet();
+        }
+        public override IEnumerable<UMI3DUser> Users()
+        {
+            return Collaboration.Users;
+        }
+        public override HashSet<UMI3DUser> UserSetWhenHasJoined()
+        {
+            return new HashSet<UMI3DUser>(Collaboration.Users);
+
         }
 
         #region session

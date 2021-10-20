@@ -24,6 +24,7 @@ namespace umi3d.cdk.collaboration
                     user.status = (StatusType)UMI3DNetworkingHelper.Read<uint>(container);
                     user.avatarId = UMI3DNetworkingHelper.Read<ulong>(container);
                     user.audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    user.audioFrequency = UMI3DNetworkingHelper.Read<int>(container);
                     user.videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container);
                     user.networkId = UMI3DNetworkingHelper.Read<uint>(container);
                     result = (T)(object)user;

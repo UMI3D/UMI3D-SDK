@@ -378,7 +378,7 @@ namespace umi3d.common
 
             public override bool Read(ByteContainer container)
             {
-                return TryRead(container,out key) && TryRead(container, out value);
+                return TryRead(container, out key) && TryRead(container, out value);
             }
         }
 
@@ -425,7 +425,7 @@ namespace umi3d.common
                 var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 T v;
                 if (TryRead(SubContainer, out v))
-                    result.Add(v); 
+                    result.Add(v);
             }
             return result;
         }
@@ -682,7 +682,7 @@ namespace umi3d.common
                 case DictionaryEntry De:
                     return Write(De.Key) + Write(De.Value);
                 default:
-                    if(typeof(T) == typeof(string))
+                    if (typeof(T) == typeof(string))
                         return Write((uint)0);
                     foreach (var module in modules)
                         if (module.Write<T>(value, out bc))
@@ -695,6 +695,10 @@ namespace umi3d.common
 
         public static Bytable WriteCollection<T>(IEnumerable<T> value)
         {
+            if (typeof(IBytable).IsAssignableFrom(typeof(T)) || value.Count() > 0 && !value.Any(e => !typeof(IBytable).IsAssignableFrom(e.GetType())))
+            {
+                return WriteIBytableCollection(value.Select((e) => e as IBytable));
+            }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
             foreach (var v in value)
                 b += Write(v);
@@ -703,11 +707,38 @@ namespace umi3d.common
 
         public static Bytable WriteCollection(IDictionary value)
         {
+            if (value.Count > 0 && !value.Cast<DictionaryEntry>().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
+            {
+                return WriteIBytableCollection(value.Cast<DictionaryEntry>().Select((e) => new DictionaryEntryBytable(e)));
+            }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count);
             foreach (var v in value)
                 b += Write(v);
             return b;
         }
+
+        class DictionaryEntryBytable : IBytable
+        {
+            object key;
+            IBytable value;
+
+            public DictionaryEntryBytable(DictionaryEntry entry)
+            {
+                this.key = entry.Key;
+                this.value = entry.Value as IBytable;
+            }
+
+            public bool IsCountable()
+            {
+                return value.IsCountable();
+            }
+
+            public Bytable ToBytableArray(params object[] parameters)
+            {
+                return Write(key) + Write(value);
+            }
+        }
+
 
         public static Bytable WriteCollection(IEnumerable<byte> value)
         {

@@ -46,7 +46,7 @@ namespace umi3d.cdk
         }
 
         /// <see cref="IResourcesLoader.UrlToObject"/>
-        public abstract void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectInBundle = "");
+        public abstract void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "");
 
         /// <summary>
         /// Return the object itself because its not in a bundle.
