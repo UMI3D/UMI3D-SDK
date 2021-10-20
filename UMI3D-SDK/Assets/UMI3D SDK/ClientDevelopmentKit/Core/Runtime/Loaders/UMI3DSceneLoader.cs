@@ -60,7 +60,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="node"></param>
         /// <param name="dto"></param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             base.ReadUMI3DExtension(dto, node, () =>
             {

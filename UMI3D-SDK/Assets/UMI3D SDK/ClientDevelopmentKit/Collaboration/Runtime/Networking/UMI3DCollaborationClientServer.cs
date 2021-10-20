@@ -435,9 +435,9 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        protected override void _GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError)
+        protected override void _GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
         {
-            var dto = new EntityRequestDto() { entityId = id };
+            var dto = new EntityRequestDto() { entitiesId = ids };
             HttpClient.SendPostEntity(dto, callback, onError);
         }
 

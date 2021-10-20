@@ -15,6 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -206,9 +207,8 @@ namespace umi3d.edk
         {
             Transaction transaction = new Transaction();
             Operation op = objectTexture.SetValue(newTexture);
-            if (op != null)
-                transaction.Operations.Add(op);
-            if (transaction.Operations.Count > 0)
+            transaction.AddIfNotNull(op);
+            if (transaction.Count() > 0)
             {
                 transaction.reliable = false;
                 UMI3DServer.Dispatch(transaction);

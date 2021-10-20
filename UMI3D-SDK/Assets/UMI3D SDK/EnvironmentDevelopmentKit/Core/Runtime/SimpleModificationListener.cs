@@ -62,8 +62,8 @@ namespace umi3d.edk
             {
 
                 var transaction = new Transaction();
-                transaction.Operations = sets.SelectMany(p => p.Value).Select(p => (Operation)p.Value).ToList();
-                if (transaction.Operations.Count > 0)
+                transaction.AddIfNotNull(sets.SelectMany(p => p.Value).Select(p => (Operation)p.Value));
+                if (transaction.Count() > 0)
                 {
                     transaction.reliable = false;
                     UMI3DServer.Dispatch(transaction);

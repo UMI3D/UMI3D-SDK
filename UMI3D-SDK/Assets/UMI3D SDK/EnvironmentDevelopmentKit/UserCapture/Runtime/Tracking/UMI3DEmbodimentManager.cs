@@ -209,11 +209,9 @@ namespace umi3d.edk.userCapture
         {
             node.Register();
             LoadEntity op = node.GetLoadEntity();
-            UMI3DServer.Dispatch(new Transaction
-            {
-                Operations = new List<Operation> { op },
-                reliable = true
-            });
+            Transaction tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(op);
+            UMI3DServer.Dispatch(tr);
         }
 
         /// <summary>
@@ -222,11 +220,9 @@ namespace umi3d.edk.userCapture
         /// <param name="id"></param>
         protected void DeleteEmbodimentObj(UMI3DAvatarNode node)
         {
-            UMI3DServer.Dispatch(new Transaction
-            {
-                Operations = new List<Operation> { node.GetDeleteEntity() },
-                reliable = true
-            });
+            Transaction tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(node.GetDeleteEntity());
+            UMI3DServer.Dispatch(tr);
         }
 
         /// <summary>

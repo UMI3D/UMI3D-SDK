@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the UMI3D UI will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             base.ReadUMI3DExtension(dto, node, () =>
              {

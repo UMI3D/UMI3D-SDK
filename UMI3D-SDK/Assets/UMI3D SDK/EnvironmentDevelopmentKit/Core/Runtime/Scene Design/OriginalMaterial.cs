@@ -65,7 +65,6 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
-            Debug.Log("id original mat " + id);
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
             {
                 return new Dictionary<string, object>(d);
