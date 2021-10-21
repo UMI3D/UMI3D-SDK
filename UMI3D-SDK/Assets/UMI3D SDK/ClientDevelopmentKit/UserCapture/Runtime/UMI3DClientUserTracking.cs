@@ -33,6 +33,8 @@ namespace umi3d.cdk.userCapture
         [ConstEnum(typeof(BoneType), typeof(uint))]
         public uint viewpointBonetype;
 
+        public bool trackingReception { get; protected set; }
+
         [SerializeField]
         protected bool sendTracking = true;
 
@@ -81,6 +83,7 @@ namespace umi3d.cdk.userCapture
             startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
         }
 
         /// <summary>

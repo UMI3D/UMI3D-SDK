@@ -27,10 +27,17 @@ namespace umi3d.cdk.interaction
 
         public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
-            node = UMI3DEnvironmentLoader.GetNode(dto.nodeId).gameObject;
-            var interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
-            finished?.Invoke();
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId, (e) => {
+                if (e is UMI3DNodeInstance nodeI)
+                {
+                    node = nodeI.gameObject;
+                    var interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
+                    finished?.Invoke();
+                }
+                else
+                    failed.Invoke(new Umi3dException($"Entity [{dto.nodeId}] is not a node"));
+            });
         }
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

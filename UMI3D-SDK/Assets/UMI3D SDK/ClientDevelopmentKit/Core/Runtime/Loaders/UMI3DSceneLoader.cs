@@ -374,7 +374,7 @@ namespace umi3d.cdk
         private bool SwitchOnMaterialProperties(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container, object materialToModify)
         {
             GlTFMaterialDto glTFMaterialDto = entity?.dto as GlTFMaterialDto;
-            ulong id = (glTFMaterialDto?.extensions?.umi3d as AbstractEntityDto).id;
+            ulong id = (glTFMaterialDto?.extensions?.umi3d as AbstractEntityDto)?.id ?? 0;
 
             switch (propertyKey)
             {
@@ -763,7 +763,7 @@ namespace umi3d.cdk
 
         public bool SetUMI3DMaterialProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (entity != null && entity.Object != null)
+            if (entity != null && entity.Object != null && (entity.Object is Material || entity.Object is List<Material>))
             {
                 return SwitchOnMaterialProperties(entity, operationId, propertyKey, container, entity.Object);
             }
