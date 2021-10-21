@@ -28,6 +28,8 @@ namespace umi3d.cdk.collaboration
         Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
         GameObject skeleton;
 
+        bool isProcessing = false;
+
         private void Update()
         {
             RegressionPosition(nodePositionFilter);
@@ -108,69 +110,76 @@ namespace umi3d.cdk.collaboration
         /// <param name="timeFrame">sending time in ms</param>
         public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
-            lastFrameTime = timeFrame;
-            lastMessageTime = Time.time;
-
-            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
-
-            foreach (BoneDto boneDto in trackingFrameDto.bones)
+            if (!isProcessing)
             {
-                if (!boneRotationFilters.ContainsKey(boneDto.boneType))
-                    boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
+                isProcessing = true;
 
-                BoneKalmanUpdate(boneDto);
+                MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+                lastFrameTime = timeFrame;
+                lastMessageTime = Time.time;
 
-                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
-                foreach (BoneBindingDto boneBindingDto in bindings)
+                NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
+
+                foreach (BoneDto boneDto in trackingFrameDto.bones)
                 {
+                    if (!boneRotationFilters.ContainsKey(boneDto.boneType))
+                        boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
 
-                    if (boneBindingDto.active)
+                    BoneKalmanUpdate(boneDto);
+
+                    List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
+                    foreach (BoneBindingDto boneBindingDto in bindings)
                     {
-                        UMI3DNodeInstance node;
-                        var wait = new WaitForFixedUpdate();
 
-                        while ((node = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId)) == null)
+                        if (boneBindingDto.active)
                         {
-                            yield return wait;
-                        }
+                            UMI3DNodeInstance node;
+                            var wait = new WaitForFixedUpdate();
 
-                        Transform obj = null;
-                        if (boneBindingDto.rigName != "")
-                        {
-                            while ((obj = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null && (obj = InspectBoundRigs(boneBindingDto)) == null)
+                            while ((node = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId)) == null)
                             {
                                 yield return wait;
                             }
 
-                            if (!boundRigs.Contains(obj))
-                                boundRigs.Add(obj);
-                        }
-                        else
-                            obj = node.transform;
-
-                        if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
-                        {
-                            SavedTransform savedTransform = new SavedTransform
+                            Transform obj = null;
+                            if (boneBindingDto.rigName != "")
                             {
-                                obj = obj,
-                                savedParent = obj.parent,
-                                savedPosition = obj.localPosition,
-                                savedRotation = obj.localRotation
-                            };
+                                while ((obj = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null && (obj = InspectBoundRigs(boneBindingDto)) == null)
+                                {
+                                    yield return wait;
+                                }
 
-                            savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
+                                if (!boundRigs.Contains(obj))
+                                    boundRigs.Add(obj);
+                            }
+                            else
+                                obj = node.transform;
+
+                            if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
+                            {
+                                SavedTransform savedTransform = new SavedTransform
+                                {
+                                    obj = obj,
+                                    savedParent = obj.parent,
+                                    savedPosition = obj.localPosition,
+                                    savedRotation = obj.localRotation
+                                };
+
+                                savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
+
+                                if (boneBindingDto.rigName == "")
+                                    node.updatePose = false;
+                            }
 
                             if (boneBindingDto.rigName == "")
+                            {
                                 node.updatePose = false;
-                        }
-
-                        if (boneBindingDto.rigName == "")
-                        {
-                            node.updatePose = false;
+                            }
                         }
                     }
                 }
+
+                isProcessing = false;
             }
         }
     }
