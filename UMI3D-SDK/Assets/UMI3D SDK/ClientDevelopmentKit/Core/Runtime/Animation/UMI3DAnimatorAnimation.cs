@@ -43,9 +43,13 @@ namespace umi3d.cdk
         public override void Start()
         {
             if (started) return;
-            GameObject go = (UMI3DEnvironmentLoader.GetEntity(dto.nodeId) as UMI3DNodeInstance)?.gameObject;
-            
-            go.GetComponentInChildren<Animator>().Play(dto.stateName);        
+
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,
+                (n) =>
+                {
+                    (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>().Play(dto.stateName);
+                }
+            );
         }
 
         ///<inheritdoc/>

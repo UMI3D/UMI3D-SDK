@@ -44,7 +44,6 @@ namespace umi3d.cdk
                     string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariante(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
 
                     UMI3DMeshNodeDto rootDto = (UMI3DMeshNodeDto)modelDto.extensions.umi3d;
-                    var rootGO = UMI3DEnvironmentLoader.GetNode((nodeDto).pid).gameObject;
                     GameObject instance = null;
 
                     try

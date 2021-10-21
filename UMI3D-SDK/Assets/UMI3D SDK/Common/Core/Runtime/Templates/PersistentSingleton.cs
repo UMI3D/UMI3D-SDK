@@ -27,7 +27,7 @@ namespace umi3d.common
         /// </summary>
         public static bool Exists
         {
-            get { return instance != null; }
+            get { return !ApplicationIsQuitting && instance != null; }
         }
 
         /// <summary>
