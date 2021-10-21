@@ -45,11 +45,14 @@ namespace umi3d.cdk
             if (dto != null)
             {
 
-                UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(nodeDto.pid);
-                node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                if (nodeDto.pid != 0)
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e => {
+                        if (e is UMI3DNodeInstance instance)
+                            node.transform.SetParent(instance.transform, false);
+                    });
+                else
+                    node.transform.SetParent(UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
 
-                if (parent == null && nodeDto.pid != 0)
-                    UnityMainThreadDispatcher.Instance().Enqueue(WaitForParent(nodeDto, node));
                 if (node.activeSelf != nodeDto.active)
                     node.SetActive(nodeDto.active);
 
@@ -60,20 +63,6 @@ namespace umi3d.cdk
             }
             else
                 finished?.Invoke();
-        }
-
-        IEnumerator WaitForParent(UMI3DAbstractNodeDto dto, GameObject node)
-        {
-            var wait = new WaitForFixedUpdate();
-            UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(dto.pid);
-            while ((parent = UMI3DEnvironmentLoader.GetNode(dto.pid)) == null && dto.pid != 0)
-            {
-                UnityEngine.Debug.Log($"parent not found {dto.pid} [{dto.id}:{node.name}]");
-                yield return wait;
-            }
-
-            node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
-
         }
 
         /// <summary>
