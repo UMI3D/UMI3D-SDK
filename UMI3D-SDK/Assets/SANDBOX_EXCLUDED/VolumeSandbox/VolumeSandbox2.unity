@@ -498,7 +498,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -615,7 +615,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -897,6 +897,60 @@ MonoBehaviour:
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.5, y: 2, z: 3}
+--- !u!1 &654291182
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 654291183}
+  - component: {fileID: 654291184}
+  m_Layer: 0
+  m_Name: Entrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &654291183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654291182}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.31, y: 0, z: 1.63}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1058358190}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &654291184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654291182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d04ab463893511242af122c372a54f0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onUserEnter:
+    m_PersistentCalls:
+      m_Calls: []
+  onUserExit:
+    m_PersistentCalls:
+      m_Calls: []
+  isTraversable: 1
+  extendFromBottom: 1
+  bounds:
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 1.57, z: 2.05}
 --- !u!1 &713738130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1163,7 +1217,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -1291,6 +1345,7 @@ Transform:
   - {fileID: 1193410365}
   - {fileID: 1968974455}
   - {fileID: 1946263336}
+  - {fileID: 654291183}
   m_Father: {fileID: 1168932581}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1310,7 +1365,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -1430,7 +1485,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -1492,7 +1547,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -1775,7 +1830,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   libraries: []
   materialIds: 
   animationIds: 
@@ -2348,7 +2403,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -2411,7 +2466,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   xBillboard: 0
   yBillboard: 0
   hasCollider: 0
@@ -2435,6 +2490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1631461999}
   - component: {fileID: 1631462000}
+  - component: {fileID: 1631462001}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -2517,6 +2573,36 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &1631462001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631461998}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed1b8f010a6494546a92b9e4cb66b65e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isStatic: 0
+  active: 1
+  UMI3DAnchor: {fileID: 0}
+  immersiveOnly: 0
+  VolumeId: 0
+  xBillboard: 0
+  yBillboard: 0
+  hasCollider: 0
+  colliderType: 3
+  convex: 0
+  colliderCenter: {x: 0, y: 0, z: 0}
+  colliderRadius: 1
+  colliderBoxSize: {x: 1, y: 1, z: 1}
+  colliderHeight: 1
+  colliderDirection: 1
+  isMeshCustom: 0
+  customMeshCollider:
+    variants: []
 --- !u!1 &1662416508
 GameObject:
   m_ObjectHideFlags: 0
@@ -3236,7 +3322,7 @@ MonoBehaviour:
   active: 1
   UMI3DAnchor: {fileID: 0}
   immersiveOnly: 0
-  VolumeId: 
+  VolumeId: 0
   libraries: []
   materialIds: 
   animationIds: 
@@ -3382,6 +3468,8 @@ MonoBehaviour:
   EmbodimentsScene: {fileID: 1297200630}
   SkeletonPrefab: {fileID: 8434539890996593422, guid: 221bc20772f4fb64998a45850f4743d3,
     type: 3}
+  handPoseIds: 
+  PreloadedHandPoses: []
 --- !u!4 &2147258032
 Transform:
   m_ObjectHideFlags: 0
