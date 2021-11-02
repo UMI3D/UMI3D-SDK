@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEditor;
 
@@ -33,15 +35,15 @@ namespace umi3d.edk.volume
 
         public override void OnInspectorGUI()
         {
-            serializedObject.Update();
-            Vector3 size = EditorGUILayout.Vector3Field("size", serializedBox.bounds.GetValue().size);
-            Vector3 center = EditorGUILayout.Vector3Field("center", serializedBox.bounds.GetValue().center);
-            serializedBox.bounds.SetValue(new Bounds(center, size));
-            serializedBox.extendFromBottom.SetValue(EditorGUILayout.Toggle("extend from bottom", serializedBox.extendFromBottom.GetValue()));
-            serializedObject.ApplyModifiedProperties();
-             
-            if (GUI.changed)
-                SceneView.RepaintAll();            
+            bool old_extendFromBottom = serializedBox.extendFromBottom.GetValue();
+            Bounds old_bounds = serializedBox.bounds.GetValue();
+
+            DrawDefaultInspector();
+            if (serializedBox.extendFromBottom.GetValue() != old_extendFromBottom)
+                serializedBox.extendFromBottom.ForceNotification();
+            if (serializedBox.bounds.GetValue() != old_bounds)
+                serializedBox.bounds.ForceNotification();
         }
     }
 }
+#endif

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.common
@@ -22,9 +23,10 @@ namespace umi3d.common
     /// <summary>
     /// Wrap a value with updates subscriptions.
     /// </summary>
+    [System.Serializable]
     public class ObservableProperty<ValueType>
     {
-        private ValueType internalValue;
+        [SerializeField] protected ValueType internalValue;
 
         private class EventType : UnityEvent<ValueType> { }
         private EventType onUpdate = new EventType();
@@ -33,6 +35,7 @@ namespace umi3d.common
         {
             internalValue = value;
         }
+        public ObservableProperty() { }
 
         public void SetValue(ValueType value, bool notifyUpdate = true)
         {
@@ -43,6 +46,8 @@ namespace umi3d.common
 
         public ValueType GetValue() => internalValue;
 
+        public void ForceNotification() => onUpdate.Invoke(internalValue);
+
         /// <summary>
         /// Subscribe to value change updates.
         /// </summary>
@@ -52,6 +57,23 @@ namespace umi3d.common
         /// Unsubscribe to value change updates.
         /// </summary>
         public void Detach(UnityAction<ValueType> callback) => onUpdate.RemoveListener(callback);
+    }
+
+    [System.Serializable]
+    public class BoolObservable : ObservableProperty<bool>
+    {
+        public BoolObservable(bool newValue)
+        {
+            internalValue = newValue;
+        }
+    }
+    [System.Serializable]
+    public class BoundsObservable : ObservableProperty<Bounds>
+    {
+        public BoundsObservable(Bounds newValue)
+        {
+            internalValue = newValue;
+        }
     }
 
 }

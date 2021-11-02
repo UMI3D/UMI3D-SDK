@@ -26,8 +26,8 @@ namespace umi3d.edk.volume
     /// </summary>
     public class Box : AbstractPrimitive
     {
-        public ObservableProperty<bool> extendFromBottom = new ObservableProperty<bool>(false);
-        public ObservableProperty<Bounds> bounds = new ObservableProperty<Bounds>(new Bounds(Vector3.zero, Vector3.one));
+        [SerializeField] public BoolObservable extendFromBottom = new BoolObservable(false);
+        [SerializeField] public BoundsObservable bounds = new BoundsObservable(new Bounds(Vector3.zero, Vector3.one));
 
         public override IEntity ToEntityDto(UMI3DUser user)
         {
