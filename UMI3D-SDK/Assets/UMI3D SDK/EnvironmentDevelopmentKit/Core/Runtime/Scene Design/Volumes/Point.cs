@@ -77,7 +77,7 @@ namespace umi3d.edk.volume
         {
             var operation = new LoadEntity()
             {
-                entity = this,
+                entities = new List<UMI3DLoadableEntity>() { this },
                 users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
             };
             return operation;

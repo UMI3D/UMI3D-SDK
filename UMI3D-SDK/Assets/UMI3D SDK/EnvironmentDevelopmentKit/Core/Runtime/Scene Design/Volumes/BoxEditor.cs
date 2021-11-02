@@ -1,0 +1,47 @@
+﻿/*
+Copyright 2019 - 2021 Inetum
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using UnityEngine;
+using UnityEditor;
+
+
+namespace umi3d.edk.volume
+{
+    [CustomEditor(typeof(Box))]
+    [CanEditMultipleObjects]
+    public class BoxEditor : Editor
+    {
+        Box serializedBox;
+
+        void OnEnable()
+        {
+            serializedBox = target as Box;
+        }
+
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+            Vector3 size = EditorGUILayout.Vector3Field("size", serializedBox.bounds.GetValue().size);
+            Vector3 center = EditorGUILayout.Vector3Field("center", serializedBox.bounds.GetValue().center);
+            serializedBox.bounds.SetValue(new Bounds(center, size));
+            serializedBox.extendFromBottom.SetValue(EditorGUILayout.Toggle("extend from bottom", serializedBox.extendFromBottom.GetValue()));
+            serializedObject.ApplyModifiedProperties();
+             
+            if (GUI.changed)
+                SceneView.RepaintAll();            
+        }
+    }
+}

@@ -17,6 +17,7 @@ limitations under the License.
 using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.volume
 {
@@ -25,16 +26,16 @@ namespace umi3d.edk.volume
     /// </summary>
     public class Box : AbstractPrimitive
     {
-        public bool extendFromBottom = false;
-        public Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
+        public ObservableProperty<bool> extendFromBottom = new ObservableProperty<bool>(false);
+        public ObservableProperty<Bounds> bounds = new ObservableProperty<Bounds>(new Bounds(Vector3.zero, Vector3.one));
 
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new BoxDto()
             {
                 id = Id(),
-                center = bounds.center + (extendFromBottom ? bounds.extents.y * Vector3.up : Vector3.zero),
-                size = bounds.size,
+                center = bounds.GetValue().center + (extendFromBottom.GetValue() ? bounds.GetValue().extents.y * Vector3.up : Vector3.zero),
+                size = bounds.GetValue().size,
                 rootNodeId = GetRootNode().Id(),
                 rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
                 isTraversable = IsTraversable()
@@ -43,9 +44,9 @@ namespace umi3d.edk.volume
 
         public void OnDrawGizmos()
         {
-            Bounds displayBound = bounds;
-            if (extendFromBottom)
-                displayBound.center += bounds.extents.y * Vector3.up;
+            Bounds displayBound = bounds.GetValue();
+            if (extendFromBottom.GetValue())
+                displayBound.center += bounds.GetValue().extents.y * Vector3.up;
 
             Gizmos.matrix = this.transform.localToWorldMatrix;
             Gizmos.color = Color.red;
