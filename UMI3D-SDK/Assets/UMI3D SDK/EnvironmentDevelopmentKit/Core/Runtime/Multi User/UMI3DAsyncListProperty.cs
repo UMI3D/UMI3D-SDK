@@ -172,7 +172,7 @@ namespace umi3d.edk
                 }
                 else
                 {
-                    operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
+                    operation += UMI3DServer.Instance.Users();
                 }
             }
             return operation;
@@ -252,7 +252,7 @@ namespace umi3d.edk
                 }
                 else
                 {
-                    operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
+                    operation += UMI3DServer.Instance.Users();
                 }
             }
             return operation;
@@ -337,7 +337,7 @@ namespace umi3d.edk
                 }
                 else
                 {
-                    operation += UMI3DEnvironment.GetEntities<UMI3DUser>();
+                    operation += UMI3DServer.Instance.Users();
                 }
             }
             return operation;

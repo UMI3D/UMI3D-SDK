@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
 
             base.ReadUMI3DExtension(dto, node, () =>
@@ -65,48 +65,48 @@ namespace umi3d.cdk
                      {
                          foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
                          {
-                             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(link.Key, link.Value, node.transform));
+                             BindSkinnedMeshBone(link.Key, link.Value, node.transform,300);
                          }
                      }
 
 
                      finished?.Invoke();
                  }
-                 else failed?.Invoke(new Umi3dExecption(0,"nodeDto should not be null"));
+                 else failed?.Invoke(new Umi3dException(0,"nodeDto should not be null"));
              }, failed);
         }
 
-        IEnumerator BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node)
-        => BindSkinnedMeshBone(skinMeshEntityId, boneId, node, 300);
 
-
-        IEnumerator BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
+        void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
-            if (maxDelay < 0)
-                yield return null;
-            if (UMI3DEnvironmentLoader.GetNode(skinMeshEntityId) == null)
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(skinMeshEntityId, e =>
+             {
+                 if (e is UMI3DNodeInstance nodeI)
+                 {
+                     MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(nodeI, boneId, node, maxDelay));
+                 }
+             });
+        }
+
+        IEnumerator BindSkinnedMeshBone(UMI3DNodeInstance nodeInstance, int boneId, Transform node, float maxDelay)
+        {
+            SkinnedMeshRenderer skmr = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+            while (skmr == null)
             {
+                if (maxDelay <= 0)
+                    yield break;
                 maxDelay -= 0.3f;
                 yield return new WaitForSeconds(0.3f);
+                skmr = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
             }
 
-
-            if (UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>() == null)
-            {
-                maxDelay -= 0.3f;
-                yield return new WaitForSeconds(0.3f);
-            }
-
-            if (maxDelay <= 0)
-                yield break;
-
-            var skmr = UMI3DEnvironmentLoader.GetNode(skinMeshEntityId).gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
             skmr.updateWhenOffscreen = true;
             var tab = skmr.bones;
             tab[boneId] = node;
             skmr.bones = tab;
-
         }
+
+
 
         IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
         {
@@ -119,7 +119,12 @@ namespace umi3d.cdk
                 foreach (var id in lod.nodes)
                 {
                     UMI3DNodeInstance n = null;
-                    yield return new WaitUntil(() => (n = UMI3DEnvironmentLoader.GetNode(id)) != null);
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, e =>
+                    {
+                        n = e as UMI3DNodeInstance;
+                    });
+                    while (n == null)
+                        yield return null;
                     var r = n.gameObject.GetComponentInChildren<Renderer>();
                     if (r != null)
                         rend.Add(r);

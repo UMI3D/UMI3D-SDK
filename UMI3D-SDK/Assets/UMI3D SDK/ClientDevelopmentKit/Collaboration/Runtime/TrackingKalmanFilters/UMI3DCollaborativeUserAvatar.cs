@@ -127,18 +127,27 @@ namespace umi3d.cdk.collaboration
 
                     if (boneBindingDto.active)
                     {
-                        UMI3DNodeInstance node;
+                        UMI3DNodeInstance node = null;
+                        UMI3DNodeInstance boneBindingnode = null;
+                        Transform obj = null;
+
                         var wait = new WaitForFixedUpdate();
 
-                        while ((node = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId)) == null)
-                        {
-                            yield return wait;
-                        }
 
-                        Transform obj = null;
+                        UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => node = e as UMI3DNodeInstance);
+
+                        while (node == null)
+                            yield return wait;
+
+                        
                         if (boneBindingDto.rigName != "")
                         {
-                            while ((obj = UMI3DEnvironmentLoader.GetNode(boneBindingDto.objectId).transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null && (obj = InspectBoundRigs(boneBindingDto)) == null)
+                            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = (e as UMI3DNodeInstance));
+                            while (boneBindingnode == null)
+                                yield return wait;
+                            while (
+                                (obj = boneBindingnode.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null 
+                                && (obj = InspectBoundRigs(boneBindingDto)) == null)
                             {
                                 yield return wait;
                             }

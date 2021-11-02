@@ -226,6 +226,8 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance.entities?.Values?.ToList()?.Where(entities => entities is E)?.Select(e => e as E);
+            else if (QuittingManager.ApplicationIsQuitting)
+                return new List<E>();
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -238,6 +240,8 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance.entities.Values.ToList().Where(entities => entities is E).Select(e => e as E).Where(predicate);
+            else if (QuittingManager.ApplicationIsQuitting)
+                return new List<E>();
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -250,6 +254,8 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance.entities[id] as E;
+            else if (QuittingManager.ApplicationIsQuitting)
+                return null;
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -268,6 +274,8 @@ namespace umi3d.edk
                 else
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
+            else if (QuittingManager.ApplicationIsQuitting)
+                return 0;
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -287,6 +295,8 @@ namespace umi3d.edk
                 else
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
+            else if (QuittingManager.ApplicationIsQuitting)
+                return 0;
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }

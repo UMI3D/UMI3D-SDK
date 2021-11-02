@@ -38,13 +38,11 @@ namespace umi3d.edk.userCapture
             {
                 HandPose.HoverAnimation = HoverPose;
 
-                HashSet<UMI3DUser> users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
-
                 List<UMI3DNodeAnimation.OperationChain> op = new List<UMI3DNodeAnimation.OperationChain>();
 
                 SetEntityProperty operation = new SetEntityProperty()
                 {
-                    users = users,
+                    users = UMI3DServer.Instance.UserSet(),
                     entityId = HandPose.Id(),
                     property = UMI3DPropertyKeys.ActiveHandPose,
                     value = ActivePose

@@ -76,19 +76,11 @@ namespace umi3d.cdk
             if (dto.audioId != 0)
             {
                 videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-                UMI3DAnimationManager.Instance.StartCoroutine(SetAudioSource(dto.audioId));
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.audioId, (e) =>
+                {
+                    videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)e.Object).audioSource);
+                });
             }
-        }
-
-        private IEnumerator SetAudioSource(ulong audioId)
-        {
-            var delay = new WaitForSeconds(1f);
-            while (UMI3DEnvironmentLoader.GetEntity(audioId) == null)
-            {
-                yield return delay;
-            }
-
-            videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)UMI3DEnvironmentLoader.GetEntity(audioId).Object).audioSource);
         }
 
         private IEnumerator StartAfterLoading()

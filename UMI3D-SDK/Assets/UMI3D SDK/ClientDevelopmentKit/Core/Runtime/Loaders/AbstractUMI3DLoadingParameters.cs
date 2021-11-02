@@ -66,7 +66,7 @@ namespace umi3d.cdk
         /// <param name="node">Gameobject on which to setup the object.</param>
         /// <param name="finished">Finished callback.</param>
         /// <param name="failed">Error callback.</param>
-        abstract public void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed);
+        abstract public void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed);
 
         /// <summary>
         /// Update a property.

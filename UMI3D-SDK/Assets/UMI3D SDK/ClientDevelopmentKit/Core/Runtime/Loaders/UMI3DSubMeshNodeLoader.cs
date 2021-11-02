@@ -27,7 +27,7 @@ namespace umi3d.cdk
     {
 
         ///<inheritdoc/>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
 
             base.ReadUMI3DExtension(dto, node, () =>
@@ -44,7 +44,6 @@ namespace umi3d.cdk
                     string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariante(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
 
                     UMI3DMeshNodeDto rootDto = (UMI3DMeshNodeDto)modelDto.extensions.umi3d;
-                    var rootGO = UMI3DEnvironmentLoader.GetNode((nodeDto).pid).gameObject;
                     GameObject instance = null;
 
                     try
@@ -129,7 +128,7 @@ namespace umi3d.cdk
                     }
                     finished?.Invoke();
                 }
-                else failed?.Invoke(new Umi3dExecption(0,"nodeDto should not be null"));
+                else failed?.Invoke(new Umi3dException(0,"nodeDto should not be null"));
             }, failed);
         }
 

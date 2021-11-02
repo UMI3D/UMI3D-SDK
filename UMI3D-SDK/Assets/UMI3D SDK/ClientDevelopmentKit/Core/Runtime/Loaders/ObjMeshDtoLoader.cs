@@ -36,7 +36,7 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectInBundle = "")
+        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
             GameObject createdObj = new GameObject();
 
@@ -52,7 +52,7 @@ namespace umi3d.cdk
 
                         objImporter.ImportError += (s) => {
                             failed = true;
-                            failCallback(new Umi3dExecption(401,$"Importing failed for : {url}")); };
+                            failCallback(new Umi3dException(401,$"Importing failed for : {url}")); };
 
                         objImporter.ImportingComplete += () =>
                         {
@@ -68,7 +68,7 @@ namespace umi3d.cdk
                                 }
                                 catch (Exception e)
                                 {
-                                    failCallback(new Umi3dExecption(0, $"Importing completed but callback failed for : {url} {e}"));
+                                    failCallback(new Umi3dException(0, $"Importing completed but callback failed for : {url} {e}"));
                                 }
                                 GameObject.Destroy(objImporter.gameObject, 1);
                             }

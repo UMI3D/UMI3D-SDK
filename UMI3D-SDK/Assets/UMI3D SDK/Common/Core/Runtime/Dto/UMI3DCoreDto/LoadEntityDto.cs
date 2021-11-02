@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace umi3d.common
 {
@@ -24,6 +25,6 @@ namespace umi3d.common
     [Serializable]
     public class LoadEntityDto : AbstractOperationDto
     {
-        public IEntity entity;
+        public List<IEntity> entities;
     }
 }
