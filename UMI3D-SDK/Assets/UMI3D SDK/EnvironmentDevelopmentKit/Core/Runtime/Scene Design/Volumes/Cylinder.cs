@@ -26,6 +26,7 @@ namespace umi3d.edk.volume
         public float radius = 1;
         public float height = 3;
 
+
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new CylinderDto()
@@ -44,7 +45,8 @@ namespace umi3d.edk.volume
             Gizmos.color = Color.cyan;
             Mesh cylinder = GeometryTools.GetCylinder(this.transform.position, this.transform.rotation, this.transform.localScale, radius, height);
             Gizmos.DrawWireMesh(cylinder);
-            Destroy(cylinder);
+            if (Application.isPlaying)
+                Destroy(cylinder);
         }
     }
 }

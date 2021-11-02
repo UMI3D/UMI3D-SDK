@@ -230,12 +230,12 @@ namespace umi3d.common
         #endregion
 
         #region Volumes
-        public const uint PointPosition = 15001;
-        public const uint FacePointsIds = 15002;
-        public const uint VolumeSlices = 15003;
-        public const uint VolumeSlicePoints = 15004;
-        public const uint VolumeSliceEdges = 15005;
-        public const uint VolumeSliceFaces = 15006;
+        public const uint VolumePrimitive_Box_Center = 15007;
+        public const uint VolumePrimitive_Box_Size = 15008;
+        public const uint VolumePrimitive_Cylinder_Height = 15009;
+        public const uint VolumePrimitive_Cylinder_Radius = 15010;
+        public const uint VolumeCell_RoodNodeId = 15011;
+        public const uint VolumeCell_RootNodeToLocalMatrix = 15012;
         #endregion
     }
 }

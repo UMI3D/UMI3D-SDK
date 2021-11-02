@@ -80,55 +80,9 @@ namespace umi3d.cdk.volumes
         {
             switch (property.property)
             {
-                case UMI3DPropertyKeys.PointPosition:
-                    Point point = entity.Object as Point;
-                    if (point == null)
-                        throw new Exception("Internal error : entity is not a point");
+                
 
-                    point.SetPosition(property.value as SerializableVector3);
-                    return true;
-
-                case UMI3DPropertyKeys.FacePointsIds:
-                    Face face = entity.Object as Face;
-                    if (face == null)
-                        throw new Exception("Internal error : entity is not a face");
-
-                    face.SetPoints(property.value as List<ulong>);
-                    return true;
-
-                case UMI3DPropertyKeys.VolumeSlices:
-                    VolumeSliceGroup group = entity.Object as VolumeSliceGroup;
-                    if (group == null)
-                        throw new Exception("Internal error : entity is not a volume slice group");
-
-                    group.SetSlices(property.value as List<VolumeSliceDto>);
-                    return true;
-
-                case UMI3DPropertyKeys.VolumeSlicePoints:
-                    VolumeSlice slice = entity.Object as VolumeSlice;
-                    if (slice == null)
-                        throw new Exception("Internal error : entity is not a volume slice");
-
-                    slice.SetPoints(property.value as List<PointDto>);
-                    return true;
-
-                case UMI3DPropertyKeys.VolumeSliceEdges:
-                    VolumeSlice slice2 = entity.Object as VolumeSlice;
-                    if (slice2 == null)
-                        throw new Exception("Internal error : entity is not a volume slice");
-
-                    slice2.SetEdges(property.value as List<int>);
-                    return true;
-
-                case UMI3DPropertyKeys.VolumeSliceFaces:
-                    VolumeSlice slice3 = entity.Object as VolumeSlice;
-                    if (slice3 == null)
-                        throw new Exception("Internal error : entity is not a volume slice");
-
-                    slice3.SetFaces(property.value as List<FaceDto>);
-                    return true;
-
-                //TODO : Primitives
+                //TODO : Take the desktop version.
 
                 default:
                     return false;
