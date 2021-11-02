@@ -470,7 +470,7 @@ namespace umi3d.cdk
                     UMI3DClientUserTracking.Instance.setTrackingSending(sendTracking);
                     performed.Invoke();
                     break;
-                case UMI3DOperationKeys.Vehicle:
+                case UMI3DOperationKeys.VehicleRequest:
 
                     performed.Invoke();
                     break;

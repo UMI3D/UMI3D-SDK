@@ -34,7 +34,7 @@ namespace umi3d.edk.userCapture
 
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Vehicle)
+            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.VehicleRequest)
                 + UMI3DNetworkingHelper.Write(VehicleId)
                 + UMI3DNetworkingHelper.Write(RelativePosition)
                 + UMI3DNetworkingHelper.Write(RelativeRotation)
