@@ -53,7 +53,7 @@ namespace umi3d.cdk
                          var b = node.AddComponent<Billboard>();
                          b.X = nodeDto.xBillboard;
                          b.Y = nodeDto.yBillboard;
-                         node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
+                         node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
                      }
 
                      if (nodeDto.lodDto != null)
@@ -181,7 +181,7 @@ namespace umi3d.cdk
                     if (dto.xBillboard || dto.yBillboard)
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = true;
-                        node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
+                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = node.dto as GlTFNodeDto;
                     }
                     else
                     {
@@ -196,7 +196,7 @@ namespace umi3d.cdk
                     if (dto.xBillboard || dto.yBillboard)
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = true;
-                        node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
+                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = node.dto as GlTFNodeDto;
                     }
                     else
                     {
@@ -406,7 +406,7 @@ namespace umi3d.cdk
                     if (dto.xBillboard || dto.yBillboard)
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = true;
-                        node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
+                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = node.dto as GlTFNodeDto;
                     }
                     else
                     {
@@ -421,7 +421,7 @@ namespace umi3d.cdk
                     if (dto.xBillboard || dto.yBillboard)
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = true;
-                        node.gameObject.GetComponent<Billboard>().rotation = node.transform.rotation;
+                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = node.dto as GlTFNodeDto;
                     }
                     else
                     {
