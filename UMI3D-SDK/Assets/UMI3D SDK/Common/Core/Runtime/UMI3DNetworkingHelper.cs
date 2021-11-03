@@ -707,9 +707,9 @@ namespace umi3d.common
 
         public static Bytable WriteCollection(IDictionary value)
         {
-            if (value.Count > 0 && !value.Cast<DictionaryEntry>().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
+            if (value.Count > 0 && !value.Entries().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
             {
-                return WriteIBytableCollection(value.Cast<DictionaryEntry>().Select((e) => new DictionaryEntryBytable(e)));
+                return WriteIBytableCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)));
             }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count);
             foreach (var v in value)

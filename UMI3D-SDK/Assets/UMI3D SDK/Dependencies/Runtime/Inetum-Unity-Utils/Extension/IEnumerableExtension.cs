@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -109,6 +110,21 @@ namespace inetum.unityUtils
                 while (it.MoveNext())
                 {
                     action.Invoke(it.Current);
+                }
+        }
+
+        /// <summary>
+        /// Return the collection of DictionaryEntry in this IDictionary
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IEnumerable<DictionaryEntry> Entries(this IDictionary source)
+        {
+            var it = source.GetEnumerator();
+            if (it != null)
+                while (it.MoveNext())
+                {
+                    yield return (DictionaryEntry)it.Current;
                 }
         }
 
