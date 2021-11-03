@@ -418,10 +418,6 @@ namespace umi3d.cdk
                     UMI3DClientUserTracking.Instance.setTrackingSending(sendingTracking.activeSending);
                     performed.Invoke();
                     break;
-                case SetVehicleDto vehicleDto:
-
-                    performed.Invoke();
-                    break;
             }
         }
 

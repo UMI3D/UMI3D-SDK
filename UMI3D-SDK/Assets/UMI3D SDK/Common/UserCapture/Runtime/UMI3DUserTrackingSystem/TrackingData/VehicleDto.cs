@@ -13,25 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.common;
-using UnityEngine;
 
-namespace umi3d.common
+using System;
+using System.Collections.Generic;
+
+namespace umi3d.common.userCapture
 {
-    public class SetVehicleDto : AbstractOperationDto
+    [System.Serializable]
+    public class VehicleDto : TeleportDto
     {
         public ulong VehicleId = 0;
 
-        public SerializableVector3 RelativePosition;
+        public ulong BodyPoseId = 0;
 
-        public SerializableVector4 RelativeRotation;
+        public bool StopNavigation = false;
 
-        public List<uint> streamedBones = new List<uint>();
+        public bool ChangeBonesToStream = false;
 
-        public bool MaintainNavigation = true;
+        public List<uint> BonesToStream = new List<uint>();
 
-        public ulong AnimationId = 0;
+
+        public VehicleDto() : base() { }
     }
 }
