@@ -28,6 +28,8 @@ namespace umi3d.cdk.collaboration
         Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
         GameObject skeleton;
 
+        bool isProcessing = false;
+
         private void Update()
         {
             RegressionPosition(nodePositionFilter);
@@ -108,22 +110,26 @@ namespace umi3d.cdk.collaboration
         /// <param name="timeFrame">sending time in ms</param>
         public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
-            lastFrameTime = timeFrame;
-            lastMessageTime = Time.time;
-
-            NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
-
-            foreach (BoneDto boneDto in trackingFrameDto.bones)
+            if (!isProcessing)
             {
-                if (!boneRotationFilters.ContainsKey(boneDto.boneType))
-                    boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
+                isProcessing = true;
 
-                BoneKalmanUpdate(boneDto);
+                MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+                lastFrameTime = timeFrame;
+                lastMessageTime = Time.time;
 
-                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
-                foreach (BoneBindingDto boneBindingDto in bindings)
+                NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
+
+                foreach (BoneDto boneDto in trackingFrameDto.bones)
                 {
+                    if (!boneRotationFilters.ContainsKey(boneDto.boneType))
+                        boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
+
+                    BoneKalmanUpdate(boneDto);
+
+                    List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
+                    foreach (BoneBindingDto boneBindingDto in bindings)
+                    {
 
                     if (boneBindingDto.active)
                     {
@@ -152,34 +158,37 @@ namespace umi3d.cdk.collaboration
                                 yield return wait;
                             }
 
-                            if (!boundRigs.Contains(obj))
-                                boundRigs.Add(obj);
-                        }
-                        else
-                            obj = node.transform;
+                                if (!boundRigs.Contains(obj))
+                                    boundRigs.Add(obj);
+                            }
+                            else
+                                obj = node.transform;
 
-                        if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
-                        {
-                            SavedTransform savedTransform = new SavedTransform
+                            if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                             {
-                                obj = obj,
-                                savedParent = obj.parent,
-                                savedPosition = obj.localPosition,
-                                savedRotation = obj.localRotation
-                            };
+                                SavedTransform savedTransform = new SavedTransform
+                                {
+                                    obj = obj,
+                                    savedParent = obj.parent,
+                                    savedPosition = obj.localPosition,
+                                    savedRotation = obj.localRotation
+                                };
 
-                            savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
+                                savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
+
+                                if (boneBindingDto.rigName == "")
+                                    node.updatePose = false;
+                            }
 
                             if (boneBindingDto.rigName == "")
+                            {
                                 node.updatePose = false;
-                        }
-
-                        if (boneBindingDto.rigName == "")
-                        {
-                            node.updatePose = false;
+                            }
                         }
                     }
                 }
+
+                isProcessing = false;
             }
         }
     }

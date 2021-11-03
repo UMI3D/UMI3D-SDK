@@ -395,7 +395,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
                 {
-                    if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    if (UMI3DClientUserTracking.Instance.trackingReception && UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         MainThreadManager.Run(() =>
                         {
                             if (client.Time.Timestep - frame.TimeStep < 500)
@@ -404,7 +404,7 @@ namespace umi3d.cdk.collaboration
                     else
                         MainThreadManager.Run(() =>
                         {
-                            Debug.LogWarning("User Avatar not found.");
+                            Debug.LogWarning("Avatar Frame Dropped");
                         });
                 }
             }
