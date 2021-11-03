@@ -48,10 +48,10 @@ namespace umi3d.edk.userCapture
             if (rotation == null) rotation = new SerializableVector4();
             return base.ToBytable()
                 + UMI3DNetworkingHelper.Write(VehicleId)
-                + UMI3DNetworkingHelper.Write(VehicleId)
-                + UMI3DNetworkingHelper.Write(VehicleId)
-                + UMI3DNetworkingHelper.Write(VehicleId)
-                + UMI3DNetworkingHelper.Write(VehicleId);
+                + UMI3DNetworkingHelper.Write(BodyPoseId)
+                + UMI3DNetworkingHelper.Write(StopNavigation)
+                + UMI3DNetworkingHelper.Write(ChangeBonesToStream)
+                + UMI3DNetworkingHelper.WriteCollection(BonesToStream);
         }
 
         protected override NavigateDto CreateDto() { return new VehicleDto(); }

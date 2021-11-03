@@ -336,6 +336,39 @@ namespace umi3d.cdk.collaboration
                             });
                         }
                         break;
+                    case UMI3DOperationKeys.VehicleRequest:
+                        {
+                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                            var vehicleId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            var bodyPoseId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            var stopNavigation = UMI3DNetworkingHelper.Read<bool>(container);
+                            var changeBonesToStream = UMI3DNetworkingHelper.Read<bool>(container);
+                            var bonesToStream = UMI3DNetworkingHelper.ReadList<uint>(container);
+
+                            UMI3DNodeInstance vehicle = UMI3DEnvironmentLoader.GetNode(vehicleId);
+
+                            MainThreadManager.Run(() =>
+                            {
+
+                                TeleportDto nav;
+                                if (vehicleId == 0)
+                                {
+                                    UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true);
+                                    nav = new TeleportDto() { position = pos, rotation = rot };
+                                }
+                                else
+                                {
+                                    UMI3DClientUserTracking.Instance.transform.SetParent(vehicle.transform, true);
+                                    var tempPosition = vehicle.transform.TransformPoint(pos);
+                                    var tempRotation = vehicle.transform.rotation * rot;
+                                    nav = new TeleportDto() { position = tempPosition, rotation = tempRotation };
+                                }
+
+                                StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            });
+                        }
+                        break;
 
                     case UMI3DOperationKeys.GetLocalInfoRequest:
                         var key = UMI3DNetworkingHelper.Read<string>(container);
