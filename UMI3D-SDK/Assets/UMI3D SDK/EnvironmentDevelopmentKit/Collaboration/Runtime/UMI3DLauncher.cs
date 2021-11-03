@@ -259,25 +259,23 @@ namespace umi3d.edk.collaboration
                     SetAuth(conf.authParam);
 
                 if (conf.tokenLifeParam > 0)
-                    UMI3DCollaborationServer.Instance.tokenLifeTime = conf.tokenLifeParam;
+                    SetTokenLife(conf.tokenLifeParam.ToString());
 
-                UMI3DCollaborationServer.Instance.useRandomHttpPort = conf.httpPortParam == 0;
-                UMI3DCollaborationServer.Instance.httpPort = conf.httpPortParam;
+                SetHttpPort(conf.httpPortParam.ToString());
 
-                UMI3DCollaborationServer.Instance.useRandomForgePort = conf.udpportParam == 0;
-                UMI3DCollaborationServer.Instance.forgePort = conf.udpportParam;
+                SetUdpPort(conf.udpportParam.ToString());
 
                 if (!string.IsNullOrEmpty(conf.masterIpParam))
                     SetMasterServerIp(conf.masterIpParam);
 
-                UMI3DCollaborationServer.Instance.forgeMasterServerPort = conf.masterPortParam;
+                SetMasterServerPort(conf.masterPortParam.ToString());
 
                 if (!string.IsNullOrEmpty(conf.natIpParam))
                     SetNatServerIp(conf.natIpParam);
 
-                UMI3DCollaborationServer.Instance.forgeNatServerPort = conf.natPortParam;
+                SetNatServerPort(conf.natPortParam.ToString());
 
-                UMI3DCollaborationServer.Instance.forgeMaxNbPlayer = conf.playersParam;
+                SetMaxNbPlayers(conf.natPortParam.ToString());
 
                 if (!string.IsNullOrEmpty(conf.sessionIdParam))
                     SetSessionId(conf.sessionIdParam);
