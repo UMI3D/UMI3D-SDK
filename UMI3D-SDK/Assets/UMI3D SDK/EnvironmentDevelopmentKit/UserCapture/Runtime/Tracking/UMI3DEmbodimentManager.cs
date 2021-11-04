@@ -98,6 +98,8 @@ namespace umi3d.edk.userCapture
             }
 
             GameObject embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
+            embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
+            embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
 
             if (EmbodimentsScene != null)
                 embd.transform.SetParent(EmbodimentsScene.transform);
