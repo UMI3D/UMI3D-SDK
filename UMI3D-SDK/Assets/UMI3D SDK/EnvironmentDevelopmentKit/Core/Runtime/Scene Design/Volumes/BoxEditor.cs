@@ -35,14 +35,7 @@ namespace umi3d.edk.volume
 
         public override void OnInspectorGUI()
         {
-            bool old_extendFromBottom = serializedBox.extendFromBottom.GetValue();
-            Bounds old_bounds = serializedBox.bounds.GetValue();
-
             DrawDefaultInspector();
-            if (serializedBox.extendFromBottom.GetValue() != old_extendFromBottom)
-                serializedBox.extendFromBottom.ForceNotification();
-            if (serializedBox.bounds.GetValue() != old_bounds)
-                serializedBox.bounds.ForceNotification();
         }
     }
 }

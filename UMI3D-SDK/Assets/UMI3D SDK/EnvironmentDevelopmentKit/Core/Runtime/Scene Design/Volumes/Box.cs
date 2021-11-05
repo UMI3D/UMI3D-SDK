@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
@@ -26,16 +27,32 @@ namespace umi3d.edk.volume
     /// </summary>
     public class Box : AbstractPrimitive
     {
-        [SerializeField] public BoolObservable extendFromBottom = new BoolObservable(false);
-        [SerializeField] public BoundsObservable bounds = new BoundsObservable(new Bounds(Vector3.zero, Vector3.one));
+        public bool extendFromBottom = false;
+
+        [SerializeField]
+        [EditorReadOnly]
+        Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
+        public UMI3DAsyncProperty<Vector3> size;
+        public UMI3DAsyncProperty<Vector3> center;
+
+
+        protected override void Awake()
+        {
+            base.Awake();
+            center = new UMI3DAsyncProperty<Vector3>(Id(), UMI3DPropertyKeys.VolumePrimitive_Box_Center, bounds.center);
+            size = new UMI3DAsyncProperty<Vector3>(Id(), UMI3DPropertyKeys.VolumePrimitive_Box_Size, bounds.size);
+
+            center.OnValueChanged += c => bounds.center = c;
+            size.OnValueChanged += s => bounds.size = s;
+        }
 
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new BoxDto()
             {
                 id = Id(),
-                center = bounds.GetValue().center + (extendFromBottom.GetValue() ? bounds.GetValue().extents.y * Vector3.up : Vector3.zero),
-                size = bounds.GetValue().size,
+                center = center.GetValue(),
+                size = size.GetValue(),
                 rootNodeId = GetRootNode().Id(),
                 rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
                 isTraversable = IsTraversable()
@@ -44,9 +61,9 @@ namespace umi3d.edk.volume
 
         public void OnDrawGizmos()
         {
-            Bounds displayBound = bounds.GetValue();
-            if (extendFromBottom.GetValue())
-                displayBound.center += bounds.GetValue().extents.y * Vector3.up;
+            Bounds displayBound = bounds;
+            if (extendFromBottom)
+                displayBound.center += bounds.extents.y * Vector3.up;
 
             Gizmos.matrix = this.transform.localToWorldMatrix;
             Gizmos.color = Color.red;

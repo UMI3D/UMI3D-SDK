@@ -223,12 +223,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 2.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &116269456
 GameObject:
   m_ObjectHideFlags: 0
@@ -279,12 +277,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 0.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &184862582
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,12 +331,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 1.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &284885695
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,12 +571,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 1.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &594754381
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,12 +677,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 1}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &644310919
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,12 +731,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 3}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &654291182
 GameObject:
   m_ObjectHideFlags: 0
@@ -797,12 +785,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.46, y: 1.7, z: 1.98}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &713738130
 GameObject:
   m_ObjectHideFlags: 0
@@ -815,6 +801,7 @@ GameObject:
   - component: {fileID: 713738133}
   - component: {fileID: 713738132}
   - component: {fileID: 713738131}
+  - component: {fileID: 713738135}
   m_Layer: 0
   m_Name: Environment
   m_TagString: Untagged
@@ -887,6 +874,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &713738135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 713738130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d6d7c9eb1ddd95428e33d689474f125, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxFrameRate: 30
 --- !u!1001 &785988876
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1226,12 +1226,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 0.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &1168932580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1486,12 +1484,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 3.52, y: 1.715, z: 3.51}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &1257466416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,12 +1686,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 3.11, y: 1.52, z: 0.825}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &1377614508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1991,12 +1985,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 1.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &1493952832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2296,12 +2288,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 0.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1001 &1778358457
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2502,12 +2492,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 1}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &1887091942
 GameObject:
   m_ObjectHideFlags: 0
@@ -2622,6 +2610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1968974455}
   - component: {fileID: 1968974456}
+  - component: {fileID: 1968974457}
   m_Layer: 0
   m_Name: Box Inside
   m_TagString: Untagged
@@ -2662,12 +2651,26 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 1
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 2.465, y: 1.73, z: 3.435}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 2.43, y: 1.85, z: 3.4}
+--- !u!114 &1968974457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968974454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f175ffa980343d489ed8562ae0446be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  box: {fileID: 1968974456}
+  frequency: 1
+  phase: 0
+  amplitude: {x: 1, y: 1, z: 1}
 --- !u!1 &1971076744
 GameObject:
   m_ObjectHideFlags: 0
@@ -2770,12 +2773,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 0.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &2065968455
 GameObject:
   m_ObjectHideFlags: 0
@@ -2881,12 +2882,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom:
-    internalValue: 1
+  extendFromBottom: 0
   bounds:
-    internalValue:
-      m_Center: {x: 0, y: 0, z: 0}
-      m_Extent: {x: 0.5, y: 2, z: 0.5}
+    m_Center: {x: 0, y: 0, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
 --- !u!1 &2147258030
 GameObject:
   m_ObjectHideFlags: 0
