@@ -149,7 +149,13 @@ namespace umi3d.cdk
         {
             this.dto = dto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
-            if (dto.playing) UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
+            if (dto.playing)
+            {
+                if (dto.startTime == default)
+                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
+                else
+                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
+            }
         }
 
         /// <summary>
@@ -160,6 +166,17 @@ namespace umi3d.cdk
         {
             yield return new WaitForEndOfFrame();
             Start();
+        }
+
+
+        /// <summary>
+        /// Call start method next frame.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator StartNextFrameAt(float time)
+        {
+            yield return new WaitForEndOfFrame();
+            Start(time);
         }
 
         public void Destroy()

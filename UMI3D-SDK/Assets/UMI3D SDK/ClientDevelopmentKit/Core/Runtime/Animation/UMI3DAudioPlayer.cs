@@ -73,7 +73,17 @@ namespace umi3d.cdk
                     {
                         var clip = (AudioClip)o;
                         if (clip != null)
+                        {
                             audioSource.clip = clip;
+
+                            if (dto.playing)
+                            {
+                                if (dto.startTime == default)
+                                    Start();
+                                else
+                                    Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                            }
+                        }
                         else
                             Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}");
                     },
@@ -92,10 +102,14 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start()
         {
-            audioSource?.Stop();
-            audioSource?.Play();
-            OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+            if ((audioSource != null) && (audioSource.clip != null))
+            {
+                audioSource.Stop();
+                audioSource.Play();
+                OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+            }
         }
+
         Coroutine OnEndCoroutine;
 
         IEnumerator WaitUntilTheEnd(float time)
@@ -190,12 +204,13 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
-            audioSource?.Stop();
-            if (audioSource)
+            if ((audioSource != null) && (audioSource.clip != null))
+            {
+                audioSource.Stop();
                 audioSource.time = atTime;
-            audioSource?.Play();
-            OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
-
+                audioSource.Play();
+                OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+            }
         }
 
         public override void SetProgress(long frame)
