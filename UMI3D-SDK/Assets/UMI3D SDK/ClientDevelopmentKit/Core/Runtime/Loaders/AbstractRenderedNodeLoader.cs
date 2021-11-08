@@ -452,7 +452,7 @@ namespace umi3d.cdk
         protected IEnumerator ApplyMaterialOverrider(ulong newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
         {
             UMI3DEntityInstance matEntity = UMI3DEnvironmentLoader.GetEntity(newMatId);
-            if (matEntity == null) Debug.LogWarning("Material not found : " + newMatId + " , that should not append");
+            if (matEntity == null) Debug.LogWarning("Material not found : " + newMatId + " , that should not happen");
 
             while (matEntity == null)
             {
@@ -504,7 +504,7 @@ namespace umi3d.cdk
 
                 //    Renderer[] childRenderers = node.gameObject.GetComponentsInChildren<Renderer>();
                 node.renderers = node.gameObject.GetComponentsInChildren<Renderer>().Where((r) => modelMeshs.Contains(r)).ToList();
-                Debug.LogWarning("that should not append");
+                Debug.LogWarning("That should not happen");
                 return node.renderers;
             }
 
