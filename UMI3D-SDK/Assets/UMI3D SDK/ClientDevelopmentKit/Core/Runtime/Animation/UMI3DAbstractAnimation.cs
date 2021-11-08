@@ -165,7 +165,9 @@ namespace umi3d.cdk
         IEnumerator StartNextFrame()
         {
             yield return new WaitForEndOfFrame();
-            Start();
+
+            if(dto.playing)
+                Start();
         }
 
 
