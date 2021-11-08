@@ -54,7 +54,6 @@ namespace umi3d.cdk.collaboration
         }
 
 
-
         /// <summary>
         /// MAnage user update
         /// </summary>
@@ -100,10 +99,10 @@ namespace umi3d.cdk.collaboration
                 StopCoroutine(WaitCoroutine[user.id]);
                 WaitCoroutine.Remove(user.id);
             }
-            var audioPlayer = user.audioplayer;
+            var audioPlayer = user?.audioplayer?.audioSource?.gameObject;
             if (audioPlayer != null)
             {
-                var reader = audioPlayer.audioSource.gameObject.GetOrAddComponent<AudioReader>();
+                var reader = audioPlayer.GetOrAddComponent<AudioReader>();
                 SpacialReader[user.id] = reader;
                 if (GlobalReader.ContainsKey(user.id))
                 {
@@ -131,7 +130,7 @@ namespace umi3d.cdk.collaboration
 
         IEnumerator WaitForAudioCreation(UMI3DUser user)
         {
-            yield return new WaitUntil(() => user.audioplayer != null);
+            yield return new WaitUntil(() => user?.audioplayer?.audioSource?.gameObject != null);
             OnAudioChanged(user);
         }
     }
