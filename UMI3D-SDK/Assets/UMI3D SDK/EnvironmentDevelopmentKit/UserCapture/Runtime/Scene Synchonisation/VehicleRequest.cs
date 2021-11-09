@@ -29,13 +29,22 @@ namespace umi3d.edk.userCapture
         public bool ChangeBonesToStream = false;
         public List<uint> BonesToStream = new List<uint>();
 
-        public VehicleRequest(Vector3 position, Quaternion rotation, ulong vehicleId, ulong bodyPoseId, bool stopNavigation, bool changeBonesToStream, List<uint> bonesToStream, bool reliable) : base(position, rotation, reliable)
+        public VehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
+        {
+            this.VehicleId = 0;
+            this.BodyPoseId = 0;
+            this.StopNavigation = false;
+            this.ChangeBonesToStream = false;
+            this.BonesToStream = new List<uint>();
+        }
+
+        public VehicleRequest(ulong vehicleId, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool stopNavigation = false, ulong bodyPoseId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, bool reliable = true) : base(position, rotation, reliable)
         {
             this.VehicleId = vehicleId;
             this.BodyPoseId = bodyPoseId;
             this.StopNavigation = stopNavigation;
             this.ChangeBonesToStream = changeBonesToStream;
-            this.BonesToStream = bonesToStream;
+            this.BonesToStream = (bonesToStream == null) ? new List<uint>() : bonesToStream;
         }
 
         protected override uint GetOperationKey()
@@ -55,6 +64,7 @@ namespace umi3d.edk.userCapture
         }
 
         protected override NavigateDto CreateDto() { return new VehicleDto(); }
+        
         protected override void WriteProperties(NavigateDto dto)
         {
             base.WriteProperties(dto);

@@ -103,7 +103,7 @@ namespace umi3d.edk.userCapture
                 embd.transform.SetParent(EmbodimentsScene.transform);
             else
                 Debug.LogWarning("The embodiments scene is not set !");
-            
+
             trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
             LoadAvatarNode(trackedUser.Avatar);
@@ -469,6 +469,89 @@ namespace umi3d.edk.userCapture
             if (avatarNodeDto.userId.Equals(user.Id()))
                 avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
         }
+        #endregion
+
+        #region Vehicle
+
+        public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle = null)
+        {
+            if (user == null)
+                return;
+
+            VehicleRequest vr;
+            SetEntityProperty op;
+
+            if (vehicle != null)
+            {
+                if (vehicle != EmbodimentsScene)
+                    vr = new VehicleRequest(vehicle.Id());
+                else
+                    vr = new VehicleRequest(0);
+
+                (user as UMI3DTrackedUser).Avatar.transform.SetParent(vehicle.transform, true);
+                op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, vehicle.GetComponent<UMI3DAbstractNode>());
+            }
+            else
+            {
+                vr = new VehicleRequest(0);
+
+                (user as UMI3DTrackedUser).Avatar.transform.SetParent(EmbodimentsScene.transform, true);
+                op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, EmbodimentsScene.GetComponent<UMI3DAbstractNode>());
+            }
+
+            vr.users = new HashSet<UMI3DUser>() { user };
+            op.users.Remove(user);
+
+            UMI3DServer.Dispatch(vr);
+
+            UMI3DServer.Dispatch(new Transaction
+            {
+                Operations = new List<Operation> { op },
+                reliable = true
+            });
+        }
+
+        public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool stopNavigation = false, ulong bodyPoseId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null)
+        {
+            if (user == null)
+                return;
+
+            VehicleRequest vr;
+            SetEntityProperty op;
+
+            if (vehicle != null)
+            {
+                if (vehicle != EmbodimentsScene)
+                    vr = new VehicleRequest(vehicle.Id(), position, rotation, stopNavigation, bodyPoseId, changeBonesToStream, bonesToStream, true);
+                else
+                    vr = new VehicleRequest(0, position, rotation, stopNavigation, bodyPoseId, changeBonesToStream, bonesToStream, true);
+
+                (user as UMI3DTrackedUser).Avatar.transform.SetParent(vehicle.transform, true);
+                (user as UMI3DTrackedUser).Avatar.transform.localPosition = position;
+                (user as UMI3DTrackedUser).Avatar.transform.localRotation = rotation;
+
+                op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, vehicle.GetComponent<UMI3DAbstractNode>());
+            }
+            else
+            {
+                vr = new VehicleRequest(0, position, rotation, stopNavigation, bodyPoseId, changeBonesToStream, bonesToStream, true);
+
+                (user as UMI3DTrackedUser).Avatar.transform.SetParent(EmbodimentsScene.transform, true);
+                op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, EmbodimentsScene.GetComponent<UMI3DAbstractNode>());
+            }
+
+            vr.users = new HashSet<UMI3DUser>() { user };
+            op.users.Remove(user);
+
+            UMI3DServer.Dispatch(vr);
+
+            UMI3DServer.Dispatch(new Transaction
+            {
+                Operations = new List<Operation> { op },
+                reliable = true
+            });
+        }
+
         #endregion
     }
 }
