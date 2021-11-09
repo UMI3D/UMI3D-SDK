@@ -89,9 +89,12 @@ namespace umi3d.cdk
             {
                 yield return new WaitForEndOfFrame();
             }
-            ulong now = UMI3DClientServer.Instance.GetTime();
-            Start((float)(now - dto.startTime));
 
+            if (dto.playing)
+            {
+                ulong now = UMI3DClientServer.Instance.GetTime();
+                Start((float)(now - dto.startTime));
+            }
         }
 
         private IEnumerator SetFrame(long frame)
