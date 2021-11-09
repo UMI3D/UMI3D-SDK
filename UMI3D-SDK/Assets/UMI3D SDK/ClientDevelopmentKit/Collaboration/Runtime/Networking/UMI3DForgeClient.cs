@@ -346,12 +346,10 @@ namespace umi3d.cdk.collaboration
                             var changeBonesToStream = UMI3DNetworkingHelper.Read<bool>(container);
                             var bonesToStream = UMI3DNetworkingHelper.ReadList<uint>(container);
 
-                            UMI3DNodeInstance vehicle = UMI3DEnvironmentLoader.GetNode(vehicleId);
-
                             MainThreadManager.Run(() =>
                             {
+                                TeleportDto nav = null;
 
-                                TeleportDto nav;
                                 if (vehicleId == 0)
                                 {
                                     UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true);
@@ -359,13 +357,19 @@ namespace umi3d.cdk.collaboration
                                 }
                                 else
                                 {
-                                    UMI3DClientUserTracking.Instance.transform.SetParent(vehicle.transform, true);
-                                    var tempPosition = vehicle.transform.TransformPoint(pos);
-                                    var tempRotation = vehicle.transform.rotation * rot;
-                                    nav = new TeleportDto() { position = tempPosition, rotation = tempRotation };
+                                    UMI3DNodeInstance vehicle = UMI3DEnvironmentLoader.GetNode(vehicleId);
+
+                                    if (vehicle != null)
+                                    {
+                                        UMI3DClientUserTracking.Instance.transform.SetParent(vehicle.transform, true);
+                                        var tempPosition = vehicle.transform.TransformPoint(pos);
+                                        var tempRotation = vehicle.transform.rotation * rot;
+                                        nav = new TeleportDto() { position = tempPosition, rotation = tempRotation };
+                                    }
                                 }
 
-                                StartCoroutine(UMI3DNavigation.Navigate(nav));
+                                if (nav != null)
+                                    StartCoroutine(UMI3DNavigation.Navigate(nav));
                             });
                         }
                         break;
