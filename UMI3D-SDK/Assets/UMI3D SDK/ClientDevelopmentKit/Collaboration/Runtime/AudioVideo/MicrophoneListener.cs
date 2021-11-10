@@ -27,6 +27,11 @@ using MainThreadDispatcher;
 
 namespace umi3d.cdk.collaboration
 {
+    [Serializable]
+    public class MicrophoneEvent : UnityEngine.Events.UnityEvent<bool>
+    {
+    }
+
     [RequireComponent(typeof(AudioSource))]
     public class MicrophoneListener : Singleton<MicrophoneListener>
     {
@@ -46,6 +51,8 @@ namespace umi3d.cdk.collaboration
 
         #region static properties 
 
+        public static MicrophoneEvent OnSaturated { get => Exists ? Instance._OnSaturated : null; }
+        public static MicrophoneEvent OnSendingData { get => Exists ? Instance._OnSending : null; }
         /// <summary>
         /// Whether the microphone is running
         /// </summary>
@@ -155,6 +162,9 @@ namespace umi3d.cdk.collaboration
         }
 
         #endregion
+
+        public MicrophoneEvent _OnSaturated = new MicrophoneEvent();
+        public MicrophoneEvent _OnSending = new MicrophoneEvent();
 
         private void Start()
         {
@@ -301,9 +311,51 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        bool currentSaturated;
+        bool displayedSaturated;
+        object SaturatedLocker = new object();
+        object displayedSaturatedLocker = new object();
+
+        public bool DisplayedSaturated
+        {
+            get
+            {
+                lock (displayedSaturatedLocker)
+                    return displayedSaturated;
+            }
+            set
+            {
+                bool v;
+                lock (displayedSaturatedLocker)
+                    v = displayedSaturated;
+                if (v != value)
+                {
+                    lock (displayedSaturatedLocker)
+                        displayedSaturated = value;
+                    UnityMainThreadDispatcher.Instance().Enqueue(() => _OnSaturated.Invoke(value));
+                }
+            }
+        }
+
+        public bool Saturated
+        {
+            get
+            {
+                lock (SaturatedLocker)
+                    return displayedSaturated;
+            }
+            private set
+            {
+                DisplayedSaturated |= value;
+                lock (SaturatedLocker)
+                    currentSaturated = value;
+                if (value)
+                    UnityMainThreadDispatcher.Instance().Enqueue(StaySaturated());
+            }
+        }
 
         object minRMSToSendLocker = new object();
-        float _minRMSToSend = 0.1f;
+        float _minRMSToSend = 0f;
         public float _MinRMSToSend
         {
             get
@@ -344,9 +396,14 @@ namespace umi3d.cdk.collaboration
             }
             private set
             {
+                bool ok;
                 lock (shouldSendLocker)
+                    ok = shouldSend;
+                if (ok != value)
                 {
-                    shouldSend = value;
+                    lock (shouldSendLocker)
+                        shouldSend = value;
+                    UnityMainThreadDispatcher.Instance().Enqueue(() => _OnSending.Invoke(value));
                 }
             }
         }
@@ -371,6 +428,31 @@ namespace umi3d.cdk.collaboration
             }
             ShouldSend = true;
             TurnMicOffRunning = false;
+        }
+
+        bool StaySaturatedRunning;
+        float timeStayingSaturated = 0.3f;
+        IEnumerator StaySaturated()
+        {
+            if (StaySaturatedRunning)
+                yield break;
+            StaySaturatedRunning = true;
+            DisplayedSaturated = true;
+            float time = 0;
+
+            do
+            {
+                if (currentSaturated)
+                {
+                    time = Time.time + timeStayingSaturated;
+                    currentSaturated = false;
+                }
+                yield return null;
+            }
+            while (time > Time.time);
+
+            DisplayedSaturated = false;
+            StaySaturatedRunning = false;
         }
 
         void _ChangeThreshold(bool up)
@@ -530,18 +612,29 @@ namespace umi3d.cdk.collaboration
                 {
                     float sum = 0;
                     float gain = Gain;
+                    bool saturated = false;
                     lock (pcmQueue)
                     {
                         for (int i = 0; i < frameSize; i++)
                         {
                             var v = pcmQueue.Dequeue() * gain;
-                            if (v > 1) v = 1;
-                            else if (v < -1) v = -1;
+                            if (v > 1)
+                            {
+                                v = 1;
+                                saturated = true;
+                            }
+                            else if (v < -1)
+                            {
+                                v = -1;
+                                saturated = true;
+                            }
+
                             frameBuffer[i] = v;
                             sum += v * v;
                         }
                     }
 
+                    Saturated = saturated;
                     RMS = Mathf.Sqrt(sum / frameSize);
                     DB = 20 * Mathf.Log10(RMS / refValue);
 
