@@ -346,30 +346,20 @@ namespace umi3d.cdk.collaboration
                             var changeBonesToStream = UMI3DNetworkingHelper.Read<bool>(container);
                             var bonesToStream = UMI3DNetworkingHelper.ReadList<uint>(container);
 
+                            var vehicleDto = new VehicleDto()
+                            {
+                                position = pos,
+                                rotation = rot,
+                                VehicleId = vehicleId,
+                                BodyPoseId = bodyPoseId,
+                                StopNavigation = stopNavigation,
+                                ChangeBonesToStream = changeBonesToStream,
+                                BonesToStream = bonesToStream
+                            };
+
                             MainThreadManager.Run(() =>
                             {
-                                TeleportDto nav = null;
-
-                                if (vehicleId == 0)
-                                {
-                                    UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true);
-                                    nav = new TeleportDto() { position = pos, rotation = rot };
-                                }
-                                else
-                                {
-                                    UMI3DNodeInstance vehicle = UMI3DEnvironmentLoader.GetNode(vehicleId);
-
-                                    if (vehicle != null)
-                                    {
-                                        UMI3DClientUserTracking.Instance.transform.SetParent(vehicle.transform, true);
-                                        var tempPosition = vehicle.transform.TransformPoint(pos);
-                                        var tempRotation = vehicle.transform.rotation * rot;
-                                        nav = new TeleportDto() { position = tempPosition, rotation = tempRotation };
-                                    }
-                                }
-
-                                if (nav != null)
-                                    StartCoroutine(UMI3DNavigation.Navigate(nav));
+                                UMI3DClientUserTracking.Instance.EmbarkVehicle(vehicleDto);
                             });
                         }
                         break;

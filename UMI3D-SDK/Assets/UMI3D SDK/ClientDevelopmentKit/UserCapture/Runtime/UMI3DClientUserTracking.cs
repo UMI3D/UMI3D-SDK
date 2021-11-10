@@ -223,5 +223,53 @@ namespace umi3d.cdk.userCapture
             this.sendTracking = activeSending;
             startingSendingTracking.Invoke();
         }
+
+        UMI3DNodeInstance globalVehicle;
+
+        public void EmbarkVehicle(VehicleDto vehicleDto)
+        {
+            TeleportDto nav = null;
+
+            if (vehicleDto.VehicleId == 0)
+            {
+                UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true);
+                nav = new TeleportDto() { position = vehicleDto.position, rotation = vehicleDto.rotation };
+
+                globalVehicle.Delete -= new Action(() => UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true));
+                globalVehicle = null;
+
+                var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+
+                bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+
+                setStreamedBones(bones);
+            }
+            else
+            {
+                UMI3DNodeInstance vehicle = UMI3DEnvironmentLoader.GetNode(vehicleDto.VehicleId);
+
+                if (vehicle != null)
+                {
+                    globalVehicle = vehicle;
+
+                    UMI3DClientUserTracking.Instance.transform.SetParent(vehicle.transform, true);
+
+                    globalVehicle.Delete += new Action(() => UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true));
+
+                    var tempPosition = vehicle.transform.TransformPoint(vehicleDto.position);
+                    var tempRotation = vehicle.transform.rotation * vehicleDto.rotation;
+                    nav = new TeleportDto() { position = tempPosition, rotation = tempRotation };
+
+                    var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+
+                    bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+
+                    setStreamedBones(bones);
+                }
+            }
+
+            if (nav != null)
+                StartCoroutine(UMI3DNavigation.Navigate(nav));
+        }
     }
 }
