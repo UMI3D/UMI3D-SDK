@@ -39,6 +39,7 @@ namespace umi3d.edk.volume
         protected override void Awake()
         {
             base.Awake();
+
             center = new UMI3DAsyncProperty<Vector3>(Id(), UMI3DPropertyKeys.VolumePrimitive_Box_Center, bounds.center);
             size = new UMI3DAsyncProperty<Vector3>(Id(), UMI3DPropertyKeys.VolumePrimitive_Box_Size, bounds.size);
 
@@ -51,7 +52,7 @@ namespace umi3d.edk.volume
             return new BoxDto()
             {
                 id = Id(),
-                center = center.GetValue(),
+                center = center.GetValue() + (extendFromBottom ? bounds.extents.y * Vector3.up : Vector3.zero),
                 size = size.GetValue(),
                 rootNodeId = GetRootNode().Id(),
                 rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),

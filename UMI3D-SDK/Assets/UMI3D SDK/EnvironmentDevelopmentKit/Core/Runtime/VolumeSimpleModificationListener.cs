@@ -9,29 +9,52 @@ namespace umi3d.edk.volume
     {
         public float maxFrameRate = 30;
 
-        private List<SetEntityProperty> operationsToSend = new List<SetEntityProperty>();
+        private List<UMI3DAsyncProperty> modifiedProperties = new List<UMI3DAsyncProperty>();
 
         protected virtual void Start()
         {
             List<Box> boxes = FindObjectsOfType<Box>().ToList();
             foreach (Box box in boxes)
             {
-                box.center.OnValueChanged += v => { operationsToSend.Add(box.center.SetValue(box.center.GetValue())); };
-                box.size.OnValueChanged += v => { operationsToSend.Add(box.size.SetValue(box.size.GetValue())); };
+                SubscribeProperty<Vector3>(box.center);
+                SubscribeProperty<Vector3>(box.size);
             }
+
+            List<Cylinder> cylinders = FindObjectsOfType<Cylinder>().ToList();
+            foreach (Cylinder cylinder in cylinders)
+            {
+                SubscribeProperty<float>(cylinder.height);
+                SubscribeProperty<float>(cylinder.radius);
+            }
+
+            StartCoroutine(SendOperations());
+        }
+
+        private void SubscribeProperty<T>(UMI3DAsyncProperty<T> property)
+        {
+            property.OnValueChanged += v =>
+            {
+                if (!modifiedProperties.Contains(property))
+                {
+                    modifiedProperties.Add(property);
+                }
+            };
         }
 
         IEnumerator SendOperations()
         {
-            while (true)
+            while (maxFrameRate > 0)
             {
-                if (operationsToSend.Count > 0)
+                if (modifiedProperties.Count > 0)
                 {
                     Transaction transaction = new Transaction();
-                    transaction.Add(operationsToSend);
-                    operationsToSend = new List<SetEntityProperty>();
+                    transaction.AddIfNotNull(modifiedProperties.ConvertAll(prop => prop.GetSetEntityOperationForAllUsers()));
+                    transaction.reliable = false;
+                    UMI3DServer.Dispatch(transaction);
+                    modifiedProperties = new List<UMI3DAsyncProperty>();
                 }
-                yield return new WaitForSeconds(60f / maxFrameRate);
+
+                yield return new WaitForSeconds(1f / maxFrameRate);
             }
         }
     }

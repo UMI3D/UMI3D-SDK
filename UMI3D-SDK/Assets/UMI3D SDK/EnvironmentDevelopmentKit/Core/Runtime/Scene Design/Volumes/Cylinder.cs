@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
@@ -23,8 +24,16 @@ namespace umi3d.edk.volume
 
     public class Cylinder : AbstractPrimitive
     {
-        public float radius = 1;
-        public float height = 3;
+        [SerializeField]
+        [EditorReadOnly]
+        public float radius_inspector = 1;
+
+        [SerializeField]
+        [EditorReadOnly]
+        public float height_inspector = 3;
+
+        public UMI3DAsyncProperty<float> radius;
+        public UMI3DAsyncProperty<float> height;
 
 
         public override IEntity ToEntityDto(UMI3DUser user)
@@ -32,8 +41,8 @@ namespace umi3d.edk.volume
             return new CylinderDto()
             {
                 id = Id(),
-                height = height,
-                radius = radius,
+                height = height.GetValue(),
+                radius = radius.GetValue(),
                 rootNodeId = GetRootNode().Id(),
                 rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
                 isTraversable = IsTraversable()
@@ -43,10 +52,21 @@ namespace umi3d.edk.volume
         public void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
-            Mesh cylinder = GeometryTools.GetCylinder(this.transform.position, this.transform.rotation, this.transform.localScale, radius, height);
+            Mesh cylinder = GeometryTools.GetCylinder(this.transform.position, this.transform.rotation, this.transform.localScale, radius_inspector, height_inspector);
             Gizmos.DrawWireMesh(cylinder);
             if (Application.isPlaying)
                 Destroy(cylinder);
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            radius = new UMI3DAsyncProperty<float>(Id(), UMI3DPropertyKeys.VolumePrimitive_Cylinder_Radius, radius_inspector);
+            height = new UMI3DAsyncProperty<float>(Id(), UMI3DPropertyKeys.VolumePrimitive_Cylinder_Height, height_inspector);
+
+            radius.OnValueChanged += r => radius_inspector = r;
+            height.OnValueChanged += h => height_inspector = h;
         }
     }
 }
