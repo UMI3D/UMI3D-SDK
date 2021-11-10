@@ -321,7 +321,7 @@ namespace umi3d.edk.collaboration
             //Apply first config fileif it exists
             for (int i = 0; i < length; i++)
             {
-                if (args[i].CompareTo(configFileParam) == 0)
+                if (args[i].Equals(configFileParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         ApplyConfigFile(ReadConfigFile(args[i]));
@@ -331,72 +331,72 @@ namespace umi3d.edk.collaboration
             //then aplly other arguments
             for (int i = 0; i < length; i++)
             {
-                if (args[i].CompareTo(nameParam) == 0)
+                if (args[i].Equals(nameParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetName(args[i]);
                 }
-                else if (args[i].CompareTo(ipParam) == 0)
+                else if (args[i].Equals(ipParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetIp(args[i]);
                 }
-                else if (args[i].CompareTo(authParam) == 0)
+                else if (args[i].Equals(authParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetAuth(args[i]);
                 }
-                else if (args[i].CompareTo(tokenLifeParam) == 0)
+                else if (args[i].Equals(tokenLifeParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetTokenLife(args[i]);
                 }
-                else if (args[i].CompareTo(httpPortParam) == 0)
+                else if (args[i].Equals(httpPortParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetHttpPort(args[i]);
                 }
-                else if (args[i].CompareTo(forgePortParam) == 0)
+                else if (args[i].Equals(forgePortParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetUdpPort(args[i]);
                 }
-                else if (args[i].CompareTo(masterIpParam) == 0)
+                else if (args[i].Equals(masterIpParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetMasterServerIp(args[i]);
                 }
-                else if (args[i].CompareTo(masterPortParam) == 0)
+                else if (args[i].Equals(masterPortParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetMasterServerPort(args[i]);
                 }
-                else if (args[i].CompareTo(natIpParam) == 0)
+                else if (args[i].Equals(natIpParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetNatServerIp(args[i]);
                 }
-                else if (args[i].CompareTo(natPortParam) == 0)
+                else if (args[i].Equals(natPortParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetNatServerPort(args[i]);
                 }
-                else if (args[i].CompareTo(maxNbPlayerParam) == 0)
+                else if (args[i].Equals(maxNbPlayerParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetMaxNbPlayers(args[i]);
                 }
-                else if (args[i].CompareTo(sessionIdParam) == 0)
+                else if (args[i].Equals(sessionIdParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetSessionId(args[i]);
                 }
-                else if (args[i].CompareTo(sessionCommentParam) == 0)
+                else if (args[i].Equals(sessionCommentParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetSessionComment(args[i]);
                 }
-                else if (args[i].CompareTo(iconParam) == 0)
+                else if (args[i].Equals(iconParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
                         SetIconServerUrl(args[i]);
