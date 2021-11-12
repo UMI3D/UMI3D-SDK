@@ -1,0 +1,18 @@
+{
+    "name": "UMI3D.CDK.UserCapture",
+    "references": [
+        "GUID:29a403b1410bc9e44b9b0cbcfde58e71",
+        "GUID:6e34c4b4c3202a14eb95e0a784041765",
+        "GUID:608ff695b5b1d8f46a32962b70ec9792",
+        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
