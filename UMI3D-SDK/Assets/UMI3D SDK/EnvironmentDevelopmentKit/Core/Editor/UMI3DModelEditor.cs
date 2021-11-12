@@ -24,16 +24,14 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class UMI3DModelEditor : RenderedNodeEditor
     {
-
-        SerializedProperty variants;
-        SerializedProperty areSubobjectsTracked;
-        SerializedProperty isRightHanded;
-        SerializedProperty isPartOfNavmesh;
-        SerializedProperty isTraversable;
+        private SerializedProperty variants;
+        private SerializedProperty areSubobjectsTracked;
+        private SerializedProperty isRightHanded;
+        private SerializedProperty isPartOfNavmesh;
+        private SerializedProperty isTraversable;
 
         private Editor _materialEditor = null;
-
-        bool foldout;
+        private bool foldout;
 
         ///<inheritdoc/>
         protected override void OnEnable()
@@ -48,7 +46,7 @@ namespace umi3d.edk.editor
 
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (_materialEditor != null) { DestroyImmediate(_materialEditor); }
         }

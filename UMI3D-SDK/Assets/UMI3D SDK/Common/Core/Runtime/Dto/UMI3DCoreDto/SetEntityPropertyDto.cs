@@ -45,7 +45,7 @@ namespace umi3d.common
         /// <returns></returns>
         public SetEntityPropertyDto Copy()
         {
-            var dto = CreateDto();
+            SetEntityPropertyDto dto = CreateDto();
             CopyProperties(dto);
             return dto;
         }

@@ -32,16 +32,15 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Contain the users connected to the scene.
         /// </summary>
-        Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
-        Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
-        Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
-
-        UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
-
-        DateTime lastUpdate = new DateTime();
+        private Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
+        private Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
+        private Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
+        private UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
+        private DateTime lastUpdate = new DateTime();
 
         public void SetLastUpdate(UMI3DCollaborationUser user) { if (users.ContainsValue(user)) SetLastUpdate(); }
-        void SetLastUpdate() { lastUpdate = DateTime.UtcNow; }
+
+        private void SetLastUpdate() { lastUpdate = DateTime.UtcNow; }
         public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
         {
             get
@@ -235,31 +234,30 @@ namespace umi3d.edk.collaboration
                 UnityMainThreadDispatcher.Instance().Enqueue(UpdateUser(user));
         }
 
-
-        IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
+        private IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            var op = objectUserList.Add(user);
+            SetEntityProperty op = objectUserList.Add(user);
             op.users.Remove(user);
-            Transaction tr = new Transaction() { reliable = true };
+            var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(op);
             UMI3DServer.Dispatch(tr);
         }
 
-        IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
+        private IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            var op = objectUserList.Remove(user);
+            SetEntityProperty op = objectUserList.Remove(user);
             if (op == null)
                 yield break;
             if (user != null)
                 op.users.Remove(user);
-            Transaction tr = new Transaction() { reliable = true };
+            var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(op);
             UMI3DServer.Dispatch(tr);
         }
 
-        IEnumerator UpdateUser(UMI3DCollaborationUser user)
+        private IEnumerator UpdateUser(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
             int index = objectUserList.GetValue().IndexOf(user);
@@ -272,7 +270,7 @@ namespace umi3d.edk.collaboration
                 value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
             };
             operation += UMI3DCollaborationServer.Collaboration.Users;
-            Transaction tr = new Transaction() { reliable = true };
+            var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(operation);
             UMI3DServer.Dispatch(tr);
         }

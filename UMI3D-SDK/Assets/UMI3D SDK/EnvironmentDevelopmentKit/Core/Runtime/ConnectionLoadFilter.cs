@@ -25,7 +25,7 @@ namespace umi3d.edk
 
         protected virtual void OnEnable()
         {
-            foreach (var e in GetComponents<UMI3DMediaEntity>())
+            foreach (UMI3DMediaEntity e in GetComponents<UMI3DMediaEntity>())
             {
                 e.AddConnectionFilter(this);
             }
@@ -33,7 +33,7 @@ namespace umi3d.edk
 
         protected virtual void OnDisable()
         {
-            foreach (var e in GetComponents<UMI3DMediaEntity>())
+            foreach (UMI3DMediaEntity e in GetComponents<UMI3DMediaEntity>())
             {
                 e.RemoveConnectionFilter(this);
             }

@@ -15,15 +15,15 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using MainThreadDispatcher;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using umi3d.common;
 using UnityEngine;
 using UnityOpus;
-using System.Linq;
-using System;
-using System.Collections;
-using MainThreadDispatcher;
 
 namespace umi3d.cdk.collaboration
 {
@@ -40,25 +40,25 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Is the length of the AudioClip produced by the recording.
         /// </summary>
-        const int lengthSeconds = 1;
+        private const int lengthSeconds = 1;
 
         /// <summary>
         ///  RMS value for 0 dB
         /// </summary>
-        const float refValue = 1f;
+        private const float refValue = 1f;
 
         #endregion
 
         #region static properties 
 
-        public static MicrophoneEvent OnSaturated { get => Exists ? Instance._OnSaturated : null; }
-        public static MicrophoneEvent OnSendingData { get => Exists ? Instance._OnSending : null; }
+        public static MicrophoneEvent OnSaturated => Exists ? Instance._OnSaturated : null;
+        public static MicrophoneEvent OnSendingData => Exists ? Instance._OnSending : null;
         /// <summary>
         /// Whether the microphone is running
         /// </summary>
         public static bool IsMute
         {
-            get { return Exists ? Instance.muted : false; }
+            get => Exists ? Instance.muted : false;
             set
             {
                 if (Exists)
@@ -144,7 +144,10 @@ namespace umi3d.cdk.collaboration
             if (Exists) Instance._ChangeTimeToTurnOff(up);
         }
 
-        public static string[] getDevices() => Exists ? Instance._getDevices() : null;
+        public static string[] getDevices()
+        {
+            return Exists ? Instance._getDevices() : null;
+        }
 
         public static void NextDevices()
         {
@@ -171,7 +174,7 @@ namespace umi3d.cdk.collaboration
             IsMute = IsMute;
         }
 
-        void _UpdateFrequency(int frequency)
+        private void _UpdateFrequency(int frequency)
         {
             samplingFrequency = frequency;
             if (Reading)
@@ -191,7 +194,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
-        void StartRecording()
+        private void StartRecording()
         {
             Reading = true;
 
@@ -217,7 +220,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Ends the Mic stream.
         /// </summary>
-        void StopRecording()
+        private void StopRecording()
         {
             Reading = false;
             Destroy(clip);
@@ -230,11 +233,11 @@ namespace umi3d.cdk.collaboration
         /// 
         /// </summary>
         [SerializeField, EditorReadOnly]
-        bool muted = false;
+        private bool muted = false;
+        private float _gain = 1f;
+        private object gainLocker = new object();
 
-        float _gain = 1f;
-        object gainLocker = new object();
-        float _Gain
+        private float _Gain
         {
             get
             {
@@ -248,9 +251,10 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        object readingLocker = new object();
-        bool reading = false;
-        bool Reading
+        private object readingLocker = new object();
+        private bool reading = false;
+
+        private bool Reading
         {
             get
             {
@@ -264,21 +268,16 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        string microphoneLabel;
-
-        int samplingFrequency = 12000;
-
-
-
-        AudioClip clip;
-        int head = 0;
-        float[] microphoneBuffer;
+        private string microphoneLabel;
+        private int samplingFrequency = 12000;
+        private AudioClip clip;
+        private int head = 0;
+        private float[] microphoneBuffer;
 
         private Thread thread;
-        int sleepTimeMiliseconde = 5;
-
-        float db;
-        object dbLocker = new object();
+        private int sleepTimeMiliseconde = 5;
+        private float db;
+        private object dbLocker = new object();
         public float DB
         {
             get
@@ -293,8 +292,8 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        float rms;
-        object RMSLocker = new object();
+        private float rms;
+        private object RMSLocker = new object();
         public float RMS
         {
             get
@@ -311,10 +310,10 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        bool currentSaturated;
-        bool displayedSaturated;
-        object SaturatedLocker = new object();
-        object displayedSaturatedLocker = new object();
+        private bool currentSaturated;
+        private bool displayedSaturated;
+        private object SaturatedLocker = new object();
+        private object displayedSaturatedLocker = new object();
 
         public bool DisplayedSaturated
         {
@@ -354,8 +353,8 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        object minRMSToSendLocker = new object();
-        float _minRMSToSend = 0f;
+        private object minRMSToSendLocker = new object();
+        private float _minRMSToSend = 0f;
         public float _MinRMSToSend
         {
             get
@@ -370,24 +369,24 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        bool IslowerThanThreshold
+        private bool IslowerThanThreshold
         {
             get
             {
-                var rms = RMS;
-                var threshold = NoiseThreshold;
+                float rms = RMS;
+                float threshold = NoiseThreshold;
                 return rms < threshold;
             }
         }
 
-        bool shouldSend;
-        object shouldSendLocker = new object();
-        bool TurnMicOffRunning;
+        private bool shouldSend;
+        private object shouldSendLocker = new object();
+        private bool TurnMicOffRunning;
         public bool ShouldSend
         {
             get
             {
-                var highRMS = !IslowerThanThreshold;
+                bool highRMS = !IslowerThanThreshold;
                 lock (shouldSendLocker)
                 {
                     shouldSend |= highRMS;
@@ -408,13 +407,14 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        float timeToTurnOff = 1f;
-        IEnumerator TurnMicOff()
+        private float timeToTurnOff = 1f;
+
+        private IEnumerator TurnMicOff()
         {
             if (TurnMicOffRunning)
                 yield break;
             TurnMicOffRunning = true;
-            var time = Time.time + TimeToTurnOff;
+            float time = Time.time + TimeToTurnOff;
 
             while (IslowerThanThreshold)
             {
@@ -430,9 +430,10 @@ namespace umi3d.cdk.collaboration
             TurnMicOffRunning = false;
         }
 
-        bool StaySaturatedRunning;
-        float timeStayingSaturated = 0.3f;
-        IEnumerator StaySaturated()
+        private bool StaySaturatedRunning;
+        private float timeStayingSaturated = 0.3f;
+
+        private IEnumerator StaySaturated()
         {
             if (StaySaturatedRunning)
                 yield break;
@@ -455,7 +456,7 @@ namespace umi3d.cdk.collaboration
             StaySaturatedRunning = false;
         }
 
-        void _ChangeThreshold(bool up)
+        private void _ChangeThreshold(bool up)
         {
             if (up)
                 NoiseThreshold += 0.05f;
@@ -463,7 +464,7 @@ namespace umi3d.cdk.collaboration
                 NoiseThreshold -= 0.05f;
         }
 
-        void _ChangeBitrate(bool up)
+        private void _ChangeBitrate(bool up)
         {
             if (up)
                 Bitrate += 500;
@@ -473,7 +474,7 @@ namespace umi3d.cdk.collaboration
                 encoder.Bitrate = Bitrate;
         }
 
-        void _ChangeTimeToTurnOff(bool up)
+        private void _ChangeTimeToTurnOff(bool up)
         {
             if (up)
                 TimeToTurnOff += 0.5f;
@@ -481,18 +482,21 @@ namespace umi3d.cdk.collaboration
                 TimeToTurnOff -= 0.5f;
         }
 
-        string[] _getDevices() => Microphone.devices;
-
-        void _NextDevices()
+        private string[] _getDevices()
         {
-            var devices = _getDevices();
-            var i = Array.IndexOf(devices, microphoneLabel) + 1;
+            return Microphone.devices;
+        }
+
+        private void _NextDevices()
+        {
+            string[] devices = _getDevices();
+            int i = Array.IndexOf(devices, microphoneLabel) + 1;
             if (i < 0 || i >= devices.Length)
                 i = 0;
             _SetDevices(devices[i]);
         }
 
-        bool _SetDevices(string name)
+        private bool _SetDevices(string name)
         {
             if (_IsAValidDevices(name))
             {
@@ -503,23 +507,26 @@ namespace umi3d.cdk.collaboration
                     StartRecording();
                 }
                 else
+                {
                     microphoneLabel = name;
+                }
+
                 return true;
             }
             return false;
         }
 
-        bool _IsAValidDevices(string name)
+        private bool _IsAValidDevices(string name)
         {
             if (name == null) return false;
             return getDevices().Contains(name);
         }
 
-        void Update()
+        private void Update()
         {
             if (!Reading) return;
 
-            var position = Microphone.GetPosition(null);
+            int position = Microphone.GetPosition(null);
             if (position < 0 || head == position)
             {
                 return;
@@ -562,16 +569,16 @@ namespace umi3d.cdk.collaboration
 
         #region Encoder
 
-        int bitrate = 96000;
-        int frameSize; //at least frequency/100
-        int outputBufferSize; // at least frameSize * sizeof(float)
+        private int bitrate = 96000;
+        private int frameSize; //at least frequency/100
+        private int outputBufferSize; // at least frameSize * sizeof(float)
 
-        Encoder encoder;
-        Queue<float> pcmQueue;
-        float[] frameBuffer;
-        byte[] outputBuffer;
+        private Encoder encoder;
+        private Queue<float> pcmQueue;
+        private float[] frameBuffer;
+        private byte[] outputBuffer;
 
-        void OnEnable()
+        private void OnEnable()
         {
             var samp = (SamplingFrequency)samplingFrequency;
             encoder = new Encoder(
@@ -585,7 +592,7 @@ namespace umi3d.cdk.collaboration
             };
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             encoder.Dispose();
             encoder = null;
@@ -599,7 +606,7 @@ namespace umi3d.cdk.collaboration
             Reading = false;
         }
 
-        void ThreadUpdate()
+        private void ThreadUpdate()
         {
             while (Reading)
             {
@@ -617,7 +624,7 @@ namespace umi3d.cdk.collaboration
                     {
                         for (int i = 0; i < frameSize; i++)
                         {
-                            var v = pcmQueue.Dequeue() * gain;
+                            float v = pcmQueue.Dequeue() * gain;
                             if (v > 1)
                             {
                                 v = 1;
@@ -640,7 +647,7 @@ namespace umi3d.cdk.collaboration
 
                     if (ShouldSend)
                     {
-                        var encodedLength = encoder.Encode(frameBuffer, outputBuffer);
+                        int encodedLength = encoder.Encode(frameBuffer, outputBuffer);
                         if (UMI3DCollaborationClientServer.Exists
                             && UMI3DCollaborationClientServer.Instance?.ForgeClient != null
                             && UMI3DCollaborationClientServer.UserDto.dto.status == StatusType.ACTIVE)

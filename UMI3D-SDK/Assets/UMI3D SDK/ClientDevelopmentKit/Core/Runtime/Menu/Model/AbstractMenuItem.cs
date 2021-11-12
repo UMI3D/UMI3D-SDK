@@ -57,7 +57,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void Select()
         {
-            List<UnityAction> localCopySubs = new List<UnityAction>(subscribers);
+            var localCopySubs = new List<UnityAction>(subscribers);
             foreach (UnityAction sub in localCopySubs)
                 sub.Invoke();
         }

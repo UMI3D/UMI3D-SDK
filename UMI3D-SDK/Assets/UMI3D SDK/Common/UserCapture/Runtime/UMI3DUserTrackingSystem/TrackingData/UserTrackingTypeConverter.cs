@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
-    static public class BoneTypeConverter
+    public static class BoneTypeConverter
     {
         public static uint Convert(this HumanBodyBones HumanBodyBones)
         {

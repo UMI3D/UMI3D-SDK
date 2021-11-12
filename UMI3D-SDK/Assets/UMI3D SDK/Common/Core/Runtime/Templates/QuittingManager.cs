@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,7 +25,8 @@ namespace umi3d.common
         /// <summary>
         /// Should be set to true when the application is quitting.
         /// </summary>
-        public static bool ApplicationIsQuitting { 
+        public static bool ApplicationIsQuitting
+        {
             get => applicationIsQuitting;
             set
             {

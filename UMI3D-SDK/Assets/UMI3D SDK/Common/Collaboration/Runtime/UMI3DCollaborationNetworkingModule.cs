@@ -1,4 +1,19 @@
-﻿using System;
+﻿/*
+Copyright 2019 - 2021 Inetum
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+using System;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
 
@@ -22,7 +37,10 @@ namespace umi3d.common.collaboration
                         result = (T)Convert.ChangeType(usercam, typeof(T));
                     }
                     else
+                    {
                         result = default(T);
+                    }
+
                     return true;
                 case true when typeof(T) == typeof(BoneDto):
                     uint type;
@@ -131,23 +149,24 @@ namespace umi3d.common.collaboration
                             result = (T)Convert.ChangeType(mat, typeof(T));
                         }
                         else
+                        {
                             result = default(T);
+                        }
                     }
                     else
+                    {
                         result = default(T);
+                    }
+
                     return true;
                 case true when typeof(T) == typeof(ScalableTextureDto):
                     {
                         var scalableTexture = new ScalableTextureDto();
                         scalableTexture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
-                        string animationId;
-                        string audioSourceId;
-                        string streamingFromUserId;
-                        float scale;
-                        if (UMI3DNetworkingHelper.TryRead(container, out animationId)
-                            && UMI3DNetworkingHelper.TryRead(container, out audioSourceId)
-                            && UMI3DNetworkingHelper.TryRead(container, out streamingFromUserId)
-                            && UMI3DNetworkingHelper.TryRead(container, out scale))
+                        if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
+                            && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
+                            && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId)
+                            && UMI3DNetworkingHelper.TryRead(container, out float scale))
                         {
                             scalableTexture.animationId = animationId;
                             scalableTexture.audioSourceId = audioSourceId;
@@ -165,12 +184,9 @@ namespace umi3d.common.collaboration
                     {
                         var texture = new TextureDto();
                         texture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
-                        string animationId;
-                        string audioSourceId;
-                        string streamingFromUserId;
-                        if (UMI3DNetworkingHelper.TryRead(container, out animationId)
-                            && UMI3DNetworkingHelper.TryRead(container, out audioSourceId)
-                            && UMI3DNetworkingHelper.TryRead(container, out streamingFromUserId))
+                        if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
+                            && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
+                            && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId))
                         {
                             texture.animationId = animationId;
                             texture.audioSourceId = audioSourceId;
@@ -204,7 +220,10 @@ namespace umi3d.common.collaboration
                         result = (T)Convert.ChangeType(file, typeof(T));
                     }
                     else
+                    {
                         result = default(T);
+                    }
+
                     return true;
                 default:
                     result = default(T);

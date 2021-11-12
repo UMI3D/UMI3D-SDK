@@ -62,7 +62,9 @@ namespace umi3d.cdk.menu.view
                 menuItem = item as TextInputMenuItem;
             }
             else
+            {
                 throw new System.Exception("MenuItem must be a TextInput");
+            }
         }
         /// <summary>
         /// Subscribe a callback to the value change.

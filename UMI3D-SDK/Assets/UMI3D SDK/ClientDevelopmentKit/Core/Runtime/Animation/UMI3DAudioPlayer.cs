@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        new public static UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
+        public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         public AudioSource audioSource { get; private set; }
 
 
@@ -32,10 +32,10 @@ namespace umi3d.cdk
             UnityMainThreadDispatcher.Instance().Enqueue(InitPlayer(dto));
         }
 
-        IEnumerator InitPlayer(UMI3DAudioPlayerDto dto)
+        private IEnumerator InitPlayer(UMI3DAudioPlayerDto dto)
         {
             var wait = new WaitForFixedUpdate();
-            var gameObject = UMI3DEnvironmentLoader.Instance.gameObject;
+            GameObject gameObject = UMI3DEnvironmentLoader.Instance.gameObject;
             if (dto.nodeID != 0)
             {
                 gameObject = UMI3DEnvironmentLoader.GetNode(dto.nodeID)?.gameObject;
@@ -64,6 +64,7 @@ namespace umi3d.cdk
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     dto.id,
                     fileToLoad,
@@ -85,12 +86,14 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}");
+                        }
                     },
                     Debug.LogWarning,
                     loader.DeleteObject
                     );
-
+            }
         }
 
         ///<inheritdoc/>
@@ -110,9 +113,9 @@ namespace umi3d.cdk
             }
         }
 
-        Coroutine OnEndCoroutine;
+        private Coroutine OnEndCoroutine;
 
-        IEnumerator WaitUntilTheEnd(float time)
+        private IEnumerator WaitUntilTheEnd(float time)
         {
             yield return new WaitForSeconds(time);
             OnEnd();
@@ -144,7 +147,7 @@ namespace umi3d.cdk
                     audioSource.spatialBlend = ADto.spatialBlend = (float)(double)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
-                    var res = ADto.audioResource;
+                    ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)property.value;
                     if (ADto.audioResource == res) return true;
                     FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(ADto.audioResource.variants);
@@ -158,6 +161,7 @@ namespace umi3d.cdk
                     string authorization = fileToLoad.authorization;
                     IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                     if (loader != null)
+                    {
                         UMI3DResourcesManager.LoadFile(
                             ADto.id,
                             fileToLoad,
@@ -174,10 +178,12 @@ namespace umi3d.cdk
                             Debug.LogWarning,
                             loader.DeleteObject
                             );
+                    }
+
                     break;
                 case UMI3DPropertyKeys.AnimationNode:
-                    var clip = audioSource?.clip;
-                    var g = audioSource.gameObject;
+                    AudioClip clip = audioSource?.clip;
+                    GameObject g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
                     ADto.nodeID = (ulong)(long)property.value;
                     g = UMI3DEnvironmentLoader.Instance.gameObject;
@@ -199,7 +205,7 @@ namespace umi3d.cdk
 
         }
 
-        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
+        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
 
         ///<inheritdoc/>
         public override void Start(float atTime)

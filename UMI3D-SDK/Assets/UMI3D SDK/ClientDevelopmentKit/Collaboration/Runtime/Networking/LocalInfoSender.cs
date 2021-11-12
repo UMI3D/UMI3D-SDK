@@ -14,11 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using umi3d.cdk;
-using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -42,7 +39,7 @@ namespace umi3d.cdk.collaboration
                 return null;
             }
 
-            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
+            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
             if (File.Exists(path))
             {
                 return File.ReadAllBytes(path);
@@ -50,12 +47,12 @@ namespace umi3d.cdk.collaboration
             else
             {
                 Debug.LogWarning(" local key field not found ");
-               
+
                 return null;
             }
         }
 
-        
+
         /// <summary>
         /// Write local info in persistentDataPath from data sent by the server.
         /// </summary>
@@ -68,8 +65,8 @@ namespace umi3d.cdk.collaboration
                 Debug.LogWarning("Unautorized to write this local data : " + key);
                 return;
             }
-            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
-            if(!File.Exists(path))
+            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
+            if (!File.Exists(path))
             {
                 File.Create(path).Dispose();
             }
@@ -101,7 +98,7 @@ namespace umi3d.cdk.collaboration
 
                     if (sendLocalInfo && autorizations[key].read)
                     {
-                        var bytes = GetLocalInfo(key);
+                        byte[] bytes = GetLocalInfo(key);
                         if (bytes != null)
                         {
                             ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(
@@ -116,6 +113,6 @@ namespace umi3d.cdk.collaboration
                 }
             }
         }
-        
+
     }
 }

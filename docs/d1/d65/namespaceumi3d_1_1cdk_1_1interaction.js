@@ -20,7 +20,7 @@ var namespaceumi3d_1_1cdk_1_1interaction =
     [ "RequestedByEnvironment", "d2/d8f/classumi3d_1_1cdk_1_1interaction_1_1_requested_by_environment.html", null ],
     [ "RequestedByUser", "d9/d84/classumi3d_1_1cdk_1_1interaction_1_1_requested_by_user.html", null ],
     [ "RequestedFromMenu", "de/d21/classumi3d_1_1cdk_1_1interaction_1_1_requested_from_menu.html", null ],
-    [ "RequestedUsingSelector", "d4/d78/classumi3d_1_1cdk_1_1interaction_1_1_requested_using_selector.html", null ],
+    [ "RequestedUsingSelector", "d4/d78/classumi3d_1_1cdk_1_1interaction_1_1_requested_using_selector.html", "d4/d78/classumi3d_1_1cdk_1_1interaction_1_1_requested_using_selector" ],
     [ "RollbackAfterFailure", "d5/d35/classumi3d_1_1cdk_1_1interaction_1_1_rollback_after_failure.html", null ],
     [ "SwitchController", "d3/dab/classumi3d_1_1cdk_1_1interaction_1_1_switch_controller.html", null ],
     [ "Tool", "dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html", "dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool" ],

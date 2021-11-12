@@ -75,7 +75,7 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            LocalInfoRequestParameterDto LIRPdto = dto as LocalInfoRequestParameterDto;
+            var LIRPdto = dto as LocalInfoRequestParameterDto;
             LIRPdto.app_id = appName;
             LIRPdto.serverName = serverName;
             LIRPdto.reason = reason;
@@ -100,12 +100,15 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case ParameterSettingRequestDto settingRequestDto:
-                    if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter )
+                    if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter)
                     {
-                        ChageUserLocalInfo(user, parameter); 
+                        ChageUserLocalInfo(user, parameter);
                     }
                     else
+                    {
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                    }
+
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

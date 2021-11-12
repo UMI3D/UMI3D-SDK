@@ -23,9 +23,8 @@ namespace umi3d.edk.editor
     [CustomPropertyDrawer(typeof(MaterialOverrider.OverridedMaterialList), false)]
     public class MaterialsOverriderDrawer : PropertyDrawer
     {
-
-        SerializedProperty overrideAllMaterial;
-        SerializedProperty overrideMaterials;
+        private SerializedProperty overrideAllMaterial;
+        private SerializedProperty overrideMaterials;
 
         ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -50,7 +49,9 @@ namespace umi3d.edk.editor
         {
             int lineCount = 1;
             if (!property.isExpanded)
+            {
                 lineCount = 1;
+            }
             else
             {
                 //   if(overrideAllMaterial == null)

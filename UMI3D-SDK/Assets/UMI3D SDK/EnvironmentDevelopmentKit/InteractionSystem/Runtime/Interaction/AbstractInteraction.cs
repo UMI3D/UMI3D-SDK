@@ -115,7 +115,7 @@ namespace umi3d.edk.interaction
             return interactionId;
         }
 
-        void Register()
+        private void Register()
         {
             if (interactionId == 0 && UMI3DEnvironment.Exists)
             {
@@ -142,8 +142,10 @@ namespace umi3d.edk.interaction
             MainThreadManager.Run(() =>
             {
                 if (this != null)
-                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                {
+                    foreach (UMI3DUserFilter f in GetComponents<UMI3DUserFilter>())
                         AddConnectionFilter(f);
+                }
             });
             interactionId = id;
             inited = true;
@@ -179,7 +181,7 @@ namespace umi3d.edk.interaction
         /// <returns>an AbstractInteractionDto representing this interaction</returns>
         public AbstractInteractionDto ToDto(UMI3DUser user)
         {
-            var dto = CreateDto();
+            AbstractInteractionDto dto = CreateDto();
             WriteProperties(dto, user);
             return dto;
         }
@@ -230,7 +232,7 @@ namespace umi3d.edk.interaction
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

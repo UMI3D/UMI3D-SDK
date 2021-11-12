@@ -89,7 +89,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAllSubMenu()
         {
-            List<AbstractMenu> menus = new List<AbstractMenu>(GetSubMenu());
+            var menus = new List<AbstractMenu>(GetSubMenu());
             foreach (AbstractMenu sub in menus)
                 Remove(sub);
         }
@@ -99,7 +99,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAllMenuItem()
         {
-            List<AbstractMenuItem> menuItems = new List<AbstractMenuItem>(GetMenuItems());
+            var menuItems = new List<AbstractMenuItem>(GetMenuItems());
             foreach (AbstractMenuItem item in menuItems)
                 Remove(item);
         }
@@ -109,7 +109,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAll()
         {
-            List<AbstractMenuItem> Items = new List<AbstractMenuItem>(GetItems());
+            var Items = new List<AbstractMenuItem>(GetItems());
             foreach (AbstractMenuItem item in Items)
                 Remove(item);
         }

@@ -36,15 +36,15 @@ namespace umi3d.cdk.menu
         /// </summary>
         public override float increment
         {
-            get { return inc; }
-            set { inc = Mathf.Abs(value); }
+            get => inc;
+            set => inc = Mathf.Abs(value);
         }
 
         /// <summary>
         /// Is the range continous (false is discrete) ?
         /// </summary>
         /// <see cref="increment"/>
-        public override bool continuousRange { get { return increment == 0; } }
+        public override bool continuousRange => increment == 0;
 
         /// <summary>
         /// Get the value of the float MenuItem.
@@ -71,7 +71,9 @@ namespace umi3d.cdk.menu
                 value = tmp;
             }
             else
+            {
                 value = newValue;
+            }
 
             foreach (UnityAction<float> sub in subscribers)
             {

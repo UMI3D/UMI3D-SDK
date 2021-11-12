@@ -90,6 +90,7 @@ namespace umi3d.cdk
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     id,
                     fileToLoad,
@@ -114,11 +115,14 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                        }
                     },
                     Debug.LogWarning,
                     loader.DeleteObject
                     );
+            }
         }
 
         [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
@@ -133,6 +137,7 @@ namespace umi3d.cdk
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     id,
                     fileToLoad,
@@ -157,11 +162,14 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                        }
                     },
                     Debug.LogWarning,
                     loader.DeleteObject
                     );
+            }
         }
 
 

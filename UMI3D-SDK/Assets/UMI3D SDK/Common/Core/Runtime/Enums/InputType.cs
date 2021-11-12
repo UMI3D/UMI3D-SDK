@@ -22,12 +22,12 @@ namespace umi3d.common
         {
         }
 
-        public static InputType Checkbox { get { return new InputType("checkbox"); } }
-        public static InputType Decimal { get { return new InputType("decimal"); } }
-        public static InputType Integer { get { return new InputType("integer"); } }
-        public static InputType Pin { get { return new InputType("pin"); } }
-        public static InputType Pwd { get { return new InputType("pwd"); } }
-        public static InputType Select { get { return new InputType("select"); } }
-        public static InputType Text { get { return new InputType("text"); } }
+        public static InputType Checkbox => new InputType("checkbox");
+        public static InputType Decimal => new InputType("decimal");
+        public static InputType Integer => new InputType("integer");
+        public static InputType Pin => new InputType("pin");
+        public static InputType Pwd => new InputType("pwd");
+        public static InputType Select => new InputType("select");
+        public static InputType Text => new InputType("text");
     }
 }

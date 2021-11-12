@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,8 +39,7 @@ namespace umi3d.cdk.userCapture
 
         [SerializeField]
         protected float targetTrackingFPS = 15;
-
-        List<uint> streamedBonetypes = new List<uint>();
+        private List<uint> streamedBonetypes = new List<uint>();
 
         public Dictionary<ulong, UserAvatar> embodimentDict = new Dictionary<ulong, UserAvatar>();
 
@@ -106,7 +104,9 @@ namespace umi3d.cdk.userCapture
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
                 else
+                {
                     yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
+                }
             }
         }
 
@@ -121,7 +121,7 @@ namespace umi3d.cdk.userCapture
                 yield return null;
             }
 
-            UserCameraPropertiesDto newCameraProperties = new UserCameraPropertiesDto()
+            var newCameraProperties = new UserCameraPropertiesDto()
             {
                 scale = 1f,
                 projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
@@ -143,7 +143,7 @@ namespace umi3d.cdk.userCapture
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
-                List<BoneDto> bonesList = new List<BoneDto>();
+                var bonesList = new List<BoneDto>();
                 foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
                 {
                     if (streamedBonetypes.Contains(bone.boneType))
@@ -176,7 +176,9 @@ namespace umi3d.cdk.userCapture
         public virtual bool RegisterEmbd(ulong id, UserAvatar u)
         {
             if (embodimentDict.ContainsKey(id))
+            {
                 return false;
+            }
             else
             {
                 embodimentDict.Add(id, u);

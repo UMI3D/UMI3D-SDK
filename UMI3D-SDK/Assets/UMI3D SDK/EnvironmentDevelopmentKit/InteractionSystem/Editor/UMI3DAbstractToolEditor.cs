@@ -27,17 +27,15 @@ namespace umi3d.edk.editor
     [CustomEditor(typeof(AbstractTool), true)]
     public class UMI3DAbstractToolEditor : Editor
     {
-
-        AbstractTool t;
-        SerializedProperty Active;
+        private AbstractTool t;
+        private SerializedProperty Active;
         protected SerializedObject _target;
-        SerializedProperty interactions;
-        SerializedProperty display;
-        ListDisplayer<AbstractInteraction> ListDisplayer;
-        SerializedProperty onProjection;
-        SerializedProperty onRelease;
-
-        static bool displayEvent = false;
+        private SerializedProperty interactions;
+        private SerializedProperty display;
+        private ListDisplayer<AbstractInteraction> ListDisplayer;
+        private SerializedProperty onProjection;
+        private SerializedProperty onRelease;
+        private static bool displayEvent = false;
 
         protected virtual void OnEnable()
         {
@@ -77,7 +75,7 @@ namespace umi3d.edk.editor
             }
         }
 
-        static bool showList = true;
+        private static bool showList = true;
 
         ///<inheritdoc/>
         public override void OnInspectorGUI()

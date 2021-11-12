@@ -44,7 +44,7 @@ namespace umi3d.cdk
         public static IEnumerator PerformTransaction(ByteContainer container)
         {
             yield return new WaitForEndOfFrame();
-            foreach (var c in UMI3DNetworkingHelper.ReadIndexesList(container))
+            foreach (ByteContainer c in UMI3DNetworkingHelper.ReadIndexesList(container))
             {
                 bool performed = false;
                 PerformOperation(c, () => performed = true);
@@ -56,7 +56,7 @@ namespace umi3d.cdk
 
 
 
-        static public void PerformOperation(AbstractOperationDto operation, Action performed)
+        public static void PerformOperation(AbstractOperationDto operation, Action performed)
         {
             if (performed == null) performed = () => { };
             switch (operation)
@@ -65,7 +65,7 @@ namespace umi3d.cdk
                     int count = load.entities.Count;
                     int performedCount = 0;
                     Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
-                    foreach (var entity in load.entities)
+                    foreach (IEntity entity in load.entities)
                     {
                         UMI3DEnvironmentLoader.LoadEntity(entity, performed2);
                     }
@@ -96,11 +96,11 @@ namespace umi3d.cdk
             }
         }
 
-        static public void PerformOperation(ByteContainer container, Action performed)
+        public static void PerformOperation(ByteContainer container, Action performed)
         {
             if (performed == null) performed = () => { };
 
-            var operationId = UMI3DNetworkingHelper.Read<uint>(container);
+            uint operationId = UMI3DNetworkingHelper.Read<uint>(container);
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
@@ -108,7 +108,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DOperationKeys.DeleteEntity:
                     {
-                        var entityId = UMI3DNetworkingHelper.Read<ulong>(container);
+                        ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
                         UMI3DEnvironmentLoader.DeleteEntity(entityId, performed);
                         break;
                     }
@@ -128,8 +128,8 @@ namespace umi3d.cdk
                 default:
                     if (UMI3DOperationKeys.SetEntityProperty <= operationId && operationId <= UMI3DOperationKeys.SetEntityMatrixProperty)
                     {
-                        var entityId = UMI3DNetworkingHelper.Read<ulong>(container);
-                        var propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
+                        ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
+                        uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
                         UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
                         performed.Invoke();
                     }

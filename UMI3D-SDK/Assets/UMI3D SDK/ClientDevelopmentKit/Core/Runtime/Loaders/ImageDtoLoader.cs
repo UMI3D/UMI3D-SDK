@@ -59,7 +59,7 @@ namespace umi3d.cdk
             UMI3DResourcesManager.DownloadObject(www,
                 () =>
                 {
-                    var texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+                    Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
                     callback.Invoke(texture);
                 },
                 s => failCallback.Invoke(s)

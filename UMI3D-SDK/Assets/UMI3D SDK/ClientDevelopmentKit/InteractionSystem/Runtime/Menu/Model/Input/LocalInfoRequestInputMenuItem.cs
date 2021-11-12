@@ -27,7 +27,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Input read authorization value.
         /// </summary>
-        private LocalInfoRequestParameterValue value = new LocalInfoRequestParameterValue(false,false);
+        private LocalInfoRequestParameterValue value = new LocalInfoRequestParameterValue(false, false);
 
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace umi3d.cdk.menu
         /// <param name="newValue"></param>
         public override void NotifyValueChange(LocalInfoRequestParameterValue newValue)
         {
-            if(value.read != newValue.read)
+            if (value.read != newValue.read)
             {
                 foreach (UnityAction<bool> sub in readSubscribers)
                 {
@@ -74,12 +74,12 @@ namespace umi3d.cdk.menu
                     sub.Invoke(newValue.write);
                 }
             }
-            foreach (var sub in subscribers)
+            foreach (UnityAction<LocalInfoRequestParameterValue> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
             value = newValue;
-            
+
         }
 
         /// <summary>

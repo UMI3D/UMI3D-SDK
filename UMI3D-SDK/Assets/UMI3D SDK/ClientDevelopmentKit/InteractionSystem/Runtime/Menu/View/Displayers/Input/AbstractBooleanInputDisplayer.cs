@@ -92,7 +92,9 @@ namespace umi3d.cdk.menu.view
                 menuItem = item as BooleanInputMenuItem;
             }
             else
+            {
                 throw new System.Exception("MenuItem must be a BooleanInput");
+            }
         }
 
     }

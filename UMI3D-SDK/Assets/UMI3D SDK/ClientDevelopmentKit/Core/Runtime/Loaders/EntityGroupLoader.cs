@@ -21,15 +21,15 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    static public class EntityGroupLoader
+    public static class EntityGroupLoader
     {
-        static public void ReadUMI3DExtension(EntityGroupDto groupDto)
+        public static void ReadUMI3DExtension(EntityGroupDto groupDto)
         {
             groupDto.entitiesId = groupDto.entitiesId.ToList();
             UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto, null);
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity != null && entity.dto is EntityGroupDto groupDto)
             {
@@ -39,9 +39,9 @@ namespace umi3d.cdk
                         UpdateEntities(entity, groupDto, property);
                         break;
                     default:
-                        foreach (var e in groupDto.entitiesId)
+                        foreach (ulong e in groupDto.entitiesId)
                         {
-                            var np = property.Copy();
+                            SetEntityPropertyDto np = property.Copy();
                             np.entityId = e;
                             UMI3DEnvironmentLoader.SetEntity(np);
                         }
@@ -53,7 +53,7 @@ namespace umi3d.cdk
         }
 
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity != null && entity.dto is EntityGroupDto groupDto)
             {
@@ -63,7 +63,7 @@ namespace umi3d.cdk
                         UpdateEntities(entity, groupDto, operationId, propertyKey, container);
                         break;
                     default:
-                        foreach (var e in groupDto.entitiesId)
+                        foreach (ulong e in groupDto.entitiesId)
                         {
                             UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, container);
                         }
@@ -74,14 +74,14 @@ namespace umi3d.cdk
             return false;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return false;
         }
 
-        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
+        private static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
         {
-            var list = groupDto.entitiesId;
+            List<ulong> list = groupDto.entitiesId;
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
@@ -105,17 +105,17 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId =(property.value as List<object>).Select(o => (ulong)(long)o).ToList();
+                    groupDto.entitiesId = (property.value as List<object>).Select(o => (ulong)(long)o).ToList();
                     break;
             }
         }
 
-        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, ByteContainer container)
+        private static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             ulong value;
 
-            var list = groupDto.entitiesId;
+            List<ulong> list = groupDto.entitiesId;
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:

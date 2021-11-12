@@ -32,7 +32,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
         {
-            ExternalMaterialDto externalMat = dto.extensions.umi3d as ExternalMaterialDto;
+            var externalMat = dto.extensions.umi3d as ExternalMaterialDto;
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
             if (externalMat != null)
             {
@@ -43,7 +43,7 @@ namespace umi3d.cdk
                 string authorization = fileToLoad.authorization;
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 if (loader != null)
-
+                {
                     UMI3DResourcesManager.LoadFile(
                    (dto.extensions.umi3d as ExternalMaterialDto)?.id ?? 0,
                    fileToLoad,
@@ -68,11 +68,14 @@ namespace umi3d.cdk
 
                        }
                        else
+                       {
                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}");
+                       }
                    },
                    Debug.LogWarning,
                    loader.DeleteObject
                    );
+                }
                 else
                 {
                     Debug.LogWarning("Loader is null for external material");
