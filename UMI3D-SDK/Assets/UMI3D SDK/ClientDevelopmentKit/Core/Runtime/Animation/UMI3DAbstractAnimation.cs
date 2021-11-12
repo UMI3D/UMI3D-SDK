@@ -166,7 +166,7 @@ namespace umi3d.cdk
         {
             yield return new WaitForEndOfFrame();
 
-            if(dto.playing)
+            if (dto.playing)
                 Start();
         }
 

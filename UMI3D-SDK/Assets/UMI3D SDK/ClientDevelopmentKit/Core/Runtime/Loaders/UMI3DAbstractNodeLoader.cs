@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using MainThreadDispatcher;
 using System;
-using System.Collections;
 using umi3d.common;
 using UnityEngine;
 
@@ -39,14 +37,15 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0,"dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
             if (dto != null)
             {
 
                 if (nodeDto.pid != 0)
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e => {
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
+                    {
                         if (e is UMI3DNodeInstance instance)
                             node.transform.SetParent(instance.transform, false);
                     });

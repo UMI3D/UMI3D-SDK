@@ -100,9 +100,9 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case ParameterSettingRequestDto settingRequestDto:
-                    if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter )
+                    if (settingRequestDto.parameter is LocalInfoRequestParameterValue parameter)
                     {
-                        ChageUserLocalInfo(user, parameter); 
+                        ChageUserLocalInfo(user, parameter);
                     }
                     else
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");

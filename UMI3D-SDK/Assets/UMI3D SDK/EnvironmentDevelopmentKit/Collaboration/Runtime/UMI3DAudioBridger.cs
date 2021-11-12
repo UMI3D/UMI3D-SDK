@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 

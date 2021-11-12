@@ -61,18 +61,18 @@ namespace umi3d.cdk
                          MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
                      }
 
-                     if(nodeDto.skinnedRendererLinks != null)
+                     if (nodeDto.skinnedRendererLinks != null)
                      {
                          foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
                          {
-                             BindSkinnedMeshBone(link.Key, link.Value, node.transform,300);
+                             BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
                          }
                      }
 
 
                      finished?.Invoke();
                  }
-                 else failed?.Invoke(new Umi3dException(0,"nodeDto should not be null"));
+                 else failed?.Invoke(new Umi3dException(0, "nodeDto should not be null"));
              }, failed);
         }
 

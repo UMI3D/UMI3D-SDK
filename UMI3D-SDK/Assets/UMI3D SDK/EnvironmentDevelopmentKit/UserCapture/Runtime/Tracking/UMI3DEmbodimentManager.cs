@@ -105,7 +105,7 @@ namespace umi3d.edk.userCapture
                 embd.transform.SetParent(EmbodimentsScene.transform);
             else
                 Debug.LogWarning("The embodiments scene is not set !");
-            
+
             trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
             LoadAvatarNode(trackedUser.Avatar);

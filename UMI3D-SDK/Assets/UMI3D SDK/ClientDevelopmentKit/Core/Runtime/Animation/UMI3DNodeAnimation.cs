@@ -83,9 +83,10 @@ namespace umi3d.cdk
             {
                 var p = GetProgress();
                 if (p < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => {
-                        if(chain.IsByte)
-                            UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null); 
+                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () =>
+                    {
+                        if (chain.IsByte)
+                            UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
                         else
                             UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
                     })));
@@ -230,7 +231,8 @@ namespace umi3d.cdk
             {
                 var p = GetProgress();
                 if (p < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () => {
+                    Coroutines.Add(UMI3DAnimationManager.Instance.StartCoroutine(WaitForProgress(chain.startOnProgress, () =>
+                    {
                         if (chain.IsByte)
                             UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
                         else

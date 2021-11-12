@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.common;
 
 namespace umi3d.edk
 {

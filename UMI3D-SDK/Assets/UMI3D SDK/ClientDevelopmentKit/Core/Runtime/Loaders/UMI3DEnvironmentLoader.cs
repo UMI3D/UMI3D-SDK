@@ -779,7 +779,8 @@ namespace umi3d.cdk
             {
                 try
                 {
-                    WaitForAnEntityToBeLoaded(id, (e) => {
+                    WaitForAnEntityToBeLoaded(id, (e) =>
+                    {
                         if (!SetEntity(e, operationId, id, propertyKey, container))
                             Debug.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {container}");
                     });

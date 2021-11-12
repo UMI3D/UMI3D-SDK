@@ -261,7 +261,7 @@ namespace umi3d.cdk.interaction
             return interaction;
         }
 
-        static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto,ByteContainer container)
+        static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto, ByteContainer container)
         {
             interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);
             interactionDto.name = UMI3DNetworkingHelper.Read<string>(container);

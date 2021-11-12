@@ -23,8 +23,8 @@ using System.Linq;
 using System.Text;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.edk.userCapture;
 using umi3d.edk.interaction;
+using umi3d.edk.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
@@ -544,7 +544,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             //Debug.Log("Receive local data from : " + user);
-            if(receiveLocalInfoListener != null)
+            if (receiveLocalInfoListener != null)
             {
                 receiveLocalInfoListener.Invoke(uriparam["param"], user, ReadObject(e.Request));
             }
@@ -561,7 +561,7 @@ namespace umi3d.edk.collaboration
         public void GetPlayerLocalInfo(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            Debug.Log( user + " wants to get datas from : " + uriparam["param"]);
+            Debug.Log(user + " wants to get datas from : " + uriparam["param"]);
             if (sendLocalInfoListener != null)
             {
                 sendLocalInfoListener.Invoke(uriparam["param"], user, e.Response);
@@ -580,7 +580,7 @@ namespace umi3d.edk.collaboration
         {
         }
         public static SendLocalinfoEvent sendLocalInfoListener = new SendLocalinfoEvent();
-        
+
         #endregion
 
         #region utils

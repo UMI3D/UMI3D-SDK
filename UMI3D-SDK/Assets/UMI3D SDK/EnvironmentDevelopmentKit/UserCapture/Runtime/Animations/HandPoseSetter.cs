@@ -15,16 +15,9 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using umi3d.edk;
-using umi3d.common;
 using umi3d.common.userCapture;
-using System;
 using UnityEditor;
-using UnityEngine.UI;
-using System.Linq;
+using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {

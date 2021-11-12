@@ -124,7 +124,7 @@ public class LaucherOnMasterServer
             sendData.Add("info", getData);
 
             // Send the request to the server
-            client.textMessageReceived += (player, frame, sender) => {ReceiveMasterInfo(player, frame, sender, UIcallback); };
+            client.textMessageReceived += (player, frame, sender) => { ReceiveMasterInfo(player, frame, sender, UIcallback); };
             client.Send(BeardedManStudios.Forge.Networking.Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
         }
         catch (Exception e)
@@ -159,7 +159,7 @@ public class LaucherOnMasterServer
                 }
             }
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Debug.Log(e);
             if (client != null)

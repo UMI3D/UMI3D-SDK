@@ -191,7 +191,8 @@ namespace umi3d.cdk.collaboration
             {
                 UnityAction a = () => newToken = true;
                 OnNewToken.AddListener(a);
-                yield return new WaitUntil(() => {
+                yield return new WaitUntil(() =>
+                {
                     bool tooLong = ((DateTime.UtcNow - argument.date).TotalMilliseconds > maxMillisecondToWait);
                     return newToken || tooLong;
                 });

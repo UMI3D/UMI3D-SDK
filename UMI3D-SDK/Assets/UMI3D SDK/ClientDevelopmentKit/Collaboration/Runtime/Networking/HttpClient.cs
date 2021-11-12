@@ -264,7 +264,7 @@ namespace umi3d.cdk.collaboration
             client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.scene, null, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
-#endregion
+        #endregion
 
         #region Local Info
         /// <summary>
@@ -280,7 +280,7 @@ namespace umi3d.cdk.collaboration
                 callback.Invoke();
             };
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
-            client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true)); 
+            client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
         /// <summary>

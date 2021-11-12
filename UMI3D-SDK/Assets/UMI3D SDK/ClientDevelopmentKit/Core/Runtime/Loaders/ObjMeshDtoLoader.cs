@@ -50,9 +50,11 @@ namespace umi3d.cdk
 
                         bool failed = false;
 
-                        objImporter.ImportError += (s) => {
+                        objImporter.ImportError += (s) =>
+                        {
                             failed = true;
-                            failCallback(new Umi3dException(401,$"Importing failed for : {url}")); };
+                            failCallback(new Umi3dException(401, $"Importing failed for : {url}"));
+                        };
 
                         objImporter.ImportingComplete += () =>
                         {

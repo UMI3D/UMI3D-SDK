@@ -15,15 +15,15 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using MainThreadDispatcher;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using umi3d.common;
 using UnityEngine;
 using UnityOpus;
-using System.Linq;
-using System;
-using System.Collections;
-using MainThreadDispatcher;
 
 namespace umi3d.cdk.collaboration
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using umi3d.cdk.interaction;
+﻿using umi3d.cdk.interaction;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;

@@ -23,7 +23,7 @@ namespace umi3d.edk
         public string token;
         public string fileId;
 
-        public UploadFileRequest( bool reliable, string fileId, HashSet<UMI3DUser> users = null) : base(reliable, users)
+        public UploadFileRequest(bool reliable, string fileId, HashSet<UMI3DUser> users = null) : base(reliable, users)
         {
             this.token = System.Guid.NewGuid().ToString();//.Replace('-','0');
             UnityEngine.Debug.LogWarning("token : " + this.token);
@@ -47,7 +47,7 @@ namespace umi3d.edk
             WriteProperties(dto);
             return dto.ToBson();
         }
-        
+
         protected virtual RequestHttpUploadDto CreateDto() { return new RequestHttpUploadDto(); }
         protected virtual void WriteProperties(RequestHttpUploadDto dto) { dto.uploadToken = token; dto.fileId = fileId; }
     }

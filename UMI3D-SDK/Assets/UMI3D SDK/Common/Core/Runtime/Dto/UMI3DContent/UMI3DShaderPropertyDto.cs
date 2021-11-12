@@ -42,10 +42,10 @@ namespace umi3d.common
 
         public Bytable ToBytableArray(params object[] parameters)
         {
-            if(CollectionType != 0)
+            if (CollectionType != 0)
                 return UMI3DNetworkingHelper.Write(CollectionType)
                     + UMI3DNetworkingHelper.Write(size)
-                    + UMI3DNetworkingHelper.Write(Type) 
+                    + UMI3DNetworkingHelper.Write(Type)
                     + UMI3DNetworkingHelper.Write(value);
             else
                 return UMI3DNetworkingHelper.Write(Type)
@@ -55,13 +55,13 @@ namespace umi3d.common
 
         public static UMI3DShaderPropertyDto FromByte(ByteContainer container)
         {
-           return new UMI3DShaderPropertyDto(_FromByte(container));
+            return new UMI3DShaderPropertyDto(_FromByte(container));
         }
 
         static object _FromByte(ByteContainer container)
         {
             var Type = UMI3DNetworkingHelper.Read<byte>(container);
-            return _FromByte(container,Type);
+            return _FromByte(container, Type);
         }
 
         static object _FromByte(ByteContainer container, byte Type)
@@ -73,7 +73,7 @@ namespace umi3d.common
                         var size = UMI3DNetworkingHelper.Read<int>(container);
                         var contentType = UMI3DNetworkingHelper.Read<byte>(container);
                         var result = new List<object>();
-                        for(int i = 0; i < size; i++)
+                        for (int i = 0; i < size; i++)
                         {
                             result.Add(_FromByte(container, contentType));
                         }

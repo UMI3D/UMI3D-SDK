@@ -119,7 +119,7 @@ namespace umi3d.edk
         }
         public virtual HashSet<UMI3DUser> UserSetWhenHasJoined()
         {
-            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where( (u) => u.hasJoined));
+            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where((u) => u.hasJoined));
         }
         public virtual IEnumerable<UMI3DUser> Users()
         {

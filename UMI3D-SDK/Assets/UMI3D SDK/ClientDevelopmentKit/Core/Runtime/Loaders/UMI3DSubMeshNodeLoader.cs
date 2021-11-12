@@ -128,7 +128,7 @@ namespace umi3d.cdk
                     }
                     finished?.Invoke();
                 }
-                else failed?.Invoke(new Umi3dException(0,"nodeDto should not be null"));
+                else failed?.Invoke(new Umi3dException(0, "nodeDto should not be null"));
             }, failed);
         }
 

@@ -105,7 +105,7 @@ namespace umi3d.cdk
                         Debug.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}");
                     break;
                 default:
-                    groupDto.entitiesId =(property.value as List<object>).Select(o => (ulong)(long)o).ToList();
+                    groupDto.entitiesId = (property.value as List<object>).Select(o => (ulong)(long)o).ToList();
                     break;
             }
         }

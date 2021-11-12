@@ -27,7 +27,7 @@ namespace umi3d.edk
         public NavigationRequest(Vector3 position, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
         {
             this.position = position;
-            
+
         }
 
         protected virtual uint GetOperationKey()

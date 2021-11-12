@@ -14,14 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
+using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using umi3d.edk;
 using umi3d.common;
 using umi3d.common.userCapture;
-using System;
-using inetum.unityUtils;
+using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
@@ -35,7 +33,7 @@ namespace umi3d.edk.userCapture
         [Serializable]
         public class PhalanxRotations : IBytable
         {
-            [ConstEnum(typeof(BoneType),typeof(uint))]
+            [ConstEnum(typeof(BoneType), typeof(uint))]
             public string Phalanx;
             public Vector3 PhalanxEulerRotation;
 
@@ -56,11 +54,11 @@ namespace umi3d.edk.userCapture
 
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(isRight) 
+            return UMI3DNetworkingHelper.Write(isRight)
                 + UMI3DNetworkingHelper.Write(HandLocalPosition)
                 + UMI3DNetworkingHelper.Write(HandLocalEulerRotation)
                 + UMI3DNetworkingHelper.Write(HandLocalPosition)
-                + UMI3DNetworkingHelper.Write(Phalanxes); 
+                + UMI3DNetworkingHelper.Write(Phalanxes);
         }
 
         void OnDrawGizmosSelected()
