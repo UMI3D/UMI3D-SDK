@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['webservicemethod_2182',['WebServiceMethod',['../d6/d7f/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method.html',1,'umi3d::edk::collaboration']]],
-  ['webservicemethodattribute_2183',['WebServiceMethodAttribute',['../db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html',1,'umi3d::edk::collaboration']]]
+  ['voicedto_0',['VoiceDto',['../d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html',1,'umi3d::common::collaboration']]]
 ];

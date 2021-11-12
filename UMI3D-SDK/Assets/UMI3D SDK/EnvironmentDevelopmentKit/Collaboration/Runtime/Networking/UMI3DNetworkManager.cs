@@ -14,30 +14,34 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.SimpleJSON;
 
-/// <summary>
-/// This class provides a NetworkManager which is able to customize the port given to a master sever.
-/// </summary>
-public class UMI3DNetworkManager : NetworkManager
+namespace umi3d.cdk.collaboration
 {
+
     /// <summary>
-    /// Converts all data required to register this server to a master server into a json.
+    /// This class provides a NetworkManager which is able to customize the port given to a master sever.
     /// </summary>
-    /// <param name="server"></param>
-    /// <param name="connectionPort"></param>
-    /// <param name="id"></param>
-    /// <param name="serverName"></param>
-    /// <param name="type"></param>
-    /// <param name="mode"></param>
-    /// <param name="comment"></param>
-    /// <param name="useElo"></param>
-    /// <param name="eloRequired"></param>
-    /// <returns></returns>
-    public virtual JSONNode MasterServerRegisterData(NetWorker server, string connectionPort, string id, string serverName, string type, string mode, string comment = "", bool useElo = false, int eloRequired = 0)
+    public class UMI3DNetworkManager : NetworkManager
     {
-        JSONNode sendData = base.MasterServerRegisterData(server, id, serverName, type, mode, comment, useElo, eloRequired);
+        /// <summary>
+        /// Converts all data required to register this server to a master server into a json.
+        /// </summary>
+        /// <param name="server"></param>
+        /// <param name="connectionPort"></param>
+        /// <param name="id"></param>
+        /// <param name="serverName"></param>
+        /// <param name="type"></param>
+        /// <param name="mode"></param>
+        /// <param name="comment"></param>
+        /// <param name="useElo"></param>
+        /// <param name="eloRequired"></param>
+        /// <returns></returns>
+        public virtual JSONNode MasterServerRegisterData(NetWorker server, string connectionPort, string id, string serverName, string type, string mode, string comment = "", bool useElo = false, int eloRequired = 0)
+        {
+            JSONNode sendData = base.MasterServerRegisterData(server, id, serverName, type, mode, comment, useElo, eloRequired);
 
-        sendData["register"]["port"] = connectionPort;
+            sendData["register"]["port"] = connectionPort;
 
-        return sendData;
+            return sendData;
+        }
     }
 }

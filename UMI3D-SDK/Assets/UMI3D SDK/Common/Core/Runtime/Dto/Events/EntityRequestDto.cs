@@ -16,7 +16,10 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.common;
 
-public class EntityRequestDto : UMI3DDto
+namespace umi3d.common
 {
-    public List<ulong> entitiesId;
+    public class EntityRequestDto : UMI3DDto
+    {
+        public List<ulong> entitiesId;
+    }
 }

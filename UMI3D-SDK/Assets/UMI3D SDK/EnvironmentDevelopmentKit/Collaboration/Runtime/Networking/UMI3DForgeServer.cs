@@ -17,6 +17,7 @@ using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.SimpleJSON;
 using System;
 using System.Collections.Generic;
+using umi3d.cdk.collaboration;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.interaction;
