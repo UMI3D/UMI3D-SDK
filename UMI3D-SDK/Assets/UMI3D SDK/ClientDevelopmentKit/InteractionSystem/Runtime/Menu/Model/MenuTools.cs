@@ -28,7 +28,7 @@ namespace umi3d.cdk.menu
         [ContextMenu("Add Bool input")]
         public void AddInputItem()
         {
-            BooleanInputMenuItem menuItem = new BooleanInputMenuItem()
+            var menuItem = new BooleanInputMenuItem()
             {
                 Name = "My Bool Input"
             };
@@ -59,13 +59,13 @@ namespace umi3d.cdk.menu
                 if (child.childCount == 0)
                 {
                     Debug.Log("add item");
-                    umi3d.cdk.menu.MenuItem menuItem = new umi3d.cdk.menu.MenuItem();
+                    var menuItem = new umi3d.cdk.menu.MenuItem();
                     menuItem.Name = child.gameObject.name;
                     menu_.Add(menuItem);
                 }
                 else
                 {
-                    umi3d.cdk.menu.Menu submenu = new umi3d.cdk.menu.Menu();
+                    var submenu = new umi3d.cdk.menu.Menu();
                     submenu.Name = child.gameObject.name;
                     menu_.Add(submenu);
                     ToMenuAux(submenu, child);

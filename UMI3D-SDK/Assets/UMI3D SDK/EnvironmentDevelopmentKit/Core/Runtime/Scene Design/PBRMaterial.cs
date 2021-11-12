@@ -204,7 +204,7 @@ namespace umi3d.edk
 
         public static void UpdateTexture(UMI3DAsyncProperty<UMI3DTextureResource> objectTexture, UMI3DTextureResource newTexture)
         {
-            Transaction transaction = new Transaction();
+            var transaction = new Transaction();
             Operation op = objectTexture.SetValue(newTexture);
             transaction.AddIfNotNull(op);
             if (transaction.Count() > 0)

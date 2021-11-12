@@ -50,7 +50,7 @@ namespace umi3d.cdk
 
                      if (nodeDto.xBillboard || nodeDto.yBillboard)
                      {
-                         var b = node.AddComponent<Billboard>();
+                         Billboard b = node.AddComponent<Billboard>();
                          b.X = nodeDto.xBillboard;
                          b.Y = nodeDto.yBillboard;
                          node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
@@ -72,12 +72,14 @@ namespace umi3d.cdk
 
                      finished?.Invoke();
                  }
-                 else failed?.Invoke(new Umi3dException(0, "nodeDto should not be null"));
+                 else
+                 {
+                     failed?.Invoke(new Umi3dException(0, "nodeDto should not be null"));
+                 }
              }, failed);
         }
 
-
-        void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
+        private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(skinMeshEntityId, e =>
              {
@@ -88,7 +90,7 @@ namespace umi3d.cdk
              });
         }
 
-        IEnumerator BindSkinnedMeshBone(UMI3DNodeInstance nodeInstance, int boneId, Transform node, float maxDelay)
+        private IEnumerator BindSkinnedMeshBone(UMI3DNodeInstance nodeInstance, int boneId, Transform node, float maxDelay)
         {
             SkinnedMeshRenderer skmr = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
             while (skmr == null)
@@ -101,22 +103,20 @@ namespace umi3d.cdk
             }
 
             skmr.updateWhenOffscreen = true;
-            var tab = skmr.bones;
+            Transform[] tab = skmr.bones;
             tab[boneId] = node;
             skmr.bones = tab;
         }
 
-
-
-        IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
+        private IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
         {
-            var lg = node.GetOrAddComponent<LODGroup>();
+            LODGroup lg = node.GetOrAddComponent<LODGroup>();
             var ls = new List<LOD>();
-            foreach (var lod in dto.lods)
+            foreach (UMI3DLodDefinitionDto lod in dto.lods)
             {
                 var rend = new List<Renderer>();
 
-                foreach (var id in lod.nodes)
+                foreach (ulong id in lod.nodes)
                 {
                     UMI3DNodeInstance n = null;
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, e =>
@@ -125,7 +125,7 @@ namespace umi3d.cdk
                     });
                     while (n == null)
                         yield return null;
-                    var r = n.gameObject.GetComponentInChildren<Renderer>();
+                    Renderer r = n.gameObject.GetComponentInChildren<Renderer>();
                     if (r != null)
                         rend.Add(r);
                 }
@@ -150,7 +150,7 @@ namespace umi3d.cdk
 
             if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation || property.property == UMI3DPropertyKeys.Scale))
             {
-                GlTFNodeDto gltfDto = (node.dto as GlTFNodeDto);
+                var gltfDto = (node.dto as GlTFNodeDto);
                 if (gltfDto == null) return false;
                 switch (property.property)
                 {
@@ -171,7 +171,7 @@ namespace umi3d.cdk
 
             if (base.SetUMI3DProperty(entity, property)) return true;
 
-            UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -375,7 +375,7 @@ namespace umi3d.cdk
 
             if (!node.updatePose && (propertyKey == UMI3DPropertyKeys.Position || propertyKey == UMI3DPropertyKeys.Rotation || propertyKey == UMI3DPropertyKeys.Scale))
             {
-                GlTFNodeDto gltfDto = (node.dto as GlTFNodeDto);
+                var gltfDto = (node.dto as GlTFNodeDto);
                 if (gltfDto == null) return false;
                 switch (propertyKey)
                 {
@@ -396,7 +396,7 @@ namespace umi3d.cdk
 
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
 
-            UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -606,6 +606,7 @@ namespace umi3d.cdk
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     id,
                     fileToLoad,
@@ -618,14 +619,17 @@ namespace umi3d.cdk
                     Debug.LogWarning,
                     loader.DeleteObject
                     );
+            }
         }
 
         private void CallbackAfterLoadingCollider(GameObject modelCollider, MeshCollider collider)
         {
             collider.convex = false;
-            var mesh = modelCollider.GetComponentInChildren<MeshFilter>();
+            MeshFilter mesh = modelCollider.GetComponentInChildren<MeshFilter>();
             if (mesh != null)
+            {
                 collider.sharedMesh = mesh.sharedMesh;
+            }
             else
             {
                 Debug.LogError("Collider not found");
@@ -676,7 +680,9 @@ namespace umi3d.cdk
                                     Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
                             }
                             else
+                            {
                                 Debug.LogWarning("the mesh has been marked as non-accessible. Collider is not registered");
+                            }
                         }
                         catch (Exception e)
                         {

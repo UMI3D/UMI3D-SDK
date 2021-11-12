@@ -18,7 +18,7 @@ namespace umi3d
 {
     static public class UMI3DVersion
     {
-        public static string version { get { return major + "." + minor + "." + status + "." + date; } }
+        public static string version => major + "." + minor + "." + status + "." + date;
         public readonly static string major = "2";
         public readonly static string minor = "3";
         public readonly static string status = "b";

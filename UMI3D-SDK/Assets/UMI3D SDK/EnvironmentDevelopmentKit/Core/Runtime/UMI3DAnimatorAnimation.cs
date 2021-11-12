@@ -23,9 +23,9 @@ namespace umi3d.edk
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
         [SerializeField, EditorReadOnly]
-        UMI3DNode node = null;
+        private UMI3DNode node = null;
         [SerializeField, EditorReadOnly]
-        string stateName = "";
+        private string stateName = "";
 
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
         private UMI3DAsyncProperty<string> _objectStateName;

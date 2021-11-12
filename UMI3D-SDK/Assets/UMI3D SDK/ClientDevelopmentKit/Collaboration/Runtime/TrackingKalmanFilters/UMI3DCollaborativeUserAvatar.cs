@@ -25,10 +25,9 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborativeUserAvatar : UserAvatar
     {
-        Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
-        GameObject skeleton;
-
-        bool isProcessing = false;
+        private Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
+        private GameObject skeleton;
+        private bool isProcessing = false;
 
         private void Update()
         {
@@ -69,7 +68,7 @@ namespace umi3d.cdk.collaboration
         {
             if (id != UMI3DClientServer.Instance.GetId())
             {
-                UMI3DCollaborativeUserAvatar ua = UMI3DClientUserTracking.Instance.embodimentDict[id] as UMI3DCollaborativeUserAvatar;
+                var ua = UMI3DClientUserTracking.Instance.embodimentDict[id] as UMI3DCollaborativeUserAvatar;
                 ua.skeleton = Instantiate((UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking).UnitSkeleton, ua.transform);
                 ua.skeleton.transform.localScale = ua.userSize;
             }
@@ -79,11 +78,11 @@ namespace umi3d.cdk.collaboration
         /// Filtering a boneDto position
         /// </summary>
         /// <param name="dto"></param>
-        void BoneKalmanUpdate(BoneDto dto)
+        private void BoneKalmanUpdate(BoneDto dto)
         {
             KalmanRotation boneRotationKalman = boneRotationFilters[dto.boneType];
 
-            Quaternion quaternionMeasurment = new Quaternion(dto.rotation.X, dto.rotation.Y, dto.rotation.Z, dto.rotation.W);
+            var quaternionMeasurment = new Quaternion(dto.rotation.X, dto.rotation.Y, dto.rotation.Z, dto.rotation.W);
 
             Vector3 targetForward = quaternionMeasurment * Vector3.forward;
             Vector3 targetUp = quaternionMeasurment * Vector3.up;
@@ -162,11 +161,13 @@ namespace umi3d.cdk.collaboration
                                     boundRigs.Add(obj);
                             }
                             else
+                            {
                                 obj = node.transform;
+                            }
 
                             if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
                             {
-                                SavedTransform savedTransform = new SavedTransform
+                                var savedTransform = new SavedTransform
                                 {
                                     obj = obj,
                                     savedParent = obj.parent,

@@ -123,7 +123,10 @@ namespace umi3d.edk.interaction
                             */
                     }
                     else
+                    {
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                    }
+
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
@@ -138,11 +141,11 @@ namespace umi3d.edk.interaction
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
 
-                    var parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (UMI3DParameterKeys.StringUploadFile == parameterId)
                     {
                         value = UMI3DNetworkingHelper.Read<string>(container);
-                        var exts = UMI3DNetworkingHelper.ReadList<string>(container);
+                        List<string> exts = UMI3DNetworkingHelper.ReadList<string>(container);
                         string fileId = UMI3DNetworkingHelper.Read<string>(container);
                         //authorizedExtensions = UMI3DNetworkingHelper.ReadList<string>(container);
                         //UnityEngine.Debug.Log(value);
@@ -175,7 +178,10 @@ namespace umi3d.edk.interaction
 
                     }
                     else
+                    {
                         throw new System.Exception($"parameter of type {parameterId}");
+                    }
+
                     break;
                 default:
                     throw new System.Exception($"User interaction not supported {operationId} ");
@@ -185,7 +191,7 @@ namespace umi3d.edk.interaction
         protected virtual void OnChange(ParameterEventContent<(string, string)> responseContainer)
         {
             //RequestHttpUploadDto httpDto = new RequestHttpUploadDto();
-            UploadFileRequest request = new UploadFileRequest(true, responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
+            var request = new UploadFileRequest(true, responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
             uploadTokens.Add(request.token, this);
 
 

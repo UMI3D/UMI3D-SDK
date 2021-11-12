@@ -24,8 +24,8 @@ namespace umi3d.edk
 
         public new TextureDto ToDto()
         {
-            TextureDto res = new TextureDto();
-            var resource = base.ToDto();
+            var res = new TextureDto();
+            ResourceDto resource = base.ToDto();
             res.variants = resource.variants;
             res.animationId = animationId;
             res.audioSourceId = audioSourceId;
@@ -47,7 +47,7 @@ namespace umi3d.edk
 
         public new ScalableTextureDto ToDto()
         {
-            var textureDto = base.ToDto();
+            TextureDto textureDto = base.ToDto();
             return new ScalableTextureDto()
             {
                 animationId = textureDto.animationId,

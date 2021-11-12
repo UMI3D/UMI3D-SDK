@@ -32,7 +32,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
-        public static new UMI3DCollaborationClientServer Instance { get { return UMI3DClientServer.Instance as UMI3DCollaborationClientServer; } set { UMI3DClientServer.Instance = value; } }
+        public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
 
         public static bool useDto { protected set; get; } = false;
 
@@ -55,7 +55,7 @@ namespace umi3d.cdk.collaboration
 
             public void Set(UserConnectionDto dto)
             {
-                var param = this.dto.parameters;
+                FormAnswerDto param = this.dto.parameters;
                 this.dto = new UserConnectionAnswerDto(dto);
                 this.dto.parameters = param;
                 this.formdto = dto.parameters;
@@ -68,9 +68,7 @@ namespace umi3d.cdk.collaboration
         public UnityEvent OnConnectionLost = new UnityEvent();
 
         public ClientIdentifierApi Identifier;
-
-
-        static bool connected = false;
+        private static bool connected = false;
 
 
         private void Start()
@@ -134,9 +132,11 @@ namespace umi3d.cdk.collaboration
             if (Exists)
                 Instance._Logout(success, failled);
         }
-        void _Logout(Action success, Action<string> failled)
+
+        private void _Logout(Action success, Action<string> failled)
         {
             if (Connected())
+            {
                 HttpClient.SendPostLogout(() =>
                 {
                     ForgeClient.Stop();
@@ -145,8 +145,11 @@ namespace umi3d.cdk.collaboration
                     Identity = new IdentityDto();
                 },
                 (error) => { failled.Invoke(error); Identity = new IdentityDto(); });
+            }
             else
+            {
                 Identity = new IdentityDto();
+            }
         }
 
 
@@ -176,15 +179,14 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
+        private double maxMillisecondToWait = 10000;
 
-
-        double maxMillisecondToWait = 10000;
         /// <summary>
         /// launch a new request
         /// </summary>
         /// <param name="argument">argument used in the request</param>
         /// <returns></returns>
-        IEnumerator TryAgain(RequestFailedArgument argument)
+        private IEnumerator TryAgain(RequestFailedArgument argument)
         {
             bool newToken = argument.GetRespondCode() == 401 && (lastTokenUpdate - argument.date).TotalMilliseconds < 0;
             if (newToken)
@@ -216,7 +218,7 @@ namespace umi3d.cdk.collaboration
             }, failback, shouldTryAgain);
         }
 
-        void _setMedia()
+        private void _setMedia()
         {
 
         }
@@ -238,6 +240,7 @@ namespace umi3d.cdk.collaboration
                     break;
                 case StatusType.READY:
                     if (Identity.userId == 0)
+                    {
                         Instance.HttpClient.SendGetIdentity((user) =>
                         {
                             UserDto.Set(user);
@@ -245,8 +248,12 @@ namespace umi3d.cdk.collaboration
                             Instance.Join();
 
                         }, (error) => { Debug.Log("error on get id :" + error); });
+                    }
                     else
+                    {
                         Instance.Join();
+                    }
+
                     break;
             }
         }
@@ -269,7 +276,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        IEnumerator OnNewTokenNextFrame()
+        private IEnumerator OnNewTokenNextFrame()
         {
             yield return new WaitForFixedUpdate();
             OnNewToken?.Invoke();
@@ -318,6 +325,7 @@ namespace umi3d.cdk.collaboration
                             break;
                         case StatusType.READY:
                             if (Identity.userId == 0)
+                            {
                                 Instance.HttpClient.SendGetIdentity((user) =>
                                 {
                                     UserDto.Set(user);
@@ -325,8 +333,12 @@ namespace umi3d.cdk.collaboration
                                     Instance.Join();
 
                                 }, (error) => { Debug.Log("error on get id :" + error); });
+                            }
                             else
+                            {
                                 Instance.Join();
+                            }
+
                             break;
                     }
                     break;
@@ -336,13 +348,14 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        bool joinning;
-        void Join()
+        private bool joinning;
+
+        private void Join()
         {
             if (joinning || connected) return;
             joinning = true;
 
-            JoinDto joinDto = new JoinDto()
+            var joinDto = new JoinDto()
             {
                 trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<uint, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(x => x.Key, x => x.Value),
                 userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
@@ -359,7 +372,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        IEnumerator UpdateIdentity(UserConnectionDto user)
+        private IEnumerator UpdateIdentity(UserConnectionDto user)
         {
             UserDto.Set(user);
             Identity.userId = user.id;
@@ -380,6 +393,7 @@ namespace umi3d.cdk.collaboration
                                     Ok = false;
                                 }
                                 else
+                                {
                                     UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
                                         Media.name,
                                         () =>
@@ -388,6 +402,7 @@ namespace umi3d.cdk.collaboration
                                         },
                                         (error) => { Ok = false; Debug.Log("error on download Libraries :" + error); }
                                         );
+                                }
                             });
                     },
                     (error) => { Ok = false; Debug.Log("error on get Libraries: " + error); }
@@ -397,16 +412,20 @@ namespace umi3d.cdk.collaboration
                 UserDto.dto.librariesUpdated = librariesUpdated;
             }
             if (Ok)
+            {
                 Instance.Identifier.GetParameterDtos(UserDto.formdto, (param) =>
                 {
                     UserDto.dto.parameters = param;
                     Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { Debug.Log("error on post id :" + error); });
                 });
+            }
             else
+            {
                 Logout(null, null);
+            }
         }
 
-        void EnterScene(EnterDto enter)
+        private void EnterScene(EnterDto enter)
         {
             useDto = enter.usedDto;
             HttpClient.SendGetEnvironment(

@@ -83,7 +83,7 @@ namespace umi3d.edk
 
         public virtual GlTFEnvironmentDto ToDto(UMI3DUser user)
         {
-            GlTFEnvironmentDto env = new GlTFEnvironmentDto();
+            var env = new GlTFEnvironmentDto();
             env.id = UMI3DGlobalID.EnvironementId;
             env.scenes.AddRange(scenes.Where(s => s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
@@ -127,7 +127,7 @@ namespace umi3d.edk
         public LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
             List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
-            var sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
+            IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
             if (sceneLib != null)
                 libraries.AddRange(sceneLib);
             return new LibrariesDto() { libraries = libraries };
@@ -141,9 +141,9 @@ namespace umi3d.edk
 
         #region AsyncProperties
 
-        void InitDefinition()
+        private void InitDefinition()
         {
-            var id = UMI3DGlobalID.EnvironementId;
+            ulong id = UMI3DGlobalID.EnvironementId;
 
             objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, 0, defaultStartPosition);
             objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, 0, Quaternion.Euler(defaultStartOrientation));
@@ -160,46 +160,49 @@ namespace umi3d.edk
 
 
         [SerializeField, EditorReadOnly]
-        List<UMI3DResource> preloadedScenes = new List<UMI3DResource>();
+        private List<UMI3DResource> preloadedScenes = new List<UMI3DResource>();
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
         /// <summary>
         /// AsyncProperties of the ambient Type.
         /// </summary>
-        AmbientMode mode { get => RenderSettings.ambientMode; }
+        private AmbientMode mode => RenderSettings.ambientMode;
         public UMI3DAsyncProperty<AmbientMode> objectAmbientType;
 
         /// <summary>
         /// AsyncProperties of the ambient color.
         /// </summary>
-        Color skyColor { get => RenderSettings.ambientSkyColor; }
+        private Color skyColor => RenderSettings.ambientSkyColor;
         public UMI3DAsyncProperty<Color> objectSkyColor;
+
         /// <summary>
         /// AsyncProperties of the ambient color.
         /// </summary>
-        Color horizontalColor { get => RenderSettings.ambientEquatorColor; }
+        private Color horizontalColor => RenderSettings.ambientEquatorColor;
         public UMI3DAsyncProperty<Color> objectHorizonColor;
+
         /// <summary>
         /// AsyncProperties of the ambient color.
         /// </summary>
-        Color groundColor { get => RenderSettings.ambientGroundColor; }
+        private Color groundColor => RenderSettings.ambientGroundColor;
         public UMI3DAsyncProperty<Color> objectGroundColor;
+
         /// <summary>
         /// AsyncProperties of the ambient Intensity.
         /// </summary>
-        float ambientIntensity { get => RenderSettings.ambientIntensity; }
+        private float ambientIntensity => RenderSettings.ambientIntensity;
         public UMI3DAsyncProperty<float> objectAmbientIntensity;
         /// <summary>
         /// AsyncProperties of the Skybox Image
         /// </summary>
         [SerializeField, EditorReadOnly]
-        UMI3DResource skyboxImage = null;
+        private UMI3DResource skyboxImage = null;
         public UMI3DAsyncProperty<UMI3DResource> objectAmbientSkyboxImage;
         /// <summary>
         /// Properties of the default Material, it is used to initialise loaded materials in clients. 
         /// </summary>
         [SerializeField]
-        UMI3DResource defaultMaterial = null;
+        private UMI3DResource defaultMaterial = null;
 
         #endregion
 
@@ -217,7 +220,7 @@ namespace umi3d.edk
         /// <summary>
         /// Contains the objects stored in the scene.
         /// </summary>
-        DictionaryGenerator<UMI3DEntity> entities = new DictionaryGenerator<UMI3DEntity>();
+        private DictionaryGenerator<UMI3DEntity> entities = new DictionaryGenerator<UMI3DEntity>();
 
         /// <summary>
         /// Access to all entities of a given type.
@@ -275,9 +278,13 @@ namespace umi3d.edk
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
             else if (QuittingManager.ApplicationIsQuitting)
+            {
                 return 0;
+            }
             else
+            {
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+            }
         }
 
         /// <summary>
@@ -296,9 +303,13 @@ namespace umi3d.edk
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
             else if (QuittingManager.ApplicationIsQuitting)
+            {
                 return 0;
+            }
             else
+            {
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+            }
         }
 
         /// <summary>
@@ -324,9 +335,9 @@ namespace umi3d.edk
             /// <summary>
             /// Contains the  stored objects.
             /// </summary>
-            Dictionary<ulong, A> objects = new Dictionary<ulong, A>();
+            private Dictionary<ulong, A> objects = new Dictionary<ulong, A>();
 
-            public Dictionary<ulong, A>.ValueCollection Values { get { return objects.Values; } }
+            public Dictionary<ulong, A>.ValueCollection Values => objects.Values;
 
             public A this[ulong key]
             {
@@ -340,9 +351,9 @@ namespace umi3d.edk
                 }
             }
 
-            System.Random random = new System.Random();
+            private System.Random random = new System.Random();
 
-            ulong NewID()
+            private ulong NewID()
             {
                 ulong value = LongRandom(100010);
                 while (objects.ContainsKey(value)) value = LongRandom(100010);
@@ -354,7 +365,7 @@ namespace umi3d.edk
             /// </summary>
             /// <param name="min">min value for this ulong. this should be inferior to 4,294,967,295/2</param>
             /// <returns></returns>
-            ulong LongRandom(ulong min)
+            private ulong LongRandom(ulong min)
             {
                 byte[] buf = new byte[64];
                 random.NextBytes(buf);

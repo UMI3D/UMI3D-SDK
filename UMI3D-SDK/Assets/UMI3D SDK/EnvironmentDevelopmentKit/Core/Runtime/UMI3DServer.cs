@@ -46,14 +46,13 @@ namespace umi3d.edk
         public static string dataPath = "../data/";
         public static string publicDataPath = "/public";
         public static string privateDataPath = "/private";
+        private string publicDataFullPath;
+        private string privateDataFullPath;
+        private string dataFullPath;
 
-        string publicDataFullPath;
-        string privateDataFullPath;
-        string dataFullPath;
-
-        public static string publicRepository { get { return Instance == null ? null : Instance.publicDataFullPath; } }
-        public static string privateRepository { get { return Instance == null ? null : Instance.privateDataFullPath; } }
-        public static string dataRepository { get { return Instance == null ? null : Instance.dataFullPath; } }
+        public static string publicRepository => Instance == null ? null : Instance.publicDataFullPath;
+        public static string privateRepository => Instance == null ? null : Instance.privateDataFullPath;
+        public static string dataRepository => Instance == null ? null : Instance.dataFullPath;
 
         public static bool IsInDataRepository(string path)
         {

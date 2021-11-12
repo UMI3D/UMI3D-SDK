@@ -21,8 +21,7 @@ using UnityEngine;
 
 public class LaucherOnMasterServer
 {
-
-    TCPMasterClient client = null;
+    private TCPMasterClient client = null;
     /// <summary>
     /// Try to connect to master server. callback is invoked if the server accepts the connection. ip_port format is 000.000.000.000:00000
     /// if only ip is given, the default port (15940) will be used
@@ -31,15 +30,14 @@ public class LaucherOnMasterServer
     /// <param name="ip_port"></param>
     public void ConnectToMasterServer(Action callback, string ip_port)
     {
-        var tab = ip_port.Split(':');
+        string[] tab = ip_port.Split(':');
         if (tab.Length == 1)
         {
             ConnectToMasterServer(callback, tab[0], 15940); // use default port
         }
         else
         {
-            ushort port;
-            if (ushort.TryParse(tab[1], out port))
+            if (ushort.TryParse(tab[1], out ushort port))
             {
                 ConnectToMasterServer(callback, tab[0], port);
             }
@@ -87,8 +85,8 @@ public class LaucherOnMasterServer
             string gameMode = "all";
 
             // Create the get request with the desired filters
-            JSONNode sendData = JSONNode.Parse("{}");
-            JSONClass getData = new JSONClass();
+            var sendData = JSONNode.Parse("{}");
+            var getData = new JSONClass();
 
             // The id of the game to get
             getData.Add("id", gameId);
@@ -119,8 +117,8 @@ public class LaucherOnMasterServer
         try
         {
             // Create the get request with the desired filters
-            JSONNode sendData = JSONNode.Parse("{}");
-            JSONClass getData = new JSONClass();
+            var sendData = JSONNode.Parse("{}");
+            var getData = new JSONClass();
             sendData.Add("info", getData);
 
             // Send the request to the server
@@ -141,11 +139,11 @@ public class LaucherOnMasterServer
         try
         {
             // Get the list of hosts to iterate through from the frame payload
-            JSONNode data = JSONNode.Parse(frame.ToString());
+            var data = JSONNode.Parse(frame.ToString());
             if (data["hosts"] != null)
             {
                 // Create a C# object for the response from the master server
-                MasterServerResponse response = new MasterServerResponse(data["hosts"].AsArray);
+                var response = new MasterServerResponse(data["hosts"].AsArray);
 
                 if (response != null && response.serverResponse.Count > 0)
                 {
@@ -177,7 +175,7 @@ public class LaucherOnMasterServer
         try
         {
             // Get the list of hosts to iterate through from the frame payload
-            JSONNode data = JSONNode.Parse(frame.ToString());
+            var data = JSONNode.Parse(frame.ToString());
             if (data["name"] != null)
             {
                 UICallback.Invoke(data["name"], data["icon"]);

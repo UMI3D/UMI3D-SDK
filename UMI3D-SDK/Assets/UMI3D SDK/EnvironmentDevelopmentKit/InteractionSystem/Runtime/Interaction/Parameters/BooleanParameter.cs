@@ -93,7 +93,10 @@ namespace umi3d.edk.interaction
                             onChangeFalse.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     else
+                    {
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                    }
+
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
@@ -105,7 +108,7 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
-                    var parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     value = UMI3DNetworkingHelper.Read<bool>(container);
                     onChange.Invoke(new ParameterEventContent<bool>(user, toolId, interactionId, hoverredId, boneType, value));
                     if (value)

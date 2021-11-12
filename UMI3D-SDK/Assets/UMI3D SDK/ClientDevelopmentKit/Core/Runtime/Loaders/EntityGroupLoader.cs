@@ -39,9 +39,9 @@ namespace umi3d.cdk
                         UpdateEntities(entity, groupDto, property);
                         break;
                     default:
-                        foreach (var e in groupDto.entitiesId)
+                        foreach (ulong e in groupDto.entitiesId)
                         {
-                            var np = property.Copy();
+                            SetEntityPropertyDto np = property.Copy();
                             np.entityId = e;
                             UMI3DEnvironmentLoader.SetEntity(np);
                         }
@@ -63,7 +63,7 @@ namespace umi3d.cdk
                         UpdateEntities(entity, groupDto, operationId, propertyKey, container);
                         break;
                     default:
-                        foreach (var e in groupDto.entitiesId)
+                        foreach (ulong e in groupDto.entitiesId)
                         {
                             UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, container);
                         }
@@ -79,9 +79,9 @@ namespace umi3d.cdk
             return false;
         }
 
-        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
+        private static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
         {
-            var list = groupDto.entitiesId;
+            List<ulong> list = groupDto.entitiesId;
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
@@ -110,12 +110,12 @@ namespace umi3d.cdk
             }
         }
 
-        static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, ByteContainer container)
+        private static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             ulong value;
 
-            var list = groupDto.entitiesId;
+            List<ulong> list = groupDto.entitiesId;
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:

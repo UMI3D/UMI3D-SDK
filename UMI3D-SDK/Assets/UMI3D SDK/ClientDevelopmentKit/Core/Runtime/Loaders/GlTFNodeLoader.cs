@@ -59,7 +59,7 @@ namespace umi3d.cdk
             LoadedNodesCount?.Invoke(0);
             foreach (UMI3DNodeInstance node in nodes.Select(n => CreateNode(n)))
             {
-                GlTFNodeDto dto = node.dto as GlTFNodeDto;
+                var dto = node.dto as GlTFNodeDto;
 
                 // Read glTF extensions
                 count += 1;
@@ -88,9 +88,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
+        private UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
         {
-            GameObject go = new GameObject(dto.name);
+            var go = new GameObject(dto.name);
             return UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
         }
 
@@ -120,7 +120,7 @@ namespace umi3d.cdk
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            var dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (property.property)
             {
@@ -152,7 +152,7 @@ namespace umi3d.cdk
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            var dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (propertyKey)
             {

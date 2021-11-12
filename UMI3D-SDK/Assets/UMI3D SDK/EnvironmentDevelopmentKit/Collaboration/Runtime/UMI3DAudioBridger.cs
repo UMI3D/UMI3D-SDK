@@ -23,7 +23,7 @@ namespace umi3d.edk.collaboration
     public class UMI3DAudioBridger : Singleton<UMI3DAudioBridger>
     {
         [SerializeField]
-        bool _Spacialized = false;
+        private bool _Spacialized = false;
         public bool Spacialized
         {
             get => _Spacialized; set
@@ -38,7 +38,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Instance.OnUserJoin.AddListener(newUser);
         }
 
-        void newUser(UMI3DUser _user)
+        private void newUser(UMI3DUser _user)
         {
             if (_user is UMI3DCollaborationUser user)
             {
@@ -50,8 +50,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-
-        IEnumerator SetAudioSource(UMI3DCollaborationUser user)
+        private IEnumerator SetAudioSource(UMI3DCollaborationUser user)
         {
             var wait = new WaitForFixedUpdate();
             while (user.Avatar == null)
@@ -62,16 +61,16 @@ namespace umi3d.edk.collaboration
                 user.audioPlayer = user.Avatar.gameObject.AddComponent<UMI3DAudioPlayer>();
                 user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
                 user.audioPlayer.ObjectNode.SetValue(user.Avatar);
-                Transaction tr = new Transaction() { reliable = true };
+                var tr = new Transaction() { reliable = true };
                 tr.AddIfNotNull(user.audioPlayer.GetLoadEntity());
                 UMI3DServer.Dispatch(tr);
             }
             if (user.audioPlayer.ObjectNode.GetValue() == null)
             {
-                var op = user.audioPlayer.ObjectNode.SetValue(user.Avatar);
+                SetEntityProperty op = user.audioPlayer.ObjectNode.SetValue(user.Avatar);
                 if (op != null)
                 {
-                    Transaction tr = new Transaction() { reliable = true };
+                    var tr = new Transaction() { reliable = true };
                     tr.AddIfNotNull(op);
                     UMI3DServer.Dispatch(tr);
                 }
@@ -79,28 +78,28 @@ namespace umi3d.edk.collaboration
             UMI3DServer.Instance.NotifyUserChanged(user);
         }
 
-        IEnumerator SetSpacialBlend(UMI3DCollaborationUser user)
+        private IEnumerator SetSpacialBlend(UMI3DCollaborationUser user)
         {
             var wait = new WaitForFixedUpdate();
             while (user.audioPlayer == null)
                 yield return wait;
-            var op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
+            SetEntityProperty op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
             if (op != null)
             {
-                Transaction tr = new Transaction() { reliable = true };
+                var tr = new Transaction() { reliable = true };
                 tr.AddIfNotNull(op);
                 UMI3DServer.Dispatch(tr);
             }
         }
 
-        void UpdateSpacial()
+        private void UpdateSpacial()
         {
-            foreach (var user in UMI3DEnvironment.GetEntities<UMI3DCollaborationUser>())
+            foreach (UMI3DCollaborationUser user in UMI3DEnvironment.GetEntities<UMI3DCollaborationUser>())
             {
-                var op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
+                SetEntityProperty op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
                 if (op != null)
                 {
-                    Transaction tr = new Transaction() { reliable = true };
+                    var tr = new Transaction() { reliable = true };
                     tr.AddIfNotNull(op);
                     UMI3DServer.Dispatch(tr);
                 }

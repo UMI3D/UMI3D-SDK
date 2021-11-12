@@ -54,7 +54,7 @@ namespace umi3d.edk
 
         public static LoadEntity operator -(LoadEntity a, LoadEntity b)
         {
-            foreach (var i in b.entities)
+            foreach (UMI3DLoadableEntity i in b.entities)
             {
                 if (a.entities.Contains(i))
                     a.entities.Remove(i);
@@ -64,7 +64,7 @@ namespace umi3d.edk
 
         public static LoadEntity operator -(LoadEntity a, IEnumerable<UMI3DUser> b)
         {
-            foreach (var u in b)
+            foreach (UMI3DUser u in b)
             {
                 if (a.users.Contains(u)) a.users.Remove(u);
             }

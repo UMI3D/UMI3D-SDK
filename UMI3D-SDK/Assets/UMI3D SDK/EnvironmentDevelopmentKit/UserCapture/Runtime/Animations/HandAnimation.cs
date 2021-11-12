@@ -30,15 +30,15 @@ namespace umi3d.edk.userCapture
         public UMI3DHandPose HandPose;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             if (NodeAnimation != null && HandPose != null)
             {
                 HandPose.HoverAnimation = HoverPose;
 
-                List<UMI3DNodeAnimation.OperationChain> op = new List<UMI3DNodeAnimation.OperationChain>();
+                var op = new List<UMI3DNodeAnimation.OperationChain>();
 
-                SetEntityProperty operation = new SetEntityProperty()
+                var operation = new SetEntityProperty()
                 {
                     users = UMI3DServer.Instance.UserSet(),
                     entityId = HandPose.Id(),

@@ -51,24 +51,24 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to check the Equality between two T objects;
         /// </summary>
-        Func<L, L, bool> Equal;
+        private Func<L, L, bool> Equal;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T, UMI3DUser, object> SerializerT;
+        private Func<T, UMI3DUser, object> SerializerT;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<L, UMI3DUser, object> SerializerL;
+        private Func<L, UMI3DUser, object> SerializerL;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
+        private Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
 
-        static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
+        private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
         {
             if (serializerT == null && serializerL == null) return null;
             if (serializerT == null)
@@ -95,12 +95,18 @@ namespace umi3d.edk
                 _equals = equals;
             }
 
-            public bool Equals(L x, L y) => _equals(x, y);
+            public bool Equals(L x, L y)
+            {
+                return _equals(x, y);
+            }
 
-            public int GetHashCode(L obj) => obj.GetHashCode();
+            public int GetHashCode(L obj)
+            {
+                return obj.GetHashCode();
+            }
         };
 
-        static Func<Dictionary<T, L>, Dictionary<T, L>, bool> EqualToListEqual(Func<L, L, bool> equal)
+        private static Func<Dictionary<T, L>, Dictionary<T, L>, bool> EqualToListEqual(Func<L, L, bool> equal)
         {
             if (equal == null) return null;
             bool DictionnaryEqual(Dictionary<T, L> dict, Dictionary<T, L> other)
@@ -134,15 +140,9 @@ namespace umi3d.edk
             Copier = copier;
         }
 
-        public L this[T key]
-        {
-            get => GetValue()[key];
-        }
+        public L this[T key] => GetValue()[key];
 
-        public L this[T key, UMI3DUser user]
-        {
-            get => GetValue(user)[key];
-        }
+        public L this[T key, UMI3DUser user] => GetValue(user)[key];
 
         /// <summary>
         /// Get property value for a given user
@@ -163,7 +163,7 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(T key, L value, bool forceOperation = false)
         {
-            var oldValue = GetValue()[key];
+            L oldValue = GetValue()[key];
 
             if ((oldValue == null && value == null || oldValue != null && Equal(oldValue, value)) && !forceOperation)
                 return null;
@@ -204,7 +204,7 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(UMI3DUser user, T key, L value, bool forceOperation = false)
         {
-            var oldValue = GetValue(user)[key];
+            L oldValue = GetValue(user)[key];
 
             var operation = new SetEntityDictionaryProperty()
             {
@@ -219,7 +219,9 @@ namespace umi3d.edk
             if (asyncValues.ContainsKey(user))
             {
                 if ((oldValue == null && value == null || Equal(oldValue, value)) && !forceOperation)
+                {
                     return null;
+                }
                 else
                 {
                     GetValue(user)[key] = value;
@@ -310,7 +312,7 @@ namespace umi3d.edk
         public SetEntityProperty Remove(T key)
         {
             if (!GetValue().ContainsKey(key)) return null;
-            var value = GetValue()[key];
+            L value = GetValue()[key];
             if (!GetValue().Remove(key)) return null;
             if (OnInnerValueRemoved != null)
                 OnInnerValueRemoved.Invoke(key);
@@ -341,7 +343,7 @@ namespace umi3d.edk
         public SetEntityProperty Remove(UMI3DUser user, T key)
         {
             if (!GetValue(user).ContainsKey(key)) return null;
-            var value = GetValue(user)[key];
+            L value = GetValue(user)[key];
 
             var operation = new SetEntityDictionaryRemoveProperty()
             {

@@ -25,10 +25,10 @@ namespace umi3d.edk.editor
     [CustomPropertyDrawer(typeof(SerializableDateTime))]
     public class SerializableDateTimePropertyDrawer : PropertyDrawer
     {
-        const int space = 5;
-        const int nowButtonSize = 40;
-        const int twoDigitField = 20;
-        const int fourDigitField = 40;
+        private const int space = 5;
+        private const int nowButtonSize = 40;
+        private const int twoDigitField = 20;
+        private const int fourDigitField = 40;
 
         ///<inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -41,20 +41,20 @@ namespace umi3d.edk.editor
             position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
 
             // Don't make child fields be indented
-            var indent = EditorGUI.indentLevel;
+            int indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
 
             // Calculate rects
-            Rect year = new Rect(position.x, position.y, fourDigitField, position.height);
-            Rect labelRect = new Rect(position.x, position.y, twoDigitField, position.height);
-            Rect month = new Rect(year.size.x + space + year.position.x, position.y, twoDigitField, position.height);
-            Rect day = new Rect(month.size.x + space + month.position.x, position.y, twoDigitField, position.height);
+            var year = new Rect(position.x, position.y, fourDigitField, position.height);
+            var labelRect = new Rect(position.x, position.y, twoDigitField, position.height);
+            var month = new Rect(year.size.x + space + year.position.x, position.y, twoDigitField, position.height);
+            var day = new Rect(month.size.x + space + month.position.x, position.y, twoDigitField, position.height);
 
-            Rect hour = new Rect(day.size.x + space + day.position.x, position.y, twoDigitField, position.height);
-            Rect minute = new Rect(hour.size.x + space + hour.position.x, position.y, twoDigitField, position.height);
-            Rect seconde = new Rect(minute.size.x + space + minute.position.x, position.y, twoDigitField, position.height);
+            var hour = new Rect(day.size.x + space + day.position.x, position.y, twoDigitField, position.height);
+            var minute = new Rect(hour.size.x + space + hour.position.x, position.y, twoDigitField, position.height);
+            var seconde = new Rect(minute.size.x + space + minute.position.x, position.y, twoDigitField, position.height);
 
-            Rect buttonRect = new Rect(seconde.x + space + seconde.size.x, position.y, nowButtonSize, position.height);
+            var buttonRect = new Rect(seconde.x + space + seconde.size.x, position.y, nowButtonSize, position.height);
 
             // Draw fields - passs GUIContent.none to each so they are drawn without labels
             EditorGUI.PropertyField(year, property.FindPropertyRelative("year"), GUIContent.none);

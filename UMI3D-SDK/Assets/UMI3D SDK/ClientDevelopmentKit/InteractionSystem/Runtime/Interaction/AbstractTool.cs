@@ -25,34 +25,34 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Tool Id.
         /// </summary>
-        public ulong id { get { return abstractDto.id; } }
+        public ulong id => abstractDto.id;
 
         /// <summary>
         /// Toolbox name.
         /// </summary>
-        public string name { get { return abstractDto.name; } }
+        public string name => abstractDto.name;
 
         /// <summary>
         /// Toolbox description.
         /// </summary>
-        public string description { get { return abstractDto.description; } }
+        public string description => abstractDto.description;
 
         /// <summary>
         /// 2D icon.
         /// </summary>
-        public ResourceDto icon2D { get { return abstractDto.icon2D; } }
+        public ResourceDto icon2D => abstractDto.icon2D;
 
         /// <summary>
         /// 3D icon.
         /// </summary>
-        public ResourceDto icon3D { get { return abstractDto.icon3D; } }
+        public ResourceDto icon3D => abstractDto.icon3D;
 
-        public bool Active { get => abstractDto?.active ?? false; }
+        public bool Active => abstractDto?.active ?? false;
 
         /// <summary>
         /// Contained tools.
         /// </summary>
-        public List<AbstractInteractionDto> interactions { get { return abstractDto.interactions; } }
+        public List<AbstractInteractionDto> interactions => abstractDto.interactions;
 
         public UnityEvent OnUpdated = new UnityEvent();
 

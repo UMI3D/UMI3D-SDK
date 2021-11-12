@@ -90,7 +90,7 @@ namespace umi3d.edk.userCapture
         {
             if (!registered)
             {
-                UMI3DHandPoseDto poseDto = new UMI3DHandPoseDto() { };
+                var poseDto = new UMI3DHandPoseDto() { };
                 RegisterPose(poseDto);
             }
             return PoseId;
@@ -161,7 +161,7 @@ namespace umi3d.edk.userCapture
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

@@ -46,13 +46,18 @@ namespace umi3d.cdk
                         if (dto.playing)
                         {
                             if (dto.startTime == default)
+                            {
                                 (entity.Object as UMI3DAbstractAnimation).Start();
+                            }
                             else
                             {
                                 (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
-                        else (entity.Object as UMI3DAbstractAnimation).Stop();
+                        else
+                        {
+                            (entity.Object as UMI3DAbstractAnimation).Stop();
+                        }
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
@@ -87,13 +92,18 @@ namespace umi3d.cdk
                         if (dto.playing)
                         {
                             if (dto.startTime == default)
+                            {
                                 (entity.Object as UMI3DAbstractAnimation).Start();
+                            }
                             else
                             {
                                 (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
-                        else (entity.Object as UMI3DAbstractAnimation).Stop();
+                        else
+                        {
+                            (entity.Object as UMI3DAbstractAnimation).Stop();
+                        }
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
@@ -162,7 +172,7 @@ namespace umi3d.cdk
         /// Call start method next frame.
         /// </summary>
         /// <returns></returns>
-        IEnumerator StartNextFrame()
+        private IEnumerator StartNextFrame()
         {
             yield return new WaitForEndOfFrame();
 
@@ -175,7 +185,7 @@ namespace umi3d.cdk
         /// Call start method next frame.
         /// </summary>
         /// <returns></returns>
-        IEnumerator StartNextFrameAt(float time)
+        private IEnumerator StartNextFrameAt(float time)
         {
             yield return new WaitForEndOfFrame();
             Start(time);

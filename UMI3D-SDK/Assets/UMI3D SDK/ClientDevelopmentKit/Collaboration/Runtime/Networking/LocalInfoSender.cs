@@ -98,7 +98,7 @@ namespace umi3d.cdk.collaboration
 
                     if (sendLocalInfo && autorizations[key].read)
                     {
-                        var bytes = GetLocalInfo(key);
+                        byte[] bytes = GetLocalInfo(key);
                         if (bytes != null)
                         {
                             ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(

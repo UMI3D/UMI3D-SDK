@@ -27,7 +27,7 @@ namespace umi3d.edk
 
         public UMI3DKHRLight(ulong objectId, Light light)
         {
-            UMI3DAsyncPropertyEquality comparer = new UMI3DAsyncPropertyEquality();
+            var comparer = new UMI3DAsyncPropertyEquality();
             objectLightIntensity = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LightIntensity, light.intensity, null, comparer.FloatEquality);
             LightName = light.name;
             objectLightRange = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LightRange, light.range, null, comparer.FloatEquality);
@@ -51,7 +51,7 @@ namespace umi3d.edk
 
         public KHR_lights_punctual ToDto(UMI3DUser user)
         {
-            KHR_lights_punctual dto = new KHR_lights_punctual();
+            var dto = new KHR_lights_punctual();
             dto.intensity = objectLightIntensity.GetValue(user);
             dto.name = LightName;
             dto.range = objectLightRange.GetValue(user);

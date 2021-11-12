@@ -32,10 +32,7 @@ namespace umi3d.cdk
         /// </summary>
         public static MediaDto Media
         {
-            get
-            {
-                return Exists ? Instance.environment : null;
-            }
+            get => Exists ? Instance.environment : null;
             set
             {
                 if (Exists)

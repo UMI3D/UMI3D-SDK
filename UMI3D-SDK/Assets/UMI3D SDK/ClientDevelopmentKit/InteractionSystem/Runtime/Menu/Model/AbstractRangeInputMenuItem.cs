@@ -38,8 +38,8 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual T increment
         {
-            get { return inc; }
-            set { inc = value; }
+            get => inc;
+            set => inc = value;
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace umi3d.edk
 
 
         [SerializeField, EditorReadOnly]
-        UMI3DResource model = new UMI3DResource();
+        private UMI3DResource model = new UMI3DResource();
         public UMI3DAsyncProperty<UMI3DResource> objectModel { get { Register(); return _objectModel; } protected set => _objectModel = value; }
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
@@ -62,7 +62,7 @@ namespace umi3d.edk
             {
                 SetSubHierarchy();
 
-                var skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+                SkinnedMeshRenderer[] skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
                 {
                     for (int i = 0; i < skinnedMeshRenderer.bones.Length; i++)
@@ -120,7 +120,7 @@ namespace umi3d.edk
 
         public List<GameObject> GetSubModelGameObjectOfUMI3DModel(Transform modelRoot)
         {
-            var res = GetChildrenWhithoutOtherModel(modelRoot);
+            List<GameObject> res = GetChildrenWhithoutOtherModel(modelRoot);
             if (modelRoot.GetComponent<Renderer>() != null)
                 res.Add(modelRoot.gameObject);
             return res;
@@ -132,7 +132,7 @@ namespace umi3d.edk
             for (int i = 0; i < tr.childCount; i++)
 
             {
-                var child = tr.GetChild(i);
+                Transform child = tr.GetChild(i);
 
                 if (!child.GetComponent<UMI3DModel>())
                 {
@@ -161,7 +161,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UMI3DMeshNodeDto meshDto = dto as UMI3DMeshNodeDto;
+            var meshDto = dto as UMI3DMeshNodeDto;
             meshDto.mesh = objectModel.GetValue(user).ToDto();
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;

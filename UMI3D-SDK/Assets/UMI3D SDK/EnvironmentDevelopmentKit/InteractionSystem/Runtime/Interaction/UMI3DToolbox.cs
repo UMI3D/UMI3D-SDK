@@ -129,8 +129,10 @@ namespace umi3d.edk.interaction
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {
                 if (this != null)
-                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                {
+                    foreach (UMI3DUserFilter f in GetComponents<UMI3DUserFilter>())
                         AddConnectionFilter(f);
+                }
             });
 
             toolboxId = id;
@@ -159,7 +161,7 @@ namespace umi3d.edk.interaction
         /// <returns>an AbstractInteractionDto representing this interaction</returns>
         public ToolboxDto ToDto(UMI3DUser user)
         {
-            ToolboxDto dto = new ToolboxDto();
+            var dto = new ToolboxDto();
             dto.id = Id();
             dto.name = display.name;
             dto.description = display.description;
@@ -187,7 +189,7 @@ namespace umi3d.edk.interaction
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

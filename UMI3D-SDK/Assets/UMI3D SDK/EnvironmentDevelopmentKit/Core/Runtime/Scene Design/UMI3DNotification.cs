@@ -23,7 +23,7 @@ namespace umi3d.edk
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
 
-        ulong notificationId;
+        private ulong notificationId;
 
         public ulong Id()
         {
@@ -32,7 +32,7 @@ namespace umi3d.edk
             return notificationId;
         }
 
-        void Register()
+        private void Register()
         {
             if (notificationId == 0 && UMI3DEnvironment.Exists)
             {
@@ -57,7 +57,7 @@ namespace umi3d.edk
 
         public IEntity ToEntityDto(UMI3DUser user)
         {
-            var dto = CreateDto();
+            NotificationDto dto = CreateDto();
             WriteProperties(dto, user);
             return dto;
         }
@@ -101,7 +101,7 @@ namespace umi3d.edk
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

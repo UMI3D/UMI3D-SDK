@@ -27,9 +27,9 @@ namespace umi3d.cdk.interaction
 
         public static void ReadUMI3DExtension(ToolboxDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
-            Toolbox toolbox = new Toolbox(dto);
+            var toolbox = new Toolbox(dto);
             AbstractInteractionMapper.Instance?.CreateToolbox(toolbox);
-            foreach (var tool in dto.tools)
+            foreach (ToolDto tool in dto.tools)
             {
                 UMI3DToolLoader.ReadUMI3DExtension(tool, toolbox);
             }
@@ -125,7 +125,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetTools(ToolboxDto dto, Toolbox tool, SetEntityPropertyDto property)
+        private static bool SetTools(ToolboxDto dto, Toolbox tool, SetEntityPropertyDto property)
         {
             switch (property)
             {
@@ -149,7 +149,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetTools(ToolboxDto dto, Toolbox tool, uint operationId, uint propertyKey, ByteContainer container)
+        private static bool SetTools(ToolboxDto dto, Toolbox tool, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             ToolDto value;
@@ -181,7 +181,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetTools(ref object value, uint propertyKey, ByteContainer container)
+        private static bool SetTools(ref object value, uint propertyKey, ByteContainer container)
         {
             value = UMI3DNetworkingHelper.ReadList<ToolDto>(container);
             return true;

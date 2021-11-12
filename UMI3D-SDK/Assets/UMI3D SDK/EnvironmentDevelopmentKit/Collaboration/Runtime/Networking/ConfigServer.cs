@@ -87,9 +87,9 @@ public class ConfigServer
     /// <returns></returns>
     public static ConfigServer ReadXml(string path)
     {
-        ConfigServer res = new ConfigServer();
+        var res = new ConfigServer();
         var ser = new XmlSerializer(typeof(ConfigServer));
-        using (FileStream myFileStream = new FileStream(path, FileMode.Open))
+        using (var myFileStream = new FileStream(path, FileMode.Open))
         {
             res = (ConfigServer)ser.Deserialize(myFileStream);
         }
@@ -100,12 +100,12 @@ public class ConfigServer
     // use to generate empty xml config
     public static void WriteXml(ConfigServer conf)
     {
-        XmlSerializer ser = new XmlSerializer(typeof(ConfigServer));
+        var ser = new XmlSerializer(typeof(ConfigServer));
 
-        XmlWriterSettings settings = new XmlWriterSettings();
+        var settings = new XmlWriterSettings();
         settings.Indent = true;
         settings.NewLineOnAttributes = true;
-        XmlWriter writer = XmlWriter.Create("config.xml", settings);
+        var writer = XmlWriter.Create("config.xml", settings);
         ser.Serialize(writer, conf);
         writer.Close();
     }

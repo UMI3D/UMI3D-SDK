@@ -38,7 +38,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
-            GameObject createdObj = new GameObject();
+            var createdObj = new GameObject();
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
             ImportOptions importOptions = CreateImportOption(authorization);
@@ -75,7 +75,9 @@ namespace umi3d.cdk
                                 GameObject.Destroy(objImporter.gameObject, 1);
                             }
                             else
+                            {
                                 failed = false;
+                            }
                         };
 
                     }));

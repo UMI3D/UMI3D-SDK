@@ -24,8 +24,8 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class SubModelNodeEditor : RenderedNodeEditor
     {
-        SerializedProperty isPartOfNavmesh;
-        SerializedProperty isTraversable;
+        private SerializedProperty isPartOfNavmesh;
+        private SerializedProperty isTraversable;
 
 
         protected override void OnEnable()

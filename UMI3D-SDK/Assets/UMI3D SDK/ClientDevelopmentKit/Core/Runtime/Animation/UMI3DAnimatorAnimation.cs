@@ -26,7 +26,7 @@ namespace umi3d.cdk
         new public static UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
         protected new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; set => base.dto = value; }
 
-        bool started = false;
+        private bool started = false;
 
         public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
         {
@@ -63,18 +63,18 @@ namespace umi3d.cdk
             base.OnEnd();
         }
 
-        bool LaunchAnimation(float waitFor)
+        private bool LaunchAnimation(float waitFor)
         {
             return dto.playing && GetProgress() >= waitFor;
         }
 
-        IEnumerator WaitForProgress(float waitFor, Action action)
+        private IEnumerator WaitForProgress(float waitFor, Action action)
         {
             yield return new WaitUntil(() => LaunchAnimation(waitFor));
             action.Invoke();
         }
 
-        IEnumerator Playing(Action action)
+        private IEnumerator Playing(Action action)
         {
             yield return null;
             action.Invoke();

@@ -30,7 +30,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
         {
-            UMI3DOriginalMaterialDto originalMat = dto.extensions.umi3d as UMI3DOriginalMaterialDto;
+            var originalMat = dto.extensions.umi3d as UMI3DOriginalMaterialDto;
 
             if (originalMat != null)
             {

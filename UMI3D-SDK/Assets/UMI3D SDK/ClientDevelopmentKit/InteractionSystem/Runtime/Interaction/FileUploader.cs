@@ -105,7 +105,7 @@ namespace umi3d.cdk.interaction
                     if (fileId != null)
                     {
 
-                        UploadFileRequestDto req = new UploadFileRequestDto()
+                        var req = new UploadFileRequestDto()
                         {
                             parameter = param,
                             fileId = fileId,

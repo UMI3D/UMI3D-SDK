@@ -74,7 +74,7 @@ namespace umi3d.cdk.menu
                     sub.Invoke(newValue.write);
                 }
             }
-            foreach (var sub in subscribers)
+            foreach (UnityAction<LocalInfoRequestParameterValue> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }

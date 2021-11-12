@@ -75,7 +75,7 @@ namespace umi3d.edk
         }
         public static SetEntityProperty operator -(SetEntityProperty a, IEnumerable<UMI3DUser> b)
         {
-            foreach (var u in b)
+            foreach (UMI3DUser u in b)
             {
                 if (a.users.Contains(u)) a.users.Remove(u);
             }

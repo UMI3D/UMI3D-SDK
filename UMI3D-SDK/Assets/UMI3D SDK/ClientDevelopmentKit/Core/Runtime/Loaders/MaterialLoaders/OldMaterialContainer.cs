@@ -29,7 +29,7 @@ namespace umi3d.cdk
                 }
                 return _oldMats;
             }
-            set { _oldMats = value; }
+            set => _oldMats = value;
         }
 
         /// <summary>

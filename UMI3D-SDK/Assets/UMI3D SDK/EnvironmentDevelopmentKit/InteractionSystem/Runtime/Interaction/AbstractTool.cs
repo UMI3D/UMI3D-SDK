@@ -37,13 +37,15 @@ namespace umi3d.edk.interaction
         [SerializeField, EditorReadOnly]
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
         public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
-        UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
+
+        private UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
 
         [SerializeField, EditorReadOnly]
         public bool Active = true;
 
         public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
-        UMI3DAsyncProperty<bool> _objectActive;
+
+        private UMI3DAsyncProperty<bool> _objectActive;
 
         /// <summary>
         /// The tool's unique id. 
@@ -96,8 +98,10 @@ namespace umi3d.edk.interaction
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {
                 if (this != null)
-                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                {
+                    foreach (UMI3DUserFilter f in GetComponents<UMI3DUserFilter>())
                         AddConnectionFilter(f);
+                }
             });
 
             toolId = id;
@@ -252,13 +256,13 @@ namespace umi3d.edk.interaction
         /// <returns>an AbstractInteractionDto representing this interaction</returns>
         public virtual AbstractToolDto ToDto(UMI3DUser user)
         {
-            var dto = CreateDto();
+            AbstractToolDto dto = CreateDto();
             WriteProperties(dto, user);
             return dto;
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

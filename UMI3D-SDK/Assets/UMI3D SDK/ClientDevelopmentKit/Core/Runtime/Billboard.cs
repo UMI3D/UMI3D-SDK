@@ -28,17 +28,17 @@ namespace umi3d.cdk
         public bool Y;
         public GlTFNodeDto glTFNodeDto;
 
-        void Start()
+        private void Start()
         {
             ComputeOrientation();
         }
 
-        void LateUpdate()
+        private void LateUpdate()
         {
             ComputeOrientation();
         }
 
-        void ComputeOrientation()
+        private void ComputeOrientation()
         {
             Vector3 pos = (Camera.main.transform.position - transform.position);
 

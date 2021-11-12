@@ -44,13 +44,17 @@ namespace umi3d.cdk
             {
 
                 if (nodeDto.pid != 0)
+                {
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
                     {
                         if (e is UMI3DNodeInstance instance)
                             node.transform.SetParent(instance.transform, false);
                     });
+                }
                 else
+                {
                     node.transform.SetParent(UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
+                }
 
                 if (node.activeSelf != nodeDto.active)
                     node.SetActive(nodeDto.active);
@@ -61,7 +65,9 @@ namespace umi3d.cdk
 
             }
             else
+            {
                 finished?.Invoke();
+            }
         }
 
         /// <summary>
@@ -74,7 +80,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            UMI3DAbstractNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) return false;
             switch (property.property)
@@ -130,7 +136,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            UMI3DAbstractNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) return false;
             switch (propertyKey)

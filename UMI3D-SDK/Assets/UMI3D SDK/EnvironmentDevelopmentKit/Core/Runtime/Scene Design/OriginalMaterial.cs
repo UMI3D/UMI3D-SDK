@@ -56,7 +56,7 @@ namespace umi3d.edk
         {
             if (!registered)
             {
-                UMI3DOriginalMaterialDto matDto = new UMI3DOriginalMaterialDto();
+                var matDto = new UMI3DOriginalMaterialDto();
                 RegisterMaterial(matDto);
             }
             return matId;

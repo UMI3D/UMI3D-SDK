@@ -54,7 +54,7 @@ namespace umi3d.edk.interaction
 
         static public void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
-            var toolId = UMI3DNetworkingHelper.Read<ulong>(container);
+            ulong toolId = UMI3DNetworkingHelper.Read<ulong>(container);
             ulong interactionId, hoverredId;
             uint bonetype;
             switch (operationKey)

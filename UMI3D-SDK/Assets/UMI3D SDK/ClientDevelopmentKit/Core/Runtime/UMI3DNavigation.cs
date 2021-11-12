@@ -27,7 +27,7 @@ namespace umi3d.cdk
         public List<AbstractNavigation> navigations;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             currentNav = navigations.FirstOrDefault();
             currentNav.Activate();
@@ -40,6 +40,7 @@ namespace umi3d.cdk
         static public IEnumerator Navigate(NavigateDto dto)
         {
             if (Exists && Instance.currentNav != null)
+            {
                 switch (dto)
                 {
                     case TeleportDto teleportDto:
@@ -49,6 +50,8 @@ namespace umi3d.cdk
                         Instance.currentNav.Navigate(dto);
                         break;
                 }
+            }
+
             yield break;
         }
     }

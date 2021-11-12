@@ -65,7 +65,7 @@ namespace umi3d.edk.userCapture
             ScriptableObject.Destroy(ScriptableHand);
         }
 
-        void SetHandDictionary()
+        private void SetHandDictionary()
         {
             ScriptableHand.Add(nameof(BoneType.LeftThumbProximal), new SpatialDataInfo(new Vector3(-0.03788809f, -0.02166997f, 0.03003088f), Vector3.zero));
             ScriptableHand.Add(nameof(BoneType.LeftThumbIntermediate), new SpatialDataInfo(new Vector3(-3.675443f, -2.122008f, 2.122012f), Vector3.zero));
@@ -217,10 +217,12 @@ namespace umi3d.edk.userCapture
                 }
 
                 if (HandPose.PhalanxRotations.Count > 0)
+                {
                     foreach (UMI3DHandPose.PhalanxRotation pr in HandPose.PhalanxRotations)
                     {
                         ScriptableHand.SetRotation(pr.Phalanx, pr.PhalanxEulerRotation);
                     }
+                }
                 else
                 {
                     ScriptableHand.PhalangesData.Clear();

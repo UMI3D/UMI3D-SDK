@@ -61,7 +61,7 @@ namespace umi3d.edk.userCapture
                 + UMI3DNetworkingHelper.Write(Phalanxes);
         }
 
-        void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             // Draw a yellow sphere at the transform's position
             Gizmos.color = Color.blue;
