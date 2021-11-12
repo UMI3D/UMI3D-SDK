@@ -147,7 +147,7 @@ namespace umi3d.cdk
         {
             if (m == 0)
             {
-                var mNum = measurements.Length;
+                int mNum = measurements.Length;
                 if (mNum > 0)
                 {
                     m = mNum;
@@ -156,7 +156,7 @@ namespace umi3d.cdk
                 }
             }
 
-            var z = Matrix.Build.Dense(m, 1, 0);
+            Matrix<double> z = Matrix.Build.Dense(m, 1, 0);
             z.SetColumn(0, measurements);
 
             //sigma points around x

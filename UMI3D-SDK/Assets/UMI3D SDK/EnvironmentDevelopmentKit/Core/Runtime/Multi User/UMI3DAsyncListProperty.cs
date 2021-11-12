@@ -52,19 +52,19 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to check the Equality between two T objects;
         /// </summary>
-        Func<T, T, bool> Equal;
+        private Func<T, T, bool> Equal;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T, UMI3DUser, object> Serializer;
+        private Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<List<T>, List<T>> Copier;
+        private Func<List<T>, List<T>> Copier;
 
-        static Func<List<T>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializer)
+        private static Func<List<T>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializer)
         {
             if (serializer == null) return null;
             object ListSerializer(List<T> list, UMI3DUser u)
@@ -83,12 +83,18 @@ namespace umi3d.edk
                 _equals = equals;
             }
 
-            public bool Equals(T x, T y) => _equals(x, y);
+            public bool Equals(T x, T y)
+            {
+                return _equals(x, y);
+            }
 
-            public int GetHashCode(T obj) => obj.GetHashCode();
+            public int GetHashCode(T obj)
+            {
+                return obj.GetHashCode();
+            }
         };
 
-        static Func<List<T>, List<T>, bool> EqualToListEqual(Func<T, T, bool> equal)
+        private static Func<List<T>, List<T>, bool> EqualToListEqual(Func<T, T, bool> equal)
         {
             if (equal == null) return null;
             bool ListEqual(List<T> list, List<T> other)
@@ -117,15 +123,9 @@ namespace umi3d.edk
             Copier = copier;
         }
 
-        public T this[int index]
-        {
-            get => GetValue()[index];
-        }
+        public T this[int index] => GetValue()[index];
 
-        public T this[int index, UMI3DUser user]
-        {
-            get => GetValue(user)[index];
-        }
+        public T this[int index, UMI3DUser user] => GetValue(user)[index];
 
         /// <summary>
         /// Get property value for a given user
@@ -146,7 +146,7 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(int index, T value, bool forceOperation = false)
         {
-            var oldValue = GetValue()[index];
+            T oldValue = GetValue()[index];
 
             if ((oldValue == null && value == null || oldValue != null && Equal(oldValue, value)) && !forceOperation)
                 return null;
@@ -187,7 +187,7 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(UMI3DUser user, int index, T value, bool forceOperation = false)
         {
-            var oldValue = GetValue(user)[index];
+            T oldValue = GetValue(user)[index];
 
             var operation = new SetEntityListProperty()
             {
@@ -202,7 +202,9 @@ namespace umi3d.edk
             if (asyncValues.ContainsKey(user))
             {
                 if ((oldValue == null && value == null || Equal(oldValue, value)) && !forceOperation)
+                {
                     return null;
+                }
                 else
                 {
                     GetValue(user)[index] = value;
@@ -230,7 +232,7 @@ namespace umi3d.edk
 
         public SetEntityProperty Add(T value)
         {
-            var index = GetValue().Count;
+            int index = GetValue().Count;
             GetValue().Add(value);
 
             OnInnerValueAdded?.Invoke(index, value);
@@ -260,7 +262,7 @@ namespace umi3d.edk
 
         public SetEntityProperty Add(UMI3DUser user, T value)
         {
-            var index = GetValue(user).Count;
+            int index = GetValue(user).Count;
 
 
             var operation = new SetEntityListAddProperty()

@@ -1,9 +1,10 @@
 var classumi3d_1_1edk_1_1_p_b_r_material =
 [
-    [ "GetId", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a4bbf79780afeda21e13e6672b2b05211", null ],
-    [ "InitDefinition", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a447e35c8987220193f74f8822ebc38b1", null ],
+    [ "GetId", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a33a20c1ce20620ab58a5b96d0ca0d23b", null ],
+    [ "InitDefinition", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a9ad803792f9634a1a4562e26a537aa5f", null ],
     [ "OnEnable", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a81e29e864174468a562767661070d6c2", null ],
-    [ "SetId", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a7ffb4720ae86db8a3c010e231dd2b526", null ],
+    [ "SetId", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a969467a18c440e30005d21c381245ff5", null ],
+    [ "ToBytes", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a94942343409296bf8377d7dbaaf8d596", null ],
     [ "ToDto", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a7c356270b8915045cbedc80842b4e3d7", null ],
     [ "ToEntityDto", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#ae8382dd1945642d52480329dbba4ab9a", null ],
     [ "baseColorFactor", "de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a24db3fb052297a73dbd91c91baac41da", null ],

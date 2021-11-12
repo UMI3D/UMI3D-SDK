@@ -59,12 +59,12 @@ namespace umi3d.cdk
             LoadedNodesCount?.Invoke(0);
             foreach (UMI3DNodeInstance node in nodes.Select(n => CreateNode(n)))
             {
-                GlTFNodeDto dto = node.dto as GlTFNodeDto;
+                var dto = node.dto as GlTFNodeDto;
 
                 // Read glTF extensions
                 count += 1;
                 UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
-                    () => { count -= 1; LoadedNodesCount?.Invoke(total - count); }, 
+                    () => { count -= 1; LoadedNodesCount?.Invoke(total - count); },
                     (s) => { count -= 1; Debug.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}"); });
                 ReadLightingExtensions(dto, node.gameObject);
 
@@ -88,9 +88,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
+        private UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
         {
-            GameObject go = new GameObject(dto.name);
+            var go = new GameObject(dto.name);
             return UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
         }
 
@@ -114,13 +114,13 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns>state if the property was handled</returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, property))
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            var dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (property.property)
             {
@@ -146,13 +146,13 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns>state if the property was handled</returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey, container))
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            var dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -171,7 +171,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey, container))
                 return true;

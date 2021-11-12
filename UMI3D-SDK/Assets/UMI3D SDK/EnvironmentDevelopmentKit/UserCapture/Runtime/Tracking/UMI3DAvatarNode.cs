@@ -29,7 +29,7 @@ namespace umi3d.edk.userCapture
         public ulong userId;
 
         [SerializeField, EditorReadOnly]
-        bool activeAvatarBindings_ = true;
+        private bool activeAvatarBindings_ = true;
 
         public Dictionary<uint, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<uint, UMI3DUserEmbodimentBone>();
 
@@ -69,14 +69,14 @@ namespace umi3d.edk.userCapture
         {
             List<BoneDto> newBoneList = dto.bones;
 
-            List<UMI3DUserEmbodimentBone> oldBoneList = new List<UMI3DUserEmbodimentBone>();
+            var oldBoneList = new List<UMI3DUserEmbodimentBone>();
 
             foreach (KeyValuePair<uint, UMI3DUserEmbodimentBone> pair in dicoBones)
                 oldBoneList.Add(pair.Value);
 
-            List<BoneDto> bonesToCreate = new List<BoneDto>();
-            List<BoneDto> bonesToUpdate = new List<BoneDto>();
-            List<UMI3DUserEmbodimentBone> bonesToDelete = new List<UMI3DUserEmbodimentBone>();
+            var bonesToCreate = new List<BoneDto>();
+            var bonesToUpdate = new List<BoneDto>();
+            var bonesToDelete = new List<UMI3DUserEmbodimentBone>();
 
             bonesToCreate = newBoneList.FindAll(newBoneDto => !dicoBones.ContainsKey(newBoneDto.boneType));
             bonesToUpdate = newBoneList.FindAll(newBoneDto => dicoBones.ContainsKey(newBoneDto.boneType));
@@ -118,7 +118,7 @@ namespace umi3d.edk.userCapture
         {
             if (dto.boneType != BoneType.None)
             {
-                UMI3DUserEmbodimentBone embodimentBone = new UMI3DUserEmbodimentBone(userId, dto.boneType);
+                var embodimentBone = new UMI3DUserEmbodimentBone(userId, dto.boneType);
                 return embodimentBone;
             }
             return null;
@@ -147,15 +147,15 @@ namespace umi3d.edk.userCapture
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UMI3DAvatarNodeDto avatarNodeDto = dto as UMI3DAvatarNodeDto;
+            var avatarNodeDto = dto as UMI3DAvatarNodeDto;
 
             avatarNodeDto.userId = userId;
             avatarNodeDto.userSize = UMI3DEmbodimentManager.Instance.embodimentSize[userId];
             avatarNodeDto.activeBindings = activeBindings.GetValue(user);
 
-            List<BoneBindingDto> bindingDtoList = new List<BoneBindingDto>();
+            var bindingDtoList = new List<BoneBindingDto>();
 
-            foreach (var item in bindings.GetValue(user))
+            foreach (UMI3DBinding item in bindings.GetValue(user))
             {
                 bindingDtoList.Add(item.ToDto(user));
             }

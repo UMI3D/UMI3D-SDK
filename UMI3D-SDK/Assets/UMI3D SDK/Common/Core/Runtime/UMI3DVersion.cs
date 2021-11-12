@@ -16,13 +16,13 @@ limitations under the License.
 
 namespace umi3d
 {
-    static public class UMI3DVersion
+    public static class UMI3DVersion
     {
-        public static string version { get { return major + "." + minor + "." + status + "." + date; } }
-        public readonly static string major = "2";
-        public readonly static string minor = "3";
-        public readonly static string status = "b";
-        public readonly static string date = "211021";
+        public static string version => major + "." + minor + "." + status + "." + date;
+        public static readonly string major = "2";
+        public static readonly string minor = "3";
+        public static readonly string status = "r";
+        public static readonly string date = "211112";
 
     }
 }

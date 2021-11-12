@@ -25,24 +25,22 @@ namespace umi3d.edk.collaboration.editor
     [CanEditMultipleObjects]
     public class RelayDescriptionEditor : Editor
     {
-        static bool showInsideVolume = false;
-        static bool showOutsideVolume = false;
-
-        SerializedProperty insideVolumeSendData;
-        SerializedProperty insideSendingStrategy;
-        SerializedProperty insideConstantFPS;
-        SerializedProperty insideMinProximityFPS;
-        SerializedProperty insideMaxProximityFPS;
-        SerializedProperty insideStartingProximityDistance;
-        SerializedProperty insideStoppingProximityDistance;
-
-        SerializedProperty outsideVolumeSendData;
-        SerializedProperty outsideSendingStrategy;
-        SerializedProperty outsideConstantFPS;
-        SerializedProperty outsideMinProximityFPS;
-        SerializedProperty outsideMaxProximityFPS;
-        SerializedProperty outsideStartingProximityDistance;
-        SerializedProperty outsideStoppingProximityDistance;
+        private static bool showInsideVolume = false;
+        private static bool showOutsideVolume = false;
+        private SerializedProperty insideVolumeSendData;
+        private SerializedProperty insideSendingStrategy;
+        private SerializedProperty insideConstantFPS;
+        private SerializedProperty insideMinProximityFPS;
+        private SerializedProperty insideMaxProximityFPS;
+        private SerializedProperty insideStartingProximityDistance;
+        private SerializedProperty insideStoppingProximityDistance;
+        private SerializedProperty outsideVolumeSendData;
+        private SerializedProperty outsideSendingStrategy;
+        private SerializedProperty outsideConstantFPS;
+        private SerializedProperty outsideMinProximityFPS;
+        private SerializedProperty outsideMaxProximityFPS;
+        private SerializedProperty outsideStartingProximityDistance;
+        private SerializedProperty outsideStoppingProximityDistance;
 
         protected virtual void OnEnable()
         {

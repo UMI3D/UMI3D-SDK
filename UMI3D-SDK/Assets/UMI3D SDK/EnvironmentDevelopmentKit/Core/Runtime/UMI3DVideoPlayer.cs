@@ -26,9 +26,9 @@ namespace umi3d.edk
 
         public VideoPlayer video; // could be null, used to synchonize video progreess
         [SerializeField]
-        MaterialSO material;
+        private MaterialSO material;
         [SerializeField, EditorReadOnly]
-        UMI3DResource videoResources;
+        private UMI3DResource videoResources;
         public UMI3DAudioPlayer audioPlayer;
         private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
 

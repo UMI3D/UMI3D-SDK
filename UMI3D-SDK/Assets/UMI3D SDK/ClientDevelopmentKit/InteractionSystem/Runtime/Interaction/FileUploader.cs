@@ -15,13 +15,9 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using umi3d.cdk;
-using umi3d.common;
 using umi3d.common.interaction;
-using umi3d.common.collaboration;
 using UnityEngine;
 
 
@@ -30,7 +26,7 @@ namespace umi3d.cdk.interaction
     /// <summary>
     /// Class to manage uploaded files
     /// </summary>
-    public static class FileUploader 
+    public static class FileUploader
     {
         private static Dictionary<string, string> filesToUpload = new Dictionary<string, string>(); // key:fileId  value:path
 
@@ -41,7 +37,7 @@ namespace umi3d.cdk.interaction
         /// <returns>return the file in bytes.</returns>
         public static byte[] GetFileToUpload(string fileId)
         {
-            if(!filesToUpload.ContainsKey(fileId))
+            if (!filesToUpload.ContainsKey(fileId))
             {
                 Debug.LogWarning("Server asked client to upload a file without its request, or the client already upload the file");
                 return null;
@@ -54,7 +50,7 @@ namespace umi3d.cdk.interaction
             }
             else
             {
-                Debug.LogWarning("File not found : "+path+". Local file cannot be uploaded.");
+                Debug.LogWarning("File not found : " + path + ". Local file cannot be uploaded.");
                 return null;
             }
         }
@@ -66,7 +62,7 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public static string AddFileToUpload(string path)
         {
-            if(!File.Exists(path))
+            if (!File.Exists(path))
             {
                 Debug.LogWarning("Warning, this file doesn't exist in your device : " + path);
                 return null;
@@ -88,7 +84,7 @@ namespace umi3d.cdk.interaction
                 Debug.LogWarning("Server asked client to upload a file without its request, or the client already upload the file");
                 return null;
             }
-            return System.IO.Path.GetFileName( filesToUpload[fileId]);
+            return System.IO.Path.GetFileName(filesToUpload[fileId]);
         }
 
         /// <summary>
@@ -109,7 +105,8 @@ namespace umi3d.cdk.interaction
                     if (fileId != null)
                     {
 
-                        UploadFileRequestDto req = new UploadFileRequestDto() {
+                        var req = new UploadFileRequestDto()
+                        {
                             parameter = param,
                             fileId = fileId,
                             toolId = 0,
@@ -118,7 +115,7 @@ namespace umi3d.cdk.interaction
                         };
                         UMI3DClientServer.SendData(req, true);
                     }
-              
+
                 }
             }
         }

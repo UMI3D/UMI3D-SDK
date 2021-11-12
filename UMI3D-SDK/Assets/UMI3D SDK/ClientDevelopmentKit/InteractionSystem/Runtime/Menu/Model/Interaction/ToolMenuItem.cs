@@ -31,6 +31,6 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Is this displayed tool projected.
         /// </summary>
-        public bool toolSelected { get { return AbstractInteractionMapper.Instance.IsToolSelected(tool.id); } }
+        public bool toolSelected => AbstractInteractionMapper.Instance.IsToolSelected(tool.id);
     }
 }

@@ -15,9 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -26,17 +23,17 @@ namespace umi3d.edk
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
         [SerializeField, EditorReadOnly]
-        UMI3DNode node = null;
+        private UMI3DNode node = null;
         [SerializeField, EditorReadOnly]
-        string stateName = "";
-        
+        private string stateName = "";
+
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
         private UMI3DAsyncProperty<string> _objectStateName;
 
 
         public UMI3DAsyncProperty<UMI3DNode> ObjectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
         public UMI3DAsyncProperty<string> ObjectStateName { get { Register(); return _objectStateName; } protected set => _objectStateName = value; }
-        
+
         ///<inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {

@@ -15,6 +15,5 @@ var classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client =
     [ "SendVOIP", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a633405df4d2ad0eccb1e3490b99f6c4d", null ],
     [ "Stop", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a04c0abee5941dda1170b2f24b5220811", null ],
     [ "IsConnected", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a0d1e717e8099d994785707b37a554bf2", null ],
-    [ "Me", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a40fd148c0495fbfaa5d9740ec1c0dfe1", null ],
     [ "NetworkingId", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a1e19c1e15a663942116c9c1753bd58b2", null ]
 ];

@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using MainThreadDispatcher;
 using System;
-using System.Collections;
 using umi3d.common;
 using UnityEngine;
 
@@ -39,19 +37,24 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0,"dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
             if (dto != null)
             {
 
                 if (nodeDto.pid != 0)
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e => {
+                {
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
+                    {
                         if (e is UMI3DNodeInstance instance)
                             node.transform.SetParent(instance.transform, false);
                     });
+                }
                 else
+                {
                     node.transform.SetParent(UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
+                }
 
                 if (node.activeSelf != nodeDto.active)
                     node.SetActive(nodeDto.active);
@@ -62,7 +65,9 @@ namespace umi3d.cdk
 
             }
             else
+            {
                 finished?.Invoke();
+            }
         }
 
         /// <summary>
@@ -75,7 +80,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            UMI3DAbstractNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) return false;
             switch (property.property)
@@ -131,7 +136,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            UMI3DAbstractNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) return false;
             switch (propertyKey)

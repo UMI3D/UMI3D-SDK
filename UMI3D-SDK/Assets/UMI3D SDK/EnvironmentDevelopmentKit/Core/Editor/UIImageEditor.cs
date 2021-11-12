@@ -24,8 +24,7 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class UIImageEditor : UMI3DNodeEditor
     {
-
-        SerializedProperty variants;
+        private SerializedProperty variants;
 
         ///<inheritdoc/>
         protected override void OnEnable()

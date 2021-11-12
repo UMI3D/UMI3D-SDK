@@ -25,7 +25,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DHttp
     {
-        HttpServer httpsv;
+        private HttpServer httpsv;
 
         public HttpRoutingUtil rootMapGET = null;
         public HttpRoutingUtil rootMapPOST = null;
@@ -37,21 +37,21 @@ namespace umi3d.edk.collaboration
 
             // Set the document root path.
 
-            UMI3DApi root = new UMI3DApi();
-            HttpRoutingUtil rootMapGET = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpGet));
-            HttpRoutingUtil rootMapPOST = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpPost));
+            var root = new UMI3DApi();
+            var rootMapGET = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpGet));
+            var rootMapPOST = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpPost));
 
             httpsv.OnGet += (object sender, HttpRequestEventArgs e) =>
             {
                 if (!rootMapGET.TryProccessRequest(sender, e))
                 {
                     Debug.Log("get environement");
-                    var path = e.Request.RawUrl;
-                    var res = e.Response;
+                    string path = e.Request.RawUrl;
+                    WebSocketSharp.Net.HttpListenerResponse res = e.Response;
                     if (path == "/")
                         path += "index.html";
 
-                    var content = httpsv.GetFile(path);
+                    byte[] content = httpsv.GetFile(path);
                     if (content == null)
                     {
                         res.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotFound;
@@ -83,7 +83,7 @@ namespace umi3d.edk.collaboration
             if (httpsv.IsListening)
             {
                 Console.WriteLine("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
-                foreach (var path in httpsv.WebSocketServices.Paths)
+                foreach (string path in httpsv.WebSocketServices.Paths)
                     Console.WriteLine("- {0}", path);
             }
         }

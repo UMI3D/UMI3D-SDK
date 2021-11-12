@@ -28,9 +28,9 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
-        Dictionary<ulong, AudioReader> GlobalReader = new Dictionary<ulong, AudioReader>();
-        Dictionary<ulong, AudioReader> SpacialReader = new Dictionary<ulong, AudioReader>();
-        Dictionary<ulong, Coroutine> WaitCoroutine = new Dictionary<ulong, Coroutine>();
+        private Dictionary<ulong, AudioReader> GlobalReader = new Dictionary<ulong, AudioReader>();
+        private Dictionary<ulong, AudioReader> SpacialReader = new Dictionary<ulong, AudioReader>();
+        private Dictionary<ulong, Coroutine> WaitCoroutine = new Dictionary<ulong, Coroutine>();
 
         private void Start()
         {
@@ -54,12 +54,11 @@ namespace umi3d.cdk.collaboration
         }
 
 
-
         /// <summary>
         /// MAnage user update
         /// </summary>
         /// <param name="user"></param>
-        void OnUserDisconected(UMI3DUser user)
+        private void OnUserDisconected(UMI3DUser user)
         {
             if (WaitCoroutine.ContainsKey(user.id))
             {
@@ -79,7 +78,7 @@ namespace umi3d.cdk.collaboration
         /// MAnage user update
         /// </summary>
         /// <param name="user"></param>
-        void OnAudioFrequencyChanged(UMI3DUser user)
+        private void OnAudioFrequencyChanged(UMI3DUser user)
         {
             if (user.id == UMI3DCollaborationClientServer.UserDto.dto.id)
                 MicrophoneListener.UpdateFrequency(user.audioFrequency);
@@ -93,17 +92,17 @@ namespace umi3d.cdk.collaboration
         /// Manage user update
         /// </summary>
         /// <param name="user"></param>
-        void OnAudioChanged(UMI3DUser user)
+        private void OnAudioChanged(UMI3DUser user)
         {
             if (WaitCoroutine.ContainsKey(user.id))
             {
                 StopCoroutine(WaitCoroutine[user.id]);
                 WaitCoroutine.Remove(user.id);
             }
-            var audioPlayer = user.audioplayer;
+            GameObject audioPlayer = user?.audioplayer?.audioSource?.gameObject;
             if (audioPlayer != null)
             {
-                var reader = audioPlayer.audioSource.gameObject.GetOrAddComponent<AudioReader>();
+                AudioReader reader = audioPlayer.GetOrAddComponent<AudioReader>();
                 SpacialReader[user.id] = reader;
                 if (GlobalReader.ContainsKey(user.id))
                 {
@@ -114,7 +113,9 @@ namespace umi3d.cdk.collaboration
             else
             {
                 if (user.audioPlayerId != 0)
+                {
                     WaitCoroutine[user.id] = StartCoroutine(WaitForAudioCreation(user));
+                }
                 else
                 {
                     if (SpacialReader.ContainsKey(user.id))
@@ -129,9 +130,9 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        IEnumerator WaitForAudioCreation(UMI3DUser user)
+        private IEnumerator WaitForAudioCreation(UMI3DUser user)
         {
-            yield return new WaitUntil(() => user.audioplayer != null);
+            yield return new WaitUntil(() => user?.audioplayer?.audioSource?.gameObject != null);
             OnAudioChanged(user);
         }
     }

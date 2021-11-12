@@ -24,9 +24,9 @@ namespace umi3d.cdk
 {
     public class UMI3DUINodeLoader : UMI3DNodeLoader
     {
-        UMI3DUITextNodeLoader textNodeLoader = new UMI3DUITextNodeLoader();
-        UMI3DUICanvasNodeLoader canvasNodeLoader = new UMI3DUICanvasNodeLoader();
-        UMI3DUIImageNodeLoader imageNodeLoader = new UMI3DUIImageNodeLoader();
+        private UMI3DUITextNodeLoader textNodeLoader = new UMI3DUITextNodeLoader();
+        private UMI3DUICanvasNodeLoader canvasNodeLoader = new UMI3DUICanvasNodeLoader();
+        private UMI3DUIImageNodeLoader imageNodeLoader = new UMI3DUIImageNodeLoader();
 
         /// <summary>
         /// Load an UMI3D UI.
@@ -53,7 +53,7 @@ namespace umi3d.cdk
                          break;
                  }
                  RectTransform transform = node.GetOrAddComponent<RectTransform>();
-                 UIRectDto rect = dto as UIRectDto;
+                 var rect = dto as UIRectDto;
                  transform.anchoredPosition = rect.anchoredPosition;
                  transform.anchoredPosition3D = rect.anchoredPosition3D;
                  transform.anchorMax = rect.anchorMax;
@@ -77,7 +77,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            UIRectDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UIRectDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UIRectDto;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -132,10 +132,12 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.RectMask:
                     dto.rectMask = (bool)property.value;
                     if (dto.rectMask)
+                    {
                         node.gameObject.GetOrAddComponent<RectMask2D>();
+                    }
                     else
                     {
-                        var mask = node.gameObject.GetComponent<RectMask2D>();
+                        RectMask2D mask = node.gameObject.GetComponent<RectMask2D>();
                         if (mask != null)
                             GameObject.Destroy(mask);
                     }
@@ -160,7 +162,7 @@ namespace umi3d.cdk
         {
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            UIRectDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UIRectDto;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UIRectDto;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -215,10 +217,12 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.RectMask:
                     dto.rectMask = UMI3DNetworkingHelper.Read<bool>(container);
                     if (dto.rectMask)
+                    {
                         node.gameObject.GetOrAddComponent<RectMask2D>();
+                    }
                     else
                     {
-                        var mask = node.gameObject.GetComponent<RectMask2D>();
+                        RectMask2D mask = node.gameObject.GetComponent<RectMask2D>();
                         if (mask != null)
                             GameObject.Destroy(mask);
                     }

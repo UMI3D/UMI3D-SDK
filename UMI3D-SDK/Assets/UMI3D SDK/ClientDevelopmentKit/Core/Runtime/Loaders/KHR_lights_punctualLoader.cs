@@ -41,9 +41,13 @@ namespace umi3d.cdk
             light.range = ldto.range;
             light.color = ldto.color;
             if (ldto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
+            {
                 light.type = LightType.Directional;
+            }
             else if (ldto.type == KHR_lights_punctual.LightTypes.Point.ToString())
+            {
                 light.type = LightType.Point;
+            }
             else if (ldto.type == KHR_lights_punctual.LightTypes.Spot.ToString())
             {
                 light.type = LightType.Spot;
@@ -60,7 +64,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual bool SetLightPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            var dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
+            KHR_lights_punctual dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
             var node = (entity as UMI3DNodeInstance);
             Light light = node?.gameObject?.GetComponent<Light>();
             if (property.property == UMI3DPropertyKeys.Light)
@@ -85,9 +89,13 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.LightType:
                     dto.type = (string)property.value;
                     if (dto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
+                    {
                         light.type = LightType.Directional;
+                    }
                     else if (dto.type == KHR_lights_punctual.LightTypes.Point.ToString())
+                    {
                         light.type = LightType.Point;
+                    }
                     else if (dto.type == KHR_lights_punctual.LightTypes.Spot.ToString())
                     {
                         light.type = LightType.Spot;
@@ -113,12 +121,12 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual bool SetLightPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            var dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
+            KHR_lights_punctual dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
             var node = (entity as UMI3DNodeInstance);
             Light light = node?.gameObject?.GetComponent<Light>();
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
-                var lightdto = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(container);
+                KHR_lights_punctual lightdto = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(container);
                 if (light != null && lightdto == null) GameObject.Destroy(light);
                 else if (lightdto != null) CreateLight(lightdto, node.gameObject);
                 return true;
@@ -138,9 +146,13 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.LightType:
                     dto.type = UMI3DNetworkingHelper.Read<string>(container);
                     if (dto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
+                    {
                         light.type = LightType.Directional;
+                    }
                     else if (dto.type == KHR_lights_punctual.LightTypes.Point.ToString())
+                    {
                         light.type = LightType.Point;
+                    }
                     else if (dto.type == KHR_lights_punctual.LightTypes.Spot.ToString())
                     {
                         light.type = LightType.Spot;
@@ -149,7 +161,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.LightSpot:
-                    var value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
+                    KHR_lights_punctual.KHR_spot value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
                     light.innerSpotAngle = dto.spot.innerConeAngle = value.innerConeAngle;
                     light.spotAngle = dto.spot.outerConeAngle = value.outerConeAngle;
                     break;

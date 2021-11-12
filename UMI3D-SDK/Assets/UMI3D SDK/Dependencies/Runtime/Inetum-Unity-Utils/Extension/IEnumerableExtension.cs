@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -75,12 +76,14 @@ namespace inetum.unityUtils
 
 
         /// <summary>
-        /// Do an action for each element. Could be use full for debug purpose.
+        /// Do an action for each element when they are requested. 
+        /// For an instant call of the action see <see cref="ForEach{A}(IEnumerable{A}, Action{A})"/>
         /// </summary>
         /// <typeparam name="A"></typeparam>
         /// <param name="source"></param>
         /// <param name="action"></param>
-        public static IEnumerable<A> ForEach<A>(this IEnumerable<A> source, Action<A> action)
+        /// <returns></returns>
+        public static IEnumerable<A> Do<A>(this IEnumerable<A> source, Action<A> action)
         {
             if (action == null)
                 throw new Exception("action should not be null");
@@ -89,6 +92,39 @@ namespace inetum.unityUtils
                 {
                     action.Invoke(it.Current);
                     yield return it.Current;
+                }
+        }
+
+        /// <summary>
+        /// Do an action for each element. Could be use full for debug purpose.
+        /// For an IEnimerable call see <see cref="Do{A}(IEnumerable{A}, Action{A})"/>
+        /// </summary>
+        /// <typeparam name="A"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="action"></param>
+        public static void ForEach<A>(this IEnumerable<A> source, Action<A> action)
+        {
+            if (action == null)
+                throw new Exception("action should not be null");
+            using (var it = source.GetEnumerator())
+                while (it.MoveNext())
+                {
+                    action.Invoke(it.Current);
+                }
+        }
+
+        /// <summary>
+        /// Return the collection of DictionaryEntry in this IDictionary
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IEnumerable<DictionaryEntry> Entries(this IDictionary source)
+        {
+            var it = source.GetEnumerator();
+            if (it != null)
+                while (it.MoveNext())
+                {
+                    yield return (DictionaryEntry)it.Current;
                 }
         }
 

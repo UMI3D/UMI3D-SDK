@@ -32,10 +32,7 @@ namespace umi3d.cdk
         /// </summary>
         public static MediaDto Media
         {
-            get
-            {
-                return Exists ? Instance.environment : null;
-            }
+            get => Exists ? Instance.environment : null;
             set
             {
                 if (Exists)
@@ -43,7 +40,7 @@ namespace umi3d.cdk
             }
         }
 
-        static public string getAuthorization()
+        public static string getAuthorization()
         {
             if (Exists)
                 return Instance._getAuthorization();
@@ -61,7 +58,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        static public void SendData(AbstractBrowserRequestDto dto, bool reliable)
+        public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
                 Instance._Send(dto, reliable);
@@ -69,7 +66,7 @@ namespace umi3d.cdk
 
         protected virtual void _Send(AbstractBrowserRequestDto dto, bool reliable) { }
 
-        static public void SendTracking(AbstractBrowserRequestDto dto)
+        public static void SendTracking(AbstractBrowserRequestDto dto)
         {
             if (Exists)
                 Instance._SendTracking(dto);
@@ -77,7 +74,7 @@ namespace umi3d.cdk
         protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
 
-        static public void GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        public static void GetFile(string url, Action<byte[]> callback, Action<string> onError)
         {
             if (Exists)
                 Instance._GetFile(url, callback, onError);
@@ -85,7 +82,7 @@ namespace umi3d.cdk
 
         protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { onError.Invoke("GetFile Not Implemented"); }
 
-        static public void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
+        public static void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
         {
             if (Exists)
                 Instance._GetEntity(ids, callback, onError);

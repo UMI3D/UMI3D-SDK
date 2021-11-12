@@ -23,11 +23,11 @@ namespace umi3d.cdk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
-        VideoPlayer videoPlayer;
-        Material mat;
-        RenderTexture renderTexture;
+        private VideoPlayer videoPlayer;
+        private Material mat;
+        private RenderTexture renderTexture;
 
-        new public static UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
+        public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
@@ -45,7 +45,7 @@ namespace umi3d.cdk
             mat.mainTexture = renderTexture;
 
             // create unity VideoPlayer
-            GameObject videoPlayerGameObject = new GameObject("video");
+            var videoPlayerGameObject = new GameObject("video");
             videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
             videoPlayer.url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.videoResource.variants).url;
@@ -89,9 +89,12 @@ namespace umi3d.cdk
             {
                 yield return new WaitForEndOfFrame();
             }
-            ulong now = UMI3DClientServer.Instance.GetTime();
-            Start((float)(now - dto.startTime));
 
+            if (dto.playing)
+            {
+                ulong now = UMI3DClientServer.Instance.GetTime();
+                Start((float)(now - dto.startTime));
+            }
         }
 
         private IEnumerator SetFrame(long frame)

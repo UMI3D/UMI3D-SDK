@@ -22,8 +22,8 @@ namespace umi3d.common
         {
         }
 
-        public static DofType Translation { get { return new DofType("Translation"); } }
-        public static DofType Rotation { get { return new DofType("Rotation"); } }
+        public static DofType Translation => new DofType("Translation");
+        public static DofType Rotation => new DofType("Rotation");
 
         public static implicit operator DofType(string str)
         {

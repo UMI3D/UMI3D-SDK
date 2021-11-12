@@ -26,23 +26,23 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class UMI3DNodeEditor : Editor
     {
-        UMI3DNode Target;
+        private UMI3DNode Target;
+
         //protected bool hasCollider;
 
-        SerializedProperty isStatic;
-        SerializedProperty isActive;
-        SerializedProperty xBillboard, yBillboard;
-        SerializedProperty immersiveOnly;
-
-        SerializedProperty colliderType;
-        SerializedProperty convex;
-        SerializedProperty colliderCenter;
-        SerializedProperty colliderRadius;
-        SerializedProperty colliderBoxSize;
-        SerializedProperty colliderHeight;
-        SerializedProperty colliderDirection;
-        SerializedProperty customMeshCollider;
-        SerializedProperty activeCollider;
+        private SerializedProperty isStatic;
+        private SerializedProperty isActive;
+        private SerializedProperty xBillboard, yBillboard;
+        private SerializedProperty immersiveOnly;
+        private SerializedProperty colliderType;
+        private SerializedProperty convex;
+        private SerializedProperty colliderCenter;
+        private SerializedProperty colliderRadius;
+        private SerializedProperty colliderBoxSize;
+        private SerializedProperty colliderHeight;
+        private SerializedProperty colliderDirection;
+        private SerializedProperty customMeshCollider;
+        private SerializedProperty activeCollider;
         protected SerializedProperty isMeshCustom;
 
 
@@ -134,7 +134,9 @@ namespace umi3d.edk.editor
                         InspectorForMeshCollider();
                         //EditorGUILayout.PropertyField(isMeshCustom);
                         if (!isMeshCustom.boolValue)
+                        {
                             EditorGUILayout.PropertyField(convex);
+                        }
                         else
                         {
                             EditorGUILayout.PropertyField(customMeshCollider);

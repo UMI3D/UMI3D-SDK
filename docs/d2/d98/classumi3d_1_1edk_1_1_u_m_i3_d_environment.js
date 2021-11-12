@@ -17,9 +17,5 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_environment =
     [ "objectPreloadedScenes", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a275b32eeb5d4ae83d2850c8a6bf0839e", null ],
     [ "objectSkyColor", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#acb5aec4e3616860d1eb65071c9558b66", null ],
     [ "scenes", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#ac86b021d6f1698df84cd7a1b127b7d28", null ],
-    [ "ambientIntensity", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#afa4b702c448c71c7d2eb5e7702e1cfac", null ],
-    [ "groundColor", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#ac9ade82f5f073a3a5794bce9ab0c6212", null ],
-    [ "horizontalColor", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a3a03e3af85d2b74daa0f9c5b6e571687", null ],
-    [ "mode", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a9b7fcb73cad2cdcb1c9fe2e3cc952075", null ],
-    [ "skyColor", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a8be96b8a7d2e91c655a7a49eb4e2da8c", null ]
+    [ "useDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a7cbac9844efe08746de65bd5ff6fc6b5", null ]
 ];

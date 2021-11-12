@@ -39,10 +39,10 @@ namespace umi3d.edk
 
         public (byte[], bool) ToBytes(UMI3DUser user)
         {
-            var operation = Operations.Where((op) => { return op.users.Contains(user); });
+            IEnumerable<Operation> operation = Operations.Where((op) => { return op.users.Contains(user); });
             if (operation.Count() > 0)
             {
-                var b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
+                Bytable b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
                     + UMI3DNetworkingHelper.WriteIBytableCollection(operation, user);
                 return (b.ToBytes(), true);
             }
@@ -74,16 +74,13 @@ namespace umi3d.edk
             set => Operations[key] = value;
         }
 
-        public List<Operation> this[UMI3DUser key]
-        {
-            get => Operations.Where(o => o.users.Contains(key)).ToList();
-        }
+        public List<Operation> this[UMI3DUser key] => Operations.Where(o => o.users.Contains(key)).ToList();
 
         public void Simplify()
         {
             Operation lastOperation = null;
 
-            List<Operation> newOperations = new List<Operation>();
+            var newOperations = new List<Operation>();
             foreach (Operation op in Operations)
             {
                 //concatenate entities in LoadEntitie operations
@@ -107,10 +104,12 @@ namespace umi3d.edk
                         case SetEntityListProperty sl:
                             var inverted = newOperations.ToList();
                             inverted.Reverse();
-                            foreach (var nop in inverted)
+                            foreach (Operation nop in inverted)
                             {
                                 if (nop is SetEntityListAddProperty || nop is SetEntityListRemoveProperty)
+                                {
                                     break;
+                                }
                                 else if (nop is SetEntityListProperty ne)
                                 {
                                     if (ne.entityId == sl.entityId && ne.property == sl.property && ne.index == sl.index)
@@ -127,10 +126,12 @@ namespace umi3d.edk
                         case SetEntityDictionaryProperty sd:
                             var inverted2 = newOperations.ToList();
                             inverted2.Reverse();
-                            foreach (var nop in inverted2)
+                            foreach (Operation nop in inverted2)
                             {
                                 if (nop is SetEntityDictionaryAddProperty || nop is SetEntityDictionaryRemoveProperty)
+                                {
                                     break;
+                                }
                                 else if (nop is SetEntityDictionaryProperty)
                                 {
                                     var ne = nop as SetEntityDictionaryProperty;
@@ -146,7 +147,7 @@ namespace umi3d.edk
                             break;
 
                         case SetEntityProperty e:
-                            foreach (var nop in newOperations.ToList())
+                            foreach (Operation nop in newOperations.ToList())
                             {
                                 if (nop is SetEntityProperty)
                                 {
@@ -163,7 +164,7 @@ namespace umi3d.edk
                             break;
 
                         case DeleteEntity d:
-                            foreach (var nop in newOperations.ToList())
+                            foreach (Operation nop in newOperations.ToList())
                             {
                                 switch (nop)
                                 {
@@ -196,14 +197,14 @@ namespace umi3d.edk
                                             if (nl.users.SequenceEqual(lastOperation.users))
                                             {
                                                 var entityToDelete = new List<UMI3DLoadableEntity>();
-                                                foreach (var entity in nl.entities)
+                                                foreach (UMI3DLoadableEntity entity in nl.entities)
                                                 {
                                                     if (entity.Id() == d.entityId)
                                                     {
                                                         entityToDelete.Add(entity);
                                                     }
                                                 }
-                                                foreach (var item in entityToDelete)
+                                                foreach (UMI3DLoadableEntity item in entityToDelete)
                                                 {
                                                     nl.entities.Remove(item);
                                                 }
@@ -217,7 +218,7 @@ namespace umi3d.edk
                             break;
 
                         case LoadEntity l:
-                            foreach (var nop in newOperations.ToList())
+                            foreach (Operation nop in newOperations.ToList())
                             {
                                 switch (nop)
                                 {
@@ -255,9 +256,9 @@ namespace umi3d.edk
                                             var entityToRemove = new List<UMI3DLoadableEntity>();
                                             if (nl.users.SequenceEqual(l.users))
                                             {
-                                                foreach (var NOEntity in nl.entities)
+                                                foreach (UMI3DLoadableEntity NOEntity in nl.entities)
                                                 {
-                                                    foreach (var newEntity in l.entities)
+                                                    foreach (UMI3DLoadableEntity newEntity in l.entities)
                                                     {
                                                         if (NOEntity.Id() == newEntity.Id())
                                                         {
@@ -266,7 +267,7 @@ namespace umi3d.edk
                                                     }
                                                 }
                                             }
-                                            foreach (var item in entityToRemove)
+                                            foreach (UMI3DLoadableEntity item in entityToRemove)
                                             {
                                                 l.entities.Remove(item);
                                             }

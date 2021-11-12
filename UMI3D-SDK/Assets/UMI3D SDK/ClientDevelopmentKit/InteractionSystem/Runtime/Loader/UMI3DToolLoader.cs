@@ -19,34 +19,34 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
-    static public class UMI3DToolLoader
+    public static class UMI3DToolLoader
     {
-        static public void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox)
+        public static void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox)
         {
-            Tool tool = new Tool(dto, toolbox);
+            var tool = new Tool(dto, toolbox);
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
             AbstractInteractionMapper.Instance.CreateTool(tool);
         }
 
-        static public void ReadUMI3DExtension(ToolDto dto)
+        public static void ReadUMI3DExtension(ToolDto dto)
         {
-            Tool tool = new Tool(dto, null);
+            var tool = new Tool(dto, null);
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
             AbstractInteractionMapper.Instance.CreateTool(tool);
         }
 
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property));
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             return (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container));
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container));
         }
