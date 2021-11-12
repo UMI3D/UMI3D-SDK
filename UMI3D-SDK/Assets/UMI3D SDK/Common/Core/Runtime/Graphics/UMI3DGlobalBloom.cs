@@ -84,7 +84,7 @@ namespace umi3d.common.graphics
 #if UNITY_EDITOR
         void OnValidate()
         {
-
+            UMI3DAbstractPostProcessing.SetBloom(this);
         }
 #endif
 

@@ -83,7 +83,7 @@ namespace umi3d.common.graphics
 #if UNITY_EDITOR
         void OnValidate()
         {
-
+            UMI3DAbstractPostProcessing.SetVignette(this);
         }
 #endif
 

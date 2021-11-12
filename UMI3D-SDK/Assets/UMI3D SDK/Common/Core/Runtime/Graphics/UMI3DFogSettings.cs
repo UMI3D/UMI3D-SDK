@@ -57,12 +57,12 @@ namespace umi3d.common.graphics
         [SerializeField]
         private float endDistance = 300f;
 
-        public bool FogEnabled { get => fogEnabled; set => fogEnabled = value; }
-        public Color Color { get => color; set => color = value; }
-        public FogMode Mode { get => mode; set => mode = value; }
-        public float Density { get => density; set => density = value; }
-        public float StartDistance { get => startDistance; set => startDistance = value; }
-        public float EndDistance { get => endDistance; set => endDistance = value; }
+        public bool FogEnabled { get => fogEnabled; }
+        public Color Color { get => color;}
+        public FogMode Mode { get => mode;}
+        public float Density { get => density; }
+        public float StartDistance { get => startDistance; }
+        public float EndDistance { get => endDistance; }
 
         public static void ResetFogSettings()
         {
