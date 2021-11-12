@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    static public class UMI3DInteractionKeys
+    public static class UMI3DInteractionKeys
     {
         public const byte None = 0;
 

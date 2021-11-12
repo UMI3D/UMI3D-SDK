@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
-        new public static UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
+        public static new UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
         protected new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; set => base.dto = value; }
 
         private bool started = false;

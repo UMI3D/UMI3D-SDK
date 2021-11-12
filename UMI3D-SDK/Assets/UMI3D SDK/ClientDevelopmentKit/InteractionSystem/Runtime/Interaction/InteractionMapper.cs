@@ -23,7 +23,7 @@ namespace umi3d.cdk.interaction
 {
     public class InteractionMapper : AbstractInteractionMapper
     {
-        public new static InteractionMapper Instance => AbstractInteractionMapper.Instance as InteractionMapper;
+        public static new InteractionMapper Instance => AbstractInteractionMapper.Instance as InteractionMapper;
 
         /// <summary>
         /// Menu to store toolboxes into.

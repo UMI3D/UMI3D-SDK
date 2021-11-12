@@ -25,7 +25,7 @@ namespace umi3d.cdk
 {
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
-        new public static UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
+        public static new UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
         protected new UMI3DNodeAnimationDto dto { get => base.dto as UMI3DNodeAnimationDto; set => base.dto = value; }
 
         public class OperationChain
@@ -180,7 +180,7 @@ namespace umi3d.cdk
         }
 
 
-        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
+        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
 
         private bool UpdateChain(UMI3DNodeAnimationDto dto, SetEntityPropertyDto property)
         {

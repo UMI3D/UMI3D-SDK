@@ -78,7 +78,7 @@ namespace umi3d.edk
         /// Return the Url of the Http Server.
         /// </summary>
         /// <returns></returns>
-        static public string GetHttpUrl()
+        public static string GetHttpUrl()
         {
             return Instance._GetHttpUrl();
         }
@@ -156,12 +156,12 @@ namespace umi3d.edk
         protected virtual void LookForMissing(UMI3DUser user) { }
 
 
-        static public void Dispatch(Transaction transaction)
+        public static void Dispatch(Transaction transaction)
         {
             if (Exists) Instance._Dispatch(transaction);
         }
 
-        static public void Dispatch(DispatchableRequest dispatchableRequest)
+        public static void Dispatch(DispatchableRequest dispatchableRequest)
         {
             if (Exists) Instance._Dispatch(dispatchableRequest);
         }

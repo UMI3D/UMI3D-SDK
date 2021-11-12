@@ -56,7 +56,7 @@ namespace umi3d.cdk
 
 
 
-        static public void PerformOperation(AbstractOperationDto operation, Action performed)
+        public static void PerformOperation(AbstractOperationDto operation, Action performed)
         {
             if (performed == null) performed = () => { };
             switch (operation)
@@ -96,7 +96,7 @@ namespace umi3d.cdk
             }
         }
 
-        static public void PerformOperation(ByteContainer container, Action performed)
+        public static void PerformOperation(ByteContainer container, Action performed)
         {
             if (performed == null) performed = () => { };
 

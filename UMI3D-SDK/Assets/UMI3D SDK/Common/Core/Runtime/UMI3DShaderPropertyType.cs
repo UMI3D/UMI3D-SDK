@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
 
-    static public class UMI3DShaderPropertyType
+    public static class UMI3DShaderPropertyType
     {
         public const byte None = 0;
 

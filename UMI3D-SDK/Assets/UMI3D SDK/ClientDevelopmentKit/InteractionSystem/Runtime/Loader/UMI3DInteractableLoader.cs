@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    static public class UMI3DInteractableLoader
+    public static class UMI3DInteractableLoader
     {
 
         public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
@@ -98,7 +98,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             switch (propertyKey)

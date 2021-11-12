@@ -54,8 +54,8 @@ namespace umi3d.edk
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
         [SerializeField, EditorReadOnly]
         private Vector3 defaultStartOrientation = new Vector3(0, 0, 0);
-        static public UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
-        static public UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
+        public static UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
+        public static UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
 
         private void Start()
         {
@@ -133,7 +133,7 @@ namespace umi3d.edk
             return new LibrariesDto() { libraries = libraries };
         }
 
-        static public bool UseLibrary()
+        public static bool UseLibrary()
         {
             return Exists ? Instance.globalLibraries.Any() || Instance.scenes.Any(s => s.libraries.Any()) : false;
         }

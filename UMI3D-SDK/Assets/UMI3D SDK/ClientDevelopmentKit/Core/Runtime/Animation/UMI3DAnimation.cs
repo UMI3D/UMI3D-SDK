@@ -25,7 +25,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAnimation : UMI3DAbstractAnimation
     {
-        new public static UMI3DAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimation; }
+        public static new UMI3DAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimation; }
         protected new UMI3DAnimationDto dto { get => base.dto as UMI3DAnimationDto; set => base.dto = value; }
 
         private List<Coroutine> Coroutines = new List<Coroutine>();
@@ -138,7 +138,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {

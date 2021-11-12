@@ -372,12 +372,12 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        static public void LoadEntity(IEntity entity, Action performed)
+        public static void LoadEntity(IEntity entity, Action performed)
         {
             if (Exists) Instance._LoadEntity(entity, performed);
         }
 
-        static public void LoadEntity(ByteContainer container, Action performed)
+        public static void LoadEntity(ByteContainer container, Action performed)
         {
             if (Exists) Instance._LoadEntity(container, performed);
         }
@@ -458,7 +458,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entityId"></param>
         /// <param name="performed"></param>
-        static public void DeleteEntity(ulong entityId, Action performed)
+        public static void DeleteEntity(ulong entityId, Action performed)
         {
             if (Instance.entities.ContainsKey(entityId))
             {
@@ -486,7 +486,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Clear an environement and make the client ready to load a new environment.
         /// </summary>
-        static public void Clear()
+        public static void Clear()
         {
             Instance.entityFilters.Clear();
 

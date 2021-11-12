@@ -440,7 +440,7 @@ namespace umi3d.common
             return res;
         }
 
-        static public byte[] ReadByteArray(ByteContainer container)
+        public static byte[] ReadByteArray(ByteContainer container)
         {
             byte type = UMI3DNetworkingHelper.Read<byte>(container);
             int count = UMI3DNetworkingHelper.Read<int>(container);

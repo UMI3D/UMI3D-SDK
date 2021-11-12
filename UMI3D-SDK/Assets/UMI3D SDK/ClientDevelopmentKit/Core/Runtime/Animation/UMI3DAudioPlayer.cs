@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        new public static UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
+        public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         public AudioSource audioSource { get; private set; }
 
 
@@ -205,7 +205,7 @@ namespace umi3d.cdk
 
         }
 
-        static public bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
+        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
 
         ///<inheritdoc/>
         public override void Start(float atTime)

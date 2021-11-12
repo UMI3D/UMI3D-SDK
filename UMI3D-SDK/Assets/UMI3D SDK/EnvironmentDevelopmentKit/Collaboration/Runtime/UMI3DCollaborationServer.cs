@@ -41,11 +41,11 @@ namespace umi3d.edk.collaboration
         private bool useIp = false;
         private UMI3DHttp http;
 
-        static public UMI3DHttp HttpServer => Exists ? Instance.http : null;
+        public static UMI3DHttp HttpServer => Exists ? Instance.http : null;
 
         private UMI3DForgeServer forgeServer;
 
-        static public UMI3DForgeServer ForgeServer => Exists ? Instance.forgeServer : null;
+        public static UMI3DForgeServer ForgeServer => Exists ? Instance.forgeServer : null;
 
         public float tokenLifeTime = 10f;
 

@@ -37,7 +37,7 @@ namespace umi3d.cdk
         /// Move the user acording to a NavigationDto
         /// </summary>
         /// <param name="dto"></param>
-        static public IEnumerator Navigate(NavigateDto dto)
+        public static IEnumerator Navigate(NavigateDto dto)
         {
             if (Exists && Instance.currentNav != null)
             {

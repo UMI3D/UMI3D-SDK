@@ -36,11 +36,11 @@ namespace umi3d.cdk.collaboration
 
         public static bool useDto { protected set; get; } = false;
 
-        static public DateTime lastTokenUpdate { get; private set; }
+        public static DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public UMI3DForgeClient ForgeClient { get; private set; }
 
-        static public IdentityDto Identity = new IdentityDto();
+        public static IdentityDto Identity = new IdentityDto();
 
         public class UserInfo
         {
@@ -62,7 +62,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        static public UserInfo UserDto = new UserInfo();
+        public static UserInfo UserDto = new UserInfo();
 
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
@@ -99,7 +99,7 @@ namespace umi3d.cdk.collaboration
         /// Start the connection workflow to the Environement defined by the Media variable in UMI3DBrowser.
         /// </summary>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void Connect()
+        public static void Connect()
         {
             Instance.Init();
             if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
@@ -127,7 +127,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Logout of the current server
         /// </summary>
-        static public void Logout(Action success, Action<string> failled)
+        public static void Logout(Action success, Action<string> failled)
         {
             if (Exists)
                 Instance._Logout(success, failled);
@@ -210,7 +210,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="url">Url used for the get request.</param>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public static void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
             {
@@ -228,7 +228,7 @@ namespace umi3d.cdk.collaboration
         /// 
         /// </summary>
         /// <param name="status"></param>
-        static public void OnStatusChanged(StatusDto statusDto)
+        public static void OnStatusChanged(StatusDto statusDto)
         {
             switch (statusDto.status)
             {
@@ -263,7 +263,7 @@ namespace umi3d.cdk.collaboration
         /// Set the token used to communicate to the server.
         /// </summary>
         /// <param name="token"></param>
-        static public void SetToken(string token)
+        public static void SetToken(string token)
         {
             if (Exists)
             {
@@ -307,7 +307,7 @@ namespace umi3d.cdk.collaboration
         /// Handles the message comming from the websockekt server.
         /// </summary>
         /// <param name="message"></param>
-        static public void OnMessage(object message)
+        public static void OnMessage(object message)
         {
             switch (message)
             {

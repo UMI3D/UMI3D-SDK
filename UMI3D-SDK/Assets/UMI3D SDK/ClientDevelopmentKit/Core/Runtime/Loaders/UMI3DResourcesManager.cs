@@ -351,7 +351,7 @@ namespace umi3d.cdk
         public Dictionary<ulong, string> librariesMap = new Dictionary<ulong, string>();
         private List<ObjectData> CacheCollection;
         private Dictionary<string, KeyValuePair<DataFile, HashSet<ulong>>> libraries;
-        static public List<DataFile> Libraries => Exists ? Instance.libraries.Values.Select(k => k.Key).ToList() : new List<DataFile>();
+        public static List<DataFile> Libraries => Exists ? Instance.libraries.Values.Select(k => k.Key).ToList() : new List<DataFile>();
 
         #endregion
         #region setup
@@ -444,12 +444,12 @@ namespace umi3d.cdk
         /// <param name="libraryId">id of the library to load.</param>
         /// <param name="finished">finished callback.</param>
         /// <param name="SceneId">id of the scene which use this library</param>
-        static public void LoadLibrary(string libraryId, Action finished, ulong SceneId = 0)
+        public static void LoadLibrary(string libraryId, Action finished, ulong SceneId = 0)
         {
             Instance.StartCoroutine(_LoadLibrary(libraryId, finished, SceneId));
         }
 
-        static public IEnumerator _LoadLibrary(string libraryId, Action finished, ulong SceneId)
+        public static IEnumerator _LoadLibrary(string libraryId, Action finished, ulong SceneId)
         {
             int count = 0;
             KeyValuePair<DataFile, HashSet<ulong>> lib = Instance.libraries.Where((p) => { return p.Key == libraryId; }).Select((p) => { return p.Value; }).FirstOrDefault();
@@ -479,7 +479,7 @@ namespace umi3d.cdk
         /// <param name="loadedResources">call each time a library have been loaded with the count of all loaded libraries in parameter.</param>
         /// <param name="resourcesToLoad">call with the total count of libraries to load in parameter.</param>
         /// <returns></returns>
-        static public IEnumerator LoadLibraries(List<string> ids, Action<int> loadedResources, Action<int> resourcesToLoad)
+        public static IEnumerator LoadLibraries(List<string> ids, Action<int> loadedResources, Action<int> resourcesToLoad)
         {
             int count = 0;
             IEnumerable<ObjectData> downloaded = Instance.CacheCollection.Where((p) => { return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Contains(i)); });
@@ -512,7 +512,7 @@ namespace umi3d.cdk
         #endregion
         #region file Load
 
-        static public void LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
+        public static void LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {
             Instance._LoadFile(id, file, urlToObject, objectFromCache, callback, failCallback, deleteAction);
         }
@@ -635,7 +635,7 @@ namespace umi3d.cdk
             }
         }
 
-        static public void GetFile(string url, Action<byte[]> callback, Action<string> error, string libraryKey = null)
+        public static void GetFile(string url, Action<byte[]> callback, Action<string> error, string libraryKey = null)
         {
             //ObjectData objectData = Instance.CacheCollection.Find((o) => { return o.MatchUrl(url, libraryKey); });
             Match matchUrl = ObjectData.rx.Match(url);
@@ -664,7 +664,7 @@ namespace umi3d.cdk
         private float librariesToDownload = 0;
         private float librariesDownloaded = 0;
 
-        static public List<string> LibrariesToDownload(LibrariesDto libraries)
+        public static List<string> LibrariesToDownload(LibrariesDto libraries)
         {
             return Instance._LibrariesToDownload(libraries.libraries);
         }
@@ -697,7 +697,7 @@ namespace umi3d.cdk
             return toDownload;
         }
 
-        static public void DownloadLibraries(LibrariesDto libraries, string applicationName, Action callback, Action<string> error)
+        public static void DownloadLibraries(LibrariesDto libraries, string applicationName, Action callback, Action<string> error)
         {
             Instance.StartCoroutine(Instance.DownloadResources(libraries.libraries, applicationName, callback, error));
         }
@@ -722,7 +722,7 @@ namespace umi3d.cdk
         }
 
 
-        static public void DownloadLibrary(AssetLibraryDto library, string application, Action callback)
+        public static void DownloadLibrary(AssetLibraryDto library, string application, Action callback)
         {
             Instance.StartCoroutine(Instance._DownloadLibrary(library, application, callback));
         }
@@ -947,7 +947,7 @@ namespace umi3d.cdk
             return argument.GetRespondCode() == 401 && argument.count < 3;
         }
 
-        static public void DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public static void DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             Instance.StartCoroutine(Instance._DownloadObject(www, callback, failCallback, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)));
         }

@@ -21,15 +21,15 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    static public class EntityGroupLoader
+    public static class EntityGroupLoader
     {
-        static public void ReadUMI3DExtension(EntityGroupDto groupDto)
+        public static void ReadUMI3DExtension(EntityGroupDto groupDto)
         {
             groupDto.entitiesId = groupDto.entitiesId.ToList();
             UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto, null);
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity != null && entity.dto is EntityGroupDto groupDto)
             {
@@ -53,7 +53,7 @@ namespace umi3d.cdk
         }
 
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity != null && entity.dto is EntityGroupDto groupDto)
             {
@@ -74,7 +74,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return false;
         }

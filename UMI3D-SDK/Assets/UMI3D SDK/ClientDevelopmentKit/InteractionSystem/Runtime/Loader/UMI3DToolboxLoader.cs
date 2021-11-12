@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    static public class UMI3DToolBoxLoader
+    public static class UMI3DToolBoxLoader
     {
 
         public static void ReadUMI3DExtension(ToolboxDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
@@ -36,7 +36,7 @@ namespace umi3d.cdk.interaction
             finished?.Invoke();
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var dto = (entity.dto as ToolboxDto);
             if (dto == null) return false;
@@ -67,7 +67,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var dto = (entity.dto as ToolboxDto);
             if (dto == null) return false;
@@ -98,7 +98,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {

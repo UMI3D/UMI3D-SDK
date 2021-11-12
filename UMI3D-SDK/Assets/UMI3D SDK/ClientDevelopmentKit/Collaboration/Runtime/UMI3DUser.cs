@@ -77,12 +77,12 @@ namespace umi3d.cdk.collaboration
         [Serializable]
         public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
 
-        static public UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserStatusUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserAudioFrequencyUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserStatusUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAudioFrequencyUpdated = new UMI3DUserEvent();
     }
 }

@@ -36,28 +36,28 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        abstract public IResourcesLoader SelectLoader(string extension);
+        public abstract IResourcesLoader SelectLoader(string extension);
 
         /// <summary>
         /// Return the best MaterialLoader for a GltfMaterialDto.
         /// </summary>
         /// <param name="gltfMatDto"></param>
         /// <returns></returns>
-        abstract public AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto);
+        public abstract AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto);
 
         /// <summary>
         /// Choose the best library variant for this client.
         /// </summary>
         /// <param name="assetLibrary"></param>
         /// <returns></returns>
-        abstract public UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary);
+        public abstract UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary);
 
         /// <summary>
         /// Choose the best file variant for this client.
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
-        abstract public FileDto ChooseVariante(List<FileDto> files);
+        public abstract FileDto ChooseVariante(List<FileDto> files);
 
         /// <summary>
         /// Setup an Umi3d object acording to a UMI3DDto.
@@ -66,7 +66,7 @@ namespace umi3d.cdk
         /// <param name="node">Gameobject on which to setup the object.</param>
         /// <param name="finished">Finished callback.</param>
         /// <param name="failed">Error callback.</param>
-        abstract public void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed);
+        public abstract void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed);
 
         /// <summary>
         /// Update a property.
@@ -74,7 +74,7 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the updated value</param>
         /// <returns></returns>
-        abstract public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property);
+        public abstract bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property);
 
         /// <summary>
         /// Update a property.
@@ -82,7 +82,7 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the updated value</param>
         /// <returns></returns>
-        abstract public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container);
+        public abstract bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container);
 
         /// <summary>
         /// Update a property.
@@ -90,27 +90,27 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the updated value</param>
         /// <returns></returns>
-        abstract public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container);
+        public abstract bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container);
 
         /// <summary>
         /// Handle Operation not handle by default.
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
-        abstract public void UnknownOperationHandler(AbstractOperationDto operation, Action performed);
+        public abstract void UnknownOperationHandler(AbstractOperationDto operation, Action performed);
 
         /// <summary>
         /// Handle Operation not handle by default.
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
-        abstract public void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed);
+        public abstract void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed);
 
         /// <summary>
         /// Load a ResourceDto as a Skybox.
         /// </summary>
         /// <param name="skybox"></param>
-        abstract public void loadSkybox(ResourceDto skybox);
+        public abstract void loadSkybox(ResourceDto skybox);
 
     }
 
