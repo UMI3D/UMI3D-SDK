@@ -23,7 +23,7 @@ namespace umi3d.cdk.interaction
 {
     public class InteractionMapper : AbstractInteractionMapper
     {
-        public new static InteractionMapper Instance { get { return AbstractInteractionMapper.Instance as InteractionMapper; } }
+        public static new InteractionMapper Instance => AbstractInteractionMapper.Instance as InteractionMapper;
 
         /// <summary>
         /// Menu to store toolboxes into.
@@ -252,7 +252,7 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override void CreateTool(Tool tool)
         {
-            foreach (var interaction in tool.dto.interactions)
+            foreach (AbstractInteractionDto interaction in tool.dto.interactions)
             {
                 interactionsIdToDto[interaction.id] = interaction;
             }

@@ -52,9 +52,9 @@ namespace umi3d.cdk.interaction
                 tool = this,
                 Name = name,
             };
-            foreach (var interaction in dto.interactions)
+            foreach (AbstractInteractionDto interaction in dto.interactions)
             {
-                var item = getInteractionItem(interaction);
+                MenuItem item = getInteractionItem(interaction);
                 Menu.Add(item);
             }
 
@@ -62,8 +62,7 @@ namespace umi3d.cdk.interaction
             toolbox?.sub.Add(Menu);
         }
 
-
-        MenuItem getInteractionItem(AbstractInteractionDto dto)
+        private MenuItem getInteractionItem(AbstractInteractionDto dto)
         {
             MenuItem result = null;
             switch (dto)

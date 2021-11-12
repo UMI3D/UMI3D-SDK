@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     [System.Serializable]
-    public class GetLocalInfoRequestDto : UMI3DDto 
+    public class GetLocalInfoRequestDto : UMI3DDto
     {
         /// <summary>
         /// Local file id. Used in the http Get request. /!\ Warning : Contains only lower case letter or number 

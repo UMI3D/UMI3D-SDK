@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            UserConnectionAnswerDto ucDto = new UserConnectionAnswerDto(ToUserDto());
+            var ucDto = new UserConnectionAnswerDto(ToUserDto());
             ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
             RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
@@ -89,7 +89,7 @@ namespace umi3d.edk.collaboration
 
         public virtual TokenDto ToTokenDto()
         {
-            TokenDto token = new TokenDto();
+            var token = new TokenDto();
             token.token = this.token;
             return token;
         }
@@ -106,7 +106,7 @@ namespace umi3d.edk.collaboration
 
         public virtual UserDto ToUserDto()
         {
-            UserDto user = new UserDto();
+            var user = new UserDto();
             user.id = Id();
             user.status = status;
             user.avatarId = Avatar == null ? 0 : Avatar.Id();
@@ -119,7 +119,7 @@ namespace umi3d.edk.collaboration
 
         public virtual StatusDto ToStatusDto()
         {
-            StatusDto status = new StatusDto();
+            var status = new StatusDto();
             status.status = this.status;
             return status;
         }

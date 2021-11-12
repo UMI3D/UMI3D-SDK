@@ -60,7 +60,7 @@ namespace umi3d.cdk.interaction
             System.Predicate<ProjectionTreeNode> adequation;
             System.Action<ProjectionTreeNode> chooseProjection;
 
-            List<AbstractUMI3DInput> selectedInputs = new List<AbstractUMI3DInput>();
+            var selectedInputs = new List<AbstractUMI3DInput>();
 
             for (int depth = 0; depth < interactions.Length; depth++)
             {
@@ -228,7 +228,7 @@ namespace umi3d.cdk.interaction
                             if (projection == null)
                                 throw new NoInputFoundException();
 
-                            ParameterNode param = new ParameterNode(id)
+                            var param = new ParameterNode(id)
                             {
                                 id = parameterDto.id,
                                 parameter = parameterDto,
@@ -453,12 +453,12 @@ namespace umi3d.cdk.interaction
             System.Predicate<ProjectionTreeNode> adequation;
             System.Action<ProjectionTreeNode> chooseProjection;
 
-            List<AbstractUMI3DInput> selectedInputs = new List<AbstractUMI3DInput>();
+            var selectedInputs = new List<AbstractUMI3DInput>();
 
             bool foundHoldableEvent = false;
             if (InteractionMapper.Instance.shouldProjectHoldableEventOnSpecificInput)
             {
-                List<AbstractInteractionDto> temp = new List<AbstractInteractionDto>();
+                var temp = new List<AbstractInteractionDto>();
 
                 foreach (AbstractInteractionDto dto in interactions)
                 {
@@ -468,7 +468,9 @@ namespace umi3d.cdk.interaction
                         foundHoldableEvent = true;
                     }
                     else
+                    {
                         temp.Add(dto);
+                    }
                 }
 
                 if (foundHoldableEvent)
@@ -646,7 +648,7 @@ namespace umi3d.cdk.interaction
                             if (projection == null)
                                 throw new NoInputFoundException();
 
-                            ParameterNode param = new ParameterNode(id)
+                            var param = new ParameterNode(id)
                             {
                                 id = parameterDto.id,
                                 parameter = parameterDto,
@@ -782,12 +784,14 @@ namespace umi3d.cdk.interaction
         {
             get
             {
-                List<ProjectionTreeNode> buffer = new List<ProjectionTreeNode>();
+                var buffer = new List<ProjectionTreeNode>();
                 foreach (ulong id in childrensId)
                 {
                     if (nodesByTree.TryGetValue(treeId, out Dictionary<ulong, ProjectionTreeNode> nodes))
+                    {
                         if (nodes.TryGetValue(id, out ProjectionTreeNode child))
                             buffer.Add(child);
+                    }
                 }
                 return buffer;
             }
@@ -848,7 +852,7 @@ namespace umi3d.cdk.interaction
                 string staticRefIds = JsonUtility.ToJson(nodes.Keys, true);
                 string storage = objectJson;// + "@\n" + static_json;
 
-                StreamWriter writer = new StreamWriter(path);
+                var writer = new StreamWriter(path);
                 writer.Write(storage);
                 writer.Close();
             }
@@ -862,7 +866,7 @@ namespace umi3d.cdk.interaction
         {
             if (nodesByTree.TryGetValue(treeId, out Dictionary<ulong, ProjectionTreeNode> nodes))
             {
-                StreamReader reader = new StreamReader(path);
+                var reader = new StreamReader(path);
                 string storage = reader.ReadToEnd();
                 string[] buffer = storage.Split('@');
 

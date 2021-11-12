@@ -30,7 +30,7 @@ namespace umi3d.cdk.menu.view
         private List<TValue> values = new List<TValue>();
 
 
-        public int Count { get { return keys.Count; } }
+        public int Count => keys.Count;
 
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace umi3d.cdk.menu.view
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            Dictionary<TKey, TValue> dic = new Dictionary<TKey, TValue>();
+            var dic = new Dictionary<TKey, TValue>();
             for (int i = 0; i < keys.Count; i++)
             {
                 dic.Add(keys[i], values[i]);
@@ -93,7 +93,7 @@ namespace umi3d.cdk.menu.view
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            Dictionary<TKey, TValue> dic = new Dictionary<TKey, TValue>();
+            var dic = new Dictionary<TKey, TValue>();
             for (int i = 0; i < keys.Count; i++)
             {
                 dic.Add(keys[i], values[i]);

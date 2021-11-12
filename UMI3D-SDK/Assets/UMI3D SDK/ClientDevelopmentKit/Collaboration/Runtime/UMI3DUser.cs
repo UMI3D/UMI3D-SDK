@@ -25,17 +25,17 @@ namespace umi3d.cdk.collaboration
     [Serializable]
     public class UMI3DUser
     {
-        UserDto dto;
+        private UserDto dto;
 
         public ulong id;
         public uint networkId;
         public StatusType status;
-        public ulong audioPlayerId { get => dto.audioSourceId; }
-        public int audioFrequency { get => dto.audioFrequency; }
-        public UMI3DAudioPlayer audioplayer { get => UMI3DAudioPlayer.Get(dto.audioSourceId); }
-        public ulong videoPlayerId { get => dto.videoSourceId; }
-        public UMI3DVideoPlayer videoPlayer { get => UMI3DVideoPlayer.Get(dto.videoSourceId); }
-        public UserAvatar avatar { get => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar; }
+        public ulong audioPlayerId => dto.audioSourceId;
+        public int audioFrequency => dto.audioFrequency;
+        public UMI3DAudioPlayer audioplayer => UMI3DAudioPlayer.Get(dto.audioSourceId);
+        public ulong videoPlayerId => dto.videoSourceId;
+        public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
+        public UserAvatar avatar => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar;
 
         public UMI3DUser(UserDto user)
         {
@@ -77,12 +77,12 @@ namespace umi3d.cdk.collaboration
         [Serializable]
         public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
 
-        static public UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserStatusUpdated = new UMI3DUserEvent();
-        static public UMI3DUserEvent OnUserAudioFrequencyUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserStatusUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAudioFrequencyUpdated = new UMI3DUserEvent();
     }
 }

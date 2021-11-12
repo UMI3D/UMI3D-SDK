@@ -53,11 +53,15 @@ namespace umi3d.edk.collaboration
         {
             Match match = regex.Match(uri);
             if (match.Success)
+            {
                 return regex.GetGroupNames().Skip(1) // Skip the "0" group
                     .Where(g => match.Groups[g].Success && match.Groups[g].Captures.Count > 0)
                         .ToDictionary(groupName => groupName, groupName => match.Groups[groupName].Value);
+            }
             else
+            {
                 return new Dictionary<string, string>();
+            }
         }
     }
 

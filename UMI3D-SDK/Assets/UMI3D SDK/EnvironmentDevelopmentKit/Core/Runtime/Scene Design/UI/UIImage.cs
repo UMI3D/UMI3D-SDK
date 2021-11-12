@@ -29,12 +29,12 @@ namespace umi3d.edk
         /// <summary>
         /// Image's color.
         /// </summary>
-        Color color { get { return GetComponent<Image>().color; } }
+        private Color color => GetComponent<Image>().color;
 
         /// <summary>
         /// Image's type
         /// </summary>
-        Image.Type type { get { return GetComponent<Image>().type; } }
+        private Image.Type type => GetComponent<Image>().type;
 
         /// <summary>
         /// Image's sprite url
@@ -86,7 +86,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UIImageDto rectDto = dto as UIImageDto;
+            var rectDto = dto as UIImageDto;
             rectDto.color = Color.GetValue(user);
             rectDto.type = ImageType.GetValue(user).Convert();
             if (sprite != null)

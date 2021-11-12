@@ -58,7 +58,7 @@ namespace umi3d.edk
         {
             if (!registered)
             {
-                ExternalMaterialDto matDto = new ExternalMaterialDto()
+                var matDto = new ExternalMaterialDto()
                 {
                     resource = resource.ToDto(),
                 };

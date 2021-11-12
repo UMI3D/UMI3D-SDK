@@ -45,9 +45,9 @@ namespace umi3d.edk.collaboration
             foreach (object obj in objects)
             {
                 MethodInfo[] methods = obj.GetType().GetMethods();
-                foreach (var method in methods)
+                foreach (MethodInfo method in methods)
                 {
-                    var attrArray = method.GetCustomAttributes(attributeType, false);
+                    object[] attrArray = method.GetCustomAttributes(attributeType, false);
                     WebServiceMethodAttribute attribute = (attrArray == null || attrArray.Length == 0) ? null : (WebServiceMethodAttribute)attrArray[0];
                     if (attribute != null)
                     {
@@ -64,7 +64,7 @@ namespace umi3d.edk.collaboration
 
         public bool TryProccessRequest(object sender, HttpRequestEventArgs e, IdentityDto identity = null)
         {
-            var path = e.Request.RawUrl;
+            string path = e.Request.RawUrl;
             foreach (WebServiceMethod r in roots)
             {
                 if (r.attribute.Match(path))

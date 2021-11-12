@@ -44,7 +44,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
-            GameObject createdObj = new GameObject();
+            var createdObj = new GameObject();
             GltfAssetBase gltfComp = createdObj.AddComponent<GltfAssetBase>();
 
             gltfComp.onLoadComplete += (x, b) =>
@@ -86,14 +86,14 @@ namespace umi3d.cdk
 
             if (authorization != null && authorization != "")
             {
-                HttpHeader authorizationHeader = new HttpHeader
+                var authorizationHeader = new HttpHeader
                 {
                     Key = common.UMI3DNetworkingKeys.Authorization,
                     Value = authorization
                 };
 
-                HttpHeader[] headers = new HttpHeader[] { authorizationHeader };
-                CustomHeaderDownloadProvider customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
+                var headers = new HttpHeader[] { authorizationHeader };
+                var customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
                 MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(() => gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator)));
             }
             else

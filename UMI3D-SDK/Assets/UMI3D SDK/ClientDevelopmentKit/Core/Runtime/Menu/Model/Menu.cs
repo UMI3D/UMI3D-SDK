@@ -62,15 +62,12 @@ namespace umi3d.cdk.menu
         }
 
         ///<inheritdoc/>
-        public override int Count
-        {
-            get => MenuItems.Count + SubMenu.Count;
-        }
+        public override int Count => MenuItems.Count + SubMenu.Count;
 
         ///<inheritdoc/>
         public override IEnumerable<AbstractMenuItem> GetItems()
         {
-            List<AbstractMenuItem> items = new List<AbstractMenuItem>();
+            var items = new List<AbstractMenuItem>();
             foreach (MenuItem item in GetMenuItems())
             {
                 items.Add(item);

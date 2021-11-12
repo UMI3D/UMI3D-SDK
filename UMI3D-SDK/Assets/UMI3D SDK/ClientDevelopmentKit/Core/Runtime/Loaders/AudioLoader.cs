@@ -59,14 +59,14 @@ namespace umi3d.cdk
             UMI3DResourcesManager.DownloadObject(www,
                 () =>
                 {
-                    var audioClip = DownloadHandlerAudioClip.GetContent(www);
+                    AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
                     callback.Invoke(audioClip);
                 },
                 s => failCallback.Invoke(s)
             );
         }
 
-        static AudioType GetType(string extension)
+        private static AudioType GetType(string extension)
         {
             switch (extension)
             {

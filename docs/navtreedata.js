@@ -25,7 +25,15 @@
 var NAVTREE =
 [
   [ "UMI3D Unity SDK", "index.html", [
-    [ "UMI3D-SDK (Unity)", "index.html", null ],
+    [ "UMI3D-SDK (Unity)", "index.html", [
+      [ "Installation", "index.html#autotoc_md6", [
+        [ "Version And Documentation", "index.html#autotoc_md2", null ],
+        [ "UMI3D Browser & Samples", "index.html#autotoc_md3", null ],
+        [ "Unity Project Settings", "index.html#autotoc_md4", null ],
+        [ "Installation through .unitypackage", "index.html#autotoc_md7", null ],
+        [ "Installation through Unity's Package Manager", "index.html#autotoc_md8", null ]
+      ] ]
+    ] ],
     [ "Packages", "namespaces.html", [
       [ "Packages", "namespaces.html", "namespaces_dup" ],
       [ "Package Functions", "namespacemembers.html", [
@@ -51,16 +59,32 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "annotated.html",
-"d2/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_embodiment_manager.html#a64113c19e52cadd80150823acda21d51",
-"d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html#ac9083062fae45ad5d5ff222bcff5fee1",
-"d4/db8/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_button_input_displayer.html#a604846abfd0cf75881fa85eb5e1cd0e5",
-"d6/d0c/namespaceumi3d_1_1cdk_1_1menu.html",
-"d7/d8d/classumi3d_1_1common_1_1_editor_read_only_attribute.html",
-"d8/dda/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_drop_down_input_displayer.html#a126f03425ce2e895ac06fb23d80e33b2",
-"da/d9d/classumi3d_1_1common_1_1_map_metric_dto.html",
-"dc/d94/classumi3d_1_1cdk_1_1_audio_loader.html#a6262f4ed3bb89c90934ba4b445bc24c5",
-"de/d13/classumi3d_1_1common_1_1_u_m_i3_d_audio_player_dto.html",
-"df/d83/classumi3d_1_1common_1_1collaboration_1_1_player_count_dto.html"
+"d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#af05b61916c8359f4c58884c2d13674d5",
+"d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#ae96b13ab6cc7cc9ded30dbcaa34511ef",
+"d2/d68/classumi3d_1_1edk_1_1_transaction.html#a58c041c96937c77e1bc4994eecf8ee9f",
+"d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a677059a1a16399a0365b48fd57edaec2",
+"d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html#a8f0974cf192795f7ec741f48b8a92d0e",
+"d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a119c6ab97e3750b3fcfbd0cb8fe78fa9",
+"d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#ac98291c89d460ac6057a6860ad981543",
+"d4/dfd/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_form_menu_item.html",
+"d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a734f9f817578ad7cc0ccb49d2ebccdd9",
+"d5/deb/classumi3d_1_1common_1_1_gl_t_f_environment_dto.html#a368a1fe3c7b6828cfbf691e479658755",
+"d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a9a6f5518206ddda28e75c897ca117930",
+"d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#ace2760198e3e4039a794896a89725180",
+"d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a5c6ec5b8d0a77bf719a16dc55328acfb",
+"d8/d24/classumi3d_1_1common_1_1_abstract_browser_request_dto.html#acd13867754df54863b5fad621fbac165",
+"d8/da2/namespaceumi3d_1_1common.html#a5ee0153a5a9e0bc9e2409c8d71929644a2ec2c2961c7ce5a114d969c1f562a563",
+"d9/d2b/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter_1_1_float_range_listener.html",
+"d9/df2/classumi3d_1_1common_1_1_u_m_i3_d_rendered_node_dto_1_1_material_override_dto.html#a2a9cb07f0e7ad88fc673ec9db4290935",
+"da/db3/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_hand_pose_event.html",
+"db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a8e208703850fb80700446dd5f25554e9",
+"dc/d49/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_network_manager.html#a7d51a1e156400e99ccf976c700a85b8b",
+"dd/d00/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_media_menu_item_displayer.html#aafe05cd6c17fd346dfccc4cc508fe72f",
+"dd/d84/classumi3d_1_1edk_1_1_set_entity_dictionary_property.html#a0d9d8514537ded9c715df54c41da2137",
+"de/d36/classumi3d_1_1edk_1_1_navigation_request.html#a3b4e16eedcb0be2df197af1988302a34",
+"de/dcb/classumi3d_1_1edk_1_1_p_b_r_material.html#a807865a65b3afedc66b147d58c7b9543",
+"df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu.html#a3c82b7b826e5d4a79c79d3b44f84ced6",
+"df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#afbe8abcb6844cc2530c92aaa149f4b55"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

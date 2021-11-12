@@ -82,7 +82,7 @@ namespace umi3d.edk.interaction
             if (frameOfReference != null)
                 mDto.frameOfReference = frameOfReference.Id();
 
-            foreach (var entity in dofSeparationOptions)
+            foreach (DofGroupOption entity in dofSeparationOptions)
                 mDto.dofSeparationOptions.Add(entity.ToDto(user));
         }
 
@@ -118,8 +118,8 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.ManipulationRequest:
-                    var translation = UMI3DNetworkingHelper.Read<Vector3>(container);
-                    var rotation = UMI3DNetworkingHelper.Read<Quaternion>(container);
+                    Vector3 translation = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    Quaternion rotation = UMI3DNetworkingHelper.Read<Quaternion>(container);
                     onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;
                 default:

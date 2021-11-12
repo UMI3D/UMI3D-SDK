@@ -30,7 +30,7 @@ namespace umi3d.edk
         /// <summary>
         /// The current default or synchronized value.
         /// </summary>
-        T value;
+        private T value;
 
         /// <summary>
         /// The id of this property.
@@ -61,43 +61,31 @@ namespace umi3d.edk
         /// Indicates if the property is asynchronous.
         /// i.e if some user have specific values
         /// </summary>
-        public bool isAsync { get => asyncValues != null && asyncValues.Count > 0; }
+        public bool isAsync => asyncValues != null && asyncValues.Count > 0;
 
         /// <summary>
         /// Indicates if the property is desynchronous.
         /// i.e if some user doesn't listen to change.
         /// </summary>
-        public bool isDeSync { get => UserDesync != null && UserDesync.Count > 0; }
+        public bool isDeSync => UserDesync != null && UserDesync.Count > 0;
 
 
         /// <summary>
         /// the function use to check the Equality between two T objects;
         /// </summary>
-        Func<T, T, bool> Equal;
+        private Func<T, T, bool> Equal;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T, UMI3DUser, object> Serializer;
+        private Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
         /// 
         /// </summary>
-        public IEnumerable<UMI3DUser> AsynchronousUser
-        {
-            get
-            {
-                return asyncValues.Keys;
-            }
-        }
+        public IEnumerable<UMI3DUser> AsynchronousUser => asyncValues.Keys;
 
-        public IEnumerable<UMI3DUser> DesynchronousUser
-        {
-            get
-            {
-                return UserDesync.ToList();
-            }
-        }
+        public IEnumerable<UMI3DUser> DesynchronousUser => UserDesync.ToList();
 
         /// <summary>
         /// UMI3DAsyncProperty constructor.
@@ -195,7 +183,7 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(UMI3DUser user, T value, bool forceOperation = false)
         {
-            SetEntityProperty operation = new SetEntityProperty()
+            var operation = new SetEntityProperty()
             {
                 users = new HashSet<UMI3DUser>(),
                 entityId = entityId,
@@ -207,7 +195,9 @@ namespace umi3d.edk
             if (asyncValues.ContainsKey(user))
             {
                 if ((asyncValues[user] == null && value == null || Equal(asyncValues[user], value)) && !forceOperation)
+                {
                     return null;
+                }
                 else
                 {
                     asyncValues[user] = value;
@@ -403,7 +393,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="d"></param>
         /// <returns>return true if <paramref name="d"/> is in ]-epsilon,epsilon[</returns>
-        bool InRange(float d)
+        private bool InRange(float d)
         {
             return (d < epsilon && d > -epsilon);
         }

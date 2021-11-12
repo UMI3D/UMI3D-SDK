@@ -25,16 +25,16 @@ namespace umi3d.edk
 
     public class UMI3DAbstractAnimation : MonoBehaviour, UMI3DLoadableEntity
     {
-        ulong animationID;
+        private ulong animationID;
 
         [SerializeField, EditorReadOnly]
-        bool playing;
+        private bool playing;
         [SerializeField, EditorReadOnly]
-        bool looping;
+        private bool looping;
         [SerializeField, EditorReadOnly]
-        ulong startTime;
+        private ulong startTime;
         [SerializeField, EditorReadOnly]
-        long pauseFrame;
+        private long pauseFrame;
         private UMI3DAsyncProperty<bool> _objectPlaying;
         private UMI3DAsyncProperty<bool> _objectLooping;
         private UMI3DAsyncProperty<ulong> _objectStartTime;
@@ -78,8 +78,10 @@ namespace umi3d.edk
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {
                 if (this != null)
-                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                {
+                    foreach (UMI3DUserFilter f in GetComponents<UMI3DUserFilter>())
                         AddConnectionFilter(f);
+                }
             });
 
             objectPlaying = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.AnimationPlaying, playing);
@@ -178,7 +180,7 @@ namespace umi3d.edk
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {
