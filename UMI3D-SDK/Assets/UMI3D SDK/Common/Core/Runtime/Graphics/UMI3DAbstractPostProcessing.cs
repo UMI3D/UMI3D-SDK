@@ -116,5 +116,12 @@ namespace umi3d.common.graphics
         protected abstract void _ResetFog();
         #endregion
 
+
+        protected virtual void Start()
+        {
+            ResetFog();
+            ResetBloom();
+            ResetVignette();
+        }
     }
 }
