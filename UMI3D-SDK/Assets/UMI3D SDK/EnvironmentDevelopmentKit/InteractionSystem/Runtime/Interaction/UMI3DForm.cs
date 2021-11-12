@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -80,7 +79,7 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case FormAnswerDto formAnswer:
-                    formAnswer.answers.ForEach(a => UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user,a));
+                    formAnswer.answers.ForEach(a => UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, a));
                     onFormCompleted.Invoke(new FormEventContent(user, formAnswer));
                     break;
                 default:

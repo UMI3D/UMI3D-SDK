@@ -24,9 +24,9 @@ namespace umi3d.common
     [System.Serializable]
     public class UMI3DShaderPropertyDto : UMI3DDto, IBytable
     {
-        byte CollectionType;
-        int size;
-        byte Type;
+        private byte CollectionType;
+        private int size;
+        private byte Type;
         public object value;
 
         public UMI3DShaderPropertyDto(object value)
@@ -42,38 +42,42 @@ namespace umi3d.common
 
         public Bytable ToBytableArray(params object[] parameters)
         {
-            if(CollectionType != 0)
+            if (CollectionType != 0)
+            {
                 return UMI3DNetworkingHelper.Write(CollectionType)
                     + UMI3DNetworkingHelper.Write(size)
-                    + UMI3DNetworkingHelper.Write(Type) 
+                    + UMI3DNetworkingHelper.Write(Type)
                     + UMI3DNetworkingHelper.Write(value);
+            }
             else
+            {
                 return UMI3DNetworkingHelper.Write(Type)
                     + UMI3DNetworkingHelper.Write(value);
+            }
         }
 
 
         public static UMI3DShaderPropertyDto FromByte(ByteContainer container)
         {
-           return new UMI3DShaderPropertyDto(_FromByte(container));
+            return new UMI3DShaderPropertyDto(_FromByte(container));
         }
 
-        static object _FromByte(ByteContainer container)
+        private static object _FromByte(ByteContainer container)
         {
-            var Type = UMI3DNetworkingHelper.Read<byte>(container);
-            return _FromByte(container,Type);
+            byte Type = UMI3DNetworkingHelper.Read<byte>(container);
+            return _FromByte(container, Type);
         }
 
-        static object _FromByte(ByteContainer container, byte Type)
+        private static object _FromByte(ByteContainer container, byte Type)
         {
             switch (Type)
             {
                 case UMI3DShaderPropertyType.Array:
                     {
-                        var size = UMI3DNetworkingHelper.Read<int>(container);
-                        var contentType = UMI3DNetworkingHelper.Read<byte>(container);
+                        int size = UMI3DNetworkingHelper.Read<int>(container);
+                        byte contentType = UMI3DNetworkingHelper.Read<byte>(container);
                         var result = new List<object>();
-                        for(int i = 0; i < size; i++)
+                        for (int i = 0; i < size; i++)
                         {
                             result.Add(_FromByte(container, contentType));
                         }
@@ -81,8 +85,8 @@ namespace umi3d.common
                     }
                 case UMI3DShaderPropertyType.List:
                     {
-                        var size = UMI3DNetworkingHelper.Read<int>(container);
-                        var contentType = UMI3DNetworkingHelper.Read<byte>(container);
+                        int size = UMI3DNetworkingHelper.Read<int>(container);
+                        byte contentType = UMI3DNetworkingHelper.Read<byte>(container);
                         var result = new List<object>();
                         for (int i = 0; i < size; i++)
                         {
@@ -106,14 +110,14 @@ namespace umi3d.common
             return null;
         }
 
-        (byte, byte) GetType(object value)
+        private (byte, byte) GetType(object value)
         {
             (byte, byte) result = (0, 0);
             switch (value)
             {
                 case Array array:
                     size = array.Length;
-                    var ea = array.GetEnumerator();
+                    System.Collections.IEnumerator ea = array.GetEnumerator();
                     if (ea.MoveNext())
                         result = GetType(ea.Current);
                     result.Item1 = UMI3DShaderPropertyType.Array;

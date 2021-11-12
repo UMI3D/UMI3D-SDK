@@ -15,10 +15,12 @@ var namespaceumi3d_1_1cdk_1_1menu =
     [ "FloatRangeInputMenuItem", "d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html", "d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item" ],
     [ "ImageMenu", "d9/d20/classumi3d_1_1cdk_1_1menu_1_1_image_menu.html", "d9/d20/classumi3d_1_1cdk_1_1menu_1_1_image_menu" ],
     [ "IntegerInputMenuItem", "d6/df0/classumi3d_1_1cdk_1_1menu_1_1_integer_input_menu_item.html", "d6/df0/classumi3d_1_1cdk_1_1menu_1_1_integer_input_menu_item" ],
+    [ "LocalInfoRequestInputMenuItem", "d5/d07/classumi3d_1_1cdk_1_1menu_1_1_local_info_request_input_menu_item.html", "d5/d07/classumi3d_1_1cdk_1_1menu_1_1_local_info_request_input_menu_item" ],
     [ "MediaMenuItem", "d6/d08/classumi3d_1_1cdk_1_1menu_1_1_media_menu_item.html", "d6/d08/classumi3d_1_1cdk_1_1menu_1_1_media_menu_item" ],
     [ "Menu", "df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu.html", "df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu" ],
     [ "MenuAsset", "de/d0a/classumi3d_1_1cdk_1_1menu_1_1_menu_asset.html", "de/d0a/classumi3d_1_1cdk_1_1menu_1_1_menu_asset" ],
     [ "MenuItem", "dd/da5/classumi3d_1_1cdk_1_1menu_1_1_menu_item.html", "dd/da5/classumi3d_1_1cdk_1_1menu_1_1_menu_item" ],
     [ "MenuTools", "d6/dba/classumi3d_1_1cdk_1_1menu_1_1_menu_tools.html", "d6/dba/classumi3d_1_1cdk_1_1menu_1_1_menu_tools" ],
-    [ "TextInputMenuItem", "d1/d63/classumi3d_1_1cdk_1_1menu_1_1_text_input_menu_item.html", "d1/d63/classumi3d_1_1cdk_1_1menu_1_1_text_input_menu_item" ]
+    [ "TextInputMenuItem", "d1/d63/classumi3d_1_1cdk_1_1menu_1_1_text_input_menu_item.html", "d1/d63/classumi3d_1_1cdk_1_1menu_1_1_text_input_menu_item" ],
+    [ "UploadInputMenuItem", "d2/d80/classumi3d_1_1cdk_1_1menu_1_1_upload_input_menu_item.html", "d2/d80/classumi3d_1_1cdk_1_1menu_1_1_upload_input_menu_item" ]
 ];

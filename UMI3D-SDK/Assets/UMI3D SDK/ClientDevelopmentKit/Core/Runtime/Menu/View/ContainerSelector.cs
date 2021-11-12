@@ -45,12 +45,11 @@ namespace umi3d.cdk.menu.view
         /// <returns></returns>
         public virtual AbstractMenuDisplayContainer ChooseContainer(AbstractMenu menu, int depth)
         {
-            AbstractMenuDisplayContainer exception;
 
             if (exceptions == null)
                 exceptions = new ContainerDictionary();
 
-            if (exceptions.TryGetValue(menu.Name, out exception))
+            if (exceptions.TryGetValue(menu.Name, out AbstractMenuDisplayContainer exception))
             {
                 return exception;
             }

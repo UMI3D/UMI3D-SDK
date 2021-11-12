@@ -20,15 +20,12 @@ namespace umi3d.common
 {
     public class PersistentSingleton<T> : QuittingManager where T : PersistentSingleton<T>
     {
-        static T instance;
+        private static T instance;
 
         /// <summary>
         /// State if an instance of <typeparamref name="T"/> exist.
         /// </summary>
-        public static bool Exists
-        {
-            get { return !ApplicationIsQuitting && instance != null; }
-        }
+        public static bool Exists => !ApplicationIsQuitting && instance != null;
 
         /// <summary>
         /// static rteference to the only instance of <typeparamref name="T"/>
@@ -47,8 +44,11 @@ namespace umi3d.common
 
                     if (instance == null)
                     {
-                        GameObject g = GameObject.Find(typeof(T).Name);
-                        if (g) instance = g.GetComponent<T>();
+                        var g = GameObject.Find(typeof(T).Name);
+                        if (g)
+                        {
+                            instance = g.GetComponent<T>();
+                        }
                         else
                         {
                             g = new GameObject();

@@ -21,10 +21,10 @@ using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
-    static public class UMI3DBrowserRequestDispatcher
+    public static class UMI3DBrowserRequestDispatcher
     {
 
-        static public void DispatchBrowserRequest(UMI3DUser user, UMI3DDto dto)
+        public static void DispatchBrowserRequest(UMI3DUser user, UMI3DDto dto)
         {
             switch (dto)
             {
@@ -52,9 +52,9 @@ namespace umi3d.edk.interaction
             }
         }
 
-        static public void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
+        public static void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
-            var toolId = UMI3DNetworkingHelper.Read<ulong>(container);
+            ulong toolId = UMI3DNetworkingHelper.Read<ulong>(container);
             ulong interactionId, hoverredId;
             uint bonetype;
             switch (operationKey)

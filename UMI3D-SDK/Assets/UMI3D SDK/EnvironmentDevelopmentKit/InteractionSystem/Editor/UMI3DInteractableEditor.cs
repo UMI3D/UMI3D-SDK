@@ -24,16 +24,16 @@ namespace umi3d.edk.editor
     [CustomEditor(typeof(UMI3DInteractable), true)]
     public class UMI3DInteractableEditor : UMI3DAbstractToolEditor
     {
-        SerializedProperty Node;
-        SerializedProperty NotifySubObject;
-        SerializedProperty NotifyHoverPosition;
-        SerializedProperty HasPriority;
-        SerializedProperty onHoverEnter;
-        SerializedProperty onHoverExit;
-        SerializedProperty onHovered;
-        SerializedProperty UseAnimations;
-        SerializedProperty HoverEnterAnimation;
-        SerializedProperty HoverExitAnimation;
+        private SerializedProperty Node;
+        private SerializedProperty NotifySubObject;
+        private SerializedProperty NotifyHoverPosition;
+        private SerializedProperty HasPriority;
+        private SerializedProperty onHoverEnter;
+        private SerializedProperty onHoverExit;
+        private SerializedProperty onHovered;
+        private SerializedProperty UseAnimations;
+        private SerializedProperty HoverEnterAnimation;
+        private SerializedProperty HoverExitAnimation;
 
         ///<inheritdoc/>
         protected override void OnEnable()
@@ -51,7 +51,7 @@ namespace umi3d.edk.editor
             HoverExitAnimation = serializedObject.FindProperty("HoverExitAnimation");
         }
 
-        static bool displayEvent = false;
+        private static bool displayEvent = false;
 
         ///<inheritdoc/>
         protected override void _OnInspectorGUI()

@@ -285,7 +285,7 @@ namespace umi3d.cdk.menu.view
         /// <param name="subMenu"></param>
         /// <param name="containerDepth">Depth of the container (zero is root)</param>
         /// <returns></returns>
-        AbstractMenuDisplayContainer CreateSubMenu(AbstractMenuDisplayContainer container, AbstractMenu subMenu, int containerDepth)
+        private AbstractMenuDisplayContainer CreateSubMenu(AbstractMenuDisplayContainer container, AbstractMenu subMenu, int containerDepth)
         {
             if (!menuToDisplayer.ContainsKey(subMenu))
             {
@@ -295,10 +295,13 @@ namespace umi3d.cdk.menu.view
                 subContainer.parent = container;
                 SetMenuAction(container, subMenu, subContainer, containerDepth + 1);
                 if (subMenu.navigable)
+                {
                     subContainer.Subscribe(() =>
                     {
                         Navigate(subMenu);
                     });
+                }
+
                 if (container != null)
                     container.Insert(subContainer, false);
                 if (container != null)
@@ -315,13 +318,12 @@ namespace umi3d.cdk.menu.view
         /// <param name="menu"></param>
         /// <param name="container"></param>
         /// <param name="containerDepth"></param>
-        void SetMenuAction(AbstractMenuDisplayContainer parentContainer, AbstractMenu menu, AbstractMenuDisplayContainer container, int containerDepth)
+        private void SetMenuAction(AbstractMenuDisplayContainer parentContainer, AbstractMenu menu, AbstractMenuDisplayContainer container, int containerDepth)
         {
             UnityAction OnManagerDestroyedAction;
             UnityAction<AbstractMenuItem> OnItemAddedAction = (item) =>
             {
-                AbstractMenuDisplayContainer currentSubContainer;
-                if (menuToDisplayer.TryGetValue(menu, out currentSubContainer))
+                if (menuToDisplayer.TryGetValue(menu, out AbstractMenuDisplayContainer currentSubContainer))
                 {
                     if (item is AbstractMenu) CreateSubMenu(currentSubContainer, item as AbstractMenu, containerDepth);
                     else CreateItem(currentSubContainer, item);
@@ -349,7 +351,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         /// <param name="menu"></param>
         /// <returns></returns>
-        AbstractMenuDisplayContainer CreateRootMenuDisplayer(AbstractMenu menu)
+        private AbstractMenuDisplayContainer CreateRootMenuDisplayer(AbstractMenu menu)
         {
             AbstractMenuDisplayContainer root = CreateSubMenu(null, menu, -1);
             root.backButtonPressed.AddListener(firstButtonBackButtonPressed.Invoke);
@@ -361,7 +363,7 @@ namespace umi3d.cdk.menu.view
         /// </summary> 
         /// <param name="container"></param>
         /// <param name="item"></param>
-        void CreateItem(AbstractMenuDisplayContainer container, AbstractMenuItem item)
+        private void CreateItem(AbstractMenuDisplayContainer container, AbstractMenuItem item)
         {
             if (!itemToDisplayer.ContainsKey(item) || itemToDisplayer[item] == null)
             {
@@ -414,8 +416,7 @@ namespace umi3d.cdk.menu.view
         /// <param name="submenu"></param>
         public void Navigate(AbstractMenu submenu)
         {
-            AbstractMenuDisplayContainer displayer;
-            if (!menuToDisplayer.TryGetValue(submenu, out displayer))
+            if (!menuToDisplayer.TryGetValue(submenu, out AbstractMenuDisplayContainer displayer))
             {
                 throw new System.Exception("Internal error : no displayer found for this menu");
             }
@@ -456,7 +457,9 @@ namespace umi3d.cdk.menu.view
                 Currentdisplayer.Display();
                 Currentdisplayer.Collapse();
                 if (Currentdisplayer != displayer)
+                {
                     Currentdisplayer.ExpandAs(displayer, true);
+                }
                 else
                 {
                     //Collapse all siblings if parrallel navigation isn't allowed

@@ -132,8 +132,7 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetAuth(string arg)
         {
-            common.AuthenticationType result;
-            if (Enum.TryParse(arg, out result))
+            if (Enum.TryParse(arg, out common.AuthenticationType result))
                 UMI3DCollaborationServer.Instance.Authentication = result;
         }
 
@@ -143,8 +142,7 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetTokenLife(string arg)
         {
-            float result;
-            if (float.TryParse(arg, out result))
+            if (float.TryParse(arg, out float result))
                 UMI3DCollaborationServer.Instance.tokenLifeTime = result;
         }
 
@@ -154,14 +152,15 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetHttpPort(string arg)
         {
-            ushort result;
-            if (ushort.TryParse(arg, out result))
+            if (ushort.TryParse(arg, out ushort result))
             {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = result == 0;
                 UMI3DCollaborationServer.Instance.httpPort = result;
             }
             else
+            {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = true;
+            }
         }
 
         /// <summary>
@@ -170,14 +169,15 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetUdpPort(string arg)
         {
-            ushort result;
-            if (ushort.TryParse(arg, out result))
+            if (ushort.TryParse(arg, out ushort result))
             {
                 UMI3DCollaborationServer.Instance.useRandomForgePort = result == 0;
                 UMI3DCollaborationServer.Instance.forgePort = result;
             }
             else
+            {
                 UMI3DCollaborationServer.Instance.useRandomForgePort = true;
+            }
         }
 
         /// <summary>
@@ -192,8 +192,7 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetMasterServerPort(string arg)
         {
-            ushort result;
-            if (ushort.TryParse(arg, out result))
+            if (ushort.TryParse(arg, out ushort result))
             {
                 UMI3DCollaborationServer.Instance.forgeMasterServerPort = result;
             }
@@ -211,8 +210,7 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetNatServerPort(string arg)
         {
-            ushort result;
-            if (ushort.TryParse(arg, out result))
+            if (ushort.TryParse(arg, out ushort result))
             {
                 UMI3DCollaborationServer.Instance.forgeNatServerPort = result;
             }
@@ -224,8 +222,7 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetMaxNbPlayers(string arg)
         {
-            int result;
-            if (int.TryParse(arg, out result))
+            if (int.TryParse(arg, out int result))
             {
                 UMI3DCollaborationServer.Instance.forgeMaxNbPlayer = result;
             }
@@ -238,7 +235,9 @@ namespace umi3d.edk.collaboration
                 return ConfigServer.ReadXml(arg);
             }
             else
+            {
                 return null;
+            }
         }
 
         /// <summary>
@@ -299,7 +298,7 @@ namespace umi3d.edk.collaboration
         /// <param name="args"></param>
         protected virtual void OtherParam(ref int i, string[] args) { }
 
-        IEnumerator _launchServer()
+        private IEnumerator _launchServer()
         {
             yield return new WaitForSeconds(3f);
             if (LaunchServerOnStart)
@@ -402,7 +401,9 @@ namespace umi3d.edk.collaboration
                         SetIconServerUrl(args[i]);
                 }
                 else
+                {
                     OtherParam(ref i, args);
+                }
             }
             StartCoroutine(_launchServer());
         }

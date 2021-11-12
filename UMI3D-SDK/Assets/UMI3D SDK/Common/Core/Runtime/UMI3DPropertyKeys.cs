@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    static public class UMI3DPropertyKeys
+    public static class UMI3DPropertyKeys
     {
         public const uint None = 0;
 

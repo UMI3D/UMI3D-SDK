@@ -9,6 +9,7 @@ var namespaceumi3d_1_1edk_1_1interaction =
     [ "BooleanParameter", "de/d5c/classumi3d_1_1edk_1_1interaction_1_1_boolean_parameter.html", "de/d5c/classumi3d_1_1edk_1_1interaction_1_1_boolean_parameter" ],
     [ "FloatRangeParameter", "d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter.html", "d7/d20/classumi3d_1_1edk_1_1interaction_1_1_float_range_parameter" ],
     [ "InteractionDisplay", "d5/dba/classumi3d_1_1edk_1_1interaction_1_1_interaction_display.html", "d5/dba/classumi3d_1_1edk_1_1interaction_1_1_interaction_display" ],
+    [ "LocalInfoParameter", "d5/dcf/classumi3d_1_1edk_1_1interaction_1_1_local_info_parameter.html", "d5/dcf/classumi3d_1_1edk_1_1interaction_1_1_local_info_parameter" ],
     [ "ProjectTool", "db/dbb/classumi3d_1_1edk_1_1interaction_1_1_project_tool.html", "db/dbb/classumi3d_1_1edk_1_1interaction_1_1_project_tool" ],
     [ "ReleaseTool", "dc/d63/classumi3d_1_1edk_1_1interaction_1_1_release_tool.html", "dc/d63/classumi3d_1_1edk_1_1interaction_1_1_release_tool" ],
     [ "StringEnumParameter", "dc/de4/classumi3d_1_1edk_1_1interaction_1_1_string_enum_parameter.html", "dc/de4/classumi3d_1_1edk_1_1interaction_1_1_string_enum_parameter" ],
@@ -20,5 +21,6 @@ var namespaceumi3d_1_1edk_1_1interaction =
     [ "UMI3DLink", "dc/ddc/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_link.html", "dc/ddc/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_link" ],
     [ "UMI3DManipulation", "db/d98/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_manipulation.html", "db/d98/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_manipulation" ],
     [ "UMI3DTool", "d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool.html", "d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool" ],
-    [ "UMI3DToolbox", "df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox.html", "df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox" ]
+    [ "UMI3DToolbox", "df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox.html", "df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox" ],
+    [ "UploadFileParameter", "d1/da5/classumi3d_1_1edk_1_1interaction_1_1_upload_file_parameter.html", "d1/da5/classumi3d_1_1edk_1_1interaction_1_1_upload_file_parameter" ]
 ];

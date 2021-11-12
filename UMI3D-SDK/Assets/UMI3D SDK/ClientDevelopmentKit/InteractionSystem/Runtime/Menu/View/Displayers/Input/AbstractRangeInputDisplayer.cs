@@ -68,7 +68,9 @@ namespace umi3d.cdk.menu.view
                 menuItem = item as FloatRangeInputMenuItem;
             }
             else
+            {
                 throw new System.Exception("MenuItem must be a Range Input");
+            }
         }
 
         /// <summary>

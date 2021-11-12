@@ -24,7 +24,7 @@ namespace umi3d.edk
     [System.Serializable]
     public class SerializableDateTime : ISerializationCallbackReceiver
     {
-        [HideInInspector] DateTime dateTime;
+        [HideInInspector] private DateTime dateTime;
         [HideInInspector] [SerializeField] private string _dateTime;
 
         [HideInInspector] [SerializeField] private int day;
@@ -49,9 +49,8 @@ namespace umi3d.edk
             else
             {
                 _dateTime = $"{day}/{month}/{year} {hours}:{minutes}:{seconds}";
-                DateTime tmp;
-                CultureInfo info = new CultureInfo(culture);
-                if (DateTime.TryParse(_dateTime, out tmp)) dateTime = tmp;
+                var info = new CultureInfo(culture);
+                if (DateTime.TryParse(_dateTime, out DateTime tmp)) dateTime = tmp;
             }
         }
 

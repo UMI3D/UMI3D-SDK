@@ -32,17 +32,16 @@ namespace umi3d.common
             return Sort(UnityEngine.Physics.RaycastAll(origin, direction, maxDistance, layerMask, queryTriggerInteraction));
         }
 
-
-        static RaycastHit[] Sort(RaycastHit[] array)
+        private static RaycastHit[] Sort(RaycastHit[] array)
         {
-            List<RaycastHit> l = new List<RaycastHit>();
+            var l = new List<RaycastHit>();
             foreach (RaycastHit r in array)
                 l.Add(r);
             l.Sort(Comparison);
             return l.ToArray();
         }
 
-        static int Comparison(RaycastHit x, RaycastHit y)
+        private static int Comparison(RaycastHit x, RaycastHit y)
         {
             return x.distance == y.distance ? 0 : x.distance < y.distance ? -1 : 1;
         }

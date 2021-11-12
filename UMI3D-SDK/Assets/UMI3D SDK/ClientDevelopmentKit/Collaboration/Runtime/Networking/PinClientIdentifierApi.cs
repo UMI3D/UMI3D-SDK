@@ -35,16 +35,17 @@ namespace umi3d.cdk.collaboration
             callback?.Invoke(new common.collaboration.UMI3DAuthenticator(GetPin, GetLoginPassword, GetIdentity));
         }
 
-        void GetPin(Action<string> callback)
+        private void GetPin(Action<string> callback)
         {
             callback?.Invoke(Pin);
         }
-        void GetLoginPassword(Action<(string, string)> callback)
+
+        private void GetLoginPassword(Action<(string, string)> callback)
         {
             callback?.Invoke((null, Pin));
         }
 
-        void GetIdentity(Action<IdentityDto> callback)
+        private void GetIdentity(Action<IdentityDto> callback)
         {
             callback?.Invoke(UMI3DCollaborationClientServer.Identity);
         }

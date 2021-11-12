@@ -21,11 +21,11 @@ namespace umi3d.edk
 {
     public static class ToUMI3DSerializable
     {
-        static public SerializableColor ToSerializableColor(Color color, UMI3DUser user) { return color; }
-        static public SerializableVector2 ToSerializableVector2(Vector2 vector, UMI3DUser user) { return vector; }
-        static public SerializableVector3 ToSerializableVector3(Vector3 vector, UMI3DUser user) { return vector; }
-        static public SerializableVector4 ToSerializableVector4(Vector4 vector, UMI3DUser user) { return vector; }
-        static public SerializableVector4 ToSerializableVector4(Quaternion quaternion, UMI3DUser user) { return quaternion; }
-        static public SerializableMatrix4x4 ToSerializableMatrix4x4(Matrix4x4 matrix, UMI3DUser user) { return matrix; }
+        public static SerializableColor ToSerializableColor(Color color, UMI3DUser user) { return color; }
+        public static SerializableVector2 ToSerializableVector2(Vector2 vector, UMI3DUser user) { return vector; }
+        public static SerializableVector3 ToSerializableVector3(Vector3 vector, UMI3DUser user) { return vector; }
+        public static SerializableVector4 ToSerializableVector4(Vector4 vector, UMI3DUser user) { return vector; }
+        public static SerializableVector4 ToSerializableVector4(Quaternion quaternion, UMI3DUser user) { return quaternion; }
+        public static SerializableMatrix4x4 ToSerializableMatrix4x4(Matrix4x4 matrix, UMI3DUser user) { return matrix; }
     }
 }

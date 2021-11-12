@@ -56,6 +56,7 @@ namespace umi3d.cdk
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     dto.id,
                     fileToLoad,
@@ -72,6 +73,7 @@ namespace umi3d.cdk
                     Debug.LogWarning,
                     loader.DeleteObject
                     );
+            }
         }
 
         /// <summary>
@@ -114,6 +116,7 @@ namespace umi3d.cdk
                         string authorization = fileToLoad.authorization;
                         IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                         if (loader != null)
+                        {
                             UMI3DResourcesManager.LoadFile(
                                 dto.id,
                                 fileToLoad,
@@ -130,6 +133,7 @@ namespace umi3d.cdk
                                 Debug.LogWarning,
                                 loader.DeleteObject
                                 );
+                        }
                     }
                     break;
                 default:
@@ -172,6 +176,7 @@ namespace umi3d.cdk
                         string authorization = fileToLoad.authorization;
                         IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                         if (loader != null)
+                        {
                             UMI3DResourcesManager.LoadFile(
                                 dto.id,
                                 fileToLoad,
@@ -188,6 +193,7 @@ namespace umi3d.cdk
                                 Debug.LogWarning,
                                 loader.DeleteObject
                                 );
+                        }
                     }
                     break;
                 default:

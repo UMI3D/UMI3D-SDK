@@ -28,8 +28,9 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Manipulation menu item to display.
         /// </summary>
-        public ManipulationMenuItem manipulationMenuItem { get { return menu as ManipulationMenuItem; } }
-        UnityAction<bool> itemSubscriber;
+        public ManipulationMenuItem manipulationMenuItem => menu as ManipulationMenuItem;
+
+        private UnityAction<bool> itemSubscriber;
 
         /// <summary>
         /// Set menu item to display and initialise the display.

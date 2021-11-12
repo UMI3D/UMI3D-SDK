@@ -44,7 +44,7 @@ namespace umi3d.cdk.menu.interaction
         public void NotifyValueChange(List<ParameterSettingRequestDto> newValue)
         {
             answers = newValue;
-            foreach (var callback in subscribers)
+            foreach (UnityAction<List<ParameterSettingRequestDto>> callback in subscribers)
                 callback(answers);
         }
 

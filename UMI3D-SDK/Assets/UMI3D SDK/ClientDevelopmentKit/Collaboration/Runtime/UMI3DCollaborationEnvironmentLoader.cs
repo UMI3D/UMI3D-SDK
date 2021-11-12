@@ -74,7 +74,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        bool SetUserList(UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
+        private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
         {
             switch (property)
             {
@@ -90,7 +90,7 @@ namespace umi3d.cdk.collaboration
                     {
                         if (UserList.Count > rem.index)
                         {
-                            var Olduser = UserList[rem.index];
+                            UMI3DUser Olduser = UserList[rem.index];
                             UserList.RemoveAt(rem.index);
                             dto.userList.RemoveAt(rem.index);
                             Olduser.Destroy();
@@ -117,7 +117,7 @@ namespace umi3d.cdk.collaboration
                     }
                 default:
                     {
-                        foreach (var user in UserList)
+                        foreach (UMI3DUser user in UserList)
                             user.Destroy();
                         dto.userList = property.value as List<UserDto>;
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
@@ -133,7 +133,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
+        private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             UserDto user;
@@ -154,7 +154,7 @@ namespace umi3d.cdk.collaboration
                         index = UMI3DNetworkingHelper.Read<int>(container);
                         if (UserList.Count > index)
                         {
-                            var Olduser = UserList[index];
+                            UMI3DUser Olduser = UserList[index];
                             UserList.RemoveAt(index);
                             dto.userList.RemoveAt(index);
                             Olduser.Destroy();
@@ -182,7 +182,7 @@ namespace umi3d.cdk.collaboration
                     }
                 default:
                     {
-                        foreach (var ouser in UserList)
+                        foreach (UMI3DUser ouser in UserList)
                             ouser.Destroy();
                         dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(container);
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();

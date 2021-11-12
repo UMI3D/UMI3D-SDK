@@ -96,7 +96,9 @@ namespace umi3d.cdk.menu.view
                 menuItem = item as UploadInputMenuItem;
             }
             else
+            {
                 throw new System.Exception("MenuItem must be an UploadInput");
+            }
         }
 
     }

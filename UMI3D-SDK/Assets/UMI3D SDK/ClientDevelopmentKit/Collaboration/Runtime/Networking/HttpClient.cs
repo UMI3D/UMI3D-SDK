@@ -29,10 +29,10 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class HttpClient
     {
-        UMI3DCollaborationClientServer client;
+        private UMI3DCollaborationClientServer client;
         internal string ComputedToken;
 
-        private string httpUrl { get { return UMI3DCollaborationClientServer.Media.connection.httpUrl; } }
+        private string httpUrl => UMI3DCollaborationClientServer.Media.connection.httpUrl;
 
         /// <summary>
         /// Init HttpClient.
@@ -52,7 +52,7 @@ namespace umi3d.cdk.collaboration
             ComputedToken = UMI3DNetworkingKeys.bearer + token;
         }
 
-        bool DefaultShouldTryAgain(RequestFailedArgument argument)
+        private bool DefaultShouldTryAgain(RequestFailedArgument argument)
         {
             return argument.count < 3;
         }
@@ -67,8 +67,8 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var res = uwr.downloadHandler.data;
-                UserConnectionDto user = UMI3DDto.FromBson(res) as UserConnectionDto;
+                byte[] res = uwr.downloadHandler.data;
+                var user = UMI3DDto.FromBson(res) as UserConnectionDto;
                 callback.Invoke(user);
             };
             client.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.identity, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
@@ -141,8 +141,8 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var res = uwr.downloadHandler.data;
-                MediaDto media = UMI3DDto.FromBson(res) as MediaDto;
+                byte[] res = uwr.downloadHandler.data;
+                var media = UMI3DDto.FromBson(res) as MediaDto;
                 callback.Invoke(media);
             };
             client.StartCoroutine(_GetRequest(url, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)));
@@ -194,7 +194,7 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var res = uwr.downloadHandler.data;
+                byte[] res = uwr.downloadHandler.data;
                 callback.Invoke(res);
             };
             client.StartCoroutine(_GetRequest(url, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false));
@@ -210,7 +210,7 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var res = uwr.downloadHandler.data;
+                byte[] res = uwr.downloadHandler.data;
                 callback.Invoke(res);
             };
             client.StartCoroutine(_GetRequest(url, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
@@ -227,8 +227,8 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var res = uwr.downloadHandler.data;
-                GlTFEnvironmentDto user = UMI3DDto.FromBson(res) as GlTFEnvironmentDto;
+                byte[] res = uwr.downloadHandler.data;
+                var user = UMI3DDto.FromBson(res) as GlTFEnvironmentDto;
                 callback.Invoke(user);
             };
             client.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.environment, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
@@ -243,8 +243,8 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var res = uwr.downloadHandler.data;
-                EnterDto enter = UMI3DDto.FromBson(res) as EnterDto;
+                byte[] res = uwr.downloadHandler.data;
+                var enter = UMI3DDto.FromBson(res) as EnterDto;
                 callback.Invoke(enter);
             };
             client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.join, join.ToBson(), action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
@@ -264,7 +264,7 @@ namespace umi3d.cdk.collaboration
             client.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.scene, null, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
-#endregion
+        #endregion
 
         #region Local Info
         /// <summary>
@@ -280,7 +280,7 @@ namespace umi3d.cdk.collaboration
                 callback.Invoke();
             };
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
-            client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true)); 
+            client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
         /// <summary>
@@ -293,7 +293,7 @@ namespace umi3d.cdk.collaboration
         {
             Action<UnityWebRequest> action = (uwr) =>
             {
-                var bytes = uwr.downloadHandler.data;
+                byte[] bytes = uwr.downloadHandler.data;
                 callback.Invoke(bytes);
             };
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
@@ -321,7 +321,7 @@ namespace umi3d.cdk.collaboration
             };
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.uploadFile, ":param", token);
             //Header
-            List<(string, string)> headers = new List<(string, string)>();
+            var headers = new List<(string, string)>();
             headers.Add((UMI3DNetworkingKeys.contentHeader, fileName));
             client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers));
         }
@@ -335,9 +335,9 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        IEnumerator _GetRequest(string url, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        private IEnumerator _GetRequest(string url, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
-            UnityWebRequest www = UnityWebRequest.Get(url);
+            var www = UnityWebRequest.Get(url);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
             if (headers != null)
             {
@@ -376,7 +376,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        IEnumerator _PostRequest(string url, byte[] bytes, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        private IEnumerator _PostRequest(string url, byte[] bytes, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             UnityWebRequest www = CreatePostRequest(url, bytes, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
@@ -415,10 +415,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="bytes">Data send via post method.</param>
         /// <param name="withResult">require a result</param>
         /// <returns></returns>
-        UnityWebRequest CreatePostRequest(string url, byte[] bytes, bool withResult = false)
+        private UnityWebRequest CreatePostRequest(string url, byte[] bytes, bool withResult = false)
         {
-            UnityWebRequest requestU = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
-            UploadHandlerRaw uH = new UploadHandlerRaw(bytes);
+            var requestU = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
+            var uH = new UploadHandlerRaw(bytes);
             requestU.uploadHandler = uH;
             if (withResult)
                 requestU.downloadHandler = new DownloadHandlerBuffer();

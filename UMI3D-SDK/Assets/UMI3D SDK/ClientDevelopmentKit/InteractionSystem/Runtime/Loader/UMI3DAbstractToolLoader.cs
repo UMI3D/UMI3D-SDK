@@ -84,7 +84,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -111,7 +111,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, ByteContainer container)
+        private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             AbstractInteractionDto value;
@@ -144,7 +144,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, SetEntityPropertyDto property)
+        private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, SetEntityPropertyDto property)
         {
             switch (property)
             {
@@ -169,7 +169,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool ReadInteractions(ref object value, uint propertyKey, ByteContainer container)
+        private static bool ReadInteractions(ref object value, uint propertyKey, ByteContainer container)
         {
             value = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(container);
             return true;
@@ -179,7 +179,7 @@ namespace umi3d.cdk.interaction
         public static AbstractInteractionDto ReadAbstractInteractionDto(ByteContainer container, out bool readable)
         {
             AbstractInteractionDto interaction;
-            var interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
+            byte interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
             switch (interactionCase)
             {
                 case UMI3DInteractionKeys.Event:
@@ -261,7 +261,7 @@ namespace umi3d.cdk.interaction
             return interaction;
         }
 
-        static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto,ByteContainer container)
+        private static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto, ByteContainer container)
         {
             interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);
             interactionDto.name = UMI3DNetworkingHelper.Read<string>(container);

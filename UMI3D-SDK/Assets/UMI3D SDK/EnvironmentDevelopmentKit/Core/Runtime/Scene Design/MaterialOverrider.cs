@@ -47,12 +47,14 @@ namespace umi3d.edk
         public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
         {
             if (overrideAllMaterial)
+            {
                 return new UMI3DRenderedNodeDto.MaterialOverrideDto()
                 {
                     newMaterialId = newMaterial.Id(),
                     overridedMaterialsId = ANY_mat,
                     addMaterialIfNotExists = addMaterialIfNotExists
                 };
+            }
 
             return new UMI3DRenderedNodeDto.MaterialOverrideDto()
             {

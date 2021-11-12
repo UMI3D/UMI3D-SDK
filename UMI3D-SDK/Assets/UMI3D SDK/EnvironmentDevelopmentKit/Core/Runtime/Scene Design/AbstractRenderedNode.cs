@@ -72,7 +72,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UMI3DRenderedNodeDto meshDto = dto as UMI3DRenderedNodeDto;
+            var meshDto = dto as UMI3DRenderedNodeDto;
 
             meshDto.receiveShadow = objectReceiveShadow.GetValue(user);
             meshDto.castShadow = objectCastShadow.GetValue(user);
