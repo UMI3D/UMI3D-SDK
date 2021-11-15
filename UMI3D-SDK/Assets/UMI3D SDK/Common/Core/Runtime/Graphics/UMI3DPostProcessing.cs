@@ -156,23 +156,28 @@ namespace umi3d.common.graphics
 
         VignetteMode Convert(UMI3DGlobalVignette.VignetteMode vignette)
         {
-            return vignette switch
+            switch (vignette)
             {
-                UMI3DGlobalVignette.VignetteMode.Classic => VignetteMode.Classic,
-                UMI3DGlobalVignette.VignetteMode.Masked => VignetteMode.Masked,
-                _ => 0,
-            };
+                case UMI3DGlobalVignette.VignetteMode.Classic:
+                    return VignetteMode.Classic;
+                case UMI3DGlobalVignette.VignetteMode.Masked:
+                    return VignetteMode.Masked;
+            }
+            return 0;
         }
 
         FogMode Convert(UMI3DFogSettings.FogMode fogMode)
         {
-            return fogMode switch
+            switch (fogMode)
             {
-                UMI3DFogSettings.FogMode.Linear => FogMode.Linear,
-                UMI3DFogSettings.FogMode.Exponential => FogMode.Exponential,
-                UMI3DFogSettings.FogMode.ExponentialSquared => FogMode.ExponentialSquared,
-                _ => 0,
-            };
+                case UMI3DFogSettings.FogMode.Linear:
+                    return FogMode.Linear;
+                case UMI3DFogSettings.FogMode.Exponential:
+                    return FogMode.Exponential;
+                case UMI3DFogSettings.FogMode.ExponentialSquared:
+                    return FogMode.ExponentialSquared;
+            }
+            return 0;
         }
 
     }
