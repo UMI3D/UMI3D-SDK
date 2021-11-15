@@ -52,11 +52,13 @@ namespace umi3d.common.graphics
             defaultBloom.dirtIntensity.Override(0f);
 
             // Use the QuickVolume method to create a volume with a priority of 100, and assign the vignette to this volume
-            PostProcessVolume volume = Camera.main.GetComponent<PostProcessVolume>();
-            if (volume == null)
+            PostProcessVolume volume = GetCamera().GetComponent<PostProcessVolume>();
+            if (volume != null)
+            {
                 if (volume.sharedProfile.TryGetSettings(out oldm))
                     volume.sharedProfile.RemoveSettings<Bloom>();
-            volume.sharedProfile.AddSettings(defaultBloom);
+                volume.sharedProfile.AddSettings(defaultBloom);
+            }
         }
 
         protected override void _ResetFog()
@@ -85,10 +87,13 @@ namespace umi3d.common.graphics
             vignette.rounded.Override(false);
 
 
-            PostProcessVolume volume = Camera.main.GetComponent<PostProcessVolume>();
-            if (volume.sharedProfile.TryGetSettings(out oldv))
-                volume.sharedProfile.RemoveSettings<Vignette>();
-            volume.sharedProfile.AddSettings(vignette);
+            PostProcessVolume volume = GetCamera().GetComponent<PostProcessVolume>();
+            if (volume != null)
+            {
+                if (volume.sharedProfile.TryGetSettings(out oldv))
+                    volume.sharedProfile.RemoveSettings<Vignette>();
+                volume.sharedProfile.AddSettings(vignette);
+            }
         }
 
         protected override void _SetBloom(UMI3DGlobalBloom bloom)
@@ -110,7 +115,7 @@ namespace umi3d.common.graphics
             m_Bloom.dirtIntensity.Override(bloom.Dirt_Intensity);
 
             if(m_Volume == null)
-                m_Volume = Camera.main.GetComponent<PostProcessVolume>();
+                m_Volume = GetCamera().GetComponent<PostProcessVolume>();
             if (m_Volume.sharedProfile.TryGetSettings(out oldm))
                 m_Volume.sharedProfile.RemoveSettings<Bloom>();
             m_Volume.sharedProfile.AddSettings(m_Bloom);
@@ -151,28 +156,23 @@ namespace umi3d.common.graphics
 
         VignetteMode Convert(UMI3DGlobalVignette.VignetteMode vignette)
         {
-            switch (vignette)
+            return vignette switch
             {
-                case UMI3DGlobalVignette.VignetteMode.Classic:
-                    return VignetteMode.Classic;
-                case UMI3DGlobalVignette.VignetteMode.Masked:
-                    return VignetteMode.Masked;
-            }
-            return 0;
+                UMI3DGlobalVignette.VignetteMode.Classic => VignetteMode.Classic,
+                UMI3DGlobalVignette.VignetteMode.Masked => VignetteMode.Masked,
+                _ => 0,
+            };
         }
 
         FogMode Convert(UMI3DFogSettings.FogMode fogMode)
         {
-            switch (fogMode)
+            return fogMode switch
             {
-                case UMI3DFogSettings.FogMode.Linear:
-                    return FogMode.Linear;
-                case UMI3DFogSettings.FogMode.Exponential:
-                    return FogMode.Exponential;
-                case UMI3DFogSettings.FogMode.ExponentialSquared:
-                    return FogMode.ExponentialSquared;
-            }
-            return 0;
+                UMI3DFogSettings.FogMode.Linear => FogMode.Linear,
+                UMI3DFogSettings.FogMode.Exponential => FogMode.Exponential,
+                UMI3DFogSettings.FogMode.ExponentialSquared => FogMode.ExponentialSquared,
+                _ => 0,
+            };
         }
 
     }
