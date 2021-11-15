@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -26,6 +27,13 @@ namespace umi3d.cdk
     {
         public GameObject gameObject;
         public Transform transform => gameObject.transform;
+
+        /// <summary>
+        /// Event call when the transform is updated.
+        /// </summary>
+        public UnityEvent OnPoseUpdated = new UnityEvent();
+
+        public void SendOnPoseUpdated() { OnPoseUpdated.Invoke(); }
 
         public bool updatePose = true;
 
