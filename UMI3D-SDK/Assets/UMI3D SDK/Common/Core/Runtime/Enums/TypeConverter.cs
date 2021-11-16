@@ -18,10 +18,10 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-    static public class PrimitiveTypeConverter
+    public static class PrimitiveTypeConverter
     {
 
-        static public PrimitiveType Convert(this MeshPrimitive MeshPrimitive)
+        public static PrimitiveType Convert(this MeshPrimitive MeshPrimitive)
         {
             switch (MeshPrimitive)
             {
@@ -40,7 +40,7 @@ namespace umi3d.common
             }
         }
 
-        static public MeshPrimitive Convert(this PrimitiveType PrimitiveType)
+        public static MeshPrimitive Convert(this PrimitiveType PrimitiveType)
         {
             switch (PrimitiveType)
             {
@@ -60,10 +60,10 @@ namespace umi3d.common
         }
     }
 
-    static public class ShadowTypeConverter
+    public static class ShadowTypeConverter
     {
 
-        static public ShadowType Convert(this LightShadows shadowType)
+        public static ShadowType Convert(this LightShadows shadowType)
         {
             switch (shadowType)
             {
@@ -77,7 +77,7 @@ namespace umi3d.common
             return 0;
         }
 
-        static public LightShadows Convert(this ShadowType shadowType)
+        public static LightShadows Convert(this ShadowType shadowType)
         {
             switch (shadowType)
             {
@@ -92,10 +92,10 @@ namespace umi3d.common
         }
     }
 
-    static public class AmbientTypeConverter
+    public static class AmbientTypeConverter
     {
 
-        static public AmbientType Convert(this UnityEngine.Rendering.AmbientMode AmbientMode)
+        public static AmbientType Convert(this UnityEngine.Rendering.AmbientMode AmbientMode)
         {
             switch (AmbientMode)
             {
@@ -109,7 +109,7 @@ namespace umi3d.common
             return 0;
         }
 
-        static public UnityEngine.Rendering.AmbientMode Convert(this AmbientType AmbientType)
+        public static UnityEngine.Rendering.AmbientMode Convert(this AmbientType AmbientType)
         {
             switch (AmbientType)
             {
@@ -124,10 +124,10 @@ namespace umi3d.common
         }
     }
 
-    static public class ImageTypeConverter
+    public static class ImageTypeConverter
     {
 
-        static public ImageType Convert(this UnityEngine.UI.Image.Type Type)
+        public static ImageType Convert(this UnityEngine.UI.Image.Type Type)
         {
             switch (Type)
             {
@@ -143,7 +143,7 @@ namespace umi3d.common
             return ImageType.Simple;
         }
 
-        static public UnityEngine.UI.Image.Type Convert(this ImageType Type)
+        public static UnityEngine.UI.Image.Type Convert(this ImageType Type)
         {
             switch (Type)
             {
@@ -159,10 +159,10 @@ namespace umi3d.common
             return UnityEngine.UI.Image.Type.Simple;
         }
     }
-    static public class TextAnchortTypeConverter
+    public static class TextAnchortTypeConverter
     {
 
-        static public TextAnchorType Convert(this TextAnchor Type)
+        public static TextAnchorType Convert(this TextAnchor Type)
         {
             switch (Type)
             {
@@ -188,7 +188,7 @@ namespace umi3d.common
             return TextAnchorType.MiddleCenter;
         }
 
-        static public TextAnchor Convert(this TextAnchorType Type)
+        public static TextAnchor Convert(this TextAnchorType Type)
         {
             switch (Type)
             {
@@ -214,10 +214,10 @@ namespace umi3d.common
             return TextAnchor.MiddleCenter;
         }
     }
-    static public class FontStyleTypeConverter
+    public static class FontStyleTypeConverter
     {
 
-        static public FontStyleType Convert(this FontStyle Type)
+        public static FontStyleType Convert(this FontStyle Type)
         {
             switch (Type)
             {
@@ -233,7 +233,7 @@ namespace umi3d.common
             return FontStyleType.Normal;
         }
 
-        static public FontStyle Convert(this FontStyleType Type)
+        public static FontStyle Convert(this FontStyleType Type)
         {
             switch (Type)
             {
@@ -250,10 +250,10 @@ namespace umi3d.common
         }
     }
 
-    static public class HorizontalWrapTypeConverter
+    public static class HorizontalWrapTypeConverter
     {
 
-        static public HorizontalWrapType Convert(this HorizontalWrapMode Type)
+        public static HorizontalWrapType Convert(this HorizontalWrapMode Type)
         {
             switch (Type)
             {
@@ -265,7 +265,7 @@ namespace umi3d.common
             return HorizontalWrapType.Wrap;
         }
 
-        static public HorizontalWrapMode Convert(this HorizontalWrapType Type)
+        public static HorizontalWrapMode Convert(this HorizontalWrapType Type)
         {
             switch (Type)
             {
@@ -278,10 +278,10 @@ namespace umi3d.common
         }
     }
 
-    static public class VerticalWrapTypeConverter
+    public static class VerticalWrapTypeConverter
     {
 
-        static public VerticalWrapType Convert(this VerticalWrapMode Type)
+        public static VerticalWrapType Convert(this VerticalWrapMode Type)
         {
             switch (Type)
             {
@@ -293,7 +293,7 @@ namespace umi3d.common
             return VerticalWrapType.Truncate;
         }
 
-        static public VerticalWrapMode Convert(this VerticalWrapType Type)
+        public static VerticalWrapMode Convert(this VerticalWrapType Type)
         {
             switch (Type)
             {

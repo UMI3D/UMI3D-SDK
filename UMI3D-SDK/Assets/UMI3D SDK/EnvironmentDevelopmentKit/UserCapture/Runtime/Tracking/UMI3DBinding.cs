@@ -68,7 +68,7 @@ namespace umi3d.edk.userCapture
         }
         public BoneBindingDto ToDto(UMI3DUser user)
         {
-            BoneBindingDto dto = new BoneBindingDto()
+            var dto = new BoneBindingDto()
             {
                 rigName = rigName,
                 active = isBinded,

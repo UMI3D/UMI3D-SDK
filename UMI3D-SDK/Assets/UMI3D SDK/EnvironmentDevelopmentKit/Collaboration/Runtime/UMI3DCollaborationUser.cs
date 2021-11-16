@@ -36,8 +36,10 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            UserConnectionAnswerDto ucDto = new UserConnectionAnswerDto(ToUserDto());
-            ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
+            var ucDto = new UserConnectionAnswerDto(ToUserDto())
+            {
+                librariesUpdated = !UMI3DEnvironment.UseLibrary()
+            };
             RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
         }
@@ -89,8 +91,10 @@ namespace umi3d.edk.collaboration
 
         public virtual TokenDto ToTokenDto()
         {
-            TokenDto token = new TokenDto();
-            token.token = this.token;
+            var token = new TokenDto
+            {
+                token = this.token
+            };
             return token;
         }
 
@@ -106,21 +110,25 @@ namespace umi3d.edk.collaboration
 
         public virtual UserDto ToUserDto()
         {
-            UserDto user = new UserDto();
-            user.id = Id();
-            user.status = status;
-            user.avatarId = Avatar == null ? 0 : Avatar.Id();
-            user.networkId = networkPlayer?.NetworkId ?? 0;
-            user.audioSourceId = audioPlayer?.Id() ?? 0;
-            user.audioFrequency = audioFrequency;
-            user.videoSourceId = videoPlayer?.Id() ?? 0;
+            var user = new UserDto
+            {
+                id = Id(),
+                status = status,
+                avatarId = Avatar == null ? 0 : Avatar.Id(),
+                networkId = networkPlayer?.NetworkId ?? 0,
+                audioSourceId = audioPlayer?.Id() ?? 0,
+                audioFrequency = audioFrequency,
+                videoSourceId = videoPlayer?.Id() ?? 0
+            };
             return user;
         }
 
         public virtual StatusDto ToStatusDto()
         {
-            StatusDto status = new StatusDto();
-            status.status = this.status;
+            var status = new StatusDto
+            {
+                status = this.status
+            };
             return status;
         }
     }

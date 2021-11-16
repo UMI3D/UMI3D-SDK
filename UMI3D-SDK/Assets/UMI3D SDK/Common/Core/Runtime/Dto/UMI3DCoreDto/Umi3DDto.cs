@@ -36,11 +36,13 @@ namespace umi3d.common
         /// <param name="dto">UMI3D Data Transfer Object to serialize.</param>
         public static byte[] ToBson(UMI3DDto dto)
         {
-            MemoryStream ms = new MemoryStream();
-            using (BsonWriter writer = new BsonWriter(ms))
+            var ms = new MemoryStream();
+            using (var writer = new BsonWriter(ms))
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.TypeNameHandling = TypeNameHandling.All;
+                var serializer = new JsonSerializer
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
                 serializer.Serialize(writer, dto);
             }
             return ms.ToArray();
@@ -78,11 +80,13 @@ namespace umi3d.common
         /// <param name="dto">a bson serialized UMI3D Data Transfer Object.</param>
         public static UMI3DDto FromBson(byte[] bson)
         {
-            MemoryStream ms = new MemoryStream(bson);
-            using (BsonReader reader = new BsonReader(ms))
+            var ms = new MemoryStream(bson);
+            using (var reader = new BsonReader(ms))
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.TypeNameHandling = TypeNameHandling.All;
+                var serializer = new JsonSerializer
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
                 UMI3DDto dto = serializer.Deserialize<UMI3DDto>(reader);
                 return dto;
             }

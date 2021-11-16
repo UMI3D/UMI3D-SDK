@@ -23,11 +23,11 @@ namespace umi3d.cdk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
-        VideoPlayer videoPlayer;
-        Material mat;
-        RenderTexture renderTexture;
+        private readonly VideoPlayer videoPlayer;
+        private readonly Material mat;
+        private readonly RenderTexture renderTexture;
 
-        new public static UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
+        public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
@@ -45,7 +45,7 @@ namespace umi3d.cdk
             mat.mainTexture = renderTexture;
 
             // create unity VideoPlayer
-            GameObject videoPlayerGameObject = new GameObject("video");
+            var videoPlayerGameObject = new GameObject("video");
             videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
             videoPlayer.url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.videoResource.variants).url;
@@ -76,19 +76,11 @@ namespace umi3d.cdk
             if (dto.audioId != 0)
             {
                 videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-                UMI3DAnimationManager.Instance.StartCoroutine(SetAudioSource(dto.audioId));
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.audioId, (e) =>
+                {
+                    videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)e.Object).audioSource);
+                });
             }
-        }
-
-        private IEnumerator SetAudioSource(ulong audioId)
-        {
-            var delay = new WaitForSeconds(1f);
-            while (UMI3DEnvironmentLoader.GetEntity(audioId) == null)
-            {
-                yield return delay;
-            }
-
-            videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)UMI3DEnvironmentLoader.GetEntity(audioId).Object).audioSource);
         }
 
         private IEnumerator StartAfterLoading()
@@ -97,9 +89,12 @@ namespace umi3d.cdk
             {
                 yield return new WaitForEndOfFrame();
             }
-            ulong now = UMI3DClientServer.Instance.GetTime();
-            Start((float)(now - dto.startTime));
 
+            if (dto.playing)
+            {
+                ulong now = UMI3DClientServer.Instance.GetTime();
+                Start((float)(now - dto.startTime));
+            }
         }
 
         private IEnumerator SetFrame(long frame)

@@ -23,12 +23,12 @@ namespace umi3d.edk
     public class LoadEntity : Operation
     {
 
-        public UMI3DLoadableEntity entity;
+        public List<UMI3DLoadableEntity> entities;
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.LoadEntity)
-                + UMI3DNetworkingHelper.Write(entity.Id());
+                + UMI3DNetworkingHelper.Write(entities.Select((e) => e.Id()));
         }
 
         ///<inheritdoc/>
@@ -36,7 +36,7 @@ namespace umi3d.edk
         {
             return new LoadEntityDto()
             {
-                entity = entity.ToEntityDto(user),
+                entities = entities.Select((e) => e.ToEntityDto(user)).ToList(),
             };
         }
 
@@ -46,9 +46,25 @@ namespace umi3d.edk
             return a;
         }
 
+        public static LoadEntity operator +(LoadEntity a, LoadEntity b)
+        {
+            a.entities.AddRange(b.entities);
+            return a + b.users;
+        }
+
+        public static LoadEntity operator -(LoadEntity a, LoadEntity b)
+        {
+            foreach (UMI3DLoadableEntity i in b.entities)
+            {
+                if (a.entities.Contains(i))
+                    a.entities.Remove(i);
+            }
+            return a - b.users;
+        }
+
         public static LoadEntity operator -(LoadEntity a, IEnumerable<UMI3DUser> b)
         {
-            foreach (var u in b)
+            foreach (UMI3DUser u in b)
             {
                 if (a.users.Contains(u)) a.users.Remove(u);
             }

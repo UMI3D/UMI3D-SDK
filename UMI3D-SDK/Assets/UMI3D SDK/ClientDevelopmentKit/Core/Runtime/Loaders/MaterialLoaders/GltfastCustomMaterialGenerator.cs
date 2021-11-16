@@ -148,7 +148,7 @@ namespace umi3d.cdk
 
             if (textureInfo.extensions != null && textureInfo.extensions.KHR_texture_transform != null)
             {
-                var tt = textureInfo.extensions.KHR_texture_transform;
+                TextureTransform tt = textureInfo.extensions.KHR_texture_transform;
                 if (tt.texCoord != 0)
                 {
                     Debug.LogError("Multiple UV sets are not supported!");
@@ -214,15 +214,14 @@ namespace umi3d.cdk
                 int bcTextureIndex = textureInfo.index;
                 if (textures != null && textures.Length > bcTextureIndex)
                 {
-                    var txt = textures[bcTextureIndex];
-                    var imageIndex = txt.GetImageIndex();
+                    GLTFast.Schema.Texture txt = textures[bcTextureIndex];
+                    int imageIndex = txt.GetImageIndex();
 
-                    Texture2D img = null;
                     if (imageVariants != null
                         && imageIndex >= 0
                         && imageVariants.Length > imageIndex
                         && imageVariants[imageIndex] != null
-                        && imageVariants[imageIndex].TryGetValue(txt.sampler, out img)
+                        && imageVariants[imageIndex].TryGetValue(txt.sampler, out Texture2D img)
                         )
                     {
                         //            int propertyId = material.shader.FindPropertyIndex(shaderProperty.propertyName);

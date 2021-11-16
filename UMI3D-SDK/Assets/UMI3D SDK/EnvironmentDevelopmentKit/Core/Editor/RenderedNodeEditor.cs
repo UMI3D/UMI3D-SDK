@@ -23,12 +23,11 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class RenderedNodeEditor : UMI3DNodeEditor
     {
-
-        SerializedProperty material;
-        SerializedProperty overrideModelMaterials;
-        SerializedProperty castShadow;
-        SerializedProperty receiveShadow;
-        SerializedProperty ignoreParent;
+        private SerializedProperty material;
+        private SerializedProperty overrideModelMaterials;
+        private SerializedProperty castShadow;
+        private SerializedProperty receiveShadow;
+        private SerializedProperty ignoreParent;
 
         ///<inheritdoc/>
         protected override void OnEnable()

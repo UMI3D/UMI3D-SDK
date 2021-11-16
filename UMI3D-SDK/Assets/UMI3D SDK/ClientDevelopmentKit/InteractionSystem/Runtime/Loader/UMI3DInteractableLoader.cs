@@ -22,15 +22,25 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    static public class UMI3DInteractableLoader
+    public static class UMI3DInteractableLoader
     {
 
-        public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
-            node = UMI3DEnvironmentLoader.GetNode(dto.nodeId).gameObject;
-            var interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
-            finished?.Invoke();
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId, (e) =>
+            {
+                if (e is UMI3DNodeInstance nodeI)
+                {
+                    node = nodeI.gameObject;
+                    Interactable interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
+                    finished?.Invoke();
+                }
+                else
+                {
+                    failed.Invoke(new Umi3dException($"Entity [{dto.nodeId}] is not a node"));
+                }
+            });
         }
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
@@ -88,7 +98,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             switch (propertyKey)
@@ -111,18 +121,17 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-
-        static void RemoveInteractableOnNode(InteractableDto dto)
+        private static void RemoveInteractableOnNode(InteractableDto dto)
         {
-            var node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
-            var interactable = node.gameObject.GetComponent<InteractableContainer>();
+            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
+            InteractableContainer interactable = node.gameObject.GetComponent<InteractableContainer>();
             if (interactable != null)
                 GameObject.Destroy(interactable);
         }
 
-        static void setInteractableOnNode(InteractableDto dto)
+        private static void setInteractableOnNode(InteractableDto dto)
         {
-            var node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
+            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
             var interactable = UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as Interactable;
             if (interactable == null)
                 interactable = new Interactable(dto);

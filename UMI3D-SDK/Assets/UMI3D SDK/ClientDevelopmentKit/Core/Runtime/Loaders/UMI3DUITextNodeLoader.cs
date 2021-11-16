@@ -180,7 +180,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextFont:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        var fontName = UMI3DNetworkingHelper.Read<string>(container);
+                        string fontName = UMI3DNetworkingHelper.Read<string>(container);
                         text.font = Resources.GetBuiltinResource<Font>(fontName) as Font;
                         dto.font = fontName;
                     }

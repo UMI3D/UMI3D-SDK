@@ -84,8 +84,8 @@ namespace umi3d.edk.interaction
         {
             var operation = new LoadEntity()
             {
-                entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
@@ -99,7 +99,7 @@ namespace umi3d.edk.interaction
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
             };
             return operation;
         }
@@ -129,8 +129,10 @@ namespace umi3d.edk.interaction
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {
                 if (this != null)
-                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                {
+                    foreach (UMI3DUserFilter f in GetComponents<UMI3DUserFilter>())
                         AddConnectionFilter(f);
+                }
             });
 
             toolboxId = id;
@@ -159,14 +161,16 @@ namespace umi3d.edk.interaction
         /// <returns>an AbstractInteractionDto representing this interaction</returns>
         public ToolboxDto ToDto(UMI3DUser user)
         {
-            ToolboxDto dto = new ToolboxDto();
-            dto.id = Id();
-            dto.name = display.name;
-            dto.description = display.description;
-            dto.icon2D = display.icon2D.ToDto();
-            dto.icon3D = display.icon3D.ToDto();
-            dto.tools = objectTools?.GetValue(user).Where(t => t != null).Select(t => t.ToDto(user) as ToolDto).ToList();
-            dto.Active = objectActive.GetValue(user);
+            var dto = new ToolboxDto
+            {
+                id = Id(),
+                name = display.name,
+                description = display.description,
+                icon2D = display.icon2D.ToDto(),
+                icon3D = display.icon3D.ToDto(),
+                tools = objectTools?.GetValue(user).Where(t => t != null).Select(t => t.ToDto(user) as ToolDto).ToList(),
+                Active = objectActive.GetValue(user)
+            };
             return dto;
         }
 
@@ -187,7 +191,7 @@ namespace umi3d.edk.interaction
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

@@ -2,7 +2,8 @@
     "name": "UMI3D.Common.Core",
     "references": [
         "GUID:215efa65361782e41b5e3fac87a2c7e3",
-        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b"
+        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b",
+        "GUID:d60799ab2a985554ea1a39cd38695018"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -11,6 +12,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "versionDefines": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.postprocessing",
+            "expression": "",
+            "define": "UNITY_POST_PROCESSING"
+        }
+    ],
     "noEngineReferences": false
 }

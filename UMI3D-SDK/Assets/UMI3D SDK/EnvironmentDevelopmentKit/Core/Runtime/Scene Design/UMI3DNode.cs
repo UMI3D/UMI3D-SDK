@@ -53,12 +53,12 @@ namespace umi3d.edk
         /// An editor field to modify default objectXBillboard value
         /// </summary>
         [SerializeField, EditorReadOnly]
-        bool xBillboard = false;
+        private bool xBillboard = false;
         /// <summary>
         /// An editor field to modify default objectYBillboard value
         /// </summary>
         [SerializeField, EditorReadOnly]
-        bool yBillboard = false;
+        private bool yBillboard = false;
 
 
         [SerializeField, EditorReadOnly]
@@ -205,7 +205,7 @@ namespace umi3d.edk
             objectIsMeshCustom.OnValueChanged += (bool b) => { isMeshCustom = b; };
             objectCustomMeshCollider.OnValueChanged += (UMI3DResource r) => { customMeshCollider = r; };
 
-            var light = GetComponent<Light>();
+            Light light = GetComponent<Light>();
             objectLight = new UMI3DAsyncProperty<UMI3DKHRLight>(objectId, UMI3DPropertyKeys.Light, light ? new UMI3DKHRLight(objectId, light) : null, (l, u) => l?.ToDto(u));
 
             /*if (ARTracker)
@@ -225,11 +225,13 @@ namespace umi3d.edk
         /// <returns></returns>
         internal GlTFNodeDto ToGlTFNodeDto(UMI3DUser user)
         {
-            GlTFNodeDto dto = new GlTFNodeDto();
-            dto.name = gameObject.name;
-            dto.position = objectPosition.GetValue(user);
-            dto.scale = objectScale.GetValue(user);
-            dto.rotation = objectRotation.GetValue(user);
+            var dto = new GlTFNodeDto
+            {
+                name = gameObject.name,
+                position = objectPosition.GetValue(user),
+                scale = objectScale.GetValue(user),
+                rotation = objectRotation.GetValue(user)
+            };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
             dto.extensions.KHR_lights_punctual = objectLight.GetValue(user)?.ToDto(user);
             return dto;
@@ -266,7 +268,7 @@ namespace umi3d.edk
         /// <returns></returns>
         internal List<UMI3DAbstractAnimationDto> GetAnimationsFor(UMI3DUser user)
         {
-            var anim = GetComponents<UMI3DAbstractAnimation>();
+            UMI3DAbstractAnimation[] anim = GetComponents<UMI3DAbstractAnimation>();
             return anim?.Select(a => a.ToAnimationDto(user))?.ToList();
         }
 
@@ -310,16 +312,18 @@ namespace umi3d.edk
         /// Compute UMI3DLodDto with LogGroup component on the node.
         /// </summary>
         /// <returns>null if not component</returns>
-        UMI3DLodDto GetLod()
+        private UMI3DLodDto GetLod()
         {
-            var lod = GetComponent<LODGroup>();
+            LODGroup lod = GetComponent<LODGroup>();
             if (lod == null) return null;
-            var lodg = new UMI3DLodDto();
-            lodg.lods = new List<UMI3DLodDefinitionDto>();
-            foreach (var lofd in lod.GetLODs())
+            var lodg = new UMI3DLodDto
+            {
+                lods = new List<UMI3DLodDefinitionDto>()
+            };
+            foreach (LOD lofd in lod.GetLODs())
             {
                 var loddef = new UMI3DLodDefinitionDto();
-                var renderers = lofd.renderers;
+                Renderer[] renderers = lofd.renderers;
                 loddef.nodes = transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponent<UMI3DNode>()).Where(s => s != null).Select(s => s.Id()).ToList();
                 loddef.screenSize = lofd.screenRelativeTransitionHeight;
                 loddef.fadeTransition = lofd.fadeTransitionWidth;
@@ -328,7 +332,7 @@ namespace umi3d.edk
             return lodg;
         }
 
-        Bytable LodToBytes(UMI3DUser user)
+        private Bytable LodToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
@@ -344,8 +348,10 @@ namespace umi3d.edk
             //Debug.Log("has collider : " + hasCollider);
             if (!hasCollider)
                 return null;
-            ColliderDto res = new ColliderDto();
-            res.colliderType = colliderType;
+            var res = new ColliderDto
+            {
+                colliderType = colliderType
+            };
             switch (colliderType)
             {
                 case ColliderType.Box:
@@ -384,7 +390,7 @@ namespace umi3d.edk
             return res;
         }
 
-        Bytable ColliderToBytes(UMI3DUser user)
+        private Bytable ColliderToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
@@ -393,7 +399,7 @@ namespace umi3d.edk
 
         public void SearchCollider()
         {
-            var c = GetComponent<Collider>();
+            Collider c = GetComponent<Collider>();
             if (c == null)
             {
                 hasCollider = false;

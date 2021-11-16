@@ -26,7 +26,7 @@ namespace umi3d.cdk
     public class UMI3DAbstractAnchorLoader
     {
 
-        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             finished.Invoke();
         }

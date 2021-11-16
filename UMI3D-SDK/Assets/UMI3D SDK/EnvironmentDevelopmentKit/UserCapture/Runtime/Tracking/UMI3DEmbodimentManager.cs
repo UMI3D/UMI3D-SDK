@@ -90,14 +90,16 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned UMI3DUser</param>
         protected void CreateEmbodiment(UMI3DUser user)
         {
-            UMI3DTrackedUser trackedUser = user as UMI3DTrackedUser;
+            var trackedUser = user as UMI3DTrackedUser;
             if (embodimentInstances.ContainsKey(user.Id()))
             {
                 Debug.LogWarning("Internal error : the user is already registered");
                 return;
             }
 
-            GameObject embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
+            var embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
+            embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
+            embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
 
             if (EmbodimentsScene != null)
                 embd.transform.SetParent(EmbodimentsScene.transform);
@@ -159,7 +161,7 @@ namespace umi3d.edk.userCapture
             StartCoroutine(_UserCameraReception(operationKey, container, user));
         }
 
-        IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
+        private IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
             {
@@ -171,7 +173,7 @@ namespace umi3d.edk.userCapture
             userEmbd.userCameraPropertiesDto = dto;
         }
 
-        IEnumerator _UserCameraReception(uint operationKey, ByteContainer container, UMI3DUser user)
+        private IEnumerator _UserCameraReception(uint operationKey, ByteContainer container, UMI3DUser user)
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
             {
@@ -211,11 +213,9 @@ namespace umi3d.edk.userCapture
         {
             node.Register();
             LoadEntity op = node.GetLoadEntity();
-            UMI3DServer.Dispatch(new Transaction
-            {
-                Operations = new List<Operation> { op },
-                reliable = true
-            });
+            var tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(op);
+            UMI3DServer.Dispatch(tr);
         }
 
         /// <summary>
@@ -224,11 +224,9 @@ namespace umi3d.edk.userCapture
         /// <param name="id"></param>
         protected void DeleteEmbodimentObj(UMI3DAvatarNode node)
         {
-            UMI3DServer.Dispatch(new Transaction
-            {
-                Operations = new List<Operation> { node.GetDeleteEntity() },
-                reliable = true
-            });
+            var tr = new Transaction() { reliable = true };
+            tr.AddIfNotNull(node.GetDeleteEntity());
+            UMI3DServer.Dispatch(tr);
         }
 
         /// <summary>
@@ -351,7 +349,7 @@ namespace umi3d.edk.userCapture
         /// <returns>The list of associated SetEntityProperty.</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
-            List<SetEntityProperty> operations = new List<SetEntityProperty>();
+            var operations = new List<SetEntityProperty>();
 
             if (keepWorldPosition && newparent != null)
             {
@@ -377,7 +375,7 @@ namespace umi3d.edk.userCapture
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
-            List<SetEntityProperty> operations = new List<SetEntityProperty>();
+            var operations = new List<SetEntityProperty>();
 
             if (keepWorldPosition && newparent != null)
             {
@@ -402,14 +400,14 @@ namespace umi3d.edk.userCapture
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
-            List<SetEntityProperty> operations = new List<SetEntityProperty>();
+            var operations = new List<SetEntityProperty>();
 
             if (keepWorldPosition && newparent != null)
             {
                 UMI3DBinding binding = obj.bindings.GetValue(index);
 
                 binding.node.transform.SetParent(newparent.transform, true);
-                var op = binding.node.objectParentId.SetValue(newparent.GetComponent<UMI3DAbstractNode>());
+                SetEntityProperty op = binding.node.objectParentId.SetValue(newparent.GetComponent<UMI3DAbstractNode>());
 
                 operations.Add(op);
 
@@ -432,7 +430,7 @@ namespace umi3d.edk.userCapture
         /// <returns>The list of associated SetEntityProperty</returns>
         public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
         {
-            List<SetEntityProperty> operations = new List<SetEntityProperty>();
+            var operations = new List<SetEntityProperty>();
 
             if (keepWorldPosition && newparent != null)
             {

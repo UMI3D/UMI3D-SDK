@@ -25,12 +25,12 @@ namespace umi3d.edk
 
     public class EntityGroup : UMI3DLoadableEntity
     {
-
-        ulong entityId;
+        private ulong entityId;
         [SerializeField, EditorReadOnly]
-        List<UMI3DMediaEntity> _entities = new List<UMI3DMediaEntity>();
-        public UMI3DAsyncListProperty<UMI3DMediaEntity> entities { get { Id(); return _entitiesObject; } private set { _entitiesObject = value; } }
-        UMI3DAsyncListProperty<UMI3DMediaEntity> _entitiesObject;
+        private List<UMI3DMediaEntity> _entities = new List<UMI3DMediaEntity>();
+        public UMI3DAsyncListProperty<UMI3DMediaEntity> entities { get { Id(); return _entitiesObject; } private set => _entitiesObject = value; }
+
+        private UMI3DAsyncListProperty<UMI3DMediaEntity> _entitiesObject;
 
 
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
@@ -38,7 +38,7 @@ namespace umi3d.edk
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
             };
             return operation;
         }
@@ -47,8 +47,8 @@ namespace umi3d.edk
         {
             var operation = new LoadEntity()
             {
-                entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
@@ -65,7 +65,7 @@ namespace umi3d.edk
             return entityId;
         }
 
-        void InitDefinition()
+        private void InitDefinition()
         {
             entities = new UMI3DAsyncListProperty<UMI3DMediaEntity>(entityId, UMI3DPropertyKeys.EntityGroupIds, _entities, (e, u) => e.Id());
         }
@@ -91,7 +91,7 @@ namespace umi3d.edk
 
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

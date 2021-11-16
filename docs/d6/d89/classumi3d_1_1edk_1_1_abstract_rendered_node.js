@@ -1,7 +1,8 @@
 var classumi3d_1_1edk_1_1_abstract_rendered_node =
 [
     [ "CreateDto", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a396d7a2d648dd09018f47b134deef7fa", null ],
-    [ "InitDefinition", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a5b56f4124d84a166bf76c507b47e345c", null ],
+    [ "InitDefinition", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#aee079e800328bd2771308905675ab461", null ],
+    [ "ToBytes", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#ae34e0a9f4d6131823508a5f0c1aa65ce", null ],
     [ "WriteProperties", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a416f35a4543fc8df336f597679d2fba6", null ],
     [ "_objectCastShadow", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a01279e2c099cae2017d3abdb94712e64", null ],
     [ "_objectMaterialOverriders", "d6/d89/classumi3d_1_1edk_1_1_abstract_rendered_node.html#a5b24c9984ed8b5df69d53fadd7c33bc1", null ],

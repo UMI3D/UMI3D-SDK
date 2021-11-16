@@ -35,12 +35,12 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public InteractableDto dto;
 
-        public bool NotifySubObject { get => dto?.notifySubObject ?? false; }
+        public bool NotifySubObject => dto?.notifySubObject ?? false;
 
         /// <summary>
         /// Defines if this interactable has priority on browsers over other interactables with hasPriority false.
         /// </summary>
-        public bool HasPriority { get => dto?.hasPriority ?? false; }
+        public bool HasPriority => dto?.hasPriority ?? false;
 
 
         ///<inheritdoc/>
@@ -55,7 +55,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public void HoverEnter(uint bone, ulong hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
-            HoverStateChangedDto hoverDto = new HoverStateChangedDto()
+            var hoverDto = new HoverStateChangedDto()
             {
                 toolId = id,
                 hoveredObjectId = hoveredObjectId,
@@ -73,7 +73,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public void HoverExit(uint bone, ulong hoveredObjectId, Vector3 position, Vector3 normal, Vector3 direction)
         {
-            HoverStateChangedDto hoverDto = new HoverStateChangedDto()
+            var hoverDto = new HoverStateChangedDto()
             {
                 toolId = id,
                 hoveredObjectId = hoveredObjectId,
@@ -95,7 +95,7 @@ namespace umi3d.cdk.interaction
         {
             if (dto.notifyHoverPosition)
             {
-                HoveredDto hoverDto = new HoveredDto()
+                var hoverDto = new HoveredDto()
                 {
                     toolId = id,
                     hoveredObjectId = hoveredObjectId,
@@ -111,7 +111,7 @@ namespace umi3d.cdk.interaction
         ///<inheritdoc/>
         public override void Destroy()
         {
-            foreach (var container in InteractableContainer.containers.Where(c => c.Interactable == this))
+            foreach (InteractableContainer container in InteractableContainer.containers.Where(c => c.Interactable == this))
                 GameObject.Destroy(container);
             base.Destroy();
         }

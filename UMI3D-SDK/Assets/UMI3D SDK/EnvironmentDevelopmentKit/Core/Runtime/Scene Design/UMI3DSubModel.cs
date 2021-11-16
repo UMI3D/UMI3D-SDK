@@ -90,7 +90,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            SubModelDto subDto = dto as SubModelDto;
+            var subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
             subDto.subModelName = subModelName;
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;

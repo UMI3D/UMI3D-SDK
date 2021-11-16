@@ -24,8 +24,7 @@ namespace umi3d.cdk.collaboration
     [RequireComponent(typeof(AudioSource))]
     public class AudioReader : MonoBehaviour
     {
-
-        ulong lastTimeStep = 0;
+        private ulong lastTimeStep = 0;
 
         public void UpdateFrequency(int frequency)
         {
@@ -47,14 +46,14 @@ namespace umi3d.cdk.collaboration
         }
 
         #region Read
-        const NumChannels channels = NumChannels.Mono;
-        int frequency = (int)SamplingFrequency.Frequency_12000;
-        const int audioClipLength = 1024 * 6;
-        AudioSource source;
-        int head = 0;
-        float[] audioClipData;
+        private const NumChannels channels = NumChannels.Mono;
+        private int frequency = (int)SamplingFrequency.Frequency_12000;
+        private const int audioClipLength = 1024 * 6;
+        private AudioSource source;
+        private int head = 0;
+        private float[] audioClipData;
 
-        void OnEnable()
+        private void OnEnable()
         {
             source = GetComponent<AudioSource>();
             source.clip = AudioClip.Create("Loopback", audioClipLength, (int)channels, frequency, false);
@@ -66,14 +65,14 @@ namespace umi3d.cdk.collaboration
                 channels);
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             source.Stop();
             decoder.Dispose();
             decoder = null;
         }
 
-        void OnDecoded(float[] pcm, int pcmLength)
+        private void OnDecoded(float[] pcm, int pcmLength)
         {
             if (audioClipData == null || audioClipData.Length != pcmLength)
             {
@@ -94,16 +93,16 @@ namespace umi3d.cdk.collaboration
         #region Decoder
 
 
-        Decoder decoder;
-        readonly float[] pcmBuffer = new float[Decoder.maximumPacketDuration * (int)channels];
+        private Decoder decoder;
+        private readonly float[] pcmBuffer = new float[Decoder.maximumPacketDuration * (int)channels];
 
-        void OnEncoded(byte[] data, int length, ulong timeStep)
+        private void OnEncoded(byte[] data, int length, ulong timeStep)
         {
             if (timeStep - lastTimeStep > 500)
                 head = 0;
 
             lastTimeStep = timeStep;
-            var pcmLength = decoder.Decode(data, length, pcmBuffer);
+            int pcmLength = decoder.Decode(data, length, pcmBuffer);
             OnDecoded(pcmBuffer, pcmLength);
         }
         #endregion

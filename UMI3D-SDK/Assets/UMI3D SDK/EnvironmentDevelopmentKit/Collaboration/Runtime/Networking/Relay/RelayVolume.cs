@@ -236,7 +236,9 @@ namespace umi3d.edk.collaboration
                         if (relayMemory != null)
                         {
                             if (!relayMemory.ContainsKey(sender.Id()) || !relayMemory[sender.Id()].ContainsKey(to.Id()))
+                            {
                                 return true;
+                            }
                             else
                             {
                                 float StrategyDelay = 1 / strategy.constantFPS;
@@ -253,7 +255,9 @@ namespace umi3d.edk.collaboration
                         if (relayMemory != null)
                         {
                             if (!relayMemory.ContainsKey(sender.Id()) || !relayMemory[sender.Id()].ContainsKey(to.Id()))
+                            {
                                 return true;
+                            }
                             else
                             {
                                 float dist = 0f;
@@ -263,7 +267,9 @@ namespace umi3d.edk.collaboration
                                     dist = Vector3.Distance(to.Avatar.objectPosition.GetValue(userSender), sender.objectPosition.GetValue(to));
                                 }
                                 else
+                                {
                                     dist = Vector3.Distance(to.Avatar.objectPosition.GetValue(), sender.objectPosition.GetValue(to));
+                                }
 
                                 float coeff = 0f;
                                 if (dist > strategy.startingProximityDistance && dist < strategy.stoppingProximityDistance)
@@ -271,7 +277,9 @@ namespace umi3d.edk.collaboration
                                     coeff = (dist - strategy.startingProximityDistance) / (strategy.stoppingProximityDistance - strategy.startingProximityDistance);
                                 }
                                 else if (dist >= strategy.stoppingProximityDistance)
+                                {
                                     coeff = 1f;
+                                }
 
                                 float StrategyDelay = (1f - coeff) * (1 / strategy.maxProximityFPS) + coeff * (1 / strategy.minProximityFPS);
                                 float CurrentDelay = now - relayMemory[sender.Id()][to.Id()];
@@ -286,7 +294,9 @@ namespace umi3d.edk.collaboration
                 }
             }
             else
+            {
                 return false;
+            }
         }
 
         /// <summary>

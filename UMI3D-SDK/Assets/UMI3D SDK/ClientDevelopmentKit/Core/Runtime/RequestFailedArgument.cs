@@ -24,11 +24,11 @@ namespace umi3d.cdk
     /// </summary>
     public class RequestFailedArgument
     {
-
-        Action tryAgain;
+        private readonly Action tryAgain;
         public DateTime date { get; private set; }
-        UnityWebRequest request;
-        long responseCode = 0;
+
+        private readonly UnityWebRequest request;
+        private readonly long responseCode = 0;
 
         public long GetRespondCode()
         {
@@ -65,14 +65,14 @@ namespace umi3d.cdk
 
     }
 
-    public class Umi3dExecption : Exception
+    public class Umi3dException : Exception
     {
-        public Umi3dExecption(long errorCode, string message) : base(message)
+        public Umi3dException(long errorCode, string message) : base(message)
         {
             this.errorCode = errorCode;
         }
 
-        public Umi3dExecption(string message) : base(message)
+        public Umi3dException(string message) : base(message)
         {
             this.errorCode = 0;
         }

@@ -39,10 +39,12 @@ namespace umi3d.edk
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            var startInterpolation = new StartInterpolationPropertyDto();
-            startInterpolation.property = property;
-            startInterpolation.entityId = entityId;
-            startInterpolation.startValue = startValue;
+            var startInterpolation = new StartInterpolationPropertyDto
+            {
+                property = property,
+                entityId = entityId,
+                startValue = startValue
+            };
             return startInterpolation;
         }
     }

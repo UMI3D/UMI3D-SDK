@@ -49,6 +49,6 @@ namespace umi3d.common.interaction
         public string reason;
         public string serverName;
         public string app_id;
-        
+
     }
 }

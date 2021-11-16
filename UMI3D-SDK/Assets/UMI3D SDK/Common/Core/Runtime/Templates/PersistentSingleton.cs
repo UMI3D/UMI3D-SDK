@@ -18,19 +18,14 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-    public class PersistentSingleton<T> : MonoBehaviour where T : PersistentSingleton<T>
+    public class PersistentSingleton<T> : QuittingManager where T : PersistentSingleton<T>
     {
-        static T instance;
+        private static T instance;
 
         /// <summary>
         /// State if an instance of <typeparamref name="T"/> exist.
         /// </summary>
-        public static bool Exists
-        {
-            get { return instance != null; }
-        }
-
-        static bool applicationIsQuitting = false;
+        public static bool Exists => !ApplicationIsQuitting && instance != null;
 
         /// <summary>
         /// static rteference to the only instance of <typeparamref name="T"/>
@@ -39,7 +34,7 @@ namespace umi3d.common
         {
             get
             {
-                if (applicationIsQuitting)
+                if (ApplicationIsQuitting)
                 {
                     return null;
                 }
@@ -49,12 +44,17 @@ namespace umi3d.common
 
                     if (instance == null)
                     {
-                        GameObject g = GameObject.Find(typeof(T).Name);
-                        if (g) instance = g.GetComponent<T>();
+                        var g = GameObject.Find(typeof(T).Name);
+                        if (g)
+                        {
+                            instance = g.GetComponent<T>();
+                        }
                         else
                         {
-                            g = new GameObject();
-                            g.name = typeof(T).Name;
+                            g = new GameObject
+                            {
+                                name = typeof(T).Name
+                            };
                             instance = g.AddComponent<T>();
                         }
                     }
@@ -92,11 +92,6 @@ namespace umi3d.common
         {
             if (instance == this)
                 instance = null;
-        }
-
-        void OnApplicationQuit()
-        {
-            applicationIsQuitting = true;
         }
     }
 }

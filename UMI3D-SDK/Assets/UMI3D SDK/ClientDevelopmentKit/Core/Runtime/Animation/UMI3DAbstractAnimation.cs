@@ -46,13 +46,18 @@ namespace umi3d.cdk
                         if (dto.playing)
                         {
                             if (dto.startTime == default)
+                            {
                                 (entity.Object as UMI3DAbstractAnimation).Start();
+                            }
                             else
                             {
                                 (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
-                        else (entity.Object as UMI3DAbstractAnimation).Stop();
+                        else
+                        {
+                            (entity.Object as UMI3DAbstractAnimation).Stop();
+                        }
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
@@ -87,13 +92,18 @@ namespace umi3d.cdk
                         if (dto.playing)
                         {
                             if (dto.startTime == default)
+                            {
                                 (entity.Object as UMI3DAbstractAnimation).Start();
+                            }
                             else
                             {
                                 (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
-                        else (entity.Object as UMI3DAbstractAnimation).Stop();
+                        else
+                        {
+                            (entity.Object as UMI3DAbstractAnimation).Stop();
+                        }
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
@@ -116,7 +126,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -149,17 +159,36 @@ namespace umi3d.cdk
         {
             this.dto = dto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
-            if (dto.playing) UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
+            if (dto.playing)
+            {
+                if (dto.startTime == default)
+                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
+                else
+                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
+            }
         }
 
         /// <summary>
         /// Call start method next frame.
         /// </summary>
         /// <returns></returns>
-        IEnumerator StartNextFrame()
+        private IEnumerator StartNextFrame()
         {
             yield return new WaitForEndOfFrame();
-            Start();
+
+            if (dto.playing)
+                Start();
+        }
+
+
+        /// <summary>
+        /// Call start method next frame.
+        /// </summary>
+        /// <returns></returns>
+        private IEnumerator StartNextFrameAt(float time)
+        {
+            yield return new WaitForEndOfFrame();
+            Start(time);
         }
 
         public void Destroy()

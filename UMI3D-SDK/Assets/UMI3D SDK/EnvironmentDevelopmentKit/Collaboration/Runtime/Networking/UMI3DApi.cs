@@ -23,8 +23,8 @@ using System.Linq;
 using System.Text;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.edk.userCapture;
 using umi3d.edk.interaction;
+using umi3d.edk.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
@@ -46,11 +46,13 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.identity, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void GetIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            var user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UserConnectionDto identity = new UserConnectionDto(user.ToUserDto());
-            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user);
-            //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user);
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
+            var identity = new UserConnectionDto(user.ToUserDto())
+            {
+                parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
+                //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
+                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
+            };
             e.Response.WriteContent(identity.ToBson());
         }
 
@@ -65,11 +67,11 @@ namespace umi3d.edk.collaboration
         public void UpdateStatus(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            StatusDto dto = ReadDto(e.Request) as StatusDto;
+            var dto = ReadDto(e.Request) as StatusDto;
             UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, dto));
         }
 
-        IEnumerator _updateStatus(UMI3DCollaborationUser user, StatusDto dto)
+        private IEnumerator _updateStatus(UMI3DCollaborationUser user, StatusDto dto)
         {
             UMI3DCollaborationServer.Instance.UpdateStatus(user, dto);
             yield break;
@@ -85,11 +87,11 @@ namespace umi3d.edk.collaboration
         public void UpdateIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UserConnectionAnswerDto dto = ReadDto(e.Request) as UserConnectionAnswerDto;
+            var dto = ReadDto(e.Request) as UserConnectionAnswerDto;
             UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, dto));
         }
 
-        IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
+        private IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
             user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
@@ -122,7 +124,7 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.media, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
         public void MediaRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            var res = e.Response;
+            HttpListenerResponse res = e.Response;
             byte[] message = null;
             if (UMI3DEnvironment.Exists)
             {
@@ -159,7 +161,7 @@ namespace umi3d.edk.collaboration
                 UMI3DServer.publicRepository, file);
             file = System.Uri.UnescapeDataString(file);
             //Validate url.
-            var res = e.Response;
+            HttpListenerResponse res = e.Response;
             if (UMI3DServer.IsInPublicRepository(file))
             {
                 GetFile(file, res);
@@ -219,7 +221,7 @@ namespace umi3d.edk.collaboration
             {
                 if (Directory.Exists(directory))
                 {
-                    FileListDto dto = new FileListDto()
+                    var dto = new FileListDto()
                     {
                         files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
                         baseUrl = System.Uri.EscapeUriString(inetum.unityUtils.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
@@ -228,7 +230,9 @@ namespace umi3d.edk.collaboration
                     res.WriteContent(dto.ToBson());
                 }
                 else
+                {
                     Return404(res, "This directory doesn't exists!");
+                }
             }
             else
             {
@@ -262,7 +266,9 @@ namespace umi3d.edk.collaboration
                     ReturnNotImplemented(res);
                 }
                 else
+                {
                     Return404(res, "This directory doesn't exists!");
+                }
             }
             else
             {
@@ -305,7 +311,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private List<string> GetDir(string directory, string localpath = "/")
         {
-            List<string> files = new List<string>();
+            var files = new List<string>();
             IEnumerable<string> localFiles = Directory.GetFiles(directory).Select(full => System.IO.Path.GetFileName(full));
             IEnumerable<string> uris = localFiles.Select(f => inetum.unityUtils.Path.Combine(localpath, f));
             files.AddRange(uris);
@@ -355,7 +361,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        IEnumerator _GetEnvironment(UMI3DEnvironment environment, UMI3DUser user, Action<GlTFEnvironmentDto> callback, Action error)
+        private IEnumerator _GetEnvironment(UMI3DEnvironment environment, UMI3DUser user, Action<GlTFEnvironmentDto> callback, Action error)
         {
             callback.Invoke(environment.ToDto(user));
             yield return null;
@@ -373,7 +379,7 @@ namespace umi3d.edk.collaboration
         public void JoinEnvironment(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            JoinDto dto = ReadDto(e.Request) as JoinDto;
+            var dto = ReadDto(e.Request) as JoinDto;
             UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), dto.userSize, dto.trackedBonetypes);
             e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
             UMI3DCollaborationServer.NotifyUserJoin(user);
@@ -389,44 +395,79 @@ namespace umi3d.edk.collaboration
         public void PostEntity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            EntityRequestDto dto = ReadDto(e.Request) as EntityRequestDto;
-            var entity = UMI3DEnvironment.GetEntity<UMI3DLoadableEntity>(dto.entityId);
-            if (entity != null)
+            var dto = ReadDto(e.Request) as EntityRequestDto;
+
+            IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = dto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
+            IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
+            IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
+            IEnumerable<ulong> entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
+
+            if (entities != null)
             {
                 LoadEntityDto result = null;
                 bool finished = false;
                 bool ok = true;
                 UnityMainThreadDispatcher.Instance().Enqueue(
                     _GetEnvironment(
-                        entity, user,
-                        (res) => { result = res; finished = true; },
+                        entities, user,
+                        (res) =>
+                        {
+                            result = res;
+                            result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
+                            result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
+                            finished = true;
+                        },
                         () => { ok = false; finished = true; }
                     ));
                 while (!finished) System.Threading.Thread.Sleep(1);
                 if (ok)
+                {
                     e.Response.WriteContent(result.ToBson());
+                }
                 else
-                    Return404(e.Response, "Unvalid Id, Object seams to be missing");
+                {
+                    Return404(e.Response, "Internal Error");
+                }
             }
             else
-                Return404(e.Response, "Unvalid Id");
+            {
+                Return404(e.Response, "Internal Error");
+            }
         }
 
-        IEnumerator _GetEnvironment(UMI3DLoadableEntity entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        private IEnumerator _GetEnvironment((ulong, UMI3DLoadableEntity) entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        {
+            return _GetEnvironment(new List<(ulong, UMI3DLoadableEntity)>() { entity }, user, callback, error);
+        }
+
+        private IEnumerator _GetEnvironment(IEnumerable<(ulong, UMI3DLoadableEntity)> entities, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
             try
             {
                 var load = new LoadEntityDto()
                 {
-                    entity = entity.ToEntityDto(user),
-                };
-                callback.Invoke(load);
-            }
-            catch
-            {
-                error();
-            }
+                    entities = entities.Select((e) =>
+                    {
+                        try
+                        {
+                            IEntity dto = e.Item2?.ToEntityDto(user);
+                            return e.Item2?.ToEntityDto(user) ?? new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}");
+                            return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
+                        }
 
+                    }).ToList(),
+                };
+                callback?.Invoke(load);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"An error occured {ex}");
+                error?.Invoke();
+            }
 
             yield return null;
         }
@@ -440,8 +481,7 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.scene, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void GetScene(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            ulong id;
-            if (ulong.TryParse(uriparam["id"], out id))
+            if (ulong.TryParse(uriparam["id"], out ulong id))
             {
                 UMI3DUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
                 UMI3DScene scene = UMI3DEnvironment.GetEntity<UMI3DScene>(id);
@@ -539,7 +579,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             //Debug.Log("Receive local data from : " + user);
-            if(receiveLocalInfoListener != null)
+            if (receiveLocalInfoListener != null)
             {
                 receiveLocalInfoListener.Invoke(uriparam["param"], user, ReadObject(e.Request));
             }
@@ -556,7 +596,7 @@ namespace umi3d.edk.collaboration
         public void GetPlayerLocalInfo(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            Debug.Log( user + " wants to get datas from : " + uriparam["param"]);
+            Debug.Log(user + " wants to get datas from : " + uriparam["param"]);
             if (sendLocalInfoListener != null)
             {
                 sendLocalInfoListener.Invoke(uriparam["param"], user, e.Response);
@@ -575,17 +615,17 @@ namespace umi3d.edk.collaboration
         {
         }
         public static SendLocalinfoEvent sendLocalInfoListener = new SendLocalinfoEvent();
-        
+
         #endregion
 
         #region utils
-        UMI3DDto ReadDto(HttpListenerRequest request)
+        private UMI3DDto ReadDto(HttpListenerRequest request)
         {
-            var bytes = default(byte[]);
+            byte[] bytes = default(byte[]);
             using (var memstream = new MemoryStream())
             {
-                var buffer = new byte[512];
-                var bytesRead = default(int);
+                byte[] buffer = new byte[512];
+                int bytesRead = default(int);
                 while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
@@ -593,13 +633,13 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        byte[] ReadObject(HttpListenerRequest request)
+        private byte[] ReadObject(HttpListenerRequest request)
         {
-            var bytes = default(byte[]);
+            byte[] bytes = default(byte[]);
             using (var memstream = new MemoryStream())
             {
-                var buffer = new byte[512];
-                var bytesRead = default(int);
+                byte[] buffer = new byte[512];
+                int bytesRead = default(int);
                 while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
@@ -607,7 +647,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        void Return404(HttpListenerResponse response, string description = "This file does not exist :(")
+        private void Return404(HttpListenerResponse response, string description = "This file does not exist :(")
         {
             response.ContentType = "text/html";
             response.ContentEncoding = Encoding.UTF8;
@@ -616,7 +656,7 @@ namespace umi3d.edk.collaboration
             response.WriteContent(Encoding.UTF8.GetBytes("404 :("));
         }
 
-        void ReturnNotImplemented(HttpListenerResponse response, string description = "This method isn't implemented now :(")
+        private void ReturnNotImplemented(HttpListenerResponse response, string description = "This method isn't implemented now :(")
         {
             response.ContentType = "text/html";
             response.ContentEncoding = Encoding.UTF8;
