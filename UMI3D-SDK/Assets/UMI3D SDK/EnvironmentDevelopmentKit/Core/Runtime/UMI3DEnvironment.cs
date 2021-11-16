@@ -208,14 +208,6 @@ namespace umi3d.edk
 
         #region entities
 
-        /// <summary>
-        /// Scene's preview icon.
-        /// </summary>
-        /*[SerializeField]
-        protected CVEResource skybox = new CVEResource()
-        {
-            IsLocalFile = true
-        };*/
 
         /// <summary>
         /// Contains the objects stored in the scene.
@@ -231,6 +223,20 @@ namespace umi3d.edk
                 return Instance.entities?.Values?.ToList()?.Where(entities => entities is E)?.Select(e => e as E);
             else if (QuittingManager.ApplicationIsQuitting)
                 return new List<E>();
+            else
+                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+        }
+
+        /// <summary>
+        /// Return all id that have been registered and remove.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<ulong> GetUnregisteredEntitiesId()
+        {
+            if (Exists)
+                return Instance.entities?.old.ToList();
+            else if (QuittingManager.ApplicationIsQuitting)
+                return new List<ulong>();
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -259,6 +265,31 @@ namespace umi3d.edk
                 return Instance.entities[id] as E;
             else if (QuittingManager.ApplicationIsQuitting)
                 return null;
+            else
+                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+        }
+
+        /// <summary>
+        /// Get entity by id.
+        /// </summary>
+        /// <param name="id">Entity to get id</param>
+        public static (E entity,bool exist, bool found) GetEntityIfExist<E>(ulong id) where E : class, UMI3DEntity
+        {
+            if (Exists)
+            {
+                if (Instance.entities.IsOldId(id))
+                    return (null, false, true);
+                else
+                {
+                    var e = Instance.entities[id];
+                    if (e is E entity)
+                        return (entity, true, true);
+                    else
+                        return (null, true, true);
+                }
+            }
+            else if (QuittingManager.ApplicationIsQuitting)
+                return (null,false,false);
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
@@ -326,18 +357,21 @@ namespace umi3d.edk
         public static void Remove(ulong id)
         {
             if (id != 0 && Exists)
-                Instance?.entities?.Remove(id);
+            {
+                Instance.entities?.Remove(id);
+            }
         }
 
         public class DictionaryGenerator<A>
         {
-
+            private HashSet<ulong> unRegisteredIds = new HashSet<ulong>();
             /// <summary>
             /// Contains the  stored objects.
             /// </summary>
             private Dictionary<ulong, A> objects = new Dictionary<ulong, A>();
 
             public Dictionary<ulong, A>.ValueCollection Values => objects.Values;
+            public IEnumerable<ulong> old => unRegisteredIds;
 
             public A this[ulong key]
             {
@@ -350,6 +384,8 @@ namespace umi3d.edk
                     else return default;
                 }
             }
+
+            public bool IsOldId(ulong guid) => unRegisteredIds.Contains(guid);
 
             private System.Random random = new System.Random();
 
@@ -380,6 +416,8 @@ namespace umi3d.edk
                 byte[] key = Guid.NewGuid().ToByteArray();
                 ulong guid = NewID();
                 objects.Add(guid, obj);
+                if (unRegisteredIds.Contains(guid))
+                    unRegisteredIds.Remove(guid);
                 return guid;
             }
 
@@ -392,12 +430,15 @@ namespace umi3d.edk
                     Debug.LogWarning($"Guid [{old}] was already used node register with another id [{guid}]");
                 }
                 objects.Add(guid, obj);
+                if (unRegisteredIds.Contains(guid))
+                    unRegisteredIds.Remove(guid);
                 return guid;
             }
 
-            public void Remove(ulong key)
+            public void Remove(ulong guid)
             {
-                objects.Remove(key);
+                objects.Remove(guid);
+                unRegisteredIds.Add(guid);
             }
 
         }

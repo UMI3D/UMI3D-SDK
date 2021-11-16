@@ -35,9 +35,11 @@ namespace umi3d.cdk
         /// Index of any 3D object loaded.
         /// </summary>
         private Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
-        private Dictionary<ulong, List<Action<UMI3DEntityInstance>>> entitywaited = new Dictionary<ulong, List<Action<UMI3DEntityInstance>>>();
+        private Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>> entitywaited = new Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>>();
+        private HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
+        private HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
 
-        public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> callback)
+        public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
             if (!Exists) return;
             if (Instance.entitywaited == null) return;
@@ -45,24 +47,64 @@ namespace umi3d.cdk
             UMI3DEntityInstance node = GetEntity(id);
             if (node != null)
             {
-                callback?.Invoke(node);
+                entityLoaded?.Invoke(node);
             }
             else
             {
                 if (Instance.entitywaited.ContainsKey(id))
-                    Instance.entitywaited[id].Add(callback);
+                    Instance.entitywaited[id].Add((entityLoaded, entityFailedToLoad));
                 else
-                    Instance.entitywaited[id] = new List<Action<UMI3DEntityInstance>>() { callback };
+                    Instance.entitywaited[id] = new List<(Action<UMI3DEntityInstance>, Action)>() { (entityLoaded, entityFailedToLoad) };
             }
+        }
+
+        private static bool NotifyEntityToBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityToBeLoaded.Add(id) : false;
+        }
+
+        private static bool IsEntityToBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityToBeLoaded.Contains(id) : false;
+        }
+        private static bool IsEntityToFailedBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityFailedToBeLoaded.Contains(id) : false;
+        }
+
+        private static bool RemoveEntityToFailedBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityFailedToBeLoaded.Remove(id) : false;
         }
 
         private static void NotifyEntityLoad(ulong id)
         {
-            UMI3DEntityInstance node = GetEntity(id);
-            if (node != null && Instance.entitywaited.ContainsKey(id))
+            if (Exists)
             {
-                Instance.entitywaited[id].ForEach(a => a?.Invoke(node));
-                Instance.entitywaited.Remove(id);
+                UMI3DEntityInstance node = GetEntity(id);
+                if (node != null)
+                {
+                    if (Instance.entitywaited.ContainsKey(id))
+                    {
+                        Instance.entitywaited[id].ForEach(a => a.Item1?.Invoke(node));
+                        Instance.entitywaited.Remove(id);
+                    }
+                    Instance.entityToBeLoaded.Remove(id);
+                }
+            }
+        }
+
+        private static void NotifyEntityFailedToLoad(ulong id)
+        {
+            if (Exists)
+            {
+                if (Instance.entitywaited.ContainsKey(id))
+                {
+                    Instance.entitywaited[id].ForEach(a => a.Item2?.Invoke());
+                    Instance.entitywaited.Remove(id);
+                }
+                Instance.entityToBeLoaded.Remove(id);
+                Instance.entityFailedToBeLoaded.Add(id);
             }
         }
 
@@ -435,6 +477,7 @@ namespace umi3d.cdk
         private void _LoadEntity(ByteContainer container, Action performed)
         {
             List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
+            ids.ForEach(id => NotifyEntityToBeLoaded(id));
             int count = ids.Count;
             int performedCount = 0;
             Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
@@ -442,7 +485,13 @@ namespace umi3d.cdk
             {
                 foreach (IEntity item in load.entities)
                 {
-                    LoadEntity(item, performed2);
+                    if (item is MissingEntityDto missing)
+                    {
+                        NotifyEntityFailedToLoad(missing.id);
+                        Debug.Log($"Get entity [{missing.id}] failed : {missing.reason}");
+                    }
+                    else
+                        LoadEntity(item, performed2);
                 }
             };
             Action<string> error = (s) =>
@@ -475,9 +524,17 @@ namespace umi3d.cdk
             {
                 UMI3DResourcesManager.UnloadLibrary(entityId);
             }
+            else if (UMI3DEnvironmentLoader.IsEntityToBeLoaded(entityId))
+            {
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) => DeleteEntity(entityId, null));
+            }
+            else if (UMI3DEnvironmentLoader.IsEntityToFailedBeLoaded(entityId))
+            {
+                UMI3DEnvironmentLoader.RemoveEntityToFailedBeLoaded(entityId);
+            }
             else
             {
-                Debug.LogError($"Entity [{entityId}] To Destroy Not Found");
+                Debug.LogError($"Entity [{entityId}] To Destroy Not Found And Not in Entities to be loaded");
             }
 
             performed?.Invoke();

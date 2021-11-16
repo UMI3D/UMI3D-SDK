@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System;
 using System.Collections;
@@ -394,7 +395,12 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             var dto = ReadDto(e.Request) as EntityRequestDto;
-            IEnumerable<UMI3DLoadableEntity> entities = UMI3DEnvironment.GetEntitiesWhere<UMI3DLoadableEntity>((item) => dto.entitiesId.Contains(item.Id()));
+
+            var Allentities = dto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
+            var entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
+            var oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
+            var entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
+
             if (entities != null)
             {
                 LoadEntityDto result = null;
@@ -403,41 +409,63 @@ namespace umi3d.edk.collaboration
                 UnityMainThreadDispatcher.Instance().Enqueue(
                     _GetEnvironment(
                         entities, user,
-                        (res) => { result = res; finished = true; },
+                        (res) => {
+                            result = res;
+                            result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
+                            result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
+                            finished = true;
+                        },
                         () => { ok = false; finished = true; }
                     ));
                 while (!finished) System.Threading.Thread.Sleep(1);
                 if (ok)
+                {
                     e.Response.WriteContent(result.ToBson());
+                }
                 else
-                    Return404(e.Response, "Unvalid Id, Object seams to be missing");
+                {
+                    Return404(e.Response, "Internal Error");
+                }
             }
             else
             {
-                Return404(e.Response, "Unvalid Id");
+                Return404(e.Response, "Internal Error");
             }
         }
 
-        private IEnumerator _GetEnvironment(UMI3DLoadableEntity entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        private IEnumerator _GetEnvironment((ulong, UMI3DLoadableEntity) entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
-            return _GetEnvironment(new List<UMI3DLoadableEntity>() { entity }, user, callback, error);
+            return _GetEnvironment(new List<(ulong, UMI3DLoadableEntity)>() { entity }, user, callback, error);
         }
 
-        private IEnumerator _GetEnvironment(IEnumerable<UMI3DLoadableEntity> entities, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        private IEnumerator _GetEnvironment(IEnumerable<(ulong, UMI3DLoadableEntity)> entities, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
             try
             {
                 var load = new LoadEntityDto()
                 {
-                    entities = entities.Select((e) => e.ToEntityDto(user)).ToList(),
-                };
-                callback.Invoke(load);
-            }
-            catch
-            {
-                error();
-            }
+                    entities = entities.Select((e) =>
+                    {
+                        try
+                        {
+                            var dto = e.Item2?.ToEntityDto(user);
+                            return e.Item2?.ToEntityDto(user) ?? new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}");
+                            return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
+                        }
 
+                    }).ToList(),
+                };
+                callback?.Invoke(load);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"An error occured {ex}");
+                error?.Invoke();
+            }
 
             yield return null;
         }
