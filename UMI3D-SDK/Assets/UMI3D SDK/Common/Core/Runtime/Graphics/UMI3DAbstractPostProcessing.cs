@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace umi3d.common.graphics
@@ -26,10 +24,16 @@ namespace umi3d.common.graphics
         /// Get the main camera.
         /// </summary>
         /// <returns></returns>
-        public static Camera GetCamera() => Exists ? Instance._GetCamera() : null;
+        public static Camera GetCamera()
+        {
+            return Exists ? Instance._GetCamera() : null;
+        }
 
         /// <see cref=" UMI3DAbstractPostProcessing.GetCamera()"/>
-        protected virtual Camera _GetCamera() => Camera.main;
+        protected virtual Camera _GetCamera()
+        {
+            return Camera.main;
+        }
 
         #region Bloom
         /// <summary>
@@ -38,7 +42,7 @@ namespace umi3d.common.graphics
         /// <returns></returns>
         public static void SetBloom(UMI3DGlobalBloom bloom)
         {
-           if(Exists)
+            if (Exists)
                 Instance._SetBloom(bloom);
         }
 

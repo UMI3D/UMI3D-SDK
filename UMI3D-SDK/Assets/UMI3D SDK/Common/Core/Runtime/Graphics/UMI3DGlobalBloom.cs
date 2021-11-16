@@ -54,35 +54,35 @@ namespace umi3d.common.graphics
         private bool fastMode = false;
 
         [Header("Dirtiness")]
-        private Texture dirt_Texture = null;
+        private readonly Texture dirt_Texture = null;
 
         [SerializeField]
         private float dirt_Intensity = 0f;
 
-        public bool BloomEnabled { get => bloomEnabled; }
-        public float Intensity { get => intensity;  }
-        public float Threshold { get => threshold;  }
-        public float SoftKnee { get => softKnee;  }
-        public float Clamp { get => clamp;  }
-        public float Diffusion { get => diffusion; }
-        public float AnamorphicRatio { get => anamorphicRatio; }
-        public Color Color { get => color;  }
-        public bool FastMode { get => fastMode;  }
-        public Texture Dirt_Texture { get => dirt_Texture;  }
-        public float Dirt_Intensity { get => dirt_Intensity;  }
+        public bool BloomEnabled => bloomEnabled;
+        public float Intensity => intensity;
+        public float Threshold => threshold;
+        public float SoftKnee => softKnee;
+        public float Clamp => clamp;
+        public float Diffusion => diffusion;
+        public float AnamorphicRatio => anamorphicRatio;
+        public Color Color => color;
+        public bool FastMode => fastMode;
+        public Texture Dirt_Texture => dirt_Texture;
+        public float Dirt_Intensity => dirt_Intensity;
 
         public static void ResetGlobalBloom()
         {
             UMI3DAbstractPostProcessing.ResetBloom();
         }
 
-        void Start()
+        private void Start()
         {
             UMI3DAbstractPostProcessing.SetBloom(this);
         }
 
 #if UNITY_EDITOR
-        void OnValidate()
+        private void OnValidate()
         {
             UMI3DAbstractPostProcessing.SetBloom(this);
         }

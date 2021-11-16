@@ -139,7 +139,7 @@ namespace umi3d.edk
         /// <see cref="VerticalOverflow"/>
         private VerticalWrapMode verticalOverflow => GetComponent<Text>().verticalOverflow;
 
-        private UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
 
         private UMI3DAsyncProperty<TextAnchor> _alignment;
         private UMI3DAsyncProperty<bool> _alignByGeometry;

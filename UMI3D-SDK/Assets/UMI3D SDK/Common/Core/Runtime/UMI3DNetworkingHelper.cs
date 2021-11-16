@@ -22,7 +22,7 @@ namespace umi3d.common
 {
     public static class UMI3DNetworkingHelper
     {
-        private static List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
+        private static readonly List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
 
         /// <summary>
         /// Add a networking module.
@@ -716,8 +716,8 @@ namespace umi3d.common
 
         private class DictionaryEntryBytable : IBytable
         {
-            private object key;
-            private IBytable value;
+            private readonly object key;
+            private readonly IBytable value;
 
             public DictionaryEntryBytable(DictionaryEntry entry)
             {

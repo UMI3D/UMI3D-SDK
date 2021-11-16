@@ -32,9 +32,9 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Contain the users connected to the scene.
         /// </summary>
-        private Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
-        private Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
-        private Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
+        private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
+        private readonly Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
+        private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
         private UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
 
@@ -61,9 +61,11 @@ namespace umi3d.edk.collaboration
 
         public PlayerCountDto GetPlayerCount()
         {
-            var pc = new PlayerCountDto();
-            pc.count = users.Count(k => k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY);
-            pc.lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss");
+            var pc = new PlayerCountDto
+            {
+                count = users.Count(k => k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY),
+                lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss")
+            };
             return pc;
         }
 

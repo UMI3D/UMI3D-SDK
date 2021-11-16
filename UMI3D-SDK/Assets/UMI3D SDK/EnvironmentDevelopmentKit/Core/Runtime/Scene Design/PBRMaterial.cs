@@ -112,7 +112,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> objectNormalTextureScale { get { Id(); return _objectNormalTextureScale; } protected set => _objectNormalTextureScale = value; }
         public UMI3DAsyncProperty<float> objectHeightTextureScale { get { Id(); return _objectHeightTextureScale; } protected set => _objectHeightTextureScale = value; }
 
-        private UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
 
         private UMI3DAsyncProperty<Color> _objectBaseColorFactor;
         private UMI3DAsyncProperty<float> _objectMetallicFactor;
@@ -131,7 +131,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingOffset;
         private UMI3DAsyncProperty<float> _objectNormalTextureScale;
         private UMI3DAsyncProperty<float> _objectHeightTextureScale;
-        private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
+        private readonly UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)

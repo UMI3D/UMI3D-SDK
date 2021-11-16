@@ -26,7 +26,7 @@ namespace umi3d.cdk
 
     public class UMI3DSceneLoader : UMI3DAbstractNodeLoader
     {
-        private UMI3DEnvironmentLoader EnvironementLoader;
+        private readonly UMI3DEnvironmentLoader EnvironementLoader;
 
         public UMI3DSceneLoader(UMI3DEnvironmentLoader EnvironementLoader)
         {

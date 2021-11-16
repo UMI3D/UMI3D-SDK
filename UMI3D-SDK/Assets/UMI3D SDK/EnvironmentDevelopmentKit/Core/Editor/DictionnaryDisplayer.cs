@@ -30,8 +30,8 @@ namespace umi3d.edk.editor
         private const char downArrow = '\u25bc';
         private const char cross = 'X';
         private const int buttonWidth = 25;
-        private bool displayArrows = false;
-        private Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> NewValue;
+        private readonly bool displayArrows = false;
+        private readonly Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> NewValue;
 
         public DictionnaryDisplayer(Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> newValue, bool displayArrow = false)
         {

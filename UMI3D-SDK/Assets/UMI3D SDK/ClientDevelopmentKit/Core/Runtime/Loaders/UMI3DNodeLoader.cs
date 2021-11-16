@@ -129,8 +129,10 @@ namespace umi3d.cdk
                     if (r != null)
                         rend.Add(r);
                 }
-                var l = new LOD(lod.screenSize, rend.ToArray());
-                l.fadeTransitionWidth = lod.fadeTransition;
+                var l = new LOD(lod.screenSize, rend.ToArray())
+                {
+                    fadeTransitionWidth = lod.fadeTransition
+                };
                 ls.Add(l);
             }
 
@@ -335,8 +337,10 @@ namespace umi3d.cdk
 
                         if (dto.colliderDto == null)
                         {
-                            dto.colliderDto = new ColliderDto();
-                            dto.colliderDto.colliderType = (ColliderType)(Int64)property.value;
+                            dto.colliderDto = new ColliderDto
+                            {
+                                colliderType = (ColliderType)(Int64)property.value
+                            };
                         }
                         else
                         {
@@ -560,8 +564,11 @@ namespace umi3d.cdk
 
                         if (dto.colliderDto == null)
                         {
-                            dto.colliderDto = new ColliderDto();
-                            dto.colliderDto.colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(container); ;
+                            dto.colliderDto = new ColliderDto
+                            {
+                                colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(container)
+                            };
+                            ;
                         }
                         else
                         {

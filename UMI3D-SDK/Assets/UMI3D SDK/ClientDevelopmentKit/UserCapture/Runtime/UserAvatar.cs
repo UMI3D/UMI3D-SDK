@@ -59,7 +59,7 @@ namespace umi3d.cdk.userCapture
 
         protected Dictionary<BoundObject, SavedTransform> savedTransforms = new Dictionary<BoundObject, SavedTransform>();
 
-        private List<Bound> bounds = new List<Bound>();
+        private readonly List<Bound> bounds = new List<Bound>();
 
         private void Update()
         {

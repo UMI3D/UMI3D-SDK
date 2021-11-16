@@ -56,8 +56,10 @@ namespace umi3d.cdk.collaboration
             public void Set(UserConnectionDto dto)
             {
                 FormAnswerDto param = this.dto.parameters;
-                this.dto = new UserConnectionAnswerDto(dto);
-                this.dto.parameters = param;
+                this.dto = new UserConnectionAnswerDto(dto)
+                {
+                    parameters = param
+                };
                 this.formdto = dto.parameters;
             }
         }
@@ -179,7 +181,7 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
-        private double maxMillisecondToWait = 10000;
+        private readonly double maxMillisecondToWait = 10000;
 
         /// <summary>
         /// launch a new request

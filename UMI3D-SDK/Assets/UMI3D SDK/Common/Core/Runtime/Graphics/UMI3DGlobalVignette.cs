@@ -61,27 +61,27 @@ namespace umi3d.common.graphics
         [SerializeField]
         private bool rounded = false;
 
-        public bool VignetteEnabled { get => vignetteEnabled; }
-        public VignetteMode Mode { get => mode; }
-        public Color Color { get => color;  }
-        public Vector2 Center { get => center;  }
-        public float Intensity { get => intensity; }
-        public float Smoothness { get => smoothness;  }
-        public float Roundness { get => roundness; }
-        public bool Rounded { get => rounded; }
+        public bool VignetteEnabled => vignetteEnabled;
+        public VignetteMode Mode => mode;
+        public Color Color => color;
+        public Vector2 Center => center;
+        public float Intensity => intensity;
+        public float Smoothness => smoothness;
+        public float Roundness => roundness;
+        public bool Rounded => rounded;
 
         public static void ResetGlobalVignette()
         {
             UMI3DAbstractPostProcessing.ResetVignette();
         }
 
-        void Start()
+        private void Start()
         {
             UMI3DAbstractPostProcessing.SetVignette(this);
         }
 
 #if UNITY_EDITOR
-        void OnValidate()
+        private void OnValidate()
         {
             UMI3DAbstractPostProcessing.SetVignette(this);
         }

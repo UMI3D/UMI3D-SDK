@@ -80,8 +80,8 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Associate a menu to its displayer (if any).
         /// </summary>
-        private Dictionary<AbstractMenu, AbstractMenuDisplayContainer> menuToDisplayer = new Dictionary<AbstractMenu, AbstractMenuDisplayContainer>();
-        private Dictionary<AbstractMenuItem, AbstractDisplayer> itemToDisplayer = new Dictionary<AbstractMenuItem, AbstractDisplayer>();
+        private readonly Dictionary<AbstractMenu, AbstractMenuDisplayContainer> menuToDisplayer = new Dictionary<AbstractMenu, AbstractMenuDisplayContainer>();
+        private readonly Dictionary<AbstractMenuItem, AbstractDisplayer> itemToDisplayer = new Dictionary<AbstractMenuItem, AbstractDisplayer>();
 
         public UnityEvent firstButtonBackButtonPressed = new UnityEvent();
 

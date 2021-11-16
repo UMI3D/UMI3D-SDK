@@ -35,7 +35,6 @@ namespace umi3d.common.graphics
 
         protected override void _ResetBloom()
         {
-            Bloom oldm;
             // Create an instance of a vignette
             Bloom defaultBloom = ScriptableObject.CreateInstance<Bloom>();
 
@@ -55,7 +54,7 @@ namespace umi3d.common.graphics
             PostProcessVolume volume = GetCamera().GetComponent<PostProcessVolume>();
             if (volume != null)
             {
-                if (volume.sharedProfile.TryGetSettings(out oldm))
+                if (volume.sharedProfile.TryGetSettings(out Bloom oldm))
                     volume.sharedProfile.RemoveSettings<Bloom>();
                 volume.sharedProfile.AddSettings(defaultBloom);
             }
@@ -73,7 +72,6 @@ namespace umi3d.common.graphics
 
         protected override void _ResetVignette()
         {
-            Vignette oldv;
             // Create an instance of a vignette
 
             Vignette vignette = ScriptableObject.CreateInstance<Vignette>();
@@ -90,7 +88,7 @@ namespace umi3d.common.graphics
             PostProcessVolume volume = GetCamera().GetComponent<PostProcessVolume>();
             if (volume != null)
             {
-                if (volume.sharedProfile.TryGetSettings(out oldv))
+                if (volume.sharedProfile.TryGetSettings(out Vignette oldv))
                     volume.sharedProfile.RemoveSettings<Vignette>();
                 volume.sharedProfile.AddSettings(vignette);
             }
@@ -98,7 +96,6 @@ namespace umi3d.common.graphics
 
         protected override void _SetBloom(UMI3DGlobalBloom bloom)
         {
-            Bloom oldm;
             // Create an instance of a vignette
             m_Bloom = ScriptableObject.CreateInstance<Bloom>();
 
@@ -114,9 +111,9 @@ namespace umi3d.common.graphics
             m_Bloom.dirtTexture.Override(bloom.Dirt_Texture);
             m_Bloom.dirtIntensity.Override(bloom.Dirt_Intensity);
 
-            if(m_Volume == null)
+            if (m_Volume == null)
                 m_Volume = GetCamera().GetComponent<PostProcessVolume>();
-            if (m_Volume.sharedProfile.TryGetSettings(out oldm))
+            if (m_Volume.sharedProfile.TryGetSettings(out Bloom oldm))
                 m_Volume.sharedProfile.RemoveSettings<Bloom>();
             m_Volume.sharedProfile.AddSettings(m_Bloom);
         }
@@ -133,9 +130,8 @@ namespace umi3d.common.graphics
 
         protected override void _SetVignette(UMI3DGlobalVignette vignette)
         {
-            Vignette oldv;
             // Create an instance of a vignette
-            if(m_Vignette == null)
+            if (m_Vignette == null)
                 m_Vignette = ScriptableObject.CreateInstance<Vignette>();
             m_Vignette.enabled.Override(vignette.VignetteEnabled);
             m_Vignette.mode.Override(Convert(vignette.Mode));
@@ -149,12 +145,12 @@ namespace umi3d.common.graphics
 
             if (m_Volume == null)
                 m_Volume = GetCamera().GetComponent<PostProcessVolume>();
-            if (m_Volume.sharedProfile.TryGetSettings(out oldv))
+            if (m_Volume.sharedProfile.TryGetSettings(out Vignette oldv))
                 m_Volume.sharedProfile.RemoveSettings<Vignette>();
             m_Volume.sharedProfile.AddSettings(m_Vignette);
         }
 
-        VignetteMode Convert(UMI3DGlobalVignette.VignetteMode vignette)
+        private VignetteMode Convert(UMI3DGlobalVignette.VignetteMode vignette)
         {
             switch (vignette)
             {
@@ -166,7 +162,7 @@ namespace umi3d.common.graphics
             return 0;
         }
 
-        FogMode Convert(UMI3DFogSettings.FogMode fogMode)
+        private FogMode Convert(UMI3DFogSettings.FogMode fogMode)
         {
             switch (fogMode)
             {

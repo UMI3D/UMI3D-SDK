@@ -45,7 +45,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Currently projected tools.
         /// </summary>
-        private Dictionary<ulong, InteractionMappingReason> projectedTools = new Dictionary<ulong, InteractionMappingReason>();
+        private readonly Dictionary<ulong, InteractionMappingReason> projectedTools = new Dictionary<ulong, InteractionMappingReason>();
 
         #endregion
 

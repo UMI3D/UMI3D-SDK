@@ -57,25 +57,25 @@ namespace umi3d.common.graphics
         [SerializeField]
         private float endDistance = 300f;
 
-        public bool FogEnabled { get => fogEnabled; }
-        public Color Color { get => color;}
-        public FogMode Mode { get => mode;}
-        public float Density { get => density; }
-        public float StartDistance { get => startDistance; }
-        public float EndDistance { get => endDistance; }
+        public bool FogEnabled => fogEnabled;
+        public Color Color => color;
+        public FogMode Mode => mode;
+        public float Density => density;
+        public float StartDistance => startDistance;
+        public float EndDistance => endDistance;
 
         public static void ResetFogSettings()
         {
             UMI3DAbstractPostProcessing.ResetFog();
         }
 
-        void ConfigureFog()
+        private void ConfigureFog()
         {
             UMI3DAbstractPostProcessing.SetFogSettings(this);
         }
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             ConfigureFog();
         }
@@ -83,7 +83,7 @@ namespace umi3d.common.graphics
 #if UNITY_EDITOR
 
         // Update is called once per frame
-        void OnValidate()
+        private void OnValidate()
         {
             ConfigureFog();
         }

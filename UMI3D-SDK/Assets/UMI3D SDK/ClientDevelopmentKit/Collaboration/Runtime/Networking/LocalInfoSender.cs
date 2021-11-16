@@ -24,7 +24,7 @@ namespace umi3d.cdk.collaboration
 {
     public class LocalInfoSender
     {
-        private static Dictionary<string, LocalInfoRequestParameterValue> autorizations = new Dictionary<string, LocalInfoRequestParameterValue>();
+        private static readonly Dictionary<string, LocalInfoRequestParameterValue> autorizations = new Dictionary<string, LocalInfoRequestParameterValue>();
 
         /// <summary>
         /// Read local info in order to send to server.

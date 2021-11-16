@@ -73,12 +73,12 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to check the Equality between two T objects;
         /// </summary>
-        private Func<T, T, bool> Equal;
+        private readonly Func<T, T, bool> Equal;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        private Func<T, UMI3DUser, object> Serializer;
+        private readonly Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
         /// 

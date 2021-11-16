@@ -198,7 +198,7 @@ namespace umi3d.cdk
             }
 
             public static Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
-            private Match a;// = rx.Match(url);
+            private readonly Match a;// = rx.Match(url);
 
             /// <summary>
             /// Match if a url is valid for this object.

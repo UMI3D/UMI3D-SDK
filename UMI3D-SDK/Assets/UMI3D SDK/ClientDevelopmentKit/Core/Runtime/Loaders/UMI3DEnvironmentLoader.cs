@@ -34,10 +34,10 @@ namespace umi3d.cdk
         /// <summary>
         /// Index of any 3D object loaded.
         /// </summary>
-        private Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
-        private Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>> entitywaited = new Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>>();
-        private HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
-        private HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
+        private readonly Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
+        private readonly Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>> entitywaited = new Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>>();
+        private readonly HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
+        private readonly HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
 
         public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
@@ -909,7 +909,7 @@ namespace umi3d.cdk
             }
         }
 
-        private Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>>();
+        private readonly Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>>();
 
         private void Update()
         {

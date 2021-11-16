@@ -23,9 +23,9 @@ namespace umi3d.cdk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
-        private VideoPlayer videoPlayer;
-        private Material mat;
-        private RenderTexture renderTexture;
+        private readonly VideoPlayer videoPlayer;
+        private readonly Material mat;
+        private readonly RenderTexture renderTexture;
 
         public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 

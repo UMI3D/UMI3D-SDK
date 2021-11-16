@@ -28,7 +28,7 @@ namespace umi3d.cdk
         public static new UMI3DAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimation; }
         protected new UMI3DAnimationDto dto { get => base.dto as UMI3DAnimationDto; set => base.dto = value; }
 
-        private List<Coroutine> Coroutines = new List<Coroutine>();
+        private readonly List<Coroutine> Coroutines = new List<Coroutine>();
         private Coroutine PlayingCoroutines;
         private float progress;
         private bool started = false;

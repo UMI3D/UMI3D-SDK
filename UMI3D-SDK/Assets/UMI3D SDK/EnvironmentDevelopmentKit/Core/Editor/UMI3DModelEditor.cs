@@ -30,8 +30,8 @@ namespace umi3d.edk.editor
         private SerializedProperty isPartOfNavmesh;
         private SerializedProperty isTraversable;
 
-        private Editor _materialEditor = null;
-        private bool foldout;
+        private readonly Editor _materialEditor = null;
+        private readonly bool foldout;
 
         ///<inheritdoc/>
         protected override void OnEnable()

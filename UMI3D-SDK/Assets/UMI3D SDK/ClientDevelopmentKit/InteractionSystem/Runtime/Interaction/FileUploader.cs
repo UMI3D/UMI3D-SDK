@@ -28,7 +28,7 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public static class FileUploader
     {
-        private static Dictionary<string, string> filesToUpload = new Dictionary<string, string>(); // key:fileId  value:path
+        private static readonly Dictionary<string, string> filesToUpload = new Dictionary<string, string>(); // key:fileId  value:path
 
         /// <summary>
         /// Checks if the fileId match with a file to upload then return the file in bytes and remove the file from filesToUpload, else return null

@@ -71,9 +71,11 @@ namespace umi3d.cdk.interaction
                     result = new MenuItem();
                     break;
                 case EventDto eventDto:
-                    var e = new EventMenuItem();
-                    e.interaction = eventDto;
-                    e.toggle = eventDto.hold;
+                    var e = new EventMenuItem
+                    {
+                        interaction = eventDto,
+                        toggle = eventDto.hold
+                    };
                     e.Subscribe((x) =>
                     {
                         if (eventDto.hold)

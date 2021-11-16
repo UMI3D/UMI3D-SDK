@@ -102,14 +102,16 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         public override ForgeConnectionDto ToDto()
         {
-            var dto = new ForgeConnectionDto();
-            dto.host = ip;
-            dto.httpUrl = _GetHttpUrl();
-            dto.forgeServerPort = forgePort;
-            dto.forgeMasterServerHost = forgeMasterServerHost;
-            dto.forgeMasterServerPort = forgeMasterServerPort;
-            dto.forgeNatServerHost = forgeNatServerHost;
-            dto.forgeNatServerPort = forgeNatServerPort;
+            var dto = new ForgeConnectionDto
+            {
+                host = ip,
+                httpUrl = _GetHttpUrl(),
+                forgeServerPort = forgePort,
+                forgeMasterServerHost = forgeMasterServerHost,
+                forgeMasterServerPort = forgeMasterServerPort,
+                forgeNatServerHost = forgeNatServerHost,
+                forgeNatServerPort = forgeNatServerPort
+            };
             return dto;
         }
 
@@ -440,8 +442,8 @@ namespace umi3d.edk.collaboration
             ForgeServer.SendData(user.networkPlayer, data, dispatchableRequest.reliable);
         }
 
-        private Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        private Dictionary<UMI3DCollaborationUser, DispatchableRequest> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, DispatchableRequest>();
+        private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
+        private readonly Dictionary<UMI3DCollaborationUser, DispatchableRequest> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, DispatchableRequest>();
         private void Update()
         {
             foreach (KeyValuePair<UMI3DCollaborationUser, Transaction> kp in TransactionToBeSend.ToList())
