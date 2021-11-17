@@ -35,6 +35,8 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DApi
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         #region users
 
         /// <summary>
@@ -455,7 +457,7 @@ namespace umi3d.edk.collaboration
                         }
                         catch (Exception ex)
                         {
-                            Debug.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}");
+                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}",scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
 
@@ -465,7 +467,7 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ex)
             {
-                Debug.LogError($"An error occured {ex}");
+                UMI3DLogger.LogError($"An error occured {ex}",scope);
                 error?.Invoke();
             }
 
@@ -535,18 +537,18 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             if (!uriparam.ContainsKey("param"))
             {
-                Debug.LogWarning("unvalide upload request, wrong networking key");
+                UMI3DLogger.LogWarning("unvalide upload request, wrong networking key",scope);
                 return;
             }
             string token = uriparam["param"];
             if (!UploadFileParameter.uploadTokens.ContainsKey(token))
             {
-                Debug.LogWarning("unvalide token (upload request)");
+                UMI3DLogger.LogWarning("unvalide token (upload request)",scope);
                 return;
             }
             if (!e.Request.Headers.Contains(UMI3DNetworkingKeys.contentHeader))
             {
-                Debug.LogWarning("unvalide header (upload request)");
+                UMI3DLogger.LogWarning("unvalide header (upload request)",scope);
                 return;
             }
             string fileName = e.Request.Headers[UMI3DNetworkingKeys.contentHeader];
@@ -559,7 +561,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                Debug.LogWarning("unauthorized extension : " + fileName + " (upload request)");
+                UMI3DLogger.LogWarning("unauthorized extension : " + fileName + " (upload request)",scope);
                 return;
             }
 
@@ -578,7 +580,7 @@ namespace umi3d.edk.collaboration
         public void PostPlayerLocalInfo(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            //Debug.Log("Receive local data from : " + user);
+            //UMI3DLogger.Log("Receive local data from : " + user,scope);
             if (receiveLocalInfoListener != null)
             {
                 receiveLocalInfoListener.Invoke(uriparam["param"], user, ReadObject(e.Request));
@@ -596,7 +598,7 @@ namespace umi3d.edk.collaboration
         public void GetPlayerLocalInfo(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            Debug.Log(user + " wants to get datas from : " + uriparam["param"]);
+            UMI3DLogger.Log(user + " wants to get datas from : " + uriparam["param"],scope);
             if (sendLocalInfoListener != null)
             {
                 sendLocalInfoListener.Invoke(uriparam["param"], user, e.Response);

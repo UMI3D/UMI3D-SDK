@@ -23,6 +23,8 @@ namespace umi3d.cdk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
+
         public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         public AudioSource audioSource { get; private set; }
 
@@ -87,10 +89,10 @@ namespace umi3d.cdk
                         }
                         else
                         {
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}");
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}",scope);
                         }
                     },
-                    Debug.LogWarning,
+                     e => UMI3DLogger.LogWarning(e,scope),
                     loader.DeleteObject
                     );
             }
@@ -173,9 +175,9 @@ namespace umi3d.cdk
                                 if (clipa != null)
                                     audioSource.clip = clipa;
                                 else
-                                    Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
                             },
-                            Debug.LogWarning,
+                            e=>UMI3DLogger.LogWarning(e,scope),
                             loader.DeleteObject
                             );
                     }

@@ -23,6 +23,8 @@ namespace umi3d.cdk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
+
         private readonly VideoPlayer videoPlayer;
         private readonly Material mat;
         private readonly RenderTexture renderTexture;
@@ -38,7 +40,7 @@ namespace umi3d.cdk
             mat = UMI3DEnvironmentLoader.GetEntity(dto.materialId).Object as Material;
             if (mat == null)
             {
-                Debug.LogWarning("Material not found to display video");
+                UMI3DLogger.LogWarning("Material not found to display video",scope);
                 return;
             }
             mat.DisableKeyword("_DISABLE_ALBEDO_MAP");
@@ -57,7 +59,7 @@ namespace umi3d.cdk
             videoPlayer.skipOnDrop = true;
             videoPlayer.waitForFirstFrame = false;
             videoPlayer.isLooping = dto.looping;
-            //videoPlayer.prepareCompleted += (v) => Debug.LogWarning("PREPARED !");
+            //videoPlayer.prepareCompleted += (v) => UMI3DLogger.LogWarning("PREPARED !");
             videoPlayer.Prepare();
 
 

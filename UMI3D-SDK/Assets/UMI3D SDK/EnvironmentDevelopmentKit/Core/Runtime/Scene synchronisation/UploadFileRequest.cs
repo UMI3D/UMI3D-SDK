@@ -20,13 +20,15 @@ namespace umi3d.edk
 {
     public class UploadFileRequest : DispatchableRequest
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Networking;
+
         public string token;
         public string fileId;
 
         public UploadFileRequest(bool reliable, string fileId, HashSet<UMI3DUser> users = null) : base(reliable, users)
         {
             this.token = System.Guid.NewGuid().ToString();//.Replace('-','0');
-            UnityEngine.Debug.LogWarning("token : " + this.token);
+            UMI3DLogger.LogWarning("token : " + this.token,scope);
             this.fileId = fileId;
         }
 

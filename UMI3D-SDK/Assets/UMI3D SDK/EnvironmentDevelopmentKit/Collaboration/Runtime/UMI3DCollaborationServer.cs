@@ -33,6 +33,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DCollaborationServer : UMI3DServer
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         public static new UMI3DCollaborationServer Instance { get => UMI3DServer.Instance as UMI3DCollaborationServer; set => UMI3DServer.Instance = value; }
 
         public bool isRunning { get; protected set; } = false;
@@ -184,7 +185,7 @@ namespace umi3d.edk.collaboration
             Collaboration.UserJoin(user);
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>");
+                UMI3DLogger.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>",scope);
                 Instance.NotifyUserJoin(user);
             });
         }
@@ -221,7 +222,7 @@ namespace umi3d.edk.collaboration
                 }
             }
             //if offline. 
-            Debug.LogWarning("No public IP found. This computer seems to be offline.");
+            UMI3DLogger.LogWarning("No public IP found. This computer seems to be offline.",scope);
             foreach (IPAddress ip in host.AddressList)
             {
                 if (ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
@@ -340,7 +341,7 @@ namespace umi3d.edk.collaboration
 
         private void _Logout(UMI3DCollaborationUser user)
         {
-            Debug.Log($"Logout {user.login} {user.Id()}");
+            UMI3DLogger.Log($"Logout {user.login} {user.Id()}",scope);
             OnUserLeave.Invoke(user);
         }
 
@@ -377,7 +378,7 @@ namespace umi3d.edk.collaboration
 
         public virtual void Ping(UMI3DCollaborationUser user)
         {
-            Debug.Log($"Ping {user.Id()} {user.login}");
+            UMI3DLogger.Log($"Ping {user.Id()} {user.login}",scope);
             user.networkPlayer.Ping();
             var sr = new StatusRequestDto { CurrentStatus = user.status };
             ForgeServer.SendSignalingMessage(user.networkPlayer, sr);

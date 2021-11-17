@@ -29,6 +29,9 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class HttpClient
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+
+
         private readonly UMI3DCollaborationClientServer client;
         internal string ComputedToken;
 
@@ -361,8 +364,8 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
-                        Debug.LogError(www.error);
-                        Debug.LogError("Failed to get " + www.url);
+                        UMI3DLogger.LogError(www.error,scope);
+                        UMI3DLogger.LogError("Failed to get " + www.url,scope);
                     }
                 }
                 yield break;
@@ -401,8 +404,8 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
-                        Debug.LogError(www.error);
-                        Debug.LogError("Failed to post " + www.url);
+                        UMI3DLogger.LogError(www.error,scope);
+                        UMI3DLogger.LogError("Failed to post " + www.url,scope);
                     }
                 }
                 yield break;

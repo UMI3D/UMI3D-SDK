@@ -70,7 +70,6 @@ namespace umi3d.edk
                 UMI3DMaterialDto matDto = this.textures.ToDto();
                 RegisterMaterial(matDto);
             }
-            //   Debug.Log("Material id : " + textures.id);
             return textures.id;
         }
 
@@ -86,7 +85,6 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void OnEnable()
         {
-            //        Debug.Log("init mat id");
 
             textures.id = 0;
             registered = false;
@@ -140,7 +138,6 @@ namespace umi3d.edk
             objectRoughnessFactor.OnValueChanged += (float f) =>
             {
                 roughnessFactor = f;
-                /*Debug.Log("change roughness " + f.ToString());*/
             };
 
             objectMetallicFactor = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.MetallicFactor, this.metallicFactor, null, pCompare.FloatEquality);

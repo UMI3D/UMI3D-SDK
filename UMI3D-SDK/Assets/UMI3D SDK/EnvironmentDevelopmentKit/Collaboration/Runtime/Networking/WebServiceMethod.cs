@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Reflection;
 using System.Text;
+using umi3d.common;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -25,6 +26,8 @@ namespace umi3d.edk.collaboration
 {
     public class WebServiceMethod
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         public MethodInfo methodInfo;
         public object source;
         public WebServiceMethodAttribute attribute;
@@ -64,7 +67,7 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ext)
             {
-                UnityEngine.Debug.LogException(ext);
+                UMI3DLogger.LogError(ext,scope);
 
                 HttpListenerResponse res = e.Response;
                 res.ContentType = "text/html";

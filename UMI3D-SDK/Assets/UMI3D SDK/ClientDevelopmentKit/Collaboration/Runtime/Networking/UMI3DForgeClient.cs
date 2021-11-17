@@ -30,6 +30,8 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DForgeClient : ForgeSocketBase
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+
         private uint Me => UMI3DCollaborationClientServer.UserDto.dto.networkId;
 
         private bool useDto => UMI3DCollaborationClientServer.useDto;
@@ -116,13 +118,13 @@ namespace umi3d.cdk.collaboration
 
             if (!client.IsBound)
             {
-                Debug.LogError("NetWorker failed to bind");
+                UMI3DLogger.LogError("NetWorker failed to bind", scope);
                 return;
             }
 
             if (mgr == null && networkManager == null)
             {
-                Debug.LogWarning("A network manager was not provided, generating a new one instead");
+                UMI3DLogger.LogWarning("A network manager was not provided, generating a new one instead", scope);
                 networkManager = new GameObject("Network Manager");
                 mgr = networkManager.AddComponent<NetworkManager>();
             }
@@ -157,7 +159,7 @@ namespace umi3d.cdk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log("AUTH FAILED !");
+                UMI3DLogger.Log("AUTH FAILED !", scope);
             });
         }
 
@@ -282,7 +284,7 @@ namespace umi3d.cdk.collaboration
                             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                                 requestGet.key,
                                 (bytes) => LocalInfoSender.SetLocalInfo(requestGet.key, bytes),
-                                (error) => { Debug.Log("error on get local info : " + requestGet.key); });
+                                (error) => { UMI3DLogger.Log("error on get local info : " + requestGet.key, scope); });
                         });
 
                         break;
@@ -298,7 +300,7 @@ namespace umi3d.cdk.collaboration
                             {
                                 UMI3DCollaborationClientServer.Instance.HttpClient.SendPostFile(
                                     null,
-                                       (error) => { Debug.Log("error on upload file : " + fileName); },
+                                       (error) => { UMI3DLogger.Log("error on upload file : " + fileName, scope); },
                                        token,
                                        fileName,
                                        bytesToUpload);
@@ -306,7 +308,7 @@ namespace umi3d.cdk.collaboration
                         }
                         break;
                     default:
-                        Debug.Log($"Type not catch {dto.GetType()}");
+                        UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
                         break;
                 }
 
@@ -352,7 +354,7 @@ namespace umi3d.cdk.collaboration
                             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                             key,
                             (bytes) => LocalInfoSender.SetLocalInfo(key, bytes),
-                            (error) => { Debug.Log("error on get local info : " + key); }
+                            (error) => { UMI3DLogger.Log("error on get local info : " + key, scope); }
                             );
                         });
                         break;
@@ -367,7 +369,7 @@ namespace umi3d.cdk.collaboration
                             {
                                 UMI3DCollaborationClientServer.Instance.HttpClient.SendPostFile(
                                     null,
-                                   (error) => { Debug.Log("error on upload file : " + name); },
+                                   (error) => { UMI3DLogger.Log("error on upload file : " + name, scope); },
                                    token,
                                    name,
                                    bytesToUpload);
@@ -377,7 +379,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            Debug.Log($"Type not catch {TransactionId}");
+                            UMI3DLogger.Log($"Type not catch {TransactionId}", scope);
                         });
                         break;
                 }
@@ -415,7 +417,7 @@ namespace umi3d.cdk.collaboration
                     {
                         MainThreadManager.Run(() =>
                         {
-                            Debug.LogWarning("Avatar Frame Dropped");
+                            UMI3DLogger.LogWarning("Avatar Frame Dropped", scope);
                         });
                     }
                 }
@@ -446,7 +448,7 @@ namespace umi3d.cdk.collaboration
                     {
                         MainThreadManager.Run(() =>
                         {
-                            Debug.LogWarning("User Avatar not found.");
+                            UMI3DLogger.LogWarning("User Avatar not found.", scope);
                         });
                     }
                 }
@@ -462,7 +464,7 @@ namespace umi3d.cdk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.LogError("Video channels not implemented!");
+                UMI3DLogger.LogError("Video channels not implemented!", scope);
             });
         }
 

@@ -31,6 +31,8 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
+
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
@@ -300,7 +302,7 @@ namespace umi3d.cdk
                 if (loader.IsToBeIgnored(extension))
                     return null;
             }
-            Debug.LogError("there is no compatible loader for this extention : " + extension);
+            UMI3DLogger.LogError("there is no compatible loader for this extention : " + extension,scope);
             return null;
         }
 
@@ -312,7 +314,7 @@ namespace umi3d.cdk
                 if (loader.IsSuitableFor(gltfMatDto))
                     return loader;
             }
-            Debug.LogError("there is no compatible material loader for this material.");
+            UMI3DLogger.LogError("there is no compatible material loader for this material.",scope);
             return null;
         }
 
@@ -385,10 +387,10 @@ namespace umi3d.cdk
                         }
                         else
                         {
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
                         }
                     },
-                    Debug.LogWarning,
+                    e => UMI3DLogger.LogWarning(e,scope),
                     loader.DeleteObject
                     );
             }

@@ -33,6 +33,8 @@ namespace umi3d.cdk
 {
     public class UMI3DResourcesManager : PersistentSingleton<UMI3DResourcesManager>
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         #region const
         private const string dataFile = "data.json";
         private const string assetDirectory = "asset";
@@ -465,7 +467,7 @@ namespace umi3d.cdk
                 if (loader != null)
                 {
                     count++;
-                    LoadFile(pair.entityIds.First(), pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; }, (error) => { Debug.LogError(error); count--; }, loader.DeleteObject);
+                    LoadFile(pair.entityIds.First(), pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; }, (error) => { UMI3DLogger.LogError(error,scope); count--; }, loader.DeleteObject);
                 }
             }
             yield return new WaitUntil(() => { return count <= 0; });
@@ -504,7 +506,7 @@ namespace umi3d.cdk
                     }
                     if (id == null)
                         throw new Exception("id should never be null");
-                    LoadFile(id ?? 0, pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; loadedResources.Invoke(total - count); }, (error) => { Debug.LogError($"{error}[{pair.url}]"); count--; }, loader.DeleteObject);
+                    LoadFile(id ?? 0, pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; loadedResources.Invoke(total - count); }, (error) => { UMI3DLogger.LogError($"{error}[{pair.url}]",scope); count--; }, loader.DeleteObject);
                 }
             }
             yield return new WaitUntil(() => { return count <= 0; });
@@ -569,7 +571,7 @@ namespace umi3d.cdk
 
                 Action<Umi3dException> error = (reason) =>
                 {
-                    //Debug.LogWarning($"error {reason}");
+                    //UMI3DLogger.LogWarning($"error {reason}");
                     foreach (Action<Umi3dException> back in objectData.loadFailCallback)
                         back.Invoke(reason);
                 };
@@ -587,7 +589,7 @@ namespace umi3d.cdk
             DateTime date = DateTime.UtcNow;
             Action<Umi3dException> error2 = (reason) =>
             {
-                //Debug.Log($"here try again {reason.Message} [{reason.errorCode}] {tryCount}");
+                //UMI3DLogger.Log($"here try again {reason.Message} [{reason.errorCode}] {tryCount}");
                 if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(reason.errorCode, () => StartCoroutine(urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)), tryCount, date, ShouldTryAgain)))
                     error?.Invoke(reason);
             };
@@ -780,7 +782,7 @@ namespace umi3d.cdk
             };
             Action<string> error = (s) =>
             {
-                Debug.LogError(s);
+                UMI3DLogger.LogError(s,scope);
                 finished = true;
             };
             UMI3DLocalAssetDirectory variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
@@ -854,7 +856,7 @@ namespace umi3d.cdk
                 string dicPath = System.IO.Path.GetDirectoryName(path);
                 string url = Path.Combine(list.baseUrl, name);
                 Action callback = () => { data.files.Add(new Data(url, path)); };
-                Action<string> error = (s) => { Debug.LogError(s); };
+                Action<string> error = (s) => { UMI3DLogger.LogError(s,scope); };
 
                 yield return StartCoroutine(DownloadFile(key, dicPath, path, url, callback, error));
             }
@@ -966,8 +968,8 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    Debug.LogWarning(www.error);
-                    Debug.LogWarning("Failed to load " + www.url);
+                    UMI3DLogger.LogWarning(www.error,scope);
+                    UMI3DLogger.LogWarning("Failed to load " + www.url,scope);
                 }
                 //}
                 yield break;
@@ -995,7 +997,7 @@ namespace umi3d.cdk
                     else
                         return o.MatchUrl(matchUrl);
                 }); if (objectData == null)
-                    Debug.LogError("not found in cache");
+                    UMI3DLogger.LogError("not found in cache",scope);
                 objectData.loadCallback.Add((o) =>
                 {
                     if (subModelsCache[modelUrlInCache].ContainsKey(subModelName))

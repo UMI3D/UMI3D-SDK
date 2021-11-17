@@ -23,6 +23,8 @@ namespace umi3d.cdk
 {
     public static class EntityGroupLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         public static void ReadUMI3DExtension(EntityGroupDto groupDto)
         {
             groupDto.entitiesId = groupDto.entitiesId.ToList();
@@ -90,19 +92,19 @@ namespace umi3d.cdk
                     else if (add.index < list.Count() && add.index >= 0)
                         list.Insert(add.index, (ulong)(long)add.value);
                     else
-                        Debug.LogWarning($"Add value ignore for {add.index} in collection of size {list.Count}");
+                        UMI3DLogger.LogWarning($"Add value ignore for {add.index} in collection of size {list.Count}",scope);
                     break;
                 case SetEntityListRemovePropertyDto rem:
                     if (rem.index < list.Count && rem.index >= 0)
                         list.RemoveAt(rem.index);
                     else
-                        Debug.LogWarning($"Remove value ignore for {rem.index} in collection of size {list.Count}");
+                        UMI3DLogger.LogWarning($"Remove value ignore for {rem.index} in collection of size {list.Count}",scope);
                     break;
                 case SetEntityListPropertyDto set:
                     if (set.index < list.Count() && set.index >= 0)
                         list[set.index] = (ulong)(long)set.value;
                     else
-                        Debug.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}");
+                        UMI3DLogger.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}",scope);
                     break;
                 default:
                     groupDto.entitiesId = (property.value as List<object>).Select(o => (ulong)(long)o).ToList();
@@ -127,7 +129,7 @@ namespace umi3d.cdk
                     else if (index < list.Count() && index >= 0)
                         list.Insert(index, value);
                     else
-                        Debug.LogWarning($"Add value ignore for {index} in collection of size {list.Count}");
+                        UMI3DLogger.LogWarning($"Add value ignore for {index} in collection of size {list.Count}",scope);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
@@ -135,7 +137,7 @@ namespace umi3d.cdk
                     if (index < list.Count && index >= 0)
                         list.RemoveAt(index);
                     else
-                        Debug.LogWarning($"Remove value ignore for {index} in collection of size {list.Count}");
+                        UMI3DLogger.LogWarning($"Remove value ignore for {index} in collection of size {list.Count}",scope);
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
@@ -144,7 +146,7 @@ namespace umi3d.cdk
                     if (index < list.Count() && index >= 0)
                         list[index] = value;
                     else
-                        Debug.LogWarning($"Set value ignore for {index} in collection of size {list.Count}");
+                        UMI3DLogger.LogWarning($"Set value ignore for {index} in collection of size {list.Count}",scope);
                     break;
                 default:
                     groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(container);

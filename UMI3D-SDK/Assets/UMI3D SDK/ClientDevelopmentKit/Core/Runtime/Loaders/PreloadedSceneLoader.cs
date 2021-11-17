@@ -27,6 +27,8 @@ namespace umi3d.cdk
     /// </summary>
     public class PreloadedSceneLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         /// <summary>
         /// Load PreloadedSceneDto.
         /// </summary>
@@ -60,11 +62,11 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            Debug.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle + "   " + o.ToString());
+                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle + "   " + o.ToString(),scope);
                             SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
 
                         },
-                        Debug.LogWarning,
+                        e => UMI3DLogger.LogWarning(e,scope),
                         loader.DeleteObject
                         );
                 }
@@ -94,7 +96,7 @@ namespace umi3d.cdk
                     case SetEntityListAddPropertyDto add:
                     case SetEntityListRemovePropertyDto rem:
                     case SetEntityListPropertyDto set:
-                        Debug.Log($"Case not handled {property}");
+                        UMI3DLogger.Log($"Case not handled {property}",scope);
                         break;
                     default:
                         var newList = (List<PreloadedSceneDto>)property.value;
@@ -148,7 +150,7 @@ namespace umi3d.cdk
                     case UMI3DOperationKeys.SetEntityListAddProperty:
                     case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     case UMI3DOperationKeys.SetEntityListProperty:
-                        Debug.Log($"Case not handled {operationId}");
+                        UMI3DLogger.Log($"Case not handled {operationId}",scope);
                         break;
                     default:
                         List<PreloadedSceneDto> newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(container);

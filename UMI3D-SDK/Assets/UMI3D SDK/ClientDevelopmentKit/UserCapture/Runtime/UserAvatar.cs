@@ -28,6 +28,9 @@ namespace umi3d.cdk.userCapture
 {
     public class UserAvatar : MonoBehaviour
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+
+
         protected struct SavedTransform
         {
             public Transform obj;
@@ -225,7 +228,7 @@ namespace umi3d.cdk.userCapture
                 }
                 else
                 {
-                    UnityEngine.Debug.LogWarning(dto.boneType + "not found in bones instances");
+                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances",scope);
                 }
             }
             else
