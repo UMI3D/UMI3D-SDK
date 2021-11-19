@@ -15,6 +15,9 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace umi3d.common
@@ -32,7 +35,7 @@ namespace umi3d.common
     public enum DebugScope
     {
         None = 0,
-        
+
         Common = 1 << 0,
         EDK = 1 << 1,
         CDK = 1 << 2,
@@ -50,12 +53,12 @@ namespace umi3d.common
         Bytes = 1 << 11,
         User = 1 << 12,
 
-        Editor = 1<<29
+        Editor = 1 << 29
     }
 
     public class UMI3DLogger : Singleton<UMI3DLogger>
     {
-
+        #region logging
         [SerializeField]
         private DebugScope _logScope = DebugScope.None;
         [SerializeField]
@@ -107,12 +110,12 @@ namespace umi3d.common
                     Debug.LogError(o);
         }
 
-        static bool validLevel(DebugLevel level)
+        private static bool validLevel(DebugLevel level)
         {
             return Exists ? Instance._validLevel(level) : (level & LogLevel) != 0;
         }
 
-        static bool validScope(DebugScope scope)
+        private static bool validScope(DebugScope scope)
         {
             return Exists ? Instance._validFlag(scope) : (scope & LogScope) != 0;
         }
@@ -134,6 +137,167 @@ namespace umi3d.common
 
         protected virtual bool _validFlag(DebugScope scope) { return (scope & LogScope) != 0; }
         protected virtual bool _validLevel(DebugLevel level) { return (level & LogLevel) != 0; }
+        #endregion
+
+        #region DebugInfo
+
+        private readonly Dictionary<ILoggable, List<DebugInfo>> Loggables = new Dictionary<ILoggable, List<DebugInfo>>();
+
+        public static void Register(ILoggable loggable) { if (Exists) Instance._Register(loggable); }
+        public static void Unregister(ILoggable loggable) { if (Exists) Instance._Unregister(loggable); }
+
+        protected virtual void _Register(ILoggable loggable)
+        {
+            Loggables[loggable] = loggable.GetInfos();
+        }
+
+        protected virtual void _Unregister(ILoggable loggable)
+        {
+            Loggables.Remove(loggable);
+        }
+
+
+        protected virtual string LogData(float time)
+        {
+            string data = Environment.NewLine;
+            data += $"Time : {time}";
+            foreach (var loggable in Loggables)
+            {
+                data += $"{loggable.Key.GetLogName()}{Environment.NewLine}";
+                if (loggable.Value != null && loggable.Value.Count > 0)
+                    loggable.Value.ForEach(info =>
+                    {
+                        if (!info.isStatic)
+                            data += $"{info.name}:{info.getData()}";
+                    });
+            }
+            return data;
+        }
+
+        public static string LogPath
+        {
+            get => Exists ? Instance.path : null;
+            set { if (Exists) Instance.path = value; }
+        }
+        [SerializeField]
+        string path;
+        public static float LogDelta
+        {
+            get => Exists ? Instance.logDelta : 0;
+            set { if (Exists)
+                {
+                    Instance.logDelta = value;
+                    Instance.wait = new WaitForSecondsRealtime(Instance.logDelta);
+                }
+            }
+        }
+        [SerializeField]
+        float logDelta;
+        public static bool ShouldLog
+        {
+            get => Exists ? Instance.log : false;
+            set { 
+                if (Exists)
+                {
+                    Instance.log = value;
+                    if (value)
+                    {
+                        Instance.StartCoroutine(Instance.LogCoroutine());
+                    }
+                }
+            }
+        }
+        [SerializeField]
+        bool log;
+        WaitForSecondsRealtime wait;
+
+        bool running = false;
+        protected virtual IEnumerator LogCoroutine()
+        {
+            if (running || !ShouldLog) yield break;
+            running = true;
+            if (wait == null) wait = new WaitForSecondsRealtime(LogDelta);
+            CreateLogFile($"{DateTime.Now}");
+            while (ShouldLog)
+            {
+                var data = LogData(Time.unscaledTime);
+                WriteLogFile(data);
+                yield return wait;
+            }
+            running = false;
+        }
+
+        protected void CreateLogFile(string header) {
+            if (!File.Exists(LogPath))
+                using (StreamWriter sw = File.CreateText(LogPath))
+                    sw.Write(Environment.NewLine + header);
+            else
+                using (StreamWriter sw = File.AppendText(LogPath))
+                    sw.Write(Environment.NewLine + header);
+        }
+
+        protected void WriteLogFile(string data)
+        {
+            using (StreamWriter sw = File.AppendText(LogPath))
+                sw.WriteLine(Environment.NewLine + data);
+        }
+
+
+        protected virtual void Start()
+        {
+            StartCoroutine(LogCoroutine());
+        }
+
+        #endregion
     }
 
+
+    public abstract class DebugInfo
+    {
+        public readonly bool isStatic;
+        public readonly string name;
+
+        protected DebugInfo(string name, bool isStatic)
+        {
+            this.isStatic = isStatic;
+            this.name = name;
+        }
+
+        public abstract object getData();
+
+    }
+
+    public abstract class DebugInfo<T> : DebugInfo
+    {
+        private T lastValue;
+        private readonly Func<T> GetValue;
+
+        protected DebugInfo(string name, T value) : base(name, true)
+        {
+            lastValue = value;
+        }
+
+        protected DebugInfo(string name, Func<T> GetValue) : base(name, false)
+        {
+            this.GetValue = GetValue;
+        }
+
+        public T GetData()
+        {
+            if (!isStatic)
+                lastValue = GetValue();
+            return lastValue;
+        }
+
+        public override object getData()
+        {
+            return GetData();
+        }
+    }
+
+    public interface ILoggable
+    {
+        string GetLogName();
+        List<DebugInfo> GetInfos();
+    }
 }
