@@ -114,9 +114,44 @@ namespace umi3d.cdk
             if (!dto.playing)
             {
                 if (dto.pauseTime > 0)
-                    videoPlayer.time = dto.pauseTime / 1000f;
+                {
+                    float time = dto.pauseTime / 1000f;
+                    videoPlayer.time = time;
+#if UNITY_ANDROID
+                    yield return MakeSureTimeIsCorrectltySet(time);
+#endif
+                }
                 else
                     videoPlayer.frame = 3;
+            }
+        }
+
+        private IEnumerator MakeSureTimeIsCorrectltySet(float time)
+        {
+            yield return new WaitForEndOfFrame();
+
+            if (videoPlayer.frame < 0 || videoPlayer.time < 0)
+            {
+                videoPlayer.Stop();
+
+                yield return new WaitForEndOfFrame();
+
+                if ((dto as UMI3DVideoPlayerDto).audioId != 0)
+                {
+                    videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded((dto as UMI3DVideoPlayerDto).audioId, (e) =>
+                    {
+                        videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)e.Object).audioSource);
+                    });
+                }
+
+                videoPlayer.Play();
+                videoPlayer.time = time;
+
+                if (!dto.playing)
+                {
+                    videoPlayer.Pause();
+                }
             }
         }
 
