@@ -71,7 +71,7 @@ namespace umi3d.cdk
             {
                 videoPlayer.Pause(); // Don't call Stop() because it cancel videoPlayer.Prepare()
 
-                UMI3DAnimationManager.Instance.StartCoroutine(SetFrame(dto.pauseFrame));
+                UMI3DAnimationManager.Instance.StartCoroutine(SetTime(dto.pauseTime));
             }
 
             //audio
@@ -99,13 +99,13 @@ namespace umi3d.cdk
             }
         }
 
-        private IEnumerator SetFrame(long frame)
+        private IEnumerator SetTime(long time)
         {
-            dto.pauseFrame = frame;
-            yield return SetFrame();
+            dto.pauseTime = time;
+            yield return SetTime();
         }
 
-        private IEnumerator SetFrame()
+        private IEnumerator SetTime()
         {
             while (!videoPlayer.isPrepared)
             {
@@ -113,7 +113,10 @@ namespace umi3d.cdk
             }
             if (!dto.playing)
             {
-                videoPlayer.frame = dto.pauseFrame;
+                if (dto.pauseTime > 0)
+                    videoPlayer.time = dto.pauseTime / 1000f;
+                else
+                    videoPlayer.frame = 3;
             }
         }
 
@@ -122,7 +125,7 @@ namespace umi3d.cdk
         {
             float res = 0;
             if (videoPlayer != null)
-                res = (float)videoPlayer.frame / (float)videoPlayer.frameCount;
+                res = (float)videoPlayer.time;
             return res;
         }
 
@@ -168,7 +171,7 @@ namespace umi3d.cdk
         public override void SetProgress(long frame)
         {
 
-            UMI3DAnimationManager.Instance.StartCoroutine(SetFrame());
+            UMI3DAnimationManager.Instance.StartCoroutine(SetTime());
         }
     }
 }

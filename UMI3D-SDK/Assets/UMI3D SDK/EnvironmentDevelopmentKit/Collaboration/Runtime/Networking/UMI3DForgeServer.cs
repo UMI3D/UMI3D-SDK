@@ -228,7 +228,7 @@ namespace umi3d.edk.collaboration
                 UMI3DLogger.Log($"Player [{player.NetworkId}] disconected",scope);
             });
             playerCount = server.Players.Count;
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId);
             if (user != null)
             {
                 MainThreadManager.Run(() =>

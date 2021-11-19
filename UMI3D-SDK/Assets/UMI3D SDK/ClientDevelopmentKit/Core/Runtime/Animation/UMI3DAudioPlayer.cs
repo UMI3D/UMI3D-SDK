@@ -101,7 +101,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override float GetProgress()
         {
-            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time / audioSource.clip.length : -1;
+            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time  : -1;
         }
 
         ///<inheritdoc/>
@@ -223,7 +223,7 @@ namespace umi3d.cdk
 
         public override void SetProgress(long frame)
         {
-            audioSource.timeSamples = (int)frame;
+            audioSource.time = frame/1000f;
 
         }
     }
