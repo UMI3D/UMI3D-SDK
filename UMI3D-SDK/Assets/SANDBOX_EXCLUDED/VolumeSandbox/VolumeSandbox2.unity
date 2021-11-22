@@ -171,7 +171,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &48415074
 GameObject:
@@ -226,7 +226,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 2.5}
 --- !u!1 &116269456
 GameObject:
   m_ObjectHideFlags: 0
@@ -334,7 +334,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 1.5}
 --- !u!1 &284885695
 GameObject:
   m_ObjectHideFlags: 0
@@ -574,7 +574,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 1.5}
 --- !u!1 &594754381
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,7 +625,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &633517272
 GameObject:
@@ -680,7 +680,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 1}
 --- !u!1 &644310919
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,7 +706,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 644310919}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.812, y: 0.14000002, z: -3.99}
+  m_LocalPosition: {x: -0.812, y: 0.14000002, z: -4.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 421870267}
@@ -734,7 +734,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 3.5}
 --- !u!1 &654291182
 GameObject:
   m_ObjectHideFlags: 0
@@ -785,10 +785,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.62, y: 1.79, z: 1.94}
 --- !u!1 &713738130
 GameObject:
   m_ObjectHideFlags: 0
@@ -1432,7 +1432,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &1193410364
 GameObject:
@@ -1484,10 +1484,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: -3.47, y: 1.79, z: 3.4}
 --- !u!1 &1257466416
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,10 +1686,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 3.21, y: 2.02, z: 0.5}
 --- !u!1 &1377614508
 GameObject:
   m_ObjectHideFlags: 0
@@ -1740,7 +1740,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &1425035368
 GameObject:
@@ -1752,7 +1752,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1425035369}
   - component: {fileID: 1425035370}
-  - component: {fileID: 1425035371}
   - component: {fileID: 1425035372}
   m_Layer: 0
   m_Name: center
@@ -1796,23 +1795,6 @@ MonoBehaviour:
   isTraversable: 1
   radius_inspector: 2.32
   height_inspector: 4.09
---- !u!114 &1425035371
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1425035368}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f175ffa980343d489ed8562ae0446be, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cylinder: {fileID: 1425035370}
-  frequency: 0.1
-  phase: 0
-  amplitude: 1
-  frameRate: 15
 --- !u!114 &1425035372
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1875,7 +1857,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &1480887767
 GameObject:
@@ -2019,7 +2001,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 1.5}
 --- !u!1 &1493952832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2498,7 +2480,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866341073}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.81, y: 0.14000002, z: 5.01}
+  m_LocalPosition: {x: -0.81, y: 0.14000002, z: 6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 421870267}
@@ -2526,7 +2508,7 @@ MonoBehaviour:
   extendFromBottom: 0
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 0.5, z: 2}
 --- !u!1 &1887091942
 GameObject:
   m_ObjectHideFlags: 0
@@ -2577,7 +2559,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &1925829773
 GameObject:
@@ -2629,7 +2611,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &1968974454
 GameObject:
@@ -2735,7 +2717,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 0
-  radius_inspector: 1
+  radius_inspector: 0.37
   height_inspector: 3
 --- !u!1 &2024039175
 GameObject:

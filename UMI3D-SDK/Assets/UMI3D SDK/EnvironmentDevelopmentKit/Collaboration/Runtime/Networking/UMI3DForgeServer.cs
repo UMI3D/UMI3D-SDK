@@ -314,16 +314,6 @@ namespace umi3d.edk.collaboration
                     case UMI3DOperationKeys.VolumeUserTransit: //add here future other volume related keys.
                         MainThreadManager.Run(() =>
                         {
-                    case UMI3DOperationKeys.UserCameraProperties:
-                        MainThreadManager.Run(() =>
-                        {
-                            UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
-                        });
-                        break;
-
-                    case UMI3DOperationKeys.VolumeUserTransit: //add here future other volume related keys.
-                        MainThreadManager.Run(() =>
-                        {
                             VolumeManager.DispatchBrowserRequest(user, id, container);
                         });
                         break;
