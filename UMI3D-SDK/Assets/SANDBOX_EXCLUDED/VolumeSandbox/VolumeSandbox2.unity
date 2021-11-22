@@ -1753,6 +1753,7 @@ GameObject:
   - component: {fileID: 1425035369}
   - component: {fileID: 1425035370}
   - component: {fileID: 1425035371}
+  - component: {fileID: 1425035372}
   m_Layer: 0
   m_Name: center
   m_TagString: Untagged
@@ -1812,6 +1813,18 @@ MonoBehaviour:
   phase: 0
   amplitude: 1
   frameRate: 15
+--- !u!114 &1425035372
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425035368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0618ec67ef96a642a8b856d2860d863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1460954798
 GameObject:
   m_ObjectHideFlags: 0
