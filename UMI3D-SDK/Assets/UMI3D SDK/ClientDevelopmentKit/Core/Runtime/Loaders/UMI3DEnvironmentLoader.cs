@@ -41,6 +41,14 @@ namespace umi3d.cdk
         private readonly HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
         private readonly HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
 
+        /// <summary>
+        /// Call a callback when an entity is registerd.
+        /// The entity might not be totaly loaded when the callback is called.
+        /// all property of UMI3DEntityInstance and UMI3DNodeInstance are set.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entityLoaded"></param>
+        /// <param name="entityFailedToLoad"></param>
         public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
             if (!Exists) return;
