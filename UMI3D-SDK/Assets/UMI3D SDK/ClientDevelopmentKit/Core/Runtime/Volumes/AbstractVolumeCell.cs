@@ -14,11 +14,43 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using UnityEngine;
+using UnityEngine.Events;
 
-public abstract class AbstractVolumeCell 
-{
-    public abstract ulong Id();
+namespace umi3d.cdk.volumes
+{ 
+    /// <summary>
+    /// Base class for volume cells.
+    /// </summary>
+    public abstract class AbstractVolumeCell
+    {
+        public abstract ulong Id();
 
-    public abstract bool IsInside(Vector3 point);
+        public bool isTraversable = true;
+
+        /// <summary>
+        /// Check if a point is inside a cell.
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool IsInside(Vector3 point, Space relativeTo);
+
+        /// <summary>
+        /// Return the base of the cell.
+        /// </summary>
+        /// <param name="onSuccess"></param>
+        /// <param name="angleLimit"></param>
+        public abstract void GetBase(Action<Mesh> onSuccess, float angleLimit);
+
+        /// <summary>
+        /// Get a representation of the cell as a mesh.
+        /// </summary>
+        /// <returns></returns>
+        public abstract Mesh GetMesh();
+
+
+        protected UnityEvent onUpdate = new UnityEvent();
+        protected void SubscribeToUpdate(UnityAction callback) => onUpdate.AddListener(callback);
+        protected void UnsubscribeToUpdate(UnityAction callback) => onUpdate.RemoveListener(callback);
+    }
 }

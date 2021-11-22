@@ -47,7 +47,6 @@ namespace umi3d.cdk.volumes
                         {
                             foreach(var callback in pending.Value)
                             {
-                                Debug.Log("PENDING CALL");
                                 callback.Invoke();
                             }
                         }
@@ -67,8 +66,6 @@ namespace umi3d.cdk.volumes
 
             public static void SubscribeToVolumeItemReception(List<ulong> itemsId, UnityAction callback)
             {
-
-                Debug.Log("PENDING LOG");
                 List<UnityAction> callbacks = new List<UnityAction>();
                 if (pendingCallbacks.TryGetValue(itemsId, out callbacks))
                 {
@@ -80,10 +77,10 @@ namespace umi3d.cdk.volumes
             }
         }
 
-        private Dictionary<ulong, Point> points = new Dictionary<ulong, Point>();
-        private Dictionary<ulong, Face> faces = new Dictionary<ulong, Face>();
-        private Dictionary<ulong, VolumeSlice> volumeSlices = new Dictionary<ulong, VolumeSlice>();
-        private Dictionary<ulong, VolumeSliceGroup> volumeSliceGroups = new Dictionary<ulong, VolumeSliceGroup>();
+        private static Dictionary<ulong, Point> points = new Dictionary<ulong, Point>();
+        private static Dictionary<ulong, Face> faces = new Dictionary<ulong, Face>();
+        private static Dictionary<ulong, VolumeSlice> volumeSlices = new Dictionary<ulong, VolumeSlice>();
+        private static Dictionary<ulong, VolumeSliceGroup> volumeSliceGroups = new Dictionary<ulong, VolumeSliceGroup>();
 
         public List<Point> GetPoints() => new List<Point>(points.Values);
 		public List<Face> GetFaces() => new List<Face>(faces.Values);
@@ -91,48 +88,68 @@ namespace umi3d.cdk.volumes
         public List<VolumeSliceGroup> GetVolumeSliceGroups() => new List<VolumeSliceGroup>(volumeSliceGroups.Values);
 
 
+        private class VolumeSliceGroupEvent : UnityEvent<AbstractVolumeCell> { }
+        private static VolumeSliceGroupEvent onSliceGroupCreation = new VolumeSliceGroupEvent();
+
+        /// <summary>
+        /// Subscribe an action to a cell reception.
+        /// </summary>
+        /// <param name="catchUpWithPreviousCells">If true, the action will be called for each already received cells.</param>
+        public static void SubscribeToSliceGroupCreation(UnityAction<AbstractVolumeCell> callback, bool catchUpWithPreviousCells)
+        {
+            onSliceGroupCreation.AddListener(callback);
+
+            if (catchUpWithPreviousCells)
+                foreach (AbstractVolumeCell cell in volumeSliceGroups.Values)
+                    callback(cell);
+        }
+
+        public static void UnsubscribeToSliceGroupCreation(UnityAction<AbstractVolumeCell> callback) => onSliceGroupCreation.RemoveListener(callback);
+
+
+
         #region Exists
 
-        public bool PointExists(ulong id)
+        public static bool PointExists(ulong id)
         {
             return points.ContainsKey(id);
         }
 
-        public bool FaceExists(ulong id)
+        public static bool FaceExists(ulong id)
         {
             return faces.ContainsKey(id);
         }
 
-        public bool VolumeSliceExists(ulong id)
+        public static bool VolumeSliceExists(ulong id)
         {
             return volumeSlices.ContainsKey(id);
         }
 
-        public bool VolumeSliceGroupExist(ulong id)
+        public static bool VolumeSliceGroupExist(ulong id)
         {
             return volumeSliceGroups.ContainsKey(id);
         }
 
         #endregion
 
-        #region Create
+        #region Get
 
-        public Point GetPoint(ulong id)
+        public static Point GetPoint(ulong id)
         {
             return points[id];
         }
 
-        public Face GetFace(ulong id)
+        public static Face GetFace(ulong id)
         {
             return faces[id];
         }
 
-        public VolumeSlice GetVolumeSlice(ulong id)
+        public static VolumeSlice GetVolumeSlice(ulong id)
         {
             return volumeSlices[id];
         }
 
-        public VolumeSliceGroup GetVolumeSliceGroup(ulong id)
+        public static VolumeSliceGroup GetVolumeSliceGroup(ulong id)
         {
             return volumeSliceGroups[id];
         }
@@ -141,7 +158,7 @@ namespace umi3d.cdk.volumes
 
         #region Create
 
-        public void CreatePoint(PointDto dto, UnityAction<Point> finished)
+        public static void CreatePoint(PointDto dto, UnityAction<Point> finished)
         {
             if (PointExists(dto.id))
                 throw new System.Exception("Point already exists");
@@ -153,7 +170,7 @@ namespace umi3d.cdk.volumes
             finished(p);
         }
 
-        public void CreateFace(FaceDto dto, UnityAction<Face> finished)
+        public static void CreateFace(FaceDto dto, UnityAction<Face> finished)
         {
             if (FaceExists(dto.id))
                 throw new System.Exception("Face already exists");
@@ -178,7 +195,7 @@ namespace umi3d.cdk.volumes
                 PendingManager.SubscribeToVolumeItemReception(pointsNeeded, creation);
         }
 
-        public void CreateVolumeSlice(VolumeSliceDto dto, UnityAction<VolumeSlice> finished)
+        public static void CreateVolumeSlice(VolumeSliceDto dto, UnityAction<VolumeSlice> finished)
         {
             if (VolumeSliceExists(dto.id))
                 throw new System.Exception("Volume slice group already exists");
@@ -213,23 +230,22 @@ namespace umi3d.cdk.volumes
 
         }
 
-        public void CreateVolumeSliceGroup(VolumeSlicesGroupDto dto, UnityAction<VolumeSliceGroup> finished)
+        public static void CreateVolumeSliceGroup(VolumeSlicesGroupDto dto, UnityAction<VolumeSliceGroup> finished)
         {
             if (VolumeSliceGroupExist(dto.id))
                 throw new System.Exception("Volume slice group already exists");
 
-            Debug.Log("Volume register");
             UnityAction creation = () =>
             {
                 VolumeSliceGroup volume = new VolumeSliceGroup();
                 volume.Setup(dto);
                 volumeSliceGroups.Add(dto.id, volume);
-
-                Debug.Log("Volume ceated");
+                volume.isTraversable = dto.isTraversable;
+                onSliceGroupCreation.Invoke(volume);
                 finished(volume);
             };
 
-            List<ulong> idsNeeded = new List<ulong>();
+            List<ulong> idsNeeded = new List<ulong>(); 
             foreach(ulong slice in dto.slicesIds)
             {
                 if (!VolumeSliceExists(slice))
@@ -251,7 +267,7 @@ namespace umi3d.cdk.volumes
 
         #region Delete
 
-        public void DeletePoint(ulong id)
+        public static void DeletePoint(ulong id)
         {
             //delete every volume featuring the given point
             foreach(var entry in volumeSliceGroups)
@@ -263,7 +279,7 @@ namespace umi3d.cdk.volumes
             points.Remove(id);
         }
 
-        public void DeleteFace(ulong id)
+        public static void DeleteFace(ulong id)
         {
             //delete every volume featuring the given face
             foreach (var entry in volumeSliceGroups)
@@ -275,12 +291,12 @@ namespace umi3d.cdk.volumes
             faces.Remove(id);
         }
 
-        public void DeleteVolumeSliceGroup(ulong id)
+        public static void DeleteVolumeSliceGroup(ulong id)
         {
             volumeSliceGroups.Remove(id);
         }
 
-        public void DeleteVolumeSlice(ulong id)
+        public static void DeleteVolumeSlice(ulong id)
         {
             volumeSlices.Remove(id);
 
@@ -288,11 +304,5 @@ namespace umi3d.cdk.volumes
 
         #endregion
 
-        public void OnDrawGizmos()
-        {
-            foreach(var volumeSliceGroup in volumeSliceGroups)
-            {
-            }
-        }
     }
 }

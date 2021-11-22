@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-using UnityEngine;
-
 namespace umi3d.cdk.volumes
 {
     /// <summary>
@@ -28,7 +25,7 @@ namespace umi3d.cdk.volumes
         public override ulong Id()
         {
             if (id == null)
-                id = (ulong) Random.Range(long.MinValue, long.MaxValue);
+                throw new System.Exception("Id should have been set on dto reception !");
             return id.Value;
         }
 

@@ -19,8 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.interaction;
-using umi3d.cdk.userCapture;
 using umi3d.cdk.volumes;
+using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
@@ -181,6 +181,8 @@ namespace umi3d.cdk
             if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;

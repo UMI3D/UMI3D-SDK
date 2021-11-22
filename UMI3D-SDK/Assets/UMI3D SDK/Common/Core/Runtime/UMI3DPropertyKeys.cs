@@ -234,8 +234,6 @@ namespace umi3d.common
         public const uint VolumePrimitive_Box_Size = 15008;
         public const uint VolumePrimitive_Cylinder_Height = 15009;
         public const uint VolumePrimitive_Cylinder_Radius = 15010;
-        public const uint VolumeCell_RoodNodeId = 15011;
-        public const uint VolumeCell_RootNodeToLocalMatrix = 15012;
         #endregion
     }
 }

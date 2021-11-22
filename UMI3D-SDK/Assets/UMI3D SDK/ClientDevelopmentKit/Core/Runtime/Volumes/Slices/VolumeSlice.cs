@@ -18,6 +18,7 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.common.volume;
 using UnityEngine;
+using System.Linq;
 
 namespace umi3d.cdk.volumes
 {
@@ -37,9 +38,9 @@ namespace umi3d.cdk.volumes
         {
             this.originalDto = dto;
             this.id = dto.id;
-            this.points = dto.points.ConvertAll(pid => VolumeSliceGroupManager.Instance.GetPoint(pid));
+            this.points = dto.points.ConvertAll(pid => VolumeSliceGroupManager.GetPoint(pid));
             this.edges = dto.edges;
-            this.faces = dto.faces.ConvertAll(fid => VolumeSliceGroupManager.Instance.GetFace(fid));
+            this.faces = dto.faces.ConvertAll(fid => VolumeSliceGroupManager.GetFace(fid));
         }
 
         public bool isInside(Vector3 point)
@@ -88,7 +89,7 @@ namespace umi3d.cdk.volumes
 
         public void SetPoints(List<PointDto> newPoints)
         {
-            points = newPoints.ConvertAll(dto => VolumeSliceGroupManager.Instance.GetPoint(dto.id));
+            points = newPoints.ConvertAll(dto => VolumeSliceGroupManager.GetPoint(dto.id));
         }
 
         public void SetEdges(List<int> newEdges)
@@ -98,7 +99,7 @@ namespace umi3d.cdk.volumes
 
         public void SetFaces(List<FaceDto> newFaces)
         {
-            faces = newFaces.ConvertAll(dto => VolumeSliceGroupManager.Instance.GetFace(dto.id));
+            faces = newFaces.ConvertAll(dto => VolumeSliceGroupManager.GetFace(dto.id));
         }
 
         public List<Point> GetPoints()
@@ -114,6 +115,26 @@ namespace umi3d.cdk.volumes
         public List<Face> GetFaces()
         {
             return faces;
+        }
+
+        public Mesh ToMesh()
+        {
+            List<Vector3> verts = this.points.ConvertAll(p => p.position);
+            List<int> tris = new List<int>();
+            this.faces.ForEach(
+                f => GeometryTools.Triangulate(f.points.Select(p => p.position).ToList()).ToList()
+                .ForEach(index => tris.Add(this.points.IndexOf(f.points[index]))));
+
+            Mesh mesh = new Mesh();
+            mesh.vertices = verts.ToArray();
+            mesh.triangles = tris.ToArray();
+            mesh.Optimize();
+            return mesh;
+        }
+
+        public Mesh GetBase(float angleLimit)
+        {
+            return GeometryTools.ForceNormalUp(GeometryTools.GetBase(this.ToMesh(), angleLimit, -1));
         }
     }
 }

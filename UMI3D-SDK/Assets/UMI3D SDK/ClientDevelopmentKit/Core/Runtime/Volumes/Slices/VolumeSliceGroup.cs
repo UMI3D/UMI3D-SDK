@@ -17,6 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using UnityEngine;
 using umi3d.common.volume;
+using System.Linq;
 
 namespace umi3d.cdk.volumes
 {
@@ -36,7 +37,7 @@ namespace umi3d.cdk.volumes
 
         public override ulong Id() => id;
         
-        public override bool IsInside(Vector3 point)
+        public override bool IsInside(Vector3 point, Space relativeTo)
         {
             foreach(VolumeSlice s in slices)
             {
@@ -48,9 +49,19 @@ namespace umi3d.cdk.volumes
 
         public void SetSlices(List<VolumeSliceDto> newSlices)
         {
-            slices = newSlices.ConvertAll(dto => VolumeSliceGroupManager.Instance.GetVolumeSlice(dto.id));
+            slices = newSlices.ConvertAll(dto => VolumeSliceGroupManager.GetVolumeSlice(dto.id));
         }
 
         public VolumeSlice[] GetSlices() => slices.ToArray();
-	}
+
+        public override void GetBase(System.Action<Mesh> onsuccess, float angleLimit)
+        {
+            onsuccess.Invoke(GeometryTools.Merge(GetSlices().Select(slice => slice.GetBase(angleLimit))));
+        }
+
+        public override Mesh GetMesh()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
 }

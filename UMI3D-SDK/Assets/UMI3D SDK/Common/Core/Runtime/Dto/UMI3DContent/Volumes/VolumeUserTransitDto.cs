@@ -29,5 +29,12 @@ namespace umi3d.common.volume
         public bool direction;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.VolumeUserTransit; }
+
+        public override Bytable ToBytableArray(params object[] parameters)
+        {
+            return base.ToBytableArray(parameters) 
+                + UMI3DNetworkingHelper.Write(volumeId) 
+                + UMI3DNetworkingHelper.Write(direction);
+        }
     }
 }

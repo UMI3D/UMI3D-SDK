@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace umi3d.common.volume
@@ -22,6 +23,18 @@ namespace umi3d.common.volume
 
     public abstract class GeometryTools
     {
+        private static string ListToString<T>(List<T> list)
+        {
+            if (list.Count == 0)
+                return "[]";
+
+            string display = "[";
+            list.ForEach(e => display += e.ToString() + ", ");
+            display = display.Remove(display.Length - 3);
+            display += "]";
+            return display;
+        }
+
         /// <summary>
         /// Compute the barycenter of a point set.
         /// </summary>
@@ -227,6 +240,35 @@ namespace umi3d.common.volume
 
         }
 
+        /// <summary>
+        /// Merge meshes into one.
+        /// </summary>
+        /// <param name="meshes"></param>
+        /// <returns></returns>
+        public static Mesh Merge(IEnumerable<Mesh> meshes)
+        {
+            List<Vector3> verts = new List<Vector3>();
+            List<int> tris = new List<int>();
+            int trisOffset = 0;
+
+            foreach(Mesh mesh in meshes)
+            {
+                verts.AddRange(mesh.vertices);
+                tris.AddRange(mesh.triangles.ToList().ConvertAll(i => i + trisOffset));
+                trisOffset += mesh.vertexCount;
+            }
+
+            Mesh merged = new Mesh();
+            merged.vertices = verts.ToArray();
+            merged.triangles = tris.ToArray();
+            merged.RecalculateNormals();
+            merged.RecalculateBounds();
+            merged.RecalculateTangents();
+            merged.Optimize();
+            return merged;
+        }
+
+
         public class Face3
         {
             public List<Vector3> points;
@@ -308,6 +350,8 @@ namespace umi3d.common.volume
 
                 return triangles;
             }
+
+            public Plane GetPlane() => GeometryTools.GetPlane(points);
         }
 
         /// <summary>
@@ -633,8 +677,8 @@ namespace umi3d.common.volume
         public static void UnwrapUV(Mesh mesh)
         {
             Vector3 normal = GeometryTools.GetSurfaceNormal(new List<Vector3>(mesh.vertices));
-            Plane uvplane = new Plane(normal, 0);
-
+            Plane uvplane = new Plane(normal, 0); 
+            
             Vector3 randomU = Vector3.zero;
             Vector3 randomV = Vector3.zero;
             while ((randomU.magnitude == 0) || (randomV.magnitude == 0))
@@ -717,25 +761,207 @@ namespace umi3d.common.volume
         }
 
         /// <summary>
+        /// Merge vertices when their distance to each others is bellow a given threeshold.
+        /// </summary>
+        public static Mesh MergeVerticesByDistance(Mesh mesh, float threeshold = 0.01f)
+        {
+            int vertCount = mesh.vertexCount;
+            for (int i=0; i < vertCount; i++)
+            {
+                for (int j=0; j< vertCount; j++)
+                {
+                    if (i != j) 
+                    {
+                        if (Vector3.Distance(mesh.vertices[i], mesh.vertices[j]) < threeshold)
+                        {
+                            mesh = MergeVertices(mesh, i, j);
+                            vertCount--;
+                            j--;
+                        }
+                    }
+                }
+            }
+            return mesh;
+        }
+
+        /// <summary>
+        /// Find the two points from mesh that are the closest to each other, and return their indexes.
+        /// </summary>
+        public static Vector2Int GetClosestPoints(Mesh mesh)
+        {
+            if (mesh.vertexCount < 2)
+                throw new System.Exception("Mesh must have at least 2 vertices.");
+
+            float minDistance = Vector3.Distance(mesh.vertices[0], mesh.vertices[1]);
+            Vector2Int closests = new Vector2Int(0, 1);
+            
+            for(int i=0; i<mesh.vertexCount; i++)
+            {
+                for(int j = i+1; j<mesh.vertexCount; j++)
+                {
+                    float dist = Vector3.Distance(mesh.vertices[i], mesh.vertices[j]);
+                    if (dist < minDistance)
+                    {
+                        minDistance = dist;
+                        closests = new Vector2Int(i, j);
+                    }
+                }
+            }
+
+            return closests;
+        }
+
+        /// <summary>
+        /// Merge two vertices into the first vertex location.
+        /// </summary>
+        /// <returns></returns>
+        public static Mesh MergeVertices(Mesh mesh, int vertice1, int vertice2)
+        {
+            /* Algorithm :
+             *  - Replace each triangle with vertice2 index with the vertice1 index.
+             *  - Remove the vertice2 index from the vertices array.
+             *  - Shift the indexes in the triangles to match with the new vertices array.
+             */
+
+            List<Vector3> vertices = mesh.vertices.ToList();
+            List<int> triangles = mesh.triangles.ToList();
+
+            triangles = triangles.ConvertAll(index => (index == vertice2) ? vertice1 : index);
+            vertices.RemoveAt(vertice2);
+            triangles = triangles.ConvertAll(index => (index >= vertice2) ? index - 1 : index);
+
+            Mesh result = new Mesh();
+            result.vertices = vertices.ToArray();
+            result.triangles = triangles.ToArray();
+            return result;
+        }
+
+        /// <summary>
+        /// Force all triangles to face upward.
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <returns></returns>
+        public static Mesh ForceNormalUp(Mesh mesh)
+        {
+            List<int> triangles = mesh.triangles.ToList();
+
+            for (int i=0; i+2 < triangles.Count; i += 3)
+            {
+                Vector3 barycenter = (mesh.vertices[triangles[i]] + mesh.vertices[triangles[i + 1]] + mesh.vertices[triangles[i + 2]]) / 3f;
+
+                bool normalUp = Vector3.Dot(Vector3.Cross(mesh.vertices[triangles[i]] - barycenter, mesh.vertices[triangles[i + 1]] - barycenter), Vector3.up) >= 0;
+                if (!normalUp)
+                {
+                    int buffer = triangles[i];
+                    triangles[i] = triangles[i + 1];
+                    triangles[i + 1] = buffer;
+                }
+            }
+
+            Mesh result = new Mesh();
+            result.vertices = mesh.vertices;
+            result.triangles = triangles.ToArray();
+            return result;
+        }
+
+        /// <summary>
+        /// Return true if the list contains the sequence in the same order.
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="sequence"></param>
+        /// <returns></returns>
+        private static bool ListContainsSequence<T>(List<T> list, List<T> sequence)
+        {
+            for(int i=0; i<list.Count; i++)
+            {
+                if (list[i].Equals(sequence[0]))
+                {
+                    bool allEqual = true;
+                    for(int j=1; j<sequence.Count; j++)
+                    {
+                        if (i + j >= list.Count)
+                            return false;
+
+                        if (!list[i + j].Equals(sequence[j]))
+                        {
+                            allEqual = false;
+                            break;
+                        }
+                    }
+                    if (allEqual)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Compute the area of a triangle.
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <returns></returns>
+        public static float GetArea(Vector3 point1, Vector3 point2, Vector3 point3)
+        {
+            float base_ = Vector3.Distance(point1, point2);
+            float height = DistanceToLine(point3, point2 - point1, point1);
+            return base_ * height / 2f;
+        }
+       
+        public static bool IsTriangleFlat(List<Vector3> triangle)
+        {
+            return GetArea(triangle[0], triangle[1], triangle[2]) == 0;
+        }
+
+        public static Mesh RemoveFlatTriangles(Mesh mesh)
+        {
+            List<int> tris = mesh.triangles.ToList();
+            int offset = 0;
+            for (int i=0; i<mesh.triangles.Length -2; i += 3)
+            {
+                if (IsTriangleFlat(new List<Vector3> { mesh.vertices[tris[i - offset]], mesh.vertices[tris[i + 1 - offset]], mesh.vertices[tris[i + 2 - offset]] }))
+                {
+                    tris.RemoveAt(i - offset);
+                    tris.RemoveAt(i - offset);
+                    tris.RemoveAt(i - offset);
+                    offset += 3;
+                }
+            }
+
+            Mesh result = new Mesh();
+            result.vertices = mesh.vertices;
+            result.triangles = tris.ToArray();
+            result.Optimize();
+            return result;
+        }
+
+        /// <summary>
         /// Get the faces of the base of a volume. 
         /// </summary>
         /// <param name="volume"></param>
         /// <param name="angleLimit">Angle of a volume face's normal under which the face is considered horizontal.</param>
+        /// <param name="stepLimit">(TO IMPLEMENTED YET) Include small steps in he base, in a similar way than navmesh auto generation.</param>
+        /// <param name="pointsMergeDistance">Define the distance within which multiple points close to each others are merged into one. If negative, no merge will be performed.</param>
         /// <returns></returns>
-        public static Mesh GetBase(Mesh volume, float angleLimit = 10)
+        public static Mesh GetBase(Mesh volume, float angleLimit, float stepLimit, float pointsMergeDistance = -1)
         {
             /* Algorithm :
+             *  - Merge points if needed
              *  - Get the lowest point
              *  - for each triangle using this point,
              *      - if the triangle is horizontal enough (see angleLimit), add it to the returned mesh
              *  - repeat for added points until no left triangle eligible. 
              */
 
+
+            Dictionary<int, List<int>> verticeToTriangles = new Dictionary<int, List<int>>();
             /// <summary>
             /// Get all triangles from volume involving a given point (returing triangles start index in volume.triangles).
             /// </summary>
             List<int> GetTriangles(int point)
             {
+                if (verticeToTriangles.TryGetValue(point, out List<int> triangles_))
+                    return triangles_;
+
                 List<int> triangles = new List<int>();
 
                 for (int i = 0; i < volume.triangles.Length - 3; i += 3)
@@ -746,8 +972,17 @@ namespace umi3d.common.volume
                     }
                 }
 
+                verticeToTriangles.Add(point, triangles);
                 return triangles;
             }
+
+            if (pointsMergeDistance > 0)
+            {
+                volume = MergeVerticesByDistance(volume, pointsMergeDistance);
+            }
+
+            volume.Optimize(); //somehow managed to avoid wierd bugs ...
+            volume = RemoveFlatTriangles(volume);
 
             Mesh baseSurface = new Mesh();
             List<int> baseSurfaceTrianglesIndexesInGlobalVolumeData = new List<int>();
@@ -777,16 +1012,18 @@ namespace umi3d.common.volume
                     investigatedPoints.Add(p);
 
                     List<int> trianglesIndexes = GetTriangles(p);
+
                     foreach (int triangleIndex in trianglesIndexes)
                     {
                         List<Vector3> triangle = new List<Vector3>();
                         triangle.Add(volume.vertices[volume.triangles[triangleIndex]]);
                         triangle.Add(volume.vertices[volume.triangles[triangleIndex + 1]]);
                         triangle.Add(volume.vertices[volume.triangles[triangleIndex + 2]]);
+                        Vector3 faceNormal = GetSurfaceNormal(triangle);
+                        float angle = Vector3.Angle(faceNormal, Vector3.up);
 
-                        float angle = Vector3.Angle(GetSurfaceNormal(triangle), Vector3.up);
                         angle = Mathf.Min(angle, 180 - angle);
-                        if (angle < angleLimit)
+                        if ((angle < angleLimit) && !ListContainsSequence(baseSurfaceTrianglesIndexesInGlobalVolumeData, new List<int>() { volume.triangles[triangleIndex], volume.triangles[triangleIndex + 1], volume.triangles[triangleIndex + 2]}))
                         {
                             baseSurfaceTrianglesIndexesInGlobalVolumeData.Add(volume.triangles[triangleIndex]);
                             baseSurfaceTrianglesIndexesInGlobalVolumeData.Add(volume.triangles[triangleIndex + 1]);
@@ -815,10 +1052,16 @@ namespace umi3d.common.volume
                 pointsToInvestigate.AddRange(pointsToAddToPointsToInvestigate);
             }
 
+
+
             List<Vector3> baseSurfaceVertices = baseSurfaceTrianglesIndexesInGlobalVolumeData.ConvertAll<Vector3>(ti => volume.vertices[ti]);
             List<int> baseSurfaceTriangles = baseSurfaceTrianglesIndexesInGlobalVolumeData.ConvertAll<int>(ti => baseSurfaceVertices.IndexOf(volume.vertices[ti]));
             baseSurface.vertices = baseSurfaceVertices.ToArray();
             baseSurface.triangles = baseSurfaceTriangles.ToArray();
+
+            if (pointsMergeDistance > 0)
+                baseSurface = MergeVerticesByDistance(baseSurface, pointsMergeDistance);            
+
             baseSurface.RecalculateNormals();
             baseSurface.RecalculateTangents();
             baseSurface.RecalculateBounds();
@@ -834,14 +1077,14 @@ namespace umi3d.common.volume
 
             for (int i = 0; i < subdiv; i++)
             {
-                vertices.Add(position + rotation * Vector3.Scale(scale, Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius));
+                vertices.Add(position + Vector3.Scale(scale, rotation * Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius));
             }
             for (int i = 0; i < subdiv; i++)
             {
-                vertices.Add(position + rotation * Vector3.Scale(scale, (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
+                vertices.Add(position + Vector3.Scale(scale, rotation * (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
             }
 
-            for (int i = 0; i < subdiv - 1; i++)
+            for(int i = 0; i < subdiv - 1; i++)
             {
                 faces.Add(i);
                 faces.Add(i + 1);
@@ -877,5 +1120,81 @@ namespace umi3d.common.volume
             return mesh;
         }
 
+        public static Mesh GetBox(Vector3 position, Quaternion rotation, Vector3 scale, Bounds bounds)
+        {
+            Matrix4x4 matrix = Matrix4x4.TRS(position, rotation, scale);
+            return GetBox(matrix, bounds);
+        }
+
+        public static Mesh GetBox(Matrix4x4 transform, Bounds bounds) 
+        { 
+            List<Vector3> points = new List<Vector3>();
+
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 0, 0), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 0, 1), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 1, 0), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 1, 1), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 0, 0), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 0, 1), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 1, 0), bounds.size)));
+            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 1, 1), bounds.size)));
+
+            List<int> tris = new List<int>() 
+            { 
+                1,5,7,
+                1,7,3,
+                0,4,1,
+                1,4,5,
+                2,3,7,
+                2,7,6,
+                0,1,3,
+                0,3,2,
+                4,7,5,
+                4,6,7,
+                0,6,4,
+                0,2,6
+            };
+
+
+            Mesh mesh = new Mesh();
+            mesh.vertices = points.ToArray();
+            mesh.triangles = tris.ToArray();
+            mesh.RecalculateNormals();
+            mesh.RecalculateTangents();
+            mesh.RecalculateBounds();
+            mesh.Optimize();
+            return mesh;
+        }
+
+        /// <summary>
+        /// Check if a point is inside a mesh.
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public static bool IsInside(Mesh mesh, Vector3 point)
+        {
+            int interCount = 0;
+            Ray ray = new Ray(point, point + mesh.bounds.size * 1.1f);
+
+            for (int i=0; i < mesh.triangles.Length - 2; i+=3)
+            {
+                List<Vector3> triangle = new List<Vector3>()
+                {
+                    mesh.vertices[mesh.triangles[i]],
+                    mesh.vertices[mesh.triangles[i+1]],
+                    mesh.vertices[mesh.triangles[i+2]]
+                };
+                if (GetPlane(triangle).Raycast(ray, out float enter))
+                {
+                    if (IsInTriangle(point + ray.direction * enter, triangle[0], triangle[1], triangle[2]))
+                    {
+                        interCount++;
+                    }
+                }
+            }
+
+            return (interCount % 2) == 1;
+        }
     }
 }
