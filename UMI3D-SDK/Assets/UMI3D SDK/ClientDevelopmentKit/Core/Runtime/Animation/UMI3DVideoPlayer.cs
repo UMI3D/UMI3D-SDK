@@ -55,7 +55,7 @@ namespace umi3d.cdk
 
             videoPlayer.source = VideoSource.Url;
             videoPlayer.renderMode = VideoRenderMode.RenderTexture;
-            videoPlayer.playOnAwake = dto.playing;
+            videoPlayer.playOnAwake = false;
             videoPlayer.skipOnDrop = true;
             videoPlayer.waitForFirstFrame = false;
             videoPlayer.isLooping = dto.looping;
@@ -80,8 +80,42 @@ namespace umi3d.cdk
                 videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
                 UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.audioId, (e) =>
                 {
-                    videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)e.Object).audioSource);
+                    UMI3DAnimationManager.Instance.StartCoroutine(SetAudioSource(dto, e));
                 });
+            }
+        }
+
+        /// <summary>
+        /// Coroutine to set <see cref="videoPlayer"/> audioSource.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="entity"></param>
+        /// <returns></returns>
+        private IEnumerator SetAudioSource(UMI3DVideoPlayerDto dto, UMI3DEntityInstance entity)
+        {
+            yield return null;
+            videoPlayer.Stop();
+            videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)entity.Object).audioSource);
+
+            if (dto.playing)
+            {
+                videoPlayer.Prepare();
+
+                while (!videoPlayer.isPrepared)
+                    yield return null;
+
+                if (dto.startTime == default)
+                {
+                    videoPlayer.Play();
+                }
+                else
+                {
+                    Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                }
+            }
+            else
+            {
+                videoPlayer.Prepare();
             }
         }
 
@@ -126,6 +160,11 @@ namespace umi3d.cdk
             }
         }
 
+        /// <summary>
+        /// Fix added for some issues encountered on Android (<see cref="VideoPlayer.time"/> not necessarily correctly set.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
         private IEnumerator MakeSureTimeIsCorrectltySet(float time)
         {
             yield return new WaitForEndOfFrame();
@@ -141,18 +180,31 @@ namespace umi3d.cdk
                     videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded((dto as UMI3DVideoPlayerDto).audioId, (e) =>
                     {
-                        videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)e.Object).audioSource);
+                        UMI3DAnimationManager.Instance.StartCoroutine(ReSetAudioSource((dto as UMI3DVideoPlayerDto), e, time));
                     });
-                }
-
-                videoPlayer.Play();
-                videoPlayer.time = time;
-
-                if (!dto.playing)
+                } else
                 {
-                    videoPlayer.Pause();
+                    videoPlayer.Play();
+                    videoPlayer.time = time;
+
+                    if (!dto.playing)
+                    {
+                        videoPlayer.Pause();
+                    }
                 }
             }
+        }
+
+        private IEnumerator ReSetAudioSource(UMI3DVideoPlayerDto dto, UMI3DEntityInstance entity, float time)
+        {
+            yield return null;
+
+            videoPlayer.Stop();
+            videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)entity.Object).audioSource);
+
+            videoPlayer.Play();
+            videoPlayer.time = time;
+            videoPlayer.Pause(); // This code is called when dto.playing is equal to false
         }
 
         ///<inheritdoc/>
