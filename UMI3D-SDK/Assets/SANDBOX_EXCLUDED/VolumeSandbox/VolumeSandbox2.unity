@@ -1689,7 +1689,7 @@ MonoBehaviour:
   extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 3.21, y: 2.02, z: 0.5}
+    m_Extent: {x: 3.1, y: 2.02, z: 0.8}
 --- !u!1 &1377614508
 GameObject:
   m_ObjectHideFlags: 0

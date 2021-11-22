@@ -30,39 +30,7 @@ namespace umi3d.cdk.volumes
         static public void ReadUMI3DExtension(AbstractVolumeDescriptorDto dto, Action finished, Action<Umi3dException> failed)
         {
             switch (dto)
-            {
-                case PointDto pointDto:
-                    VolumeSliceGroupManager.CreatePoint(pointDto, p =>
-                    {
-                        UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, p, () => VolumeSliceGroupManager.DeletePoint(dto.id));
-                        finished.Invoke();
-                    });
-                    break;
-
-                case FaceDto faceDto:
-                    VolumeSliceGroupManager.CreateFace(faceDto, f =>
-                    {
-                        UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, f, () => VolumeSliceGroupManager.DeleteFace(dto.id));
-                        finished.Invoke();
-                    });
-                    break;
-
-                case VolumeSliceDto slice:
-                    VolumeSliceGroupManager.CreateVolumeSlice(slice, s =>
-                    {
-                        UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, s, () => VolumeSliceGroupManager.DeleteVolumeSlice(dto.id));
-                        finished.Invoke();
-                    });
-                    break;
-
-                case VolumeSlicesGroupDto group:
-                    VolumeSliceGroupManager.CreateVolumeSliceGroup(group, v =>
-                    {
-                        UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, v, () => VolumeSliceGroupManager.DeleteVolumeSliceGroup(dto.id));
-                        finished.Invoke();
-                    });
-                    break;
-
+            {          
                 case AbstractPrimitiveDto prim:
                     VolumePrimitiveManager.CreatePrimitive(prim, p =>
                     {
