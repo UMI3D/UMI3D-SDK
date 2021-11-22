@@ -223,10 +223,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 2.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 2.5}
 --- !u!1 &116269456
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,10 +277,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 0.5}
 --- !u!1 &184862582
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,10 +331,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 1.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 1.5}
 --- !u!1 &284885695
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,10 +571,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 1.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 1.5}
 --- !u!1 &594754381
 GameObject:
   m_ObjectHideFlags: 0
@@ -677,10 +677,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 1}
+    m_Extent: {x: 0.5, y: 2.04, z: 1}
 --- !u!1 &644310919
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,10 +731,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 3.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 3.5}
 --- !u!1 &654291182
 GameObject:
   m_ObjectHideFlags: 0
@@ -1226,10 +1226,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 0.5}
 --- !u!1 &1168932580
 GameObject:
   m_ObjectHideFlags: 0
@@ -1998,10 +1998,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 1.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 1.5}
 --- !u!1 &1493952832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2301,10 +2301,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 0.5}
 --- !u!1001 &1778358457
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2505,10 +2505,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 2}
+    m_Extent: {x: 0.5, y: 2.04, z: 2}
 --- !u!1 &1887091942
 GameObject:
   m_ObjectHideFlags: 0
@@ -2769,10 +2769,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 0.5}
 --- !u!1 &2065968455
 GameObject:
   m_ObjectHideFlags: 0
@@ -2878,10 +2878,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isTraversable: 1
-  extendFromBottom: 0
+  extendFromBottom: 1
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    m_Extent: {x: 0.5, y: 2.04, z: 0.5}
 --- !u!1 &2147258030
 GameObject:
   m_ObjectHideFlags: 0
