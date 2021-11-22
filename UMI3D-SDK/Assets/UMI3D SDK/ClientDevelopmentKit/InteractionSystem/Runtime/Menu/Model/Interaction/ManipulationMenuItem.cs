@@ -35,7 +35,7 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Toggle event subscribers.
         /// </summary>
-        private List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
 
         /// <summary>
         /// Raise deselection event.

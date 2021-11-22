@@ -41,7 +41,7 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0,"dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
             base.ReadUMI3DExtension(dto, node, () =>
@@ -90,7 +90,9 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
 
@@ -102,7 +104,9 @@ namespace umi3d.cdk
                             embd.SetActiveBindings((bool)property.value);
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
                 default:
@@ -146,7 +150,9 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
 
@@ -158,7 +164,9 @@ namespace umi3d.cdk
                             embd.SetActiveBindings(UMI3DNetworkingHelper.Read<bool>(container));
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
                 default:

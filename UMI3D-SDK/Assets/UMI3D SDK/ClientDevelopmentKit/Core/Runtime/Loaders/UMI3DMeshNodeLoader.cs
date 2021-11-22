@@ -47,7 +47,7 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0,"dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
 
@@ -66,6 +66,7 @@ namespace umi3d.cdk
                 if (loader is AbstractMeshDtoLoader)
                     offset = ((AbstractMeshDtoLoader)loader).GetRotationOffset();
                 if (loader != null)
+                {
                     UMI3DResourcesManager.LoadFile(
                         nodeDto.id,
                         fileToLoad,
@@ -79,12 +80,14 @@ namespace umi3d.cdk
                                 finished.Invoke();
                             }
                             else
+                            {
                                 failed?.Invoke(new Umi3dException(0, $"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
-
+                            }
                         },
                         failed,
                         loader.DeleteObject
                         );
+                }
             }, failed);
         }
 
@@ -100,10 +103,10 @@ namespace umi3d.cdk
             string url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.mesh.variants).url;
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
-                GameObject copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
-                foreach (var lodgroup in copy.GetComponentsInChildren<LODGroup>())
+                var copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
+                foreach (LODGroup lodgroup in copy.GetComponentsInChildren<LODGroup>())
                     GameObject.Destroy(lodgroup);
-                Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
+                var subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())
                 {
                     if (!ignoredPrimitiveNameForSubObjectsLoading.Contains(child.name)) // ignore game objects created by the gltf importer or other importer 
@@ -135,13 +138,13 @@ namespace umi3d.cdk
             {
                 root = go;
             }
-            GameObject instance = GameObject.Instantiate(root, parent, true);
+            var instance = GameObject.Instantiate(root, parent, true);
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
 
-            foreach (var renderer in renderers)
+            foreach (Renderer renderer in renderers)
             {
                 renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 renderer.receiveShadows = dto.receiveShadow;

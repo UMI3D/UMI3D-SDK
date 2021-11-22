@@ -25,7 +25,7 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
+        private readonly List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
 
         public List<ParameterSettingRequestDto> answers;
         public FormDto dto;
@@ -44,7 +44,7 @@ namespace umi3d.cdk.menu.interaction
         public void NotifyValueChange(List<ParameterSettingRequestDto> newValue)
         {
             answers = newValue;
-            foreach (var callback in subscribers)
+            foreach (UnityAction<List<ParameterSettingRequestDto>> callback in subscribers)
                 callback(answers);
         }
 

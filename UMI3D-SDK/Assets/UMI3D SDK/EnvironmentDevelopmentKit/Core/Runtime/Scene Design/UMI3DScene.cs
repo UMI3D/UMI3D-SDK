@@ -34,7 +34,7 @@ namespace umi3d.edk
         [EditorReadOnly]
         public List<AssetLibrary> libraries;
         #endregion
-        List<UMI3DNode> nodes;
+        private List<UMI3DNode> nodes;
 
         #region initialization
 
@@ -65,8 +65,10 @@ namespace umi3d.edk
         public virtual GlTFSceneDto ToGlTFNodeDto(UMI3DUser user)
         {
             //SyncProperties();
-            GlTFSceneDto dto = new GlTFSceneDto();
-            dto.name = gameObject.name;
+            var dto = new GlTFSceneDto
+            {
+                name = gameObject.name
+            };
             nodes = GetAllChildrenInThisScene(user);
             dto.extensions.umi3d = ToUMI3DSceneNodeDto(user);
             WriteCollections(dto, user);
@@ -82,7 +84,7 @@ namespace umi3d.edk
         /// <returns></returns>
         protected virtual UMI3DSceneNodeDto ToUMI3DSceneNodeDto(UMI3DUser user)
         {
-            var dto = CreateDto();
+            UMI3DSceneNodeDto dto = CreateDto();
             WriteProperties(dto, user);
             return dto;
         }
@@ -108,14 +110,14 @@ namespace umi3d.edk
 
         public override Bytable ToBytes(UMI3DUser user)
         {
-            var fp = base.ToBytes(user);
+            Bytable fp = base.ToBytes(user);
             var otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(o => o.ToBytes(user)).ToList();
             otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(o => o.ToBytes(user)));
-            var f = otherEntities.Aggregate((a, b) => { return a + b; });
+            Bytable f = otherEntities.Aggregate((a, b) => { return a + b; });
 
-            var position = objectPosition.GetValue(user);
-            var scale = objectScale.GetValue(user);
-            var rotation = objectRotation.GetValue(user);
+            Vector3 position = objectPosition.GetValue(user);
+            Vector3 scale = objectScale.GetValue(user);
+            Quaternion rotation = objectRotation.GetValue(user);
             var LibrariesId = libraries.Select(l => { return l.id; }).ToList();
 
             return

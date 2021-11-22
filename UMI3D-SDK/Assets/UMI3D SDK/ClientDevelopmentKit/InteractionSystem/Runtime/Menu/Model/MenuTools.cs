@@ -14,12 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk.menu
 {
     public class MenuTools : MonoBehaviour
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Interaction;
+
         public MenuAsset menu;
 
         /// <summary>
@@ -28,7 +31,7 @@ namespace umi3d.cdk.menu
         [ContextMenu("Add Bool input")]
         public void AddInputItem()
         {
-            BooleanInputMenuItem menuItem = new BooleanInputMenuItem()
+            var menuItem = new BooleanInputMenuItem()
             {
                 Name = "My Bool Input"
             };
@@ -46,8 +49,8 @@ namespace umi3d.cdk.menu
             menu.menu.RemoveAllMenuItem();
             menu.menu.RemoveAllSubMenu();
             ToMenuAux(menu.menu, this.transform);
-            Debug.Log("Convertion done for " + menu.menu.Name);
-            Debug.Log(new List<AbstractMenu>(menu.menu.GetSubMenu()).Count);
+            UMI3DLogger.Log("Convertion done for " + menu.menu.Name,scope);
+            UMI3DLogger.Log(new List<AbstractMenu>(menu.menu.GetSubMenu()).Count,scope);
 
         }
 
@@ -58,15 +61,19 @@ namespace umi3d.cdk.menu
             {
                 if (child.childCount == 0)
                 {
-                    Debug.Log("add item");
-                    umi3d.cdk.menu.MenuItem menuItem = new umi3d.cdk.menu.MenuItem();
-                    menuItem.Name = child.gameObject.name;
+                    UMI3DLogger.Log("add item",scope);
+                    var menuItem = new umi3d.cdk.menu.MenuItem
+                    {
+                        Name = child.gameObject.name
+                    };
                     menu_.Add(menuItem);
                 }
                 else
                 {
-                    umi3d.cdk.menu.Menu submenu = new umi3d.cdk.menu.Menu();
-                    submenu.Name = child.gameObject.name;
+                    var submenu = new umi3d.cdk.menu.Menu
+                    {
+                        Name = child.gameObject.name
+                    };
                     menu_.Add(submenu);
                     ToMenuAux(submenu, child);
                 }

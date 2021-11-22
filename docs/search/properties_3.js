@@ -1,12 +1,14 @@
 var searchData=
 [
-  ['datarepository_3425',['dataRepository',['../db/d4d/classumi3d_1_1edk_1_1_u_m_i3_d_server.html#a7fe9e7166076ad60d1f093a80083983e',1,'umi3d::edk::UMI3DServer']]],
-  ['date_3426',['date',['../de/d4f/classumi3d_1_1cdk_1_1collaboration_1_1_http_client_1_1_request_failed_argument.html#a4436f6ee4dd880ef07940a1100f16c1f',1,'umi3d::cdk::collaboration::HttpClient::RequestFailedArgument']]],
-  ['decimal_3427',['Decimal',['../da/d1d/classumi3d_1_1common_1_1_input_type.html#afc966d50080078b41ed55d5d95678930',1,'umi3d::common::InputType']]],
-  ['description_3428',['description',['../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html#a671829c758a3cfe42ce5220570dcbeca',1,'umi3d::cdk::interaction::AbstractTool']]],
-  ['desynchronoususer_3429',['DesynchronousUser',['../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#af3c0f197fe2a6c897b583379296c7d5a',1,'umi3d::edk::UMI3DAsyncProperty']]],
-  ['direction_3430',['direction',['../d6/d84/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable_1_1_hover_event_content.html#a2cc55a983df3faf87190539a035bd70e',1,'umi3d::edk::interaction::UMI3DInteractable::HoverEventContent']]],
-  ['downloaded_3431',['downloaded',['../df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html#a04c233d2af482a98f33d2bcf2de557b1',1,'umi3d::cdk::UMI3DEnvironmentLoader']]],
-  ['dto_3432',['dto',['../d2/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_abstract_animation.html#a774597882dfa99ea246f41f7df3065e9',1,'umi3d.cdk.UMI3DAbstractAnimation.dto()'],['../dd/d03/classumi3d_1_1cdk_1_1_u_m_i3_d_animation.html#ae09c744609893696297d6cf640c583ec',1,'umi3d.cdk.UMI3DAnimation.dto()'],['../d3/d4a/classumi3d_1_1cdk_1_1_u_m_i3_d_node_animation.html#a56c981194969a97bb949cbff9f724cbe',1,'umi3d.cdk.UMI3DNodeAnimation.dto()']]],
-  ['dynamicpixelperunit_3433',['DynamicPixelPerUnit',['../d9/d4c/classumi3d_1_1edk_1_1_u_i_canvas.html#a4008c2a38f09778fad2f9c227e485a1c',1,'umi3d::edk::UICanvas']]]
+  ['checkbox_0',['Checkbox',['../da/d1d/classumi3d_1_1common_1_1_input_type.html#ac83fb36f19e1fcdccda10d031ff7e178',1,'umi3d::common::InputType']]],
+  ['children_1',['children',['../d6/d9f/classumi3d_1_1cdk_1_1interaction_1_1_projection_tree_node.html#a9ee9805ec8d6e2a22286bbddc7157829',1,'umi3d::cdk::interaction::ProjectionTreeNode']]],
+  ['collaboration_2',['Collaboration',['../d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a6f986507bb763a5964ddc143e35245e4',1,'umi3d::edk::collaboration::UMI3DCollaborationServer']]],
+  ['colliders_3',['colliders',['../dd/d7d/classumi3d_1_1cdk_1_1_u_m_i3_d_node_instance.html#aaeb82c5a55fcbaa08fe2b66b0186c082',1,'umi3d::cdk::UMI3DNodeInstance']]],
+  ['color_4',['Color',['../d7/de9/classumi3d_1_1edk_1_1_u_i_image.html#a16ffd03ec872a958cad2e980e94de93c',1,'umi3d::edk::UIImage']]],
+  ['continuousrange_5',['continuousRange',['../d7/dea/classumi3d_1_1cdk_1_1menu_1_1_abstract_range_input_menu_item.html#a61c43afbcb41effa77e95fb3cd879f48',1,'umi3d.cdk.menu.AbstractRangeInputMenuItem.continuousRange()'],['../d1/dac/classumi3d_1_1cdk_1_1menu_1_1_float_range_input_menu_item.html#ae96b13ab6cc7cc9ded30dbcaa34511ef',1,'umi3d.cdk.menu.FloatRangeInputMenuItem.continuousRange()']]],
+  ['controller_6',['controller',['../d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a644bbaf0811583cf11a1387d631e8369',1,'umi3d::cdk::interaction::AbstractUMI3DInput']]],
+  ['count_7',['count',['../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a7ed5622efd084c70f267846524821693',1,'umi3d::cdk::RequestFailedArgument']]],
+  ['count_8',['Count',['../df/d6e/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu.html#ad741f90bf335076fa7a1238b6fbadf51',1,'umi3d.cdk.menu.AbstractMenu.Count()'],['../df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu.html#a0260cdaff43735791b81fec56bb2394e',1,'umi3d.cdk.menu.Menu.Count()'],['../d0/db7/classumi3d_1_1cdk_1_1menu_1_1view_1_1_serializable_dictionary.html#ae0c5f63d8153f923706e6d7b0c437830',1,'umi3d.cdk.menu.view.SerializableDictionary.Count()']]],
+  ['currentmicrophone_9',['CurrentMicrophone',['../d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a0efd9c7e6379dea07dcbcee4de3fc22e',1,'umi3d::cdk::collaboration::MicrophoneListener']]],
+  ['currentnav_10',['currentNav',['../d3/d9d/classumi3d_1_1cdk_1_1_u_m_i3_d_navigation.html#a4ab57847078f9d6696fb1d1678179114',1,'umi3d::cdk::UMI3DNavigation']]]
 ];

@@ -14,10 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace umi3d.cdk
 {
 
@@ -45,7 +41,7 @@ namespace umi3d.cdk
 
         public UMI3DILoadingPolicy ShouldTryAgain(string failedMessage)
         {
-            if(trycount < maxTrycount)
+            if (trycount < maxTrycount)
             {
                 trycount++;
                 return this;

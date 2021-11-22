@@ -21,7 +21,9 @@ namespace umi3d.common.collaboration
 {
     public sealed class UMI3DAuthenticator : IUserAuthenticator
     {
-        const string sepparator = ":";
+        const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
+
+        private const string sepparator = ":";
         private readonly Action<Action<string>> getPin;
         private readonly Action<Action<(string, string)>> getLoginPassword;
         private readonly Action<Action<IdentityDto>> getIdentity;
@@ -81,7 +83,7 @@ namespace umi3d.common.collaboration
                     });
                     break;
                 default:
-                    Debug.LogWarning($"Unknow AuthenticationType [{type}]");
+                    UMI3DLogger.LogWarning($"Unknow AuthenticationType [{type}]",scope);
                     rejectServerAction();
                     break;
             }
@@ -95,7 +97,7 @@ namespace umi3d.common.collaboration
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
             string basicString = response.GetBasicType<string>();
-            IdentityDto identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
+            var identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
 
             MainThreadManager.Run(() =>
             {
@@ -123,17 +125,19 @@ namespace umi3d.common.collaboration
                             rejectUserAction(player);
                         break;
                     default:
-                        Debug.LogWarning($"Unknow AuthenticationType [{authenticationType}]");
+                        UMI3DLogger.LogWarning($"Unknow AuthenticationType [{authenticationType}]",scope);
                         rejectUserAction(player);
                         break;
                 }
             });
         }
 
-        void AcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
+        private void AcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
         {
             if (shouldAccdeptPlayer == null)
+            {
                 authServerAction();
+            }
             else
             {
                 shouldAccdeptPlayer(identity, player, (b) =>
@@ -147,7 +151,7 @@ namespace umi3d.common.collaboration
             }
         }
 
-        void sendAuthServerAction(string auth, Action<BMSByte> authServerAction)
+        private void sendAuthServerAction(string auth, Action<BMSByte> authServerAction)
         {
             getIdentity((id) =>
             {
@@ -155,28 +159,36 @@ namespace umi3d.common.collaboration
             });
         }
 
-
-        void getAuthLoginPassword(Action<string> callback)
+        private void getAuthLoginPassword(Action<string> callback)
         {
             if (getLoginPassword == null)
+            {
                 callback?.Invoke("");
+            }
             else
+            {
                 getLoginPassword.Invoke((k) =>
                 {
-                    var (login, password) = k;
+                    (string login, string password) = k;
                     LoginSet?.Invoke(login);
                     callback.Invoke(login + sepparator + password);
                 });
+            }
         }
-        void getAuthPin(Action<string> callback)
+
+        private void getAuthPin(Action<string> callback)
         {
             if (getPin == null)
+            {
                 callback?.Invoke("");
+            }
             else
+            {
                 getPin.Invoke((pin) =>
                 {
                     callback.Invoke(pin);
                 });
+            }
         }
 
 

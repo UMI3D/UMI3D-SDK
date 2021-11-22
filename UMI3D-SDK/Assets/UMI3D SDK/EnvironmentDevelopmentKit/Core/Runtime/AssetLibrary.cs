@@ -26,8 +26,7 @@ namespace umi3d.edk
     public class AssetLibrary : ScriptableObject, UMI3DLoadableEntity
     {
         public string id = "com.compagny.application";
-
-        ulong eId = 0;
+        private ulong eId = 0;
         [SerializeField]
         public SerializableDateTime date;
         [SerializeField]
@@ -35,14 +34,16 @@ namespace umi3d.edk
 
         public AssetLibraryDto ToDto()
         {
-            AssetLibraryDto dto = new AssetLibraryDto();
-            dto.libraryId = id;
-            dto.id = Id();
-            dto.format = date.Format();
-            dto.culture = date.Culture();
-            dto.date = date.ToString();
-            dto.variants = new List<UMI3DLocalAssetDirectory>();
-            foreach (var variant in variants)
+            var dto = new AssetLibraryDto
+            {
+                libraryId = id,
+                id = Id(),
+                format = date.Format(),
+                culture = date.Culture(),
+                date = date.ToString(),
+                variants = new List<UMI3DLocalAssetDirectory>()
+            };
+            foreach (UMI3DLocalAssetDirectory variant in variants)
             {
                 dto.variants.Add(new UMI3DLocalAssetDirectory(variant));
             }
@@ -101,7 +102,7 @@ namespace umi3d.edk
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

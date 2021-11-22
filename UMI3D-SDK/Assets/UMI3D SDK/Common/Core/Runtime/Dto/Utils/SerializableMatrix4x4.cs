@@ -61,7 +61,10 @@ namespace umi3d.common
                     if (c == 2) return c2[r];
                     return c3[r];
                 }
-                else throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
+                else
+                {
+                    throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
+                }
             }
             set
             {
@@ -72,14 +75,17 @@ namespace umi3d.common
                     else if (c == 2) c2[r] = value;
                     else c3[r] = value;
                 }
-                else throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
+                else
+                {
+                    throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
+                }
             }
         }
 
         public static implicit operator SerializableMatrix4x4(Matrix4x4 m)
         {
             if (m == null) return default;
-            SerializableMatrix4x4 M = new SerializableMatrix4x4();
+            var M = new SerializableMatrix4x4();
             for (int i = 0; i < 16; i++)
                 M[i] = m[i];
             return M;
@@ -88,7 +94,7 @@ namespace umi3d.common
         public static implicit operator Matrix4x4(SerializableMatrix4x4 m)
         {
             if (m == null) return default;
-            Matrix4x4 M = new Matrix4x4();
+            var M = new Matrix4x4();
             for (int i = 0; i < 16; i++)
                 M[i] = m[i];
             return M;

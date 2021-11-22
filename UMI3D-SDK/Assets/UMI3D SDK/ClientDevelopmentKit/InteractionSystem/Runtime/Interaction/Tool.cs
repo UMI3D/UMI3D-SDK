@@ -16,6 +16,7 @@ limitations under the License.
 
 using umi3d.cdk.menu;
 using umi3d.cdk.menu.interaction;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,6 +29,7 @@ namespace umi3d.cdk.interaction
     /// <see cref="InteractableDto"/>
     public class Tool : AbstractTool
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
 
         public class Event : UnityEvent<Tool> { }
 
@@ -52,9 +54,9 @@ namespace umi3d.cdk.interaction
                 tool = this,
                 Name = name,
             };
-            foreach (var interaction in dto.interactions)
+            foreach (AbstractInteractionDto interaction in dto.interactions)
             {
-                var item = getInteractionItem(interaction);
+                MenuItem item = getInteractionItem(interaction);
                 Menu.Add(item);
             }
 
@@ -62,8 +64,7 @@ namespace umi3d.cdk.interaction
             toolbox?.sub.Add(Menu);
         }
 
-
-        MenuItem getInteractionItem(AbstractInteractionDto dto)
+        private MenuItem getInteractionItem(AbstractInteractionDto dto)
         {
             MenuItem result = null;
             switch (dto)
@@ -72,9 +73,11 @@ namespace umi3d.cdk.interaction
                     result = new MenuItem();
                     break;
                 case EventDto eventDto:
-                    var e = new EventMenuItem();
-                    e.interaction = eventDto;
-                    e.toggle = eventDto.hold;
+                    var e = new EventMenuItem
+                    {
+                        interaction = eventDto,
+                        toggle = eventDto.hold
+                    };
                     e.Subscribe((x) =>
                     {
                         if (eventDto.hold)
@@ -217,9 +220,9 @@ namespace umi3d.cdk.interaction
                     result = form;
                     break;
                 default:
-                    Debug.LogWarning($"Unknown Menu Item for {dto}");
+                    UMI3DLogger.LogWarning($"Unknown Menu Item for {dto}",scope);
                     result = new MenuItem();
-                    result.Subscribe(() => Debug.Log("Unknown case."));
+                    result.Subscribe(() => UMI3DLogger.Log("Unknown case.",scope));
                     break;
             }
             result.Name = dto.name;

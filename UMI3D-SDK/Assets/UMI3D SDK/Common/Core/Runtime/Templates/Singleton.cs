@@ -20,18 +20,17 @@ namespace umi3d.common
 {
     public class Singleton<T> : QuittingManager where T : Singleton<T>
     {
+        const DebugScope scope = DebugScope.Common | DebugScope.Core;
+
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>
         /// </summary>
-        static T instance;
+        private static T instance;
 
         /// <summary>
         /// State if an instance of <typeparamref name="T"/> exist.
         /// </summary>
-        public static bool Exists
-        {
-            get { return !ApplicationIsQuitting && instance != null; }
-        }
+        public static bool Exists => !ApplicationIsQuitting && instance != null;
 
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>.
@@ -48,12 +47,17 @@ namespace umi3d.common
                     instance = FindObjectOfType<T>();
                     if (instance == null)
                     {
-                        GameObject g = GameObject.Find(typeof(T).Name);
-                        if (g) instance = g.GetComponent<T>();
+                        var g = GameObject.Find(typeof(T).Name);
+                        if (g)
+                        {
+                            instance = g.GetComponent<T>();
+                        }
                         else
                         {
-                            g = new GameObject();
-                            g.name = typeof(T).Name;
+                            g = new GameObject
+                            {
+                                name = typeof(T).Name
+                            };
                             instance = g.AddComponent<T>();
                         }
                     }
@@ -63,7 +67,7 @@ namespace umi3d.common
             set
             {
                 if (instance == null) instance = value;
-                else Debug.LogError("Instance of " + typeof(T) + " already exist, Instance could not be set");
+                else UMI3DLogger.LogError("Instance of " + typeof(T) + " already exist, Instance could not be set",scope);
             }
         }
 
@@ -74,7 +78,7 @@ namespace umi3d.common
         {
             if (instance != null && instance != this)
             {
-                Debug.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated");
+                UMI3DLogger.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated",scope);
                 Destroy(this);
             }
             else

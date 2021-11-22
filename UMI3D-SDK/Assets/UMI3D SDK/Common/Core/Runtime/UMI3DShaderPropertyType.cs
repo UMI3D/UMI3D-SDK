@@ -17,14 +17,14 @@ limitations under the License.
 namespace umi3d.common
 {
 
-    static public class UMI3DShaderPropertyType 
+    public static class UMI3DShaderPropertyType
     {
         public const byte None = 0;
 
         public const byte Array = 1;
         public const byte List = 2;
 
-        public const byte Bool  = 101;
+        public const byte Bool = 101;
         public const byte Double = 102;
         public const byte Float = 105;
         public const byte Int = 104;

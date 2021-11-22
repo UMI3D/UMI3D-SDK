@@ -86,7 +86,7 @@ namespace umi3d.edk
         /// <summary>
         /// The current default or synchronized value.
         /// </summary>
-        T value;
+        private T value;
 
         /// <summary>
         /// The id of this property.
@@ -123,12 +123,12 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to check the Equality between two T objects;
         /// </summary>
-        Func<T, T, bool> Equal;
+        private readonly Func<T, T, bool> Equal;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        Func<T, UMI3DUser, object> Serializer;
+        private readonly Func<T, UMI3DUser, object> Serializer;
 
         ///<inheritdoc/>
         public override IEnumerable<UMI3DUser> AsynchronousUser
@@ -236,7 +236,9 @@ namespace umi3d.edk
             if (asyncValues.ContainsKey(user))
             {
                 if ((asyncValues[user] == null && value == null || Equal(asyncValues[user], value)) && !forceOperation)
+                {
                     return null;
+                }
                 else
                 {
                     asyncValues[user] = value;
@@ -433,7 +435,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="d"></param>
         /// <returns>return true if <paramref name="d"/> is in ]-epsilon,epsilon[</returns>
-        bool InRange(float d)
+        private bool InRange(float d)
         {
             return (d < epsilon && d > -epsilon);
         }

@@ -33,6 +33,8 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
+
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
@@ -47,7 +49,7 @@ namespace umi3d.cdk
         public NotificationLoader notificationLoader;
 
         [SerializeField]
-        Material _skyboxMaterial;
+        private Material _skyboxMaterial;
         public Material skyboxMaterial { get { if (_skyboxMaterial == null) { _skyboxMaterial = new Material(RenderSettings.skybox); RenderSettings.skybox = _skyboxMaterial; } return _skyboxMaterial; } }
 
         public List<IResourcesLoader> ResourcesLoaders { get; } = new List<IResourcesLoader>() { new ObjMeshDtoLoader(), new ImageDtoLoader(), new GlTFMeshDtoLoader(), new BundleDtoLoader(), new AudioLoader() };
@@ -236,7 +238,7 @@ namespace umi3d.cdk
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {
             UMI3DLocalAssetDirectory res = null;
-            foreach (var assetDir in assetLibrary.variants)
+            foreach (UMI3DLocalAssetDirectory assetDir in assetLibrary.variants)
             {
                 bool ok = res == null;
                 if (!ok && !assetDir.formats.Any(f => !supportedformats.Contains(f)))
@@ -262,7 +264,7 @@ namespace umi3d.cdk
         /// <param name="b"></param>
         /// <param name="max">maximum, 0 mean no maximum</param>
         /// <returns></returns>
-        bool Compare(float a, float b, float max)
+        private bool Compare(float a, float b, float max)
         {
             if (max <= 0) return a > b;
             if (b > max) return b > a;
@@ -275,7 +277,8 @@ namespace umi3d.cdk
         {
             FileDto res = null;
             if (files != null)
-                foreach (var file in files)
+            {
+                foreach (FileDto file in files)
                 {
                     bool ok = res == null;
                     if (!ok && supportedformats.Contains(file.format))
@@ -291,6 +294,8 @@ namespace umi3d.cdk
                         res = file;
                     }
                 }
+            }
+
             return res;
         }
 
@@ -304,7 +309,7 @@ namespace umi3d.cdk
                 if (loader.IsToBeIgnored(extension))
                     return null;
             }
-            Debug.LogError("there is no compatible loader for this extention : " + extension);
+            UMI3DLogger.LogError("there is no compatible loader for this extention : " + extension,scope);
             return null;
         }
 
@@ -316,7 +321,7 @@ namespace umi3d.cdk
                 if (loader.IsSuitableFor(gltfMatDto))
                     return loader;
             }
-            Debug.LogError("there is no compatible material loader for this material.");
+            UMI3DLogger.LogError("there is no compatible material loader for this material.",scope);
             return null;
         }
 
@@ -330,6 +335,7 @@ namespace umi3d.cdk
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     UMI3DGlobalID.EnvironementId,
                     fileToLoad,
@@ -359,8 +365,10 @@ namespace umi3d.cdk
                             var buffer = new Texture2D(tex.width, tex.height);
                             buffer.SetPixels(tex.GetPixels());
                             for (int x = 0; x < tex.width; x++)
+                            {
                                 for (int y = 0; y < tex.height; y++)
                                     tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
+                            }
 
                             imageColors = tex.GetPixels(size, 0, size, size);
                             cube.SetPixels(imageColors, CubemapFace.PositiveY);
@@ -385,11 +393,14 @@ namespace umi3d.cdk
                             RenderSettings.skybox = skyboxMaterial;
                         }
                         else
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                        {
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
+                        }
                     },
-                    Debug.LogWarning,
+                    e => UMI3DLogger.LogWarning(e,scope),
                     loader.DeleteObject
                     );
+            }
         }
 
         ///<inheritdoc/>
@@ -437,7 +448,7 @@ namespace umi3d.cdk
             {
                 case UMI3DOperationKeys.SwitchTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    var oldid = UMI3DNetworkingHelper.Read<ulong>(container);
+                    ulong oldid = UMI3DNetworkingHelper.Read<ulong>(container);
                     releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
                     performed.Invoke();
@@ -454,22 +465,22 @@ namespace umi3d.cdk
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
-                    var target = UMI3DNetworkingHelper.Read<int>(container);
+                    int target = UMI3DNetworkingHelper.Read<int>(container);
                     UMI3DClientUserTracking.Instance.setFPSTarget(target);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
-                    var streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
+                    List<uint> streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
                     UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
-                    var sendCamera = UMI3DNetworkingHelper.Read<bool>(container);
+                    bool sendCamera = UMI3DNetworkingHelper.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.setCameraPropertiesSending(sendCamera);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
-                    var sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
+                    bool sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.setTrackingSending(sendTracking);
                     performed.Invoke();
                     break;

@@ -15,8 +15,8 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections;
-using umi3d.cdk.interaction;
 using System.Linq;
+using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -30,16 +30,22 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DForgeClient : ForgeSocketBase
     {
-        uint Me { get { return UMI3DCollaborationClientServer.UserDto.dto.networkId; } }
-        bool useDto { get { return UMI3DCollaborationClientServer.useDto; } }
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        UMI3DUser GetUserByNetWorkId(uint nid)
+        private uint Me => UMI3DCollaborationClientServer.UserDto.dto.networkId;
+
+        private bool useDto => UMI3DCollaborationClientServer.useDto;
+
+        private UMI3DUser GetUserByNetWorkId(uint nid)
         {
             if (UMI3DCollaborationEnvironmentLoader.Exists && UMI3DCollaborationEnvironmentLoader.Instance.UserList != null)
+            {
                 lock (UMI3DCollaborationEnvironmentLoader.Instance.UserList)
                 {
                     return UMI3DCollaborationEnvironmentLoader.Instance.UserList?.Find(u => u?.networkId == nid);
                 }
+            }
+
             return null;
         }
 
@@ -49,7 +55,7 @@ namespace umi3d.cdk.collaboration
         private UDPClient client;
 
 
-        public bool IsConnected { get => client != null && client.IsConnected; }
+        public bool IsConnected => client != null && client.IsConnected;
 
         /// <summary>
         /// 
@@ -63,7 +69,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        public uint NetworkingId { get { return client.Me.NetworkId; } }
+        public uint NetworkingId => client.Me.NetworkId;
 
         /// <summary>
         /// 
@@ -112,18 +118,20 @@ namespace umi3d.cdk.collaboration
 
             if (!client.IsBound)
             {
-                Debug.LogError("NetWorker failed to bind");
+                UMI3DLogger.LogError("NetWorker failed to bind", scope);
                 return;
             }
 
             if (mgr == null && networkManager == null)
             {
-                Debug.LogWarning("A network manager was not provided, generating a new one instead");
+                UMI3DLogger.LogWarning("A network manager was not provided, generating a new one instead", scope);
                 networkManager = new GameObject("Network Manager");
                 mgr = networkManager.AddComponent<NetworkManager>();
             }
             else if (mgr == null)
+            {
                 mgr = Instantiate(networkManager).GetComponent<NetworkManager>();
+            }
 
             mgr.Initialize(client, masterServerHost, masterServerPort, null);
         }
@@ -151,7 +159,7 @@ namespace umi3d.cdk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log("AUTH FAILED !");
+                UMI3DLogger.Log("AUTH FAILED !", scope);
             });
         }
 
@@ -217,7 +225,9 @@ namespace umi3d.cdk.collaboration
         public void SendBrowserRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (useDto)
+            {
                 SendBinaryData((int)DataChannelTypes.Data, dto.ToBson(), reliable);
+            }
             else
             {
                 SendBinaryData((int)DataChannelTypes.Data, dto.ToBytableArray().ToBytes(), reliable);
@@ -239,7 +249,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var bytable = UMI3DNetworkingHelper.Write(Me) + UMI3DNetworkingHelper.WriteCollection(sample.Take(length));
+                Bytable bytable = UMI3DNetworkingHelper.Write(Me) + UMI3DNetworkingHelper.WriteCollection(sample.Take(length));
                 voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), Receivers.All, MessageGroupIds.VOIP, false);
             }
             client.Send(voice);
@@ -274,7 +284,7 @@ namespace umi3d.cdk.collaboration
                             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                                 requestGet.key,
                                 (bytes) => LocalInfoSender.SetLocalInfo(requestGet.key, bytes),
-                                (error) => { Debug.Log("error on get local info : " + requestGet.key); });
+                                (error) => { UMI3DLogger.Log("error on get local info : " + requestGet.key, scope); });
                         });
 
                         break;
@@ -290,7 +300,7 @@ namespace umi3d.cdk.collaboration
                             {
                                 UMI3DCollaborationClientServer.Instance.HttpClient.SendPostFile(
                                     null,
-                                       (error) => { Debug.Log("error on upload file : " + fileName); },
+                                       (error) => { UMI3DLogger.Log("error on upload file : " + fileName, scope); },
                                        token,
                                        fileName,
                                        bytesToUpload);
@@ -298,7 +308,7 @@ namespace umi3d.cdk.collaboration
                         }
                         break;
                     default:
-                        Debug.Log($"Type not catch {dto.GetType()}");
+                        UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
                         break;
                 }
 
@@ -306,7 +316,7 @@ namespace umi3d.cdk.collaboration
             else
             {
                 var container = new ByteContainer(frame.StreamData.byteArr);
-                var TransactionId = UMI3DNetworkingHelper.Read<uint>(container);
+                uint TransactionId = UMI3DNetworkingHelper.Read<uint>(container);
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
@@ -317,7 +327,7 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
                         {
-                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                             var nav = new NavigateDto() { position = pos };
                             MainThreadManager.Run(() =>
                             {
@@ -327,8 +337,8 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.TeleportationRequest:
                         {
-                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                            var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            SerializableVector4 rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                             var nav = new TeleportDto() { position = pos, rotation = rot };
                             MainThreadManager.Run(() =>
                             {
@@ -338,13 +348,13 @@ namespace umi3d.cdk.collaboration
                         break;
 
                     case UMI3DOperationKeys.GetLocalInfoRequest:
-                        var key = UMI3DNetworkingHelper.Read<string>(container);
+                        string key = UMI3DNetworkingHelper.Read<string>(container);
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetLocalInfo(
                             key,
                             (bytes) => LocalInfoSender.SetLocalInfo(key, bytes),
-                            (error) => { Debug.Log("error on get local info : " + key); }
+                            (error) => { UMI3DLogger.Log("error on get local info : " + key, scope); }
                             );
                         });
                         break;
@@ -359,7 +369,7 @@ namespace umi3d.cdk.collaboration
                             {
                                 UMI3DCollaborationClientServer.Instance.HttpClient.SendPostFile(
                                     null,
-                                   (error) => { Debug.Log("error on upload file : " + name); },
+                                   (error) => { UMI3DLogger.Log("error on upload file : " + name, scope); },
                                    token,
                                    name,
                                    bytesToUpload);
@@ -369,7 +379,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            Debug.Log($"Type not catch {TransactionId}");
+                            UMI3DLogger.Log($"Type not catch {TransactionId}", scope);
                         });
                         break;
                 }
@@ -395,17 +405,21 @@ namespace umi3d.cdk.collaboration
             {
                 if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
                 {
-                    if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    if (UMI3DClientUserTracking.Instance.trackingReception && UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    {
                         MainThreadManager.Run(() =>
                         {
                             if (client.Time.Timestep - frame.TimeStep < 500)
                                 StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
                         });
+                    }
                     else
+                    {
                         MainThreadManager.Run(() =>
                         {
-                            Debug.LogWarning("User Avatar not found.");
+                            UMI3DLogger.LogWarning("Avatar Frame Dropped", scope);
                         });
+                    }
                 }
             }
             else
@@ -413,7 +427,7 @@ namespace umi3d.cdk.collaboration
                 var trackingFrame = new common.userCapture.UserTrackingFrameDto();
 
                 var container = new ByteContainer(frame.StreamData.byteArr);
-                var id = UMI3DNetworkingHelper.Read<uint>(container);
+                uint id = UMI3DNetworkingHelper.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
                     trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
@@ -423,16 +437,20 @@ namespace umi3d.cdk.collaboration
                     trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
 
                     if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    {
                         MainThreadManager.Run(() =>
                         {
                             if (client.Time.Timestep - frame.TimeStep < 500)
                                 StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
                         });
+                    }
                     else
+                    {
                         MainThreadManager.Run(() =>
                         {
-                            Debug.LogWarning("User Avatar not found.");
+                            UMI3DLogger.LogWarning("User Avatar not found.", scope);
                         });
+                    }
                 }
             }
         }
@@ -446,7 +464,7 @@ namespace umi3d.cdk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.LogError("Video channels not implemented!");
+                UMI3DLogger.LogError("Video channels not implemented!", scope);
             });
         }
 
@@ -461,8 +479,8 @@ namespace umi3d.cdk.collaboration
         {
             if (useDto)
             {
-                VoiceDto dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
-                var id = dto.senderId;
+                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
+                uint id = dto.senderId;
                 UMI3DUser source = GetUserByNetWorkId(id);
                 if (source != null)
                     AudioManager.Instance.Read(source.id, dto.data, client.Time.Timestep);
@@ -470,7 +488,7 @@ namespace umi3d.cdk.collaboration
             else
             {
                 var container = new ByteContainer(frame.StreamData.byteArr);
-                var id = UMI3DNetworkingHelper.Read<uint>(container);
+                uint id = UMI3DNetworkingHelper.Read<uint>(container);
                 UMI3DUser source = GetUserByNetWorkId(id);
                 if (source != null)
                     AudioManager.Instance.Read(source.id, UMI3DNetworkingHelper.ReadByteArray(container), client.Time.Timestep);
@@ -493,7 +511,7 @@ namespace umi3d.cdk.collaboration
             bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
             bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-            Binary bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
+            var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
             client.Send(bin, isReliable);
         }
 
@@ -527,8 +545,9 @@ namespace umi3d.cdk.collaboration
             destroyed = true;
         }
 
-        bool destroyed = false;
-        new Coroutine StartCoroutine(IEnumerator enumerator)
+        private bool destroyed = false;
+
+        private new Coroutine StartCoroutine(IEnumerator enumerator)
         {
             if (!destroyed)
                 return base.StartCoroutine(enumerator);

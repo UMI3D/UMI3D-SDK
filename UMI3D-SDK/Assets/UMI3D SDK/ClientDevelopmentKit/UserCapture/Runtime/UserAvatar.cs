@@ -28,6 +28,9 @@ namespace umi3d.cdk.userCapture
 {
     public class UserAvatar : MonoBehaviour
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+
+
         protected struct SavedTransform
         {
             public Transform obj;
@@ -59,14 +62,14 @@ namespace umi3d.cdk.userCapture
 
         protected Dictionary<BoundObject, SavedTransform> savedTransforms = new Dictionary<BoundObject, SavedTransform>();
 
-        private List<Bound> bounds = new List<Bound>();
+        private readonly List<Bound> bounds = new List<Bound>();
 
         private void Update()
         {
             this.transform.position = UMI3DClientUserTracking.Instance.transform.position;
             this.transform.rotation = UMI3DClientUserTracking.Instance.transform.rotation;
 
-            foreach (var item in bounds)
+            foreach (Bound item in bounds)
             {
                 if (item.obj != null)
                 {
@@ -89,8 +92,10 @@ namespace umi3d.cdk.userCapture
             userBindings = dto.bindings;
 
             if (dto.handPoses != null)
+            {
                 foreach (UMI3DHandPoseDto pose in dto.handPoses)
                     UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null);
+            }
 
             if (activeUserBindings && userBindings != null)
             {
@@ -115,14 +120,18 @@ namespace umi3d.cdk.userCapture
                 if (activeUserBindings)
                 {
                     foreach (BoneBindingDto dto in userBindings)
+                    {
                         if (dto.active)
                             UpdateBindingPosition(dto);
+                    }
                 }
                 else
                 {
                     foreach (BoneBindingDto dto in userBindings)
+                    {
                         if (savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
                             ResetObject(dto);
+                    }
                 }
             }
         }
@@ -134,15 +143,21 @@ namespace umi3d.cdk.userCapture
         public void SetBindings(List<BoneBindingDto> newBindings)
         {
             foreach (BoneBindingDto dto in userBindings)
+            {
                 if (savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
                     ResetObject(dto);
+            }
 
             userBindings = newBindings;
 
             if (activeUserBindings && userBindings != null)
+            {
                 foreach (BoneBindingDto dto in userBindings)
+                {
                     if (dto.active)
                         UpdateBindingPosition(dto);
+                }
+            }
         }
 
         /// <summary>
@@ -160,7 +175,9 @@ namespace umi3d.cdk.userCapture
                     AddBinding_(index, dto);
             }
             else
+            {
                 AddBinding_(index, dto);
+            }
         }
 
         protected void AddBinding_(int index, BoneBindingDto dto)
@@ -210,10 +227,14 @@ namespace umi3d.cdk.userCapture
 
                 }
                 else
-                    UnityEngine.Debug.LogWarning(dto.boneType + "not found in bones instances");
+                {
+                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances",scope);
+                }
             }
             else
+            {
                 WaitForOtherRig(dto);
+            }
         }
 
         protected Transform InspectBoundRigs(BoneBindingDto dto)
@@ -239,7 +260,9 @@ namespace umi3d.cdk.userCapture
                         obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName);
                     }
                     else
+                    {
                         obj = node.transform;
+                    }
 
                     bounds.Add(new Bound()
                     {
@@ -278,11 +301,13 @@ namespace umi3d.cdk.userCapture
                     boundRigs.Add(obj);
             }
             else
+            {
                 obj = node.transform;
+            }
 
             if (!savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
             {
-                SavedTransform savedTransform = new SavedTransform
+                var savedTransform = new SavedTransform
                 {
                     obj = obj,
                     savedParent = obj.parent,
@@ -374,7 +399,9 @@ namespace umi3d.cdk.userCapture
                         boundRigs.Remove(savedTransform.obj);
                 }
                 else
+                {
                     Destroy(node.gameObject);
+                }
             }
 
             if (!dto.active)
@@ -440,9 +467,9 @@ namespace umi3d.cdk.userCapture
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
-                    var value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
-                    var value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
+                    double value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+                    double value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
+                    double value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
 
                     tools.estimations = new double[] { value_x, value_y, value_z };
 
@@ -462,17 +489,17 @@ namespace umi3d.cdk.userCapture
                 double check = lastMessageTime;
                 double now = Time.time;
 
-                var delta = now - check;
+                double delta = now - check;
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    var fw_value_x = (tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[0];
-                    var fw_value_y = (tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[1];
-                    var fw_value_z = (tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[2];
+                    double fw_value_x = (tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[0];
+                    double fw_value_y = (tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[1];
+                    double fw_value_z = (tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[2];
 
-                    var up_value_x = (tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[0];
-                    var up_value_y = (tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[1];
-                    var up_value_z = (tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[2];
+                    double up_value_x = (tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[0];
+                    double up_value_y = (tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[1];
+                    double up_value_z = (tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[2];
 
                     tools.estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
 
@@ -500,7 +527,7 @@ namespace umi3d.cdk.userCapture
             else
                 nodePositionFilter.previous_prediction = positionMeasurement;
 
-            Quaternion quaternionMeasurment = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
+            var quaternionMeasurment = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
 
             Vector3 targetForward = quaternionMeasurment * Vector3.forward;
             Vector3 targetUp = quaternionMeasurment * Vector3.up;

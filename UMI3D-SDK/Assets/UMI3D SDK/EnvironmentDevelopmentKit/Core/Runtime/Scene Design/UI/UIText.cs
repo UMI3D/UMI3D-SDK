@@ -98,48 +98,48 @@ namespace umi3d.edk
 
 
         /// <see cref="Alignment"/>
-        TextAnchor alignment { get { return GetComponent<Text>().alignment; } }
+        private TextAnchor alignment => GetComponent<Text>().alignment;
 
         /// <see cref="AlignByGeometry"/>
-        bool alignByGeometry { get { return GetComponent<Text>().alignByGeometry; } }
+        private bool alignByGeometry => GetComponent<Text>().alignByGeometry;
 
         /// <see cref="CTextColor"/>
-        Color color { get { return GetComponent<Text>().color; } }
+        private Color color => GetComponent<Text>().color;
 
         /// <see cref="TextFont"/>
-        Font font { get { return GetComponent<Text>().font; } }
+        private Font font => GetComponent<Text>().font;
 
         /// <see cref="FontSize"/>
-        int fontSize { get { return GetComponent<Text>().fontSize; } }
+        private int fontSize => GetComponent<Text>().fontSize;
 
         /// <see cref="FontStyle"/>
-        FontStyle fontStyle { get { return GetComponent<Text>().fontStyle; } }
+        private FontStyle fontStyle => GetComponent<Text>().fontStyle;
 
         /// <see cref="TextFont"/>
-        HorizontalWrapMode horizontalOverflow { get { return GetComponent<Text>().horizontalOverflow; } }
+        private HorizontalWrapMode horizontalOverflow => GetComponent<Text>().horizontalOverflow;
 
         /// <see cref="LineSpacing"/>
-        float lineSpacing { get { return GetComponent<Text>().lineSpacing; } }
+        private float lineSpacing => GetComponent<Text>().lineSpacing;
 
         /// <see cref="ResizeTextForBestFit"/>
-        bool resizeTextForBestFit { get { return GetComponent<Text>().resizeTextForBestFit; } }
+        private bool resizeTextForBestFit => GetComponent<Text>().resizeTextForBestFit;
 
         /// <see cref="ResizeTextMaxSize"/>
-        int resizeTextMaxSize { get { return GetComponent<Text>().resizeTextMaxSize; } }
+        private int resizeTextMaxSize => GetComponent<Text>().resizeTextMaxSize;
 
         /// <see cref="ResizeTextMinSize"/>
-        int resizeTextMinSize { get { return GetComponent<Text>().resizeTextMinSize; } }
+        private int resizeTextMinSize => GetComponent<Text>().resizeTextMinSize;
 
         /// <see cref="SupportRichText"/>
-        bool supportRichText { get { return GetComponent<Text>().supportRichText; } }
+        private bool supportRichText => GetComponent<Text>().supportRichText;
 
         /// <see cref="Text"/>
-        string text { get { return GetComponent<Text>().text; } }
+        private string text => GetComponent<Text>().text;
 
         /// <see cref="VerticalOverflow"/>
-        VerticalWrapMode verticalOverflow { get { return GetComponent<Text>().verticalOverflow; } }
+        private VerticalWrapMode verticalOverflow => GetComponent<Text>().verticalOverflow;
 
-        UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
 
         private UMI3DAsyncProperty<TextAnchor> _alignment;
         private UMI3DAsyncProperty<bool> _alignByGeometry;
@@ -191,7 +191,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UITextDto textDto = dto as UITextDto;
+            var textDto = dto as UITextDto;
             textDto.alignment = Alignment.GetValue(user).Convert();
             textDto.alignByGeometry = AlignByGeometry.GetValue(user);
             textDto.color = TextColor.GetValue(user);
@@ -211,7 +211,7 @@ namespace umi3d.edk
 
         public override Bytable ToBytes(UMI3DUser user)
         {
-            var text = Text.GetValue(user);
+            string text = Text.GetValue(user);
             if (text != null && text.Length > 0 && text[text.Length - 1] == '\\') text += " ";
 
             return base.ToBytes(user)

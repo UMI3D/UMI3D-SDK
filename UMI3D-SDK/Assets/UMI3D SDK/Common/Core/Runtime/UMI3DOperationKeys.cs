@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    static public class UMI3DOperationKeys
+    public static class UMI3DOperationKeys
     {
         public const uint Transaction = 1;
         public const uint LoadEntity = 2;
@@ -66,7 +66,7 @@ namespace umi3d.common
         public const uint VolumeUserTransit = 10100;
 
     }
-    static public class UMI3DParameterKeys
+    public static class UMI3DParameterKeys
     {
         public const uint FloatRange = 1;
         public const uint IntRange = 2;

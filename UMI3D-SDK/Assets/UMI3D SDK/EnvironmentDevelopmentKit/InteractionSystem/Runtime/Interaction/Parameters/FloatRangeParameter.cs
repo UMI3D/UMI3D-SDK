@@ -114,7 +114,10 @@ namespace umi3d.edk.interaction
                         }
                     }
                     else
+                    {
                         throw new Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                    }
+
                     break;
                 default:
                     throw new Exception("User interaction not supported (ParameterSettingRequestDto) ");
@@ -126,10 +129,10 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
-                    var parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (parameterId == UMI3DParameterKeys.FloatRange)
                     {
-                        var value = UMI3DNetworkingHelper.Read<float>(container);
+                        float value = UMI3DNetworkingHelper.Read<float>(container);
                         if (value < min || value > max)
                         {
                             throw new Exception("Value is out of range");
@@ -141,7 +144,10 @@ namespace umi3d.edk.interaction
                         }
                     }
                     else
+                    {
                         throw new Exception($"parameter of type {parameterId}");
+                    }
+
                     break;
                 default:
                     throw new Exception("User interaction not supported (ParameterSettingRequestDto) ");

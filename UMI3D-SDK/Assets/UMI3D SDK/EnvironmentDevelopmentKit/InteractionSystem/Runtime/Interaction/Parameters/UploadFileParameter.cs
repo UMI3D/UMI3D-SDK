@@ -26,6 +26,7 @@ namespace umi3d.edk.interaction
 {
     public class UploadFileParameter : AbstractParameter
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;
 
         public static Dictionary<string, UploadFileParameter> uploadTokens { get; private set; } = new Dictionary<string, UploadFileParameter>();
 
@@ -45,7 +46,7 @@ namespace umi3d.edk.interaction
         public List<string> authorizedExtensions = new List<string>();
 
         [System.Serializable]
-        public class UploadListener : ParameterEvent<(string,string)> { }
+        public class UploadListener : ParameterEvent<(string, string)> { }
 
 
         /// <summary>
@@ -91,39 +92,42 @@ namespace umi3d.edk.interaction
         {
             switch (interactionRequest)
             {
-                case UploadFileRequestDto settingRequestDto: 
+                case UploadFileRequestDto settingRequestDto:
                     if (settingRequestDto.parameter is UploadFileParameterDto)
                     {
                         var parameter = settingRequestDto.parameter as UploadFileParameterDto;
                         //value = parameter.value;
-                       // if(System.IO.File.Exists(parameter.value))
-                       // {
-                            string ext = System.IO.Path.GetExtension(parameter.value);
-                            if (!string.IsNullOrEmpty(ext))
+                        // if(System.IO.File.Exists(parameter.value))
+                        // {
+                        string ext = System.IO.Path.GetExtension(parameter.value);
+                        if (!string.IsNullOrEmpty(ext))
+                        {
+                            if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
                             {
-                                if (authorizedExtensions.Count==0 || authorizedExtensions.Contains(ext))
-                                {
-                                    onChange.Invoke(new ParameterEventContent<(string,string)>(user, settingRequestDto, (parameter.value,settingRequestDto.fileId)));
-                                }
-                                else
-                                {
-                                    Debug.LogWarning("Unauthorized extension : " + ext);
-                                }
+                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, settingRequestDto, (parameter.value, settingRequestDto.fileId)));
                             }
                             else
                             {
-                                Debug.LogWarning("unvalide extension");
+                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext,scope);
                             }
-
-                    /*    }
+                        }
                         else
                         {
-                            Debug.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + parameter.value);
+                            UMI3DLogger.LogWarning("unvalide extension",scope);
                         }
-                        */
+
+                        /*    }
+                            else
+                            {
+                                UMI3DLogger.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + parameter.value);
+                            }
+                            */
                     }
                     else
+                    {
                         throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                    }
+
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
@@ -133,59 +137,61 @@ namespace umi3d.edk.interaction
         ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
-            Debug.Log("on user interaction with bytes");
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
 
-                    var parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (UMI3DParameterKeys.StringUploadFile == parameterId)
                     {
                         value = UMI3DNetworkingHelper.Read<string>(container);
-                        var exts = UMI3DNetworkingHelper.ReadList<string>(container);
+                        List<string> exts = UMI3DNetworkingHelper.ReadList<string>(container);
                         string fileId = UMI3DNetworkingHelper.Read<string>(container);
                         //authorizedExtensions = UMI3DNetworkingHelper.ReadList<string>(container);
-                        //UnityEngine.Debug.Log(value);
+                        //UnityEngine.UMI3DLogger.Log(value);
                         //if (System.IO.File.Exists(value))
                         //{
                         string ext = System.IO.Path.GetExtension(value);
-                            if (!string.IsNullOrEmpty(ext))
+                        if (!string.IsNullOrEmpty(ext))
+                        {
+                            if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
                             {
-                                if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
-                                {
-                                
-                                    onChange.Invoke(new ParameterEventContent<(string,string)>(user, toolId, interactionId, hoverredId, boneType, (value,fileId)));
-                                }
-                                else
-                                {
-                                    Debug.LogWarning("Unauthorized extension : " + ext);
-                                }
+
+                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, toolId, interactionId, hoverredId, boneType, (value, fileId)));
                             }
                             else
                             {
-                                Debug.LogWarning("unvalide extension");
+                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext ,scope);
                             }
-
-                    /*    }
+                        }
                         else
                         {
-                            Debug.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + value);
-                        }*/
+                            UMI3DLogger.LogWarning("unvalide extension", scope);
+                        }
+
+                        /*    }
+                            else
+                            {
+                                UMI3DLogger.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + value,scope);
+                            }*/
 
 
                     }
                     else
+                    {
                         throw new System.Exception($"parameter of type {parameterId}");
+                    }
+
                     break;
                 default:
                     throw new System.Exception($"User interaction not supported {operationId} ");
             }
         }
 
-        protected virtual void OnChange(ParameterEventContent<(string,string)> responseContainer)
+        protected virtual void OnChange(ParameterEventContent<(string, string)> responseContainer)
         {
             //RequestHttpUploadDto httpDto = new RequestHttpUploadDto();
-            UploadFileRequest request = new UploadFileRequest(true,responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
+            var request = new UploadFileRequest(true, responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
             uploadTokens.Add(request.token, this);
 
 
@@ -197,26 +203,26 @@ namespace umi3d.edk.interaction
             if (uploadTokens.ContainsKey(token))
                 uploadTokens.Remove(token);
             else
-                Debug.LogWarning("this token : " + token + " is not a valide token");
+                UMI3DLogger.LogWarning("this token : " + token + " is not a valide token",scope);
         }
 
         public virtual void OnFileReceive(string token, string fileName, byte[] bytes)
         {
-            if(!Directory.Exists(pathToSaveFile))
+            if (!Directory.Exists(pathToSaveFile))
             {
                 var dir = new DirectoryInfo(pathToSaveFile);
                 dir.Create();
             }
             string path = inetum.unityUtils.Path.Combine(pathToSaveFile, fileName);
-            if(File.Exists(path))
+            if (File.Exists(path))
             {
                 //path += "_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToLongTimeString();
-                path = inetum.unityUtils.Path.Combine(pathToSaveFile, System.IO.Path.GetFileNameWithoutExtension(path) + "_" + DateTime.Now.ToShortDateString().Replace(@"/", "-") + "_" + DateTime.Now.ToLongTimeString().Replace(':','-') + System.IO.Path.GetExtension(path));
+                path = inetum.unityUtils.Path.Combine(pathToSaveFile, System.IO.Path.GetFileNameWithoutExtension(path) + "_" + DateTime.Now.ToShortDateString().Replace(@"/", "-") + "_" + DateTime.Now.ToLongTimeString().Replace(':', '-') + System.IO.Path.GetExtension(path));
 
             }
             File.WriteAllBytes(path, bytes);
             onSave.Invoke(path);
-            
+
         }
 
         private void Start()

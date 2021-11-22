@@ -50,14 +50,14 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Selection event subscribers.
         /// </summary>
-        private List<UnityAction> subscribers = new List<UnityAction>();
+        private readonly List<UnityAction> subscribers = new List<UnityAction>();
 
         /// <summary>
         /// Raise selection event.
         /// </summary>
         public virtual void Select()
         {
-            List<UnityAction> localCopySubs = new List<UnityAction>(subscribers);
+            var localCopySubs = new List<UnityAction>(subscribers);
             foreach (UnityAction sub in localCopySubs)
                 sub.Invoke();
         }

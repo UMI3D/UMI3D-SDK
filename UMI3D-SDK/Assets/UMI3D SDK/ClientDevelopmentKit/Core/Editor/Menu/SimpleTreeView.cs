@@ -19,7 +19,7 @@ using UnityEditor.IMGUI.Controls;
 #if UNITY_EDITOR
 namespace umi3d.cdk.editor
 {
-    class SimpleTreeView : TreeView
+    internal class SimpleTreeView : TreeView
     {
         public IList<TreeViewItem> content = new List<TreeViewItem>();
 
@@ -33,7 +33,7 @@ namespace umi3d.cdk.editor
         protected override TreeViewItem BuildRoot()
         {
             var root = new TreeViewItem { id = 0, depth = -1, displayName = "Root" };
-            var allItems = content;
+            IList<TreeViewItem> allItems = content;
 
             // Utility method that initializes the TreeViewItem.children and .parent for all items.
             SetupParentsAndChildrenFromDepths(root, allItems);

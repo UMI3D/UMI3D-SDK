@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using umi3d.cdk;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -27,7 +25,8 @@ namespace umi3d.cdk.collaboration
 {
     public class LocalInfoSender
     {
-        private static Dictionary<string, LocalInfoRequestParameterValue> autorizations = new Dictionary<string, LocalInfoRequestParameterValue>();
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+        private static readonly Dictionary<string, LocalInfoRequestParameterValue> autorizations = new Dictionary<string, LocalInfoRequestParameterValue>();
 
         /// <summary>
         /// Read local info in order to send to server.
@@ -38,24 +37,24 @@ namespace umi3d.cdk.collaboration
         {
             if (!(autorizations.ContainsKey(key) && autorizations[key].read))
             {
-                Debug.LogWarning("Unautorized to read this local data : " + key);
+                UMI3DLogger.LogWarning("Unautorized to read this local data : " + key,scope);
                 return null;
             }
 
-            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
+            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
             if (File.Exists(path))
             {
                 return File.ReadAllBytes(path);
             }
             else
             {
-                Debug.LogWarning(" local key field not found ");
-               
+                UMI3DLogger.LogWarning(" local key field not found ", scope);
+
                 return null;
             }
         }
 
-        
+
         /// <summary>
         /// Write local info in persistentDataPath from data sent by the server.
         /// </summary>
@@ -65,11 +64,11 @@ namespace umi3d.cdk.collaboration
         {
             if (!(autorizations.ContainsKey(key) && autorizations[key].write))
             {
-                Debug.LogWarning("Unautorized to write this local data : " + key);
+                UMI3DLogger.LogWarning("Unautorized to write this local data : " + key, scope);
                 return;
             }
-            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key+ ".umi3dData");
-            if(!File.Exists(path))
+            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
+            if (!File.Exists(path))
             {
                 File.Create(path).Dispose();
             }
@@ -88,7 +87,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (param is LocalInfoRequestParameterDto)
                 {
-                    //Debug.Log(param.ToJson());
+                    //UMI3DLogger.Log(param.ToJson());
                     string key = (param as LocalInfoRequestParameterDto).key;
                     if (autorizations.ContainsKey(key))
                     {
@@ -101,12 +100,12 @@ namespace umi3d.cdk.collaboration
 
                     if (sendLocalInfo && autorizations[key].read)
                     {
-                        var bytes = GetLocalInfo(key);
+                        byte[] bytes = GetLocalInfo(key);
                         if (bytes != null)
                         {
                             ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(
                                 () => { },
-                                (s) => Debug.LogWarning("fail to send local datas to server : " + s),
+                                (s) => UMI3DLogger.LogWarning("fail to send local datas to server : " + s,scope),
                                 key,
                                 bytes
                                 );
@@ -116,6 +115,6 @@ namespace umi3d.cdk.collaboration
                 }
             }
         }
-        
+
     }
 }

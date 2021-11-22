@@ -24,11 +24,11 @@ namespace umi3d.cdk
     /// </summary>
     public class RequestFailedArgument
     {
-
-        Action tryAgain;
+        private readonly Action tryAgain;
         public DateTime date { get; private set; }
-        UnityWebRequest request;
-        long responseCode = 0;
+
+        private readonly UnityWebRequest request;
+        private readonly long responseCode = 0;
 
         public long GetRespondCode()
         {

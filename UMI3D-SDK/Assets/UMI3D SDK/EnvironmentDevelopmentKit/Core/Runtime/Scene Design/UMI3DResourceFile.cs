@@ -38,14 +38,15 @@ namespace umi3d.edk
 
         public FileDto ToDto()
         {
-            var dto = new FileDto();
-            dto.url = GetUrl();
-            dto.format = format;
-            dto.extension = extension;
-            dto.metrics = metrics;
-            dto.pathIfInBundle = isInBundle ? pathIfInBundle : null;
-            dto.libraryKey = isInLibrary ? libraryKey?.id : null;
-
+            var dto = new FileDto
+            {
+                url = GetUrl(),
+                format = format,
+                extension = extension,
+                metrics = metrics,
+                pathIfInBundle = isInBundle ? pathIfInBundle : null,
+                libraryKey = isInLibrary ? libraryKey?.id : null
+            };
             return dto;
         }
 

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using umi3d.common;
 using umi3d.common.collaboration;
 using WebSocketSharp.Server;
 
@@ -25,6 +26,8 @@ namespace umi3d.edk.collaboration
 {
     public class HttpRoutingUtil
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         public Type attributeType { get; private set; }
 
         public List<WebServiceMethod> roots = new List<WebServiceMethod>();
@@ -45,9 +48,9 @@ namespace umi3d.edk.collaboration
             foreach (object obj in objects)
             {
                 MethodInfo[] methods = obj.GetType().GetMethods();
-                foreach (var method in methods)
+                foreach (MethodInfo method in methods)
                 {
-                    var attrArray = method.GetCustomAttributes(attributeType, false);
+                    object[] attrArray = method.GetCustomAttributes(attributeType, false);
                     WebServiceMethodAttribute attribute = (attrArray == null || attrArray.Length == 0) ? null : (WebServiceMethodAttribute)attrArray[0];
                     if (attribute != null)
                     {
@@ -64,7 +67,7 @@ namespace umi3d.edk.collaboration
 
         public bool TryProccessRequest(object sender, HttpRequestEventArgs e, IdentityDto identity = null)
         {
-            var path = e.Request.RawUrl;
+            string path = e.Request.RawUrl;
             foreach (WebServiceMethod r in roots)
             {
                 if (r.attribute.Match(path))
@@ -73,7 +76,7 @@ namespace umi3d.edk.collaboration
                     return true;
                 }
             }
-            UnityEngine.Debug.Log("no post root " + path);
+            UMI3DLogger.Log("no post root " + path,scope);
             return false;
         }
 

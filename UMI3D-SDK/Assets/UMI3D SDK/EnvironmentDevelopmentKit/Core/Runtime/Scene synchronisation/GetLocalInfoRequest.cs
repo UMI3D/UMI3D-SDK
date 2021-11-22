@@ -40,7 +40,7 @@ namespace umi3d.edk
 
         public override byte[] ToBson()
         {
-            var dto = CreateDto();
+            GetLocalInfoRequestDto dto = CreateDto();
             WriteProperties(dto);
             return dto.ToBson();
         }

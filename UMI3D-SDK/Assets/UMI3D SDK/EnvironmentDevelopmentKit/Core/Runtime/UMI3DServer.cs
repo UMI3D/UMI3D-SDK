@@ -46,14 +46,13 @@ namespace umi3d.edk
         public static string dataPath = "../data/";
         public static string publicDataPath = "/public";
         public static string privateDataPath = "/private";
+        private string publicDataFullPath;
+        private string privateDataFullPath;
+        private string dataFullPath;
 
-        string publicDataFullPath;
-        string privateDataFullPath;
-        string dataFullPath;
-
-        public static string publicRepository { get { return Instance == null ? null : Instance.publicDataFullPath; } }
-        public static string privateRepository { get { return Instance == null ? null : Instance.privateDataFullPath; } }
-        public static string dataRepository { get { return Instance == null ? null : Instance.dataFullPath; } }
+        public static string publicRepository => Instance == null ? null : Instance.publicDataFullPath;
+        public static string privateRepository => Instance == null ? null : Instance.privateDataFullPath;
+        public static string dataRepository => Instance == null ? null : Instance.dataFullPath;
 
         public static bool IsInDataRepository(string path)
         {
@@ -79,7 +78,7 @@ namespace umi3d.edk
         /// Return the Url of the Http Server.
         /// </summary>
         /// <returns></returns>
-        static public string GetHttpUrl()
+        public static string GetHttpUrl()
         {
             return Instance._GetHttpUrl();
         }
@@ -119,7 +118,7 @@ namespace umi3d.edk
         }
         public virtual HashSet<UMI3DUser> UserSetWhenHasJoined()
         {
-            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where( (u) => u.hasJoined));
+            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where((u) => u.hasJoined));
         }
         public virtual IEnumerable<UMI3DUser> Users()
         {
@@ -157,12 +156,12 @@ namespace umi3d.edk
         protected virtual void LookForMissing(UMI3DUser user) { }
 
 
-        static public void Dispatch(Transaction transaction)
+        public static void Dispatch(Transaction transaction)
         {
             if (Exists) Instance._Dispatch(transaction);
         }
 
-        static public void Dispatch(DispatchableRequest dispatchableRequest)
+        public static void Dispatch(DispatchableRequest dispatchableRequest)
         {
             if (Exists) Instance._Dispatch(dispatchableRequest);
         }
