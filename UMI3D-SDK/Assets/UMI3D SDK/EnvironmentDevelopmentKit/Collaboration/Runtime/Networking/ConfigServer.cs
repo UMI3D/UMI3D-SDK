@@ -104,9 +104,11 @@ namespace umi3d.edk.collaboration
         {
             var ser = new XmlSerializer(typeof(ConfigServer));
 
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.NewLineOnAttributes = true;
+            var settings = new XmlWriterSettings
+            {
+                Indent = true,
+                NewLineOnAttributes = true
+            };
             var writer = XmlWriter.Create("config.xml", settings);
             ser.Serialize(writer, conf);
             writer.Close();

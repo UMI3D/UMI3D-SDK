@@ -29,7 +29,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class HttpClient
     {
-        private UMI3DCollaborationClientServer client;
+        private readonly UMI3DCollaborationClientServer client;
         internal string ComputedToken;
 
         private string httpUrl => UMI3DCollaborationClientServer.Media.connection.httpUrl;
@@ -321,8 +321,10 @@ namespace umi3d.cdk.collaboration
             };
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.uploadFile, ":param", token);
             //Header
-            var headers = new List<(string, string)>();
-            headers.Add((UMI3DNetworkingKeys.contentHeader, fileName));
+            var headers = new List<(string, string)>
+            {
+                (UMI3DNetworkingKeys.contentHeader, fileName)
+            };
             client.StartCoroutine(_PostRequest(url, bytes, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers));
         }
         #endregion

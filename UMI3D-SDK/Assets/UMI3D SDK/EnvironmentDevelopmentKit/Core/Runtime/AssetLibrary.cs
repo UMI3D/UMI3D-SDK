@@ -34,13 +34,15 @@ namespace umi3d.edk
 
         public AssetLibraryDto ToDto()
         {
-            var dto = new AssetLibraryDto();
-            dto.libraryId = id;
-            dto.id = Id();
-            dto.format = date.Format();
-            dto.culture = date.Culture();
-            dto.date = date.ToString();
-            dto.variants = new List<UMI3DLocalAssetDirectory>();
+            var dto = new AssetLibraryDto
+            {
+                libraryId = id,
+                id = Id(),
+                format = date.Format(),
+                culture = date.Culture(),
+                date = date.ToString(),
+                variants = new List<UMI3DLocalAssetDirectory>()
+            };
             foreach (UMI3DLocalAssetDirectory variant in variants)
             {
                 dto.variants.Add(new UMI3DLocalAssetDirectory(variant));
@@ -100,7 +102,7 @@ namespace umi3d.edk
         }
 
         #region filter
-        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

@@ -225,11 +225,13 @@ namespace umi3d.edk
         /// <returns></returns>
         internal GlTFNodeDto ToGlTFNodeDto(UMI3DUser user)
         {
-            var dto = new GlTFNodeDto();
-            dto.name = gameObject.name;
-            dto.position = objectPosition.GetValue(user);
-            dto.scale = objectScale.GetValue(user);
-            dto.rotation = objectRotation.GetValue(user);
+            var dto = new GlTFNodeDto
+            {
+                name = gameObject.name,
+                position = objectPosition.GetValue(user),
+                scale = objectScale.GetValue(user),
+                rotation = objectRotation.GetValue(user)
+            };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
             dto.extensions.KHR_lights_punctual = objectLight.GetValue(user)?.ToDto(user);
             return dto;
@@ -314,8 +316,10 @@ namespace umi3d.edk
         {
             LODGroup lod = GetComponent<LODGroup>();
             if (lod == null) return null;
-            var lodg = new UMI3DLodDto();
-            lodg.lods = new List<UMI3DLodDefinitionDto>();
+            var lodg = new UMI3DLodDto
+            {
+                lods = new List<UMI3DLodDefinitionDto>()
+            };
             foreach (LOD lofd in lod.GetLODs())
             {
                 var loddef = new UMI3DLodDefinitionDto();
@@ -344,8 +348,10 @@ namespace umi3d.edk
             //Debug.Log("has collider : " + hasCollider);
             if (!hasCollider)
                 return null;
-            var res = new ColliderDto();
-            res.colliderType = colliderType;
+            var res = new ColliderDto
+            {
+                colliderType = colliderType
+            };
             switch (colliderType)
             {
                 case ColliderType.Box:

@@ -213,8 +213,10 @@ namespace umi3d.edk
             objectParentId = new UMI3DAsyncProperty<UMI3DAbstractNode>(objectId, UMI3DPropertyKeys.ParentId, Parent, (UMI3DAbstractNode node, UMI3DUser user) => node.Id());
             objectParentId.OnValueChanged += (UMI3DAbstractNode node) => { if (transform.parent != node?.transform) transform.SetParent(node?.transform); };
 
-            var PropertyEquality = new UMI3DAsyncPropertyEquality();
-            PropertyEquality.epsilon = 0.000001f;
+            var PropertyEquality = new UMI3DAsyncPropertyEquality
+            {
+                epsilon = 0.000001f
+            };
 
             objectPosition = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.Position, transform.localPosition, ToUMI3DSerializable.ToSerializableVector3, PropertyEquality.Vector3Equality);
             objectPosition.OnValueChanged += (Vector3 p) => transform.localPosition = p;
@@ -338,7 +340,7 @@ namespace umi3d.edk
         #endregion
 
         #region filter
-        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

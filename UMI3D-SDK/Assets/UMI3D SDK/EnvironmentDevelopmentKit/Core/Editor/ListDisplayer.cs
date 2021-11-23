@@ -30,7 +30,7 @@ namespace umi3d.edk.editor
         private const char downArrow = '\u25bc';
         private const char cross = 'X';
         private const int buttonWidth = 25;
-        private Func<SerializedProperty, T> NewValue;
+        private readonly Func<SerializedProperty, T> NewValue;
 
         public ListDisplayer(Func<SerializedProperty, T> newValue)
         {

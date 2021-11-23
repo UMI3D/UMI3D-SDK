@@ -25,7 +25,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DHttp
     {
-        private HttpServer httpsv;
+        private readonly HttpServer httpsv;
 
         public HttpRoutingUtil rootMapGET = null;
         public HttpRoutingUtil rootMapPOST = null;

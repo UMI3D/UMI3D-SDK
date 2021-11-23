@@ -73,6 +73,7 @@ namespace umi3d.cdk
                 node.transform.localPosition = dto.position;
                 node.transform.localRotation = dto.rotation;
                 node.transform.localScale = dto.scale;
+                node.SendOnPoseUpdated();
             }
             if (finished != null)
             {
@@ -126,12 +127,15 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.Position:
                     node.transform.localPosition = dto.position = (SerializableVector3)property.value;
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
                     node.transform.localRotation = dto.rotation = (SerializableVector4)property.value;
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
                     node.transform.localScale = dto.scale = (SerializableVector3)property.value;
+                    node.SendOnPoseUpdated();
                     break;
                 default:
                     return false;
@@ -158,12 +162,15 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.Position:
                     dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
+                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    node.SendOnPoseUpdated();
                     break;
                 default:
                     return false;

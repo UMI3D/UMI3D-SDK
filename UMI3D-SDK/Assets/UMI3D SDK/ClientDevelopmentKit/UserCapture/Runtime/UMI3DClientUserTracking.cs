@@ -157,6 +157,7 @@ namespace umi3d.cdk.userCapture
                 LastFrameDto = new UserTrackingFrameDto()
                 {
                     bones = bonesList,
+                    skeletonHighOffset = skeletonContainer.localPosition.y,
                     position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     refreshFrequency = targetTrackingFPS,

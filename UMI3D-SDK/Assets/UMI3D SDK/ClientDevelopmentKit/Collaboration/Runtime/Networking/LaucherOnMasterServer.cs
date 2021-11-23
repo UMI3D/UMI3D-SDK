@@ -80,12 +80,14 @@ namespace umi3d.cdk.collaboration
 
                 // Create the get request with the desired filters
                 var sendData = JSONNode.Parse("{}");
-                var getData = new JSONClass();
+                var getData = new JSONClass
+                {
 
-                // The id of the game to get
-                getData.Add("id", gameId);
-                getData.Add("type", gameType);
-                getData.Add("mode", gameMode);
+                    // The id of the game to get
+                    { "id", gameId },
+                    { "type", gameType },
+                    { "mode", gameMode }
+                };
 
                 sendData.Add("get", getData);
 

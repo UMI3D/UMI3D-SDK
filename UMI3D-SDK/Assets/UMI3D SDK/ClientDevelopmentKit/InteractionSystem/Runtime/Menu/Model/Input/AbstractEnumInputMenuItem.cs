@@ -33,7 +33,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<T>> subscribers = new List<UnityAction<T>>();
+        private readonly List<UnityAction<T>> subscribers = new List<UnityAction<T>>();
 
         /// <summary>
         /// Get displayed value.

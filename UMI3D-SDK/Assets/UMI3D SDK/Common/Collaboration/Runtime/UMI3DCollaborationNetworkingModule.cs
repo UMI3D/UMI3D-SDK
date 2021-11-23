@@ -30,10 +30,12 @@ namespace umi3d.common.collaboration
                     readable = container.length >= 17 * sizeof(float) + sizeof(uint);
                     if (readable)
                     {
-                        var usercam = new UserCameraPropertiesDto();
-                        usercam.scale = UMI3DNetworkingHelper.Read<float>(container);
-                        usercam.projectionMatrix = UMI3DNetworkingHelper.Read<SerializableMatrix4x4>(container);
-                        usercam.boneType = UMI3DNetworkingHelper.Read<uint>(container);
+                        var usercam = new UserCameraPropertiesDto
+                        {
+                            scale = UMI3DNetworkingHelper.Read<float>(container),
+                            projectionMatrix = UMI3DNetworkingHelper.Read<SerializableMatrix4x4>(container),
+                            boneType = UMI3DNetworkingHelper.Read<uint>(container)
+                        };
                         result = (T)Convert.ChangeType(usercam, typeof(T));
                     }
                     else
@@ -161,8 +163,10 @@ namespace umi3d.common.collaboration
                     return true;
                 case true when typeof(T) == typeof(ScalableTextureDto):
                     {
-                        var scalableTexture = new ScalableTextureDto();
-                        scalableTexture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                        var scalableTexture = new ScalableTextureDto
+                        {
+                            variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
+                        };
                         if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
                             && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
                             && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId)
@@ -182,8 +186,10 @@ namespace umi3d.common.collaboration
                     }
                 case true when typeof(T) == typeof(TextureDto):
                     {
-                        var texture = new TextureDto();
-                        texture.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                        var texture = new TextureDto
+                        {
+                            variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
+                        };
                         if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
                             && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
                             && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId))
@@ -200,14 +206,18 @@ namespace umi3d.common.collaboration
                         return true;
                     }
                 case true when typeof(T) == typeof(ResourceDto):
-                    var resource = new ResourceDto();
-                    resource.variants = UMI3DNetworkingHelper.ReadList<FileDto>(container);
+                    var resource = new ResourceDto
+                    {
+                        variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
+                    };
                     readable = true;
                     result = (T)Convert.ChangeType(resource, typeof(T));
                     return true;
                 case true when typeof(T) == typeof(FileDto):
-                    var file = new FileDto();
-                    file.metrics = new AssetMetricDto();
+                    var file = new FileDto
+                    {
+                        metrics = new AssetMetricDto()
+                    };
                     readable = UMI3DNetworkingHelper.TryRead<string>(container, out file.url)
                                && UMI3DNetworkingHelper.TryRead<string>(container, out file.format)
                                && UMI3DNetworkingHelper.TryRead<string>(container, out file.extension)

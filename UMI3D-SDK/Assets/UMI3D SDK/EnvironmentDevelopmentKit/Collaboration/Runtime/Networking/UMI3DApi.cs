@@ -47,10 +47,12 @@ namespace umi3d.edk.collaboration
         public void GetIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            var identity = new UserConnectionDto(user.ToUserDto());
-            identity.parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user);
-            //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-            identity.librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user);
+            var identity = new UserConnectionDto(user.ToUserDto())
+            {
+                parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
+                //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
+                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
+            };
             e.Response.WriteContent(identity.ToBson());
         }
 
@@ -394,7 +396,12 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             var dto = ReadDto(e.Request) as EntityRequestDto;
-            IEnumerable<UMI3DLoadableEntity> entities = UMI3DEnvironment.GetEntitiesWhere<UMI3DLoadableEntity>((item) => dto.entitiesId.Contains(item.Id()));
+
+            IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = dto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
+            IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
+            IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
+            IEnumerable<ulong> entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
+
             if (entities != null)
             {
                 LoadEntityDto result = null;
@@ -403,41 +410,64 @@ namespace umi3d.edk.collaboration
                 UnityMainThreadDispatcher.Instance().Enqueue(
                     _GetEnvironment(
                         entities, user,
-                        (res) => { result = res; finished = true; },
+                        (res) =>
+                        {
+                            result = res;
+                            result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
+                            result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
+                            finished = true;
+                        },
                         () => { ok = false; finished = true; }
                     ));
                 while (!finished) System.Threading.Thread.Sleep(1);
                 if (ok)
+                {
                     e.Response.WriteContent(result.ToBson());
+                }
                 else
-                    Return404(e.Response, "Unvalid Id, Object seams to be missing");
+                {
+                    Return404(e.Response, "Internal Error");
+                }
             }
             else
             {
-                Return404(e.Response, "Unvalid Id");
+                Return404(e.Response, "Internal Error");
             }
         }
 
-        private IEnumerator _GetEnvironment(UMI3DLoadableEntity entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        private IEnumerator _GetEnvironment((ulong, UMI3DLoadableEntity) entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
-            return _GetEnvironment(new List<UMI3DLoadableEntity>() { entity }, user, callback, error);
+            return _GetEnvironment(new List<(ulong, UMI3DLoadableEntity)>() { entity }, user, callback, error);
         }
 
-        private IEnumerator _GetEnvironment(IEnumerable<UMI3DLoadableEntity> entities, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
+        private IEnumerator _GetEnvironment(IEnumerable<(ulong, UMI3DLoadableEntity)> entities, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
         {
             try
             {
                 var load = new LoadEntityDto()
                 {
-                    entities = entities.Select((e) => e.ToEntityDto(user)).ToList(),
-                };
-                callback.Invoke(load);
-            }
-            catch
-            {
-                error();
-            }
+                    entities = entities.Select((e) =>
+                    {
+                        try
+                        {
+                            IEntity dto = e.Item2?.ToEntityDto(user);
+                            return e.Item2?.ToEntityDto(user) ?? new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}");
+                            return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
+                        }
 
+                    }).ToList(),
+                };
+                callback?.Invoke(load);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"An error occured {ex}");
+                error?.Invoke();
+            }
 
             yield return null;
         }

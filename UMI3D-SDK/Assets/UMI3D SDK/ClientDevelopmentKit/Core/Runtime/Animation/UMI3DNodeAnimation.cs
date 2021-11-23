@@ -56,7 +56,7 @@ namespace umi3d.cdk
         }
 
         private List<OperationChain> operationChains;
-        private List<Coroutine> Coroutines = new List<Coroutine>();
+        private readonly List<Coroutine> Coroutines = new List<Coroutine>();
         private Coroutine PlayingCoroutines;
         private float progress;
         private bool started = false;

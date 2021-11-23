@@ -52,8 +52,10 @@ namespace umi3d.common
                         }
                         else
                         {
-                            g = new GameObject();
-                            g.name = typeof(T).Name;
+                            g = new GameObject
+                            {
+                                name = typeof(T).Name
+                            };
                             instance = g.AddComponent<T>();
                         }
                     }

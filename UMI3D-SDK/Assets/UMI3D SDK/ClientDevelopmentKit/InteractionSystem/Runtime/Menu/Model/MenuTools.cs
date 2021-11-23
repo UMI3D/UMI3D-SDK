@@ -59,14 +59,18 @@ namespace umi3d.cdk.menu
                 if (child.childCount == 0)
                 {
                     Debug.Log("add item");
-                    var menuItem = new umi3d.cdk.menu.MenuItem();
-                    menuItem.Name = child.gameObject.name;
+                    var menuItem = new umi3d.cdk.menu.MenuItem
+                    {
+                        Name = child.gameObject.name
+                    };
                     menu_.Add(menuItem);
                 }
                 else
                 {
-                    var submenu = new umi3d.cdk.menu.Menu();
-                    submenu.Name = child.gameObject.name;
+                    var submenu = new umi3d.cdk.menu.Menu
+                    {
+                        Name = child.gameObject.name
+                    };
                     menu_.Add(submenu);
                     ToMenuAux(submenu, child);
                 }

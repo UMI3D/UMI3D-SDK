@@ -51,12 +51,14 @@ namespace umi3d.edk
 
         public KHR_lights_punctual ToDto(UMI3DUser user)
         {
-            var dto = new KHR_lights_punctual();
-            dto.intensity = objectLightIntensity.GetValue(user);
-            dto.name = LightName;
-            dto.range = objectLightRange.GetValue(user);
-            dto.color = objectLightColor.GetValue(user);
-            dto.type = objectLightType.GetValue(user);
+            var dto = new KHR_lights_punctual
+            {
+                intensity = objectLightIntensity.GetValue(user),
+                name = LightName,
+                range = objectLightRange.GetValue(user),
+                color = objectLightColor.GetValue(user),
+                type = objectLightType.GetValue(user)
+            };
             if (dto.type == null) return null;
             dto.spot = objectLightSpot.GetValue(user);
             return dto;

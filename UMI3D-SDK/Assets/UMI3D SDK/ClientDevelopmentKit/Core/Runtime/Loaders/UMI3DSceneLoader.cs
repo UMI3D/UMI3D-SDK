@@ -26,7 +26,7 @@ namespace umi3d.cdk
 
     public class UMI3DSceneLoader : UMI3DAbstractNodeLoader
     {
-        private UMI3DEnvironmentLoader EnvironementLoader;
+        private readonly UMI3DEnvironmentLoader EnvironementLoader;
 
         public UMI3DSceneLoader(UMI3DEnvironmentLoader EnvironementLoader)
         {
@@ -108,17 +108,26 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.Position:
                     dto.position = (SerializableVector3)property.value;
                     if (node.updatePose)
+                    {
                         node.transform.localPosition = dto.position;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Rotation:
                     dto.rotation = (SerializableVector4)property.value;
                     if (node.updatePose)
+                    {
                         node.transform.localRotation = dto.rotation;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = (SerializableVector3)property.value;
                     if (node.updatePose)
+                    {
                         node.transform.localScale = dto.scale;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 default:
                     return false;
@@ -148,17 +157,26 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.Position:
                     dto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
                     if (node.updatePose)
+                    {
                         node.transform.localPosition = dto.position;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Rotation:
                     dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
                     if (node.updatePose)
+                    {
                         node.transform.localRotation = dto.rotation;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
                     if (node.updatePose)
+                    {
                         node.transform.localScale = dto.scale;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 default:
                     return false;
