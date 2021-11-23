@@ -97,13 +97,13 @@ namespace umi3d.cdk
             videoPlayer.Stop();
             videoPlayer.SetTargetAudioSource(0, ((UMI3DAudioPlayer)entity.Object).audioSource);
 
+            videoPlayer.Prepare();
+
+            while (!videoPlayer.isPrepared)
+                yield return null;
+
             if (dto.playing)
             {
-                videoPlayer.Prepare();
-
-                while (!videoPlayer.isPrepared)
-                    yield return null;
-
                 if (dto.startTime == default)
                 {
                     videoPlayer.Play();
@@ -112,10 +112,6 @@ namespace umi3d.cdk
                 {
                     Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                 }
-            }
-            else
-            {
-                videoPlayer.Prepare();
             }
         }
 
