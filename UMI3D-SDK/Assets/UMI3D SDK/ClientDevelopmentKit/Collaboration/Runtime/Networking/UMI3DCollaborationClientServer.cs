@@ -24,6 +24,7 @@ using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
+using inetum.unityUtils;
 
 namespace umi3d.cdk.collaboration
 {
@@ -106,6 +107,7 @@ namespace umi3d.cdk.collaboration
         public static void Connect()
         {
             Instance.Init();
+            UMI3DLogger.Log("Init Connection", scope | DebugScope.Connection);
             if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
             {
                 Instance.ForgeClient.ip = connection.host;
@@ -115,13 +117,17 @@ namespace umi3d.cdk.collaboration
                 Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
                 Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
 
+                UMI3DLogger.Log($"ip:{Instance.ForgeClient.ip}:{Instance.ForgeClient.port}, master:{Instance.ForgeClient.masterServerHost}:{Instance.ForgeClient.masterServerPort}, nat:{Instance.ForgeClient.natServerHost }:{Instance.ForgeClient.natServerPort}", scope | DebugScope.Connection);
+
                 UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((Auth) =>
                 {
+                    UMI3DLogger.Log("Get Identity", scope | DebugScope.Connection);
                     UMI3DCollaborationClientServer.Identity.login = "";
                     Auth.LoginSet = (s) =>
                     {
                         UMI3DCollaborationClientServer.Identity.login = s;
                         Auth.LoginSet = null;
+                        UMI3DLogger.Log($"Login is {UMI3DCollaborationClientServer.Identity.login}", scope | DebugScope.Connection);
                     };
                     Instance.ForgeClient.Join(Auth);
                 });
@@ -139,16 +145,22 @@ namespace umi3d.cdk.collaboration
 
         private void _Logout(Action success, Action<string> failled)
         {
+            UMI3DLogger.Log("Logout", scope | DebugScope.Connection);
             if (Connected())
             {
                 HttpClient.SendPostLogout(() =>
                 {
+                    UMI3DLogger.Log("Logout ok", scope | DebugScope.Connection);
                     ForgeClient.Stop();
                     Start();
                     success?.Invoke();
                     Identity = new IdentityDto();
                 },
-                (error) => { failled.Invoke(error); Identity = new IdentityDto(); });
+                (error) => {
+                    UMI3DLogger.LogError("Logout failed", scope | DebugScope.Connection);
+                    failled.Invoke(error); 
+                    Identity = new IdentityDto(); 
+                });
             }
             else
             {
@@ -162,6 +174,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void ConnectionLost()
         {
+            UMI3DLogger.LogWarning("Connection Lost", scope | DebugScope.Connection);
             UMI3DCollaborationClientServer.Logout(null, null);
 
             OnConnectionLost.Invoke();
@@ -177,9 +190,11 @@ namespace umi3d.cdk.collaboration
         {
             if (argument.ShouldTryAgain(argument))
             {
+                UMI3DLogger.LogWarning($"Http request failed [{argument.GetRespondCode()} url:{argument.GetUrl()} headers:{argument.GetHeader()?.ToString(e=> $"{{{e.Key}:{e.Value}}}" )} ], try again", scope | DebugScope.Connection);
                 StartCoroutine(TryAgain(argument));
                 return true;
             }
+            UMI3DLogger.LogError($"Http request failed [{argument.GetRespondCode()} url:{argument.GetUrl()} headers:{argument.GetHeader()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ], abort", scope | DebugScope.Connection);
             return false;
         }
 
@@ -197,6 +212,7 @@ namespace umi3d.cdk.collaboration
             {
                 UnityAction a = () => newToken = true;
                 OnNewToken.AddListener(a);
+                UMI3DLogger.Log($"Wait for new token", scope | DebugScope.Connection);
                 yield return new WaitUntil(() =>
                 {
                     bool tooLong = ((DateTime.UtcNow - argument.date).TotalMilliseconds > maxMillisecondToWait);
@@ -216,17 +232,13 @@ namespace umi3d.cdk.collaboration
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
         public static void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
+            UMI3DLogger.Log($"Get media at {url}", scope | DebugScope.Connection);
             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
             {
-                Media = media; Instance._setMedia(); callback?.Invoke(media);
+                UMI3DLogger.Log($"Media received", scope | DebugScope.Connection);
+                Media = media; callback?.Invoke(media);
             }, failback, shouldTryAgain);
         }
-
-        private void _setMedia()
-        {
-
-        }
-
 
         /// <summary>
         /// 
@@ -234,6 +246,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="status"></param>
         public static void OnStatusChanged(StatusDto statusDto)
         {
+            UMI3DLogger.Log($"Status changed to {statusDto.status}", scope | DebugScope.Connection);
             switch (statusDto.status)
             {
                 case StatusType.CREATED:

@@ -35,6 +35,15 @@ namespace umi3d.cdk
             return request?.responseCode ?? responseCode;
         }
 
+        public string GetUrl()
+        {
+            return request?.url;
+        }
+
+        public System.Collections.Generic.Dictionary<string,string> GetHeader()
+        {
+            return request?.GetResponseHeaders();
+        }
 
         public Func<RequestFailedArgument, bool> ShouldTryAgain { get; private set; }
         public RequestFailedArgument(UnityWebRequest request, Action tryAgain, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
