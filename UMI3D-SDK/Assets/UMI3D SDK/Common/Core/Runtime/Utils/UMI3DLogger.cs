@@ -53,16 +53,48 @@ namespace umi3d.common
         Bytes = 1 << 11,
         User = 1 << 12,
 
+        Connection = 1 << 13,
+
         Editor = 1 << 29
     }
 
-    public class UMI3DLogger : Singleton<UMI3DLogger>
+    public class UMI3DLogger : PersistentSingleton<UMI3DLogger>
     {
         #region logging
         [SerializeField]
         private DebugScope _logScope = DebugScope.None;
         [SerializeField]
         private DebugLevel _logLevel = DebugLevel.Default | DebugLevel.Warning | DebugLevel.Error;
+
+        public static string LogPath
+        {
+            get => Exists ? Instance.logPath : null;
+            set
+            {
+                if (Exists)
+                {
+                    Instance.logPath = value;
+                    Instance.logWritter?.Stop();
+                    Instance.logWritter = new ThreadWritter(Instance.logPath);
+                }
+            }
+        }
+        [SerializeField]
+        string logPath;
+        public static bool ShouldLog
+        {
+            get => Exists ? Instance.log : false;
+            set
+            {
+                if (Exists)
+                {
+                    Instance.log = value;
+                }
+            }
+        }
+        [SerializeField]
+        bool log;
+
 
         public static DebugScope LogScope
         {
@@ -122,16 +154,22 @@ namespace umi3d.common
 
         protected virtual void _Log(object o, DebugScope scope)
         {
+            if (ShouldLog)
+                logWritter.Write(o.ToString());
             Debug.Log(o);
         }
 
         protected virtual void _LogWarning(object o, DebugScope scope)
         {
+            if (ShouldLog)
+                logWritter.Write("Warning: "+o.ToString());
             Debug.LogWarning(o);
         }
 
         protected virtual void _LogError(object o, DebugScope scope)
         {
+            if (ShouldLog)
+                logWritter.Write("Error: " + o.ToString());
             Debug.LogError(o);
         }
 
@@ -156,50 +194,80 @@ namespace umi3d.common
             Loggables.Remove(loggable);
         }
 
-
-        protected virtual string LogData(float time)
+        protected virtual string LogStaticData()
         {
             string data = Environment.NewLine;
-            data += $"Time : {time}";
+            data += $"Static";
+            data += Environment.NewLine;
             foreach (var loggable in Loggables)
             {
-                data += $"{loggable.Key.GetLogName()}{Environment.NewLine}";
+                data += $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
                 if (loggable.Value != null && loggable.Value.Count > 0)
                     loggable.Value.ForEach(info =>
                     {
-                        if (!info.isStatic)
-                            data += $"{info.name}:{info.getData()}";
+                        if (info.isStatic)
+                            data += $"\"{info.name}\":\"{info}\",";
                     });
+                data += $"}}";
             }
             return data;
         }
 
-        public static string LogPath
+        protected virtual string LogNotStaticData(float time)
         {
-            get => Exists ? Instance.path : null;
-            set { if (Exists) Instance.path = value; }
+            string data = Environment.NewLine;
+            data += $"Time : {time},{ Environment.NewLine}";
+            foreach (var loggable in Loggables)
+            {
+                data += $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
+                if (loggable.Value != null && loggable.Value.Count > 0)
+                    loggable.Value.ForEach(info =>
+                    {
+                        if (!info.isStatic)
+                            data += $"\"{info.name}\":\"{info}\",c";
+                    });
+                data += $"}}";
+            }
+            return data;
         }
-        [SerializeField]
-        string path;
-        public static float LogDelta
+
+        public static string LogInfoPath
         {
-            get => Exists ? Instance.logDelta : 0;
-            set { if (Exists)
+            get => Exists ? Instance.infoPath : null;
+            set
+            {
+                if (Exists)
                 {
-                    Instance.logDelta = value;
-                    Instance.wait = new WaitForSecondsRealtime(Instance.logDelta);
+                    Instance.infoPath = value;
+                    Instance.infoWritter?.Stop();
+                    Instance.infoWritter = new ThreadWritter(Instance.infoPath);
                 }
             }
         }
         [SerializeField]
-        float logDelta;
-        public static bool ShouldLog
+        string infoPath;
+        public static float LogInfoDelta
         {
-            get => Exists ? Instance.log : false;
-            set { 
+            get => Exists ? Instance.logInfoDelta : 0;
+            set
+            {
                 if (Exists)
                 {
-                    Instance.log = value;
+                    Instance.logInfoDelta = value;
+                    Instance.wait = new WaitForSecondsRealtime(Instance.logInfoDelta);
+                }
+            }
+        }
+        [SerializeField]
+        float logInfoDelta;
+        public static bool ShouldLogInfo
+        {
+            get => Exists ? Instance.logInfo : false;
+            set
+            {
+                if (Exists)
+                {
+                    Instance.logInfo = value;
                     if (value)
                     {
                         Instance.StartCoroutine(Instance.LogCoroutine());
@@ -208,46 +276,47 @@ namespace umi3d.common
             }
         }
         [SerializeField]
-        bool log;
+        bool logInfo;
         WaitForSecondsRealtime wait;
 
         bool running = false;
         protected virtual IEnumerator LogCoroutine()
         {
-            if (running || !ShouldLog) yield break;
+            if (running || !ShouldLogInfo) yield break;
             running = true;
-            if (wait == null) wait = new WaitForSecondsRealtime(LogDelta);
-            CreateLogFile($"{DateTime.Now}");
-            while (ShouldLog)
+            if (wait == null) wait = new WaitForSecondsRealtime(LogInfoDelta);
+            WriteLogFile($"{DateTime.Now}");
+            WriteLogFile(LogStaticData());
+            while (ShouldLogInfo)
             {
-                var data = LogData(Time.unscaledTime);
+                var data = LogNotStaticData(Time.unscaledTime);
                 WriteLogFile(data);
                 yield return wait;
             }
             running = false;
         }
 
-        protected void CreateLogFile(string header) {
-            if (!File.Exists(LogPath))
-                using (StreamWriter sw = File.CreateText(LogPath))
-                    sw.Write(Environment.NewLine + header);
-            else
-                using (StreamWriter sw = File.AppendText(LogPath))
-                    sw.Write(Environment.NewLine + header);
-        }
-
         protected void WriteLogFile(string data)
         {
-            using (StreamWriter sw = File.AppendText(LogPath))
-                sw.WriteLine(Environment.NewLine + data);
+            infoWritter.Write(data);
         }
-
+        ThreadWritter infoWritter;
+        ThreadWritter logWritter;
 
         protected virtual void Start()
         {
+            infoWritter = new ThreadWritter(LogInfoPath);
+            logWritter = new ThreadWritter(LogPath);
             StartCoroutine(LogCoroutine());
+
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            infoWritter.Stop();
+            logWritter.Stop();
+        }
         #endregion
     }
 
@@ -263,24 +332,32 @@ namespace umi3d.common
             this.name = name;
         }
 
-        public abstract object getData();
+        public abstract string getData();
 
     }
 
-    public abstract class DebugInfo<T> : DebugInfo
+    public class DebugInfo<T> : DebugInfo
     {
         private T lastValue;
         private readonly Func<T> GetValue;
+        Func<T, string> serializer;
 
-        protected DebugInfo(string name, T value) : base(name, true)
+        public DebugInfo(string name, T value, Func<T, string> serializer = null) : this(name, true, serializer)
         {
+
             lastValue = value;
         }
 
-        protected DebugInfo(string name, Func<T> GetValue) : base(name, false)
+        public DebugInfo(string name, Func<T> GetValue, Func<T, string> serializer = null) : this(name, false, serializer)
         {
             this.GetValue = GetValue;
         }
+
+        private DebugInfo(string name, bool isStatic, Func<T, string> serializer) : base(name, isStatic)
+        {
+            this.serializer = serializer ?? ((T o) => o.ToString());
+        }
+
 
         public T GetData()
         {
@@ -289,9 +366,9 @@ namespace umi3d.common
             return lastValue;
         }
 
-        public override object getData()
+        public override string getData()
         {
-            return GetData();
+            return serializer(GetData());
         }
     }
 
