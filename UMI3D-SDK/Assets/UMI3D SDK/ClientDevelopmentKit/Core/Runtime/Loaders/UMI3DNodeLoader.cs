@@ -84,12 +84,22 @@ namespace umi3d.cdk
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(skinMeshEntityId, e =>
-             {
-                 if (e is UMI3DNodeInstance nodeI)
-                 {
-                     MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(nodeI, boneId, node, maxDelay));
-                 }
-             });
+            {
+                if (e is UMI3DNodeInstance nodeI)
+                {
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(WaitingForSkinnedMeshBone(skinMeshEntityId, boneId, node, maxDelay, nodeI));
+                }
+            });
+        }
+
+        protected IEnumerator WaitingForSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay, UMI3DNodeInstance nodeI)
+        {
+            if (nodeI == null)
+                yield break;
+
+            yield return null;
+
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(nodeI, boneId, node, maxDelay));
         }
 
         private IEnumerator BindSkinnedMeshBone(UMI3DNodeInstance nodeInstance, int boneId, Transform node, float maxDelay)
