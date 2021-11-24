@@ -133,6 +133,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public override void Init()
         {
+            UMI3DLogger.Log($"Server Init", scope);
             base.Init();
             if (collaborativeModule == null)
                 collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
@@ -165,11 +166,13 @@ namespace umi3d.edk.collaboration
 
         private void ShouldAcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action<bool> action)
         {
+            UMI3DLogger.Log($"Should accept player", scope);
             UMI3DCollaborationServer.Collaboration.CreateUser(player, identity, action, UserCreatedCallback);
         }
 
         protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
+            UMI3DLogger.Log($"User Created", scope);
             OnUserCreated.Invoke(user);
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
@@ -357,6 +360,7 @@ namespace umi3d.edk.collaboration
 
         private IEnumerator _lookForMissing(UMI3DCollaborationUser user)
         {
+            UMI3DLogger.Log($"look For missing", scope);
             if (user == null) yield break;
             yield return new WaitForFixedUpdate();
             int count = 0;

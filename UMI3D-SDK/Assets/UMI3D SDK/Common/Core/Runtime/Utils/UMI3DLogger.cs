@@ -194,41 +194,32 @@ namespace umi3d.common
             Loggables.Remove(loggable);
         }
 
-        protected virtual string LogStaticData()
+        protected virtual string LogData(float time)
         {
-            string data = Environment.NewLine;
-            data += $"Static";
-            data += Environment.NewLine;
+            string data = $"Time : {time},{ Environment.NewLine}";
+            bool globalOk = false;
             foreach (var loggable in Loggables)
             {
-                data += $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
+                bool localOk = false;
+                string localdata = $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
                 if (loggable.Value != null && loggable.Value.Count > 0)
                     loggable.Value.ForEach(info =>
                     {
-                        if (info.isStatic)
-                            data += $"\"{info.name}\":\"{info}\",";
+                        var i = info.GetData();
+                        if(i!=null)
+                        {
+                            localOk = true;
+                            localdata += $"\"{info.name}\":\"{i}\",{Environment.NewLine}";
+                        }
                     });
-                data += $"}}";
+                localdata += $"}}";
+                if (localOk)
+                {
+                    data += localOk;
+                    globalOk = true;
+                }
             }
-            return data;
-        }
-
-        protected virtual string LogNotStaticData(float time)
-        {
-            string data = Environment.NewLine;
-            data += $"Time : {time},{ Environment.NewLine}";
-            foreach (var loggable in Loggables)
-            {
-                data += $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
-                if (loggable.Value != null && loggable.Value.Count > 0)
-                    loggable.Value.ForEach(info =>
-                    {
-                        if (!info.isStatic)
-                            data += $"\"{info.name}\":\"{info}\",c";
-                    });
-                data += $"}}";
-            }
-            return data;
+            return globalOk ? data : null;
         }
 
         public static string LogInfoPath
@@ -286,11 +277,11 @@ namespace umi3d.common
             running = true;
             if (wait == null) wait = new WaitForSecondsRealtime(LogInfoDelta);
             WriteLogFile($"{DateTime.Now}");
-            WriteLogFile(LogStaticData());
             while (ShouldLogInfo)
             {
-                var data = LogNotStaticData(Time.unscaledTime);
-                WriteLogFile(data);
+                var data = LogData(Time.unscaledTime);
+                if(data != null)
+                    WriteLogFile(data);
                 yield return wait;
             }
             running = false;
@@ -332,8 +323,24 @@ namespace umi3d.common
             this.name = name;
         }
 
-        public abstract string getData();
+        /// <summary>
+        /// state if the value was updated since last GetData
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool Updated();
 
+        /// <summary>
+        /// return the data as a string if it was updated since last call;
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetData();
+
+
+        /// <summary>
+        /// return the data as a string;
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetCurrentData();
     }
 
     public class DebugInfo<T> : DebugInfo
@@ -341,11 +348,12 @@ namespace umi3d.common
         private T lastValue;
         private readonly Func<T> GetValue;
         Func<T, string> serializer;
+        bool updated = false;
 
         public DebugInfo(string name, T value, Func<T, string> serializer = null) : this(name, true, serializer)
         {
-
             lastValue = value;
+            updated = true;
         }
 
         public DebugInfo(string name, Func<T> GetValue, Func<T, string> serializer = null) : this(name, false, serializer)
@@ -358,17 +366,42 @@ namespace umi3d.common
             this.serializer = serializer ?? ((T o) => o.ToString());
         }
 
-
-        public T GetData()
+        public T GetTData()
         {
             if (!isStatic)
                 lastValue = GetValue();
             return lastValue;
         }
 
-        public override string getData()
+        public override string GetData()
         {
-            return serializer(GetData());
+            return Updated() ? serializer(GetTData()) : null;
+        }
+        public override string GetCurrentData()
+        {
+            return serializer(GetTData());
+        }
+
+        public override bool Updated()
+        {
+            if (updated)
+            {
+                lastValue = GetTData();
+                return true;
+            }
+            if (!isStatic)
+            {
+                var value = GetTData();
+                if(!value.Equals(lastValue))
+                {
+                    lastValue = value;
+                    updated = true;
+                    return true;
+                }
+                
+            }
+            return false;
+
         }
     }
 
