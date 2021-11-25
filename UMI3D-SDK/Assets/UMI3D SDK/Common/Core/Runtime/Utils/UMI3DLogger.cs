@@ -75,7 +75,8 @@ namespace umi3d.common
                 {
                     Instance.logPath = value;
                     Instance.logWritter?.Stop();
-                    Instance.logWritter = new ThreadWritter(Instance.logPath);
+
+                    Instance.logWritter = string.IsNullOrEmpty(Instance.logPath) ? null : new ThreadWritter(Instance.logPath);
                 }
             }
         }
@@ -155,21 +156,21 @@ namespace umi3d.common
         protected virtual void _Log(object o, DebugScope scope)
         {
             if (ShouldLog)
-                logWritter.Write(o.ToString());
+                logWritter?.Write(o.ToString());
             Debug.Log(o);
         }
 
         protected virtual void _LogWarning(object o, DebugScope scope)
         {
             if (ShouldLog)
-                logWritter.Write("Warning: "+o.ToString());
+                logWritter?.Write("Warning: " + o.ToString());
             Debug.LogWarning(o);
         }
 
         protected virtual void _LogError(object o, DebugScope scope)
         {
             if (ShouldLog)
-                logWritter.Write("Error: " + o.ToString());
+                logWritter?.Write("Error: " + o.ToString());
             Debug.LogError(o);
         }
 
@@ -206,16 +207,16 @@ namespace umi3d.common
                     loggable.Value.ForEach(info =>
                     {
                         var i = info.GetData();
-                        if(i!=null)
+                        if (i.Item1)
                         {
                             localOk = true;
-                            localdata += $"\"{info.name}\":\"{i}\",{Environment.NewLine}";
+                            localdata += $"\"{info.name}\":\"{i.Item2}\",{Environment.NewLine}";
                         }
                     });
                 localdata += $"}}";
                 if (localOk)
                 {
-                    data += localOk;
+                    data += localdata;
                     globalOk = true;
                 }
             }
@@ -231,7 +232,7 @@ namespace umi3d.common
                 {
                     Instance.infoPath = value;
                     Instance.infoWritter?.Stop();
-                    Instance.infoWritter = new ThreadWritter(Instance.infoPath);
+                    Instance.infoWritter = string.IsNullOrEmpty(Instance.infoPath) ? null : new ThreadWritter(Instance.infoPath);
                 }
             }
         }
@@ -280,7 +281,7 @@ namespace umi3d.common
             while (ShouldLogInfo)
             {
                 var data = LogData(Time.unscaledTime);
-                if(data != null)
+                if (data != null)
                     WriteLogFile(data);
                 yield return wait;
             }
@@ -289,15 +290,15 @@ namespace umi3d.common
 
         protected void WriteLogFile(string data)
         {
-            infoWritter.Write(data);
+            infoWritter?.Write(data);
         }
         ThreadWritter infoWritter;
         ThreadWritter logWritter;
 
         protected virtual void Start()
         {
-            infoWritter = new ThreadWritter(LogInfoPath);
-            logWritter = new ThreadWritter(LogPath);
+            infoWritter = string.IsNullOrEmpty(LogInfoPath) ? null : new ThreadWritter(LogInfoPath);
+            logWritter = string.IsNullOrEmpty(LogPath) ? null : new ThreadWritter(LogPath);
             StartCoroutine(LogCoroutine());
 
         }
@@ -305,8 +306,8 @@ namespace umi3d.common
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            infoWritter.Stop();
-            logWritter.Stop();
+            infoWritter?.Stop();
+            logWritter?.Stop();
         }
         #endregion
     }
@@ -333,7 +334,7 @@ namespace umi3d.common
         /// return the data as a string if it was updated since last call;
         /// </summary>
         /// <returns></returns>
-        public abstract string GetData();
+        public abstract (bool, string) GetData();
 
 
         /// <summary>
@@ -353,7 +354,7 @@ namespace umi3d.common
         public DebugInfo(string name, T value, Func<T, string> serializer = null) : this(name, true, serializer)
         {
             lastValue = value;
-            updated = true;
+
         }
 
         public DebugInfo(string name, Func<T> GetValue, Func<T, string> serializer = null) : this(name, false, serializer)
@@ -363,20 +364,35 @@ namespace umi3d.common
 
         private DebugInfo(string name, bool isStatic, Func<T, string> serializer) : base(name, isStatic)
         {
-            this.serializer = serializer ?? ((T o) => o.ToString());
+            this.serializer = serializer ?? ((T o) => o?.ToString() ?? "Null");
+            updated = true;
         }
 
         public T GetTData()
         {
             if (!isStatic)
-                lastValue = GetValue();
+                return this.GetValue.Invoke();
             return lastValue;
         }
 
-        public override string GetData()
+        public override (bool, string) GetData()
         {
-            return Updated() ? serializer(GetTData()) : null;
+            var ok = Updated();
+            if (ok) Debug.Log(ok);
+
+            return (ok, GetIfUpdatedData());
         }
+
+        string GetIfUpdatedData()
+        {
+            if (updated)
+            {
+                updated = false;
+                return serializer(lastValue);
+            }
+            return null;
+        }
+
         public override string GetCurrentData()
         {
             return serializer(GetTData());
@@ -392,13 +408,16 @@ namespace umi3d.common
             if (!isStatic)
             {
                 var value = GetTData();
-                if(!value.Equals(lastValue))
+                if (
+                    (!value?.Equals(lastValue) ?? false)
+                    || (!lastValue?.Equals(value) ?? false)
+                    )
                 {
                     lastValue = value;
                     updated = true;
                     return true;
                 }
-                
+
             }
             return false;
 
