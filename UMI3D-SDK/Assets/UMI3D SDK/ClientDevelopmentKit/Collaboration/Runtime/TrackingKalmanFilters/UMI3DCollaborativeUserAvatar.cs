@@ -29,13 +29,17 @@ namespace umi3d.cdk.collaboration
         private GameObject skeleton;
         private bool isProcessing = false;
 
+        protected KalmanPosition skeletonHeightFilter = new KalmanPosition(50, 0.5);
+
         private void Update()
         {
             RegressionPosition(nodePositionFilter);
             RegressionRotation(nodeRotationFilter);
+            RegressionSkeletonPosition(skeletonHeightFilter);
 
             this.transform.localPosition = nodePositionFilter.regressed_position;
             this.transform.localRotation = nodeRotationFilter.regressed_rotation;
+            skeleton.transform.localPosition = skeletonHeightFilter.regressed_position;
 
             Animator userAnimator = skeleton.GetComponentInChildren<Animator>();
 
@@ -43,7 +47,13 @@ namespace umi3d.cdk.collaboration
             {
                 RegressionRotation(boneRotationFilters[boneType]);
 
-                Transform boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
+                Transform boneTransform;
+
+                if (!boneType.Equals(BoneType.CenterFeet))
+                    boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
+                else
+                    boneTransform = skeleton.transform;
+
                 boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
 
                 List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
@@ -102,6 +112,41 @@ namespace umi3d.cdk.collaboration
                 boneRotationKalman.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
         }
 
+        void SkeletonKalmanUpdate(float skeletonNodePosY)
+        {
+            double[] heightMeasurement = new double[] { skeletonNodePosY };
+
+            skeletonHeightFilter.KalmanFilter.Update(heightMeasurement);
+
+            double[] newHeightMeasurement = skeletonHeightFilter.KalmanFilter.getState();
+            skeletonHeightFilter.prediction = newHeightMeasurement;
+
+            if (skeletonHeightFilter.estimations.Length > 0)
+                skeletonHeightFilter.previous_prediction = skeletonHeightFilter.estimations;
+            else
+                skeletonHeightFilter.previous_prediction = heightMeasurement;
+        }
+
+        void RegressionSkeletonPosition(KalmanPosition tools)
+        {
+            if (tools.previous_prediction.Length > 0)
+            {
+                double check = lastMessageTime;
+                double now = Time.time;
+
+                double delta = now - check;
+
+                if (delta * MeasuresPerSecond <= 1)
+                {
+                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+
+                    tools.estimations = new double[] { value_x };
+
+                    tools.regressed_position = new Vector3(0, (float)value_x, 0);
+                }
+            }
+        }
+
         /// <summary>
         /// Update the a UserAvatar directly sent by another client.
         /// </summary>
@@ -118,6 +163,7 @@ namespace umi3d.cdk.collaboration
                 lastMessageTime = Time.time;
 
                 NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
+                SkeletonKalmanUpdate(trackingFrameDto.skeletonHighOffset);
 
                 foreach (BoneDto boneDto in trackingFrameDto.bones)
                 {
