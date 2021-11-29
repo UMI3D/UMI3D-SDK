@@ -32,6 +32,8 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DForgeServer : ForgeSocketBase
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         /// <summary>
         /// 
         /// </summary>
@@ -114,13 +116,13 @@ namespace umi3d.edk.collaboration
 
             if (!server.IsBound)
             {
-                Debug.LogError("NetWorker failed to bind");
+                UMI3DLogger.LogError("NetWorker failed to bind",scope);
                 return;
             }
 
             if (mgr == null && networkManager == null)
             {
-                Debug.LogWarning("A network manager was not provided, generating a new one instead");
+                UMI3DLogger.LogWarning("A network manager was not provided, generating a new one instead",scope);
                 networkManager = new GameObject("Network Manager");
                 mgr = networkManager.AddComponent<UMI3DNetworkManager>();
             }
@@ -170,7 +172,7 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"Player [{player.NetworkId}] timeout");
+                UMI3DLogger.Log($"Player [{player.NetworkId}] timeout",scope);
             });
             playerCount = server.Players.Count;
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
@@ -190,7 +192,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerAuthenticated(NetworkingPlayer player, NetWorker sender)
         {
-            //Debug.Log($"Player { player.NetworkId } {player.Name} authenticated");
+            //UMI3DLogger.Log($"Player { player.NetworkId } {player.Name} authenticated",scope);
         }
 
         /// <summary>
@@ -210,7 +212,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerRejected(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log("Player rejected");
+            UMI3DLogger.Log("Player rejected",scope);
             //TODO
         }
 
@@ -223,10 +225,10 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"Player [{player.NetworkId}] disconected");
+                UMI3DLogger.Log($"Player [{player.NetworkId}] disconected",scope);
             });
             playerCount = server.Players.Count;
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId);
             if (user != null)
             {
                 MainThreadManager.Run(() =>
@@ -246,7 +248,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log(sts.status);
+                    UMI3DLogger.Log(sts.status,scope);
                 });
                 UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
             }
@@ -416,7 +418,7 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.LogError("Video frame not implemented!");
+                UMI3DLogger.LogError("Video frame not implemented!",scope);
             });
         }
 
@@ -664,7 +666,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]");
+                    UMI3DLogger.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]",scope);
                 });
             }
         }

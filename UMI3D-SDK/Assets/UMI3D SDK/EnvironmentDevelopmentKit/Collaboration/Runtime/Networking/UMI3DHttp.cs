@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
+using umi3d.common;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -25,6 +26,8 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DHttp
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         private readonly HttpServer httpsv;
 
         public HttpRoutingUtil rootMapGET = null;
@@ -45,7 +48,7 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapGET.TryProccessRequest(sender, e))
                 {
-                    Debug.Log("get environement");
+                    UMI3DLogger.Log("get environement",scope);
                     string path = e.Request.RawUrl;
                     WebSocketSharp.Net.HttpListenerResponse res = e.Response;
                     if (path == "/")
@@ -75,7 +78,7 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapPOST.TryProccessRequest(sender, e))
                 {
-                    Debug.Log("post error " + e.Request.RawUrl);
+                    UMI3DLogger.Log("post error " + e.Request.RawUrl,scope);
                 }
             };
 

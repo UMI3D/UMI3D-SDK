@@ -27,6 +27,7 @@ namespace umi3d.cdk
 {
     public class AbstractRenderedNodeLoader : UMI3DNodeLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         ///<inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
@@ -152,7 +153,7 @@ namespace umi3d.cdk
                             }
                             break;
                         default:
-                            Debug.LogWarning("wrong type in AsyncProperty list ");
+                            UMI3DLogger.LogWarning("wrong type in AsyncProperty list ", scope);
                             break;
                     }
 
@@ -315,7 +316,7 @@ namespace umi3d.cdk
                             }
                             break;
                         default:
-                            Debug.LogWarning("wrong type in AsyncProperty list ");
+                            UMI3DLogger.LogWarning("wrong type in AsyncProperty list ", scope);
                             break;
                     }
 
@@ -488,7 +489,7 @@ namespace umi3d.cdk
         protected IEnumerator ApplyMaterialOverrider(ulong newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
         {
             UMI3DEntityInstance matEntity = UMI3DEnvironmentLoader.GetEntity(newMatId);
-            if (matEntity == null) Debug.LogWarning("Material not found : " + newMatId + " , that should not happen");
+            if (matEntity == null) UMI3DLogger.LogWarning("Material not found : " + newMatId + " , that should not happen", scope);
 
             while (matEntity == null)
             {
@@ -499,7 +500,7 @@ namespace umi3d.cdk
 
             if (node == null || node.gameObject == null || matEntity == null)
             {
-                Debug.LogWarning("object has been removed during material loading ");
+                UMI3DLogger.LogWarning("object has been removed during material loading ", scope);
                 yield break;
             }
 
@@ -540,11 +541,11 @@ namespace umi3d.cdk
 
                 //    Renderer[] childRenderers = node.gameObject.GetComponentsInChildren<Renderer>();
                 node.renderers = node.gameObject.GetComponentsInChildren<Renderer>().Where((r) => modelMeshs.Contains(r)).ToList();
-                Debug.LogWarning("That should not happen");
+                UMI3DLogger.LogWarning("That should not happen", scope);
                 return node.renderers;
             }
 
-            Debug.LogError("RendererNodeLoader used for non rendered node");
+            UMI3DLogger.LogError("RendererNodeLoader used for non rendered node", scope);
             return new List<Renderer>();
         }
 

@@ -21,6 +21,8 @@ namespace umi3d.cdk
 {
     public class UMI3DExternalMaterialLoader : AbstractUMI3DMaterialLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading|DebugScope.Material;
+
         ///<inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
         {
@@ -63,22 +65,22 @@ namespace umi3d.cdk
                            }
                            catch
                            {
-                               Debug.LogError("Fail to load material : " + url);
+                               UMI3DLogger.LogError("Fail to load material : " + url,scope);
                            }
 
                        }
                        else
                        {
-                           Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}");
+                           UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}",scope);
                        }
                    },
-                   Debug.LogWarning,
+                   e => UMI3DLogger.LogWarning(e,scope),
                    loader.DeleteObject
                    );
                 }
                 else
                 {
-                    Debug.LogWarning("Loader is null for external material");
+                    UMI3DLogger.LogWarning("Loader is null for external material",scope);
                 }
 
 
@@ -86,7 +88,7 @@ namespace umi3d.cdk
             }
             else
             {
-                Debug.LogWarning("extension is null");
+                UMI3DLogger.LogWarning("extension is null",scope);
             }
         }
     }

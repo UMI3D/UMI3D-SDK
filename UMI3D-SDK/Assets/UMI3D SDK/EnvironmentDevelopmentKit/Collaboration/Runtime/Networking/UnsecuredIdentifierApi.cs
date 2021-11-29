@@ -23,10 +23,11 @@ namespace umi3d.edk.collaboration
     [CreateAssetMenu(fileName = "UnsecuredIdentifierApi", menuName = "UMI3D/Unsecured Identifier")]
     public class UnsecuredIdentifierApi : IdentifierApi
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         ///<inheritdoc/>
         public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
         {
-            if (type != AuthenticationType.None) Debug.LogWarning($"UnsecuredIdentifierApi does not handle other AuthenticationType than None [ignored type : {type}]");
+            if (type != AuthenticationType.None) UMI3DLogger.LogWarning($"UnsecuredIdentifierApi does not handle other AuthenticationType than None [ignored type : {type}]",scope);
             type = AuthenticationType.None;
             return new UMI3DAuthenticator();
         }

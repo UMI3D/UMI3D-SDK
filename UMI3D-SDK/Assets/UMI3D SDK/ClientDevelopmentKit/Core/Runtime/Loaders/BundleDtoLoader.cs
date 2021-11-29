@@ -28,6 +28,8 @@ namespace umi3d.cdk
     public class BundleDtoLoader : IResourcesLoader
     {
 
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         public List<string> supportedFileExtentions;
         public List<string> ignoredFileExtentions;
 
@@ -87,9 +89,9 @@ namespace umi3d.cdk
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
         {
             /*     Usefull to find pathIfObjectInBundle in a bundle
-            Debug.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length);
-            Debug.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length);
-            Debug.Log(((AssetBundle)o).GetAllAssetNames()[0]);
+            UMI3DLogger.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length,scope);
+            UMI3DLogger.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length,scope);
+            UMI3DLogger.Log(((AssetBundle)o).GetAllAssetNames()[0],scope);
             */
             if (pathIfObjectInBundle != null && pathIfObjectInBundle != "")
             {
@@ -112,7 +114,7 @@ namespace umi3d.cdk
 
                     else
                     {
-                        Debug.LogWarning("Scene path not found : " + pathIfObjectInBundle);
+                        UMI3DLogger.LogWarning("Scene path not found : " + pathIfObjectInBundle,scope);
                         callback.Invoke(o);
                     }
 

@@ -26,6 +26,7 @@ namespace umi3d.edk.interaction
 {
     public class UploadFileParameter : AbstractParameter
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;
 
         public static Dictionary<string, UploadFileParameter> uploadTokens { get; private set; } = new Dictionary<string, UploadFileParameter>();
 
@@ -107,18 +108,18 @@ namespace umi3d.edk.interaction
                             }
                             else
                             {
-                                Debug.LogWarning("Unauthorized extension : " + ext);
+                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext,scope);
                             }
                         }
                         else
                         {
-                            Debug.LogWarning("unvalide extension");
+                            UMI3DLogger.LogWarning("unvalide extension",scope);
                         }
 
                         /*    }
                             else
                             {
-                                Debug.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + parameter.value);
+                                UMI3DLogger.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + parameter.value);
                             }
                             */
                     }
@@ -136,7 +137,6 @@ namespace umi3d.edk.interaction
         ///<inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
-            Debug.Log("on user interaction with bytes");
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
@@ -148,7 +148,7 @@ namespace umi3d.edk.interaction
                         List<string> exts = UMI3DNetworkingHelper.ReadList<string>(container);
                         string fileId = UMI3DNetworkingHelper.Read<string>(container);
                         //authorizedExtensions = UMI3DNetworkingHelper.ReadList<string>(container);
-                        //UnityEngine.Debug.Log(value);
+                        //UnityEngine.UMI3DLogger.Log(value);
                         //if (System.IO.File.Exists(value))
                         //{
                         string ext = System.IO.Path.GetExtension(value);
@@ -161,18 +161,18 @@ namespace umi3d.edk.interaction
                             }
                             else
                             {
-                                Debug.LogWarning("Unauthorized extension : " + ext);
+                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext ,scope);
                             }
                         }
                         else
                         {
-                            Debug.LogWarning("unvalide extension");
+                            UMI3DLogger.LogWarning("unvalide extension", scope);
                         }
 
                         /*    }
                             else
                             {
-                                Debug.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + value);
+                                UMI3DLogger.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + value,scope);
                             }*/
 
 
@@ -203,7 +203,7 @@ namespace umi3d.edk.interaction
             if (uploadTokens.ContainsKey(token))
                 uploadTokens.Remove(token);
             else
-                Debug.LogWarning("this token : " + token + " is not a valide token");
+                UMI3DLogger.LogWarning("this token : " + token + " is not a valide token",scope);
         }
 
         public virtual void OnFileReceive(string token, string fileName, byte[] bytes)

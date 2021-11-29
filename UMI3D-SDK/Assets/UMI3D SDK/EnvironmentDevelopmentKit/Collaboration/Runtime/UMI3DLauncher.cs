@@ -16,6 +16,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.IO;
+using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -86,9 +87,34 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public const string iconParam = Separator + "iconurl";
         /// <summary>
+        /// Set the log scope.
+        /// </summary>
+        public const string loggingScopeParam = Separator + "logscope";
+        /// <summary>
+        /// Set the log level.
+        /// </summary>
+        public const string loggingLevelParam = Separator + "loglevel";
+        /// <summary>
+        /// Set the loginfo file output path.
+        /// </summary>
+        public const string loginfoOutputPathParam = Separator + "infofilepath";
+        /// <summary>
+        /// Set the loginfo frequency.
+        /// </summary>
+        public const string loginfoFrequencyParam = Separator + "infofrequency";
+        /// <summary>
+        /// Set the log file output path.
+        /// </summary>
+        public const string logOutputPathParam = Separator + "logfilepath";
+
+
+
+        public const string generateconfigFileParam = Separator + "createconfig";
+        /// <summary>
         /// Set the config file path.
         /// </summary>
         public const string configFileParam = Separator + "config";
+
 
         /// <summary>
         /// Should the server be launch at start.
@@ -228,6 +254,69 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <summary>
+        /// method called when param <see cref="loggingScopeParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetLogScope(string arg)
+        {
+            var split = arg.Split('|');
+            DebugScope Result = 0;
+            foreach (var s in split)
+            {
+                if (DebugScope.TryParse(s, out DebugScope result))
+                {
+                    Result |= result;
+                }
+            }
+            UMI3DLogger.LogScope = Result;
+        }
+
+        /// <summary>
+        /// method called when param <see cref="loggingLevelParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetLogLevel(string arg)
+        {
+            if (DebugLevel.TryParse(arg, out DebugLevel result))
+            {
+                UMI3DLogger.LogLevel = result;
+            }
+        }
+
+        /// <summary>
+        /// method called when param <see cref="loginfoOutputPathParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetloginfoOutputPathParam(string arg)
+        {
+            UMI3DLogger.ShouldLogInfo = true;
+            UMI3DLogger.LogInfoPath = arg;
+        }
+
+        /// <summary>
+        /// method called when param <see cref="loginfoFrequencyParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetLoginfoFrequencyParam(string arg)
+        {
+            if (float.TryParse(arg, out float result))
+            {
+                UMI3DLogger.LogInfoDelta = result;
+            }
+        }
+
+        /// <summary>
+        /// method called when param <see cref="loginfoOutputPathParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetlogOutputPathParam(string arg)
+        {
+            UMI3DLogger.ShouldLog = true;
+            UMI3DLogger.LogPath = arg;
+        }
+
+
         protected virtual ConfigServer ReadConfigFile(string arg)
         {
             if (File.Exists(arg))
@@ -238,6 +327,15 @@ namespace umi3d.edk.collaboration
             {
                 return null;
             }
+        }
+
+        protected virtual void GenerateConfigFile(string arg)
+        {
+            if (File.Exists(arg))
+            {
+                File.Delete(arg);
+            }
+            ConfigServer.WriteXml(new ConfigServer(), arg);
         }
 
         /// <summary>
@@ -284,6 +382,21 @@ namespace umi3d.edk.collaboration
 
                 if (!string.IsNullOrEmpty(conf.iconUrlParam))
                     SetIconServerUrl(conf.iconUrlParam);
+
+                if (!string.IsNullOrEmpty(conf.loggingLevelParam))
+                    SetLogLevel(conf.loggingLevelParam);
+
+                if (!string.IsNullOrEmpty(conf.loggingScopeParam))
+                    SetLogScope(conf.loggingScopeParam);
+
+                if (conf.loginfoFrequencyParam > 0)
+                    SetLoginfoFrequencyParam(conf.loginfoFrequencyParam.ToString());
+
+                if (!string.IsNullOrEmpty(conf.loginfoOutputPathParam))
+                    SetloginfoOutputPathParam(conf.loginfoOutputPathParam);
+
+                if (!string.IsNullOrEmpty(conf.logOutputPathParam))
+                    SetlogOutputPathParam(conf.logOutputPathParam);
             }
 
         }
@@ -324,7 +437,15 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         ApplyConfigFile(ReadConfigFile(args[i]));
+                    break;
                 }
+                else if (args[i].Equals(generateconfigFileParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        GenerateConfigFile(args[i]);
+                    Application.Quit();
+                }
+
             }
 
             //then aplly other arguments
@@ -399,6 +520,31 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetIconServerUrl(args[i]);
+                }
+                else if (args[i].Equals(loggingLevelParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetLogLevel(args[i]);
+                }
+                else if (args[i].Equals(loggingScopeParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetLogScope(args[i]);
+                }
+                else if (args[i].Equals(loginfoFrequencyParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetLoginfoFrequencyParam(args[i]);
+                }
+                else if (args[i].Equals(loginfoOutputPathParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetloginfoOutputPathParam(args[i]);
+                }
+                else if (args[i].Equals(logOutputPathParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetlogOutputPathParam(args[i]);
                 }
                 else
                 {

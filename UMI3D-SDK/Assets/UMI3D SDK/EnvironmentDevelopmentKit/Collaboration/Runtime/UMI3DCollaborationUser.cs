@@ -26,11 +26,12 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
         public UMI3DCollaborationUser(string login)
         {
             this.login = login;
             status = StatusType.CREATED;
-            Debug.Log($"<color=magenta>new User {Id()} {login}</color>");
+            UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>",scope);
         }
 
         public void InitConnection(UMI3DForgeServer connection)

@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using umi3d.common;
 using umi3d.common.collaboration;
 using WebSocketSharp.Server;
 
@@ -25,6 +26,8 @@ namespace umi3d.edk.collaboration
 {
     public class HttpRoutingUtil
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         public Type attributeType { get; private set; }
 
         public List<WebServiceMethod> roots = new List<WebServiceMethod>();
@@ -73,7 +76,7 @@ namespace umi3d.edk.collaboration
                     return true;
                 }
             }
-            UnityEngine.Debug.Log("no post root " + path);
+            UMI3DLogger.Log("no post root " + path,scope);
             return false;
         }
 

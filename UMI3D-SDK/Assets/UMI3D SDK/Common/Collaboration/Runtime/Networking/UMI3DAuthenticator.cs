@@ -21,6 +21,8 @@ namespace umi3d.common.collaboration
 {
     public sealed class UMI3DAuthenticator : IUserAuthenticator
     {
+        const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
+
         private const string sepparator = ":";
         private readonly Action<Action<string>> getPin;
         private readonly Action<Action<(string, string)>> getLoginPassword;
@@ -81,7 +83,7 @@ namespace umi3d.common.collaboration
                     });
                     break;
                 default:
-                    Debug.LogWarning($"Unknow AuthenticationType [{type}]");
+                    UMI3DLogger.LogWarning($"Unknow AuthenticationType [{type}]",scope);
                     rejectServerAction();
                     break;
             }
@@ -123,7 +125,7 @@ namespace umi3d.common.collaboration
                             rejectUserAction(player);
                         break;
                     default:
-                        Debug.LogWarning($"Unknow AuthenticationType [{authenticationType}]");
+                        UMI3DLogger.LogWarning($"Unknow AuthenticationType [{authenticationType}]",scope);
                         rejectUserAction(player);
                         break;
                 }

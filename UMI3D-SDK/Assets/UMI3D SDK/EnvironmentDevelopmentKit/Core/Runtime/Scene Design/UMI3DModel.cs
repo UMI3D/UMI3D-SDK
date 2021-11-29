@@ -24,6 +24,8 @@ namespace umi3d.edk
 {
     public partial class UMI3DModel : AbstractRenderedNode
     {
+        const DebugScope scope = DebugScope.EDK | DebugScope.Core;
+
         [Obsolete("will be removed soon")]
         public bool lockColliders = false;
 
@@ -83,11 +85,11 @@ namespace umi3d.edk
         {
             if (idGenerator == null || idGenerator.Length < 1)
             {
-                Debug.LogWarning("idGenerator is required");
+                UMI3DLogger.LogWarning("idGenerator is required",scope);
                 return;
             }
 
-            //Debug.Log("add subobjects in hierarchy for " + gameObject.name);
+            //UMI3DLogger.Log("add subobjects in hierarchy for " + gameObject.name,scope);
             foreach (GameObject child in GetSubModelGameObjectOfUMI3DModel(gameObject.transform))
             {
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
