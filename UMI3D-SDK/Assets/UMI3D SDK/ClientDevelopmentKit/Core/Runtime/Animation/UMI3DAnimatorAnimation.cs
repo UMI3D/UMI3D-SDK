@@ -46,9 +46,19 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,
                 (n) =>
                 {
-                    (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>().Play(dto.stateName);
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(WaitingForAnimator(n, dto));
                 }
             );
+        }
+
+        protected IEnumerator WaitingForAnimator(UMI3DEntityInstance n, UMI3DAnimatorAnimationDto dto)
+        {
+            if (n == null)
+                yield break;
+
+            yield return null;
+
+            (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>().Play(dto.stateName);
         }
 
         ///<inheritdoc/>

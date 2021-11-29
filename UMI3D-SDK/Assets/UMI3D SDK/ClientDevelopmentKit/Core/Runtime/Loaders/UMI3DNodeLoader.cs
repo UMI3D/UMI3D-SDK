@@ -28,6 +28,8 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DNodeLoader : UMI3DAbstractNodeLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         /// <summary>
         /// Load an umi3d node.
         /// </summary>
@@ -82,12 +84,22 @@ namespace umi3d.cdk
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(skinMeshEntityId, e =>
-             {
-                 if (e is UMI3DNodeInstance nodeI)
-                 {
-                     MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(nodeI, boneId, node, maxDelay));
-                 }
-             });
+            {
+                if (e is UMI3DNodeInstance nodeI)
+                {
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(WaitingForSkinnedMeshBone(skinMeshEntityId, boneId, node, maxDelay, nodeI));
+                }
+            });
+        }
+
+        protected IEnumerator WaitingForSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay, UMI3DNodeInstance nodeI)
+        {
+            if (nodeI == null)
+                yield break;
+
+            yield return null;
+
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(BindSkinnedMeshBone(nodeI, boneId, node, maxDelay));
         }
 
         private IEnumerator BindSkinnedMeshBone(UMI3DNodeInstance nodeInstance, int boneId, Transform node, float maxDelay)
@@ -623,7 +635,7 @@ namespace umi3d.cdk
                     {
                         CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
                     },
-                    Debug.LogWarning,
+                    e=>UMI3DLogger.LogWarning(e,scope),
                     loader.DeleteObject
                     );
             }
@@ -639,7 +651,7 @@ namespace umi3d.cdk
             }
             else
             {
-                Debug.LogError("Collider not found");
+                UMI3DLogger.LogError("Collider not found",scope);
             }
         }
 
@@ -684,16 +696,16 @@ namespace umi3d.cdk
                                 if (nodeInstance != null)
                                     nodeInstance.colliders.Add(mesh);
                                 else
-                                    Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                                    UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered",scope);
                             }
                             else
                             {
-                                Debug.LogWarning("the mesh has been marked as non-accessible. Collider is not registered");
+                                UMI3DLogger.LogWarning("the mesh has been marked as non-accessible. Collider is not registered",scope);
                             }
                         }
                         catch (Exception e)
                         {
-                            Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
+                            UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]",scope);
                         }
 
                     }
@@ -711,11 +723,11 @@ namespace umi3d.cdk
                                 if (nodeInstance != null)
                                     nodeInstance.colliders.Add(mc);
                                 else
-                                    Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                                    UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered",scope);
                             }
                             catch (Exception e)
                             {
-                                Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
+                                UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]",scope);
                             }
                         }
 
@@ -731,11 +743,11 @@ namespace umi3d.cdk
                                 if (nodeInstance != null)
                                     nodeInstance.colliders.Add(mc);
                                 else
-                                    Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                                    UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered",scope);
                             }
                             catch (Exception e)
                             {
-                                Debug.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]");
+                                UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]",scope);
                             }
                         }
                     }
@@ -747,7 +759,7 @@ namespace umi3d.cdk
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(bc);
                     else
-                        Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered",scope);
                     break;
                 case ColliderType.Sphere:
                     SphereCollider sc = go.AddComponent<SphereCollider>();
@@ -756,7 +768,7 @@ namespace umi3d.cdk
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(sc);
                     else
-                        Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered",scope);
                     break;
                 case ColliderType.Capsule:
                     CapsuleCollider cc = go.AddComponent<CapsuleCollider>();
@@ -767,14 +779,12 @@ namespace umi3d.cdk
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(cc);
                     else
-                        Debug.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered");
+                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered",scope);
                     break;
                 default:
                     break;
             }
         }
         #endregion
-
-
     }
 }

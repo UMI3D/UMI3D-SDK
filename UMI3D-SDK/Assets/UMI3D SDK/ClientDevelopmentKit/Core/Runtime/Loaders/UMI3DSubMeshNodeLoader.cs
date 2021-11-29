@@ -25,6 +25,7 @@ namespace umi3d.cdk
 {
     public class UMI3DSubMeshNodeLoader : AbstractRenderedNodeLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         ///<inheritdoc/>
         public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
@@ -123,8 +124,8 @@ namespace umi3d.cdk
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError(e);
-                        Debug.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found");
+                        UMI3DLogger.LogError(e,scope);
+                        UMI3DLogger.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found",scope);
                     }
                     finished?.Invoke();
                 }

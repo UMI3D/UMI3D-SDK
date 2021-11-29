@@ -20,11 +20,14 @@ using MrtkShader;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using umi3d.common;
 
 namespace umi3d.cdk
 {
     public class GltfastCustomMaterialGenerator : DefaultMaterialGenerator
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading|DebugScope.Material;
+
         ///<inheritdoc/>
         public override UnityEngine.Material GenerateMaterial(GLTFast.Schema.Material gltfMaterial, ref GLTFast.Schema.Texture[] textures, ref GLTFast.Schema.Image[] schemaImages, ref Dictionary<int, Texture2D>[] imageVariants, string url, int id)
         {
@@ -151,7 +154,7 @@ namespace umi3d.cdk
                 TextureTransform tt = textureInfo.extensions.KHR_texture_transform;
                 if (tt.texCoord != 0)
                 {
-                    Debug.LogError("Multiple UV sets are not supported!");
+                    UMI3DLogger.LogError("Multiple UV sets are not supported!", scope);
                 }
 
                 float cos = 1;
@@ -174,7 +177,7 @@ namespace umi3d.cdk
                      sin = Mathf.Sin(tt.rotation);
                      material.SetVector(StandardShaderHelper.mainTexRotatePropId, new Vector4(cos, sin, -sin, cos));
                      material.EnableKeyword(StandardShaderHelper.KW_UV_ROTATION);*/
-                    Debug.LogWarning("Texture rotation is not supported");
+                    UMI3DLogger.LogWarning("Texture rotation is not supported", scope);
                     offset.x += scale.y * sin;
                 }
                 offset.y -= scale.y * cos;
@@ -232,12 +235,12 @@ namespace umi3d.cdk
                     }
                     else
                     {
-                        Debug.LogErrorFormat("Image #{0} not found", imageIndex);
+                        UMI3DLogger.LogError($"Image #{imageIndex} not found", scope);
                     }
                 }
                 else
                 {
-                    Debug.LogErrorFormat("Texture #{0} not found", bcTextureIndex);
+                    UMI3DLogger.LogError($"Texture #{bcTextureIndex} not found", scope);
                 }
 
             }

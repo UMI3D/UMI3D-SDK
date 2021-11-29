@@ -33,8 +33,9 @@ namespace umi3d.cdk.collaboration
     }
 
     [RequireComponent(typeof(AudioSource))]
-    public class MicrophoneListener : Singleton<MicrophoneListener>
+    public class MicrophoneListener : Singleton<MicrophoneListener>, ILoggable
     {
+
         #region const
 
         /// <summary>
@@ -191,6 +192,7 @@ namespace umi3d.cdk.collaboration
         {
             IsMute = IsMute;
             audioSource = GetComponent<AudioSource>();
+            UMI3DLogger.Register(this);
         }
 
         private void _UpdateFrequency(int frequency)
@@ -713,6 +715,37 @@ namespace umi3d.cdk.collaboration
                 Thread.Sleep(sleepTimeMiliseconde);
             }
             thread = null;
+        }
+
+        const string LogName = "Microphone Listener";
+        string ILoggable.GetLogName()
+        {
+            return LogName;
+        }
+
+        List<DebugInfo> ILoggable.GetInfos()
+        {
+            return new List<DebugInfo>
+            {
+                new DebugInfo<string>("Current Microphone",()=>CurrentMicrophone),
+                new DebugInfo<string[]>("Microphones",getDevices(),(l)=>l.ToString<string>()),
+                new DebugInfo<int>("Sampling Frequency (Hz)",()=>samplingFrequency),
+                new DebugInfo<int>("Bitrate (b/s)",()=>Bitrate),
+                new DebugInfo<int>("Frame Size (float)",()=>frameSize),
+                new DebugInfo<int>("Output Buffer Size (bytes)",()=>outputBufferSize),
+                new DebugInfo<int>("PCM Queue Size",()=>
+                    {
+                        if(pcmQueue != null)
+                            lock (pcmQueue)
+                                return pcmQueue.Count;
+                        return 0;
+                    }
+                ),
+                new DebugInfo<(float,float,bool)>("RMS",()=>(RMS,NoiseThreshold,ShouldSend),(t)=>$"{t.Item1}[>{t.Item2}=>{t.Item3}]"),
+                new DebugInfo<float>(" DB",()=>DB),
+                new DebugInfo<float>(" Gain",()=>Gain),
+                new DebugInfo<float>(" Time to turn off",()=>TimeToTurnOff),
+            };
         }
         #endregion
     }

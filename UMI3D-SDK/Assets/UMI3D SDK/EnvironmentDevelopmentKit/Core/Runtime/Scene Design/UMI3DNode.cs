@@ -257,7 +257,6 @@ namespace umi3d.edk
         /// <returns></returns>
         internal virtual List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
-            //Debug.LogError("GetGlTFMaterialsFor is unimplemented!");
             return new List<GlTFMaterialDto>();
         }
 
@@ -345,7 +344,6 @@ namespace umi3d.edk
 
         private ColliderDto GetColliderDto()
         {
-            //Debug.Log("has collider : " + hasCollider);
             if (!hasCollider)
                 return null;
             var res = new ColliderDto

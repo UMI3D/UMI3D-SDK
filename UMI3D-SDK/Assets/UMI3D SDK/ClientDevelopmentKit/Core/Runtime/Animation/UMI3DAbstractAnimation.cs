@@ -71,8 +71,8 @@ namespace umi3d.cdk
                     dto.startTime = (ulong)(long)property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    dto.pauseFrame = (long)property.value;
-                    SetProgress(dto.pauseFrame);
+                    dto.pauseTime = (long)property.value;
+                    SetProgress(dto.pauseTime);
                     break;
                 default:
                     return false;
@@ -117,8 +117,8 @@ namespace umi3d.cdk
                     dto.startTime = UMI3DNetworkingHelper.Read<ulong>(container);
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    dto.pauseFrame = UMI3DNetworkingHelper.Read<long>(container);
-                    SetProgress(dto.pauseFrame);
+                    dto.pauseTime = UMI3DNetworkingHelper.Read<long>(container);
+                    SetProgress(dto.pauseTime);
                     break;
                 default:
                     return false;

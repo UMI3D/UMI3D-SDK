@@ -24,6 +24,7 @@ using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
+using inetum.unityUtils;
 
 namespace umi3d.cdk.collaboration
 {
@@ -32,6 +33,8 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+
         public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
 
         public static bool useDto { protected set; get; } = false;
@@ -104,6 +107,7 @@ namespace umi3d.cdk.collaboration
         public static void Connect()
         {
             Instance.Init();
+            UMI3DLogger.Log("Init Connection", scope | DebugScope.Connection);
             if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
             {
                 Instance.ForgeClient.ip = connection.host;
@@ -113,13 +117,17 @@ namespace umi3d.cdk.collaboration
                 Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
                 Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
 
+                UMI3DLogger.Log($"ip:{Instance.ForgeClient.ip}:{Instance.ForgeClient.port}, master:{Instance.ForgeClient.masterServerHost}:{Instance.ForgeClient.masterServerPort}, nat:{Instance.ForgeClient.natServerHost }:{Instance.ForgeClient.natServerPort}", scope | DebugScope.Connection);
+
                 UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((Auth) =>
                 {
+                    UMI3DLogger.Log("Get Identity", scope | DebugScope.Connection);
                     UMI3DCollaborationClientServer.Identity.login = "";
                     Auth.LoginSet = (s) =>
                     {
                         UMI3DCollaborationClientServer.Identity.login = s;
                         Auth.LoginSet = null;
+                        UMI3DLogger.Log($"Login is {UMI3DCollaborationClientServer.Identity.login}", scope | DebugScope.Connection);
                     };
                     Instance.ForgeClient.Join(Auth);
                 });
@@ -137,16 +145,22 @@ namespace umi3d.cdk.collaboration
 
         private void _Logout(Action success, Action<string> failled)
         {
+            UMI3DLogger.Log("Logout", scope | DebugScope.Connection);
             if (Connected())
             {
                 HttpClient.SendPostLogout(() =>
                 {
+                    UMI3DLogger.Log("Logout ok", scope | DebugScope.Connection);
                     ForgeClient.Stop();
                     Start();
                     success?.Invoke();
                     Identity = new IdentityDto();
                 },
-                (error) => { failled.Invoke(error); Identity = new IdentityDto(); });
+                (error) => {
+                    UMI3DLogger.LogError("Logout failed", scope | DebugScope.Connection);
+                    failled.Invoke(error); 
+                    Identity = new IdentityDto(); 
+                });
             }
             else
             {
@@ -160,6 +174,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void ConnectionLost()
         {
+            UMI3DLogger.LogWarning("Connection Lost", scope | DebugScope.Connection);
             UMI3DCollaborationClientServer.Logout(null, null);
 
             OnConnectionLost.Invoke();
@@ -175,9 +190,11 @@ namespace umi3d.cdk.collaboration
         {
             if (argument.ShouldTryAgain(argument))
             {
+                UMI3DLogger.LogWarning($"Http request failed [{argument}], try again", scope | DebugScope.Connection);
                 StartCoroutine(TryAgain(argument));
                 return true;
             }
+            UMI3DLogger.LogError($"Http request failed [{argument}], abort", scope | DebugScope.Connection);
             return false;
         }
 
@@ -195,6 +212,7 @@ namespace umi3d.cdk.collaboration
             {
                 UnityAction a = () => newToken = true;
                 OnNewToken.AddListener(a);
+                UMI3DLogger.Log($"Wait for new token", scope | DebugScope.Connection);
                 yield return new WaitUntil(() =>
                 {
                     bool tooLong = ((DateTime.UtcNow - argument.date).TotalMilliseconds > maxMillisecondToWait);
@@ -214,17 +232,13 @@ namespace umi3d.cdk.collaboration
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
         public static void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
+            UMI3DLogger.Log($"Get media at {url}", scope | DebugScope.Connection);
             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
             {
-                Media = media; Instance._setMedia(); callback?.Invoke(media);
+                UMI3DLogger.Log($"Media received", scope | DebugScope.Connection);
+                Media = media; callback?.Invoke(media);
             }, failback, shouldTryAgain);
         }
-
-        private void _setMedia()
-        {
-
-        }
-
 
         /// <summary>
         /// 
@@ -232,13 +246,14 @@ namespace umi3d.cdk.collaboration
         /// <param name="status"></param>
         public static void OnStatusChanged(StatusDto statusDto)
         {
+            UMI3DLogger.Log($"Status changed to {statusDto.status}", scope | DebugScope.Connection);
             switch (statusDto.status)
             {
                 case StatusType.CREATED:
                     UMI3DCollaborationClientServer.Instance.HttpClient.SendGetIdentity((user) =>
                     {
                         Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                    }, (error) => { Debug.Log("error on get id :" + error); });
+                    }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                     break;
                 case StatusType.READY:
                     if (Identity.userId == 0)
@@ -249,7 +264,7 @@ namespace umi3d.cdk.collaboration
                             Identity.userId = user.id;
                             Instance.Join();
 
-                        }, (error) => { Debug.Log("error on get id :" + error); });
+                        }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                     }
                     else
                     {
@@ -323,7 +338,7 @@ namespace umi3d.cdk.collaboration
                             Instance.HttpClient.SendGetIdentity((user) =>
                             {
                                 Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                            }, (error) => { Debug.Log("error on get id :" + error); });
+                            }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                             break;
                         case StatusType.READY:
                             if (Identity.userId == 0)
@@ -334,7 +349,7 @@ namespace umi3d.cdk.collaboration
                                     Identity.userId = user.id;
                                     Instance.Join();
 
-                                }, (error) => { Debug.Log("error on get id :" + error); });
+                                }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                             }
                             else
                             {
@@ -355,6 +370,7 @@ namespace umi3d.cdk.collaboration
         private void Join()
         {
             if (joinning || connected) return;
+            UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
             joinning = true;
 
             var joinDto = new JoinDto()
@@ -366,7 +382,7 @@ namespace umi3d.cdk.collaboration
             Instance.HttpClient.SendPostJoin(
                 joinDto,
                 (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
-                (error) => { joinning = false; Debug.Log("error on get id :" + error); });
+                (error) => { joinning = false; UMI3DLogger.LogError("error on get id :" + error, scope); });
         }
 
         /// <summary>
@@ -376,6 +392,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private IEnumerator UpdateIdentity(UserConnectionDto user)
         {
+            UMI3DLogger.Log($"UpdateIdentity {user.id}", scope | DebugScope.Connection);
             UserDto.Set(user);
             Identity.userId = user.id;
             bool Ok = true;
@@ -383,9 +400,11 @@ namespace umi3d.cdk.collaboration
 
             if (!UserDto.dto.librariesUpdated)
             {
+
                 HttpClient.SendGetLibraries(
                     (LibrariesDto) =>
                     {
+                        UMI3DLogger.Log($"Ask to download Libraries", scope | DebugScope.Connection);
                         Instance.Identifier.ShouldDownloadLibraries(
                             UMI3DResourcesManager.LibrariesToDownload(LibrariesDto),
                             b =>
@@ -393,6 +412,7 @@ namespace umi3d.cdk.collaboration
                                 if (!b)
                                 {
                                     Ok = false;
+                                    UMI3DLogger.Log($"libraries Dowload aborted", scope | DebugScope.Connection);
                                 }
                                 else
                                 {
@@ -402,12 +422,12 @@ namespace umi3d.cdk.collaboration
                                         {
                                             librariesUpdated = true;
                                         },
-                                        (error) => { Ok = false; Debug.Log("error on download Libraries :" + error); }
+                                        (error) => { Ok = false; UMI3DLogger.Log("error on download Libraries :" + error, scope); }
                                         );
                                 }
                             });
                     },
-                    (error) => { Ok = false; Debug.Log("error on get Libraries: " + error); }
+                    (error) => { Ok = false; UMI3DLogger.Log("error on get Libraries: " + error, scope); }
                     );
 
                 yield return new WaitUntil(() => { return librariesUpdated || !Ok; });
@@ -418,7 +438,7 @@ namespace umi3d.cdk.collaboration
                 Instance.Identifier.GetParameterDtos(UserDto.formdto, (param) =>
                 {
                     UserDto.dto.parameters = param;
-                    Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { Debug.Log("error on post id :" + error); });
+                    Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { UMI3DLogger.Log("error on post id :" + error, scope); });
                 });
             }
             else
@@ -435,13 +455,14 @@ namespace umi3d.cdk.collaboration
                 {
                     Action setStatus = () =>
                     {
+                        UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
                         UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
                         UserDto.dto.status = StatusType.ACTIVE;
                         HttpClient.SendPostUpdateIdentity(null, null);
                     };
                     StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
                 },
-                (error) => { Debug.Log("error on get Environement :" + error); });
+                (error) => { UMI3DLogger.Log("error on get Environement :" + error, scope); });
         }
 
         ///<inheritdoc/>
@@ -453,12 +474,14 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError)
         {
+            UMI3DLogger.Log($"GetFile {url}", scope);
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
         ///<inheritdoc/>
         protected override void _GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
         {
+            UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
             var dto = new EntityRequestDto() { entitiesId = ids };
             HttpClient.SendPostEntity(dto, callback, onError);
         }

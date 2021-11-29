@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -28,6 +29,8 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public static class FileUploader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Interaction;
+
         private static readonly Dictionary<string, string> filesToUpload = new Dictionary<string, string>(); // key:fileId  value:path
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace umi3d.cdk.interaction
         {
             if (!filesToUpload.ContainsKey(fileId))
             {
-                Debug.LogWarning("Server asked client to upload a file without its request, or the client already upload the file");
+                UMI3DLogger.LogWarning("Server asked client to upload a file without its request, or the client already upload the file",scope);
                 return null;
             }
             string path = filesToUpload[fileId];
@@ -50,7 +53,7 @@ namespace umi3d.cdk.interaction
             }
             else
             {
-                Debug.LogWarning("File not found : " + path + ". Local file cannot be uploaded.");
+                UMI3DLogger.LogWarning("File not found : " + path + ". Local file cannot be uploaded.",scope);
                 return null;
             }
         }
@@ -64,7 +67,7 @@ namespace umi3d.cdk.interaction
         {
             if (!File.Exists(path))
             {
-                Debug.LogWarning("Warning, this file doesn't exist in your device : " + path);
+                UMI3DLogger.LogWarning("Warning, this file doesn't exist in your device : " + path,scope);
                 return null;
             }
             string res = Guid.NewGuid().ToString();
@@ -81,7 +84,7 @@ namespace umi3d.cdk.interaction
         {
             if (!filesToUpload.ContainsKey(fileId))
             {
-                Debug.LogWarning("Server asked client to upload a file without its request, or the client already upload the file");
+                UMI3DLogger.LogWarning("Server asked client to upload a file without its request, or the client already upload the file",scope);
                 return null;
             }
             return System.IO.Path.GetFileName(filesToUpload[fileId]);
@@ -97,7 +100,7 @@ namespace umi3d.cdk.interaction
             {
                 if (param is UploadFileParameterDto ParameterDto)
                 {
-                    Debug.Log(param.ToJson());
+                    UMI3DLogger.Log(param.ToJson(),scope);
                     string pathValue = (param as UploadFileParameterDto).value;//the path of the file to upload
                     // -> create request with AddFileToUpload
 
