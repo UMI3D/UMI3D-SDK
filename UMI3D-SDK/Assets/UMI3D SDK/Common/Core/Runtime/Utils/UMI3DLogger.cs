@@ -55,7 +55,8 @@ namespace umi3d.common
 
         Connection = 1 << 13,
 
-        Editor = 1 << 29
+        Editor = 1 << 29,
+        Other = 1<<28
     }
 
     public class UMI3DLogger : PersistentSingleton<UMI3DLogger>
