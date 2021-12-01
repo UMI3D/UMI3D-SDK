@@ -190,11 +190,11 @@ namespace umi3d.cdk.collaboration
         {
             if (argument.ShouldTryAgain(argument))
             {
-                UMI3DLogger.LogWarning($"Http request failed [{argument.GetRespondCode()} url:{argument.GetUrl()} headers:{argument.GetHeader()?.ToString(e=> $"{{{e.Key}:{e.Value}}}" )} ], try again", scope | DebugScope.Connection);
+                UMI3DLogger.LogWarning($"Http request failed [{argument}], try again", scope | DebugScope.Connection);
                 StartCoroutine(TryAgain(argument));
                 return true;
             }
-            UMI3DLogger.LogError($"Http request failed [{argument.GetRespondCode()} url:{argument.GetUrl()} headers:{argument.GetHeader()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ], abort", scope | DebugScope.Connection);
+            UMI3DLogger.LogError($"Http request failed [{argument}], abort", scope | DebugScope.Connection);
             return false;
         }
 
@@ -370,6 +370,7 @@ namespace umi3d.cdk.collaboration
         private void Join()
         {
             if (joinning || connected) return;
+            UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
             joinning = true;
 
             var joinDto = new JoinDto()
@@ -381,7 +382,7 @@ namespace umi3d.cdk.collaboration
             Instance.HttpClient.SendPostJoin(
                 joinDto,
                 (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
-                (error) => { joinning = false; UMI3DLogger.Log("error on get id :" + error, scope); });
+                (error) => { joinning = false; UMI3DLogger.LogError("error on get id :" + error, scope); });
         }
 
         /// <summary>
@@ -391,6 +392,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private IEnumerator UpdateIdentity(UserConnectionDto user)
         {
+            UMI3DLogger.Log($"UpdateIdentity {user.id}", scope | DebugScope.Connection);
             UserDto.Set(user);
             Identity.userId = user.id;
             bool Ok = true;
@@ -398,9 +400,11 @@ namespace umi3d.cdk.collaboration
 
             if (!UserDto.dto.librariesUpdated)
             {
+
                 HttpClient.SendGetLibraries(
                     (LibrariesDto) =>
                     {
+                        UMI3DLogger.Log($"Ask to download Libraries", scope | DebugScope.Connection);
                         Instance.Identifier.ShouldDownloadLibraries(
                             UMI3DResourcesManager.LibrariesToDownload(LibrariesDto),
                             b =>
@@ -408,6 +412,7 @@ namespace umi3d.cdk.collaboration
                                 if (!b)
                                 {
                                     Ok = false;
+                                    UMI3DLogger.Log($"libraries Dowload aborted", scope | DebugScope.Connection);
                                 }
                                 else
                                 {
@@ -450,6 +455,7 @@ namespace umi3d.cdk.collaboration
                 {
                     Action setStatus = () =>
                     {
+                        UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
                         UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
                         UserDto.dto.status = StatusType.ACTIVE;
                         HttpClient.SendPostUpdateIdentity(null, null);
@@ -468,12 +474,14 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError)
         {
+            UMI3DLogger.Log($"GetFile {url}", scope);
             HttpClient.SendGetPrivate(url, callback, onError);
         }
 
         ///<inheritdoc/>
         protected override void _GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
         {
+            UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
             var dto = new EntityRequestDto() { entitiesId = ids };
             HttpClient.SendPostEntity(dto, callback, onError);
         }

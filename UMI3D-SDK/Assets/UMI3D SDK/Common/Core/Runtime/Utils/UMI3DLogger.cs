@@ -75,7 +75,8 @@ namespace umi3d.common
                 {
                     Instance.logPath = value;
                     Instance.logWritter?.Stop();
-                    Instance.logWritter = new ThreadWritter(Instance.logPath);
+
+                    Instance.logWritter = string.IsNullOrEmpty(Instance.logPath) ? null : new ThreadWritter(Instance.logPath);
                 }
             }
         }
@@ -155,21 +156,21 @@ namespace umi3d.common
         protected virtual void _Log(object o, DebugScope scope)
         {
             if (ShouldLog)
-                logWritter.Write(o.ToString());
+                logWritter?.Write(o.ToString());
             Debug.Log(o);
         }
 
         protected virtual void _LogWarning(object o, DebugScope scope)
         {
             if (ShouldLog)
-                logWritter.Write("Warning: "+o.ToString());
+                logWritter?.Write("Warning: " + o.ToString());
             Debug.LogWarning(o);
         }
 
         protected virtual void _LogError(object o, DebugScope scope)
         {
             if (ShouldLog)
-                logWritter.Write("Error: " + o.ToString());
+                logWritter?.Write("Error: " + o.ToString());
             Debug.LogError(o);
         }
 
@@ -194,41 +195,32 @@ namespace umi3d.common
             Loggables.Remove(loggable);
         }
 
-        protected virtual string LogStaticData()
+        protected virtual string LogData(float time)
         {
-            string data = Environment.NewLine;
-            data += $"Static";
-            data += Environment.NewLine;
+            string data = $"Time : {time},{ Environment.NewLine}";
+            bool globalOk = false;
             foreach (var loggable in Loggables)
             {
-                data += $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
+                bool localOk = false;
+                string localdata = $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
                 if (loggable.Value != null && loggable.Value.Count > 0)
                     loggable.Value.ForEach(info =>
                     {
-                        if (info.isStatic)
-                            data += $"\"{info.name}\":\"{info}\",";
+                        var i = info.GetData();
+                        if (i.Item1)
+                        {
+                            localOk = true;
+                            localdata += $"\"{info.name}\":\"{i.Item2}\",{Environment.NewLine}";
+                        }
                     });
-                data += $"}}";
+                localdata += $"}}";
+                if (localOk)
+                {
+                    data += localdata;
+                    globalOk = true;
+                }
             }
-            return data;
-        }
-
-        protected virtual string LogNotStaticData(float time)
-        {
-            string data = Environment.NewLine;
-            data += $"Time : {time},{ Environment.NewLine}";
-            foreach (var loggable in Loggables)
-            {
-                data += $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
-                if (loggable.Value != null && loggable.Value.Count > 0)
-                    loggable.Value.ForEach(info =>
-                    {
-                        if (!info.isStatic)
-                            data += $"\"{info.name}\":\"{info}\",c";
-                    });
-                data += $"}}";
-            }
-            return data;
+            return globalOk ? data : null;
         }
 
         public static string LogInfoPath
@@ -240,7 +232,7 @@ namespace umi3d.common
                 {
                     Instance.infoPath = value;
                     Instance.infoWritter?.Stop();
-                    Instance.infoWritter = new ThreadWritter(Instance.infoPath);
+                    Instance.infoWritter = string.IsNullOrEmpty(Instance.infoPath) ? null : new ThreadWritter(Instance.infoPath);
                 }
             }
         }
@@ -286,11 +278,11 @@ namespace umi3d.common
             running = true;
             if (wait == null) wait = new WaitForSecondsRealtime(LogInfoDelta);
             WriteLogFile($"{DateTime.Now}");
-            WriteLogFile(LogStaticData());
             while (ShouldLogInfo)
             {
-                var data = LogNotStaticData(Time.unscaledTime);
-                WriteLogFile(data);
+                var data = LogData(Time.unscaledTime);
+                if (data != null)
+                    WriteLogFile(data);
                 yield return wait;
             }
             running = false;
@@ -298,15 +290,15 @@ namespace umi3d.common
 
         protected void WriteLogFile(string data)
         {
-            infoWritter.Write(data);
+            infoWritter?.Write(data);
         }
         ThreadWritter infoWritter;
         ThreadWritter logWritter;
 
         protected virtual void Start()
         {
-            infoWritter = new ThreadWritter(LogInfoPath);
-            logWritter = new ThreadWritter(LogPath);
+            infoWritter = string.IsNullOrEmpty(LogInfoPath) ? null : new ThreadWritter(LogInfoPath);
+            logWritter = string.IsNullOrEmpty(LogPath) ? null : new ThreadWritter(LogPath);
             StartCoroutine(LogCoroutine());
 
         }
@@ -314,8 +306,8 @@ namespace umi3d.common
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            infoWritter.Stop();
-            logWritter.Stop();
+            infoWritter?.Stop();
+            logWritter?.Stop();
         }
         #endregion
     }
@@ -332,8 +324,24 @@ namespace umi3d.common
             this.name = name;
         }
 
-        public abstract string getData();
+        /// <summary>
+        /// state if the value was updated since last GetData
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool Updated();
 
+        /// <summary>
+        /// return the data as a string if it was updated since last call;
+        /// </summary>
+        /// <returns></returns>
+        public abstract (bool, string) GetData();
+
+
+        /// <summary>
+        /// return the data as a string;
+        /// </summary>
+        /// <returns></returns>
+        public abstract string GetCurrentData();
     }
 
     public class DebugInfo<T> : DebugInfo
@@ -341,11 +349,12 @@ namespace umi3d.common
         private T lastValue;
         private readonly Func<T> GetValue;
         Func<T, string> serializer;
+        bool updated = false;
 
         public DebugInfo(string name, T value, Func<T, string> serializer = null) : this(name, true, serializer)
         {
-
             lastValue = value;
+
         }
 
         public DebugInfo(string name, Func<T> GetValue, Func<T, string> serializer = null) : this(name, false, serializer)
@@ -355,20 +364,63 @@ namespace umi3d.common
 
         private DebugInfo(string name, bool isStatic, Func<T, string> serializer) : base(name, isStatic)
         {
-            this.serializer = serializer ?? ((T o) => o.ToString());
+            this.serializer = serializer ?? ((T o) => o?.ToString() ?? "Null");
+            updated = true;
         }
 
-
-        public T GetData()
+        public T GetTData()
         {
             if (!isStatic)
-                lastValue = GetValue();
+                return this.GetValue.Invoke();
             return lastValue;
         }
 
-        public override string getData()
+        public override (bool, string) GetData()
         {
-            return serializer(GetData());
+            var ok = Updated();
+            if (ok) Debug.Log(ok);
+
+            return (ok, GetIfUpdatedData());
+        }
+
+        string GetIfUpdatedData()
+        {
+            if (updated)
+            {
+                updated = false;
+                return serializer(lastValue);
+            }
+            return null;
+        }
+
+        public override string GetCurrentData()
+        {
+            return serializer(GetTData());
+        }
+
+        public override bool Updated()
+        {
+            if (updated)
+            {
+                lastValue = GetTData();
+                return true;
+            }
+            if (!isStatic)
+            {
+                var value = GetTData();
+                if (
+                    (!value?.Equals(lastValue) ?? false)
+                    || (!lastValue?.Equals(value) ?? false)
+                    )
+                {
+                    lastValue = value;
+                    updated = true;
+                    return true;
+                }
+
+            }
+            return false;
+
         }
     }
 

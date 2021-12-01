@@ -49,9 +49,12 @@ namespace umi3d.common
 
         public ThreadWritter(string path)
         {
-            this.path = path;
-            Running = true;
             queue = new Queue<string>();
+            this.path = path;
+            if (string.IsNullOrEmpty(this.path))
+                return;
+            Running = true;
+            
             thread = new Thread(ThreadUpdate);
             if (!thread.IsAlive)
                 thread.Start();

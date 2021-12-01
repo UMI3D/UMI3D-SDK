@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using UnityEngine.Networking;
 
@@ -43,6 +44,16 @@ namespace umi3d.cdk
         public System.Collections.Generic.Dictionary<string,string> GetHeader()
         {
             return request?.GetResponseHeaders();
+        }
+
+        public override string ToString()
+        {
+            if (request != null) {
+                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{request.responseCode}, url:{request.url}], header:{request?.GetResponseHeaders()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ";
+            }
+            else {
+                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{responseCode}]";
+            }
         }
 
         public Func<RequestFailedArgument, bool> ShouldTryAgain { get; private set; }
