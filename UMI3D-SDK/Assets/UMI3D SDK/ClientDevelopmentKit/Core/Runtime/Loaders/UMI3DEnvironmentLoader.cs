@@ -600,7 +600,7 @@ namespace umi3d.cdk
         /// <param name="matDto"></param>
         private void LoadDefaultMaterial(ResourceDto matDto)
         {
-            FileDto fileToLoad = Parameters.ChooseVariante(matDto.variants);
+            FileDto fileToLoad = Parameters.ChooseVariant(matDto.variants);
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;

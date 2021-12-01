@@ -28,6 +28,8 @@ public class PackagesExporter
     const string dllFolder = "../Dll/";
     const string pathCdk = packageFolder+ "cdk.unitypackage";
     const string pathEdk = packageFolder + "edk.unitypackage";
+    const string pathServerStarterKit = packageFolder + "server-starter-kit.unitypackage";
+
     const string pathCore = packageFolder + "module/core.unitypackage";
     const string pathDependencies = packageFolder + "module/dependencies.unitypackage";
     const string pathInteractionSystem = packageFolder + "module/interaction-system.unitypackage";
@@ -38,6 +40,8 @@ public class PackagesExporter
     const string assetCommon = "Assets/UMI3D SDK/Common";
     const string assetCDK = "Assets/UMI3D SDK/ClientDevelopmentKit";
     const string assetEDK = "Assets/UMI3D SDK/EnvironmentDevelopmentKit";
+
+    const string assetServerStarterKit = "Assets/Server Starter Kit";
 
     const string coreFolder = "/Core";
     const string collaborationFolder = "/Collaboration";
@@ -113,6 +117,9 @@ public class PackagesExporter
         var interaction = new List<string> { assetCommon + interactionSystemFolder, assetEDK + interactionSystemFolder, assetCDK + interactionSystemFolder };
         var userCapture = new List<string> { assetCommon + userCaptureFolder, assetEDK + userCaptureFolder, assetCDK + userCaptureFolder };
         var collaboration = new List<string> { assetCommon + collaborationFolder, assetEDK + collaborationFolder, assetCDK + collaborationFolder };
+
+        
+
         core.Add(assetDependencies);
         interaction.AddRange(core);
         collaboration.AddRange(interaction);
@@ -128,6 +135,8 @@ public class PackagesExporter
             assetCommon + coreFolder, assetCommon + interactionSystemFolder, assetCommon + userCaptureFolder, assetCommon + collaborationFolder,
             assetEDK + coreFolder, assetEDK + interactionSystemFolder, assetEDK + userCaptureFolder, assetEDK + collaborationFolder
         };
+
+        var ServerStarterKit = new List<string>(edk) { assetServerStarterKit };
 
         if (!Directory.Exists(Application.dataPath + "/../" + packageFolder))
         {
@@ -146,6 +155,8 @@ public class PackagesExporter
             AssetDatabase.ExportPackage(interaction.ToArray(), pathInteractionSystem, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
             AssetDatabase.ExportPackage(userCapture.ToArray(), pathUserCapture, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
             AssetDatabase.ExportPackage(collaboration.ToArray(), pathCollaboration, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+
+            AssetDatabase.ExportPackage(ServerStarterKit.ToArray(), pathServerStarterKit, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
         }
         AssetDatabase.ExportPackage(cdk, pathCdk, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
         AssetDatabase.ExportPackage(edk, pathEdk, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);

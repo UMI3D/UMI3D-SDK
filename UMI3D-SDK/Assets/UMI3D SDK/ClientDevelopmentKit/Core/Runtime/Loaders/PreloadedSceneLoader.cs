@@ -48,7 +48,7 @@ namespace umi3d.cdk
 
             if (resourceScene != null)
             {
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(resourceScene.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(resourceScene.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
@@ -75,7 +75,7 @@ namespace umi3d.cdk
 
         private static void Unload(PreloadedSceneDto scenesdto, GameObject node)
         {
-            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariante(scenesdto.scene.variants).pathIfInBundle));
+            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle));
         }
 
         /// <summary>

@@ -266,7 +266,7 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override FileDto ChooseVariante(List<FileDto> files)
+        public override FileDto ChooseVariant(List<FileDto> files)
         {
             FileDto res = null;
             if (files != null)
@@ -321,7 +321,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void loadSkybox(ResourceDto skybox)
         {
-            FileDto fileToLoad = ChooseVariante(skybox.variants);
+            FileDto fileToLoad = ChooseVariant(skybox.variants);
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;

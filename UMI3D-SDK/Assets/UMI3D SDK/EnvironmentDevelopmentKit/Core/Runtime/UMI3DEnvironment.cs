@@ -44,7 +44,7 @@ namespace umi3d.edk
         /// Environment's name.
         /// </summary>
         [EditorReadOnly]
-        public string environmentName = "test";
+        public string environmentName = "Environment Name";
 
         [HideInInspector]
         public List<UMI3DScene> scenes;

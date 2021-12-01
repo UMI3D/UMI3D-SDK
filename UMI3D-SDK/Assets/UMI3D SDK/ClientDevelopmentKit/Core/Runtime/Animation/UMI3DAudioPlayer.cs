@@ -55,7 +55,7 @@ namespace umi3d.cdk
                 yield break;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.audioResource.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.audioResource.variants);
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -151,7 +151,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)property.value;
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
@@ -216,7 +216,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;

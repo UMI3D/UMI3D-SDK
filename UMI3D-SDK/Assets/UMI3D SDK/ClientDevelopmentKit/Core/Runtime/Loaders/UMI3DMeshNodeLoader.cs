@@ -55,7 +55,7 @@ namespace umi3d.cdk
             {
 
                 //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
@@ -100,7 +100,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
-            string url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.mesh.variants).url;
+            string url = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.mesh.variants).url;
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
                 var copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);

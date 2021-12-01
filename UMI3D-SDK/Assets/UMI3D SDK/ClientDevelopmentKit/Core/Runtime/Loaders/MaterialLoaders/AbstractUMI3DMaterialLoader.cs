@@ -84,7 +84,7 @@ namespace umi3d.cdk
                     alternativeCallback.Invoke(null);
                 return;
             }
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(textureDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -131,7 +131,7 @@ namespace umi3d.cdk
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(textureDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;

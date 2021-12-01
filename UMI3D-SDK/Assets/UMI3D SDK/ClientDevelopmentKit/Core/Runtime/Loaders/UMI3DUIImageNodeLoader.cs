@@ -51,7 +51,7 @@ namespace umi3d.cdk
                 return;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.sprite.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite.variants);
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -105,7 +105,7 @@ namespace umi3d.cdk
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
                         dto.sprite = property.value as ResourceDto;
-                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.sprite?.variants);
+                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)
                         {
                             image.sprite = null;
@@ -165,7 +165,7 @@ namespace umi3d.cdk
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
                         dto.sprite = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.sprite?.variants);
+                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)
                         {
                             image.sprite = null;

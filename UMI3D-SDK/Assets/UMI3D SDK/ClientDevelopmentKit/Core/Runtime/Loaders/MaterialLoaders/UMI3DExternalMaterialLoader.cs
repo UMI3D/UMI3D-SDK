@@ -38,7 +38,7 @@ namespace umi3d.cdk
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
             if (externalMat != null)
             {
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(externalMat.resource.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(externalMat.resource.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
