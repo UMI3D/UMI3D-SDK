@@ -76,21 +76,14 @@ namespace umi3d.common
 
         #region tool
         // 5000 - 5999
-        public const uint ToolboxName = 5001;
-        public const uint ToolboxDescription = 5002;
-        public const uint ToolboxIcon2D = 5003;
-        public const uint ToolboxIcon3D = 5004;
-        public const uint ToolboxTools = 5005;
-        public const uint ToolboxSceneId = 5006;
-
-        public const uint ToolboxActive = 5010;
-        public const uint ToolActive = 5011;
+        public const uint ToolboxTools = 5001;
 
         public const uint AbstractToolName = 5101;
         public const uint AbstractToolDescription = 5102;
         public const uint AbstractToolIcon2D = 5103;
         public const uint AbstractToolIcon3D = 5104;
         public const uint AbstractToolInteractions = 5105;
+        public const uint AbstractToolActive = 5106;
 
         public const uint InteractableNodeId = 5201;
         public const uint InteractableNotifyHoverPosition = 5202;

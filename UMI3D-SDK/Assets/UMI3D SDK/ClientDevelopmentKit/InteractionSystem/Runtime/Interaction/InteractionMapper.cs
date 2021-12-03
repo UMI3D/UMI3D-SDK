@@ -244,30 +244,30 @@ namespace umi3d.cdk.interaction
         #region CRUD
 
         /// <inheritdoc/>
-        public override void CreateToolbox(Toolbox toolbox)
-        {
-            toolboxMenu.Add(toolbox.sub);
-        }
+        //public override void CreateToolbox(Toolbox toolbox)
+        //{
+        //    toolboxMenu.Add(toolbox.sub);
+        //}
 
         /// <inheritdoc/>
-        public override void CreateTool(Tool tool)
-        {
-            foreach (AbstractInteractionDto interaction in tool.dto.interactions)
-            {
-                interactionsIdToDto[interaction.id] = interaction;
-            }
-            tool.Menu.Subscribe(() =>
-            {
-                if (tool.Menu.toolSelected)
-                {
-                    ReleaseTool(tool.id, new RequestedFromMenu());
-                }
-                else
-                {
-                    SelectTool(tool.id, true, 0, new RequestedFromMenu());
-                }
-            });
-        }
+        //public override void CreateTool(Tool tool)
+        //{
+        //    foreach (AbstractInteractionDto interaction in tool.dto.interactions)
+        //    {
+        //        interactionsIdToDto[interaction.id] = interaction;
+        //    }
+        //    tool.Menu.Subscribe(() =>
+        //    {
+        //        if (tool.Menu.toolSelected)
+        //        {
+        //            ReleaseTool(tool.id, new RequestedFromMenu());
+        //        }
+        //        else
+        //        {
+        //            SelectTool(tool.id, true, 0, new RequestedFromMenu());
+        //        }
+        //    });
+        //}
 
         /// <inheritdoc/>
         public override Toolbox GetToolbox(ulong id)
@@ -280,7 +280,7 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override IEnumerable<Toolbox> GetToolboxes(Predicate<Toolbox> condition)
         {
-            return Toolbox.Toolboxes().FindAll(condition);
+            return Toolbox.GetToolboxes().FindAll(condition);
         }
 
         /// <inheritdoc/>

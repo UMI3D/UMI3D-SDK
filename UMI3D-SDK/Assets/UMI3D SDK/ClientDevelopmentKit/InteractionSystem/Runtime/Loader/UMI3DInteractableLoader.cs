@@ -24,7 +24,6 @@ namespace umi3d.cdk.interaction
 {
     public static class UMI3DInteractableLoader
     {
-
         public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId, (e) =>
