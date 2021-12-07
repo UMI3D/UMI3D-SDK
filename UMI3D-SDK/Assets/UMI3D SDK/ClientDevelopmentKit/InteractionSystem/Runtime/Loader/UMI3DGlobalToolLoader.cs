@@ -61,6 +61,9 @@ namespace umi3d.cdk.interaction
 
         public static void ReadUMI3DExtension(GlobalToolDto dto, Action finished, Action<Umi3dException> failed)
         {
+            if (GlobalTool.GetGlobalTools().Exists(t => t.id == dto.id))
+                return;
+
             GlobalTool tool = (dto is ToolboxDto) ? new Toolbox(dto): new GlobalTool(dto);
 
             if (dto is ToolboxDto)
@@ -127,7 +130,7 @@ namespace umi3d.cdk.interaction
                     return false;
             }
         }
-
+                        
         public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;

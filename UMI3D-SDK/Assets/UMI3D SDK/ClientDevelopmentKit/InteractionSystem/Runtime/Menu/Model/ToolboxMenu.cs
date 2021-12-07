@@ -30,13 +30,22 @@ namespace umi3d.cdk.menu.interaction
         {
             this.toolbox = toolbox;
             Name = toolbox.name;
-            icon2D = new Texture2D(0, 0);
+            if (icon2D != null)
+            {
+                icon2D = new Texture2D(0, 0);
 
-            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(toolbox.icon2D.variants);
-            UMI3DResourcesManager.GetFile(
-                icon2DFile.url,
-                rawData => this.icon2D.LoadRawTextureData(rawData),
-                e => Debug.LogError(e));
+                FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(toolbox.icon2D.variants);
+
+                if ((icon2DFile.url != null) && (icon2DFile.url != ""))
+                {
+                    UMI3DResourcesManager.GetFile(
+                        icon2DFile.url,
+                        rawData => this.icon2D.LoadRawTextureData(rawData),
+                        e => Debug.LogError(e));
+                }
+            }
+
+            toolbox.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, toolbox.id)));
 
             Subscribe(() =>
             {

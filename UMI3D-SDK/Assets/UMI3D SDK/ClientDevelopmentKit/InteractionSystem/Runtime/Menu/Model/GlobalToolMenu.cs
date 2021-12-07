@@ -34,15 +34,20 @@ namespace umi3d.cdk.menu.interaction
             Name = tool.name;
             icon2D = new Texture2D(0, 0);
 
-            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(tool.icon2D.variants);
-            UMI3DResourcesManager.GetFile(
-                icon2DFile.url, 
-                rawData => this.icon2D.LoadRawTextureData(rawData),
-                e => Debug.LogError(e));
+            if (tool.icon2D != null)
+            {
+                FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(tool.icon2D.variants);
+
+                if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
+                UMI3DResourcesManager.GetFile(
+                    icon2DFile.url,
+                    rawData => this.icon2D.LoadRawTextureData(rawData),
+                    e => Debug.LogError(e));
+            }
 
             Subscribe(() =>
             {
-                throw new System.NotImplementedException(); //todo
+                AbstractInteractionMapper.Instance.SelectTool(tool.id, true, this.tool.id, new RequestedFromMenu());
             });
         }
     }
