@@ -42,7 +42,7 @@ namespace umi3d.cdk
                     new UMI3DNodeAnimation(nodeAnimation);
                     break;
                 case UMI3DVideoPlayerDto videoPlayer:
-                    new UMI3DVideoPlayer(videoPlayer);
+                    UMI3DVideoPlayerLoader.LoadVideo(videoPlayer);
                     break;
                 case UMI3DAudioPlayerDto audioPlayer:
                     new UMI3DAudioPlayer(audioPlayer);

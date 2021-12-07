@@ -303,6 +303,11 @@ namespace umi3d.cdk
         public UnityEvent onEnvironmentLoaded = new UnityEvent();
 
         /// <summary>
+        /// Is environement (except videos) loaded ?
+        /// </summary>
+        public bool isEnvironmentLoaded = false;
+
+        /// <summary>
         /// Load the Environment.
         /// </summary>
         /// <param name="dto">Dto of the environement.</param>
@@ -311,6 +316,8 @@ namespace umi3d.cdk
         /// <returns></returns>
         public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
         {
+            isEnvironmentLoaded = false;
+
             environment = dto;
             RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null);
             nodesToInstantiate = dto.scenes.Count;
@@ -328,6 +335,7 @@ namespace umi3d.cdk
             }
             onProgressChange.Invoke(1f);
             onResourcesLoaded.Invoke();
+
             //
             // Instantiate nodes
             //
@@ -341,10 +349,24 @@ namespace umi3d.cdk
                 onProgressChange.Invoke(nodesToInstantiate == 0 ? 1f : instantiatedNodes / nodesToInstantiate);
                 yield return new WaitForEndOfFrame();
             }
-            onProgressChange.Invoke(1f);
-            onEnvironmentLoaded.Invoke();
-            yield return null;
-            onSuccess.Invoke();
+
+            isEnvironmentLoaded = true;
+            Action onFinish = () =>
+            {
+                onProgressChange.Invoke(1f);
+                onEnvironmentLoaded.Invoke();
+            };
+
+            if (UMI3DVideoPlayerLoader.HasVideoToLoad)
+            {
+                UMI3DVideoPlayerLoader.LoadVideoPlayers(() => { onFinish.Invoke(); onSuccess(); });
+            } else
+            {
+                onFinish.Invoke();
+
+                yield return null;
+                onSuccess.Invoke();
+            }
         }
 
         #endregion
@@ -562,6 +584,7 @@ namespace umi3d.cdk
                 DeleteEntity(entity, null);
             }
             UMI3DResourcesManager.Instance.ClearCache();
+            Instance.isEnvironmentLoaded = false;
         }
 
         /// <summary>

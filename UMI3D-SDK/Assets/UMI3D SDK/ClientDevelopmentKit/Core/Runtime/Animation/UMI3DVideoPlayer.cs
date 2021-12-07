@@ -31,6 +31,8 @@ namespace umi3d.cdk
 
         public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
+        public bool isPrepared { get => videoPlayer?.isPrepared ?? false; }
+
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
             //init material
@@ -40,7 +42,7 @@ namespace umi3d.cdk
             mat = UMI3DEnvironmentLoader.GetEntity(dto.materialId).Object as Material;
             if (mat == null)
             {
-                UMI3DLogger.LogWarning("Material not found to display video",scope);
+                UMI3DLogger.LogWarning("Material not found to display video", scope);
                 return;
             }
             mat.DisableKeyword("_DISABLE_ALBEDO_MAP");
@@ -59,7 +61,6 @@ namespace umi3d.cdk
             videoPlayer.skipOnDrop = true;
             videoPlayer.waitForFirstFrame = false;
             videoPlayer.isLooping = dto.looping;
-            //videoPlayer.prepareCompleted += (v) => UMI3DLogger.LogWarning("PREPARED !");
             videoPlayer.Prepare();
 
 
@@ -137,10 +138,24 @@ namespace umi3d.cdk
 
         private IEnumerator SetTime()
         {
+            while (videoPlayer == null)
+            {
+                yield return null;
+            }
+
+            yield return null;
+            yield return null;
+
             while (!videoPlayer.isPrepared)
             {
                 yield return new WaitForEndOfFrame();
             }
+
+            yield return null;
+            yield return null;
+
+            videoPlayer.Play();
+
             if (!dto.playing)
             {
                 if (dto.pauseTime > 0)
@@ -153,6 +168,8 @@ namespace umi3d.cdk
                 }
                 else
                     videoPlayer.frame = 3;
+
+                videoPlayer.Pause();
             }
         }
 
@@ -163,7 +180,8 @@ namespace umi3d.cdk
         /// <returns></returns>
         private IEnumerator MakeSureTimeIsCorrectltySet(float time)
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
+            yield return null;
 
             if (videoPlayer.frame < 0 || videoPlayer.time < 0)
             {
@@ -178,7 +196,8 @@ namespace umi3d.cdk
                     {
                         UMI3DAnimationManager.Instance.StartCoroutine(ReSetAudioSource((dto as UMI3DVideoPlayerDto), e, time));
                     });
-                } else
+                }
+                else
                 {
                     videoPlayer.Play();
                     videoPlayer.time = time;
@@ -200,7 +219,10 @@ namespace umi3d.cdk
 
             videoPlayer.Play();
             videoPlayer.time = time;
-            videoPlayer.Pause(); // This code is called when dto.playing is equal to false
+            if (!dto.playing)
+            {
+                videoPlayer.Pause();
+            }
         }
 
         ///<inheritdoc/>
@@ -253,7 +275,6 @@ namespace umi3d.cdk
 
         public override void SetProgress(long frame)
         {
-
             UMI3DAnimationManager.Instance.StartCoroutine(SetTime());
         }
     }
