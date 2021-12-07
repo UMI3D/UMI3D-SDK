@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.menu.interaction
 {
-    public class GlobalToolMenu : MenuItem
+    public class GlobalToolMenu : Menu
     {
         public AbstractMenu parent;
 
@@ -39,11 +39,13 @@ namespace umi3d.cdk.menu.interaction
                 FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(tool.icon2D.variants);
 
                 if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
-                UMI3DResourcesManager.GetFile(
-                    icon2DFile.url,
-                    rawData => this.icon2D.LoadRawTextureData(rawData),
-                    e => Debug.LogError(e));
+                    UMI3DResourcesManager.GetFile(
+                        icon2DFile.url,
+                        rawData => this.icon2D.LoadRawTextureData(rawData),
+                        e => Debug.LogError(e));
             }
+
+            tool.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id)));
 
             Subscribe(() =>
             {

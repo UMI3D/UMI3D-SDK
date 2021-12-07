@@ -46,11 +46,6 @@ namespace umi3d.cdk.menu.interaction
             }
 
             toolbox.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, toolbox.id)));
-
-            Subscribe(() =>
-            {
-                throw new System.NotImplementedException(); //todo
-            });
         }
     }
 }
