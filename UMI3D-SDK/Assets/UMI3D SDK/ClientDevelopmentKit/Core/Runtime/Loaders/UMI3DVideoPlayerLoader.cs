@@ -80,7 +80,7 @@ namespace umi3d.cdk
                 var player = new UMI3DVideoPlayer(videoPlayer);
 
                 while (!player.isPrepared)
-                    yield return wait;
+                    yield return null;
 
                 yield return wait;
             }
