@@ -44,6 +44,10 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
+#if UNITY_ANDROID
+            if (!url.Contains("http")) url = "file://" + url;
+#endif
+
             var createdObj = new GameObject();
             GltfAssetBase gltfComp = createdObj.AddComponent<GltfAssetBase>();
 
