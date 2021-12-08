@@ -387,13 +387,16 @@ namespace umi3d.cdk
                 
                 if (subModelsCache != null && subModelsCache.ContainsKey(ObjectValue.url))
                 {
-                    foreach (KeyValuePair<string, Transform> item in subModelsCache[ObjectValue.url])
+                    foreach (KeyValuePair<string, Transform> item in subModelsCache[ObjectValue.url].ToList())
                     {
-                            Destroy(item.Value.gameObject);
+                        Destroy(item.Value.gameObject);
+                        subModelsCache[ObjectValue.url].Remove(item.Key);
                     }
+                    subModelsCache.Remove(ObjectValue.url);
                 }
 
                 ObjectValue.DeleteAction?.Invoke(ObjectValue.value, "clear requested");
+                CacheCollection.Remove(ObjectValue);
                 return true;
             }
             return false;
@@ -594,11 +597,14 @@ namespace umi3d.cdk
                         objectData.state = ObjectData.Estate.Loaded;
                         foreach (Action<object> back in objectData.loadCallback)
                             back.Invoke(obj);
+                        objectData.loadCallback.Clear();
                     };
                     Action<Umi3dException> error2 = (reason) =>
                     {
                         foreach (Action<Umi3dException> back in objectData.loadFailCallback)
                             back.Invoke(reason);
+                        objectData.loadFailCallback.Clear();
+                        objectData.state = ObjectData.Estate.NotLoaded;
                     };
                     StartCoroutine(urlToObjectWithPolicy(sucess2, error2, path, objectData.extension, objectData, null, urlToObject));
                 };
@@ -608,6 +614,8 @@ namespace umi3d.cdk
                     //UMI3DLogger.LogWarning($"error {reason}");
                     foreach (Action<Umi3dException> back in objectData.loadFailCallback)
                         back.Invoke(reason);
+                    objectData.loadFailCallback.Clear();
+                    objectData.state = ObjectData.Estate.NotLoaded;
                 };
                 objectData.state = ObjectData.Estate.Loading;
                 GetFilePath(objectData.url, sucess, error);
