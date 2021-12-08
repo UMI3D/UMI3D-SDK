@@ -365,6 +365,40 @@ namespace umi3d.cdk
             ClearCache();
         }
 
+        public static bool ClearCache(string VariantUrl, string LibraryId = null)
+        {
+            Match matchUrl = ObjectData.rx.Match(VariantUrl);
+            return (VariantUrl != null && Exists) ? Instance.ClearCache(ob => ob.MatchUrl(matchUrl,LibraryId)) : false;
+        }
+
+        private bool ClearCache(Func<ObjectData,bool> predicate)
+        {
+            if (CacheCollection != null)
+            {
+                ObjectData ObjectValue = CacheCollection.FirstOrDefault(predicate);
+                if (ObjectValue == null) return false;
+                if (ObjectValue.state == ObjectData.Estate.Loading && ObjectValue.loadFailCallback != null)
+                {
+                    foreach (Action<Umi3dException> failback in ObjectValue.loadFailCallback)
+                    {
+                        failback.Invoke(new Umi3dException(0, "clear requested"));
+                    }
+                }
+                
+                if (subModelsCache != null && subModelsCache.ContainsKey(ObjectValue.url))
+                {
+                    foreach (KeyValuePair<string, Transform> item in subModelsCache[ObjectValue.url])
+                    {
+                            Destroy(item.Value.gameObject);
+                    }
+                }
+
+                ObjectValue.DeleteAction?.Invoke(ObjectValue.value, "clear requested");
+                return true;
+            }
+            return false;
+        }
+
         public void ClearCache()
         {
             if (CacheCollection != null)
