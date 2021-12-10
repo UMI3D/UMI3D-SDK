@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
-    [CreateAssetMenu(fileName = "PinIdentifierApi", menuName = "UMI3D/Pin Identifier")]
+    [CreateAssetMenu(fileName = "PinIdentifierWithFormApi", menuName = "UMI3D/Pin Identifier With Form")]
     public class PinIdentifierWithFormApi : PinIdentifierApi
     {
         public UMI3DForm form;
