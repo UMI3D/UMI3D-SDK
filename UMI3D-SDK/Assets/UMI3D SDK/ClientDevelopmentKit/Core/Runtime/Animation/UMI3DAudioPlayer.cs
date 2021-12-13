@@ -110,7 +110,7 @@ namespace umi3d.cdk
             {
                 audioSource.Stop();
                 audioSource.Play();
-                OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
             }
         }
 
@@ -126,7 +126,7 @@ namespace umi3d.cdk
         public override void Stop()
         {
             audioSource?.Stop();
-            if (OnEndCoroutine != null) UMI3DAnimationManager.Instance.StopCoroutine(OnEndCoroutine);
+            if (OnEndCoroutine != null) UMI3DAnimationManager.StopCoroutine(OnEndCoroutine);
         }
 
         ///<inheritdoc/>
@@ -271,7 +271,7 @@ namespace umi3d.cdk
                 audioSource.Stop();
                 audioSource.time = atTime;
                 audioSource.Play();
-                OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
             }
         }
 

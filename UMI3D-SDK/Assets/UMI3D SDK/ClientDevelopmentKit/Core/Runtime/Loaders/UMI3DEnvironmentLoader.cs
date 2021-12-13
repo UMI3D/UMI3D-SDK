@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +32,6 @@ namespace umi3d.cdk
     public class UMI3DEnvironmentLoader : Singleton<UMI3DEnvironmentLoader>
     {
         const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
-
 
         /// <summary>
         /// Index of any 3D object loaded.
@@ -274,7 +274,7 @@ namespace umi3d.cdk
         protected override void Awake()
         {
             base.Awake();
-            sceneLoader = new UMI3DSceneLoader(this);
+            sceneLoader = new UMI3DSceneLoader();
             nodeLoader = new GlTFNodeLoader();
         }
 
@@ -439,7 +439,6 @@ namespace umi3d.cdk
         }
 
         #endregion
-
 
         /// <summary>
         /// Load IEntity.

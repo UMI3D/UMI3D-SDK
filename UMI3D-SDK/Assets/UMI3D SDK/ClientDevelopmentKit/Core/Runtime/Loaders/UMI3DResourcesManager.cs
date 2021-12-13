@@ -485,7 +485,7 @@ namespace umi3d.cdk
         /// <param name="SceneId">id of the scene which use this library</param>
         public static void LoadLibrary(string libraryId, Action finished, ulong SceneId = 0)
         {
-            Instance.StartCoroutine(_LoadLibrary(libraryId, finished, SceneId));
+            StartCoroutine(_LoadLibrary(libraryId, finished, SceneId));
         }
 
         public static IEnumerator _LoadLibrary(string libraryId, Action finished, ulong SceneId)
@@ -743,7 +743,7 @@ namespace umi3d.cdk
 
         public static void DownloadLibraries(LibrariesDto libraries, string applicationName, Action callback, Action<string> error)
         {
-            Instance.StartCoroutine(Instance.DownloadResources(libraries.libraries, applicationName, callback, error));
+            StartCoroutine(Instance.DownloadResources(libraries.libraries, applicationName, callback, error));
         }
 
         private IEnumerator DownloadResources(List<AssetLibraryDto> assetlibraries, string applicationName, Action callback, Action<string> error)
@@ -768,7 +768,7 @@ namespace umi3d.cdk
 
         public static void DownloadLibrary(AssetLibraryDto library, string application, Action callback)
         {
-            Instance.StartCoroutine(Instance._DownloadLibrary(library, application, callback));
+            StartCoroutine(Instance._DownloadLibrary(library, application, callback));
         }
 
         private IEnumerator _DownloadLibrary(AssetLibraryDto library, string application, Action callback)
@@ -993,7 +993,7 @@ namespace umi3d.cdk
 
         public static void DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            Instance.StartCoroutine(Instance._DownloadObject(www, callback, failCallback, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)));
+            StartCoroutine(Instance._DownloadObject(www, callback, failCallback, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)));
         }
 
         private IEnumerator _DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)

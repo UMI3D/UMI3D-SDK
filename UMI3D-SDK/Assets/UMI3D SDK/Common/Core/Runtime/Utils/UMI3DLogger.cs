@@ -263,7 +263,7 @@ namespace umi3d.common
                     Instance.logInfo = value;
                     if (value)
                     {
-                        Instance.StartCoroutine(Instance.LogCoroutine());
+                        StartCoroutine(Instance.LogCoroutine());
                     }
                 }
             }

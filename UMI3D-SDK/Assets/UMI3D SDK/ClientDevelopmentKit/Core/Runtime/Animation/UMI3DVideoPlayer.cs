@@ -66,13 +66,13 @@ namespace umi3d.cdk
 
             if (dto.playing)
             {
-                UMI3DAnimationManager.Instance.StartCoroutine(StartAfterLoading());
+                UMI3DAnimationManager.StartCoroutine(StartAfterLoading());
             }
             else
             {
                 videoPlayer.Pause(); // Don't call Stop() because it cancel videoPlayer.Prepare()
 
-                UMI3DAnimationManager.Instance.StartCoroutine(SetTime(dto.pauseTime));
+                UMI3DAnimationManager.StartCoroutine(SetTime(dto.pauseTime));
             }
 
             //audio
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                 videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
                 UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.audioId, (e) =>
                 {
-                    UMI3DAnimationManager.Instance.StartCoroutine(SetAudioSource(dto, e));
+                    UMI3DAnimationManager.StartCoroutine(SetAudioSource(dto, e));
                 });
             }
         }
@@ -194,7 +194,7 @@ namespace umi3d.cdk
                     videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded((dto as UMI3DVideoPlayerDto).audioId, (e) =>
                     {
-                        UMI3DAnimationManager.Instance.StartCoroutine(ReSetAudioSource((dto as UMI3DVideoPlayerDto), e, time));
+                        UMI3DAnimationManager.StartCoroutine(ReSetAudioSource((dto as UMI3DVideoPlayerDto), e, time));
                     });
                 }
                 else
@@ -275,7 +275,7 @@ namespace umi3d.cdk
 
         public override void SetProgress(long frame)
         {
-            UMI3DAnimationManager.Instance.StartCoroutine(SetTime());
+            UMI3DAnimationManager.StartCoroutine(SetTime());
         }
     }
 }

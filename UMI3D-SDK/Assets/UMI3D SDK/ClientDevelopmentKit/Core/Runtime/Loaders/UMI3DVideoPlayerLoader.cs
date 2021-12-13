@@ -59,7 +59,7 @@ namespace umi3d.cdk
         public static void LoadVideoPlayers(Action onFinish)
         {
             if (HasVideoToLoad)
-                UMI3DAnimationManager.Instance.StartCoroutine(LoadVideoPlayersCoroutine(onFinish));
+                UMI3DAnimationManager.StartCoroutine(LoadVideoPlayersCoroutine(onFinish));
         }
 
         /// <summary>

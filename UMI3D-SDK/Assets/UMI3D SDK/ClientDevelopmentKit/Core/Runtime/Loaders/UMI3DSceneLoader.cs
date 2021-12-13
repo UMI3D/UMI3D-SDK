@@ -28,13 +28,6 @@ namespace umi3d.cdk
     {
         const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        private readonly UMI3DEnvironmentLoader EnvironementLoader;
-
-        public UMI3DSceneLoader(UMI3DEnvironmentLoader EnvironementLoader)
-        {
-            this.EnvironementLoader = EnvironementLoader;
-        }
-
         /// <summary>
         /// Create a GLTFScene based on a GLTFSceneDto
         /// </summary>
@@ -42,19 +35,25 @@ namespace umi3d.cdk
         /// <param name="finished"></param>
         public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> LoadedNodesCount)
         {
-            var go = new GameObject(dto.name);
-            UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go,
-                () =>
-                {
-                    UMI3DSceneNodeDto sceneDto = dto.extensions.umi3d;
-                    foreach (string library in sceneDto.LibrariesId)
-                        UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
-                });
-            go.transform.SetParent(EnvironementLoader.transform);
-            //Load Materials
-            LoadSceneMaterials(dto, () => { EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
-            //Load Nodes
-            //     EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount));
+            if (UMI3DEnvironmentLoader.Exists)
+            {
+
+                var go = new GameObject(dto.name);
+                UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go,
+                    () =>
+                    {
+                        UMI3DSceneNodeDto sceneDto = dto.extensions.umi3d;
+                        foreach (string library in sceneDto.LibrariesId)
+                            UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
+                    });
+                go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
+                //Load Materials
+                LoadSceneMaterials(dto, () => { UMI3DEnvironmentLoader.StartCoroutine(UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
+                //Load Nodes
+                //     EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount));
+            }
+            else
+                finished?.Invoke();
         }
 
         /// <summary>

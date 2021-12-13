@@ -252,7 +252,7 @@ namespace umi3d.cdk.collaboration
                 case StatusType.CREATED:
                     UMI3DCollaborationClientServer.Instance.HttpClient.SendGetIdentity((user) =>
                     {
-                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                        StartCoroutine(Instance.UpdateIdentity(user));
                     }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                     break;
                 case StatusType.READY:
@@ -288,7 +288,7 @@ namespace umi3d.cdk.collaboration
                 Instance?.HttpClient?.SetToken(token);
                 BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
                 {
-                    Instance?.StartCoroutine(Instance.OnNewTokenNextFrame());
+                    StartCoroutine(Instance.OnNewTokenNextFrame());
                 });
             }
         }
@@ -337,7 +337,7 @@ namespace umi3d.cdk.collaboration
                         case StatusType.CREATED:
                             Instance.HttpClient.SendGetIdentity((user) =>
                             {
-                                Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                                StartCoroutine(Instance.UpdateIdentity(user));
                             }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                             break;
                         case StatusType.READY:
