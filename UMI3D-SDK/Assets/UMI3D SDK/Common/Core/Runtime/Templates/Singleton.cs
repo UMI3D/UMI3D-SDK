@@ -86,23 +86,21 @@ namespace umi3d.common
             else
             {
                 instance = this as T;
-                CoroutineManager = new CoroutineManager(this, () => ApplicationIsQuitting);
-                Breaker = new CoroutineManager.Breaker(0.1f);
             }
         }
 
-        public static CoroutineManager CoroutineManager { get; protected set; }
-        static CoroutineManager.Breaker Breaker { get; set; }
-        new public static Coroutine StartCoroutine(IEnumerator enumerator) => CoroutineManager.Start(enumerator);
-        new public static void StopCoroutine(Coroutine coroutine) => CoroutineManager.Stop(coroutine);
-        public static System.Threading.Tasks.Task BreackTask => Breaker.Task;
+        new public static Coroutine StartCoroutine(IEnumerator enumerator) => Exists ? (Instance as MonoBehaviour).StartCoroutine(enumerator) : null;
+        new public static void StopCoroutine(Coroutine coroutine)
+        {
+            if(Exists)
+                (Instance as MonoBehaviour).StopCoroutine(coroutine);
+        }
 
         protected virtual void OnDestroy()
         {
             if (instance == this)
             {
                 instance = null;
-                CoroutineManager.Stop();
             }
         }
     }
