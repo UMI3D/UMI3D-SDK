@@ -37,16 +37,11 @@ namespace umi3d.edk.collaboration
     {
         const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        ThreadDeserializer deserializer;
         public UMI3DApi()
-        {
-            deserializer = new ThreadDeserializer();
-        }
+        { }
 
         public void Stop()
-        {
-            deserializer.Stop();
-        }
+        { }
 
         #region users
 
@@ -82,12 +77,15 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Update Status {user?.Id()}", scope);
+            bool finished = false;
             ReadDto(e.Request,
                 (dto) =>
                 {
                     var status = dto as StatusDto;
                     UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, status));
+                    finished = true;
                 });
+            while (!finished) System.Threading.Thread.Sleep(1);
         }
 
         private IEnumerator _updateStatus(UMI3DCollaborationUser user, StatusDto dto)
@@ -107,11 +105,14 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Update identity {user?.Id()}", scope);
+            bool finished = false;
             ReadDto(e.Request, (dto) =>
             {
                 var anw = dto as UserConnectionAnswerDto;
                 UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, anw));
+                finished = true;
             });
+            while (!finished) System.Threading.Thread.Sleep(1);
         }
 
         private IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
@@ -420,13 +421,16 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Join environment {user?.Id()}", scope);
+            bool finished = false;
             ReadDto(e.Request, (dto) =>
             {
                 var join = dto as JoinDto;
                 UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), join.userSize, join.trackedBonetypes);
                 e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
                 UMI3DCollaborationServer.NotifyUserJoin(user);
+                finished = true;
             });
+            while (!finished) System.Threading.Thread.Sleep(1);
         }
 
         /// <summary>
@@ -440,6 +444,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Post Entity {user?.Id()}", scope);
+            bool finished2 = false;
             ReadDto(e.Request, (dto) =>
             {
 
@@ -481,7 +486,9 @@ namespace umi3d.edk.collaboration
                 {
                     Return404(e.Response, "Internal Error");
                 }
+                finished2 = true;
             });
+            while (!finished2) System.Threading.Thread.Sleep(1);
         }
 
         private IEnumerator _GetEnvironment((ulong, UMI3DLoadableEntity) entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
@@ -686,7 +693,7 @@ namespace umi3d.edk.collaboration
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
             }
-            deserializer.FromBson(bytes, action);
+            action.Invoke(UMI3DDto.FromBson(bytes));
         }
 
         private byte[] ReadObject(HttpListenerRequest request)
