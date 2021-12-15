@@ -109,7 +109,7 @@ namespace umi3d.common
         }
         public static DebugLevel LogLevel
         {
-            get => Exists ? Instance._logLevel : (DebugLevel)~0;
+            get => Exists ? Instance._logLevel : DebugLevel.Error;
             set
             {
                 if (Exists)
