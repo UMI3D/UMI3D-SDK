@@ -37,6 +37,17 @@ namespace umi3d.edk.collaboration
     {
         const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
+        ThreadDeserializer deserializer;
+        public UMI3DApi()
+        {
+            deserializer = new ThreadDeserializer();
+        }
+
+        public void Stop()
+        {
+            deserializer.Stop();
+        }
+
         #region users
 
         /// <summary>
@@ -71,8 +82,12 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Update Status {user?.Id()}", scope);
-            var dto = ReadDto(e.Request) as StatusDto;
-            UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, dto));
+            ReadDto(e.Request,
+                (dto) =>
+                {
+                    var status = dto as StatusDto;
+                    UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, status));
+                });
         }
 
         private IEnumerator _updateStatus(UMI3DCollaborationUser user, StatusDto dto)
@@ -92,8 +107,11 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Update identity {user?.Id()}", scope);
-            var dto = ReadDto(e.Request) as UserConnectionAnswerDto;
-            UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, dto));
+            ReadDto(e.Request, (dto) =>
+            {
+                var anw = dto as UserConnectionAnswerDto;
+                UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, anw));
+            });
         }
 
         private IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
@@ -402,10 +420,13 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Join environment {user?.Id()}", scope);
-            var dto = ReadDto(e.Request) as JoinDto;
-            UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), dto.userSize, dto.trackedBonetypes);
-            e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
-            UMI3DCollaborationServer.NotifyUserJoin(user);
+            ReadDto(e.Request, (dto) =>
+            {
+                var join = dto as JoinDto;
+                UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), join.userSize, join.trackedBonetypes);
+                e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
+                UMI3DCollaborationServer.NotifyUserJoin(user);
+            });
         }
 
         /// <summary>
@@ -419,44 +440,48 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Post Entity {user?.Id()}", scope);
-            var dto = ReadDto(e.Request) as EntityRequestDto;
-
-            IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = dto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
-            IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
-            IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
-            IEnumerable<ulong> entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
-
-            if (entities != null)
+            ReadDto(e.Request, (dto) =>
             {
-                LoadEntityDto result = null;
-                bool finished = false;
-                bool ok = true;
-                UnityMainThreadDispatcher.Instance().Enqueue(
-                    _GetEnvironment(
-                        entities, user,
-                        (res) =>
-                        {
-                            result = res;
-                            result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
-                            result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
-                            finished = true;
-                        },
-                        () => { ok = false; finished = true; }
-                    ));
-                while (!finished) System.Threading.Thread.Sleep(1);
-                if (ok)
+
+                var entityDto = dto as EntityRequestDto;
+
+                IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = entityDto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
+                IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
+                IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
+                IEnumerable<ulong> entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
+
+                if (entities != null)
                 {
-                    e.Response.WriteContent(result.ToBson());
+                    LoadEntityDto result = null;
+                    bool finished = false;
+                    bool ok = true;
+                    UnityMainThreadDispatcher.Instance().Enqueue(
+                        _GetEnvironment(
+                            entities, user,
+                            (res) =>
+                            {
+                                result = res;
+                                result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
+                                result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
+                                finished = true;
+                            },
+                            () => { ok = false; finished = true; }
+                        ));
+                    while (!finished) System.Threading.Thread.Sleep(1);
+                    if (ok)
+                    {
+                        e.Response.WriteContent(result.ToBson());
+                    }
+                    else
+                    {
+                        Return404(e.Response, "Internal Error");
+                    }
                 }
                 else
                 {
                     Return404(e.Response, "Internal Error");
                 }
-            }
-            else
-            {
-                Return404(e.Response, "Internal Error");
-            }
+            });
         }
 
         private IEnumerator _GetEnvironment((ulong, UMI3DLoadableEntity) entity, UMI3DUser user, Action<LoadEntityDto> callback, Action error)
@@ -645,10 +670,12 @@ namespace umi3d.edk.collaboration
         }
         public static SendLocalinfoEvent sendLocalInfoListener = new SendLocalinfoEvent();
 
+
+
         #endregion
 
         #region utils
-        private UMI3DDto ReadDto(HttpListenerRequest request)
+        private void ReadDto(HttpListenerRequest request, Action<UMI3DDto> action)
         {
             byte[] bytes = default(byte[]);
             using (var memstream = new MemoryStream())
@@ -658,8 +685,8 @@ namespace umi3d.edk.collaboration
                 while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
-                return UMI3DDto.FromBson(bytes);
             }
+            deserializer.FromBson(bytes, action);
         }
 
         private byte[] ReadObject(HttpListenerRequest request)

@@ -33,6 +33,8 @@ namespace umi3d.edk.collaboration
         public HttpRoutingUtil rootMapGET = null;
         public HttpRoutingUtil rootMapPOST = null;
 
+        UMI3DApi root;
+
         public UMI3DHttp()
         {
 
@@ -40,7 +42,7 @@ namespace umi3d.edk.collaboration
 
             // Set the document root path.
 
-            var root = new UMI3DApi();
+            root = new UMI3DApi();
             var rootMapGET = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpGet));
             var rootMapPOST = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpPost));
 
@@ -98,6 +100,11 @@ namespace umi3d.edk.collaboration
         {
             if (httpsv != null)
                 httpsv.Stop();
+        }
+
+        public void Destroy()
+        {
+            root.Stop();
         }
     }
 }

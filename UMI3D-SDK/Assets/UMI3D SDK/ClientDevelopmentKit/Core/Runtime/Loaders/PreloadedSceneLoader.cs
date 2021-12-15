@@ -62,9 +62,7 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle + "   " + o.ToString(),scope);
-                            SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
-
+                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle,scope);
                         },
                         e => UMI3DLogger.LogWarning(e,scope),
                         loader.DeleteObject

@@ -75,6 +75,12 @@ namespace umi3d.cdk.collaboration
         public ClientIdentifierApi Identifier;
         private static bool connected = false;
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (!Exists)
+                HttpClient?.Stop();
+        }
 
         private void Start()
         {
@@ -463,12 +469,6 @@ namespace umi3d.cdk.collaboration
                     StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
                 },
                 (error) => { UMI3DLogger.Log("error on get Environement :" + error, scope); });
-        }
-
-        ///<inheritdoc/>
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
         }
 
         ///<inheritdoc/>

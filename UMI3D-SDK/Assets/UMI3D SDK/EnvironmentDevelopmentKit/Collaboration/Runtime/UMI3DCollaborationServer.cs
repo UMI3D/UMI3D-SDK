@@ -128,6 +128,13 @@ namespace umi3d.edk.collaboration
             QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (!Exists)
+                http?.Destroy();
+        }
+
         /// <summary>
         /// Initialize the server.
         /// </summary>
