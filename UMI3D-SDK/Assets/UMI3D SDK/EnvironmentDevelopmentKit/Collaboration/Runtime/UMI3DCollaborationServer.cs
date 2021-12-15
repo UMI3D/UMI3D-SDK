@@ -254,16 +254,22 @@ namespace umi3d.edk.collaboration
                 UMI3DNetworkingHelper.RemoveModule(collaborativeModule);
             http?.Stop();
             forgeServer?.Stop();
-            isRunning = false;
-            OnServerStop.Invoke();
+            if (isRunning)
+            {
+                isRunning = false;
+                OnServerStop.Invoke();
+            }
         }
 
         private void Clear()
         {
             http?.Stop();
             forgeServer?.Stop();
-            isRunning = false;
-            OnServerStop.Invoke();
+            if (isRunning)
+            {
+                isRunning = false;
+                OnServerStop.Invoke();
+            }
         }
 
         public static void Stop()
