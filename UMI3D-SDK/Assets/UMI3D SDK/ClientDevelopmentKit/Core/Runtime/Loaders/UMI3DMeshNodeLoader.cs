@@ -47,7 +47,7 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException( "Dto should be an UMI3DAbstractNodeDto"));
                 return;
             }
 
@@ -63,8 +63,8 @@ namespace umi3d.cdk
                 string pathIfInBundle = fileToLoad.pathIfInBundle;
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 Vector3 offset = Vector3.zero;
-                if (loader is AbstractMeshDtoLoader)
-                    offset = ((AbstractMeshDtoLoader)loader).GetRotationOffset();
+                if (loader is AbstractMeshDtoLoader meshLoader)
+                    offset = meshLoader.GetRotationOffset();
                 if (loader != null)
                 {
                     UMI3DResourcesManager.LoadFile(
@@ -76,18 +76,19 @@ namespace umi3d.cdk
                         {
                             if (o is GameObject g && dto is UMI3DMeshNodeDto meshDto)
                             {
-                                CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset);
-                                finished.Invoke();
+                                CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset, finished);
                             }
                             else
                             {
-                                failed?.Invoke(new Umi3dException(0, $"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
+                                failed?.Invoke(new Umi3dException( $"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
                             }
                         },
                         failed,
                         loader.DeleteObject
                         );
                 }
+                else
+                    failed.Invoke(new Umi3dException( $"No loader found for {ext}"));
             }, failed);
         }
 
@@ -127,7 +128,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
+        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, Action finished)
         {
             GameObject root = null;
             if (dto.areSubobjectsTracked)
@@ -156,7 +157,7 @@ namespace umi3d.cdk
             ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(dto.id, nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
-
+            finished?.Invoke();
         }
 
 

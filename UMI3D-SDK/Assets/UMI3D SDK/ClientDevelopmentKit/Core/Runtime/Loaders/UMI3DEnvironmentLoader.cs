@@ -55,7 +55,7 @@ namespace umi3d.cdk
             if (Instance.entitywaited == null) return;
 
             UMI3DEntityInstance node = GetEntity(id);
-            if (node != null)
+            if (node != null && node.IsLoaded)
             {
                 entityLoaded?.Invoke(node);
             }
@@ -170,10 +170,9 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DNodeInstance() { gameObject = instance, dto = dto, Delete = delete };
+                node = new UMI3DNodeInstance(()=> NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
                 Instance.entities.Add(id, node);
             }
-            NotifyEntityLoad(id);
 
             return node;
         }
@@ -197,10 +196,9 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DEntityInstance() { dto = dto, Object = Object, Delete = delete };
+                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = Object, Delete = delete };
                 Instance.entities.Add(id, node);
             }
-            NotifyEntityLoad(id);
             return node;
         }
 
@@ -213,24 +211,24 @@ namespace umi3d.cdk
         /// Number of UMI3D nodes.
         /// = Number of scenes + Number of glTF nodes
         /// </summary>
-        private int nodesToInstantiate = 0;
+        private float nodesToInstantiate = 0;
 
         /// <summary>
         /// Number of UMI3D nodes.
         /// = Number of scenes + Number of glTF nodes
         /// </summary>
-        private int instantiatedNodes = 0;
+        private float instantiatedNodes = 0;
 
         /// <summary>
         /// Number of UMI3D nodes.
         /// = Number of scenes + Number of glTF nodes
         /// </summary>
-        private int resourcesToLoad = 0;
+        private float resourcesToLoad = 0;
 
         /// <summary>
         /// Number of loaded resources.
         /// </summary>
-        private int loadedResources = 0;
+        private float loadedResources = 0;
 
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
@@ -326,7 +324,7 @@ namespace umi3d.cdk
             isEnvironmentLoaded = false;
 
             environment = dto;
-            RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null);
+            RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
             nodesToInstantiate = dto.scenes.Count;
             foreach (GlTFSceneDto sce in dto.scenes)
                 nodesToInstantiate += sce.nodes.Count;
@@ -361,20 +359,26 @@ namespace umi3d.cdk
             isEnvironmentLoaded = true;
             Action onFinish = () =>
             {
-                onProgressChange.Invoke(1f);
-                onEnvironmentLoaded.Invoke();
+                StartCoroutine(Load());
             };
+
+            IEnumerator Load()
+            {
+                onProgressChange.Invoke(1f);
+                yield return new WaitForSeconds(0.3f);
+                onEnvironmentLoaded.Invoke();
+                yield return null;
+                onSuccess.Invoke();
+            }
+
 
             if (UMI3DVideoPlayerLoader.HasVideoToLoad)
             {
-                UMI3DVideoPlayerLoader.LoadVideoPlayers(() => { onFinish.Invoke(); onSuccess(); });
+                UMI3DVideoPlayerLoader.LoadVideoPlayers(() => { onFinish(); });
             }
             else
             {
-                onFinish.Invoke();
-
-                yield return null;
-                onSuccess.Invoke();
+                onFinish();
             }
         }
 
@@ -427,11 +431,13 @@ namespace umi3d.cdk
             //Load scenes without hierarchy
             foreach (GlTFSceneDto scene in scenes)
             {
+                var tmpLoadedNodes = instantiatedNodes;
                 bool isFinished = false;
-                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => instantiatedNodes = i); ;
+                float total = 0;
+                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => total = i, (i) => instantiatedNodes = tmpLoadedNodes + i*0.5f);
                 yield return new WaitUntil(() => isFinished == true);
+                instantiatedNodes = tmpLoadedNodes + total * 0.5f;
             }
-
             int count = 0;
             //Organize scenes
             foreach (GlTFSceneDto scene in scenes)
@@ -439,12 +445,11 @@ namespace umi3d.cdk
                 count += 1;
                 var node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 1; }, (s) => { count -= 1; UMI3DLogger.LogWarning(s, scope); });
+                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 0.5f; }, (s) => { count -= 1; UMI3DLogger.LogWarning(s, scope); });
                 node.gameObject.SetActive(true);
             }
             yield return new WaitUntil(() => count <= 0);
             finished.Invoke();
-            yield return null;
         }
 
         #endregion
@@ -497,7 +502,7 @@ namespace umi3d.cdk
                         if (matDto.name != null && matDto.name.Length > 0)
                             m.name = matDto.name;
                         //register the material
-                        RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
+                        RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
                         performed.Invoke();
                     });
                     break;

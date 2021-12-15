@@ -28,7 +28,7 @@ namespace umi3d.cdk
         public static void ReadUMI3DExtension(EntityGroupDto groupDto)
         {
             groupDto.entitiesId = groupDto.entitiesId.ToList();
-            UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto, null).NotifyLoaded();
         }
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

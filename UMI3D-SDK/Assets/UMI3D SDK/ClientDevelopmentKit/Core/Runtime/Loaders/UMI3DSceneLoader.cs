@@ -33,24 +33,37 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="finished"></param>
-        public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> LoadedNodesCount)
+        public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> ToLoadNodesCount, System.Action<int> LoadedNodesCount)
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
 
                 var go = new GameObject(dto.name);
-                UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go,
+                var node = UMI3DEnvironmentLoader.RegisterNodeInstance(
+                    dto.extensions.umi3d.id,
+                    dto,
+                    go,
                     () =>
                     {
                         UMI3DSceneNodeDto sceneDto = dto.extensions.umi3d;
                         foreach (string library in sceneDto.LibrariesId)
                             UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
                     });
+
+                void finished2()
+                {
+                    node.NotifyLoaded();
+                    finished?.Invoke();
+                }
+
                 go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
-                //Load Materials
-                LoadSceneMaterials(dto, () => { UMI3DEnvironmentLoader.StartCoroutine(UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
-                //Load Nodes
-                //     EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount));
+                //Load Materials and then Nodes
+                LoadSceneMaterials(dto, 
+                    () => { 
+                        UMI3DEnvironmentLoader.StartCoroutine(
+                            UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, finished2, ToLoadNodesCount, LoadedNodesCount));
+                    }
+                );
             }
             else
                 finished?.Invoke();
@@ -221,6 +234,7 @@ namespace umi3d.cdk
                             m.name = material.name;
                         //register the material
                         UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m);
+                        entity.NotifyLoaded();
                     }
                     );
 
@@ -545,7 +559,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    UMI3DLogger.LogWarning("not totaly implemented",scope);
+                    UMI3DLogger.LogWarning("Shader Properties are not totaly implemented",scope);
                     IMaterialDto extension = glTFMaterialDto.extensions.umi3d;
                     string key;
                     object value;

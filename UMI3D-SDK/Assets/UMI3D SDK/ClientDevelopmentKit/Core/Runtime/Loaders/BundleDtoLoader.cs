@@ -59,7 +59,6 @@ namespace umi3d.cdk
         /// <see cref="IResourcesLoader.UrlToObject"/>
         public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
-
             // add bundle in the cache
 #if UNITY_ANDROID
             UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
@@ -72,20 +71,18 @@ namespace umi3d.cdk
                 {
                     try
                     {
-
-
                         AssetBundle bundle = ((DownloadHandlerAssetBundle)www.downloadHandler)?.assetBundle;
                         if (bundle != null)
                             callback.Invoke(bundle);
                         else
-                            failCallback.Invoke(new Umi3dException(0, "Bundle was empty"));
+                            failCallback.Invoke(new Umi3dException("Bundle was empty"));
                     }
                     catch (Exception e)
                     {
-                        failCallback.Invoke(new Umi3dException(0, e.Message));
+                        failCallback.Invoke(new Umi3dException(e));
                     }
                 },
-                s => failCallback.Invoke(s)
+                s => {  failCallback?.Invoke(s); }
             );
         }
 
@@ -114,7 +111,6 @@ namespace umi3d.cdk
                     {
                         AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
                     }
-
                     callback.Invoke(objectInBundle);
                 }
                 else

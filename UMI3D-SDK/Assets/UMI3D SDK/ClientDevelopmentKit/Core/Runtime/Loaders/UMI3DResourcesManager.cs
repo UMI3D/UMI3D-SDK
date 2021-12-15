@@ -391,7 +391,7 @@ namespace umi3d.cdk
                 {
                     foreach (Action<Umi3dException> failback in ObjectValue.loadFailCallback)
                     {
-                        failback.Invoke(new Umi3dException(0, "clear requested"));
+                        failback.Invoke(new Umi3dException( "clear requested"));
                     }
                 }
 
@@ -422,7 +422,7 @@ namespace umi3d.cdk
                     {
                         foreach (Action<Umi3dException> failback in ObjectValue.loadFailCallback)
                         {
-                            failback.Invoke(new Umi3dException(0, "clear all cache"));
+                            failback.Invoke(new Umi3dException( "clear all cache"));
                         }
                     }
 
@@ -553,7 +553,14 @@ namespace umi3d.cdk
                     }
                     if (id == null)
                         throw new Exception("id should never be null");
-                    LoadFile(id ?? 0, pair, loader.UrlToObject, loader.ObjectFromCache, (obj) => { count--; loadedResources.Invoke(total - count); }, (error) => { UMI3DLogger.LogError($"{error}[{pair.url}]", scope); count--; }, loader.DeleteObject);
+                    LoadFile(
+                        id ?? 0, 
+                        pair,
+                        loader.UrlToObject,
+                        loader.ObjectFromCache,
+                        (obj) => { count--; loadedResources.Invoke(total - count);},
+                        (error) => { UMI3DLogger.LogError($"{error}[{pair.url}]", scope); count--; },
+                        loader.DeleteObject);
                 }
             }
             yield return new WaitUntil(() => { return count <= 0; });
@@ -637,13 +644,22 @@ namespace umi3d.cdk
             if (ShouldTryAgain == null)
                 ShouldTryAgain = DefaultShouldTryAgain;
             if (tryCount > 0)
-                yield return new WaitForEndOfFrame();
+                yield return null;
             DateTime date = DateTime.UtcNow;
             Action<Umi3dException> error2 = (reason) =>
             {
-                //UMI3DLogger.Log($"here try again {reason.Message} [{reason.errorCode}] {tryCount}");
-                if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(reason.errorCode, () => StartCoroutine(urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)), tryCount, date, ShouldTryAgain)))
+               if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(
+                    new RequestFailedArgument(
+                        reason.errorCode, 
+                        () => StartCoroutine(
+                            urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)),
+                        tryCount,
+                        date,
+                        ShouldTryAgain
+                        )))
+                {
                     error?.Invoke(reason);
+                }
             };
 
             urlToObject.Invoke(path, extension, objectData.authorization, succes, error2, bundlePath);
@@ -1015,7 +1031,11 @@ namespace umi3d.cdk
         private IEnumerator _DownloadObject(UnityWebRequest www, Action callback, Action<Umi3dException> failCallback, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
         {
             yield return www.SendWebRequest();
+#if UNITY_2020_1_OR_NEWER
+            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.result == UnityWebRequest.Result.DataProcessingError)
+#else
             if (www.isNetworkError || www.isHttpError)
+#endif
             {
                 //DateTime date = DateTime.UtcNow;
                 //if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, () => StartCoroutine(_DownloadObject(www, callback, failCallback,ShouldTryAgain,tryCount + 1)), tryCount, date, ShouldTryAgain)))
@@ -1035,8 +1055,8 @@ namespace umi3d.cdk
             callback.Invoke();
         }
 
-        #endregion
-        #region sub Models
+#endregion
+#region sub Models
         public Dictionary<string, Dictionary<string, Transform>> subModelsCache;
 
         public void GetSubModel(string modelUrlInCache, string subModelName, Action<object> callback)
@@ -1054,16 +1074,16 @@ namespace umi3d.cdk
                         return true;
                     else
                         return o.MatchUrl(matchUrl);
-                }); if (objectData == null)
+                });
+                if (objectData == null)
                     UMI3DLogger.LogError("not found in cache", scope);
                 objectData.loadCallback.Add((o) =>
                 {
                     if (subModelsCache[modelUrlInCache].ContainsKey(subModelName))
                         callback.Invoke(subModelsCache[modelUrlInCache][subModelName].gameObject);
                 });
-
             }
-            #endregion
+#endregion
         }
     }
 }

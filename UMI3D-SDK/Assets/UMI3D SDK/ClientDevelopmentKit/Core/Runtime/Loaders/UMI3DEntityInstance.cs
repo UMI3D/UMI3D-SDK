@@ -27,5 +27,26 @@ namespace umi3d.cdk
         public UMI3DDto dto;
         public object Object;
         public Action Delete;
+
+        Action LoadedCallback;
+
+        public UMI3DEntityInstance(Action loadedCallback)
+        {
+            if (loadedCallback == null)
+                throw new Umi3dException("No instance should be created without loadedCallback");
+
+            this.LoadedCallback = loadedCallback;
+        }
+
+        public bool IsLoaded => LoadedCallback == null;
+
+        public void NotifyLoaded() {
+            if(!IsLoaded)
+            {
+                LoadedCallback();
+                LoadedCallback = null;
+            }
+        }
+
     }
 }

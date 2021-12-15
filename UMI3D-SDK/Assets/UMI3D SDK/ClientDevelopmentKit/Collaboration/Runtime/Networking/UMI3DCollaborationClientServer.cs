@@ -456,6 +456,7 @@ namespace umi3d.cdk.collaboration
         private void EnterScene(EnterDto enter)
         {
             useDto = enter.usedDto;
+            UMI3DEnvironmentLoader.Instance.NotifyLoad();
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {

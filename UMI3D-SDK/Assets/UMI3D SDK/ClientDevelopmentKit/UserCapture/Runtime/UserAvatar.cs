@@ -103,7 +103,7 @@ namespace umi3d.cdk.userCapture
             if (dto.handPoses != null)
             {
                 foreach (UMI3DHandPoseDto pose in dto.handPoses)
-                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null);
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null).NotifyLoaded();
             }
 
             if (activeUserBindings && userBindings != null)

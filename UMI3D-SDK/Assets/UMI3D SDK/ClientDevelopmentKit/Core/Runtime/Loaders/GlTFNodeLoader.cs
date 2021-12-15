@@ -54,10 +54,11 @@ namespace umi3d.cdk
         /// <param name="finished">Callback called when all nodes are loaded.</param>
         /// <param name="LoadedNodesCount">Action called each time a node is loaded with the count of all loaded node in parameter.</param>
         /// <returns></returns>
-        public IEnumerator LoadNodes(IEnumerable<GlTFNodeDto> nodes, System.Action finished, System.Action<int> LoadedNodesCount = null)
+        public IEnumerator LoadNodes(IEnumerable<GlTFNodeDto> nodes, System.Action finished, System.Action<int> ToLoadNodesCount = null, System.Action<int> LoadedNodesCount = null)
         {
             int count = 0;
             int total = nodes.Count();
+            ToLoadNodesCount?.Invoke(total);
             LoadedNodesCount?.Invoke(0);
             foreach (UMI3DNodeInstance node in nodes.Select(n => CreateNode(n)))
             {
@@ -65,22 +66,31 @@ namespace umi3d.cdk
 
                 // Read glTF extensions
                 count += 1;
-                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
-                    () => { count -= 1; LoadedNodesCount?.Invoke(total - count); },
-                    (s) => { count -= 1; UMI3DLogger.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}",scope); });
-                ReadLightingExtensions(dto, node.gameObject);
 
-                // Important: all nodes in the scene must be registred before to handle hierarchy. 
-                // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
-                node.transform.localPosition = dto.position;
-                node.transform.localRotation = dto.rotation;
-                node.transform.localScale = dto.scale;
-                node.SendOnPoseUpdated();
+                void actionAfterLoading()
+                {
+                    ReadLightingExtensions(dto, node.gameObject);
+                    // Important: all nodes in the scene must be registred before to handle hierarchy. 
+                    // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
+                    node.transform.localPosition = dto.position;
+                    node.transform.localRotation = dto.rotation;
+                    node.transform.localScale = dto.scale;
+                    node.SendOnPoseUpdated();
+                    node.NotifyLoaded();
+
+                    count -= 1;
+                    LoadedNodesCount?.Invoke(total - count);
+                };
+
+                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
+                    actionAfterLoading,
+                    (s) => { actionAfterLoading(); UMI3DLogger.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}",scope); });
             }
             if (finished != null)
             {
-                LoadedNodesCount?.Invoke(total);
                 yield return new WaitUntil(() => count <= 0);
+                LoadedNodesCount?.Invoke(total);
+                yield return null;
                 finished.Invoke();
             }
             yield return null;

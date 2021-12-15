@@ -542,7 +542,7 @@ namespace umi3d.cdk
 
                 //    Renderer[] childRenderers = node.gameObject.GetComponentsInChildren<Renderer>();
                 node.renderers = node.gameObject.GetComponentsInChildren<Renderer>().Where((r) => modelMeshs.Contains(r)).ToList();
-                UMI3DLogger.LogWarning("That should not happen", scope);
+                UMI3DLogger.LogWarning("Renderers list was empty, That should not happen", scope);
                 return node.renderers;
             }
 

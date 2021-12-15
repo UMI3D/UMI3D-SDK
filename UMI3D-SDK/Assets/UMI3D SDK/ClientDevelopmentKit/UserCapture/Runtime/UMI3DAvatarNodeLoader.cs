@@ -41,7 +41,7 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException( "dto should be an  UMI3DAbstractNodeDto"));
                 return;
             }
             base.ReadUMI3DExtension(dto, node, () =>

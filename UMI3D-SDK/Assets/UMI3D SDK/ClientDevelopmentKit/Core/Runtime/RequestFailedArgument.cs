@@ -97,7 +97,20 @@ namespace umi3d.cdk
             this.errorCode = 0;
         }
 
+        public Umi3dException(Exception exception) : base(exception.Message)
+        {
+            this.exception = exception;
+            this.errorCode = 0;
+        }
+
         public long errorCode { get; protected set; }
+        public readonly Exception exception;
+
+        public override string ToString()
+        {
+            return $"code : {errorCode} | {base.ToString()} : [  { exception?.StackTrace ?? base.StackTrace} ]";
+        }
+
     }
 
 }

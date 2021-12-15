@@ -158,7 +158,7 @@ namespace umi3d.cdk
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
         {
             this.dto = dto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
+            var node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
             if (dto.playing)
             {
                 if (dto.startTime == default)
@@ -166,6 +166,7 @@ namespace umi3d.cdk
                 else
                     UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
             }
+            UnityMainThreadDispatcher.Instance().Enqueue(node.NotifyLoaded);
         }
 
         /// <summary>
