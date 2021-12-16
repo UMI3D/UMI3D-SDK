@@ -45,6 +45,8 @@ namespace umi3d.cdk.volumes
                 foreach (AbstractVolumeCell cell in primitives.Values)
                     callback(cell);            
         }
+
+        /// <see cref="SubscribeToPrimitiveCreation(UnityAction{AbstractVolumeCell}, bool)"/>
         public static void UnsubscribeToPrimitiveCreation(UnityAction<AbstractVolumeCell> callback) => onPrimitiveCreation.RemoveListener(callback); 
 
 

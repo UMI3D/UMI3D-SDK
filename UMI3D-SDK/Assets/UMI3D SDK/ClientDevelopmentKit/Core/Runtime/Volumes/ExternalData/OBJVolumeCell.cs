@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common.volume;
 using UnityEngine;
@@ -27,6 +26,7 @@ namespace umi3d.cdk.volumes
     public class OBJVolumeCell : AbstractVolumeCell
     {
         public List<Mesh> meshes;
+        public List<GameObject> parts;
 
         public ulong id;
 

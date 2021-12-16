@@ -691,6 +691,7 @@ GameObject:
   m_Component:
   - component: {fileID: 644310920}
   - component: {fileID: 644310921}
+  - component: {fileID: 644310922}
   m_Layer: 0
   m_Name: box
   m_TagString: Untagged
@@ -735,6 +736,18 @@ MonoBehaviour:
   bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0.5, y: 2.04, z: 3.5}
+--- !u!114 &644310922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 644310919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9693398f8339ba4bab8737730d03ab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &654291182
 GameObject:
   m_ObjectHideFlags: 0
@@ -1498,6 +1511,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1257466417}
   - component: {fileID: 1257466418}
+  - component: {fileID: 1257466419}
   m_Layer: 0
   m_Name: mainnav
   m_TagString: Untagged
@@ -1540,6 +1554,18 @@ MonoBehaviour:
       m_Calls: []
   fileURL: private\com.gfi.volumesandbox\default\mainnavmeshasvolume.obj
   isTraversable: 1
+--- !u!114 &1257466419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1257466416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9693398f8339ba4bab8737730d03ab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1297200629
 GameObject:
   m_ObjectHideFlags: 0
@@ -1752,7 +1778,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1425035369}
   - component: {fileID: 1425035370}
-  - component: {fileID: 1425035372}
+  - component: {fileID: 1425035371}
   m_Layer: 0
   m_Name: center
   m_TagString: Untagged
@@ -1795,7 +1821,7 @@ MonoBehaviour:
   isTraversable: 1
   radius_inspector: 2.32
   height_inspector: 4.09
---- !u!114 &1425035372
+--- !u!114 &1425035371
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1804,7 +1830,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1425035368}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0618ec67ef96a642a8b856d2860d863, type: 3}
+  m_Script: {fileID: 11500000, guid: d9693398f8339ba4bab8737730d03ab1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1460954798

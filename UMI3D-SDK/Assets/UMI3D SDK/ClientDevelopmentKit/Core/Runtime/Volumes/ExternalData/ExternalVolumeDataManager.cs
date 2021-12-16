@@ -30,7 +30,7 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public class ExternalVolumeDataManager : Singleton<ExternalVolumeDataManager>
     {
-        private static Dictionary<string, AbstractVolumeCell> cells = new Dictionary<string, AbstractVolumeCell>();
+        private static Dictionary<ulong, AbstractVolumeCell> cells = new Dictionary<ulong, AbstractVolumeCell>();
 
         private class ExternalVolumeEvent : UnityEvent<AbstractVolumeCell> { }
         private static ExternalVolumeEvent onVolumeCreation = new ExternalVolumeEvent();
@@ -59,12 +59,11 @@ namespace umi3d.cdk.volumes
 
             Action<object> success = obj =>
             {
-                GameObject sceneNode = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId).gameObject;
-
                 OBJVolumeCell cell = new OBJVolumeCell()
                 {
                     id = dto.id,
-                    meshes = (obj as GameObject).GetComponentsInChildren<MeshFilter>().ToList().ConvertAll(filter => filter.mesh)
+                    meshes = (obj as GameObject).GetComponentsInChildren<MeshFilter>().ToList().ConvertAll(filter => filter.mesh),
+                    parts = new List<GameObject>() { obj as GameObject }                    
                 };
 
                 Matrix4x4 m = dto.rootNodeToLocalMatrix;
@@ -75,6 +74,7 @@ namespace umi3d.cdk.volumes
                 }
 
                 cell.isTraversable = dto.isTraversable;
+                cells.Add(cell.id, cell);
                 onVolumeCreation.Invoke(cell);
                 finished.Invoke(cell);
             };
@@ -89,7 +89,19 @@ namespace umi3d.cdk.volumes
 
         public void DeleteOBJVolume(ulong id)
         {
-            throw new System.NotImplementedException(); //todo
+            if (cells.ContainsKey(id))
+            {
+                OBJVolumeCell cell = cells[id] as OBJVolumeCell;
+                if (cell != null)
+                {
+                    cell.parts.ForEach(p => 
+                    {
+                        if (p != null)
+                            Destroy(p);                      
+                    });
+                }
+                cells.Remove(id);
+            }
         }
 
         public static List<AbstractVolumeCell> GetCells() => cells.Values.ToList();

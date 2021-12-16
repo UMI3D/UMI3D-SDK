@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12fbfbfca31c98c44a2b1bc6a9d717db, type: 3}
   m_Name: PinIdentifierApi
   m_EditorClassIdentifier: 
-  pin: 0000
+  pin: 
