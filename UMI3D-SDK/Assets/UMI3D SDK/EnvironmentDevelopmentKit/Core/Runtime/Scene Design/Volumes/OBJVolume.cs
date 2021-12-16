@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace umi3d.edk.volume
 {
+    /// <summary>
+    /// Volume cell represented by an .obj
+    /// </summary>
     public class OBJVolume : MonoBehaviour, IVolume
     {
         /// <summary>

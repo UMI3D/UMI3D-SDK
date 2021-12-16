@@ -20,9 +20,14 @@ using UnityEngine;
 
 namespace umi3d.common.volume
 {
-
+    /// <summary>
+    /// Contains several useful methods for geometry computing.
+    /// </summary>
     public abstract class GeometryTools
     {
+        /// <summary>
+        /// For logging purpose.
+        /// </summary>
         private static string ListToString<T>(List<T> list)
         {
             if (list.Count == 0)

@@ -18,7 +18,6 @@ using inetum.unityUtils;
 using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace umi3d.edk.volume
 {

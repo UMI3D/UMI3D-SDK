@@ -19,11 +19,19 @@ using umi3d.common;
 
 namespace umi3d.edk.volume
 {
+    /// <summary>
+    /// Centralise volume management.
+    /// </summary>
     public class VolumeManager : Singleton<VolumeManager>
     {
+        /// <summary>
+        /// Volume cells instances.
+        /// </summary>
         public static Dictionary<ulong, IVolume> volumes = new Dictionary<ulong, IVolume>();
 
-
+        /// <summary>
+        /// Handle volume transit information
+        /// </summary>
         static public void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
             switch (operationKey)
@@ -38,6 +46,9 @@ namespace umi3d.edk.volume
             }
         }
 
+        /// <summary>
+        /// Handle volume transit information
+        /// </summary>
         static public void DispatchBrowserRequest(UMI3DUser user, ulong volumeId, bool direction)
         {
             if (volumes.TryGetValue(volumeId, out IVolume volume))
