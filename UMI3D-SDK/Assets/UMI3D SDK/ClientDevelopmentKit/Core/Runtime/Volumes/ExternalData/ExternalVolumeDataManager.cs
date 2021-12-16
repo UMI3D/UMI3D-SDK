@@ -34,6 +34,7 @@ namespace umi3d.cdk.volumes
 
         private class ExternalVolumeEvent : UnityEvent<AbstractVolumeCell> { }
         private static ExternalVolumeEvent onVolumeCreation = new ExternalVolumeEvent();
+        private static ExternalVolumeEvent onVolumeDelete = new ExternalVolumeEvent();
 
         /// <summary>
         /// Subscribe an action to a cell reception.
@@ -52,7 +53,21 @@ namespace umi3d.cdk.volumes
         /// Unsubscribe an action to a cell reception.
         /// </summary>
         public static void UnsubscribeToExternalVolumeCreation(UnityAction<AbstractVolumeCell> callback) => onVolumeCreation.RemoveListener(callback);
-       
+
+        /// <summary>
+        /// Subscribe an action to a cell delete.
+        /// </summary>
+        public static void SubscribeToExternalVolumeDelete(UnityAction<AbstractVolumeCell> callback)
+        {
+            onVolumeDelete.AddListener(callback);            
+        }
+
+        /// <summary>
+        /// Unsubscribe an action to a cell reception.
+        /// </summary>
+        public static void UnsubscribeToExternalVolumeDelete(UnityAction<AbstractVolumeCell> callback) => onVolumeDelete.RemoveListener(callback);
+
+
         public void CreateOBJVolume(OBJVolumeDto dto, UnityAction<AbstractVolumeCell> finished)
         {
             ObjMeshDtoLoader loader = new ObjMeshDtoLoader();
@@ -101,6 +116,7 @@ namespace umi3d.cdk.volumes
                     });
                 }
                 cells.Remove(id);
+                onVolumeDelete.Invoke(cell);
             }
         }
 

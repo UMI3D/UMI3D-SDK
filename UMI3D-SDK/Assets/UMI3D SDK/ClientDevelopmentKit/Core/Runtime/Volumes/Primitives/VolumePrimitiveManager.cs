@@ -32,6 +32,7 @@ namespace umi3d.cdk.volumes
 
         private class PrimitiveEvent : UnityEvent<AbstractVolumeCell> { }
         private static PrimitiveEvent onPrimitiveCreation = new PrimitiveEvent();
+        private static PrimitiveEvent onPrimitiveDelete = new PrimitiveEvent();
 
         /// <summary>
         /// Subscribe an action to a cell reception.
@@ -43,11 +44,22 @@ namespace umi3d.cdk.volumes
 
             if (catchUpWithPreviousCells)
                 foreach (AbstractVolumeCell cell in primitives.Values)
-                    callback(cell);            
+                    callback(cell);
         }
 
         /// <see cref="SubscribeToPrimitiveCreation(UnityAction{AbstractVolumeCell}, bool)"/>
-        public static void UnsubscribeToPrimitiveCreation(UnityAction<AbstractVolumeCell> callback) => onPrimitiveCreation.RemoveListener(callback); 
+        public static void UnsubscribeToPrimitiveCreation(UnityAction<AbstractVolumeCell> callback) => onPrimitiveCreation.RemoveListener(callback);
+
+        /// <summary>
+        /// Subscribe an action to a cell delete.
+        /// </summary>
+        public static void SubscribeToPrimitiveDelete(UnityAction<AbstractVolumeCell> callback)
+        {
+            onPrimitiveDelete.AddListener(callback);
+        }
+
+        /// <see cref="SubscribeToPrimitiveDelete(UnityAction{AbstractVolumeCell})"/>
+        public static void UnsubscribeToPrimitiveDelete(UnityAction<AbstractVolumeCell> callback) => onPrimitiveDelete.RemoveListener(callback);
 
 
         public static void CreatePrimitive(AbstractPrimitiveDto dto, UnityAction<AbstractVolumeCell> finished)
@@ -93,6 +105,7 @@ namespace umi3d.cdk.volumes
             {
                 prim.Delete();
                 primitives.Remove(id);
+                onPrimitiveDelete.Invoke(prim);
             }
             else
             {
