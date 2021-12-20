@@ -38,7 +38,7 @@ namespace umi3d.edk.volume
         /// </summary>
         [SerializeField] private UMI3DUserEvent onUserExit = new UMI3DUserEvent();
 
-        [SerializeField] private string fileURL;
+        [SerializeField] private string fileURL = null;
 
         ///<inheritdoc/>
         public UMI3DUserEvent GetUserEnter() => onUserEnter;
