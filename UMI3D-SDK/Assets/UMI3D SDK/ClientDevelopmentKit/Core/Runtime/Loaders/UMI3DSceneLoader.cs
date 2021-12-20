@@ -160,7 +160,7 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null)
             {
-                return SetUMI3DMaterialProperty(entity, operationId, propertyKey, container); ;
+                return SetUMI3DMaterialProperty(entity, operationId, propertyKey, container);
             }
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;

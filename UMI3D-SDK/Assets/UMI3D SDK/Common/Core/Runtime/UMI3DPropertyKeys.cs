@@ -228,5 +228,12 @@ namespace umi3d.common
         //List of overided materials
         public const uint OverideMaterialId = 14401;
         #endregion
+
+        #region Volumes
+        public const uint VolumePrimitive_Box_Center = 15007;
+        public const uint VolumePrimitive_Box_Size = 15008;
+        public const uint VolumePrimitive_Cylinder_Height = 15009;
+        public const uint VolumePrimitive_Cylinder_Radius = 15010;
+        #endregion
     }
 }

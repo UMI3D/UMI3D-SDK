@@ -1,5 +1,5 @@
 #if UNITY_2017_1_OR_NEWER
-using UnityEditor.Experimental.AssetImporters;
+
 using UnityEditor;
 using System.IO;
 using UnityEngine;
@@ -15,8 +15,8 @@ using System.Threading.Tasks;
 
 namespace UnityGLTF
 {
-    [ScriptedImporter(1, new[] { "glb", "gltf" })]
-    public class GLTFImporter : ScriptedImporter
+    [UnityEditor.Experimental.AssetImporters.ScriptedImporter(1, new[] { "glb", "gltf" })]
+    public class GLTFImporter : UnityEditor.Experimental.AssetImporters.ScriptedImporter
     {
         [SerializeField] private bool _removeEmptyRootObjects = true;
         [SerializeField] private float _scaleFactor = 1.0f;
@@ -28,7 +28,7 @@ namespace UnityGLTF
         [SerializeField] private bool _importMaterials = true;
         [SerializeField] private bool _useJpgTextures = false;
 
-        public override void OnImportAsset(AssetImportContext ctx)
+        public override void OnImportAsset(UnityEditor.Experimental.AssetImporters.AssetImportContext ctx)
         {
             string sceneName = null;
             GameObject gltfScene = null;

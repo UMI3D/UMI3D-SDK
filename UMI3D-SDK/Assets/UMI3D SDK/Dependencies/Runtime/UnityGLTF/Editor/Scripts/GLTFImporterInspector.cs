@@ -2,14 +2,14 @@
 using System;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
+
 using UnityEngine;
 
 namespace UnityGLTF
 {
 	[CustomEditor(typeof(GLTFImporter))]
 	[CanEditMultipleObjects]
-	public class GLTFImporterInspector : AssetImporterEditor
+	public class GLTFImporterInspector : UnityEditor.Experimental.AssetImporters.AssetImporterEditor
 	{
 		private string[] _importNormalsNames;
 
