@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace umi3d.edk.volume
 {
+    [System.Obsolete("This class isn't mean to be use in production", false)]
     public class VolumeSimpleModificationListener : MonoBehaviour
     {
         public float maxFrameRate = 30;
