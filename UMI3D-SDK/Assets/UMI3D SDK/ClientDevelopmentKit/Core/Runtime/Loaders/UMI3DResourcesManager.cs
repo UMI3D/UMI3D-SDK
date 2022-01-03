@@ -378,7 +378,7 @@ namespace umi3d.cdk
         public static bool ClearCache(string VariantUrl, string LibraryId = null)
         {
             Match matchUrl = ObjectData.rx.Match(VariantUrl);
-            return (VariantUrl != null && Exists) ? Instance.ClearCache(ob => ob.MatchUrl(matchUrl, LibraryId)) : false;
+            return (VariantUrl != null && Exists) ? Instance.ClearCache(ob => VariantUrl == ob.url || ob.MatchUrl(matchUrl, LibraryId)) : false;
         }
 
         private bool ClearCache(Func<ObjectData, bool> predicate)
