@@ -22,7 +22,7 @@ namespace umi3d.cdk
 {
     public class UMI3DPbrMaterialLoader : AbstractUMI3DMaterialLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading| DebugScope.Material;
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
         /// <inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
@@ -76,6 +76,16 @@ namespace umi3d.cdk
 
                             //MRTK Shader
                             newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
+                            if (newMat.color.a < 1)
+                            {
+                                newMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                                newMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                                newMat.SetInt("_ZWrite", 0);
+                                newMat.DisableKeyword("_ALPHATEST_ON");
+                                newMat.DisableKeyword("_ALPHABLEND_ON");
+                                newMat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                                newMat.renderQueue = 3000;
+                            }
                             newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)(Vector3)dto.emissiveFactor);
                             newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
                             newMat.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - dto.pbrMetallicRoughness.roughnessFactor);
@@ -144,7 +154,7 @@ namespace umi3d.cdk
             }
             else
             {
-                UMI3DLogger.LogWarning("extension is null",scope);
+                UMI3DLogger.LogWarning("extension is null", scope);
             }
         }
 
