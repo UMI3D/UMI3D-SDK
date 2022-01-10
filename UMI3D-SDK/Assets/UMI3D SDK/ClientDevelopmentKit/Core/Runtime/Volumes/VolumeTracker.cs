@@ -32,8 +32,7 @@ namespace umi3d.cdk.volumes
 		private Coroutine trackingRoutine = null;
 		private List<UnityAction<ulong>> callbacksOnEnter = new List<UnityAction<ulong>>();
 		private List<UnityAction<ulong>> callbacksOnExit = new List<UnityAction<ulong>>();
-		private bool wasInsideOneVolumeLastFrame = false;
-		private ulong? lastVolumeId;
+		private List<ulong> volumesThisWasInsideOfLastFrame = new List<ulong>();
 
 		protected virtual void Awake()
         {
@@ -44,7 +43,7 @@ namespace umi3d.cdk.volumes
         {
 			if (trackingRoutine == null)
 			{
-				wasInsideOneVolumeLastFrame = volumesToTrack.Exists(v => v.IsInside(this.transform.position, Space.World));
+                volumesThisWasInsideOfLastFrame = volumesToTrack.FindAll(v => v.IsInside(this.transform.position, Space.World)).ConvertAll(cell => cell.Id());
 				trackingRoutine = StartCoroutine(Track());
 			}
 		}
@@ -67,17 +66,26 @@ namespace umi3d.cdk.volumes
         {
             while (true)
             {
-				AbstractVolumeCell cell = volumesToTrack.Find(v => v.IsInside(this.transform.position, Space.World));
-				bool inside = (cell != null);
-				if (inside && !wasInsideOneVolumeLastFrame)
-					foreach (var callback in callbacksOnEnter)
-						callback.Invoke(cell.Id());
-				else if (!inside && wasInsideOneVolumeLastFrame)
-					foreach (var callback in callbacksOnExit)
-						callback.Invoke(lastVolumeId.Value);
+				List<ulong> cells = volumesToTrack.FindAll(v => v.IsInside(this.transform.position, Space.World)).ConvertAll(cell => cell.Id());
+				
+                foreach(ulong cid in cells)
+                {
+                    if (!volumesThisWasInsideOfLastFrame.Contains(cid))
+                    {
+                        volumesThisWasInsideOfLastFrame.Add(cid);
+                        callbacksOnEnter.ForEach(call => call.Invoke(cid));
+                    }
+                }
 
-				wasInsideOneVolumeLastFrame = inside;
-				lastVolumeId = cell?.Id();
+                foreach(ulong cid in volumesThisWasInsideOfLastFrame)
+                {
+                    if (!cells.Contains(cid))
+                    {
+                        volumesThisWasInsideOfLastFrame.Remove(cid);
+                        callbacksOnExit.ForEach(call => call.Invoke(cid));
+                    }
+                }
+
 
 				yield return new WaitForSeconds(1f / detectionFrameRate);
 			}
