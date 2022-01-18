@@ -41,6 +41,7 @@ namespace umi3d.cdk
 
         public virtual UMI3DNodeLoader nodeLoader { get; } = new UMI3DNodeLoader();
         public virtual UMI3DMeshNodeLoader meshLoader { get; } = new UMI3DMeshNodeLoader();
+        public virtual UMI3DLineRendererLoader lineLoader { get; } = new UMI3DLineRendererLoader();
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
         public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
@@ -93,6 +94,9 @@ namespace umi3d.cdk
                     break;
                 case UMI3DMeshNodeDto m:
                     meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    break;
+                case UMI3DLineDto m:
+                    lineLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
                 case SubModelDto s:
                     SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
@@ -150,6 +154,8 @@ namespace umi3d.cdk
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (lineLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (UILoader.SetUMI3DProperty(entity, property))
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, property))
@@ -190,6 +196,8 @@ namespace umi3d.cdk
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (lineLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (avatarLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
@@ -222,6 +230,8 @@ namespace umi3d.cdk
             if (SubMeshLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (meshLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (lineLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (UILoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
