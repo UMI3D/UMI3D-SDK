@@ -25,7 +25,7 @@ namespace umi3d.cdk
     {
         const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading |DebugScope.Material;
 
-        public abstract void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback);
+        public abstract void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null);
 
         public abstract bool IsSuitableFor(GlTFMaterialDto gltfMatDto);
 

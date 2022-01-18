@@ -406,7 +406,7 @@ namespace umi3d.cdk
             return true;
         }
 
-
+        
         private bool SwitchOnMaterialProperties(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container, object materialToModify)
         {
             var glTFMaterialDto = entity?.dto as GlTFMaterialDto;

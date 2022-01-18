@@ -32,7 +32,7 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
+        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null)
         {
             var externalMat = dto.extensions.umi3d as ExternalMaterialDto;
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
