@@ -82,14 +82,14 @@ namespace umi3d.cdk
                         failCallback.Invoke(new Umi3dException(e));
                     }
                 },
-                s => {  failCallback?.Invoke(s); }
+                s => { failCallback?.Invoke(s); }
             );
         }
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
         {
-            UMI3DEnvironmentLoader.StartCoroutine(_ObjectFromCache(o,callback,pathIfObjectInBundle));
+            UMI3DEnvironmentLoader.StartCoroutine(_ObjectFromCache(o, callback, pathIfObjectInBundle));
         }
 
         IEnumerator _ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
@@ -104,9 +104,13 @@ namespace umi3d.cdk
             {
                 if (Array.Exists((bundle).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
+#if UNITY_2020_1_OR_NEWER
                     var load = bundle.LoadAssetAsync(pathIfObjectInBundle);
                     yield return load;
                     UnityEngine.Object objectInBundle = load.asset;
+#else
+                    UnityEngine.Object objectInBundle = bundle.LoadAsset(pathIfObjectInBundle);
+#endif
                     if (objectInBundle is GameObject)
                     {
                         AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
