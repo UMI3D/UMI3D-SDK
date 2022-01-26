@@ -63,7 +63,10 @@ namespace umi3d.cdk
 
                                         Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
                                         if (renderers != null)
+                                        {
                                             UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);
+                                            UMI3DEnvironmentLoader.GetNode(nodeDto.id).renderers.AddRange(renderers);
+                                        }
                                         if (rootDto.applyCustomMaterial)
                                         {
                                             // apply root model override
@@ -142,15 +145,15 @@ namespace umi3d.cdk
                             failed?.Invoke(new Umi3dException($"Model Entity [{nodeDto.modelId}] should be a nodeInstance"));
                     }
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(
-                        nodeDto.modelId, 
+                        nodeDto.modelId,
                         LoadSubModel,
                         () => failed?.Invoke(new Umi3dException($"Model [{nodeDto.modelId}] of this sub model [{nodeDto.id}] failed to load"))
                     );
-                    
+
                 }
                 else
                 {
-                    failed?.Invoke(new Umi3dException( "nodeDto should not be null"));
+                    failed?.Invoke(new Umi3dException("nodeDto should not be null"));
                 }
             }, failed);
         }
