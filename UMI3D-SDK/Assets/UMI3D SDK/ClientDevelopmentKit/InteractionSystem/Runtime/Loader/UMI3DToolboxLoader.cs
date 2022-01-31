@@ -24,6 +24,7 @@ namespace umi3d.cdk.interaction
 {
     public static class UMI3DToolBoxLoader
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public static void ReadUMI3DExtension(ToolboxDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
@@ -159,7 +160,12 @@ namespace umi3d.cdk.interaction
                 case UMI3DOperationKeys.SetEntityListAddProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
                     value = UMI3DNetworkingHelper.Read<ToolDto>(container);
-                    dto.tools.Add(value);
+                    if (index == dto.tools.Count)
+                        dto.tools.Add(value);
+                    else if (index < dto.tools.Count && index >= 0)
+                        dto.tools.Insert(index, value);
+                    else
+                        UMI3DLogger.LogWarning($"Add value ignore for {index} in collection of size {dto.tools.Count}", scope);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
