@@ -164,7 +164,7 @@ namespace umi3d.cdk.collaboration
                 },
                 (error) => {
                     UMI3DLogger.LogError("Logout failed", scope | DebugScope.Connection);
-                    failled.Invoke(error); 
+                    failled?.Invoke(error); 
                     Identity = new IdentityDto(); 
                 });
             }
