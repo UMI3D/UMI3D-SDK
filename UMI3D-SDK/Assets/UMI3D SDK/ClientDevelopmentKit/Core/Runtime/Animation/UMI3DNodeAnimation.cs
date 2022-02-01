@@ -25,6 +25,8 @@ namespace umi3d.cdk
 {
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
+        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         public static new UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
         protected new UMI3DNodeAnimationDto dto { get => base.dto as UMI3DNodeAnimationDto; set => base.dto = value; }
 
@@ -207,8 +209,14 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
+                    int ind = UMI3DNetworkingHelper.Read<int>(container);
                     OperationChain value = UMI3DNetworkingHelper.Read<OperationChain>(container);
-                    operationChains.Add(value);
+                    if (ind == operationChains.Count())
+                        operationChains.Add(value);
+                    else if (ind < operationChains.Count() && ind >= 0)
+                        operationChains.Insert(ind, value);
+                    else
+                        UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {operationChains.Count}", scope);
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     operationChains.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
