@@ -12,7 +12,7 @@ namespace BeardedManStudios.Forge.Networking.UnityEditor
 		{
 			static RuntimeCheck()
 			{
-				//ForgeNetworkingAboutEditor.Init();
+				ForgeNetworkingAboutEditor.Init();
 			}
 		}
 		#endregion
