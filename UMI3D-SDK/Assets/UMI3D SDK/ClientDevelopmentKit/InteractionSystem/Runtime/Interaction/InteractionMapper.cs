@@ -101,6 +101,8 @@ namespace umi3d.cdk.interaction
                 controller.Release(tool, reason);
                 toolIdToController.Remove(tool.id);
                 tool.OnUpdated.RemoveAllListeners();
+                tool.OnAdded.RemoveAllListeners();
+                tool.OnRemoved.RemoveAllListeners();
                 projectedTools.Remove(tool.id);
             }
             else
@@ -163,6 +165,9 @@ namespace umi3d.cdk.interaction
                 toolIdToController.Add(tool.id, controller);
                 projectedTools.Add(tool.id, reason);
                 tool.OnUpdated.AddListener(() => UpdateTools(toolId, releasable, reason));
+                tool.OnAdded.AddListener(abstractInteractionDto => { UpdateAddOnTools(toolId, releasable, abstractInteractionDto, reason); });
+                tool.OnRemoved.AddListener(abstractInteractionDto => { UpdateRemoveOnTools(toolId, releasable, abstractInteractionDto, reason); });
+
                 controller.Project(tool, releasable, reason, hoveredObjectId);
 
                 return true;
@@ -187,6 +192,39 @@ namespace umi3d.cdk.interaction
                 return true;
             }
             throw new Exception("no controller have this tool projected");
+        }
+
+        /// <inheritdoc/>
+        public override bool UpdateAddOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null)
+        {
+            if (toolIdToController.ContainsKey(toolId))
+            {
+                AbstractController controller = toolIdToController[toolId];
+                AbstractTool tool = GetTool(toolId);
+                controller.AddUpdate(tool, releasable, abstractInteractionDto, reason);
+                return true;
+            }
+            throw new Exception("no controller have this tool projected");
+        }
+
+        /// <inheritdoc/>
+        public override bool UpdateRemoveOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null)
+        {
+            AbstractTool tool = GetTool(toolId);
+            tool.interactions.Remove(abstractInteractionDto);
+
+            foreach (var item in Controllers)
+            {
+                foreach (AbstractUMI3DInput input in item.inputs)
+                {
+                    if (input != null && !input.IsAvailable() && input.CurrentInteraction().id == abstractInteractionDto.id)
+                    {
+                        input.Dissociate();
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         /// <inheritdoc/>
