@@ -87,6 +87,13 @@ namespace umi3d.cdk
 
     public class Umi3dException : Exception
     {
+        string stack = null;
+
+        public override string StackTrace
+        {
+            get => stack ?? base.StackTrace;
+        }
+
         public Umi3dException(long errorCode, string message) : base(message)
         {
             this.errorCode = errorCode;
@@ -97,10 +104,18 @@ namespace umi3d.cdk
             this.errorCode = 0;
         }
 
+        public Umi3dException(Exception exception, string message) : base(message + "\n" + exception.Message)
+        {
+            this.exception = exception;
+            this.errorCode = 0;
+            this.stack = exception.StackTrace;
+        }
+
         public Umi3dException(Exception exception) : base(exception.Message)
         {
             this.exception = exception;
             this.errorCode = 0;
+            this.stack = exception.StackTrace;
         }
 
         public long errorCode { get; protected set; }

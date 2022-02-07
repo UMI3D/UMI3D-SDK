@@ -71,11 +71,21 @@ namespace umi3d.cdk
                 {
                     try
                     {
-                        AssetBundle bundle = ((DownloadHandlerAssetBundle)www.downloadHandler)?.assetBundle;
-                        if (bundle != null)
-                            callback.Invoke(bundle);
+                        if (www.downloadHandler is DownloadHandlerAssetBundle downloadHandlerAssetBundle)
+                        {
+                            AssetBundle bundle = downloadHandlerAssetBundle?.assetBundle;
+                            if (bundle != null)
+                                callback.Invoke(bundle);
+
+#if UNITY_2020
+                            if (downloadHandlerAssetBundle?.error != null)
+                                throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
+#endif
+                            else
+                                throw new Umi3dException("The asset bundle was empty. An error might have occurred during the decoding of the asset bundle’s assets.");
+                        }
                         else
-                            failCallback.Invoke(new Umi3dException("Bundle was empty"));
+                            throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
                     }
                     catch (Exception e)
                     {

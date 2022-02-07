@@ -73,7 +73,7 @@ namespace umi3d.cdk
                                 }
                                 catch (Exception e)
                                 {
-                                    failCallback(new Umi3dException( $"Importing completed but callback failed for : {url} {e}"));
+                                    failCallback(new Umi3dException(e, $"Importing completed but callback failed for : {url}"));
                                 }
                                 GameObject.Destroy(objImporter.gameObject, 1);
                             }

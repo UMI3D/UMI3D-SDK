@@ -68,14 +68,14 @@ namespace umi3d.cdk
                         callback.Invoke(newModel.gameObject);
 
                     }
-                    catch
+                    catch(Exception e)
                     {
-                        failCallback(new Umi3dException( "Importing failed for " + url));
+                        failCallback(new Umi3dException(e, "Importing failed for " + url));
                     }
                 }
                 else
                 {
-                    failCallback(new Umi3dException("Importing failed for " + url));
+                    failCallback(new Umi3dException($"Importing failed for { url } \nLoad failed"));
                 }
                 GameObject.Destroy(gltfComp.gameObject, 1);
             };
