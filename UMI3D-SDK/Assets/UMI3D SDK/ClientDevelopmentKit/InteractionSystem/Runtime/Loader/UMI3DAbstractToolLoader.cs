@@ -121,12 +121,20 @@ namespace umi3d.cdk.interaction
                 case UMI3DOperationKeys.SetEntityListAddProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
                     value = UMI3DNetworkingHelper.Read<AbstractInteractionDto>(container);
-                    dto.interactions.Add(value);
-                    break;
+                    if (index == dto.interactions.Count)
+                        dto.interactions.Add(value);
+                    else if (index < dto.interactions.Count)
+                        dto.interactions.Insert(index, value);
+                    else return false;
+                    tool.Added(value); break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
                     if (index < dto.interactions.Count)
+                    {
+                        AbstractInteractionDto removed = dto.interactions[index];
                         dto.interactions.RemoveAt(index);
+                        tool.Removed(removed);
+                    }
                     else return false;
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
@@ -135,12 +143,13 @@ namespace umi3d.cdk.interaction
                     if (index < dto.interactions.Count)
                         dto.interactions[index] = value;
                     else return false;
+                    tool.Updated();
                     break;
                 default:
                     dto.interactions = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(container);
+                    tool.Updated();
                     break;
             }
-            tool.Updated();
             return true;
         }
 
