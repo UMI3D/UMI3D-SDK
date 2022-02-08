@@ -32,6 +32,7 @@ The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f
 
 - [UMI3D Virtual World Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.4.r.220208/edk.unitypackage)
 - [UMI3D Browser Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.4.r.220208/cdk.unitypackage)
+- [UMI3D Virtual World Starter Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.4.r.220208/server-starter-kit.unitypackage)
 
 ### Installation through Unity's Package Manager 
 
