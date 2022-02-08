@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
-using inetum.unityUtils;
 
 namespace umi3d.cdk.collaboration
 {
@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
 
@@ -75,6 +75,12 @@ namespace umi3d.cdk.collaboration
         public ClientIdentifierApi Identifier;
         private static bool connected = false;
 
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (!Exists)
+                HttpClient?.Stop();
+        }
 
         private void Start()
         {
@@ -156,10 +162,11 @@ namespace umi3d.cdk.collaboration
                     success?.Invoke();
                     Identity = new IdentityDto();
                 },
-                (error) => {
+                (error) =>
+                {
                     UMI3DLogger.LogError("Logout failed", scope | DebugScope.Connection);
-                    failled.Invoke(error); 
-                    Identity = new IdentityDto(); 
+                    failled?.Invoke(error);
+                    Identity = new IdentityDto();
                 });
             }
             else
@@ -252,7 +259,7 @@ namespace umi3d.cdk.collaboration
                 case StatusType.CREATED:
                     UMI3DCollaborationClientServer.Instance.HttpClient.SendGetIdentity((user) =>
                     {
-                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                        StartCoroutine(Instance.UpdateIdentity(user));
                     }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                     break;
                 case StatusType.READY:
@@ -288,7 +295,7 @@ namespace umi3d.cdk.collaboration
                 Instance?.HttpClient?.SetToken(token);
                 BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
                 {
-                    Instance?.StartCoroutine(Instance.OnNewTokenNextFrame());
+                    StartCoroutine(Instance.OnNewTokenNextFrame());
                 });
             }
         }
@@ -337,7 +344,7 @@ namespace umi3d.cdk.collaboration
                         case StatusType.CREATED:
                             Instance.HttpClient.SendGetIdentity((user) =>
                             {
-                                Instance.StartCoroutine(Instance.UpdateIdentity(user));
+                                StartCoroutine(Instance.UpdateIdentity(user));
                             }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                             break;
                         case StatusType.READY:
@@ -450,6 +457,7 @@ namespace umi3d.cdk.collaboration
         private void EnterScene(EnterDto enter)
         {
             useDto = enter.usedDto;
+            UMI3DEnvironmentLoader.Instance.NotifyLoad();
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {
@@ -463,12 +471,6 @@ namespace umi3d.cdk.collaboration
                     StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
                 },
                 (error) => { UMI3DLogger.Log("error on get Environement :" + error, scope); });
-        }
-
-        ///<inheritdoc/>
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
         }
 
         ///<inheritdoc/>

@@ -41,17 +41,19 @@ namespace umi3d.cdk
             return request?.url;
         }
 
-        public System.Collections.Generic.Dictionary<string,string> GetHeader()
+        public System.Collections.Generic.Dictionary<string, string> GetHeader()
         {
             return request?.GetResponseHeaders();
         }
 
         public override string ToString()
         {
-            if (request != null) {
+            if (request != null)
+            {
                 return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{request.responseCode}, url:{request.url}], header:{request?.GetResponseHeaders()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ";
             }
-            else {
+            else
+            {
                 return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{responseCode}]";
             }
         }
@@ -87,6 +89,10 @@ namespace umi3d.cdk
 
     public class Umi3dException : Exception
     {
+        private readonly string stack = null;
+
+        public override string StackTrace => stack ?? base.StackTrace;
+
         public Umi3dException(long errorCode, string message) : base(message)
         {
             this.errorCode = errorCode;
@@ -97,7 +103,28 @@ namespace umi3d.cdk
             this.errorCode = 0;
         }
 
+        public Umi3dException(Exception exception, string message) : base(message + "\n" + exception.Message)
+        {
+            this.exception = exception;
+            this.errorCode = 0;
+            this.stack = exception.StackTrace;
+        }
+
+        public Umi3dException(Exception exception) : base(exception.Message)
+        {
+            this.exception = exception;
+            this.errorCode = 0;
+            this.stack = exception.StackTrace;
+        }
+
         public long errorCode { get; protected set; }
+        public readonly Exception exception;
+
+        public override string ToString()
+        {
+            return $"code : {errorCode} | {base.ToString()} : [  { exception?.StackTrace ?? base.StackTrace} ]";
+        }
+
     }
 
 }

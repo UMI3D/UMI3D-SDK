@@ -21,7 +21,7 @@ namespace umi3d.cdk
 {
     public class UMI3DExternalMaterialLoader : AbstractUMI3DMaterialLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading|DebugScope.Material;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
         ///<inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
@@ -32,13 +32,13 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
+        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null)
         {
             var externalMat = dto.extensions.umi3d as ExternalMaterialDto;
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
             if (externalMat != null)
             {
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(externalMat.resource.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(externalMat.resource.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
@@ -65,22 +65,22 @@ namespace umi3d.cdk
                            }
                            catch
                            {
-                               UMI3DLogger.LogError("Fail to load material : " + url,scope);
+                               UMI3DLogger.LogError("Fail to load material : " + url, scope);
                            }
 
                        }
                        else
                        {
-                           UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}",scope);
+                           UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}", scope);
                        }
                    },
-                   e => UMI3DLogger.LogWarning(e,scope),
+                   e => UMI3DLogger.LogWarning(e, scope),
                    loader.DeleteObject
                    );
                 }
                 else
                 {
-                    UMI3DLogger.LogWarning("Loader is null for external material",scope);
+                    UMI3DLogger.LogWarning("Loader is null for external material", scope);
                 }
 
 
@@ -88,7 +88,7 @@ namespace umi3d.cdk
             }
             else
             {
-                UMI3DLogger.LogWarning("extension is null",scope);
+                UMI3DLogger.LogWarning("extension is null", scope);
             }
         }
     }

@@ -15,10 +15,12 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace umi3d.cdk
 {
@@ -27,8 +29,7 @@ namespace umi3d.cdk
     /// </summary>
     public class BundleDtoLoader : IResourcesLoader
     {
-
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public List<string> supportedFileExtentions;
         public List<string> ignoredFileExtentions;
@@ -57,7 +58,6 @@ namespace umi3d.cdk
         /// <see cref="IResourcesLoader.UrlToObject"/>
         public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
-
             // add bundle in the cache
 #if UNITY_ANDROID
             UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
@@ -70,60 +70,79 @@ namespace umi3d.cdk
                 {
                     try
                     {
-                        AssetBundle bundle = ((DownloadHandlerAssetBundle)www.downloadHandler)?.assetBundle;
-                        if (bundle != null)
-                            callback.Invoke(bundle);
+                        if (www.downloadHandler is DownloadHandlerAssetBundle downloadHandlerAssetBundle)
+                        {
+                            AssetBundle bundle = downloadHandlerAssetBundle?.assetBundle;
+                            if (bundle != null)
+                                callback.Invoke(bundle);
+
+#if UNITY_2020
+                            if (downloadHandlerAssetBundle?.error != null)
+                                throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
+#endif
+                            else
+                                throw new Umi3dException("The asset bundle was empty. An error might have occurred during the decoding of the asset bundle’s assets.");
+                        }
                         else
-                            failCallback.Invoke(new Umi3dException(0, "Bundle was empty"));
+                            throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
                     }
                     catch (Exception e)
                     {
-                        failCallback.Invoke(new Umi3dException(0, e.Message));
+                        failCallback.Invoke(new Umi3dException(e));
                     }
                 },
-                s => failCallback.Invoke(s)
+                s => { failCallback?.Invoke(s); }
             );
         }
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
         {
-            /*     Usefull to find pathIfObjectInBundle in a bundle
-            UMI3DLogger.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length,scope);
-            UMI3DLogger.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length,scope);
-            UMI3DLogger.Log(((AssetBundle)o).GetAllAssetNames()[0],scope);
+            UMI3DEnvironmentLoader.StartCoroutine(_ObjectFromCache(o, callback, pathIfObjectInBundle));
+        }
+
+        private IEnumerator _ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
+        {
+            /*     
+                Usefull to find pathIfObjectInBundle in a bundle
+                UMI3DLogger.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length,scope);
+                UMI3DLogger.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length,scope);
+                UMI3DLogger.Log(((AssetBundle)o).GetAllAssetNames()[0],scope);
             */
-            if (pathIfObjectInBundle != null && pathIfObjectInBundle != "")
+            if (pathIfObjectInBundle != null && pathIfObjectInBundle != "" && o is AssetBundle bundle)
             {
-                if (Array.Exists(((AssetBundle)o).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
+                if (Array.Exists((bundle).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
-                    UnityEngine.Object objectInBundle = ((AssetBundle)o).LoadAsset(pathIfObjectInBundle);
+#if UNITY_2020_1_OR_NEWER
+                    var load = bundle.LoadAssetAsync(pathIfObjectInBundle);
+                    yield return load;
+                    UnityEngine.Object objectInBundle = load.asset;
+#else
+                    UnityEngine.Object objectInBundle = bundle.LoadAsset(pathIfObjectInBundle);
+#endif
                     if (objectInBundle is GameObject)
                     {
                         AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
                     }
-
                     callback.Invoke(objectInBundle);
                 }
                 else
                 {
-                    if (Array.Exists(((AssetBundle)o).GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
+                    if (Array.Exists((bundle).GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
                     {
-                        callback.Invoke(pathIfObjectInBundle);
+                        AsyncOperation scene = SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
+                        yield return scene;
+                        callback.Invoke(null);
                     }
-
                     else
                     {
-                        UMI3DLogger.LogWarning("Scene path not found : " + pathIfObjectInBundle,scope);
+                        UMI3DLogger.LogWarning($"Path {pathIfObjectInBundle} not found in Assets nor Scene", scope);
                         callback.Invoke(o);
                     }
-
                 }
             }
             else
-            {
                 callback.Invoke(o);
-            }
         }
 
         /// <summary>

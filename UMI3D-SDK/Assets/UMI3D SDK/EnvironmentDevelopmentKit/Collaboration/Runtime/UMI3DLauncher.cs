@@ -260,9 +260,9 @@ namespace umi3d.edk.collaboration
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetLogScope(string arg)
         {
-            var split = arg.Split('|');
+            string[] split = arg.Split('|');
             DebugScope Result = 0;
-            foreach (var s in split)
+            foreach (string s in split)
             {
                 if (DebugScope.TryParse(s, out DebugScope result))
                 {

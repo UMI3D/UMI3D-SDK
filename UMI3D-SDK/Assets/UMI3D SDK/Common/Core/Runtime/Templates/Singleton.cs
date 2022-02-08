@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
 using UnityEngine;
 
 namespace umi3d.common
 {
     public class Singleton<T> : QuittingManager where T : Singleton<T>
     {
-        const DebugScope scope = DebugScope.Common | DebugScope.Core;
+        private const DebugScope scope = DebugScope.Common | DebugScope.Core;
 
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>
@@ -67,7 +68,7 @@ namespace umi3d.common
             set
             {
                 if (instance == null) instance = value;
-                else UMI3DLogger.LogError("Instance of " + typeof(T) + " already exist, Instance could not be set",scope);
+                else UMI3DLogger.LogError("Instance of " + typeof(T) + " already exist, Instance could not be set", scope);
             }
         }
 
@@ -78,7 +79,7 @@ namespace umi3d.common
         {
             if (instance != null && instance != this)
             {
-                UMI3DLogger.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated",scope);
+                UMI3DLogger.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated", scope);
                 Destroy(this);
             }
             else
@@ -87,10 +88,23 @@ namespace umi3d.common
             }
         }
 
+        public static new Coroutine StartCoroutine(IEnumerator enumerator)
+        {
+            return Exists ? (Instance as MonoBehaviour).StartCoroutine(enumerator) : null;
+        }
+
+        public static new void StopCoroutine(Coroutine coroutine)
+        {
+            if (Exists)
+                (Instance as MonoBehaviour).StopCoroutine(coroutine);
+        }
+
         protected virtual void OnDestroy()
         {
             if (instance == this)
+            {
                 instance = null;
+            }
         }
     }
 }

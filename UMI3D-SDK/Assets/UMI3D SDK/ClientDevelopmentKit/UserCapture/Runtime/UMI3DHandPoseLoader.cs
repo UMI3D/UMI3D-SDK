@@ -31,7 +31,7 @@ namespace umi3d.cdk
         /// <param name="dto"></param>
         public static void Load(UMI3DHandPoseDto dto)
         {
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
         }
 
         /// <summary>

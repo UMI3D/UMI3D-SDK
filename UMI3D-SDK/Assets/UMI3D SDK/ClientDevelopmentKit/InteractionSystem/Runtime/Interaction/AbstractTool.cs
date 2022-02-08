@@ -54,9 +54,16 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public List<AbstractInteractionDto> interactions => abstractDto.interactions;
 
+        // could be removed if unity project version is 2020.1 or newer 
+        private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
+
         public UnityEvent OnUpdated = new UnityEvent();
+        public UnityEvent<AbstractInteractionDto> OnAdded = new AbstractInteractionDtoEvent();
+        public UnityEvent<AbstractInteractionDto> OnRemoved = new AbstractInteractionDtoEvent();
 
         public void Updated() { OnUpdated.Invoke(); }
+        public void Added(AbstractInteractionDto abstractInteractionDto) { OnAdded.Invoke(abstractInteractionDto); }
+        public void Removed(AbstractInteractionDto abstractInteractionDto) { OnRemoved.Invoke(abstractInteractionDto); }
 
         /// <summary>
         /// Event raised when the abstract tool is projected.

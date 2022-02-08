@@ -14,5 +14,6 @@ var searchData=
   ['eventstatechangeddto_11',['EventStateChangedDto',['../d4/d93/classumi3d_1_1common_1_1interaction_1_1_event_state_changed_dto.html',1,'umi3d::common::interaction']]],
   ['eventtriggereddto_12',['EventTriggeredDto',['../d3/dba/classumi3d_1_1common_1_1interaction_1_1_event_triggered_dto.html',1,'umi3d::common::interaction']]],
   ['externalmaterialdto_13',['ExternalMaterialDto',['../d5/d2b/classumi3d_1_1common_1_1_external_material_dto.html',1,'umi3d::common']]],
-  ['externalresourcematerial_14',['ExternalResourceMaterial',['../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html',1,'umi3d::edk']]]
+  ['externalresourcematerial_14',['ExternalResourceMaterial',['../dc/d05/classumi3d_1_1edk_1_1_external_resource_material.html',1,'umi3d::edk']]],
+  ['externalvolumedatamanager_15',['ExternalVolumeDataManager',['../dc/d2f/classumi3d_1_1cdk_1_1volumes_1_1_external_volume_data_manager.html',1,'umi3d::cdk::volumes']]]
 ];

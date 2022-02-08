@@ -62,6 +62,14 @@ namespace umi3d.common
         public const uint CastShadow = 3004;
         public const uint ReceiveShadow = 3005;
         public const uint IgnoreModelMaterialOverride = 3006;
+        public const uint LineUseWorldSpace = 3007;
+        public const uint LineLoop = 3008;
+        public const uint LinePositions = 3009;
+        public const uint LineStartColor = 3010;
+        public const uint LineEndColor = 3011;
+        public const uint LineStartWidth = 3012;
+        public const uint LineEndWidth = 3013;
+
         #endregion
 
         #region KHR_light
@@ -227,6 +235,13 @@ namespace umi3d.common
 
         //List of overided materials
         public const uint OverideMaterialId = 14401;
+        #endregion
+
+        #region Volumes
+        public const uint VolumePrimitive_Box_Center = 15007;
+        public const uint VolumePrimitive_Box_Size = 15008;
+        public const uint VolumePrimitive_Cylinder_Height = 15009;
+        public const uint VolumePrimitive_Cylinder_Radius = 15010;
         #endregion
     }
 }

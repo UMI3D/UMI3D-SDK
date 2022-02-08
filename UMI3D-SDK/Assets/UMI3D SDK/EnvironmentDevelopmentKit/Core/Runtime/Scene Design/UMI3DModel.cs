@@ -24,7 +24,7 @@ namespace umi3d.edk
 {
     public partial class UMI3DModel : AbstractRenderedNode
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Core;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Core;
 
         [Obsolete("will be removed soon")]
         public bool lockColliders = false;
@@ -38,6 +38,10 @@ namespace umi3d.edk
 
         // Should not be modified after init 
         public bool areSubobjectsTracked = false;
+        /// <summary>
+        /// State if submodel have already been added under this model.
+        /// </summary>
+        public bool areSubobjectsAlreadyMarked = false;
 
         // Should not be modified after init 
         public bool isRightHanded = true;
@@ -63,6 +67,7 @@ namespace umi3d.edk
             if (areSubobjectsTracked)
             {
                 SetSubHierarchy();
+                areSubobjectsAlreadyMarked = true;
 
                 SkinnedMeshRenderer[] skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
                 foreach (SkinnedMeshRenderer skinnedMeshRenderer in skinnedMeshRenderers)
@@ -85,7 +90,7 @@ namespace umi3d.edk
         {
             if (idGenerator == null || idGenerator.Length < 1)
             {
-                UMI3DLogger.LogWarning("idGenerator is required",scope);
+                UMI3DLogger.LogWarning("idGenerator is required", scope);
                 return;
             }
 
@@ -94,22 +99,23 @@ namespace umi3d.edk
             {
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
                 {
-                    if (child.gameObject.GetComponent<Renderer>() != null)
-                    {
-                        UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
-                        subModel.parentModel = this;
-                        subModel.objectCastShadow.SetValue(this.castShadow);
-                        subModel.objectReceiveShadow.SetValue(this.receiveShadow);
-                    }
-                    else if (child.gameObject.GetComponent<ReflectionProbe>() != null)
-                    {
-                        UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
-                        subModel.parentModel = this;
-                    }
-                    else
-                    {
-                        UMI3DNode node = child.gameObject.AddComponent<UMI3DNode>();
-                    }
+                    if (!areSubobjectsAlreadyMarked)
+                        if (child.gameObject.GetComponent<Renderer>() != null)
+                        {
+                            UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
+                            subModel.parentModel = this;
+                            subModel.objectCastShadow.SetValue(this.castShadow);
+                            subModel.objectReceiveShadow.SetValue(this.receiveShadow);
+                        }
+                        else if (child.gameObject.GetComponent<ReflectionProbe>() != null)
+                        {
+                            UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
+                            subModel.parentModel = this;
+                        }
+                        else
+                        {
+                            UMI3DNode node = child.gameObject.AddComponent<UMI3DNode>();
+                        }
                 }
                 else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
                 {

@@ -21,6 +21,7 @@ var classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar =
     [ "WaitForOtherRig", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a30c0735e1cae97561aedced327529480", null ],
     [ "WaitForRig", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#ae354d09fb237f2b2e4f3cc29e17fae45", null ],
     [ "WaitForRig", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#ae9a6b3feb9e19f709b2f84a3a5670017", null ],
+    [ "WaitingForOtherEntityRig", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a3a5308b502b5af2c2a451f21f8debdff", null ],
     [ "boundRigs", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#ab542fd5fe2f98cca34e52d12e239edea", null ],
     [ "lastFrameTime", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a79511ed98a75a42ca1bf2d9452f1365c", null ],
     [ "lastMessageTime", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html#a5cc5a4b5a9a359ce295f922c7064369c", null ],

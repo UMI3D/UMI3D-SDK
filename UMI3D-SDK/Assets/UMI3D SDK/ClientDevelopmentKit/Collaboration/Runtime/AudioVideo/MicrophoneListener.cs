@@ -717,7 +717,7 @@ namespace umi3d.cdk.collaboration
             thread = null;
         }
 
-        const string LogName = "Microphone Listener";
+        private const string LogName = "Microphone Listener";
         string ILoggable.GetLogName()
         {
             return LogName;

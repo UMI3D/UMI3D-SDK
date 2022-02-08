@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['signaling_0',['Signaling',['../d5/da1/namespaceumi3d_1_1common_1_1collaboration.html#a18cf1ab4cf8bf90245910ab5b49bf215a023a5262e4ff9f44dc313dc0e497f99c',1,'umi3d::common::collaboration']]],
-  ['simple_1',['Simple',['../d8/da2/namespaceumi3d_1_1common.html#a58fdb0e7938754b5d6f111744f6b4703a1fbb1e3943c2c6c560247ac8f9289780',1,'umi3d::common']]],
-  ['skybox_2',['Skybox',['../d8/da2/namespaceumi3d_1_1common.html#aa9f0762b736d51b409b20e686a17389da63fbbc4fe17b5b4262ebe7c2921518ed',1,'umi3d::common']]],
-  ['sliced_3',['Sliced',['../d8/da2/namespaceumi3d_1_1common.html#a58fdb0e7938754b5d6f111744f6b4703afa6a7b9fa989f179f6bbf2796bf4337c',1,'umi3d::common']]],
-  ['soft_4',['Soft',['../d8/da2/namespaceumi3d_1_1common.html#ad444e3cdabcb0ad6d1f2c20781b85419a682160fc6ad12f783f70608a9b46b9b9',1,'umi3d::common']]],
-  ['sphere_5',['Sphere',['../d8/da2/namespaceumi3d_1_1common.html#aede111448bf746cdbc825863522ddfa4ab7095f057db3fefa7325ad93a04e14fd',1,'umi3d.common.Sphere()'],['../d8/da2/namespaceumi3d_1_1common.html#a5ee0153a5a9e0bc9e2409c8d71929644ab7095f057db3fefa7325ad93a04e14fd',1,'umi3d.common.Sphere()']]],
-  ['standard_6',['STANDARD',['../d8/da2/namespaceumi3d_1_1common.html#adffd92ff0018101ded8f05ca707e0aa6a94e94133f4bdc1794c6b647b8ea134d0',1,'umi3d::common']]],
-  ['standard_7',['standard',['../d8/da2/namespaceumi3d_1_1common.html#a4890a44cb3eeb44c9eb37271766c4754ac00f0c4675b91fb8b918e4079a0b1bac',1,'umi3d::common']]],
-  ['standard_5fspecular_5fsetup_8',['STANDARD_SPECULAR_SETUP',['../d8/da2/namespaceumi3d_1_1common.html#adffd92ff0018101ded8f05ca707e0aa6ac67d918c9e26855300401c831ed7753a',1,'umi3d::common']]]
+  ['ready_0',['READY',['../d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60a2baa69eafc7204f3bd8648eba580c489',1,'umi3d::common']]],
+  ['riggedavatardisplay_1',['RiggedAvatarDisplay',['../d8/da2/namespaceumi3d_1_1common.html#a4c402d2c4cce22c34eaa22fcb698503da634367817dc6d17699f48c30cc048fe3',1,'umi3d::common']]],
+  ['rx_2',['RX',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47af9c24782c24c237d16e79f18e2fa9046',1,'umi3d::common::interaction']]],
+  ['rx_5fry_3',['RX_RY',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a4220dfb9ebc9dfb55caaf25410be2548',1,'umi3d::common::interaction']]],
+  ['rx_5fry_5frz_4',['RX_RY_RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47ae390896627193c7cf3e52f511890912f',1,'umi3d::common::interaction']]],
+  ['rx_5frz_5',['RX_RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a2948b950db985e34bb5d76f7565e3389',1,'umi3d::common::interaction']]],
+  ['ry_6',['RY',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47accb21680cb44cbc3715ed8acc0145efe',1,'umi3d::common::interaction']]],
+  ['ry_5frz_7',['RY_RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47acb7fb9f9ed91cb20faeb36a38c350eba',1,'umi3d::common::interaction']]],
+  ['rz_8',['RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a25e29a048984cda66521f1eab1182666',1,'umi3d::common::interaction']]]
 ];

@@ -38,6 +38,9 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
+#if UNITY_ANDROID
+            if (!url.Contains("http")) url = "file://" + url;
+#endif
             var createdObj = new GameObject();
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
@@ -70,7 +73,7 @@ namespace umi3d.cdk
                                 }
                                 catch (Exception e)
                                 {
-                                    failCallback(new Umi3dException(0, $"Importing completed but callback failed for : {url} {e}"));
+                                    failCallback(new Umi3dException(e, $"Importing completed but callback failed for : {url}"));
                                 }
                                 GameObject.Destroy(objImporter.gameObject, 1);
                             }

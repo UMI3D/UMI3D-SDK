@@ -63,6 +63,8 @@ namespace umi3d.common
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
 
+        public const uint VolumeUserTransit = 10100;
+
     }
     public static class UMI3DParameterKeys
     {

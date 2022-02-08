@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
         public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         public AudioSource audioSource { get; private set; }
@@ -55,7 +55,7 @@ namespace umi3d.cdk
                 yield break;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.audioResource.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.audioResource.variants);
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -85,10 +85,10 @@ namespace umi3d.cdk
                         }
                         else
                         {
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}",scope);
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}", scope);
                         }
                     },
-                     e => UMI3DLogger.LogWarning(e,scope),
+                     e => UMI3DLogger.LogWarning(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -100,7 +100,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override float GetProgress()
         {
-            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time  : -1;
+            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time : -1;
         }
 
         ///<inheritdoc/>
@@ -110,7 +110,7 @@ namespace umi3d.cdk
             {
                 audioSource.Stop();
                 audioSource.Play();
-                OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
             }
         }
 
@@ -126,7 +126,7 @@ namespace umi3d.cdk
         public override void Stop()
         {
             audioSource?.Stop();
-            if (OnEndCoroutine != null) UMI3DAnimationManager.Instance.StopCoroutine(OnEndCoroutine);
+            if (OnEndCoroutine != null) UMI3DAnimationManager.StopCoroutine(OnEndCoroutine);
         }
 
         ///<inheritdoc/>
@@ -151,7 +151,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)property.value;
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
@@ -174,9 +174,9 @@ namespace umi3d.cdk
                                 if (clipa != null)
                                     audioSource.clip = clipa;
                                 else
-                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
+                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                             },
-                            e=>UMI3DLogger.LogWarning(e,scope),
+                            e => UMI3DLogger.LogWarning(e, scope),
                             loader.DeleteObject
                             );
                     }
@@ -216,7 +216,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
@@ -271,13 +271,13 @@ namespace umi3d.cdk
                 audioSource.Stop();
                 audioSource.time = atTime;
                 audioSource.Play();
-                OnEndCoroutine = UMI3DAnimationManager.Instance.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
             }
         }
 
         public override void SetProgress(long frame)
         {
-            audioSource.time = frame/1000f;
+            audioSource.time = frame / 1000f;
 
         }
     }

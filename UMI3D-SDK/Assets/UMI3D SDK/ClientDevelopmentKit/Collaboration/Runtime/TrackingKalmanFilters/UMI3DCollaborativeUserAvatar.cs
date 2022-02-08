@@ -112,7 +112,7 @@ namespace umi3d.cdk.collaboration
                 boneRotationKalman.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
         }
 
-        void SkeletonKalmanUpdate(float skeletonNodePosY)
+        private void SkeletonKalmanUpdate(float skeletonNodePosY)
         {
             double[] heightMeasurement = new double[] { skeletonNodePosY };
 
@@ -127,7 +127,7 @@ namespace umi3d.cdk.collaboration
                 skeletonHeightFilter.previous_prediction = heightMeasurement;
         }
 
-        void RegressionSkeletonPosition(KalmanPosition tools)
+        private void RegressionSkeletonPosition(KalmanPosition tools)
         {
             if (tools.previous_prediction.Length > 0)
             {
@@ -138,7 +138,7 @@ namespace umi3d.cdk.collaboration
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    var value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+                    double value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
 
                     tools.estimations = new double[] { value_x };
 

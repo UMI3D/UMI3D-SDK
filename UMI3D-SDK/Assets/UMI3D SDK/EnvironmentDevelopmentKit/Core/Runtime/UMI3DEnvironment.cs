@@ -26,7 +26,7 @@ namespace umi3d.edk
 {
     public class UMI3DEnvironment : Singleton<UMI3DEnvironment>
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration;
 
         [EditorReadOnly]
         public bool useDto = false;
@@ -44,7 +44,7 @@ namespace umi3d.edk
         /// Environment's name.
         /// </summary>
         [EditorReadOnly]
-        public string environmentName = "test";
+        public string environmentName = "Environment Name";
 
         [HideInInspector]
         public List<UMI3DScene> scenes;
@@ -436,7 +436,7 @@ namespace umi3d.edk
                 {
                     ulong old = guid;
                     guid = NewID();
-                    UMI3DLogger.LogWarning($"Guid [{old}] was already used node register with another id [{guid}]",scope);
+                    UMI3DLogger.LogWarning($"Guid [{old}] was already used node register with another id [{guid}]", scope);
                 }
                 objects.Add(guid, obj);
                 if (unRegisteredIds.Contains(guid))

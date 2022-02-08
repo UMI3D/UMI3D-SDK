@@ -19,7 +19,7 @@ namespace umi3d.cdk
 {
     public class UMI3DOriginalMaterialLoader : AbstractUMI3DMaterialLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading|DebugScope.Material;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
         ///<inheritdoc/>        
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
@@ -30,7 +30,7 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback)
+        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null)
         {
             var originalMat = dto.extensions.umi3d as UMI3DOriginalMaterialDto;
 
@@ -44,7 +44,7 @@ namespace umi3d.cdk
             }
             else
             {
-                UMI3DLogger.LogWarning("extension is null",scope);
+                UMI3DLogger.LogWarning("extension is null", scope);
             }
         }
 

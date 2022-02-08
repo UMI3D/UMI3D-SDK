@@ -26,7 +26,7 @@ namespace umi3d.edk
     [Obsolete("This class isn't mean to be use in production", false)]
     public partial class SimpleModificationListener : MonoBehaviour
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Editor;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Editor;
 
         private UMI3DNode[] nodes;
         private UMI3DScene[] scenes;
@@ -145,7 +145,7 @@ namespace umi3d.edk
                     case OriginalMaterial extmat:
                         break;
                     default:
-                        UMI3DLogger.LogWarning("unsupported material type",scope);
+                        UMI3DLogger.LogWarning("unsupported material type", scope);
                         break;
                 }
 
@@ -242,9 +242,9 @@ namespace umi3d.edk
                 }
                 catch (Exception e)
                 {
-                    UMI3DLogger.LogError(e,scope);
-                    UMI3DLogger.Log("entityid = " + operation.entityId,scope);
-                    UMI3DLogger.Log("property = " + operation.property,scope);
+                    UMI3DLogger.LogError(e, scope);
+                    UMI3DLogger.Log("entityid = " + operation.entityId, scope);
+                    UMI3DLogger.Log("property = " + operation.property, scope);
 
                 }
 

@@ -19,14 +19,13 @@ using System.Collections.Generic;
 using System.IO;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
     public class UploadFileParameter : AbstractParameter
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;
 
         public static Dictionary<string, UploadFileParameter> uploadTokens { get; private set; } = new Dictionary<string, UploadFileParameter>();
 
@@ -108,12 +107,12 @@ namespace umi3d.edk.interaction
                             }
                             else
                             {
-                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext,scope);
+                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext, scope);
                             }
                         }
                         else
                         {
-                            UMI3DLogger.LogWarning("unvalide extension",scope);
+                            UMI3DLogger.LogWarning("unvalide extension", scope);
                         }
 
                         /*    }
@@ -161,7 +160,7 @@ namespace umi3d.edk.interaction
                             }
                             else
                             {
-                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext ,scope);
+                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext, scope);
                             }
                         }
                         else
@@ -203,7 +202,7 @@ namespace umi3d.edk.interaction
             if (uploadTokens.ContainsKey(token))
                 uploadTokens.Remove(token);
             else
-                UMI3DLogger.LogWarning("this token : " + token + " is not a valide token",scope);
+                UMI3DLogger.LogWarning("this token : " + token + " is not a valide token", scope);
         }
 
         public virtual void OnFileReceive(string token, string fileName, byte[] bytes)

@@ -19,14 +19,14 @@ using GLTFast.Schema;
 using MrtkShader;
 using System.Collections.Generic;
 using System.IO;
-using UnityEngine;
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.cdk
 {
     public class GltfastCustomMaterialGenerator : DefaultMaterialGenerator
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading|DebugScope.Material;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
         ///<inheritdoc/>
         public override UnityEngine.Material GenerateMaterial(GLTFast.Schema.Material gltfMaterial, ref GLTFast.Schema.Texture[] textures, ref GLTFast.Schema.Image[] schemaImages, ref Dictionary<int, Texture2D>[] imageVariants, string url, int id)
