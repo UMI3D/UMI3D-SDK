@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_
 
 <p>This is the complete list of members for <a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a>, including all inherited members.</p>
 <table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#af633809879562628036aaa4ad4243fb7">LoadGlTFScene</a>(GlTFSceneDto dto, System.Action finished, System.Action&lt; int &gt; LoadedNodesCount)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a6a43a8a7383742448abe8e46ed8d47be">LoadGlTFScene</a>(GlTFSceneDto dto, System.Action finished, System.Action&lt; int &gt; ToLoadNodesCount, System.Action&lt; int &gt; LoadedNodesCount)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a89def6477720a596864503542c03e29f">LoadSceneMaterials</a>(GlTFSceneDto dto, Action callback)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a3bac5752b66c287a5ce7dd5ddba89f3a">ReadUMI3DExtension</a>(UMI3DDto dto, GameObject node, Action finished, Action&lt; Umi3dException &gt; failed)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a5c31b4ecd7d937ea3d8efbb254e2aa26">ReadUMI3DMaterialProperty</a>(ref object value, uint propertyKey, ByteContainer container)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"></td></tr>
@@ -102,7 +102,6 @@ $(document).ready(function(){initNavTree('d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_
   <tr class="even"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a5335470f750adb403c06192158354cae">SetUMI3DMaterialProperty</a>(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"></td></tr>
   <tr class="odd"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a9d53d1344f18f5215c10053f3cdadcba">SetUMI3DProperty</a>(UMI3DEntityInstance entity, SetEntityPropertyDto property)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a1a7c79170622dc63c0cf11b517d64898">SetUMI3DProperty</a>(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"><span class="mlabel">virtual</span></td></tr>
-  <tr class="odd"><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#ad8d966e9d8a730e6e68787f9f0119733">UMI3DSceneLoader</a>(UMI3DEnvironmentLoader EnvironementLoader)</td><td class="entry"><a class="el" href="../../d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html">umi3d.cdk.UMI3DSceneLoader</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.20-->

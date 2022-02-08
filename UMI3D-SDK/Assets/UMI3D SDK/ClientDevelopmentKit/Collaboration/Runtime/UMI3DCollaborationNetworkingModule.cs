@@ -34,14 +34,16 @@ namespace umi3d.cdk.collaboration
                         readable = false;
                         return true;
                     }
-                    var user = new UserDto();
-                    user.id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    user.status = (StatusType)UMI3DNetworkingHelper.Read<uint>(container);
-                    user.avatarId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    user.audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    user.audioFrequency = UMI3DNetworkingHelper.Read<int>(container);
-                    user.videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    user.networkId = UMI3DNetworkingHelper.Read<uint>(container);
+                    var user = new UserDto
+                    {
+                        id = UMI3DNetworkingHelper.Read<ulong>(container),
+                        status = (StatusType)UMI3DNetworkingHelper.Read<uint>(container),
+                        avatarId = UMI3DNetworkingHelper.Read<ulong>(container),
+                        audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
+                        audioFrequency = UMI3DNetworkingHelper.Read<int>(container),
+                        videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
+                        networkId = UMI3DNetworkingHelper.Read<uint>(container)
+                    };
                     result = (T)(object)user;
                     readable = true;
                     return true;
@@ -79,18 +81,22 @@ namespace umi3d.cdk.collaboration
                     }
                 case true when typeof(T) == typeof(DofGroupOptionDto):
                     {
-                        var value = new DofGroupOptionDto();
-                        value.name = UMI3DNetworkingHelper.Read<string>(container);
-                        value.separations = UMI3DNetworkingHelper.ReadList<DofGroupDto>(container);
+                        var value = new DofGroupOptionDto
+                        {
+                            name = UMI3DNetworkingHelper.Read<string>(container),
+                            separations = UMI3DNetworkingHelper.ReadList<DofGroupDto>(container)
+                        };
                         result = (T)(object)value;
                         readable = true;
                         return true;
                     }
                 case true when typeof(T) == typeof(DofGroupDto):
                     {
-                        var value = new DofGroupDto();
-                        value.name = UMI3DNetworkingHelper.Read<string>(container);
-                        value.dofs = (DofGroupEnum)UMI3DNetworkingHelper.Read<int>(container);
+                        var value = new DofGroupDto
+                        {
+                            name = UMI3DNetworkingHelper.Read<string>(container),
+                            dofs = (DofGroupEnum)UMI3DNetworkingHelper.Read<int>(container)
+                        };
                         result = (T)(object)value;
                         readable = true;
                         return true;

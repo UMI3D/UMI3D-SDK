@@ -28,8 +28,10 @@ namespace umi3d.edk
 
         public (byte[], bool) ToBson(UMI3DUser user)
         {
-            var transactionDto = new TransactionDto();
-            transactionDto.operations = new List<AbstractOperationDto>(Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }));
+            var transactionDto = new TransactionDto
+            {
+                operations = new List<AbstractOperationDto>(Operations.Where((op) => { return op.users.Contains(user); }).Select((op) => { return op.ToOperationDto(user); }))
+            };
             if (transactionDto.operations.Count > 0)
             {
                 return (transactionDto.ToBson(), true);

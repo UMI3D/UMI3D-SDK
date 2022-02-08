@@ -24,9 +24,9 @@ namespace umi3d.common
     [System.Serializable]
     public class UMI3DShaderPropertyDto : UMI3DDto, IBytable
     {
-        private byte CollectionType;
+        private readonly byte CollectionType;
         private int size;
-        private byte Type;
+        private readonly byte Type;
         public object value;
 
         public UMI3DShaderPropertyDto(object value)

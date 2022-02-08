@@ -16,20 +16,21 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 
 
 namespace umi3d.edk.interaction
 {
     public static class UMI3DBrowserRequestDispatcher
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Interaction | DebugScope.Networking;
+
 
         public static void DispatchBrowserRequest(UMI3DUser user, UMI3DDto dto)
         {
             switch (dto)
             {
                 case TransactionDto transaction:
-                    Debug.Log($"receive transaction from browser {user.Id()}:{dto}");
+                    UMI3DLogger.Log($"receive transaction from browser {user.Id()}:{dto}", scope);
                     break;
                 case ToolReleasedDto toolReleased:
                     UMI3DEnvironment.GetEntity<AbstractTool>(toolReleased.toolId)?.OnToolReleased(user, toolReleased);
@@ -47,7 +48,7 @@ namespace umi3d.edk.interaction
                     UMI3DEnvironment.GetEntity<AbstractInteraction>(interaction.id)?.OnUserInteraction(user, interaction);
                     break;
                 default:
-                    Debug.LogWarning($"Missing case {dto.GetType()}");
+                    UMI3DLogger.LogWarning($"Missing case {dto.GetType()}", scope);
                     break;
             }
         }
@@ -60,7 +61,7 @@ namespace umi3d.edk.interaction
             switch (operationKey)
             {
                 case UMI3DOperationKeys.Transaction:
-                    Debug.Log($"receive transaction from browser {user.Id()}");
+                    UMI3DLogger.Log($"receive transaction from browser {user.Id()}", scope);
                     break;
                 case UMI3DOperationKeys.ToolReleased:
                     bonetype = UMI3DNetworkingHelper.Read<uint>(container);
@@ -91,7 +92,7 @@ namespace umi3d.edk.interaction
                         UMI3DEnvironment.GetEntity<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoverredId, bonetype, container);
                         break;
                     }
-                    Debug.LogWarning($"Missing case {operationKey}");
+                    UMI3DLogger.LogWarning($"Missing case {operationKey}", scope);
                     break;
             }
         }

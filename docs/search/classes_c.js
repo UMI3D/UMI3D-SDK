@@ -20,6 +20,7 @@ var searchData=
   ['meshmetricdto_17',['MeshMetricDto',['../da/db7/classumi3d_1_1common_1_1_mesh_metric_dto.html',1,'umi3d::common']]],
   ['microphoneevent_18',['MicrophoneEvent',['../dd/d4e/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_event.html',1,'umi3d::cdk::collaboration']]],
   ['microphonelistener_19',['MicrophoneListener',['../d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html',1,'umi3d::cdk::collaboration']]],
-  ['multisetentityproperty_20',['MultiSetEntityProperty',['../d4/de4/classumi3d_1_1edk_1_1_multi_set_entity_property.html',1,'umi3d::edk']]],
-  ['multisetentitypropertydto_21',['MultiSetEntityPropertyDto',['../d2/d1f/classumi3d_1_1common_1_1_multi_set_entity_property_dto.html',1,'umi3d::common']]]
+  ['missingentitydto_20',['MissingEntityDto',['../dc/de3/classumi3d_1_1common_1_1_missing_entity_dto.html',1,'umi3d::common']]],
+  ['multisetentityproperty_21',['MultiSetEntityProperty',['../d4/de4/classumi3d_1_1edk_1_1_multi_set_entity_property.html',1,'umi3d::edk']]],
+  ['multisetentitypropertydto_22',['MultiSetEntityPropertyDto',['../d2/d1f/classumi3d_1_1common_1_1_multi_set_entity_property_dto.html',1,'umi3d::common']]]
 ];

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -223,6 +224,38 @@ namespace umi3d.cdk.interaction
                 associatedInputs.Remove(tool.id);
             }
             currentTool = null;
+        }
+
+        /// <summary>
+        /// Change a tool on this controller to add a new interaction
+        /// </summary>
+        /// <param name="tool"></param>
+        /// <param name="releasable"></param>
+        /// <param name="abstractInteractionDto"></param>
+        /// <param name="reason"></param>
+        public virtual void AddUpdate(AbstractTool tool, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason)
+        {
+            if (currentTool != tool)
+                throw new System.Exception("Try to update wrong tool");
+
+            if (RequiresMenu(tool))
+            {
+                CreateInteractionsMenuFor(tool);
+            }
+            else
+            {
+                var interaction = new AbstractInteractionDto[] { abstractInteractionDto };
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interaction, tool.id, GetCurrentHoveredId());
+                if (associatedInputs.ContainsKey(tool.id))
+                {
+                    associatedInputs[tool.id] = associatedInputs[tool.id].Concat(inputs).ToArray();
+                }
+                else
+                {
+                    associatedInputs.Add(tool.id, inputs);
+                }
+            }
+            currentTool = tool;
         }
     }
 }

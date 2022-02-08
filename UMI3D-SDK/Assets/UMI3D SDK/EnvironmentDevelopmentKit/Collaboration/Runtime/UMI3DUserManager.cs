@@ -28,13 +28,14 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DUserManager
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
 
         /// <summary>
         /// Contain the users connected to the scene.
         /// </summary>
-        private Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
-        private Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
-        private Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
+        private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
+        private readonly Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
+        private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
         private UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
 
@@ -61,9 +62,11 @@ namespace umi3d.edk.collaboration
 
         public PlayerCountDto GetPlayerCount()
         {
-            var pc = new PlayerCountDto();
-            pc.count = users.Count(k => k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY);
-            pc.lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss");
+            var pc = new PlayerCountDto
+            {
+                count = users.Count(k => k.Value.status == StatusType.ACTIVE || k.Value.status == StatusType.AWAY),
+                lastUpdate = lastUpdate.ToString("MM:dd:yyyy:HH:mm:ss")
+            };
             return pc;
         }
 
@@ -177,7 +180,7 @@ namespace umi3d.edk.collaboration
                 bool reconnection = false;
                 if (LoginDto == null)
                 {
-                    Debug.LogWarning("user try to use empty login");
+                    UMI3DLogger.LogWarning("user try to use empty login", scope);
                     acceptUser(false);
                     return;
                 }
@@ -190,7 +193,7 @@ namespace umi3d.edk.collaboration
                 {
                     if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != 0 && users.ContainsKey(LoginDto.userId))
                     {
-                        Debug.LogWarning($"Login [{LoginDto.login}] already us by an other user");
+                        UMI3DLogger.LogWarning($"Login [{LoginDto.login}] already us by an other user", scope);
                         acceptUser(false);
                         return;
                     }

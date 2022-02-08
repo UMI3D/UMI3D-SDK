@@ -22,6 +22,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
+using umi3d.edk.volume;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -32,6 +33,8 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DForgeServer : ForgeSocketBase
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
         /// <summary>
         /// 
         /// </summary>
@@ -114,13 +117,13 @@ namespace umi3d.edk.collaboration
 
             if (!server.IsBound)
             {
-                Debug.LogError("NetWorker failed to bind");
+                UMI3DLogger.LogError("NetWorker failed to bind", scope);
                 return;
             }
 
             if (mgr == null && networkManager == null)
             {
-                Debug.LogWarning("A network manager was not provided, generating a new one instead");
+                UMI3DLogger.LogWarning("A network manager was not provided, generating a new one instead", scope);
                 networkManager = new GameObject("Network Manager");
                 mgr = networkManager.AddComponent<UMI3DNetworkManager>();
             }
@@ -170,7 +173,7 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"Player [{player.NetworkId}] timeout");
+                UMI3DLogger.Log($"Player [{player.NetworkId}] timeout", scope);
             });
             playerCount = server.Players.Count;
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
@@ -190,7 +193,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerAuthenticated(NetworkingPlayer player, NetWorker sender)
         {
-            //Debug.Log($"Player { player.NetworkId } {player.Name} authenticated");
+            //UMI3DLogger.Log($"Player { player.NetworkId } {player.Name} authenticated",scope);
         }
 
         /// <summary>
@@ -210,7 +213,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerRejected(NetworkingPlayer player, NetWorker sender)
         {
-            Debug.Log("Player rejected");
+            UMI3DLogger.Log("Player rejected", scope);
             //TODO
         }
 
@@ -223,10 +226,10 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.Log($"Player [{player.NetworkId}] disconected");
+                UMI3DLogger.Log($"Player [{player.NetworkId}] disconected", scope);
             });
             playerCount = server.Players.Count;
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId);
             if (user != null)
             {
                 MainThreadManager.Run(() =>
@@ -246,7 +249,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log(sts.status);
+                    UMI3DLogger.Log(sts.status, scope);
                 });
                 UMI3DCollaborationServer.Collaboration.OnStatusUpdate(user.Id(), sts.status);
             }
@@ -272,11 +275,19 @@ namespace umi3d.edk.collaboration
             if (UMI3DEnvironment.Instance.useDto)
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
-                if (dto is common.userCapture.UserCameraPropertiesDto camera)
+
+                if (dto is common.userCapture.UserCameraPropertiesDto cam)
                 {
                     MainThreadManager.Run(() =>
                     {
-                        UMI3DEmbodimentManager.Instance.UserCameraReception(camera, user);
+                        UMI3DEmbodimentManager.Instance.UserCameraReception(cam, user);
+                    });
+                }
+                else if (dto is common.volume.VolumeUserTransitDto vutdto)
+                {
+                    MainThreadManager.Run(() =>
+                    {
+                        VolumeManager.DispatchBrowserRequest(user, vutdto.volumeId, vutdto.direction);
                     });
                 }
                 else
@@ -291,20 +302,30 @@ namespace umi3d.edk.collaboration
             {
                 var container = new ByteContainer(frame.StreamData.byteArr);
                 uint id = UMI3DNetworkingHelper.Read<uint>(container);
-                if (id == UMI3DOperationKeys.UserCameraProperties)
+                switch (id)
                 {
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
-                    });
+                    case UMI3DOperationKeys.UserCameraProperties:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
+                        });
+                        break;
+
+                    case UMI3DOperationKeys.VolumeUserTransit: //add here future other volume related keys.
+                        MainThreadManager.Run(() =>
+                        {
+                            VolumeManager.DispatchBrowserRequest(user, id, container);
+                        });
+                        break;
+
+                    default:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
+                        });
+                        break;
                 }
-                else
-                {
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
-                    });
-                }
+
             }
         }
 
@@ -370,6 +391,7 @@ namespace umi3d.edk.collaboration
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
                     trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    trackingFrame.skeletonHighOffset = UMI3DNetworkingHelper.Read<float>(container);
                     trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
@@ -415,7 +437,7 @@ namespace umi3d.edk.collaboration
         {
             MainThreadManager.Run(() =>
             {
-                Debug.LogError("Video frame not implemented!");
+                UMI3DLogger.LogError("Video frame not implemented!", scope);
             });
         }
 
@@ -588,7 +610,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        private Dictionary<uint, Dictionary<uint, Dictionary<int, ulong>>> relayMemory = new Dictionary<uint, Dictionary<uint, Dictionary<int, ulong>>>();
+        private readonly Dictionary<uint, Dictionary<uint, Dictionary<int, ulong>>> relayMemory = new Dictionary<uint, Dictionary<uint, Dictionary<int, ulong>>>();
 
         /// <summary>
         /// 
@@ -663,7 +685,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    Debug.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]");
+                    UMI3DLogger.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]", scope);
                 });
             }
         }

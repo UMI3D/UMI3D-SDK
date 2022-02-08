@@ -57,7 +57,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
-        public abstract FileDto ChooseVariante(List<FileDto> files);
+        public abstract FileDto ChooseVariant(List<FileDto> files);
 
         /// <summary>
         /// Setup an Umi3d object acording to a UMI3DDto.

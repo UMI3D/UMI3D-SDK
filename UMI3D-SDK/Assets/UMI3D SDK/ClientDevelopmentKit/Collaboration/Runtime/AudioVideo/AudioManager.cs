@@ -28,9 +28,9 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class AudioManager : Singleton<AudioManager>
     {
-        private Dictionary<ulong, AudioReader> GlobalReader = new Dictionary<ulong, AudioReader>();
-        private Dictionary<ulong, AudioReader> SpacialReader = new Dictionary<ulong, AudioReader>();
-        private Dictionary<ulong, Coroutine> WaitCoroutine = new Dictionary<ulong, Coroutine>();
+        private readonly Dictionary<ulong, AudioReader> GlobalReader = new Dictionary<ulong, AudioReader>();
+        private readonly Dictionary<ulong, AudioReader> SpacialReader = new Dictionary<ulong, AudioReader>();
+        private readonly Dictionary<ulong, Coroutine> WaitCoroutine = new Dictionary<ulong, Coroutine>();
 
         private void Start()
         {
@@ -122,8 +122,10 @@ namespace umi3d.cdk.collaboration
                         SpacialReader.Remove(user.id);
                     if (!GlobalReader.ContainsKey(user.id))
                     {
-                        var g = new GameObject();
-                        g.name = $"user_{user.id}_audio_reader";
+                        var g = new GameObject
+                        {
+                            name = $"user_{user.id}_audio_reader"
+                        };
                         GlobalReader[user.id] = g.AddComponent<AudioReader>();
                     }
                 }

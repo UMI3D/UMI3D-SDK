@@ -16,8 +16,8 @@ limitations under the License.
 
 using umi3d.cdk.menu;
 using umi3d.cdk.menu.interaction;
+using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
@@ -28,6 +28,7 @@ namespace umi3d.cdk.interaction
     /// <see cref="InteractableDto"/>
     public class Tool : AbstractTool
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
 
         public class Event : UnityEvent<Tool> { }
 
@@ -71,9 +72,11 @@ namespace umi3d.cdk.interaction
                     result = new MenuItem();
                     break;
                 case EventDto eventDto:
-                    var e = new EventMenuItem();
-                    e.interaction = eventDto;
-                    e.toggle = eventDto.hold;
+                    var e = new EventMenuItem
+                    {
+                        interaction = eventDto,
+                        toggle = eventDto.hold
+                    };
                     e.Subscribe((x) =>
                     {
                         if (eventDto.hold)
@@ -216,9 +219,9 @@ namespace umi3d.cdk.interaction
                     result = form;
                     break;
                 default:
-                    Debug.LogWarning($"Unknown Menu Item for {dto}");
+                    UMI3DLogger.LogWarning($"Unknown Menu Item for {dto}", scope);
                     result = new MenuItem();
-                    result.Subscribe(() => Debug.Log("Unknown case."));
+                    result.Subscribe(() => UMI3DLogger.Log("Unknown case.", scope));
                     break;
             }
             result.Name = dto.name;

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using UnityEngine.Networking;
 
@@ -24,17 +25,38 @@ namespace umi3d.cdk
     /// </summary>
     public class RequestFailedArgument
     {
-        private Action tryAgain;
+        private readonly Action tryAgain;
         public DateTime date { get; private set; }
 
-        private UnityWebRequest request;
-        private long responseCode = 0;
+        private readonly UnityWebRequest request;
+        private readonly long responseCode = 0;
 
         public long GetRespondCode()
         {
             return request?.responseCode ?? responseCode;
         }
 
+        public string GetUrl()
+        {
+            return request?.url;
+        }
+
+        public System.Collections.Generic.Dictionary<string, string> GetHeader()
+        {
+            return request?.GetResponseHeaders();
+        }
+
+        public override string ToString()
+        {
+            if (request != null)
+            {
+                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{request.responseCode}, url:{request.url}], header:{request?.GetResponseHeaders()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ";
+            }
+            else
+            {
+                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{responseCode}]";
+            }
+        }
 
         public Func<RequestFailedArgument, bool> ShouldTryAgain { get; private set; }
         public RequestFailedArgument(UnityWebRequest request, Action tryAgain, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
@@ -67,6 +89,10 @@ namespace umi3d.cdk
 
     public class Umi3dException : Exception
     {
+        private readonly string stack = null;
+
+        public override string StackTrace => stack ?? base.StackTrace;
+
         public Umi3dException(long errorCode, string message) : base(message)
         {
             this.errorCode = errorCode;
@@ -77,7 +103,28 @@ namespace umi3d.cdk
             this.errorCode = 0;
         }
 
+        public Umi3dException(Exception exception, string message) : base(message + "\n" + exception.Message)
+        {
+            this.exception = exception;
+            this.errorCode = 0;
+            this.stack = exception.StackTrace;
+        }
+
+        public Umi3dException(Exception exception) : base(exception.Message)
+        {
+            this.exception = exception;
+            this.errorCode = 0;
+            this.stack = exception.StackTrace;
+        }
+
         public long errorCode { get; protected set; }
+        public readonly Exception exception;
+
+        public override string ToString()
+        {
+            return $"code : {errorCode} | {base.ToString()} : [  { exception?.StackTrace ?? base.StackTrace} ]";
+        }
+
     }
 
 }

@@ -33,11 +33,13 @@ namespace umi3d.edk
         ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            var setEntity = new SetEntityDictionaryPropertyDto();
-            setEntity.property = property;
-            setEntity.entityId = entityId;
-            setEntity.value = value;
-            setEntity.key = key;
+            var setEntity = new SetEntityDictionaryPropertyDto
+            {
+                property = property,
+                entityId = entityId,
+                value = value,
+                key = key
+            };
             return setEntity;
         }
 

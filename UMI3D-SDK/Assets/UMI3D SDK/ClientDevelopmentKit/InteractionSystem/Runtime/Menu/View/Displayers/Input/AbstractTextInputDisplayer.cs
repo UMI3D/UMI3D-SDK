@@ -28,7 +28,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
+        private readonly List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
         /// <summary>
         /// Get displayed value.
         /// </summary>

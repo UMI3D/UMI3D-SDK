@@ -22,7 +22,9 @@ namespace umi3d.common
 {
     public static class UMI3DNetworkingHelper
     {
-        private static List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
+        private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
+
+        private static readonly List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
 
         /// <summary>
         /// Add a networking module.
@@ -716,8 +718,8 @@ namespace umi3d.common
 
         private class DictionaryEntryBytable : IBytable
         {
-            private object key;
-            private IBytable value;
+            private readonly object key;
+            private readonly IBytable value;
 
             public DictionaryEntryBytable(DictionaryEntry entry)
             {
@@ -846,6 +848,8 @@ namespace umi3d.common
 
     public class Bytable
     {
+        private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
+
         public int size { get; private set; }
         public Func<byte[], int, int, (int, int)> function { get; private set; }
 
@@ -865,14 +869,14 @@ namespace umi3d.common
         {
             byte[] b = new byte[size];
             (int, int) c = function(b, 0, 0);
-            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}");
+            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}", scope);
             return b;
         }
 
         public byte[] ToBytes(byte[] bytes, int position = 0)
         {
             (int, int) c = function(bytes, position, 0);
-            if (c.Item2 != size) Debug.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}");
+            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}", scope);
             return bytes;
         }
 

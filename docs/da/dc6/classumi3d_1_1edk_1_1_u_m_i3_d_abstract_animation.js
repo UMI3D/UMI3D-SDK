@@ -15,7 +15,7 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation =
     [ "ToEntityDto", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#ad3463d56c9d60bea7ffd3f0e0f532c8c", null ],
     [ "WriteProperties", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#aac1ac80eefc4dfe0139ca71028856636", null ],
     [ "objectLooping", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#a9f08f6c77bb7c4cf2b0c2151b2ebfb8e", null ],
-    [ "objectPauseFrame", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#aadf1c688c568ae5d7ac0331d90b38f42", null ],
+    [ "objectPauseTime", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#a211f3deab96125570252c2702f9c7838", null ],
     [ "objectPlaying", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#ad9fe79a30e2f5cdb8c50f238ba2e92d4", null ],
     [ "objectStartTime", "da/dc6/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_animation.html#ad4d3318c46f7f14e0d5e3737a3fc2ee7", null ]
 ];

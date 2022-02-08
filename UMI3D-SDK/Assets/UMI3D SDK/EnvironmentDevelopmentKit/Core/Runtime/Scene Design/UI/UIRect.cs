@@ -95,7 +95,7 @@ namespace umi3d.edk
         ///<see cref="rectMask"/>
         public UMI3DAsyncProperty<bool> RectMask { get { Register(); return _rectMask; } protected set => _rectMask = value; }
 
-        private UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
 
         private UMI3DAsyncProperty<Vector2> _anchoredPosition;
         private UMI3DAsyncProperty<Vector3> _anchoredPosition3D;

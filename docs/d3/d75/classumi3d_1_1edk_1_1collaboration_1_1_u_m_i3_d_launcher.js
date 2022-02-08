@@ -1,6 +1,7 @@
 var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher =
 [
     [ "ApplyConfigFile", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#abf74e48ebeac54b857f0ca1f8cba33b1", null ],
+    [ "GenerateConfigFile", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#abc3a8ae0207eb5d8a794c6d2697b25da", null ],
     [ "LaunchServer", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a31fca048b3e6a44be1ce0b9568d87dd3", null ],
     [ "OtherParam", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a972c86819a708d8e4f945bacfd954412", null ],
     [ "ReadConfigFile", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a6096f453e189360ce53a155e7bfaf220", null ],
@@ -8,6 +9,11 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher =
     [ "SetHttpPort", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#aea3b6fc73f70c7666cbf9ff106cc3a56", null ],
     [ "SetIconServerUrl", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a6170f026cf92813b7a03c9526bec2d33", null ],
     [ "SetIp", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#afb19342a9fc513cd29a105d94f3b5c4e", null ],
+    [ "SetLoginfoFrequencyParam", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a9d498e8f0f13deb27ba65fa224e6e042", null ],
+    [ "SetloginfoOutputPathParam", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a79e5ca360b9fe9294a536dd8d5044a52", null ],
+    [ "SetLogLevel", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a8778da33c6cfb41df97ebd41948685e8", null ],
+    [ "SetlogOutputPathParam", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#adc91ae42b646a1dbf553b77084b8e5cf", null ],
+    [ "SetLogScope", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a04554a37377262445bdce1cef7a25e9d", null ],
     [ "SetMasterServerIp", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a1902a4cbc0096964d80f871bc05a7745", null ],
     [ "SetMasterServerPort", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#ac9f2c390ca101233c6a337313d29c54b", null ],
     [ "SetMaxNbPlayers", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html#a3b4bac08526840bfd9905f9e9be64737", null ],

@@ -1,7 +1,6 @@
 var classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader =
 [
-    [ "UMI3DSceneLoader", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#ad8d966e9d8a730e6e68787f9f0119733", null ],
-    [ "LoadGlTFScene", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#af633809879562628036aaa4ad4243fb7", null ],
+    [ "LoadGlTFScene", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a6a43a8a7383742448abe8e46ed8d47be", null ],
     [ "LoadSceneMaterials", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a89def6477720a596864503542c03e29f", null ],
     [ "ReadUMI3DExtension", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a3bac5752b66c287a5ce7dd5ddba89f3a", null ],
     [ "ReadUMI3DMaterialProperty", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html#a5c31b4ecd7d937ea3d8efbb254e2aa26", null ],

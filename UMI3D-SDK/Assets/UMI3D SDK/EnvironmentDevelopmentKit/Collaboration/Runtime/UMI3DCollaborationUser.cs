@@ -20,24 +20,26 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
-using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
     public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
         public UMI3DCollaborationUser(string login)
         {
             this.login = login;
             status = StatusType.CREATED;
-            Debug.Log($"<color=magenta>new User {Id()} {login}</color>");
+            UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
 
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            var ucDto = new UserConnectionAnswerDto(ToUserDto());
-            ucDto.librariesUpdated = !UMI3DEnvironment.UseLibrary();
+            var ucDto = new UserConnectionAnswerDto(ToUserDto())
+            {
+                librariesUpdated = !UMI3DEnvironment.UseLibrary()
+            };
             RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
         }
@@ -89,8 +91,10 @@ namespace umi3d.edk.collaboration
 
         public virtual TokenDto ToTokenDto()
         {
-            var token = new TokenDto();
-            token.token = this.token;
+            var token = new TokenDto
+            {
+                token = this.token
+            };
             return token;
         }
 
@@ -106,21 +110,25 @@ namespace umi3d.edk.collaboration
 
         public virtual UserDto ToUserDto()
         {
-            var user = new UserDto();
-            user.id = Id();
-            user.status = status;
-            user.avatarId = Avatar == null ? 0 : Avatar.Id();
-            user.networkId = networkPlayer?.NetworkId ?? 0;
-            user.audioSourceId = audioPlayer?.Id() ?? 0;
-            user.audioFrequency = audioFrequency;
-            user.videoSourceId = videoPlayer?.Id() ?? 0;
+            var user = new UserDto
+            {
+                id = Id(),
+                status = status,
+                avatarId = Avatar == null ? 0 : Avatar.Id(),
+                networkId = networkPlayer?.NetworkId ?? 0,
+                audioSourceId = audioPlayer?.Id() ?? 0,
+                audioFrequency = audioFrequency,
+                videoSourceId = videoPlayer?.Id() ?? 0
+            };
             return user;
         }
 
         public virtual StatusDto ToStatusDto()
         {
-            var status = new StatusDto();
-            status.status = this.status;
+            var status = new StatusDto
+            {
+                status = this.status
+            };
             return status;
         }
     }

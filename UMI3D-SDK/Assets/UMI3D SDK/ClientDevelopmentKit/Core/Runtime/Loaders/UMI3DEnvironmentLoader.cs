@@ -30,39 +30,90 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DEnvironmentLoader : Singleton<UMI3DEnvironmentLoader>
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Index of any 3D object loaded.
         /// </summary>
-        private Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
-        private Dictionary<ulong, List<Action<UMI3DEntityInstance>>> entitywaited = new Dictionary<ulong, List<Action<UMI3DEntityInstance>>>();
+        private readonly Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
+        private readonly Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>> entitywaited = new Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>>();
+        private readonly HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
+        private readonly HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
 
-        public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> callback)
+        /// <summary>
+        /// Call a callback when an entity is registerd.
+        /// The entity might not be totaly loaded when the callback is called.
+        /// all property of UMI3DEntityInstance and UMI3DNodeInstance are set.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entityLoaded"></param>
+        /// <param name="entityFailedToLoad"></param>
+        public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
             if (!Exists) return;
             if (Instance.entitywaited == null) return;
 
             UMI3DEntityInstance node = GetEntity(id);
-            if (node != null)
+            if (node != null && node.IsLoaded)
             {
-                callback?.Invoke(node);
+                entityLoaded?.Invoke(node);
             }
             else
             {
                 if (Instance.entitywaited.ContainsKey(id))
-                    Instance.entitywaited[id].Add(callback);
+                    Instance.entitywaited[id].Add((entityLoaded, entityFailedToLoad));
                 else
-                    Instance.entitywaited[id] = new List<Action<UMI3DEntityInstance>>() { callback };
+                    Instance.entitywaited[id] = new List<(Action<UMI3DEntityInstance>, Action)>() { (entityLoaded, entityFailedToLoad) };
             }
+        }
+
+        private static bool NotifyEntityToBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityToBeLoaded.Add(id) : false;
+        }
+
+        private static bool IsEntityToBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityToBeLoaded.Contains(id) : false;
+        }
+        private static bool IsEntityToFailedBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityFailedToBeLoaded.Contains(id) : false;
+        }
+
+        private static bool RemoveEntityToFailedBeLoaded(ulong id)
+        {
+            return Exists ? Instance.entityFailedToBeLoaded.Remove(id) : false;
         }
 
         private static void NotifyEntityLoad(ulong id)
         {
-            UMI3DEntityInstance node = GetEntity(id);
-            if (node != null && Instance.entitywaited.ContainsKey(id))
+            if (Exists)
             {
-                Instance.entitywaited[id].ForEach(a => a?.Invoke(node));
-                Instance.entitywaited.Remove(id);
+                UMI3DEntityInstance node = GetEntity(id);
+                if (node != null)
+                {
+                    if (Instance.entitywaited.ContainsKey(id))
+                    {
+                        Instance.entitywaited[id].ForEach(a => a.Item1?.Invoke(node));
+                        Instance.entitywaited.Remove(id);
+                    }
+                    Instance.entityToBeLoaded.Remove(id);
+                }
+            }
+        }
+
+        private static void NotifyEntityFailedToLoad(ulong id)
+        {
+            if (Exists)
+            {
+                if (Instance.entitywaited.ContainsKey(id))
+                {
+                    Instance.entitywaited[id].ForEach(a => a.Item2?.Invoke());
+                    Instance.entitywaited.Remove(id);
+                }
+                Instance.entityToBeLoaded.Remove(id);
+                Instance.entityFailedToBeLoaded.Add(id);
             }
         }
 
@@ -118,10 +169,9 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DNodeInstance() { gameObject = instance, dto = dto, Delete = delete };
+                node = new UMI3DNodeInstance(() => NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
                 Instance.entities.Add(id, node);
             }
-            NotifyEntityLoad(id);
 
             return node;
         }
@@ -145,10 +195,9 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DEntityInstance() { dto = dto, Object = Object, Delete = delete };
+                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = Object, Delete = delete };
                 Instance.entities.Add(id, node);
             }
-            NotifyEntityLoad(id);
             return node;
         }
 
@@ -161,24 +210,24 @@ namespace umi3d.cdk
         /// Number of UMI3D nodes.
         /// = Number of scenes + Number of glTF nodes
         /// </summary>
-        private int nodesToInstantiate = 0;
+        private float nodesToInstantiate = 0;
 
         /// <summary>
         /// Number of UMI3D nodes.
         /// = Number of scenes + Number of glTF nodes
         /// </summary>
-        private int instantiatedNodes = 0;
+        private float instantiatedNodes = 0;
 
         /// <summary>
         /// Number of UMI3D nodes.
         /// = Number of scenes + Number of glTF nodes
         /// </summary>
-        private int resourcesToLoad = 0;
+        private float resourcesToLoad = 0;
 
         /// <summary>
         /// Number of loaded resources.
         /// </summary>
-        private int loadedResources = 0;
+        private float loadedResources = 0;
 
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
@@ -194,7 +243,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public Material GetBaseMaterial()
         {
-            //Debug.Log("GetBaseMaterial");
+            //UMI3DLogger.Log("GetBaseMaterial",scope);
             if (baseMaterial == null)
                 return null;
             return new Material(baseMaterial);
@@ -222,7 +271,7 @@ namespace umi3d.cdk
         protected override void Awake()
         {
             base.Awake();
-            sceneLoader = new UMI3DSceneLoader(this);
+            sceneLoader = new UMI3DSceneLoader();
             nodeLoader = new GlTFNodeLoader();
         }
 
@@ -251,6 +300,17 @@ namespace umi3d.cdk
         public UnityEvent onEnvironmentLoaded = new UnityEvent();
 
         /// <summary>
+        /// Is environement (except videos) loaded ?
+        /// </summary>
+        public bool isEnvironmentLoaded = false;
+
+
+        public void NotifyLoad()
+        {
+            onProgressChange.Invoke(0);
+        }
+
+        /// <summary>
         /// Load the Environment.
         /// </summary>
         /// <param name="dto">Dto of the environement.</param>
@@ -259,8 +319,11 @@ namespace umi3d.cdk
         /// <returns></returns>
         public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
         {
+            onProgressChange.Invoke(0.1f);
+            isEnvironmentLoaded = false;
+
             environment = dto;
-            RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null);
+            RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
             nodesToInstantiate = dto.scenes.Count;
             foreach (GlTFSceneDto sce in dto.scenes)
                 nodesToInstantiate += sce.nodes.Count;
@@ -271,28 +334,51 @@ namespace umi3d.cdk
             StartCoroutine(LoadResources(dto));
             while (!downloaded)
             {
-                onProgressChange.Invoke(resourcesToLoad == 0 ? 1f : loadedResources / resourcesToLoad);
-                yield return new WaitForEndOfFrame();
+                onProgressChange.Invoke(resourcesToLoad == 0 ? 0.2f : 0.1f + loadedResources / resourcesToLoad * 0.4f);
+                yield return null;
             }
-            onProgressChange.Invoke(1f);
+            onProgressChange.Invoke(0.5f);
             onResourcesLoaded.Invoke();
+
             //
             // Instantiate nodes
             //
 
             ReadUMI3DExtension(dto, null);
 
-            onProgressChange.Invoke(0f);
             InstantiateNodes();
             while (!loaded)
             {
-                onProgressChange.Invoke(nodesToInstantiate == 0 ? 1f : instantiatedNodes / nodesToInstantiate);
-                yield return new WaitForEndOfFrame();
+                onProgressChange.Invoke(nodesToInstantiate == 0 ? 0.6f : 0.5f + instantiatedNodes / nodesToInstantiate * 0.4f);
+                yield return null;
             }
-            onProgressChange.Invoke(1f);
-            onEnvironmentLoaded.Invoke();
-            yield return null;
-            onSuccess.Invoke();
+
+            onProgressChange.Invoke(0.9f);
+            yield return new WaitForSeconds(0.3f);
+            isEnvironmentLoaded = true;
+            Action onFinish = () =>
+            {
+                StartCoroutine(Load());
+            };
+
+            IEnumerator Load()
+            {
+                onProgressChange.Invoke(1f);
+                yield return new WaitForSeconds(0.3f);
+                onEnvironmentLoaded.Invoke();
+                yield return null;
+                onSuccess.Invoke();
+            }
+
+
+            if (UMI3DVideoPlayerLoader.HasVideoToLoad)
+            {
+                UMI3DVideoPlayerLoader.LoadVideoPlayers(() => { onFinish(); });
+            }
+            else
+            {
+                onFinish();
+            }
         }
 
         #endregion
@@ -344,11 +430,13 @@ namespace umi3d.cdk
             //Load scenes without hierarchy
             foreach (GlTFSceneDto scene in scenes)
             {
+                float tmpLoadedNodes = instantiatedNodes;
                 bool isFinished = false;
-                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => instantiatedNodes = i); ;
+                float total = 0;
+                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => total = i, (i) => instantiatedNodes = tmpLoadedNodes + i * 0.5f);
                 yield return new WaitUntil(() => isFinished == true);
+                instantiatedNodes = tmpLoadedNodes + total * 0.5f;
             }
-
             int count = 0;
             //Organize scenes
             foreach (GlTFSceneDto scene in scenes)
@@ -356,16 +444,14 @@ namespace umi3d.cdk
                 count += 1;
                 var node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 1; }, (s) => { count -= 1; Debug.LogWarning(s); });
+                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 0.5f; }, (s) => { count -= 1; UMI3DLogger.LogWarning(s, scope); });
                 node.gameObject.SetActive(true);
             }
             yield return new WaitUntil(() => count <= 0);
             finished.Invoke();
-            yield return null;
         }
 
         #endregion
-
 
         /// <summary>
         /// Load IEntity.
@@ -406,7 +492,7 @@ namespace umi3d.cdk
                         });
                     break;
                 case AbstractEntityDto dto:
-                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { Debug.Log(s); performed.Invoke(); });
+                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.Log(s, scope); performed.Invoke(); });
                     break;
                 case GlTFMaterialDto matDto:
                     Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
@@ -415,12 +501,12 @@ namespace umi3d.cdk
                         if (matDto.name != null && matDto.name.Length > 0)
                             m.name = matDto.name;
                         //register the material
-                        RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m);
+                        RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
                         performed.Invoke();
                     });
                     break;
                 default:
-                    Debug.Log($"load entity fail missing case {entity.GetType()}");
+                    UMI3DLogger.Log($"load entity fail missing case {entity.GetType()}", scope);
                     performed.Invoke();
                     break;
 
@@ -435,6 +521,7 @@ namespace umi3d.cdk
         private void _LoadEntity(ByteContainer container, Action performed)
         {
             List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
+            ids.ForEach(id => NotifyEntityToBeLoaded(id));
             int count = ids.Count;
             int performedCount = 0;
             Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
@@ -442,12 +529,18 @@ namespace umi3d.cdk
             {
                 foreach (IEntity item in load.entities)
                 {
-                    LoadEntity(item, performed2);
+                    if (item is MissingEntityDto missing)
+                    {
+                        NotifyEntityFailedToLoad(missing.id);
+                        UMI3DLogger.Log($"Get entity [{missing.id}] failed : {missing.reason}", scope);
+                    }
+                    else
+                        LoadEntity(item, performed2);
                 }
             };
             Action<string> error = (s) =>
             {
-                Debug.Log(s);
+                UMI3DLogger.LogError(s, scope);
                 performed2.Invoke();
             };
             UMI3DClientServer.GetEntity(ids, callback, error);
@@ -475,9 +568,17 @@ namespace umi3d.cdk
             {
                 UMI3DResourcesManager.UnloadLibrary(entityId);
             }
+            else if (UMI3DEnvironmentLoader.IsEntityToBeLoaded(entityId))
+            {
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) => DeleteEntity(entityId, null));
+            }
+            else if (UMI3DEnvironmentLoader.IsEntityToFailedBeLoaded(entityId))
+            {
+                UMI3DEnvironmentLoader.RemoveEntityToFailedBeLoaded(entityId);
+            }
             else
             {
-                Debug.LogError($"Entity [{entityId}] To Destroy Not Found");
+                UMI3DLogger.LogError($"Entity [{entityId}] To Destroy Not Found And Not in Entities to be loaded", scope);
             }
 
             performed?.Invoke();
@@ -495,6 +596,7 @@ namespace umi3d.cdk
                 DeleteEntity(entity, null);
             }
             UMI3DResourcesManager.Instance.ClearCache();
+            Instance.isEnvironmentLoaded = false;
         }
 
         /// <summary>
@@ -533,7 +635,7 @@ namespace umi3d.cdk
         /// <param name="matDto"></param>
         private void LoadDefaultMaterial(ResourceDto matDto)
         {
-            FileDto fileToLoad = Parameters.ChooseVariante(matDto.variants);
+            FileDto fileToLoad = Parameters.ChooseVariant(matDto.variants);
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -547,7 +649,7 @@ namespace umi3d.cdk
                     loader.UrlToObject,
                     loader.ObjectFromCache,
                     (mat) => SetBaseMaterial((Material)mat),
-                    (e) => Debug.LogWarning(e.Message),
+                    (e) => UMI3DLogger.LogWarning(e.Message, scope),
                     loader.DeleteObject
                     );
             }
@@ -766,8 +868,8 @@ namespace umi3d.cdk
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property);
-                    Debug.LogWarning(e);
+                    UMI3DLogger.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property, scope);
+                    UMI3DLogger.LogWarning(e, scope);
                 }
             }
             return true;
@@ -792,13 +894,13 @@ namespace umi3d.cdk
                     WaitForAnEntityToBeLoaded(id, (e) =>
                     {
                         if (!SetEntity(e, operationId, id, propertyKey, container))
-                            Debug.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {container}");
+                            UMI3DLogger.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {container}", scope | DebugScope.Bytes);
                     });
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning($"SetEntity not apply on this object, id = {  id },  operation = { operationId } ,  property = { propertyKey }");
-                    Debug.LogWarning(e);
+                    UMI3DLogger.LogWarning($"SetEntity not apply on this object, id = {  id },  operation = { operationId } ,  property = { propertyKey }", scope | DebugScope.Bytes);
+                    UMI3DLogger.LogWarning(e, scope);
                 }
             }
             return true;
@@ -852,7 +954,7 @@ namespace umi3d.cdk
             }
         }
 
-        private Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>>();
+        private readonly Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>>();
 
         private void Update()
         {
@@ -1068,7 +1170,7 @@ namespace umi3d.cdk
                 return true;
             }
 
-            Debug.LogWarning("Need to determine what happens when not in interpolation");
+            UMI3DLogger.LogWarning("Need to determine what happens when not in interpolation", scope);
 
             return false;
         }

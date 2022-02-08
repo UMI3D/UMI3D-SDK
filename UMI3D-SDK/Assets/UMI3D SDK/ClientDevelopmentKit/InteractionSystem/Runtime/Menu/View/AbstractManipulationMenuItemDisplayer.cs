@@ -65,7 +65,7 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Selection event subscribers.
         /// </summary>
-        private List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
 
         /// <summary>
         /// Raise selection event.

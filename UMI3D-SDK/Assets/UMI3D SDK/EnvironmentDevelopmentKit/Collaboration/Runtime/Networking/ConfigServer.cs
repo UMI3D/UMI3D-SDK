@@ -81,6 +81,27 @@ namespace umi3d.edk.collaboration
         /// Set the icon url of the server.
         /// </summary>
         public string iconUrlParam = "";
+        /// <summary>
+        /// Set the log scope.
+        /// </summary>
+        public string loggingScopeParam = "";
+        /// <summary>
+        /// Set the log level.
+        /// </summary>
+        public string loggingLevelParam = "";
+        /// <summary>
+        /// Set the loginfo file output path.
+        /// </summary>
+        public string loginfoOutputPathParam = "";
+        /// <summary>
+        /// Set the loginfo frequency.
+        /// </summary>
+        public float loginfoFrequencyParam = -1f;
+        /// <summary>
+        /// Set the log file output path.
+        /// </summary>
+        public string logOutputPathParam = "";
+
 
         /// <summary>
         /// Read config server file.
@@ -100,14 +121,16 @@ namespace umi3d.edk.collaboration
 
 
         // use to generate empty xml config
-        public static void WriteXml(ConfigServer conf)
+        public static void WriteXml(ConfigServer conf, string path)
         {
             var ser = new XmlSerializer(typeof(ConfigServer));
 
-            var settings = new XmlWriterSettings();
-            settings.Indent = true;
-            settings.NewLineOnAttributes = true;
-            var writer = XmlWriter.Create("config.xml", settings);
+            var settings = new XmlWriterSettings
+            {
+                Indent = true,
+                NewLineOnAttributes = true
+            };
+            var writer = XmlWriter.Create(path, settings);
             ser.Serialize(writer, conf);
             writer.Close();
         }

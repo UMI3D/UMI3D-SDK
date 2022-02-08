@@ -65,8 +65,10 @@ namespace umi3d.edk
         public virtual GlTFSceneDto ToGlTFNodeDto(UMI3DUser user)
         {
             //SyncProperties();
-            var dto = new GlTFSceneDto();
-            dto.name = gameObject.name;
+            var dto = new GlTFSceneDto
+            {
+                name = gameObject.name
+            };
             nodes = GetAllChildrenInThisScene(user);
             dto.extensions.umi3d = ToUMI3DSceneNodeDto(user);
             WriteCollections(dto, user);

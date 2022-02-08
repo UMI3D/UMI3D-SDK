@@ -17,12 +17,14 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.SimpleJSON;
 using System;
-using UnityEngine;
+using umi3d.common;
 
 namespace umi3d.cdk.collaboration
 {
     public class LaucherOnMasterServer
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
+
         private TCPMasterClient client = null;
         /// <summary>
         /// Try to connect to master server. callback is invoked if the server accepts the connection. ip_port format is 000.000.000.000:00000
@@ -80,24 +82,26 @@ namespace umi3d.cdk.collaboration
 
                 // Create the get request with the desired filters
                 var sendData = JSONNode.Parse("{}");
-                var getData = new JSONClass();
+                var getData = new JSONClass
+                {
 
-                // The id of the game to get
-                getData.Add("id", gameId);
-                getData.Add("type", gameType);
-                getData.Add("mode", gameMode);
+                    // The id of the game to get
+                    { "id", gameId },
+                    { "type", gameType },
+                    { "mode", gameMode }
+                };
 
                 sendData.Add("get", getData);
 
                 // Send the request to the server
-                //client.binaryMessageReceived += (x,y,z) => { Debug.Log("bin massage received"); };
+                //client.binaryMessageReceived += (x,y,z) => { UMI3DLogger.Log("bin massage received"); };
                 client.textMessageReceived += (player, frame, sender) => { ReceiveMasterDatas(player, frame, sender, UIcallback); };
                 client.Send(BeardedManStudios.Forge.Networking.Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
 
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e);
+                UMI3DLogger.LogWarning(e, scope);
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
@@ -121,7 +125,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e);
+                UMI3DLogger.LogWarning(e, scope);
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
@@ -148,7 +152,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                UMI3DLogger.LogWarning(e, scope);
                 if (client != null)
                 {
                     client.Disconnect(true);
@@ -170,7 +174,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                UMI3DLogger.LogWarning(e, scope);
                 if (client != null)
                 {
                     client.Disconnect(true);

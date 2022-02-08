@@ -51,22 +51,22 @@ namespace umi3d.edk
         /// <summary>
         /// the function use to check the Equality between two T objects;
         /// </summary>
-        private Func<L, L, bool> Equal;
+        private readonly Func<L, L, bool> Equal;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        private Func<T, UMI3DUser, object> SerializerT;
+        private readonly Func<T, UMI3DUser, object> SerializerT;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        private Func<L, UMI3DUser, object> SerializerL;
+        private readonly Func<L, UMI3DUser, object> SerializerL;
 
         /// <summary>
         /// the function use to serialize a T object;
         /// </summary>
-        private Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
+        private readonly Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
 
         private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
         {

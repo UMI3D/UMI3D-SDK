@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
+using umi3d.common;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -25,10 +25,13 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DHttp
     {
-        private HttpServer httpsv;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+
+        private readonly HttpServer httpsv;
 
         public HttpRoutingUtil rootMapGET = null;
         public HttpRoutingUtil rootMapPOST = null;
+        private readonly UMI3DApi root;
 
         public UMI3DHttp()
         {
@@ -37,7 +40,7 @@ namespace umi3d.edk.collaboration
 
             // Set the document root path.
 
-            var root = new UMI3DApi();
+            root = new UMI3DApi();
             var rootMapGET = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpGet));
             var rootMapPOST = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpPost));
 
@@ -45,7 +48,7 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapGET.TryProccessRequest(sender, e))
                 {
-                    Debug.Log("get environement");
+                    UMI3DLogger.Log("get environement", scope);
                     string path = e.Request.RawUrl;
                     WebSocketSharp.Net.HttpListenerResponse res = e.Response;
                     if (path == "/")
@@ -75,7 +78,7 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapPOST.TryProccessRequest(sender, e))
                 {
-                    Debug.Log("post error " + e.Request.RawUrl);
+                    UMI3DLogger.Log("post error " + e.Request.RawUrl, scope);
                 }
             };
 
@@ -95,6 +98,11 @@ namespace umi3d.edk.collaboration
         {
             if (httpsv != null)
                 httpsv.Stop();
+        }
+
+        public void Destroy()
+        {
+            root.Stop();
         }
     }
 }

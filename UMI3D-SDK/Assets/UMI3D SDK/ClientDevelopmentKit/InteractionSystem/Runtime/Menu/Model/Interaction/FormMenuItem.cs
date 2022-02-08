@@ -25,7 +25,7 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
+        private readonly List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
 
         public List<ParameterSettingRequestDto> answers;
         public FormDto dto;

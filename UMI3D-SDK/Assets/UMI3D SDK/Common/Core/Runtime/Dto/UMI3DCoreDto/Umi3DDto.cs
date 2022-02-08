@@ -39,8 +39,10 @@ namespace umi3d.common
             var ms = new MemoryStream();
             using (var writer = new BsonWriter(ms))
             {
-                var serializer = new JsonSerializer();
-                serializer.TypeNameHandling = TypeNameHandling.All;
+                var serializer = new JsonSerializer
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
                 serializer.Serialize(writer, dto);
             }
             return ms.ToArray();
@@ -81,8 +83,10 @@ namespace umi3d.common
             var ms = new MemoryStream(bson);
             using (var reader = new BsonReader(ms))
             {
-                var serializer = new JsonSerializer();
-                serializer.TypeNameHandling = TypeNameHandling.All;
+                var serializer = new JsonSerializer
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
                 UMI3DDto dto = serializer.Deserialize<UMI3DDto>(reader);
                 return dto;
             }

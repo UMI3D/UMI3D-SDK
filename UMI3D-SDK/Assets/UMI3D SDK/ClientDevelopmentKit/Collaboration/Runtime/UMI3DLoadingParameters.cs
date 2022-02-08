@@ -20,9 +20,11 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.volumes;
 using umi3d.common;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
+using umi3d.common.volume;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -31,12 +33,15 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
+
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
 
         public virtual UMI3DNodeLoader nodeLoader { get; } = new UMI3DNodeLoader();
         public virtual UMI3DMeshNodeLoader meshLoader { get; } = new UMI3DMeshNodeLoader();
+        public virtual UMI3DLineRendererLoader lineLoader { get; } = new UMI3DLineRendererLoader();
         public virtual UMI3DUINodeLoader UILoader { get; } = new UMI3DUINodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
         public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
@@ -80,12 +85,18 @@ namespace umi3d.cdk
                 case ToolboxDto t:
                     UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
                     break;
+                case AbstractVolumeDescriptorDto v:
+                    UMI3DVolumeLoader.ReadUMI3DExtension(v, callback, failed);
+                    break;
                 case ToolDto t:
                     UMI3DToolLoader.ReadUMI3DExtension(t);
                     finished?.Invoke();
                     break;
                 case UMI3DMeshNodeDto m:
                     meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    break;
+                case UMI3DLineDto m:
+                    lineLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
                 case SubModelDto s:
                     SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
@@ -135,11 +146,15 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, property))
+                return true;
+            if (lineLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (UILoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -173,11 +188,15 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (lineLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
@@ -211,6 +230,8 @@ namespace umi3d.cdk
             if (SubMeshLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (meshLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (lineLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (UILoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
@@ -264,7 +285,7 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override FileDto ChooseVariante(List<FileDto> files)
+        public override FileDto ChooseVariant(List<FileDto> files)
         {
             FileDto res = null;
             if (files != null)
@@ -300,7 +321,7 @@ namespace umi3d.cdk
                 if (loader.IsToBeIgnored(extension))
                     return null;
             }
-            Debug.LogError("there is no compatible loader for this extention : " + extension);
+            UMI3DLogger.LogError("there is no compatible loader for this extention : " + extension, scope);
             return null;
         }
 
@@ -312,14 +333,14 @@ namespace umi3d.cdk
                 if (loader.IsSuitableFor(gltfMatDto))
                     return loader;
             }
-            Debug.LogError("there is no compatible material loader for this material.");
+            UMI3DLogger.LogError("there is no compatible material loader for this material.", scope);
             return null;
         }
 
         ///<inheritdoc/>
         public override void loadSkybox(ResourceDto skybox)
         {
-            FileDto fileToLoad = ChooseVariante(skybox.variants);
+            FileDto fileToLoad = ChooseVariant(skybox.variants);
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -385,10 +406,10 @@ namespace umi3d.cdk
                         }
                         else
                         {
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                         }
                     },
-                    Debug.LogWarning,
+                    e => UMI3DLogger.LogWarning(e, scope),
                     loader.DeleteObject
                     );
             }

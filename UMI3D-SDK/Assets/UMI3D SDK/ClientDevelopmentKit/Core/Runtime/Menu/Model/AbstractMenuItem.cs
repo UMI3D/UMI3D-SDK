@@ -50,7 +50,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Selection event subscribers.
         /// </summary>
-        private List<UnityAction> subscribers = new List<UnityAction>();
+        private readonly List<UnityAction> subscribers = new List<UnityAction>();
 
         /// <summary>
         /// Raise selection event.

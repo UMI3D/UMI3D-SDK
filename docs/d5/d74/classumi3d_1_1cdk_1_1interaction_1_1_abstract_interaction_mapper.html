@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -175,6 +175,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1827292c4a4bbd5a9d6978ce22ba8956"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a1827292c4a4bbd5a9d6978ce22ba8956">UpdateTools</a> (ulong toolId, bool releasable, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
 <tr class="memdesc:a1827292c4a4bbd5a9d6978ce22ba8956"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a1827292c4a4bbd5a9d6978ce22ba8956">More...</a><br /></td></tr>
 <tr class="separator:a1827292c4a4bbd5a9d6978ce22ba8956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64a7605b2def6262f02251d90baccee5"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a64a7605b2def6262f02251d90baccee5">UpdateAddOnTools</a> (ulong toolId, bool releasable, <a class="el" href="../../d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html">AbstractInteractionDto</a> abstractInteractionDto, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
+<tr class="memdesc:a64a7605b2def6262f02251d90baccee5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated when one element was added on the tool.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a64a7605b2def6262f02251d90baccee5">More...</a><br /></td></tr>
+<tr class="separator:a64a7605b2def6262f02251d90baccee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99d047e502953b3fa7b518b601447f86"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a99d047e502953b3fa7b518b601447f86">UpdateRemoveOnTools</a> (ulong toolId, bool releasable, <a class="el" href="../../d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html">AbstractInteractionDto</a> abstractInteractionDto, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason=null)</td></tr>
+<tr class="memdesc:a99d047e502953b3fa7b518b601447f86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated when one element was removed on the tool.  <a href="../../d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a99d047e502953b3fa7b518b601447f86">More...</a><br /></td></tr>
+<tr class="separator:a99d047e502953b3fa7b518b601447f86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -915,6 +921,128 @@ Protected Attributes</h2></td></tr>
 <p>Check if a tool with the given id exists. </p>
 
 <p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a44cda19e50ee45599e41198f9151033c">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
+</div>
+</div>
+<a id="a64a7605b2def6262f02251d90baccee5" name="a64a7605b2def6262f02251d90baccee5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64a7605b2def6262f02251d90baccee5">&#9670;&nbsp;</a></span>UpdateAddOnTools()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract bool umi3d.cdk.interaction.AbstractInteractionMapper.UpdateAddOnTools </td>
+          <td>(</td>
+          <td class="paramtype">ulong&#160;</td>
+          <td class="paramname"><em>toolId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html">AbstractInteractionDto</a>&#160;</td>
+          <td class="paramname"><em>abstractInteractionDto</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a>&#160;</td>
+          <td class="paramname"><em>reason</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated when one element was added on the tool. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">toolId</td><td>Id of the <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a>.</td></tr>
+    <tr><td class="paramname">releasable</td><td>Is the tool releasable.</td></tr>
+    <tr><td class="paramname">reason</td><td>Interaction mapping reason.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a9b1f7f6deb69124e3950c1a92c8c8801">umi3d.cdk.interaction.InteractionMapper</a>.</p>
+
+</div>
+</div>
+<a id="a99d047e502953b3fa7b518b601447f86" name="a99d047e502953b3fa7b518b601447f86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99d047e502953b3fa7b518b601447f86">&#9670;&nbsp;</a></span>UpdateRemoveOnTools()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract bool umi3d.cdk.interaction.AbstractInteractionMapper.UpdateRemoveOnTools </td>
+          <td>(</td>
+          <td class="paramtype">ulong&#160;</td>
+          <td class="paramname"><em>toolId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html">AbstractInteractionDto</a>&#160;</td>
+          <td class="paramname"><em>abstractInteractionDto</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a>&#160;</td>
+          <td class="paramname"><em>reason</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Request a <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a> to be updated when one element was removed on the tool. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">toolId</td><td>Id of the <a class="el" href="../../dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html" title="Client&#39;s side interactable object.">Tool</a>.</td></tr>
+    <tr><td class="paramname">releasable</td><td>Is the tool releasable.</td></tr>
+    <tr><td class="paramname">reason</td><td>Interaction mapping reason.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implemented in <a class="el" href="../../d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a895587069ffc04510220451c8b58114a">umi3d.cdk.interaction.InteractionMapper</a>.</p>
 
 </div>
 </div>

@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -153,6 +153,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afe437d9212a71bae03d84475ea457f5e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#afe437d9212a71bae03d84475ea457f5e">Release</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason)</td></tr>
 <tr class="memdesc:afe437d9212a71bae03d84475ea457f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Release a projected tool from this controller.  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#afe437d9212a71bae03d84475ea457f5e">More...</a><br /></td></tr>
 <tr class="separator:afe437d9212a71bae03d84475ea457f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26a27979b6b81ce94188fa8814e0c2c9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a26a27979b6b81ce94188fa8814e0c2c9">AddUpdate</a> (<a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a> <a class="el" href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a45e88da40ba49d33deeeca7f24de59ca">tool</a>, bool releasable, <a class="el" href="../../d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html">AbstractInteractionDto</a> abstractInteractionDto, <a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a> reason)</td></tr>
+<tr class="memdesc:a26a27979b6b81ce94188fa8814e0c2c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change a tool on this controller to add a new interaction  <a href="../../de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html#a26a27979b6b81ce94188fa8814e0c2c9">More...</a><br /></td></tr>
+<tr class="separator:a26a27979b6b81ce94188fa8814e0c2c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -196,6 +199,65 @@ Properties</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Abstract class for UMI3D Controller. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a26a27979b6b81ce94188fa8814e0c2c9" name="a26a27979b6b81ce94188fa8814e0c2c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26a27979b6b81ce94188fa8814e0c2c9">&#9670;&nbsp;</a></span>AddUpdate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void umi3d.cdk.interaction.AbstractController.AddUpdate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html">AbstractTool</a>&#160;</td>
+          <td class="paramname"><em>tool</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>releasable</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/db6/classumi3d_1_1common_1_1interaction_1_1_abstract_interaction_dto.html">AbstractInteractionDto</a>&#160;</td>
+          <td class="paramname"><em>abstractInteractionDto</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="../../d6/d21/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapping_reason.html">InteractionMappingReason</a>&#160;</td>
+          <td class="paramname"><em>reason</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Change a tool on this controller to add a new interaction </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tool</td><td></td></tr>
+    <tr><td class="paramname">releasable</td><td></td></tr>
+    <tr><td class="paramname">abstractInteractionDto</td><td></td></tr>
+    <tr><td class="paramname">reason</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a8ec3916684490bdd9596274edad1ea6e" name="a8ec3916684490bdd9596274edad1ea6e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8ec3916684490bdd9596274edad1ea6e">&#9670;&nbsp;</a></span>Clear()</h2>
 

@@ -24,9 +24,9 @@ namespace umi3d.cdk
 {
     public class UMI3DUINodeLoader : UMI3DNodeLoader
     {
-        private UMI3DUITextNodeLoader textNodeLoader = new UMI3DUITextNodeLoader();
-        private UMI3DUICanvasNodeLoader canvasNodeLoader = new UMI3DUICanvasNodeLoader();
-        private UMI3DUIImageNodeLoader imageNodeLoader = new UMI3DUIImageNodeLoader();
+        private readonly UMI3DUITextNodeLoader textNodeLoader = new UMI3DUITextNodeLoader();
+        private readonly UMI3DUICanvasNodeLoader canvasNodeLoader = new UMI3DUICanvasNodeLoader();
+        private readonly UMI3DUIImageNodeLoader imageNodeLoader = new UMI3DUIImageNodeLoader();
 
         /// <summary>
         /// Load an UMI3D UI.

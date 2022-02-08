@@ -20,11 +20,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 		public Transform content = null;
 		public GameObject serverOption = null;
 		public GameObject networkManager = null;
-
-
-        TCPMasterClient client = null;
-
-        public int navigateToScene = -1;
+		TCPClient client = null;
 
 		private void Awake()
 		{
@@ -50,33 +46,40 @@ namespace BeardedManStudios.Forge.Networking.Unity
 
 		public void Refresh()
 		{
-            // Clear out all the currently listed servers
-            for (int i = content.childCount - 1; i >= 0; --i)
+			// Clear out all the currently listed servers
+			for (int i = content.childCount - 1; i >= 0; --i)
 				Destroy(content.GetChild(i).gameObject);
 
-            // The Master Server communicates over TCP
-            client = new TCPMasterClient();
-            //client = new UDPClient();
+			// The Master Server communicates over TCP
+			client = new TCPMasterClient();
 
-            // Once this client has been accepted by the master server it should sent it's get request
-            client.serverAccepted += (sender) =>
-            {
-                Debug.Log("server accepted :)");
-                GetServers();
-            };
+			// Once this client has been accepted by the master server it should sent it's get request
+			client.serverAccepted += (sender) =>
+			{
+				try
+				{
+					// Create the get request with the desired filters
+					JSONNode sendData = JSONNode.Parse("{}");
+					JSONClass getData = new JSONClass();
+					getData.Add("id", gameId);
+					getData.Add("type", gameType);
+					getData.Add("mode", gameMode);
 
-            client.connectAttemptFailed += (sender) =>
-            {
-                Debug.Log("connection failed :(");
-            };
+					sendData.Add("get", getData);
 
-            client.disconnected += (sender) =>
-            {
-                Debug.Log("disconnected :(");
-            };
+					// Send the request to the server
+					client.Send(Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
+				}
+				catch
+				{
+					// If anything fails, then this client needs to be disconnected
+					client.Disconnect(true);
+					client = null;
+				}
+			};
 
-            // An event that is raised when the server responds with hosts
-            client.textMessageReceived += (player, frame, sender) =>
+			// An event that is raised when the server responds with hosts
+			client.textMessageReceived += (player, frame, sender) =>
 			{
 				try
 				{
@@ -112,13 +115,6 @@ namespace BeardedManStudios.Forge.Networking.Unity
 										socket = new TCPClient();
 										((TCPClient)socket).Connect(address, port);
 									}
-									#if !UNITY_IOS && !UNITY_ANDROID
-									else if (protocol == "web")
-									{
-										socket = new TCPClientWebsockets();
-										((TCPClientWebsockets)socket).Connect(address, port);
-									}
-									#endif
 									if (socket == null)
 										throw new Exception("No socket of type " + protocol + " could be established");
 
@@ -140,38 +136,11 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			};
 
 			client.Connect(masterServerHost, (ushort)masterServerPort);
-            
 		}
 
-        void GetServers()
-        {
-            try
-            {
-                // Create the get request with the desired filters
-                JSONNode sendData = JSONNode.Parse("{}");
-                JSONClass getData = new JSONClass();
-                getData.Add("id", gameId);
-                getData.Add("type", gameType);
-                getData.Add("mode", gameMode);
-
-                sendData.Add("get", getData);
-
-                // Send the request to the server
-                client.Send(Frame.Text.CreateFromString(client.Time.Timestep, sendData.ToString(), true, Receivers.Server, MessageGroupIds.MASTER_SERVER_GET, true));
-            }
-            catch (Exception error)
-            {
-                Debug.Log(error);
-                // If anything fails, then this client needs to be disconnected
-                client.Disconnect(true);
-                client = null;
-            }
-        }
-
 		public void Connected(NetWorker networker)
-        {
-            Debug.Log("Connected to Master server");
-            if (!networker.IsBound)
+		{
+			if (!networker.IsBound)
 			{
 				Debug.LogError("NetWorker failed to bind");
 				return;
@@ -186,11 +155,7 @@ namespace BeardedManStudios.Forge.Networking.Unity
 			else
 				Instantiate(networkManager).GetComponent<NetworkManager>().Initialize(networker);
 
-            if(navigateToScene < 0)
-			    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
-            else
-                SceneManager.LoadScene(navigateToScene);
-
-        }
+			SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+		}
 	}
 }

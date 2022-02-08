@@ -36,9 +36,11 @@ namespace umi3d.edk
 
         public override GlTFMaterialDto ToDto()
         {
-            var res = new GlTFMaterialDto();
-            res.extensions = new GlTFMaterialExtensions()
-            { umi3d = new UMI3DOriginalMaterialDto() };
+            var res = new GlTFMaterialDto
+            {
+                extensions = new GlTFMaterialExtensions()
+                { umi3d = new UMI3DOriginalMaterialDto() }
+            };
             ((UMI3DOriginalMaterialDto)res.extensions.umi3d).id = GetId();
 
             ((UMI3DOriginalMaterialDto)res.extensions.umi3d).shaderProperties = shaderProperties;

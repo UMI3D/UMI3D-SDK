@@ -154,9 +154,11 @@ namespace umi3d.edk.interaction
             /// <returns></returns>
             public DofGroupDto ToDto(UMI3DUser user)
             {
-                var dto = new DofGroupDto();
-                dto.name = name;
-                dto.dofs = dofs;
+                var dto = new DofGroupDto
+                {
+                    name = name,
+                    dofs = dofs
+                };
                 return dto;
             }
         }
@@ -188,8 +190,10 @@ namespace umi3d.edk.interaction
             /// <returns></returns>
             public DofGroupOptionDto ToDto(UMI3DUser user)
             {
-                var dto = new DofGroupOptionDto();
-                dto.name = name;
+                var dto = new DofGroupOptionDto
+                {
+                    name = name
+                };
                 foreach (DofGroup entity in separations)
                     dto.separations.Add(entity.ToDto(user));
                 return dto;

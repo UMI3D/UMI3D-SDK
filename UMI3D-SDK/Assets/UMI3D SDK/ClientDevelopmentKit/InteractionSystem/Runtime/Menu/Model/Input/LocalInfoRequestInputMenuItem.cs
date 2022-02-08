@@ -33,17 +33,17 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<bool>> readSubscribers = new List<UnityAction<bool>>();
+        private readonly List<UnityAction<bool>> readSubscribers = new List<UnityAction<bool>>();
 
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<LocalInfoRequestParameterValue>> subscribers = new List<UnityAction<LocalInfoRequestParameterValue>>();
+        private readonly List<UnityAction<LocalInfoRequestParameterValue>> subscribers = new List<UnityAction<LocalInfoRequestParameterValue>>();
 
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<bool>> writeSubscribers = new List<UnityAction<bool>>();
+        private readonly List<UnityAction<bool>> writeSubscribers = new List<UnityAction<bool>>();
 
 
         /// <summary>

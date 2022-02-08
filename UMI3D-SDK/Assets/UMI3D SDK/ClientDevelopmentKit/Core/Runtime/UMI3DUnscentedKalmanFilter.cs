@@ -80,12 +80,12 @@ namespace umi3d.cdk
         /// <summary>
 		/// Std of process 
 		/// </summary>
-        private double q;
+        private readonly double q;
 
         /// <summary>
 		/// Std of measurement 
 		/// </summary>
-        private double r;
+        private readonly double r;
 
         /// <summary>
 		/// Covariance of process

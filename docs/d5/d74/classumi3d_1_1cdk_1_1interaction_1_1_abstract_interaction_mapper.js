@@ -21,6 +21,8 @@ var classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper =
     [ "SwitchTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a31755463cdfd9752ddc9eb22da60227f", null ],
     [ "ToolboxExists", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a350386d47bebf146174e7fbf2ddd7871", null ],
     [ "ToolExists", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a718e06128208ddc8064b3d2f4ff1f4ba", null ],
+    [ "UpdateAddOnTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a64a7605b2def6262f02251d90baccee5", null ],
+    [ "UpdateRemoveOnTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a99d047e502953b3fa7b518b601447f86", null ],
     [ "UpdateTools", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a1827292c4a4bbd5a9d6978ce22ba8956", null ],
     [ "Controllers", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a624f461a2d5eb76916a349dcc923f3de", null ],
     [ "shouldProjectHoldableEventOnSpecificInput", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ac23da7aa866e96e8aaacc6563eb8d183", null ]

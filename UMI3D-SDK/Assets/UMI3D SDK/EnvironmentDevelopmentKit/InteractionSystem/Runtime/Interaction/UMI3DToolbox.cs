@@ -161,14 +161,16 @@ namespace umi3d.edk.interaction
         /// <returns>an AbstractInteractionDto representing this interaction</returns>
         public ToolboxDto ToDto(UMI3DUser user)
         {
-            var dto = new ToolboxDto();
-            dto.id = Id();
-            dto.name = display.name;
-            dto.description = display.description;
-            dto.icon2D = display.icon2D.ToDto();
-            dto.icon3D = display.icon3D.ToDto();
-            dto.tools = objectTools?.GetValue(user).Where(t => t != null).Select(t => t.ToDto(user) as ToolDto).ToList();
-            dto.Active = objectActive.GetValue(user);
+            var dto = new ToolboxDto
+            {
+                id = Id(),
+                name = display.name,
+                description = display.description,
+                icon2D = display.icon2D.ToDto(),
+                icon3D = display.icon3D.ToDto(),
+                tools = objectTools?.GetValue(user).Where(t => t != null).Select(t => t.ToDto(user) as ToolDto).ToList(),
+                Active = objectActive.GetValue(user)
+            };
             return dto;
         }
 
@@ -189,7 +191,7 @@ namespace umi3d.edk.interaction
         }
 
         #region filter
-        private HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

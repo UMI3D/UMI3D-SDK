@@ -33,7 +33,7 @@ namespace umi3d.cdk.interaction
                 {
                     node = nodeI.gameObject;
                     Interactable interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-                    UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy);
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
                     finished?.Invoke();
                 }
                 else
