@@ -4,6 +4,7 @@ var namespaceumi3d_1_1cdk =
     [ "interaction", "d1/d65/namespaceumi3d_1_1cdk_1_1interaction.html", "d1/d65/namespaceumi3d_1_1cdk_1_1interaction" ],
     [ "menu", "d6/d0c/namespaceumi3d_1_1cdk_1_1menu.html", "d6/d0c/namespaceumi3d_1_1cdk_1_1menu" ],
     [ "userCapture", "d3/d71/namespaceumi3d_1_1cdk_1_1user_capture.html", "d3/d71/namespaceumi3d_1_1cdk_1_1user_capture" ],
+    [ "volumes", "d2/d4b/namespaceumi3d_1_1cdk_1_1volumes.html", "d2/d4b/namespaceumi3d_1_1cdk_1_1volumes" ],
     [ "AbstractMeshDtoLoader", "d8/db8/classumi3d_1_1cdk_1_1_abstract_mesh_dto_loader.html", "d8/db8/classumi3d_1_1cdk_1_1_abstract_mesh_dto_loader" ],
     [ "AbstractNavigation", "d3/dea/classumi3d_1_1cdk_1_1_abstract_navigation.html", "d3/dea/classumi3d_1_1cdk_1_1_abstract_navigation" ],
     [ "AbstractRenderedNodeLoader", "dd/d48/classumi3d_1_1cdk_1_1_abstract_rendered_node_loader.html", "dd/d48/classumi3d_1_1cdk_1_1_abstract_rendered_node_loader" ],
@@ -39,6 +40,7 @@ var namespaceumi3d_1_1cdk =
     [ "UMI3DExternalMaterialLoader", "d9/d2b/classumi3d_1_1cdk_1_1_u_m_i3_d_external_material_loader.html", "d9/d2b/classumi3d_1_1cdk_1_1_u_m_i3_d_external_material_loader" ],
     [ "UMI3DHandPoseLoader", "d3/ddb/classumi3d_1_1cdk_1_1_u_m_i3_d_hand_pose_loader.html", null ],
     [ "UMI3DILoadingPolicy", "de/de0/interfaceumi3d_1_1cdk_1_1_u_m_i3_d_i_loading_policy.html", "de/de0/interfaceumi3d_1_1cdk_1_1_u_m_i3_d_i_loading_policy" ],
+    [ "UMI3DLineRendererLoader", "de/d80/classumi3d_1_1cdk_1_1_u_m_i3_d_line_renderer_loader.html", "de/d80/classumi3d_1_1cdk_1_1_u_m_i3_d_line_renderer_loader" ],
     [ "UMI3DLoadingParameters", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters" ],
     [ "UMI3DMeshNodeLoader", "d3/d06/classumi3d_1_1cdk_1_1_u_m_i3_d_mesh_node_loader.html", "d3/d06/classumi3d_1_1cdk_1_1_u_m_i3_d_mesh_node_loader" ],
     [ "UMI3DNavigation", "d3/d9d/classumi3d_1_1cdk_1_1_u_m_i3_d_navigation.html", "d3/d9d/classumi3d_1_1cdk_1_1_u_m_i3_d_navigation" ],
@@ -55,5 +57,6 @@ var namespaceumi3d_1_1cdk =
     [ "UMI3DUINodeLoader", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_node_loader.html", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_node_loader" ],
     [ "UMI3DUITextNodeLoader", "d8/d70/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_text_node_loader.html", "d8/d70/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_text_node_loader" ],
     [ "UMI3DUnscentedKalmanFilter", "d6/d57/classumi3d_1_1cdk_1_1_u_m_i3_d_unscented_kalman_filter.html", "d6/d57/classumi3d_1_1cdk_1_1_u_m_i3_d_unscented_kalman_filter" ],
-    [ "UMI3DVideoPlayer", "d4/d56/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player.html", "d4/d56/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player" ]
+    [ "UMI3DVideoPlayer", "d4/d56/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player.html", "d4/d56/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player" ],
+    [ "UMI3DVideoPlayerLoader", "dd/dfc/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player_loader.html", null ]
 ];

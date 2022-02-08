@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -111,8 +111,8 @@ $(document).ready(function(){initNavTree('dd/dab/classumi3d_1_1cdk_1_1_abstract_
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ade0a31997bed96b7cf50fef55254383e"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html#ade0a31997bed96b7cf50fef55254383e">LoadMaterialFromExtension</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> dto, Action&lt; Material &gt; callback)</td></tr>
-<tr class="separator:ade0a31997bed96b7cf50fef55254383e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26ae2f1301019664963b9bb3f3f0125b"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html#a26ae2f1301019664963b9bb3f3f0125b">LoadMaterialFromExtension</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> dto, Action&lt; Material &gt; callback, Material oldMaterial=null)</td></tr>
+<tr class="separator:a26ae2f1301019664963b9bb3f3f0125b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a260f9bdda7b8bad65da1f4c66e552d76"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html#a260f9bdda7b8bad65da1f4c66e552d76">IsSuitableFor</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> gltfMatDto)</td></tr>
 <tr class="separator:a260f9bdda7b8bad65da1f4c66e552d76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -214,8 +214,8 @@ Static Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ade0a31997bed96b7cf50fef55254383e" name="ade0a31997bed96b7cf50fef55254383e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ade0a31997bed96b7cf50fef55254383e">&#9670;&nbsp;</a></span>LoadMaterialFromExtension()</h2>
+<a id="a26ae2f1301019664963b9bb3f3f0125b" name="a26ae2f1301019664963b9bb3f3f0125b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26ae2f1301019664963b9bb3f3f0125b">&#9670;&nbsp;</a></span>LoadMaterialFromExtension()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -233,7 +233,13 @@ Static Protected Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Action&lt; Material &gt;&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Material&#160;</td>
+          <td class="paramname"><em>oldMaterial</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -248,7 +254,7 @@ Static Protected Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="../../d9/d2b/classumi3d_1_1cdk_1_1_u_m_i3_d_external_material_loader.html#aa5ec8dbd33c610020a2041e428f9f5b2">umi3d.cdk.UMI3DExternalMaterialLoader</a>, <a class="el" href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a7bdac9cb9ec619dc1524762ff135ed54">umi3d.cdk.UMI3DOriginalMaterialLoader</a>, and <a class="el" href="../../d3/d9e/classumi3d_1_1cdk_1_1_u_m_i3_d_pbr_material_loader.html#af9b2f96902838f09c6435135f003f3e5">umi3d.cdk.UMI3DPbrMaterialLoader</a>.</p>
+<p>Implemented in <a class="el" href="../../d9/d2b/classumi3d_1_1cdk_1_1_u_m_i3_d_external_material_loader.html#a0fbd262162d81fad287191e098c14a4f">umi3d.cdk.UMI3DExternalMaterialLoader</a>, <a class="el" href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a5877ff328a176a832c48770a2450e3df">umi3d.cdk.UMI3DOriginalMaterialLoader</a>, and <a class="el" href="../../d3/d9e/classumi3d_1_1cdk_1_1_u_m_i3_d_pbr_material_loader.html#a945952306fffbf9f171b40c27c83b06c">umi3d.cdk.UMI3DPbrMaterialLoader</a>.</p>
 
 </div>
 </div>

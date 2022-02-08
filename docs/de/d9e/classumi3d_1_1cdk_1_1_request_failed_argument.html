@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -102,6 +102,12 @@ $(document).ready(function(){initNavTree('de/d9e/classumi3d_1_1cdk_1_1_request_f
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a185091424c37a2597eba3923d3bf8d98"><td class="memItemLeft" align="right" valign="top">long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a185091424c37a2597eba3923d3bf8d98">GetRespondCode</a> ()</td></tr>
 <tr class="separator:a185091424c37a2597eba3923d3bf8d98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb58bc70e82851dda1c824b1f7cd1363"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#aeb58bc70e82851dda1c824b1f7cd1363">GetUrl</a> ()</td></tr>
+<tr class="separator:aeb58bc70e82851dda1c824b1f7cd1363"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a026b0cd140bc3672b8c58fb56a2a91"><td class="memItemLeft" align="right" valign="top">System.Collections.Generic.Dictionary&lt; string, string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a4a026b0cd140bc3672b8c58fb56a2a91">GetHeader</a> ()</td></tr>
+<tr class="separator:a4a026b0cd140bc3672b8c58fb56a2a91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae658914d7e9c59b254311a21c40c6efa"><td class="memItemLeft" align="right" valign="top">override string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#ae658914d7e9c59b254311a21c40c6efa">ToString</a> ()</td></tr>
+<tr class="separator:ae658914d7e9c59b254311a21c40c6efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad38ceff61d1f26d8df17a0247da15e1c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#ad38ceff61d1f26d8df17a0247da15e1c">RequestFailedArgument</a> (UnityWebRequest request, Action tryAgain, int <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a7ed5622efd084c70f267846524821693">count</a>, DateTime <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a632d1a4ef55ad647bb7948f6c5ffcdb4">date</a>, Func&lt; <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html">RequestFailedArgument</a>, bool &gt; <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a529810911ec2ab24f0c5a069019baa14">ShouldTryAgain</a>)</td></tr>
 <tr class="separator:ad38ceff61d1f26d8df17a0247da15e1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae32a2fb93e7c4af58a034e4c526a5839"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#ae32a2fb93e7c4af58a034e4c526a5839">RequestFailedArgument</a> (long responseCode, Action tryAgain, int <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a7ed5622efd084c70f267846524821693">count</a>, DateTime <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a632d1a4ef55ad647bb7948f6c5ffcdb4">date</a>, Func&lt; <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html">RequestFailedArgument</a>, bool &gt; <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html#a529810911ec2ab24f0c5a069019baa14">ShouldTryAgain</a>)</td></tr>
@@ -214,6 +220,23 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4a026b0cd140bc3672b8c58fb56a2a91" name="a4a026b0cd140bc3672b8c58fb56a2a91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a026b0cd140bc3672b8c58fb56a2a91">&#9670;&nbsp;</a></span>GetHeader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">System.Collections.Generic.Dictionary&lt; string, string &gt; umi3d.cdk.RequestFailedArgument.GetHeader </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a185091424c37a2597eba3923d3bf8d98" name="a185091424c37a2597eba3923d3bf8d98"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a185091424c37a2597eba3923d3bf8d98">&#9670;&nbsp;</a></span>GetRespondCode()</h2>
 
@@ -222,6 +245,40 @@ Properties</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">long umi3d.cdk.RequestFailedArgument.GetRespondCode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aeb58bc70e82851dda1c824b1f7cd1363" name="aeb58bc70e82851dda1c824b1f7cd1363"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb58bc70e82851dda1c824b1f7cd1363">&#9670;&nbsp;</a></span>GetUrl()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">string umi3d.cdk.RequestFailedArgument.GetUrl </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae658914d7e9c59b254311a21c40c6efa" name="ae658914d7e9c59b254311a21c40c6efa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae658914d7e9c59b254311a21c40c6efa">&#9670;&nbsp;</a></span>ToString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">override string umi3d.cdk.RequestFailedArgument.ToString </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

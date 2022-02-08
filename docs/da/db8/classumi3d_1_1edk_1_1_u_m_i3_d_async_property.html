@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -94,15 +94,41 @@ $(document).ready(function(){initNavTree('da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="#properties">Properties</a> &#124;
 <a href="../../d3/d61/classumi3d_1_1edk_1_1_u_m_i3_d_async_property-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">umi3d.edk.UMI3DAsyncProperty&lt; T &gt; Class Template Reference</div></div>
+  <div class="headertitle"><div class="title">umi3d.edk.UMI3DAsyncProperty&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
 
 <p>Define an object property that could have a different value depending on the <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>.  
  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#details">More...</a></p>
+<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="../../closed.png" alt="+"/> Inheritance diagram for umi3d.edk.UMI3DAsyncProperty&lt; T &gt;:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
+ <div class="center">
+  <img src="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.png" alt=""/>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ad4fd46cf2517118fc459cea28405d462"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#ad4fd46cf2517118fc459cea28405d462">GetSetEntityOperationForAllUsers</a> ()</td></tr>
+<tr class="memdesc:ad4fd46cf2517118fc459cea28405d462"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a SetEntityOperation for this property for all users, regardless of async information.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#ad4fd46cf2517118fc459cea28405d462">More...</a><br /></td></tr>
+<tr class="separator:ad4fd46cf2517118fc459cea28405d462"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ced73702779cf5a7dc3ca6e92d75162"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a9ced73702779cf5a7dc3ca6e92d75162">GetSetEntityOperationForUser</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user)</td></tr>
+<tr class="memdesc:a9ced73702779cf5a7dc3ca6e92d75162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a SetEntityOperation for this property for a given user.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a9ced73702779cf5a7dc3ca6e92d75162">More...</a><br /></td></tr>
+<tr class="separator:a9ced73702779cf5a7dc3ca6e92d75162"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a582fca6a32687c4eca18f53246c7106b"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a582fca6a32687c4eca18f53246c7106b">GetSetEntityOperationForUsers</a> (Func&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>, bool &gt; condition)</td></tr>
+<tr class="memdesc:a582fca6a32687c4eca18f53246c7106b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a SetEntityOperation for this property for users matching the given condition, regardless of async information.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a582fca6a32687c4eca18f53246c7106b">More...</a><br /></td></tr>
+<tr class="separator:a582fca6a32687c4eca18f53246c7106b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f45a82a404e3a30b69c9f23bc98f08e"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a6f45a82a404e3a30b69c9f23bc98f08e">Sync</a> ()</td></tr>
+<tr class="memdesc:a6f45a82a404e3a30b69c9f23bc98f08e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the property as synchronized/asynchronous.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a6f45a82a404e3a30b69c9f23bc98f08e">More...</a><br /></td></tr>
+<tr class="separator:a6f45a82a404e3a30b69c9f23bc98f08e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1937540db4d0efad969594e7b52dc2a0"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a1937540db4d0efad969594e7b52dc2a0">Sync</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, bool isSync)</td></tr>
+<tr class="memdesc:a1937540db4d0efad969594e7b52dc2a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the property as synchronized/asynchronous for a user.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a1937540db4d0efad969594e7b52dc2a0">More...</a><br /></td></tr>
+<tr class="separator:a1937540db4d0efad969594e7b52dc2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18da1e9027ae2c72d3fb7cc33517aa6d"><td class="memItemLeft" align="right" valign="top">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a18da1e9027ae2c72d3fb7cc33517aa6d">DeSync</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, bool isnotifying)</td></tr>
+<tr class="memdesc:a18da1e9027ae2c72d3fb7cc33517aa6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The property will not notify update if desync.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a18da1e9027ae2c72d3fb7cc33517aa6d">More...</a><br /></td></tr>
+<tr class="separator:a18da1e9027ae2c72d3fb7cc33517aa6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff1c8c00351689fd6fcdba605749186b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#aff1c8c00351689fd6fcdba605749186b">UMI3DAsyncProperty</a> (ulong <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#af159c4de827af08f76d6276742219042">entityId</a>, uint <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a3e2173fbabeeac494e59d56e89b4baea">propertyId</a>, T value, Func&lt; T, <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>, object &gt; serializer=null, Func&lt; T, T, bool &gt; equal=null)</td></tr>
 <tr class="memdesc:aff1c8c00351689fd6fcdba605749186b"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html" title="Define an object property that could have a different value depending on the UMI3DUser.">UMI3DAsyncProperty</a> constructor.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#aff1c8c00351689fd6fcdba605749186b">More...</a><br /></td></tr>
 <tr class="separator:aff1c8c00351689fd6fcdba605749186b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -118,15 +144,23 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0c31b868a18f5e82b1dfbf57cbb93acf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a0c31b868a18f5e82b1dfbf57cbb93acf">SetValue</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, T value, bool forceOperation=false)</td></tr>
 <tr class="memdesc:a0c31b868a18f5e82b1dfbf57cbb93acf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the property's value for a given user.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a0c31b868a18f5e82b1dfbf57cbb93acf">More...</a><br /></td></tr>
 <tr class="separator:a0c31b868a18f5e82b1dfbf57cbb93acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a919e512718d9e59410cabdbede98b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a9a919e512718d9e59410cabdbede98b4">Sync</a> ()</td></tr>
-<tr class="memdesc:a9a919e512718d9e59410cabdbede98b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the property as synchronized/asynchronous.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a9a919e512718d9e59410cabdbede98b4">More...</a><br /></td></tr>
-<tr class="separator:a9a919e512718d9e59410cabdbede98b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc806430b98350b62536e46098b09e5b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#afc806430b98350b62536e46098b09e5b">Sync</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, bool isSync)</td></tr>
-<tr class="memdesc:afc806430b98350b62536e46098b09e5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the property as synchronized/asynchronous for a user.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#afc806430b98350b62536e46098b09e5b">More...</a><br /></td></tr>
-<tr class="separator:afc806430b98350b62536e46098b09e5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe4c7571523cda58c98724846f9d1559"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#afe4c7571523cda58c98724846f9d1559">DeSync</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, bool isnotifying)</td></tr>
-<tr class="memdesc:afe4c7571523cda58c98724846f9d1559"><td class="mdescLeft">&#160;</td><td class="mdescRight">THe property will not notify update if desync.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#afe4c7571523cda58c98724846f9d1559">More...</a><br /></td></tr>
-<tr class="separator:afe4c7571523cda58c98724846f9d1559"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acaf97826a845e528aaef32a55c01456f"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#acaf97826a845e528aaef32a55c01456f">GetSetEntityOperationForAllUsers</a> ()</td></tr>
+<tr class="memdesc:acaf97826a845e528aaef32a55c01456f"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#acaf97826a845e528aaef32a55c01456f">More...</a><br /></td></tr>
+<tr class="separator:acaf97826a845e528aaef32a55c01456f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0107ccbb764fd6c274fa725c87fa2c2"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#aa0107ccbb764fd6c274fa725c87fa2c2">GetSetEntityOperationForUser</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user)</td></tr>
+<tr class="memdesc:aa0107ccbb764fd6c274fa725c87fa2c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#aa0107ccbb764fd6c274fa725c87fa2c2">More...</a><br /></td></tr>
+<tr class="separator:aa0107ccbb764fd6c274fa725c87fa2c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6802af75c0539342e37f0a9cd3222136"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a6802af75c0539342e37f0a9cd3222136">GetSetEntityOperationForUsers</a> (Func&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>, bool &gt; condition)</td></tr>
+<tr class="memdesc:a6802af75c0539342e37f0a9cd3222136"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a6802af75c0539342e37f0a9cd3222136">More...</a><br /></td></tr>
+<tr class="separator:a6802af75c0539342e37f0a9cd3222136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac8f90241fba3eeea813ec21ed1d5389f"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#ac8f90241fba3eeea813ec21ed1d5389f">Sync</a> ()</td></tr>
+<tr class="memdesc:ac8f90241fba3eeea813ec21ed1d5389f"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#ac8f90241fba3eeea813ec21ed1d5389f">More...</a><br /></td></tr>
+<tr class="separator:ac8f90241fba3eeea813ec21ed1d5389f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaf4ec66a29c32320b6adf20a8d757da"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#abaf4ec66a29c32320b6adf20a8d757da">Sync</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, bool isSync)</td></tr>
+<tr class="memdesc:abaf4ec66a29c32320b6adf20a8d757da"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#abaf4ec66a29c32320b6adf20a8d757da">More...</a><br /></td></tr>
+<tr class="separator:abaf4ec66a29c32320b6adf20a8d757da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a9d2ece8bdcd1521bd7d4b917fdd0d2"><td class="memItemLeft" align="right" valign="top">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a5a9d2ece8bdcd1521bd7d4b917fdd0d2">DeSync</a> (<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> user, bool isnotifying)</td></tr>
+<tr class="separator:a5a9d2ece8bdcd1521bd7d4b917fdd0d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -152,22 +186,32 @@ Protected Attributes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
+<tr class="memitem:acb819ea88622a1b7d6c675ea6987d7aa"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#acb819ea88622a1b7d6c675ea6987d7aa">isAsync</a><code> [get]</code></td></tr>
+<tr class="memdesc:acb819ea88622a1b7d6c675ea6987d7aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if the property is asynchronous. i.e if some user have specific values  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#acb819ea88622a1b7d6c675ea6987d7aa">More...</a><br /></td></tr>
+<tr class="separator:acb819ea88622a1b7d6c675ea6987d7aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a967dca2a4085b5d49709e76c7e17c70c"><td class="memItemLeft" align="right" valign="top">abstract bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a967dca2a4085b5d49709e76c7e17c70c">isDeSync</a><code> [get]</code></td></tr>
+<tr class="memdesc:a967dca2a4085b5d49709e76c7e17c70c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if the property is desynchronous. i.e if some user doesn't listen to change.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a967dca2a4085b5d49709e76c7e17c70c">More...</a><br /></td></tr>
+<tr class="separator:a967dca2a4085b5d49709e76c7e17c70c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a846880fd71076780f8117864affbb956"><td class="memItemLeft" align="right" valign="top">abstract IEnumerable&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a846880fd71076780f8117864affbb956">AsynchronousUser</a><code> [get]</code></td></tr>
+<tr class="separator:a846880fd71076780f8117864affbb956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91d9d5c94547d371136253b4341309fc"><td class="memItemLeft" align="right" valign="top">abstract IEnumerable&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a91d9d5c94547d371136253b4341309fc">DesynchronousUser</a><code> [get]</code></td></tr>
+<tr class="separator:a91d9d5c94547d371136253b4341309fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e2173fbabeeac494e59d56e89b4baea"><td class="memItemLeft" align="right" valign="top">uint&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a3e2173fbabeeac494e59d56e89b4baea">propertyId</a><code> [get]</code></td></tr>
 <tr class="memdesc:a3e2173fbabeeac494e59d56e89b4baea"><td class="mdescLeft">&#160;</td><td class="mdescRight">The id of this property.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a3e2173fbabeeac494e59d56e89b4baea">More...</a><br /></td></tr>
 <tr class="separator:a3e2173fbabeeac494e59d56e89b4baea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af159c4de827af08f76d6276742219042"><td class="memItemLeft" align="right" valign="top">ulong&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#af159c4de827af08f76d6276742219042">entityId</a><code> [get]</code></td></tr>
 <tr class="memdesc:af159c4de827af08f76d6276742219042"><td class="mdescLeft">&#160;</td><td class="mdescRight">The id of the entity.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#af159c4de827af08f76d6276742219042">More...</a><br /></td></tr>
 <tr class="separator:af159c4de827af08f76d6276742219042"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a89fff594e6ae736332735cbcea1d3951"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a89fff594e6ae736332735cbcea1d3951">isAsync</a><code> [get]</code></td></tr>
-<tr class="memdesc:a89fff594e6ae736332735cbcea1d3951"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if the property is asynchronous. i.e if some user have specific values  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a89fff594e6ae736332735cbcea1d3951">More...</a><br /></td></tr>
-<tr class="separator:a89fff594e6ae736332735cbcea1d3951"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a783adc2db94516d137da6953a0ffabb2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a783adc2db94516d137da6953a0ffabb2">isDeSync</a><code> [get]</code></td></tr>
-<tr class="memdesc:a783adc2db94516d137da6953a0ffabb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates if the property is desynchronous. i.e if some user doesn't listen to change.  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a783adc2db94516d137da6953a0ffabb2">More...</a><br /></td></tr>
-<tr class="separator:a783adc2db94516d137da6953a0ffabb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a537bd6a93345580730e016279adebbc3"><td class="memItemLeft" align="right" valign="top">IEnumerable&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a537bd6a93345580730e016279adebbc3">AsynchronousUser</a><code> [get]</code></td></tr>
-<tr class="separator:a537bd6a93345580730e016279adebbc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3c0f197fe2a6c897b583379296c7d5a"><td class="memItemLeft" align="right" valign="top">IEnumerable&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#af3c0f197fe2a6c897b583379296c7d5a">DesynchronousUser</a><code> [get]</code></td></tr>
-<tr class="separator:af3c0f197fe2a6c897b583379296c7d5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e86a8478ce0c7b1076ab84400bc092a"><td class="memItemLeft" align="right" valign="top">override bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a5e86a8478ce0c7b1076ab84400bc092a">isAsync</a><code> [get]</code></td></tr>
+<tr class="memdesc:a5e86a8478ce0c7b1076ab84400bc092a"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a5e86a8478ce0c7b1076ab84400bc092a">More...</a><br /></td></tr>
+<tr class="separator:a5e86a8478ce0c7b1076ab84400bc092a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0abbabc770c71026de2aa2fc7674551d"><td class="memItemLeft" align="right" valign="top">override bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a0abbabc770c71026de2aa2fc7674551d">isDeSync</a><code> [get]</code></td></tr>
+<tr class="separator:a0abbabc770c71026de2aa2fc7674551d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8daa9859adabb826d4c43837314c6e22"><td class="memItemLeft" align="right" valign="top">override IEnumerable&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a8daa9859adabb826d4c43837314c6e22">AsynchronousUser</a><code> [get]</code></td></tr>
+<tr class="memdesc:a8daa9859adabb826d4c43837314c6e22"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a8daa9859adabb826d4c43837314c6e22">More...</a><br /></td></tr>
+<tr class="separator:a8daa9859adabb826d4c43837314c6e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a055c866141f36a42a807afef746b273e"><td class="memItemLeft" align="right" valign="top">override IEnumerable&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html#a055c866141f36a42a807afef746b273e">DesynchronousUser</a><code> [get]</code></td></tr>
+<tr class="separator:a055c866141f36a42a807afef746b273e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Define an object property that could have a different value depending on the <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>. </p>
@@ -261,14 +305,59 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="afe4c7571523cda58c98724846f9d1559" name="afe4c7571523cda58c98724846f9d1559"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe4c7571523cda58c98724846f9d1559">&#9670;&nbsp;</a></span>DeSync()</h2>
+<a id="a18da1e9027ae2c72d3fb7cc33517aa6d" name="a18da1e9027ae2c72d3fb7cc33517aa6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18da1e9027ae2c72d3fb7cc33517aa6d">&#9670;&nbsp;</a></span>DeSync() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.DeSync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
+          <td class="paramname"><em>user</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isnotifying</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The property will not notify update if desync. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">user</td><td>the user</td></tr>
+    <tr><td class="paramname">isSync</td><td>Is the property async ?</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a5a9d2ece8bdcd1521bd7d4b917fdd0d2" name="a5a9d2ece8bdcd1521bd7d4b917fdd0d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a9d2ece8bdcd1521bd7d4b917fdd0d2">&#9670;&nbsp;</a></span>DeSync() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.DeSync </td>
+          <td class="memname">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.DeSync </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
           <td class="paramname"><em>user</em>, </td>
@@ -287,14 +376,147 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>THe property will not notify update if desync. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">user</td><td>the user</td></tr>
-    <tr><td class="paramname">isSync</td><td>Is the property async ?</td></tr>
-  </table>
-  </dd>
-</dl>
+</div>
+</div>
+<a id="ad4fd46cf2517118fc459cea28405d462" name="ad4fd46cf2517118fc459cea28405d462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4fd46cf2517118fc459cea28405d462">&#9670;&nbsp;</a></span>GetSetEntityOperationForAllUsers() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.GetSetEntityOperationForAllUsers </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a SetEntityOperation for this property for all users, regardless of async information. </p>
+
+</div>
+</div>
+<a id="acaf97826a845e528aaef32a55c01456f" name="acaf97826a845e528aaef32a55c01456f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acaf97826a845e528aaef32a55c01456f">&#9670;&nbsp;</a></span>GetSetEntityOperationForAllUsers() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.GetSetEntityOperationForAllUsers </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>inheritdoc/&gt; </p>
+
+</div>
+</div>
+<a id="a9ced73702779cf5a7dc3ca6e92d75162" name="a9ced73702779cf5a7dc3ca6e92d75162"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ced73702779cf5a7dc3ca6e92d75162">&#9670;&nbsp;</a></span>GetSetEntityOperationForUser() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.GetSetEntityOperationForUser </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
+          <td class="paramname"><em>user</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a SetEntityOperation for this property for a given user. </p>
+
+</div>
+</div>
+<a id="aa0107ccbb764fd6c274fa725c87fa2c2" name="aa0107ccbb764fd6c274fa725c87fa2c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0107ccbb764fd6c274fa725c87fa2c2">&#9670;&nbsp;</a></span>GetSetEntityOperationForUser() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.GetSetEntityOperationForUser </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
+          <td class="paramname"><em>user</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>inheritdoc/&gt; </p>
+
+</div>
+</div>
+<a id="a582fca6a32687c4eca18f53246c7106b" name="a582fca6a32687c4eca18f53246c7106b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a582fca6a32687c4eca18f53246c7106b">&#9670;&nbsp;</a></span>GetSetEntityOperationForUsers() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.GetSetEntityOperationForUsers </td>
+          <td>(</td>
+          <td class="paramtype">Func&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>, bool &gt;&#160;</td>
+          <td class="paramname"><em>condition</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Get a SetEntityOperation for this property for users matching the given condition, regardless of async information. </p>
+
+</div>
+</div>
+<a id="a6802af75c0539342e37f0a9cd3222136" name="a6802af75c0539342e37f0a9cd3222136"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6802af75c0539342e37f0a9cd3222136">&#9670;&nbsp;</a></span>GetSetEntityOperationForUsers() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.GetSetEntityOperationForUsers </td>
+          <td>(</td>
+          <td class="paramtype">Func&lt; <a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>, bool &gt;&#160;</td>
+          <td class="paramname"><em>condition</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>inheritdoc/&gt; </p>
 
 </div>
 </div>
@@ -429,17 +651,45 @@ Properties</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>inheritdoc/&gt; </p>
 
 </div>
 </div>
-<a id="a9a919e512718d9e59410cabdbede98b4" name="a9a919e512718d9e59410cabdbede98b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a919e512718d9e59410cabdbede98b4">&#9670;&nbsp;</a></span>Sync() <span class="overload">[1/2]</span></h2>
+<a id="a6f45a82a404e3a30b69c9f23bc98f08e" name="a6f45a82a404e3a30b69c9f23bc98f08e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f45a82a404e3a30b69c9f23bc98f08e">&#9670;&nbsp;</a></span>Sync() <span class="overload">[1/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.Sync </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the property as synchronized/asynchronous. </p>
+
+</div>
+</div>
+<a id="ac8f90241fba3eeea813ec21ed1d5389f" name="ac8f90241fba3eeea813ec21ed1d5389f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8f90241fba3eeea813ec21ed1d5389f">&#9670;&nbsp;</a></span>Sync() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.Sync </td>
+          <td class="memname">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.Sync </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -447,18 +697,63 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the property as synchronized/asynchronous. </p>
+<p>inheritdoc/&gt; </p>
 
 </div>
 </div>
-<a id="afc806430b98350b62536e46098b09e5b" name="afc806430b98350b62536e46098b09e5b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc806430b98350b62536e46098b09e5b">&#9670;&nbsp;</a></span>Sync() <span class="overload">[2/2]</span></h2>
+<a id="a1937540db4d0efad969594e7b52dc2a0" name="a1937540db4d0efad969594e7b52dc2a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1937540db4d0efad969594e7b52dc2a0">&#9670;&nbsp;</a></span>Sync() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.Sync </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
+          <td class="paramname"><em>user</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isSync</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Set the property as synchronized/asynchronous for a user. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">user</td><td>the user</td></tr>
+    <tr><td class="paramname">isSync</td><td>Is the property async ?</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abaf4ec66a29c32320b6adf20a8d757da" name="abaf4ec66a29c32320b6adf20a8d757da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abaf4ec66a29c32320b6adf20a8d757da">&#9670;&nbsp;</a></span>Sync() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.Sync </td>
+          <td class="memname">override <a class="el" href="../../d3/dc8/classumi3d_1_1edk_1_1_set_entity_property.html">SetEntityProperty</a> <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.Sync </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&#160;</td>
           <td class="paramname"><em>user</em>, </td>
@@ -477,14 +772,7 @@ Properties</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Set the property as synchronized/asynchronous for a user. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">user</td><td>the user</td></tr>
-    <tr><td class="paramname">isSync</td><td>Is the property async ?</td></tr>
-  </table>
-  </dd>
-</dl>
+<p>inheritdoc/&gt; </p>
 
 </div>
 </div>
@@ -526,6 +814,7 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>A event that is triggered when value changes. </p>
+<p >inheritdoc/&gt; </p>
 
 </div>
 </div>
@@ -568,8 +857,8 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
-<a id="a537bd6a93345580730e016279adebbc3" name="a537bd6a93345580730e016279adebbc3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a537bd6a93345580730e016279adebbc3">&#9670;&nbsp;</a></span>AsynchronousUser</h2>
+<a id="a846880fd71076780f8117864affbb956" name="a846880fd71076780f8117864affbb956"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a846880fd71076780f8117864affbb956">&#9670;&nbsp;</a></span>AsynchronousUser <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -578,7 +867,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">IEnumerable&lt;<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&gt; <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.AsynchronousUser</td>
+          <td class="memname">abstract IEnumerable&lt;<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&gt; <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.AsynchronousUser</td>
         </tr>
       </table>
   </td>
@@ -588,12 +877,10 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p></p>
-
 </div>
 </div>
-<a id="af3c0f197fe2a6c897b583379296c7d5a" name="af3c0f197fe2a6c897b583379296c7d5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3c0f197fe2a6c897b583379296c7d5a">&#9670;&nbsp;</a></span>DesynchronousUser</h2>
+<a id="a8daa9859adabb826d4c43837314c6e22" name="a8daa9859adabb826d4c43837314c6e22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8daa9859adabb826d4c43837314c6e22">&#9670;&nbsp;</a></span>AsynchronousUser <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -602,7 +889,53 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">IEnumerable&lt;<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&gt; <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.DesynchronousUser</td>
+          <td class="memname">override IEnumerable&lt;<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&gt; <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.AsynchronousUser</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>inheritdoc/&gt; </p>
+
+</div>
+</div>
+<a id="a91d9d5c94547d371136253b4341309fc" name="a91d9d5c94547d371136253b4341309fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91d9d5c94547d371136253b4341309fc">&#9670;&nbsp;</a></span>DesynchronousUser <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract IEnumerable&lt;<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&gt; <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.DesynchronousUser</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a055c866141f36a42a807afef746b273e" name="a055c866141f36a42a807afef746b273e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a055c866141f36a42a807afef746b273e">&#9670;&nbsp;</a></span>DesynchronousUser <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override IEnumerable&lt;<a class="el" href="../../d2/d13/classumi3d_1_1edk_1_1_u_m_i3_d_user.html">UMI3DUser</a>&gt; <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.DesynchronousUser</td>
         </tr>
       </table>
   </td>
@@ -638,8 +971,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a89fff594e6ae736332735cbcea1d3951" name="a89fff594e6ae736332735cbcea1d3951"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89fff594e6ae736332735cbcea1d3951">&#9670;&nbsp;</a></span>isAsync</h2>
+<a id="acb819ea88622a1b7d6c675ea6987d7aa" name="acb819ea88622a1b7d6c675ea6987d7aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acb819ea88622a1b7d6c675ea6987d7aa">&#9670;&nbsp;</a></span>isAsync <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -648,7 +981,7 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.isAsync</td>
+          <td class="memname">abstract bool <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.isAsync</td>
         </tr>
       </table>
   </td>
@@ -662,8 +995,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a783adc2db94516d137da6953a0ffabb2" name="a783adc2db94516d137da6953a0ffabb2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a783adc2db94516d137da6953a0ffabb2">&#9670;&nbsp;</a></span>isDeSync</h2>
+<a id="a5e86a8478ce0c7b1076ab84400bc092a" name="a5e86a8478ce0c7b1076ab84400bc092a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e86a8478ce0c7b1076ab84400bc092a">&#9670;&nbsp;</a></span>isAsync <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -672,7 +1005,31 @@ Properties</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.isDeSync</td>
+          <td class="memname">override bool <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.isAsync</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>inheritdoc/&gt; </p>
+
+</div>
+</div>
+<a id="a967dca2a4085b5d49709e76c7e17c70c" name="a967dca2a4085b5d49709e76c7e17c70c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a967dca2a4085b5d49709e76c7e17c70c">&#9670;&nbsp;</a></span>isDeSync <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">abstract bool <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.isDeSync</td>
         </tr>
       </table>
   </td>
@@ -683,6 +1040,28 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Indicates if the property is desynchronous. i.e if some user doesn't listen to change. </p>
+
+</div>
+</div>
+<a id="a0abbabc770c71026de2aa2fc7674551d" name="a0abbabc770c71026de2aa2fc7674551d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0abbabc770c71026de2aa2fc7674551d">&#9670;&nbsp;</a></span>isDeSync <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override bool <a class="el" href="../../da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html">umi3d.edk.UMI3DAsyncProperty</a>&lt; T &gt;.isDeSync</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

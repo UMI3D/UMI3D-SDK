@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -108,11 +108,10 @@ $(document).ready(function(){initNavTree('d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a481f65369dafdb94a4cf353e9957bb88"><td class="memItemLeft" align="right" valign="top">override bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a481f65369dafdb94a4cf353e9957bb88">IsSuitableFor</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> gltfMatDto)</td></tr>
-<tr class="memdesc:a481f65369dafdb94a4cf353e9957bb88"><td class="mdescLeft">&#160;</td><td class="mdescRight"><br  />
-  <a href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a481f65369dafdb94a4cf353e9957bb88">More...</a><br /></td></tr>
+<tr class="memdesc:a481f65369dafdb94a4cf353e9957bb88"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a481f65369dafdb94a4cf353e9957bb88">More...</a><br /></td></tr>
 <tr class="separator:a481f65369dafdb94a4cf353e9957bb88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bdac9cb9ec619dc1524762ff135ed54"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a7bdac9cb9ec619dc1524762ff135ed54">LoadMaterialFromExtension</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> dto, Action&lt; Material &gt; callback)</td></tr>
-<tr class="separator:a7bdac9cb9ec619dc1524762ff135ed54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5877ff328a176a832c48770a2450e3df"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d3/d07/classumi3d_1_1cdk_1_1_u_m_i3_d_original_material_loader.html#a5877ff328a176a832c48770a2450e3df">LoadMaterialFromExtension</a> (<a class="el" href="../../d1/d0f/classumi3d_1_1common_1_1_gl_t_f_material_dto.html">GlTFMaterialDto</a> dto, Action&lt; Material &gt; callback, Material oldMaterial=null)</td></tr>
+<tr class="separator:a5877ff328a176a832c48770a2450e3df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -155,16 +154,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p><br  />
- </p>
-<p >inheritdoc/&gt; </p>
+<p>inheritdoc/&gt; </p>
 
 <p>Implements <a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html#a260f9bdda7b8bad65da1f4c66e552d76">umi3d.cdk.AbstractUMI3DMaterialLoader</a>.</p>
 
 </div>
 </div>
-<a id="a7bdac9cb9ec619dc1524762ff135ed54" name="a7bdac9cb9ec619dc1524762ff135ed54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7bdac9cb9ec619dc1524762ff135ed54">&#9670;&nbsp;</a></span>LoadMaterialFromExtension()</h2>
+<a id="a5877ff328a176a832c48770a2450e3df" name="a5877ff328a176a832c48770a2450e3df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5877ff328a176a832c48770a2450e3df">&#9670;&nbsp;</a></span>LoadMaterialFromExtension()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -182,7 +179,13 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Action&lt; Material &gt;&#160;</td>
-          <td class="paramname"><em>callback</em>&#160;</td>
+          <td class="paramname"><em>callback</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Material&#160;</td>
+          <td class="paramname"><em>oldMaterial</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -197,7 +200,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html#ade0a31997bed96b7cf50fef55254383e">umi3d.cdk.AbstractUMI3DMaterialLoader</a>.</p>
+<p>Implements <a class="el" href="../../dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html#a26ae2f1301019664963b9bb3f3f0125b">umi3d.cdk.AbstractUMI3DMaterialLoader</a>.</p>
 
 </div>
 </div>

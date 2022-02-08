@@ -2,7 +2,7 @@ var searchData=
 [
   ['laucheronmasterserver_0',['LaucherOnMasterServer',['../dd/d6a/classumi3d_1_1cdk_1_1collaboration_1_1_laucher_on_master_server.html',1,'umi3d::cdk::collaboration']]],
   ['librariesdto_1',['LibrariesDto',['../d0/d32/classumi3d_1_1common_1_1_libraries_dto.html',1,'umi3d::common']]],
-  ['linedto_2',['LineDto',['../dc/d6d/classumi3d_1_1common_1_1_line_dto.html',1,'umi3d::common']]],
+  ['line3_2',['Line3',['../d0/d48/classumi3d_1_1common_1_1volume_1_1_geometry_tools_1_1_line3.html',1,'umi3d::common::volume::GeometryTools']]],
   ['linkdto_3',['LinkDto',['../d5/de2/classumi3d_1_1common_1_1interaction_1_1_link_dto.html',1,'umi3d::common::interaction']]],
   ['linknode_4',['LinkNode',['../d6/de5/classumi3d_1_1cdk_1_1interaction_1_1_link_node.html',1,'umi3d::cdk::interaction']]],
   ['linkopened_5',['LinkOpened',['../df/d69/classumi3d_1_1common_1_1interaction_1_1_link_opened.html',1,'umi3d::common::interaction']]],

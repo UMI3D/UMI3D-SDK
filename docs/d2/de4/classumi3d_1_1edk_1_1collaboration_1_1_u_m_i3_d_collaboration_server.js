@@ -9,6 +9,7 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server =
     [ "NotifyUserChanged", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a7fef0145de3cf28754a79959fd6ed8b3", null ],
     [ "NotifyUserJoin", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a5ca6b27dbd78a33c28b37ebea3470858", null ],
     [ "NotifyUserStatusChanged", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#ae1128a9c3bff31714dee85b40344271f", null ],
+    [ "OnDestroy", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#abf3e375336737ce459cd1b0ed62bef28", null ],
     [ "Ping", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a3af0b3d34feed3d756e097bf78460a8c", null ],
     [ "SetIP", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a49ded86fb686858c16fe46b4269b1d4e", null ],
     [ "ToDto", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html#a085b9addbdb38effc9129d5cc5ac990f", null ],
