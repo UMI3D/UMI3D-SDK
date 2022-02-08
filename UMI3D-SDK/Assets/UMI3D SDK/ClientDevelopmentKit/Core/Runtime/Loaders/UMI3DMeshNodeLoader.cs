@@ -47,7 +47,7 @@ namespace umi3d.cdk
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException( "Dto should be an UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException("Dto should be an UMI3DAbstractNodeDto"));
                 return;
             }
 
@@ -80,7 +80,7 @@ namespace umi3d.cdk
                             }
                             else
                             {
-                                failed?.Invoke(new Umi3dException( $"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
+                                failed?.Invoke(new Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
                             }
                         },
                         failed,
@@ -88,7 +88,7 @@ namespace umi3d.cdk
                         );
                 }
                 else
-                    failed.Invoke(new Umi3dException( $"No loader found for {ext}"));
+                    failed.Invoke(new Umi3dException($"No loader found for {ext}"));
             }, failed);
         }
 

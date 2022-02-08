@@ -213,7 +213,7 @@ namespace umi3d.cdk.interaction
             AbstractTool tool = GetTool(toolId);
             tool.interactions.Remove(abstractInteractionDto);
 
-            foreach (var item in Controllers)
+            foreach (AbstractController item in Controllers)
             {
                 foreach (AbstractUMI3DInput input in item.inputs)
                 {

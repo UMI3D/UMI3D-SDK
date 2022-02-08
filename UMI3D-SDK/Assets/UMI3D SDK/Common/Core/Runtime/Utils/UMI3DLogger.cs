@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace umi3d.common
@@ -56,7 +55,7 @@ namespace umi3d.common
         Connection = 1 << 13,
 
         Editor = 1 << 29,
-        Other = 1<<28
+        Other = 1 << 28
     }
 
     public class UMI3DLogger : PersistentSingleton<UMI3DLogger>
@@ -82,7 +81,7 @@ namespace umi3d.common
             }
         }
         [SerializeField]
-        string logPath;
+        private string logPath;
         public static bool ShouldLog
         {
             get => Exists ? Instance.log : false;
@@ -95,7 +94,7 @@ namespace umi3d.common
             }
         }
         [SerializeField]
-        bool log;
+        private bool log;
 
 
         public static DebugScope LogScope
@@ -200,14 +199,14 @@ namespace umi3d.common
         {
             string data = $"Time : {time},{ Environment.NewLine}";
             bool globalOk = false;
-            foreach (var loggable in Loggables)
+            foreach (KeyValuePair<ILoggable, List<DebugInfo>> loggable in Loggables)
             {
                 bool localOk = false;
                 string localdata = $"\"{loggable.Key.GetLogName()}\":{{{Environment.NewLine}";
                 if (loggable.Value != null && loggable.Value.Count > 0)
                     loggable.Value.ForEach(info =>
                     {
-                        var i = info.GetData();
+                        (bool, string) i = info.GetData();
                         if (i.Item1)
                         {
                             localOk = true;
@@ -238,7 +237,7 @@ namespace umi3d.common
             }
         }
         [SerializeField]
-        string infoPath;
+        private string infoPath;
         public static float LogInfoDelta
         {
             get => Exists ? Instance.logInfoDelta : 0;
@@ -252,7 +251,7 @@ namespace umi3d.common
             }
         }
         [SerializeField]
-        float logInfoDelta;
+        private float logInfoDelta;
         public static bool ShouldLogInfo
         {
             get => Exists ? Instance.logInfo : false;
@@ -269,10 +268,9 @@ namespace umi3d.common
             }
         }
         [SerializeField]
-        bool logInfo;
-        WaitForSecondsRealtime wait;
-
-        bool running = false;
+        private bool logInfo;
+        private WaitForSecondsRealtime wait;
+        private bool running = false;
         protected virtual IEnumerator LogCoroutine()
         {
             if (running || !ShouldLogInfo) yield break;
@@ -281,7 +279,7 @@ namespace umi3d.common
             WriteLogFile($"{DateTime.Now}");
             while (ShouldLogInfo)
             {
-                var data = LogData(Time.unscaledTime);
+                string data = LogData(Time.unscaledTime);
                 if (data != null)
                     WriteLogFile(data);
                 yield return wait;
@@ -293,8 +291,9 @@ namespace umi3d.common
         {
             infoWritter?.Write(data);
         }
-        ThreadWritter infoWritter;
-        ThreadWritter logWritter;
+
+        private ThreadWritter infoWritter;
+        private ThreadWritter logWritter;
 
         protected override void Awake()
         {
@@ -350,8 +349,8 @@ namespace umi3d.common
     {
         private T lastValue;
         private readonly Func<T> GetValue;
-        Func<T, string> serializer;
-        bool updated = false;
+        private readonly Func<T, string> serializer;
+        private bool updated = false;
 
         public DebugInfo(string name, T value, Func<T, string> serializer = null) : this(name, true, serializer)
         {
@@ -379,13 +378,13 @@ namespace umi3d.common
 
         public override (bool, string) GetData()
         {
-            var ok = Updated();
+            bool ok = Updated();
             if (ok) Debug.Log(ok);
 
             return (ok, GetIfUpdatedData());
         }
 
-        string GetIfUpdatedData()
+        private string GetIfUpdatedData()
         {
             if (updated)
             {
@@ -409,7 +408,7 @@ namespace umi3d.common
             }
             if (!isStatic)
             {
-                var value = GetTData();
+                T value = GetTData();
                 if (
                     (!value?.Equals(lastValue) ?? false)
                     || (!lastValue?.Equals(value) ?? false)

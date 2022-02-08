@@ -27,8 +27,7 @@ namespace umi3d.cdk
         public UMI3DDto dto;
         public object Object;
         public Action Delete;
-
-        Action LoadedCallback;
+        private Action LoadedCallback;
 
         public UMI3DEntityInstance(Action loadedCallback)
         {
@@ -40,8 +39,9 @@ namespace umi3d.cdk
 
         public bool IsLoaded => LoadedCallback == null;
 
-        public void NotifyLoaded() {
-            if(!IsLoaded)
+        public void NotifyLoaded()
+        {
+            if (!IsLoaded)
             {
                 LoadedCallback();
                 LoadedCallback = null;

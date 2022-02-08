@@ -44,9 +44,15 @@ namespace umi3d.cdk.volumes
         }
 
         /// <inheritdoc/>
-        public override ulong Id() => id;
+        public override ulong Id()
+        {
+            return id;
+        }
 
         /// <inheritdoc/>
-        public override bool IsInside(Vector3 point, Space relativeTo) => meshes.Exists(mesh => GeometryTools.IsInside(mesh, point));
+        public override bool IsInside(Vector3 point, Space relativeTo)
+        {
+            return meshes.Exists(mesh => GeometryTools.IsInside(mesh, point));
+        }
     }
 }

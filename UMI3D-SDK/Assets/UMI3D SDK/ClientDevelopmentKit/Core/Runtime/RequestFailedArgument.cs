@@ -41,17 +41,19 @@ namespace umi3d.cdk
             return request?.url;
         }
 
-        public System.Collections.Generic.Dictionary<string,string> GetHeader()
+        public System.Collections.Generic.Dictionary<string, string> GetHeader()
         {
             return request?.GetResponseHeaders();
         }
 
         public override string ToString()
         {
-            if (request != null) {
+            if (request != null)
+            {
                 return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{request.responseCode}, url:{request.url}], header:{request?.GetResponseHeaders()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ";
             }
-            else {
+            else
+            {
                 return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{responseCode}]";
             }
         }
@@ -87,12 +89,9 @@ namespace umi3d.cdk
 
     public class Umi3dException : Exception
     {
-        string stack = null;
+        private readonly string stack = null;
 
-        public override string StackTrace
-        {
-            get => stack ?? base.StackTrace;
-        }
+        public override string StackTrace => stack ?? base.StackTrace;
 
         public Umi3dException(long errorCode, string message) : base(message)
         {

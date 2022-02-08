@@ -29,7 +29,7 @@ namespace umi3d.common
         [SerializeField] protected ValueType internalValue;
 
         private class EventType : UnityEvent<ValueType> { }
-        private EventType onUpdate = new EventType();
+        private readonly EventType onUpdate = new EventType();
 
         public ObservableProperty(ValueType value)
         {
@@ -44,19 +44,31 @@ namespace umi3d.common
                 onUpdate.Invoke(value);
         }
 
-        public ValueType GetValue() => internalValue;
+        public ValueType GetValue()
+        {
+            return internalValue;
+        }
 
-        public void ForceNotification() => onUpdate.Invoke(internalValue);
+        public void ForceNotification()
+        {
+            onUpdate.Invoke(internalValue);
+        }
 
         /// <summary>
         /// Subscribe to value change updates.
         /// </summary>
-        public void Attach(UnityAction<ValueType> callback) => onUpdate.AddListener(callback);
+        public void Attach(UnityAction<ValueType> callback)
+        {
+            onUpdate.AddListener(callback);
+        }
 
         /// <summary>
         /// Unsubscribe to value change updates.
         /// </summary>
-        public void Detach(UnityAction<ValueType> callback) => onUpdate.RemoveListener(callback);
+        public void Detach(UnityAction<ValueType> callback)
+        {
+            onUpdate.RemoveListener(callback);
+        }
     }
 
     [System.Serializable]

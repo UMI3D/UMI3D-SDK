@@ -32,7 +32,7 @@ namespace umi3d.edk.volume
         /// <summary>
         /// Handle volume transit information
         /// </summary>
-        static public void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
+        public static void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
             switch (operationKey)
             {
@@ -49,7 +49,7 @@ namespace umi3d.edk.volume
         /// <summary>
         /// Handle volume transit information
         /// </summary>
-        static public void DispatchBrowserRequest(UMI3DUser user, ulong volumeId, bool direction)
+        public static void DispatchBrowserRequest(UMI3DUser user, ulong volumeId, bool direction)
         {
             if (volumes.TryGetValue(volumeId, out IVolume volume))
             {

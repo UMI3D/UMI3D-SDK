@@ -24,7 +24,7 @@ namespace umi3d.cdk.interaction
         public static void ReadUMI3DExtension(ToolDto dto, Toolbox toolbox)
         {
             var tool = new Tool(dto, toolbox);
-            var node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
+            UMI3DEntityInstance node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
             AbstractInteractionMapper.Instance.CreateTool(tool);
             node.NotifyLoaded();
         }
@@ -32,7 +32,7 @@ namespace umi3d.cdk.interaction
         public static void ReadUMI3DExtension(ToolDto dto)
         {
             var tool = new Tool(dto, null);
-            var node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
+            UMI3DEntityInstance node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, tool, tool.Destroy);
             AbstractInteractionMapper.Instance.CreateTool(tool);
             node.NotifyLoaded();
         }

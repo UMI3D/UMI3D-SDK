@@ -15,13 +15,12 @@ using BeardedManStudios;
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Unity;
 using System;
-using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
     public sealed class UMI3DAuthenticator : IUserAuthenticator
     {
-        const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
 
         private const string sepparator = ":";
         private readonly Action<Action<string>> getPin;
@@ -83,7 +82,7 @@ namespace umi3d.common.collaboration
                     });
                     break;
                 default:
-                    UMI3DLogger.LogWarning($"Unknow AuthenticationType [{type}]",scope);
+                    UMI3DLogger.LogWarning($"Unknow AuthenticationType [{type}]", scope);
                     rejectServerAction();
                     break;
             }
@@ -125,7 +124,7 @@ namespace umi3d.common.collaboration
                             rejectUserAction(player);
                         break;
                     default:
-                        UMI3DLogger.LogWarning($"Unknow AuthenticationType [{authenticationType}]",scope);
+                        UMI3DLogger.LogWarning($"Unknow AuthenticationType [{authenticationType}]", scope);
                         rejectUserAction(player);
                         break;
                 }

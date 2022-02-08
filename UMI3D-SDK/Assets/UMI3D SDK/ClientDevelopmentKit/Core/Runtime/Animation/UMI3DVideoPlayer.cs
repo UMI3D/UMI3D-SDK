@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
         private readonly VideoPlayer videoPlayer;
         private readonly Material mat;
@@ -31,7 +31,7 @@ namespace umi3d.cdk
 
         public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
-        public bool isPrepared { get => videoPlayer?.isPrepared ?? false; }
+        public bool isPrepared => videoPlayer?.isPrepared ?? false;
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {

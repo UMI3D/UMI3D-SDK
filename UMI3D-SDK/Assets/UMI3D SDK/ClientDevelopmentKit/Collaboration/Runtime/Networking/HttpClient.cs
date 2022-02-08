@@ -19,7 +19,6 @@ using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration
@@ -29,14 +28,13 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class HttpClient
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
         internal string ComputedToken;
 
         private string httpUrl => UMI3DCollaborationClientServer.Media.connection.httpUrl;
 
-
-        ThreadDeserializer deserializer;
+        private readonly ThreadDeserializer deserializer;
         /// <summary>
         /// Init HttpClient.
         /// </summary>
@@ -86,7 +84,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.Log($"Received Get Identity", scope | DebugScope.Connection);
                 byte[] res = uwr.downloadHandler.data;
                 deserializer.FromBson(res, action2);
-            }; 
+            };
             UMI3DClientServer.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.identity, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
@@ -171,7 +169,7 @@ namespace umi3d.cdk.collaboration
             {
                 UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
                 byte[] res = uwr.downloadHandler.data;
-                deserializer.FromBson(res, action2); 
+                deserializer.FromBson(res, action2);
             };
             UMI3DClientServer.StartCoroutine(_GetRequest(url, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)));
         }
@@ -301,7 +299,7 @@ namespace umi3d.cdk.collaboration
             {
                 UMI3DLogger.Log($"Received PostJoin", scope | DebugScope.Connection);
                 byte[] res = uwr.downloadHandler.data;
-                deserializer.FromBson(res,action2);
+                deserializer.FromBson(res, action2);
             };
             UMI3DClientServer.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.join, join.ToBson(), action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
@@ -423,8 +421,8 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
-                        UMI3DLogger.LogError(www.error,scope);
-                        UMI3DLogger.LogError("Failed to get " + www.url,scope);
+                        UMI3DLogger.LogError(www.error, scope);
+                        UMI3DLogger.LogError("Failed to get " + www.url, scope);
                     }
                 }
                 yield break;
@@ -463,8 +461,8 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
-                        UMI3DLogger.LogError(www.error,scope);
-                        UMI3DLogger.LogError("Failed to post " + www.url,scope);
+                        UMI3DLogger.LogError(www.error, scope);
+                        UMI3DLogger.LogError("Failed to post " + www.url, scope);
                     }
                 }
                 yield break;

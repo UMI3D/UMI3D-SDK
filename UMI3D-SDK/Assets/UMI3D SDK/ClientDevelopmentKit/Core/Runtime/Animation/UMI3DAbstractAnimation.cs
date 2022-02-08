@@ -158,7 +158,7 @@ namespace umi3d.cdk
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
         {
             this.dto = dto;
-            var node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
+            UMI3DEntityInstance node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
             if (dto.playing)
             {
                 if (dto.startTime == default)

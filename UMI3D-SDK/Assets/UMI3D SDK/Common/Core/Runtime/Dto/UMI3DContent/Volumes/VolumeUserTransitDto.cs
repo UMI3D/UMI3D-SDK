@@ -32,8 +32,8 @@ namespace umi3d.common.volume
 
         public override Bytable ToBytableArray(params object[] parameters)
         {
-            return base.ToBytableArray(parameters) 
-                + UMI3DNetworkingHelper.Write(volumeId) 
+            return base.ToBytableArray(parameters)
+                + UMI3DNetworkingHelper.Write(volumeId)
                 + UMI3DNetworkingHelper.Write(direction);
         }
     }

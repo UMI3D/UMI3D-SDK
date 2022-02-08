@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -25,7 +25,7 @@ namespace umi3d.edk
     /// </summary>
     public class OnDestroyListener : MonoBehaviour
     {
-        void OnDestroy()
+        private void OnDestroy()
         {
             List<DeleteEntity> deleteOperations = this.GetComponentsInChildren<UMI3DEntity>().ToList()
                 .ConvertAll(entity =>
@@ -37,7 +37,7 @@ namespace umi3d.edk
 
             if (deleteOperations.Count > 0)
             {
-                Transaction deleteTransaction = new Transaction();
+                var deleteTransaction = new Transaction();
                 deleteTransaction.AddIfNotNull(deleteOperations);
                 deleteTransaction.reliable = true;
 

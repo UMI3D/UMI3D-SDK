@@ -26,7 +26,7 @@ namespace umi3d.cdk
 
     public class UMI3DSceneLoader : UMI3DAbstractNodeLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Create a GLTFScene based on a GLTFSceneDto
@@ -39,7 +39,7 @@ namespace umi3d.cdk
             {
 
                 var go = new GameObject(dto.name);
-                var node = UMI3DEnvironmentLoader.RegisterNodeInstance(
+                UMI3DNodeInstance node = UMI3DEnvironmentLoader.RegisterNodeInstance(
                     dto.extensions.umi3d.id,
                     dto,
                     go,
@@ -58,8 +58,9 @@ namespace umi3d.cdk
 
                 go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
                 //Load Materials and then Nodes
-                LoadSceneMaterials(dto, 
-                    () => { 
+                LoadSceneMaterials(dto,
+                    () =>
+                    {
                         UMI3DEnvironmentLoader.StartCoroutine(
                             UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, finished2, ToLoadNodesCount, LoadedNodesCount));
                     }
@@ -241,7 +242,7 @@ namespace umi3d.cdk
                 }
                 catch
                 {
-                    UMI3DLogger.LogError("this material failed to load : " + material.name,scope);
+                    UMI3DLogger.LogError("this material failed to load : " + material.name, scope);
                 }
             }
             callback.Invoke();
@@ -283,7 +284,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
-                    UMI3DLogger.LogWarning("Height Texture not supported",scope);
+                    UMI3DLogger.LogWarning("Height Texture not supported", scope);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
@@ -305,7 +306,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    UMI3DLogger.LogWarning("not totaly implemented",scope);
+                    UMI3DLogger.LogWarning("not totaly implemented", scope);
                     IMaterialDto extension = glTFMaterialDto.extensions.umi3d;
                     switch (property)
                     {
@@ -314,7 +315,7 @@ namespace umi3d.cdk
                             if (extension.shaderProperties.ContainsKey((string)p.key))
                             {
                                 extension.shaderProperties[(string)p.key] = ((UMI3DShaderPropertyDto)p.value).value;
-                                UMI3DLogger.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value",scope);
+                                UMI3DLogger.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value", scope);
                             }
                             else
                             {
@@ -324,7 +325,7 @@ namespace umi3d.cdk
                             break;
                         case SetEntityDictionaryRemovePropertyDto p:
                             extension.shaderProperties.Remove((string)p.key);
-                            UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied",scope);
+                            UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied", scope);
                             break;
                         case SetEntityDictionaryPropertyDto p:
                             extension.shaderProperties[(string)p.key] = ((UMI3DShaderPropertyDto)p.value).value;
@@ -406,7 +407,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        
+
         private bool SwitchOnMaterialProperties(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container, object materialToModify)
         {
             var glTFMaterialDto = entity?.dto as GlTFMaterialDto;
@@ -501,7 +502,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
-                    UMI3DLogger.LogWarning("Height Texture not supported",scope);
+                    UMI3DLogger.LogWarning("Height Texture not supported", scope);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
@@ -559,7 +560,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    UMI3DLogger.LogWarning("Shader Properties are not totaly implemented",scope);
+                    UMI3DLogger.LogWarning("Shader Properties are not totaly implemented", scope);
                     IMaterialDto extension = glTFMaterialDto.extensions.umi3d;
                     string key;
                     object value;
@@ -572,7 +573,7 @@ namespace umi3d.cdk
                             if (extension.shaderProperties.ContainsKey(key))
                             {
                                 extension.shaderProperties[key] = value;
-                                UMI3DLogger.LogWarning($"this key [{key}] already exists. Update old value",scope);
+                                UMI3DLogger.LogWarning($"this key [{key}] already exists. Update old value", scope);
                             }
                             else
                             {
@@ -583,7 +584,7 @@ namespace umi3d.cdk
                         case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
                             extension.shaderProperties.Remove((string)key);
-                            UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied",scope);
+                            UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied", scope);
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
@@ -928,7 +929,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
-                    UMI3DLogger.LogWarning("Height Texture not supported",scope);
+                    UMI3DLogger.LogWarning("Height Texture not supported", scope);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
@@ -948,7 +949,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    UMI3DLogger.LogWarning("not totaly implemented",scope);
+                    UMI3DLogger.LogWarning("not totaly implemented", scope);
                     break;
 
                 default:

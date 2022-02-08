@@ -30,18 +30,30 @@ namespace umi3d.edk.volume
         public UMI3DUserEvent onUserExit = new UMI3DUserEvent();
 
         ///<inheritdoc/>
-        public UMI3DUserEvent GetUserEnter() => onUserEnter;
+        public UMI3DUserEvent GetUserEnter()
+        {
+            return onUserEnter;
+        }
 
         ///<inheritdoc/>
-        public UMI3DUserEvent GetUserExit() => onUserExit;
+        public UMI3DUserEvent GetUserExit()
+        {
+            return onUserExit;
+        }
 
         /// <summary>
         /// Return the root node to position the primitive in relation to.
         /// </summary>
         /// <returns></returns>
-        public UMI3DAbstractNode GetRootNode() => this.gameObject.GetComponentInParent<UMI3DAbstractNode>();
+        public UMI3DAbstractNode GetRootNode()
+        {
+            return this.gameObject.GetComponentInParent<UMI3DAbstractNode>();
+        }
 
-        public Matrix4x4 GetRootNodeToLocalMatrix() => GetRootNode().transform.localToWorldMatrix * this.transform.worldToLocalMatrix;
+        public Matrix4x4 GetRootNodeToLocalMatrix()
+        {
+            return GetRootNode().transform.localToWorldMatrix * this.transform.worldToLocalMatrix;
+        }
 
         /// <summary>
         /// Return delete operation
@@ -84,7 +96,7 @@ namespace umi3d.edk.volume
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {
@@ -115,6 +127,9 @@ namespace umi3d.edk.volume
 
         [SerializeField]
         private bool isTraversable = true;
-        public bool IsTraversable() => isTraversable;
+        public bool IsTraversable()
+        {
+            return isTraversable;
+        }
     }
 }

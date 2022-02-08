@@ -58,7 +58,7 @@ namespace umi3d.cdk.interaction
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
 
         public UnityEvent OnUpdated = new UnityEvent();
-        public UnityEvent<AbstractInteractionDto> OnAdded = new AbstractInteractionDtoEvent(); 
+        public UnityEvent<AbstractInteractionDto> OnAdded = new AbstractInteractionDtoEvent();
         public UnityEvent<AbstractInteractionDto> OnRemoved = new AbstractInteractionDtoEvent();
 
         public void Updated() { OnUpdated.Invoke(); }

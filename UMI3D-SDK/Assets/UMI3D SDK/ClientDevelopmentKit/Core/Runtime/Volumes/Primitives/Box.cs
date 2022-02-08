@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common.volume;
+using UnityEngine;
 
 namespace umi3d.cdk.volumes
 {
@@ -42,8 +41,8 @@ namespace umi3d.cdk.volumes
         /// <inheritdoc/>
         public override void GetBase(System.Action<Mesh> onsuccess, float angleLimit)
         {
-            List<Vector3> verts = new List<Vector3>();
-            List<int> tris = new List<int>();
+            var verts = new List<Vector3>();
+            var tris = new List<int>();
 
             verts.Add(bounds.min);
             verts.Add(bounds.min + bounds.size.x * Vector3.right);
@@ -51,12 +50,14 @@ namespace umi3d.cdk.volumes
             verts.Add(bounds.min + bounds.size.z * Vector3.forward);
             verts = verts.ConvertAll(v => localToWorld.MultiplyPoint(v));
 
-            tris.Add(0);    tris.Add(2);    tris.Add(1);
-            tris.Add(0);    tris.Add(3);    tris.Add(2);           
+            tris.Add(0); tris.Add(2); tris.Add(1);
+            tris.Add(0); tris.Add(3); tris.Add(2);
 
-            Mesh base_ = new Mesh();
-            base_.vertices = verts.ToArray();
-            base_.triangles = tris.ToArray();
+            var base_ = new Mesh
+            {
+                vertices = verts.ToArray(),
+                triangles = tris.ToArray()
+            };
             base_.RecalculateNormals();
             onsuccess.Invoke(base_);
         }

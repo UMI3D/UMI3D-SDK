@@ -32,7 +32,7 @@ namespace umi3d.cdk
         /// </summary>
         public static Queue<UMI3DVideoPlayerDto> videoPlayersToLoad = new Queue<UMI3DVideoPlayerDto>();
 
-        public static bool HasVideoToLoad { get => videoPlayersToLoad.Count > 0; }
+        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0;
 
         /// <summary>
         /// Asks to load a <see cref="UMI3DVideoPlayer"/> from a <see cref="UMI3DVideoPlayerDto"/>. 

@@ -28,7 +28,7 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DUIImageNodeLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Load an UMI3D UI Image.
@@ -70,9 +70,9 @@ namespace umi3d.cdk
                         if (tex != null)
                             image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
                         else
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                     },
-                    e=>UMI3DLogger.LogWarning(e,scope),
+                    e => UMI3DLogger.LogWarning(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -130,9 +130,9 @@ namespace umi3d.cdk
                                     if (tex != null)
                                         image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
                                     else
-                                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
+                                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                                 },
-                                e=>UMI3DLogger.LogWarning(e,scope),
+                                e => UMI3DLogger.LogWarning(e, scope),
                                 loader.DeleteObject
                                 );
                         }
@@ -190,7 +190,7 @@ namespace umi3d.cdk
                                     if (tex != null)
                                         image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
                                     else
-                                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
+                                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                                 },
                                 e => UMI3DLogger.LogWarning(e, scope),
                                 loader.DeleteObject

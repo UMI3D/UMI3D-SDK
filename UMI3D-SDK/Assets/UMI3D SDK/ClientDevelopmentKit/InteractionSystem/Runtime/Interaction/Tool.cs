@@ -18,7 +18,6 @@ using umi3d.cdk.menu;
 using umi3d.cdk.menu.interaction;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
@@ -29,7 +28,7 @@ namespace umi3d.cdk.interaction
     /// <see cref="InteractableDto"/>
     public class Tool : AbstractTool
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
 
         public class Event : UnityEvent<Tool> { }
 
@@ -220,9 +219,9 @@ namespace umi3d.cdk.interaction
                     result = form;
                     break;
                 default:
-                    UMI3DLogger.LogWarning($"Unknown Menu Item for {dto}",scope);
+                    UMI3DLogger.LogWarning($"Unknown Menu Item for {dto}", scope);
                     result = new MenuItem();
-                    result.Subscribe(() => UMI3DLogger.Log("Unknown case.",scope));
+                    result.Subscribe(() => UMI3DLogger.Log("Unknown case.", scope));
                     break;
             }
             result.Name = dto.name;

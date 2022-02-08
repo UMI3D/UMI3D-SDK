@@ -28,11 +28,11 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public class VolumePrimitiveManager : Singleton<VolumePrimitiveManager>
     {
-        private static Dictionary<ulong, AbstractPrimitive> primitives = new Dictionary<ulong, AbstractPrimitive>();
+        private static readonly Dictionary<ulong, AbstractPrimitive> primitives = new Dictionary<ulong, AbstractPrimitive>();
 
         private class PrimitiveEvent : UnityEvent<AbstractVolumeCell> { }
-        private static PrimitiveEvent onPrimitiveCreation = new PrimitiveEvent();
-        private static PrimitiveEvent onPrimitiveDelete = new PrimitiveEvent();
+        private static readonly PrimitiveEvent onPrimitiveCreation = new PrimitiveEvent();
+        private static readonly PrimitiveEvent onPrimitiveDelete = new PrimitiveEvent();
 
         /// <summary>
         /// Subscribe an action to a cell reception.
@@ -48,7 +48,10 @@ namespace umi3d.cdk.volumes
         }
 
         /// <see cref="SubscribeToPrimitiveCreation(UnityAction{AbstractVolumeCell}, bool)"/>
-        public static void UnsubscribeToPrimitiveCreation(UnityAction<AbstractVolumeCell> callback) => onPrimitiveCreation.RemoveListener(callback);
+        public static void UnsubscribeToPrimitiveCreation(UnityAction<AbstractVolumeCell> callback)
+        {
+            onPrimitiveCreation.RemoveListener(callback);
+        }
 
         /// <summary>
         /// Subscribe an action to a cell delete.
@@ -59,8 +62,10 @@ namespace umi3d.cdk.volumes
         }
 
         /// <see cref="SubscribeToPrimitiveDelete(UnityAction{AbstractVolumeCell})"/>
-        public static void UnsubscribeToPrimitiveDelete(UnityAction<AbstractVolumeCell> callback) => onPrimitiveDelete.RemoveListener(callback);
-
+        public static void UnsubscribeToPrimitiveDelete(UnityAction<AbstractVolumeCell> callback)
+        {
+            onPrimitiveDelete.RemoveListener(callback);
+        }
 
         public static void CreatePrimitive(AbstractPrimitiveDto dto, UnityAction<AbstractVolumeCell> finished)
         {
@@ -68,7 +73,7 @@ namespace umi3d.cdk.volumes
             switch (dto)
             {
                 case BoxDto boxDto:
-                    Box box = new Box() { id = boxDto.id };
+                    var box = new Box() { id = boxDto.id };
                     box.SetBounds(new Bounds() { center = boxDto.center, size = boxDto.size });
                     box.SetLocalToWorldMatrix(localToWorldMatrix);
                     box.rootNodeId = dto.rootNodeId;
@@ -79,7 +84,7 @@ namespace umi3d.cdk.volumes
                     finished.Invoke(box);
                     break;
                 case CylinderDto cylinderDto:
-                    Cylinder c = new Cylinder()
+                    var c = new Cylinder()
                     {
                         id = cylinderDto.id,
                         position = localToWorldMatrix.MultiplyPoint(Vector3.zero),
@@ -118,18 +123,21 @@ namespace umi3d.cdk.volumes
             return primitives[id];
         }
 
-        public static List<AbstractPrimitive> GetPrimitives() => primitives.Values.ToList();
+        public static List<AbstractPrimitive> GetPrimitives()
+        {
+            return primitives.Values.ToList();
+        }
 
         public void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
-            foreach(Box box in GetPrimitives().Where(p => p is Box))
+            foreach (Box box in GetPrimitives().Where(p => p is Box))
             {
                 Gizmos.matrix = box.localToWorld;
                 Gizmos.DrawWireCube(box.bounds.center, box.bounds.size);
             }
 
-            foreach(Cylinder cyl in GetPrimitives().Where(c => c is Cylinder))
+            foreach (Cylinder cyl in GetPrimitives().Where(c => c is Cylinder))
             {
                 Gizmos.matrix = cyl.localToWorld;
                 Gizmos.DrawWireMesh(GeometryTools.GetCylinder(Vector3.zero, Quaternion.identity, Vector3.one, cyl.radius, cyl.height));

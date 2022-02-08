@@ -15,10 +15,7 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -28,10 +25,11 @@ namespace umi3d.common
     {
         private Thread thread;
         private readonly int sleepTimeMiliseconde = 50;
-        private Queue<(byte[],Action<UMI3DDto>)> queue;
-        object runningLock = new object();
-        bool running;
-        bool Running
+        private readonly Queue<(byte[], Action<UMI3DDto>)> queue;
+        private readonly object runningLock = new object();
+        private bool running;
+
+        private bool Running
         {
             get
             {
@@ -61,9 +59,9 @@ namespace umi3d.common
 
         public void FromBson(byte[] bson, Action<UMI3DDto> action)
         {
-            if(action != null && bson != null)
-                lock(queue)
-                    queue.Enqueue((bson,action));
+            if (action != null && bson != null)
+                lock (queue)
+                    queue.Enqueue((bson, action));
         }
 
         private void ThreadUpdate()
@@ -83,7 +81,7 @@ namespace umi3d.common
                     if (set)
                     {
                         var dto = UMI3DDto.FromBson(c.Item1);
-                        MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(()=>c.Item2.Invoke(dto));
+                        MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => c.Item2.Invoke(dto));
                     }
                 }
                 catch (Exception e)

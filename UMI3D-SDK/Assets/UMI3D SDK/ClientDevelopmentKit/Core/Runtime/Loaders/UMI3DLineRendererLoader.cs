@@ -27,7 +27,7 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DLineRendererLoader : AbstractRenderedNodeLoader
     {
-      
+
         public UMI3DLineRendererLoader() { }
 
         protected LineRenderer line;
@@ -51,7 +51,7 @@ namespace umi3d.cdk
             base.ReadUMI3DExtension(dto, node, () =>
             {
                 line = node.GetComponent<LineRenderer>();
-                if(line == null)
+                if (line == null)
                 {
                     line = node.AddComponent<LineRenderer>();
                     line.material = new Material(Shader.Find("Sprites/Default"));
@@ -146,7 +146,7 @@ namespace umi3d.cdk
 
             var node = entity as UMI3DNodeInstance;
             switch (propertyKey)
-            { 
+            {
                 case UMI3DPropertyKeys.LineEndColor:
                     extension.endColor = UMI3DNetworkingHelper.Read<SerializableColor>(container);
                     line.endColor = extension.endColor;

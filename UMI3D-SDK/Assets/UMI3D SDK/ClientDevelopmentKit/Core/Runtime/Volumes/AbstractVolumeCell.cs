@@ -19,7 +19,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.volumes
-{ 
+{
     /// <summary>
     /// Base class for volume cells.
     /// </summary>
@@ -50,7 +50,14 @@ namespace umi3d.cdk.volumes
 
 
         protected UnityEvent onUpdate = new UnityEvent();
-        protected void SubscribeToUpdate(UnityAction callback) => onUpdate.AddListener(callback);
-        protected void UnsubscribeToUpdate(UnityAction callback) => onUpdate.RemoveListener(callback);
+        protected void SubscribeToUpdate(UnityAction callback)
+        {
+            onUpdate.AddListener(callback);
+        }
+
+        protected void UnsubscribeToUpdate(UnityAction callback)
+        {
+            onUpdate.RemoveListener(callback);
+        }
     }
 }

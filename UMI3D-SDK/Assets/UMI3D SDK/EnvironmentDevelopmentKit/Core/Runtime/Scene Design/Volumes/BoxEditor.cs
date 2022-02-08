@@ -25,9 +25,9 @@ namespace umi3d.edk.volume
     [CanEditMultipleObjects]
     public class BoxEditor : Editor
     {
-        Box serializedBox;
+        private Box serializedBox;
 
-        void OnEnable()
+        private void OnEnable()
         {
             serializedBox = target as Box;
         }

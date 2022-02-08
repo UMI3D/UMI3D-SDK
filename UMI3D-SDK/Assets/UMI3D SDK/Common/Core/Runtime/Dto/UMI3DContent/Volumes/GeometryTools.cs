@@ -48,7 +48,7 @@ namespace umi3d.common.volume
         public static Vector3 Barycenter(List<Vector3> points)
         {
             Vector3 center = Vector3.zero;
-            foreach (var p in points)
+            foreach (Vector3 p in points)
                 center += p * 1f / ((float)points.Count);
 
             return center;
@@ -63,7 +63,7 @@ namespace umi3d.common.volume
         /// <returns></returns>
         public static float DistanceToLine(Vector3 point, Vector3 lineDirection, Vector3 linePoint)
         {
-            Vector3 pointOnLine = Vector3.Project(point - linePoint, lineDirection);
+            var pointOnLine = Vector3.Project(point - linePoint, lineDirection);
             return (point - linePoint - pointOnLine).magnitude;
         }
 
@@ -83,7 +83,7 @@ namespace umi3d.common.volume
             Vector3 v = Vector3.Cross(plane.normal, u).normalized;
 
             //step 2 : convert all points in the plane referential
-            List<Vector3> pointsInPlaneReferential = new List<Vector3>();
+            var pointsInPlaneReferential = new List<Vector3>();
             foreach (Vector3 p in points)
             {
                 Vector3 pProjected = plane.ClosestPointOnPlane(p) - plane.normal * plane.distance;
@@ -94,7 +94,7 @@ namespace umi3d.common.volume
             }
 
             //step 3 : list edges in plane referential
-            List<Line3> edges = new List<Line3>();
+            var edges = new List<Line3>();
             for (int i = 0; i < pointsInPlaneReferential.Count - 1; i++)
             {
                 edges.Add(new Line3()
@@ -175,7 +175,7 @@ namespace umi3d.common.volume
             Vector3 planeNormal = Vector3.zero;
             for (int i = 1; i < points.Count - 1; i++)
             {
-                Vector3 normal = Vector3.Cross(
+                var normal = Vector3.Cross(
                     points[i] - planeCenter,
                     points[i + 1] - planeCenter);
 
@@ -252,20 +252,22 @@ namespace umi3d.common.volume
         /// <returns></returns>
         public static Mesh Merge(IEnumerable<Mesh> meshes)
         {
-            List<Vector3> verts = new List<Vector3>();
-            List<int> tris = new List<int>();
+            var verts = new List<Vector3>();
+            var tris = new List<int>();
             int trisOffset = 0;
 
-            foreach(Mesh mesh in meshes)
+            foreach (Mesh mesh in meshes)
             {
                 verts.AddRange(mesh.vertices);
                 tris.AddRange(mesh.triangles.ToList().ConvertAll(i => i + trisOffset));
                 trisOffset += mesh.vertexCount;
             }
 
-            Mesh merged = new Mesh();
-            merged.vertices = verts.ToArray();
-            merged.triangles = tris.ToArray();
+            var merged = new Mesh
+            {
+                vertices = verts.ToArray(),
+                triangles = tris.ToArray()
+            };
             merged.RecalculateNormals();
             merged.RecalculateBounds();
             merged.RecalculateTangents();
@@ -299,7 +301,7 @@ namespace umi3d.common.volume
                     raySize += Mathf.Abs((p - point).magnitude);
                 }
 
-                Line3 ray = new Line3()
+                var ray = new Line3()
                 {
                     from = point,
                     to = ((points[0] + points[1]) / 2f - point).normalized * raySize + point
@@ -319,12 +321,12 @@ namespace umi3d.common.volume
             public List<Face3> Triangulate()
             {
                 int[] trianglesIndexes = GeometryTools.Triangulate(points);
-                List<Face3> triangles = new List<Face3>();
+                var triangles = new List<Face3>();
 
                 for (int i = 0; i <= trianglesIndexes.Length - 3; i += 3)
                 {
-                    List<Vector3> points_ = new List<Vector3>();
-                    List<Line3> edges_ = new List<Line3>();
+                    var points_ = new List<Vector3>();
+                    var edges_ = new List<Line3>();
 
                     points_.Add(points[trianglesIndexes[i + 0]]);
                     points_.Add(points[trianglesIndexes[i + 1]]);
@@ -356,7 +358,10 @@ namespace umi3d.common.volume
                 return triangles;
             }
 
-            public Plane GetPlane() => GeometryTools.GetPlane(points);
+            public Plane GetPlane()
+            {
+                return GeometryTools.GetPlane(points);
+            }
         }
 
         /// <summary>
@@ -374,13 +379,12 @@ namespace umi3d.common.volume
 
             List<Face3> triangles = face.Triangulate();
 
-            Dictionary<Vector3, List<Face3>> facesByNormals = new Dictionary<Vector3, List<Face3>>();
+            var facesByNormals = new Dictionary<Vector3, List<Face3>>();
             foreach (Face3 triangle in triangles)
             {
                 Vector3 normal = GetSurfaceNormal(triangle.points);
 
-                List<Face3> trianglesWithSameNormal;
-                if (facesByNormals.TryGetValue(normal, out trianglesWithSameNormal))
+                if (facesByNormals.TryGetValue(normal, out List<Face3> trianglesWithSameNormal))
                     facesByNormals.Remove(normal);
                 else
                     trianglesWithSameNormal = new List<Face3>();
@@ -388,12 +392,14 @@ namespace umi3d.common.volume
                 facesByNormals.Add(normal, trianglesWithSameNormal);
             }
 
-            List<Face3> export = new List<Face3>();
-            foreach (var planeTris in facesByNormals)
+            var export = new List<Face3>();
+            foreach (KeyValuePair<Vector3, List<Face3>> planeTris in facesByNormals)
             {
-                Face3 plane = new Face3();
-                plane.points = new List<Vector3>();
-                plane.edges = new List<Line3>();
+                var plane = new Face3
+                {
+                    points = new List<Vector3>(),
+                    edges = new List<Line3>()
+                };
 
                 foreach (Face3 tri in planeTris.Value)
                 {
@@ -428,7 +434,7 @@ namespace umi3d.common.volume
             public bool Intersect(Line3 other)
             {
                 //plane detection                                
-                Plane plane = new Plane();
+                var plane = new Plane();
                 plane.Set3Points(this.from, this.to, other.from);
 
                 if (Vector3.Distance(other.to, plane.ClosestPointOnPlane(other.to)) > 0.001f)
@@ -440,16 +446,16 @@ namespace umi3d.common.volume
                 Vector3 v = Vector3.zero;
                 while ((u.magnitude == 0) || (v.magnitude == 0))
                 {
-                    Vector3 randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-                    Vector3 randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+                    var randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+                    var randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
                     u = plane.ClosestPointOnPlane(randomPointA) - plane.distance * plane.normal;
                     v = plane.ClosestPointOnPlane(randomPointB) - plane.distance * plane.normal;
                 }
 
-                Vector2 from_ = new Vector2(Vector3.Dot(u, this.from), Vector3.Dot(v, this.from));
-                Vector2 to_ = new Vector2(Vector3.Dot(u, this.to), Vector3.Dot(v, this.to));
-                Vector2 otherFrom = new Vector2(Vector3.Dot(u, other.from), Vector3.Dot(v, other.from));
-                Vector2 otherTo = new Vector2(Vector3.Dot(u, other.to), Vector3.Dot(v, other.to));
+                var from_ = new Vector2(Vector3.Dot(u, this.from), Vector3.Dot(v, this.from));
+                var to_ = new Vector2(Vector3.Dot(u, this.to), Vector3.Dot(v, this.to));
+                var otherFrom = new Vector2(Vector3.Dot(u, other.from), Vector3.Dot(v, other.from));
+                var otherTo = new Vector2(Vector3.Dot(u, other.to), Vector3.Dot(v, other.to));
 
 
                 ///notations and algo from : https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
@@ -560,13 +566,13 @@ namespace umi3d.common.volume
         /// <returns></returns>
         public static bool IsInsidePolygon(Vector3 target, List<Vector3> polygon)
         {
-            Line3 raycast = new Line3()
+            var raycast = new Line3()
             {
                 from = target,
                 to = target + (polygon[1] - polygon[0]) * 2 * ComputeBoundingBox(polygon).size.magnitude
             };
 
-            List<Line3> edges = new List<Line3>();
+            var edges = new List<Line3>();
             for (int i = 0; i < polygon.Count - 1; i++)
             {
 
@@ -602,7 +608,7 @@ namespace umi3d.common.volume
         {
 
             //plane detection                                
-            Plane plane = new Plane();
+            var plane = new Plane();
             plane.Set3Points(a, b, c);
 
             //Convert points 3D coordinates into 2D plane coordinates
@@ -610,16 +616,16 @@ namespace umi3d.common.volume
             Vector3 randomV = Vector3.zero;
             while ((randomU.magnitude == 0) || (randomV.magnitude == 0))
             {
-                Vector3 randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-                Vector3 randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+                var randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+                var randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
                 randomU = plane.ClosestPointOnPlane(randomPointA) - plane.distance * plane.normal;
                 randomV = plane.ClosestPointOnPlane(randomPointB) - plane.distance * plane.normal;
             }
 
-            Vector2 target2D = new Vector2(Vector3.Dot(target, randomU), Vector3.Dot(target, randomV));
-            Vector2 a2D = new Vector2(Vector3.Dot(a, randomU), Vector3.Dot(a, randomV));
-            Vector2 b2D = new Vector2(Vector3.Dot(b, randomU), Vector3.Dot(b, randomV));
-            Vector2 c2D = new Vector2(Vector3.Dot(c, randomU), Vector3.Dot(c, randomV));
+            var target2D = new Vector2(Vector3.Dot(target, randomU), Vector3.Dot(target, randomV));
+            var a2D = new Vector2(Vector3.Dot(a, randomU), Vector3.Dot(a, randomV));
+            var b2D = new Vector2(Vector3.Dot(b, randomU), Vector3.Dot(b, randomV));
+            var c2D = new Vector2(Vector3.Dot(c, randomU), Vector3.Dot(c, randomV));
 
 
             //algorithm from https://stackoverflow.com/questions/2049582/how-to-determine-if-a-point-is-in-a-2d-triangle
@@ -655,8 +661,8 @@ namespace umi3d.common.volume
                 throw new System.Exception("Not enough points (min is 3)");
 
             //ear clipping method
-            List<int> triangles = new List<int>();
-            List<Vector3> buffer = new List<Vector3>(points);
+            var triangles = new List<int>();
+            var buffer = new List<Vector3>(points);
 
             while (buffer.Count > 3)
             {
@@ -682,19 +688,19 @@ namespace umi3d.common.volume
         public static void UnwrapUV(Mesh mesh)
         {
             Vector3 normal = GeometryTools.GetSurfaceNormal(new List<Vector3>(mesh.vertices));
-            Plane uvplane = new Plane(normal, 0); 
-            
+            var uvplane = new Plane(normal, 0);
+
             Vector3 randomU = Vector3.zero;
             Vector3 randomV = Vector3.zero;
             while ((randomU.magnitude == 0) || (randomV.magnitude == 0))
             {
-                Vector3 randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-                Vector3 randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+                var randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
+                var randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
                 randomU = uvplane.ClosestPointOnPlane(randomPointA) - uvplane.distance * uvplane.normal;
                 randomV = uvplane.ClosestPointOnPlane(randomPointB) - uvplane.distance * uvplane.normal;
             }
 
-            List<Vector2> rawUV = new List<Vector2>();
+            var rawUV = new List<Vector2>();
             foreach (Vector3 vert in mesh.vertices)
             {
                 rawUV.Add(new Vector2(
@@ -731,7 +737,7 @@ namespace umi3d.common.volume
                     maxY = p.y;
             }
 
-            List<Vector2> scaledPoints = new List<Vector2>();
+            var scaledPoints = new List<Vector2>();
 
             foreach (Vector2 p in points)
             {
@@ -755,7 +761,7 @@ namespace umi3d.common.volume
             Vector3 surfaceNormal = Vector3.zero;
             for (int i = 1; i < points.Count - 1; i++)
             {
-                Vector3 normal = Vector3.Cross(
+                var normal = Vector3.Cross(
                     points[1] - points[0],
                     points[i + 1] - points[i]);
 
@@ -771,11 +777,11 @@ namespace umi3d.common.volume
         public static Mesh MergeVerticesByDistance(Mesh mesh, float threeshold = 0.01f)
         {
             int vertCount = mesh.vertexCount;
-            for (int i=0; i < vertCount; i++)
+            for (int i = 0; i < vertCount; i++)
             {
-                for (int j=0; j< vertCount; j++)
+                for (int j = 0; j < vertCount; j++)
                 {
-                    if (i != j) 
+                    if (i != j)
                     {
                         if (Vector3.Distance(mesh.vertices[i], mesh.vertices[j]) < threeshold)
                         {
@@ -798,11 +804,11 @@ namespace umi3d.common.volume
                 throw new System.Exception("Mesh must have at least 2 vertices.");
 
             float minDistance = Vector3.Distance(mesh.vertices[0], mesh.vertices[1]);
-            Vector2Int closests = new Vector2Int(0, 1);
-            
-            for(int i=0; i<mesh.vertexCount; i++)
+            var closests = new Vector2Int(0, 1);
+
+            for (int i = 0; i < mesh.vertexCount; i++)
             {
-                for(int j = i+1; j<mesh.vertexCount; j++)
+                for (int j = i + 1; j < mesh.vertexCount; j++)
                 {
                     float dist = Vector3.Distance(mesh.vertices[i], mesh.vertices[j]);
                     if (dist < minDistance)
@@ -828,16 +834,18 @@ namespace umi3d.common.volume
              *  - Shift the indexes in the triangles to match with the new vertices array.
              */
 
-            List<Vector3> vertices = mesh.vertices.ToList();
-            List<int> triangles = mesh.triangles.ToList();
+            var vertices = mesh.vertices.ToList();
+            var triangles = mesh.triangles.ToList();
 
             triangles = triangles.ConvertAll(index => (index == vertice2) ? vertice1 : index);
             vertices.RemoveAt(vertice2);
             triangles = triangles.ConvertAll(index => (index >= vertice2) ? index - 1 : index);
 
-            Mesh result = new Mesh();
-            result.vertices = vertices.ToArray();
-            result.triangles = triangles.ToArray();
+            var result = new Mesh
+            {
+                vertices = vertices.ToArray(),
+                triangles = triangles.ToArray()
+            };
             return result;
         }
 
@@ -848,9 +856,9 @@ namespace umi3d.common.volume
         /// <returns></returns>
         public static Mesh ForceNormalUp(Mesh mesh)
         {
-            List<int> triangles = mesh.triangles.ToList();
+            var triangles = mesh.triangles.ToList();
 
-            for (int i=0; i+2 < triangles.Count; i += 3)
+            for (int i = 0; i + 2 < triangles.Count; i += 3)
             {
                 Vector3 barycenter = (mesh.vertices[triangles[i]] + mesh.vertices[triangles[i + 1]] + mesh.vertices[triangles[i + 2]]) / 3f;
 
@@ -863,9 +871,11 @@ namespace umi3d.common.volume
                 }
             }
 
-            Mesh result = new Mesh();
-            result.vertices = mesh.vertices;
-            result.triangles = triangles.ToArray();
+            var result = new Mesh
+            {
+                vertices = mesh.vertices,
+                triangles = triangles.ToArray()
+            };
             return result;
         }
 
@@ -877,12 +887,12 @@ namespace umi3d.common.volume
         /// <returns></returns>
         private static bool ListContainsSequence<T>(List<T> list, List<T> sequence)
         {
-            for(int i=0; i<list.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
                 if (list[i].Equals(sequence[0]))
                 {
                     bool allEqual = true;
-                    for(int j=1; j<sequence.Count; j++)
+                    for (int j = 1; j < sequence.Count; j++)
                     {
                         if (i + j >= list.Count)
                             return false;
@@ -911,7 +921,7 @@ namespace umi3d.common.volume
             float height = DistanceToLine(point3, point2 - point1, point1);
             return base_ * height / 2f;
         }
-       
+
         public static bool IsTriangleFlat(List<Vector3> triangle)
         {
             return GetArea(triangle[0], triangle[1], triangle[2]) == 0;
@@ -919,9 +929,9 @@ namespace umi3d.common.volume
 
         public static Mesh RemoveFlatTriangles(Mesh mesh)
         {
-            List<int> tris = mesh.triangles.ToList();
+            var tris = mesh.triangles.ToList();
             int offset = 0;
-            for (int i=0; i<mesh.triangles.Length -2; i += 3)
+            for (int i = 0; i < mesh.triangles.Length - 2; i += 3)
             {
                 if (IsTriangleFlat(new List<Vector3> { mesh.vertices[tris[i - offset]], mesh.vertices[tris[i + 1 - offset]], mesh.vertices[tris[i + 2 - offset]] }))
                 {
@@ -932,9 +942,11 @@ namespace umi3d.common.volume
                 }
             }
 
-            Mesh result = new Mesh();
-            result.vertices = mesh.vertices;
-            result.triangles = tris.ToArray();
+            var result = new Mesh
+            {
+                vertices = mesh.vertices,
+                triangles = tris.ToArray()
+            };
             result.Optimize();
             return result;
         }
@@ -958,7 +970,7 @@ namespace umi3d.common.volume
              */
 
 
-            Dictionary<int, List<int>> verticeToTriangles = new Dictionary<int, List<int>>();
+            var verticeToTriangles = new Dictionary<int, List<int>>();
             /// <summary>
             /// Get all triangles from volume involving a given point (returing triangles start index in volume.triangles).
             /// </summary>
@@ -967,7 +979,7 @@ namespace umi3d.common.volume
                 if (verticeToTriangles.TryGetValue(point, out List<int> triangles_))
                     return triangles_;
 
-                List<int> triangles = new List<int>();
+                var triangles = new List<int>();
 
                 for (int i = 0; i < volume.triangles.Length - 3; i += 3)
                 {
@@ -989,8 +1001,8 @@ namespace umi3d.common.volume
             volume.Optimize(); //somehow managed to avoid wierd bugs ...
             volume = RemoveFlatTriangles(volume);
 
-            Mesh baseSurface = new Mesh();
-            List<int> baseSurfaceTrianglesIndexesInGlobalVolumeData = new List<int>();
+            var baseSurface = new Mesh();
+            var baseSurfaceTrianglesIndexesInGlobalVolumeData = new List<int>();
 
             int lowestPointIndex = -1;
             float lowestPosition = float.MaxValue;
@@ -1003,15 +1015,17 @@ namespace umi3d.common.volume
                 }
             }
 
-            List<int> investigatedPoints = new List<int>();
-            List<int> pointsToInvestigate = new List<int>();
-            pointsToInvestigate.Add(lowestPointIndex);
+            var investigatedPoints = new List<int>();
+            var pointsToInvestigate = new List<int>
+            {
+                lowestPointIndex
+            };
             int watchdogMax = volume.vertexCount;
             int watchdog = 0;
             while ((pointsToInvestigate.Count > 0) && (watchdog <= watchdogMax))
             {
                 watchdog++;
-                List<int> pointsToAddToPointsToInvestigate = new List<int>();
+                var pointsToAddToPointsToInvestigate = new List<int>();
                 foreach (int p in pointsToInvestigate)
                 {
                     investigatedPoints.Add(p);
@@ -1020,15 +1034,17 @@ namespace umi3d.common.volume
 
                     foreach (int triangleIndex in trianglesIndexes)
                     {
-                        List<Vector3> triangle = new List<Vector3>();
-                        triangle.Add(volume.vertices[volume.triangles[triangleIndex]]);
-                        triangle.Add(volume.vertices[volume.triangles[triangleIndex + 1]]);
-                        triangle.Add(volume.vertices[volume.triangles[triangleIndex + 2]]);
+                        var triangle = new List<Vector3>
+                        {
+                            volume.vertices[volume.triangles[triangleIndex]],
+                            volume.vertices[volume.triangles[triangleIndex + 1]],
+                            volume.vertices[volume.triangles[triangleIndex + 2]]
+                        };
                         Vector3 faceNormal = GetSurfaceNormal(triangle);
                         float angle = Vector3.Angle(faceNormal, Vector3.up);
 
                         angle = Mathf.Min(angle, 180 - angle);
-                        if ((angle < angleLimit) && !ListContainsSequence(baseSurfaceTrianglesIndexesInGlobalVolumeData, new List<int>() { volume.triangles[triangleIndex], volume.triangles[triangleIndex + 1], volume.triangles[triangleIndex + 2]}))
+                        if ((angle < angleLimit) && !ListContainsSequence(baseSurfaceTrianglesIndexesInGlobalVolumeData, new List<int>() { volume.triangles[triangleIndex], volume.triangles[triangleIndex + 1], volume.triangles[triangleIndex + 2] }))
                         {
                             baseSurfaceTrianglesIndexesInGlobalVolumeData.Add(volume.triangles[triangleIndex]);
                             baseSurfaceTrianglesIndexesInGlobalVolumeData.Add(volume.triangles[triangleIndex + 1]);
@@ -1065,7 +1081,7 @@ namespace umi3d.common.volume
             baseSurface.triangles = baseSurfaceTriangles.ToArray();
 
             if (pointsMergeDistance > 0)
-                baseSurface = MergeVerticesByDistance(baseSurface, pointsMergeDistance);            
+                baseSurface = MergeVerticesByDistance(baseSurface, pointsMergeDistance);
 
             baseSurface.RecalculateNormals();
             baseSurface.RecalculateTangents();
@@ -1075,10 +1091,10 @@ namespace umi3d.common.volume
 
         public static Mesh GetCylinder(Vector3 position, Quaternion rotation, Vector3 scale, float radius, float height, int subdiv = 16)
         {
-            Mesh mesh = new Mesh();
+            var mesh = new Mesh();
 
-            List<Vector3> vertices = new List<Vector3>();
-            List<int> faces = new List<int>();
+            var vertices = new List<Vector3>();
+            var faces = new List<int>();
 
             for (int i = 0; i < subdiv; i++)
             {
@@ -1089,7 +1105,7 @@ namespace umi3d.common.volume
                 vertices.Add(position + Vector3.Scale(scale, rotation * (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
             }
 
-            for(int i = 0; i < subdiv - 1; i++)
+            for (int i = 0; i < subdiv - 1; i++)
             {
                 faces.Add(i);
                 faces.Add(i + 1);
@@ -1127,25 +1143,26 @@ namespace umi3d.common.volume
 
         public static Mesh GetBox(Vector3 position, Quaternion rotation, Vector3 scale, Bounds bounds)
         {
-            Matrix4x4 matrix = Matrix4x4.TRS(position, rotation, scale);
+            var matrix = Matrix4x4.TRS(position, rotation, scale);
             return GetBox(matrix, bounds);
         }
 
-        public static Mesh GetBox(Matrix4x4 transform, Bounds bounds) 
-        { 
-            List<Vector3> points = new List<Vector3>();
+        public static Mesh GetBox(Matrix4x4 transform, Bounds bounds)
+        {
+            var points = new List<Vector3>
+            {
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 0, 0), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 0, 1), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 1, 0), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 1, 1), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 0, 0), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 0, 1), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 1, 0), bounds.size)),
+                transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 1, 1), bounds.size))
+            };
 
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 0, 0), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 0, 1), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 1, 0), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(0, 1, 1), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 0, 0), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 0, 1), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 1, 0), bounds.size)));
-            points.Add(transform.MultiplyPoint(bounds.min + Vector3.Scale(new Vector3(1, 1, 1), bounds.size)));
-
-            List<int> tris = new List<int>() 
-            { 
+            var tris = new List<int>()
+            {
                 1,5,7,
                 1,7,3,
                 0,4,1,
@@ -1161,9 +1178,11 @@ namespace umi3d.common.volume
             };
 
 
-            Mesh mesh = new Mesh();
-            mesh.vertices = points.ToArray();
-            mesh.triangles = tris.ToArray();
+            var mesh = new Mesh
+            {
+                vertices = points.ToArray(),
+                triangles = tris.ToArray()
+            };
             mesh.RecalculateNormals();
             mesh.RecalculateTangents();
             mesh.RecalculateBounds();
@@ -1180,11 +1199,11 @@ namespace umi3d.common.volume
         public static bool IsInside(Mesh mesh, Vector3 point)
         {
             int interCount = 0;
-            Ray ray = new Ray(point, point + mesh.bounds.size * 1.1f);
+            var ray = new Ray(point, point + mesh.bounds.size * 1.1f);
 
-            for (int i=0; i < mesh.triangles.Length - 2; i+=3)
+            for (int i = 0; i < mesh.triangles.Length - 2; i += 3)
             {
-                List<Vector3> triangle = new List<Vector3>()
+                var triangle = new List<Vector3>()
                 {
                     mesh.vertices[mesh.triangles[i]],
                     mesh.vertices[mesh.triangles[i+1]],

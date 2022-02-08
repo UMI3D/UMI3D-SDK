@@ -23,7 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
         public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
         public AudioSource audioSource { get; private set; }
@@ -85,10 +85,10 @@ namespace umi3d.cdk
                         }
                         else
                         {
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}",scope);
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}", scope);
                         }
                     },
-                     e => UMI3DLogger.LogWarning(e,scope),
+                     e => UMI3DLogger.LogWarning(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -100,7 +100,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override float GetProgress()
         {
-            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time  : -1;
+            return (audioSource != null && audioSource.clip != null && audioSource.clip.length > 0) ? audioSource.time : -1;
         }
 
         ///<inheritdoc/>
@@ -174,9 +174,9 @@ namespace umi3d.cdk
                                 if (clipa != null)
                                     audioSource.clip = clipa;
                                 else
-                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}",scope);
+                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                             },
-                            e=>UMI3DLogger.LogWarning(e,scope),
+                            e => UMI3DLogger.LogWarning(e, scope),
                             loader.DeleteObject
                             );
                     }
@@ -277,7 +277,7 @@ namespace umi3d.cdk
 
         public override void SetProgress(long frame)
         {
-            audioSource.time = frame/1000f;
+            audioSource.time = frame / 1000f;
 
         }
     }

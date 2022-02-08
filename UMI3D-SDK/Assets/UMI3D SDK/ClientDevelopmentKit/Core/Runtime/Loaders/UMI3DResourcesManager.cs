@@ -33,7 +33,7 @@ namespace umi3d.cdk
 {
     public class UMI3DResourcesManager : PersistentSingleton<UMI3DResourcesManager>
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         #region const
         private const string dataFile = "data.json";
@@ -358,7 +358,7 @@ namespace umi3d.cdk
         #endregion
         #region setup
 
-        ThreadDeserializer deserializer;
+        private ThreadDeserializer deserializer;
 
         ///<inheritdoc/>
         protected override void Awake()
@@ -391,7 +391,7 @@ namespace umi3d.cdk
                 {
                     foreach (Action<Umi3dException> failback in ObjectValue.loadFailCallback)
                     {
-                        failback.Invoke(new Umi3dException( "clear requested"));
+                        failback.Invoke(new Umi3dException("clear requested"));
                     }
                 }
 
@@ -422,7 +422,7 @@ namespace umi3d.cdk
                     {
                         foreach (Action<Umi3dException> failback in ObjectValue.loadFailCallback)
                         {
-                            failback.Invoke(new Umi3dException( "clear all cache"));
+                            failback.Invoke(new Umi3dException("clear all cache"));
                         }
                     }
 
@@ -554,11 +554,11 @@ namespace umi3d.cdk
                     if (id == null)
                         throw new Exception("id should never be null");
                     LoadFile(
-                        id ?? 0, 
+                        id ?? 0,
                         pair,
                         loader.UrlToObject,
                         loader.ObjectFromCache,
-                        (obj) => { count--; loadedResources.Invoke(total - count);},
+                        (obj) => { count--; loadedResources.Invoke(total - count); },
                         (error) => { UMI3DLogger.LogError($"{error}[{pair.url}]", scope); count--; },
                         loader.DeleteObject);
                 }
@@ -648,15 +648,15 @@ namespace umi3d.cdk
             DateTime date = DateTime.UtcNow;
             Action<Umi3dException> error2 = (reason) =>
             {
-               if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(
-                    new RequestFailedArgument(
-                        reason.errorCode, 
-                        () => StartCoroutine(
-                            urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)),
-                        tryCount,
-                        date,
-                        ShouldTryAgain
-                        )))
+                if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(
+                     new RequestFailedArgument(
+                         reason.errorCode,
+                         () => StartCoroutine(
+                             urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)),
+                         tryCount,
+                         date,
+                         ShouldTryAgain
+                         )))
                 {
                     error?.Invoke(reason);
                 }
@@ -1055,8 +1055,8 @@ namespace umi3d.cdk
             callback.Invoke();
         }
 
-#endregion
-#region sub Models
+        #endregion
+        #region sub Models
         public Dictionary<string, Dictionary<string, Transform>> subModelsCache;
 
         public void GetSubModel(string modelUrlInCache, string subModelName, Action<object> callback)
@@ -1083,7 +1083,7 @@ namespace umi3d.cdk
                         callback.Invoke(subModelsCache[modelUrlInCache][subModelName].gameObject);
                 });
             }
-#endregion
+            #endregion
         }
     }
 }

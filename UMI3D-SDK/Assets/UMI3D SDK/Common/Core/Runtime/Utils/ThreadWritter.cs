@@ -15,10 +15,8 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -26,14 +24,14 @@ namespace umi3d.common
 {
     public class ThreadWritter
     {
-
-        readonly string path;
+        private readonly string path;
         private Thread thread;
         private readonly int sleepTimeMiliseconde = 500;
-        private Queue<string> queue;
-        object runningLock = new object();
-        bool running;
-        bool Running
+        private readonly Queue<string> queue;
+        private readonly object runningLock = new object();
+        private bool running;
+
+        private bool Running
         {
             get
             {
@@ -54,7 +52,7 @@ namespace umi3d.common
             if (string.IsNullOrEmpty(this.path))
                 return;
             Running = true;
-            
+
             thread = new Thread(ThreadUpdate);
             if (!thread.IsAlive)
                 thread.Start();
@@ -84,7 +82,7 @@ namespace umi3d.common
                     lock (queue)
                         if (queue.Count > 0)
                         {
-                            foreach (var s in queue)
+                            foreach (string s in queue)
                                 File.AppendAllText(path, Environment.NewLine + s);
                             queue.Clear();
                         }

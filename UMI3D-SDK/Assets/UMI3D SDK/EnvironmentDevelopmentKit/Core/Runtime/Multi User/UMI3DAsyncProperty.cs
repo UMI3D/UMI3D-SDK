@@ -114,10 +114,10 @@ namespace umi3d.edk
         public Action<UMI3DUser, T> OnUserValueChanged;
 
         ///<inheritdoc/>
-        public override bool isAsync { get => asyncValues != null && asyncValues.Count > 0; }
+        public override bool isAsync => asyncValues != null && asyncValues.Count > 0;
 
         ///<inheritdoc/>
-        public override bool isDeSync { get => UserDesync != null && UserDesync.Count > 0; }
+        public override bool isDeSync => UserDesync != null && UserDesync.Count > 0;
 
 
         /// <summary>
@@ -131,22 +131,10 @@ namespace umi3d.edk
         private readonly Func<T, UMI3DUser, object> Serializer;
 
         ///<inheritdoc/>
-        public override IEnumerable<UMI3DUser> AsynchronousUser
-        {
-            get
-            {
-                return asyncValues.Keys;
-            }
-        }
+        public override IEnumerable<UMI3DUser> AsynchronousUser => asyncValues.Keys;
 
         ///<inheritdoc/>
-        public override IEnumerable<UMI3DUser> DesynchronousUser
-        {
-            get
-            {
-                return UserDesync.ToList();
-            }
-        }
+        public override IEnumerable<UMI3DUser> DesynchronousUser => UserDesync.ToList();
 
         /// <summary>
         /// UMI3DAsyncProperty constructor.
@@ -210,14 +198,14 @@ namespace umi3d.edk
             this.value = value;
 
             if (OnValueChanged != null)
-                OnValueChanged.Invoke(value);           
+                OnValueChanged.Invoke(value);
 
             if (UMI3DEnvironment.Exists)
             {
-                if ((isAsync || isDeSync))                
-                    return GetSetEntityOperationForUsers(user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));                
-                else                
-                    return GetSetEntityOperationForAllUsers();                
+                if ((isAsync || isDeSync))
+                    return GetSetEntityOperationForUsers(user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
+                else
+                    return GetSetEntityOperationForAllUsers();
             }
 
             return null;
@@ -262,7 +250,10 @@ namespace umi3d.edk
         }
 
         ///<inheritdoc/>
-        public override SetEntityProperty GetSetEntityOperationForAllUsers() => GetSetEntityOperationForUsers(u => true);
+        public override SetEntityProperty GetSetEntityOperationForAllUsers()
+        {
+            return GetSetEntityOperationForUsers(u => true);
+        }
 
         ///<inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user)

@@ -14,10 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.volume;
-using umi3d.common;
 using System;
-using System.Collections.Generic;
+using umi3d.common;
+using umi3d.common.volume;
 using UnityEngine;
 
 namespace umi3d.cdk.volumes
@@ -25,12 +24,12 @@ namespace umi3d.cdk.volumes
     /// <summary>
     /// Loader for volume parts.
     /// </summary>
-	static public class UMI3DVolumeLoader
+	public static class UMI3DVolumeLoader
     {
-        static public void ReadUMI3DExtension(AbstractVolumeDescriptorDto dto, Action finished, Action<Umi3dException> failed)
+        public static void ReadUMI3DExtension(AbstractVolumeDescriptorDto dto, Action finished, Action<Umi3dException> failed)
         {
             switch (dto)
-            {          
+            {
                 case AbstractPrimitiveDto prim:
                     VolumePrimitiveManager.CreatePrimitive(prim, p =>
                     {
@@ -52,13 +51,13 @@ namespace umi3d.cdk.volumes
             }
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             switch (property.property)
             {
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Center:
                     var box_1 = entity.Object as Box;
-                    Vector3 newCenter = (Vector3)property.value;
+                    var newCenter = (Vector3)property.value;
                     Vector3 size = box_1.bounds.size;
                     box_1.SetBounds(new Bounds(newCenter, size));
                     return true;
@@ -66,7 +65,7 @@ namespace umi3d.cdk.volumes
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Size:
                     var box_2 = entity.Object as Box;
                     Vector3 center = box_2.bounds.center;
-                    Vector3 newsize = (Vector3)property.value;
+                    var newsize = (Vector3)property.value;
                     box_2.SetBounds(new Bounds(center, newsize));
                     return true;
 
@@ -85,7 +84,7 @@ namespace umi3d.cdk.volumes
             }
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {

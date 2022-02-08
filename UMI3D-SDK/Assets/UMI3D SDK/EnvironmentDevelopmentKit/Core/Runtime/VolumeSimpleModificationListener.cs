@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 namespace umi3d.edk.volume
 {
@@ -14,14 +14,14 @@ namespace umi3d.edk.volume
 
         protected virtual void Start()
         {
-            List<Box> boxes = FindObjectsOfType<Box>().ToList();
+            var boxes = FindObjectsOfType<Box>().ToList();
             foreach (Box box in boxes)
             {
                 SubscribeProperty<Vector3>(box.center);
                 SubscribeProperty<Vector3>(box.size);
             }
 
-            List<Cylinder> cylinders = FindObjectsOfType<Cylinder>().ToList();
+            var cylinders = FindObjectsOfType<Cylinder>().ToList();
             foreach (Cylinder cylinder in cylinders)
             {
                 SubscribeProperty<float>(cylinder.height);
@@ -42,13 +42,13 @@ namespace umi3d.edk.volume
             };
         }
 
-        IEnumerator SendOperations()
+        private IEnumerator SendOperations()
         {
             while (maxFrameRate > 0)
             {
                 if (modifiedProperties.Count > 0)
                 {
-                    Transaction transaction = new Transaction();
+                    var transaction = new Transaction();
                     transaction.AddIfNotNull(modifiedProperties.ConvertAll(prop => prop.GetSetEntityOperationForAllUsers()));
                     transaction.reliable = false;
                     UMI3DServer.Dispatch(transaction);

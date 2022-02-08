@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -90,16 +89,16 @@ namespace umi3d.edk
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
-            if(lineRenderer == null)
+            if (lineRenderer == null)
                 lineRenderer = GetComponent<LineRenderer>();
 
             objectLoop = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.LineLoop, lineRenderer == null ? loop : lineRenderer.loop, (r, u) => r);
             objectLoop.OnValueChanged += b => loop = b;
             objectUseWorldSpace = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.LineUseWorldSpace, lineRenderer == null ? useWorldSpace : lineRenderer.useWorldSpace, (r, u) => r);
             objectUseWorldSpace.OnValueChanged += b => useWorldSpace = b;
-            objectStartColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineStartColor, lineRenderer == null ? (Color)startColor : lineRenderer.startColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c,u));
+            objectStartColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineStartColor, lineRenderer == null ? (Color)startColor : lineRenderer.startColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c, u));
             objectStartColor.OnValueChanged += c => startColor = c;
-            objectEndColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineEndColor, lineRenderer == null ? (Color)endColor : lineRenderer.endColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c,u));
+            objectEndColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineEndColor, lineRenderer == null ? (Color)endColor : lineRenderer.endColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c, u));
             objectEndColor.OnValueChanged += c => endColor = c;
 
             objectStartWidth = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LineStartWidth, lineRenderer == null ? startWidth : lineRenderer.startWidth, (f, u) => f);
@@ -111,15 +110,15 @@ namespace umi3d.edk
             {
                 SyncPositionsFromLineRenderer();
             }
-            objectPositions = new UMI3DAsyncListProperty<Vector3>(objectId, UMI3DPropertyKeys.LinePositions, positions, (v, u) => ToUMI3DSerializable.ToSerializableVector3(v,u));
+            objectPositions = new UMI3DAsyncListProperty<Vector3>(objectId, UMI3DPropertyKeys.LinePositions, positions, (v, u) => ToUMI3DSerializable.ToSerializableVector3(v, u));
             objectPositions.OnValueChanged += b => positions = b;
 
-       
+
         }
 
         public void SyncPositionsFromLineRenderer()
         {
-            Vector3[] tab = new Vector3[lineRenderer.positionCount];
+            var tab = new Vector3[lineRenderer.positionCount];
             lineRenderer.GetPositions(tab);
             positions = tab.ToList();
         }
@@ -149,7 +148,7 @@ namespace umi3d.edk
             lineDto.useWorldSpace = objectUseWorldSpace.GetValue(user);
             lineDto.startWidth = objectStartWidth.GetValue(user);
             lineDto.endWidth = objectEndWidth.GetValue(user);
-            lineDto.positions = objectPositions.GetValue(user).ConvertAll(vector => ToUMI3DSerializable.ToSerializableVector3(vector,user));
+            lineDto.positions = objectPositions.GetValue(user).ConvertAll(vector => ToUMI3DSerializable.ToSerializableVector3(vector, user));
         }
 
         ///<inheritdoc/>

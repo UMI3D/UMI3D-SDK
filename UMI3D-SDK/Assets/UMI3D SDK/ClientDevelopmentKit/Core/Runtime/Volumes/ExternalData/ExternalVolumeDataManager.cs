@@ -14,27 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.volume;
-using umi3d.common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using umi3d.common;
+using umi3d.common.volume;
 using UnityEngine;
 using UnityEngine.Events;
-using umi3d.cdk;
-using System.Linq;
 
-namespace umi3d.cdk.volumes 
+namespace umi3d.cdk.volumes
 {
     /// <summary>
     /// Manager for volumes created with external data (.obj).
     /// </summary>
     public class ExternalVolumeDataManager : Singleton<ExternalVolumeDataManager>
     {
-        private static Dictionary<ulong, AbstractVolumeCell> cells = new Dictionary<ulong, AbstractVolumeCell>();
+        private static readonly Dictionary<ulong, AbstractVolumeCell> cells = new Dictionary<ulong, AbstractVolumeCell>();
 
         private class ExternalVolumeEvent : UnityEvent<AbstractVolumeCell> { }
-        private static ExternalVolumeEvent onVolumeCreation = new ExternalVolumeEvent();
-        private static ExternalVolumeEvent onVolumeDelete = new ExternalVolumeEvent();
+        private static readonly ExternalVolumeEvent onVolumeCreation = new ExternalVolumeEvent();
+        private static readonly ExternalVolumeEvent onVolumeDelete = new ExternalVolumeEvent();
 
         /// <summary>
         /// Subscribe an action to a cell reception.
@@ -52,37 +51,42 @@ namespace umi3d.cdk.volumes
         /// <summary>
         /// Unsubscribe an action to a cell reception.
         /// </summary>
-        public static void UnsubscribeToExternalVolumeCreation(UnityAction<AbstractVolumeCell> callback) => onVolumeCreation.RemoveListener(callback);
+        public static void UnsubscribeToExternalVolumeCreation(UnityAction<AbstractVolumeCell> callback)
+        {
+            onVolumeCreation.RemoveListener(callback);
+        }
 
         /// <summary>
         /// Subscribe an action to a cell delete.
         /// </summary>
         public static void SubscribeToExternalVolumeDelete(UnityAction<AbstractVolumeCell> callback)
         {
-            onVolumeDelete.AddListener(callback);            
+            onVolumeDelete.AddListener(callback);
         }
 
         /// <summary>
         /// Unsubscribe an action to a cell reception.
         /// </summary>
-        public static void UnsubscribeToExternalVolumeDelete(UnityAction<AbstractVolumeCell> callback) => onVolumeDelete.RemoveListener(callback);
-
+        public static void UnsubscribeToExternalVolumeDelete(UnityAction<AbstractVolumeCell> callback)
+        {
+            onVolumeDelete.RemoveListener(callback);
+        }
 
         public void CreateOBJVolume(OBJVolumeDto dto, UnityAction<AbstractVolumeCell> finished)
         {
-            ObjMeshDtoLoader loader = new ObjMeshDtoLoader();
+            var loader = new ObjMeshDtoLoader();
 
             Action<object> success = obj =>
             {
-                OBJVolumeCell cell = new OBJVolumeCell()
+                var cell = new OBJVolumeCell()
                 {
                     id = dto.id,
                     meshes = (obj as GameObject).GetComponentsInChildren<MeshFilter>().ToList().ConvertAll(filter => filter.mesh),
-                    parts = new List<GameObject>() { obj as GameObject }                    
+                    parts = new List<GameObject>() { obj as GameObject }
                 };
 
                 Matrix4x4 m = dto.rootNodeToLocalMatrix;
-                foreach(Mesh mesh in cell.meshes)
+                foreach (Mesh mesh in cell.meshes)
                 {
                     mesh.vertices = mesh.vertices.ToList().ConvertAll(v => Vector3.Scale(v, new Vector3(-1, 1, -1))).ToArray(); //asimpl right handed coordinate system dirty fix
                     mesh.vertices = mesh.vertices.ToList().ConvertAll(v => m.MultiplyPoint(v)).ToArray(); //apply dto transform
@@ -96,7 +100,7 @@ namespace umi3d.cdk.volumes
 
             Action<Umi3dException> failed = e =>
             {
-                Debug.LogError("Failed to load obj file : " + e.Message);   
+                Debug.LogError("Failed to load obj file : " + e.Message);
             };
 
             loader.UrlToObject(dto.objFile, ".obj", UMI3DClientServer.getAuthorization(), success, failed);
@@ -106,13 +110,13 @@ namespace umi3d.cdk.volumes
         {
             if (cells.ContainsKey(id))
             {
-                OBJVolumeCell cell = cells[id] as OBJVolumeCell;
+                var cell = cells[id] as OBJVolumeCell;
                 if (cell != null)
                 {
-                    cell.parts.ForEach(p => 
+                    cell.parts.ForEach(p =>
                     {
                         if (p != null)
-                            Destroy(p);                      
+                            Destroy(p);
                     });
                 }
                 cells.Remove(id);
@@ -120,6 +124,9 @@ namespace umi3d.cdk.volumes
             }
         }
 
-        public static List<AbstractVolumeCell> GetCells() => cells.Values.ToList();
+        public static List<AbstractVolumeCell> GetCells()
+        {
+            return cells.Values.ToList();
+        }
     }
 }

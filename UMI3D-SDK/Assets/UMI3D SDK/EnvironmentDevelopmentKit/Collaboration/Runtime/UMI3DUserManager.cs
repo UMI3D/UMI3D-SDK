@@ -28,7 +28,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DUserManager
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
 
         /// <summary>
         /// Contain the users connected to the scene.
@@ -180,7 +180,7 @@ namespace umi3d.edk.collaboration
                 bool reconnection = false;
                 if (LoginDto == null)
                 {
-                    UMI3DLogger.LogWarning("user try to use empty login",scope);
+                    UMI3DLogger.LogWarning("user try to use empty login", scope);
                     acceptUser(false);
                     return;
                 }
@@ -193,7 +193,7 @@ namespace umi3d.edk.collaboration
                 {
                     if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != 0 && users.ContainsKey(LoginDto.userId))
                     {
-                        UMI3DLogger.LogWarning($"Login [{LoginDto.login}] already us by an other user",scope);
+                        UMI3DLogger.LogWarning($"Login [{LoginDto.login}] already us by an other user", scope);
                         acceptUser(false);
                         return;
                     }

@@ -44,10 +44,10 @@ namespace umi3d.cdk.volumes
         {
             int subdiv = 128; //meh...
 
-            Mesh mesh = new Mesh();
+            var mesh = new Mesh();
 
-            List<Vector3> vertices = new List<Vector3>();
-            List<int> faces = new List<int>();
+            var vertices = new List<Vector3>();
+            var faces = new List<int>();
 
             vertices.Add(this.position);
             for (int i = 0; i < subdiv; i++)
@@ -58,7 +58,7 @@ namespace umi3d.cdk.volumes
             {
                 faces.Add(0);
                 faces.Add(i);
-                faces.Add(i+1);
+                faces.Add(i + 1);
             }
             faces.Add(0);
             faces.Add(subdiv);
@@ -76,7 +76,7 @@ namespace umi3d.cdk.volumes
         /// <inheritdoc/>
         public override Mesh GetMesh()
         {
-            return GeometryTools.GetCylinder(position, rotation, scale, radius, height, 16 * ((int) radius + 1));
+            return GeometryTools.GetCylinder(position, rotation, scale, radius, height, 16 * ((int)radius + 1));
         }
 
         /// <inheritdoc/>
@@ -89,8 +89,8 @@ namespace umi3d.cdk.volumes
              * 3- check height
              */
 
-            Vector3 localCoordinate = 
-                relativeTo == Space.Self ? 
+            Vector3 localCoordinate =
+                relativeTo == Space.Self ?
                     point :
                     Vector3.Scale(
                         new Vector3(

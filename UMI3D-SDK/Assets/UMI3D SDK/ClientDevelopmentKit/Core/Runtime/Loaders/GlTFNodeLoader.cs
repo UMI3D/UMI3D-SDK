@@ -27,7 +27,7 @@ namespace umi3d.cdk
     /// </summary>
     public class GlTFNodeLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Constructor.
@@ -84,7 +84,7 @@ namespace umi3d.cdk
 
                 UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
                     actionAfterLoading,
-                    (s) => { actionAfterLoading(); UMI3DLogger.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}",scope); });
+                    (s) => { actionAfterLoading(); UMI3DLogger.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}", scope); });
             }
             if (finished != null)
             {

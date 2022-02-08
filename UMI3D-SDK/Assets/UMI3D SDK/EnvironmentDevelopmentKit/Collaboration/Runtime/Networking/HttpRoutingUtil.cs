@@ -26,7 +26,7 @@ namespace umi3d.edk.collaboration
 {
     public class HttpRoutingUtil
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public Type attributeType { get; private set; }
 
@@ -76,7 +76,7 @@ namespace umi3d.edk.collaboration
                     return true;
                 }
             }
-            UMI3DLogger.Log("no post root " + path,scope);
+            UMI3DLogger.Log("no post root " + path, scope);
             return false;
         }
 

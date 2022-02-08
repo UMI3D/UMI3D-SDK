@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using umi3d.common;
-using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -26,14 +25,13 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DHttp
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         private readonly HttpServer httpsv;
 
         public HttpRoutingUtil rootMapGET = null;
         public HttpRoutingUtil rootMapPOST = null;
-
-        UMI3DApi root;
+        private readonly UMI3DApi root;
 
         public UMI3DHttp()
         {
@@ -50,7 +48,7 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapGET.TryProccessRequest(sender, e))
                 {
-                    UMI3DLogger.Log("get environement",scope);
+                    UMI3DLogger.Log("get environement", scope);
                     string path = e.Request.RawUrl;
                     WebSocketSharp.Net.HttpListenerResponse res = e.Response;
                     if (path == "/")
@@ -80,7 +78,7 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapPOST.TryProccessRequest(sender, e))
                 {
-                    UMI3DLogger.Log("post error " + e.Request.RawUrl,scope);
+                    UMI3DLogger.Log("post error " + e.Request.RawUrl, scope);
                 }
             };
 

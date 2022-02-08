@@ -68,7 +68,7 @@ namespace umi3d.cdk
                         callback.Invoke(newModel.gameObject);
 
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         failCallback(new Umi3dException(e, "Importing failed for " + url));
                     }

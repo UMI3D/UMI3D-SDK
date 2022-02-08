@@ -30,7 +30,7 @@ namespace umi3d.edk.volume
 
         [SerializeField]
         [EditorReadOnly]
-        Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
+        private Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
         public UMI3DAsyncProperty<Vector3> size;
         public UMI3DAsyncProperty<Vector3> center;
 

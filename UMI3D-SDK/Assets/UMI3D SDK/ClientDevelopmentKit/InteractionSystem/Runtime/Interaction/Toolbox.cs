@@ -43,7 +43,7 @@ namespace umi3d.cdk.interaction
             tools = new List<Tool>();
 
             this.dto = dto;
-            var node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this, Destroy);
+            UMI3DEntityInstance node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this, Destroy);
             sub = new ToolboxSubMenu()
             {
                 Name = dto.name,

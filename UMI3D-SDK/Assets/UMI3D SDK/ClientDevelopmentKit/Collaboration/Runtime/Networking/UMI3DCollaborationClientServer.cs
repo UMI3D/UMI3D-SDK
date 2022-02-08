@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
-using inetum.unityUtils;
 
 namespace umi3d.cdk.collaboration
 {
@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
 
@@ -162,10 +162,11 @@ namespace umi3d.cdk.collaboration
                     success?.Invoke();
                     Identity = new IdentityDto();
                 },
-                (error) => {
+                (error) =>
+                {
                     UMI3DLogger.LogError("Logout failed", scope | DebugScope.Connection);
-                    failled?.Invoke(error); 
-                    Identity = new IdentityDto(); 
+                    failled?.Invoke(error);
+                    Identity = new IdentityDto();
                 });
             }
             else

@@ -25,7 +25,6 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
-using UnityEngine;
 using UnityEngine.Events;
 using WebSocketSharp;
 using WebSocketSharp.Net;
@@ -35,7 +34,7 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DApi
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public UMI3DApi()
         { }
@@ -130,7 +129,7 @@ namespace umi3d.edk.collaboration
         [HttpPost(UMI3DNetworkingKeys.logout, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void Logout(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            
+
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"Logout {user?.Id()}", scope);
             if (user != null)
@@ -184,7 +183,7 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.publicFiles, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Directory)]
         public void GetPublicFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            
+
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.publicFiles.Length);
             file = inetum.unityUtils.Path.Combine(
                 UMI3DServer.publicRepository, file);
@@ -511,7 +510,7 @@ namespace umi3d.edk.collaboration
                         }
                         catch (Exception ex)
                         {
-                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}",scope);
+                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}", scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
 
@@ -521,7 +520,7 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ex)
             {
-                UMI3DLogger.LogError($"An error occured {ex}",scope);
+                UMI3DLogger.LogError($"An error occured {ex}", scope);
                 error?.Invoke();
             }
 
@@ -594,18 +593,18 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"Post Upload File {user?.Id()}", scope);
             if (!uriparam.ContainsKey("param"))
             {
-                UMI3DLogger.LogWarning("unvalide upload request, wrong networking key",scope);
+                UMI3DLogger.LogWarning("unvalide upload request, wrong networking key", scope);
                 return;
             }
             string token = uriparam["param"];
             if (!UploadFileParameter.uploadTokens.ContainsKey(token))
             {
-                UMI3DLogger.LogWarning("unvalide token (upload request)",scope);
+                UMI3DLogger.LogWarning("unvalide token (upload request)", scope);
                 return;
             }
             if (!e.Request.Headers.Contains(UMI3DNetworkingKeys.contentHeader))
             {
-                UMI3DLogger.LogWarning("unvalide header (upload request)",scope);
+                UMI3DLogger.LogWarning("unvalide header (upload request)", scope);
                 return;
             }
             string fileName = e.Request.Headers[UMI3DNetworkingKeys.contentHeader];
@@ -618,7 +617,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                UMI3DLogger.LogWarning("unauthorized extension : " + fileName + " (upload request)",scope);
+                UMI3DLogger.LogWarning("unauthorized extension : " + fileName + " (upload request)", scope);
                 return;
             }
 
@@ -657,7 +656,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
             UMI3DLogger.Log($"GetPlayerLocalInfo {user?.Id()}", scope);
-            UMI3DLogger.Log(user + " wants to get datas from : " + uriparam["param"],scope);
+            UMI3DLogger.Log(user + " wants to get datas from : " + uriparam["param"], scope);
             if (sendLocalInfoListener != null)
             {
                 sendLocalInfoListener.Invoke(uriparam["param"], user, e.Response);

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DEnvironmentLoader : Singleton<UMI3DEnvironmentLoader>
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Index of any 3D object loaded.
@@ -170,7 +169,7 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DNodeInstance(()=> NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
+                node = new UMI3DNodeInstance(() => NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
                 Instance.entities.Add(id, node);
             }
 
@@ -431,10 +430,10 @@ namespace umi3d.cdk
             //Load scenes without hierarchy
             foreach (GlTFSceneDto scene in scenes)
             {
-                var tmpLoadedNodes = instantiatedNodes;
+                float tmpLoadedNodes = instantiatedNodes;
                 bool isFinished = false;
                 float total = 0;
-                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => total = i, (i) => instantiatedNodes = tmpLoadedNodes + i*0.5f);
+                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => total = i, (i) => instantiatedNodes = tmpLoadedNodes + i * 0.5f);
                 yield return new WaitUntil(() => isFinished == true);
                 instantiatedNodes = tmpLoadedNodes + total * 0.5f;
             }

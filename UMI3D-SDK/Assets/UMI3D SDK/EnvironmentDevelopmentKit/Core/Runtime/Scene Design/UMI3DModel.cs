@@ -24,7 +24,7 @@ namespace umi3d.edk
 {
     public partial class UMI3DModel : AbstractRenderedNode
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Core;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Core;
 
         [Obsolete("will be removed soon")]
         public bool lockColliders = false;

@@ -22,7 +22,7 @@ namespace umi3d.common
 {
     public static class UMI3DNetworkingHelper
     {
-        const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
+        private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
         private static readonly List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
 
@@ -848,7 +848,7 @@ namespace umi3d.common
 
     public class Bytable
     {
-        const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
+        private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
         public int size { get; private set; }
         public Func<byte[], int, int, (int, int)> function { get; private set; }
@@ -869,14 +869,14 @@ namespace umi3d.common
         {
             byte[] b = new byte[size];
             (int, int) c = function(b, 0, 0);
-            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}",scope);
+            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}", scope);
             return b;
         }
 
         public byte[] ToBytes(byte[] bytes, int position = 0)
         {
             (int, int) c = function(bytes, position, 0);
-            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}",scope);
+            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}", scope);
             return bytes;
         }
 

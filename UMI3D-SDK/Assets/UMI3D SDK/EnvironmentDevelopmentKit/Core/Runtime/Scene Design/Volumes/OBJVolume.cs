@@ -41,10 +41,16 @@ namespace umi3d.edk.volume
         [SerializeField] private string fileURL = null;
 
         ///<inheritdoc/>
-        public UMI3DUserEvent GetUserEnter() => onUserEnter;
+        public UMI3DUserEvent GetUserEnter()
+        {
+            return onUserEnter;
+        }
 
         ///<inheritdoc/>
-        public UMI3DUserEvent GetUserExit() => onUserExit;
+        public UMI3DUserEvent GetUserExit()
+        {
+            return onUserExit;
+        }
 
         /// <summary>
         /// Return delete operation
@@ -88,7 +94,7 @@ namespace umi3d.edk.volume
 
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {
@@ -120,7 +126,7 @@ namespace umi3d.edk.volume
             UMI3DScene scene = this.GetComponentInParent<UMI3DScene>();
 
 
-            OBJVolumeDto dto = new OBJVolumeDto()
+            var dto = new OBJVolumeDto()
             {
                 id = Id(),
                 objFile = path,
@@ -138,7 +144,9 @@ namespace umi3d.edk.volume
 
         [SerializeField]
         private bool isTraversable = true;
-        public bool IsTraversable() => isTraversable;
-
+        public bool IsTraversable()
+        {
+            return isTraversable;
+        }
     }
 }
