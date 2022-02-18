@@ -520,7 +520,7 @@ namespace umi3d.cdk
             {
                 foreach (string matKey in listToOverride)
                 {
-                    OverrideMaterial(newMatId, node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")), matEntity, shaderProperties, addIfNotExists);
+                    OverrideMaterial(newMatId, node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)") || (matKey.Equals(s + " (Instance)"))), matEntity, shaderProperties, addIfNotExists);
                 }
             }
 
