@@ -17,8 +17,14 @@ limitations under the License.
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.common
+namespace inetum.unityUtils
 {
+    /// <summary>
+    /// A manager to handle the application quitting.
+    /// This is used by default by singleBehaviour
+    /// </summary>
+    /// <seealso cref="SingleBehaviour{T}"/>>
+    /// <seealso cref="PersistentSingleBehaviour{T}"/>>
     public class QuittingManager : MonoBehaviour
     {
         private static bool applicationIsQuitting = false;

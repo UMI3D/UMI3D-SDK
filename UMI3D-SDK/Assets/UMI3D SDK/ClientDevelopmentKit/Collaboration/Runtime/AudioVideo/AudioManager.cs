@@ -26,7 +26,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Singleton use to read AudioDto.
     /// </summary>
-    public class AudioManager : Singleton<AudioManager>
+    public class AudioManager : SingleBehaviour<AudioManager>
     {
         private readonly Dictionary<ulong, AudioReader> GlobalReader = new Dictionary<ulong, AudioReader>();
         private readonly Dictionary<ulong, AudioReader> SpacialReader = new Dictionary<ulong, AudioReader>();

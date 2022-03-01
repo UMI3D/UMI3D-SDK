@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
     }
 
     [RequireComponent(typeof(AudioSource))]
-    public class MicrophoneListener : Singleton<MicrophoneListener>, ILoggable
+    public class MicrophoneListener : SingleBehaviour<MicrophoneListener>, ILoggable
     {
 
         #region const

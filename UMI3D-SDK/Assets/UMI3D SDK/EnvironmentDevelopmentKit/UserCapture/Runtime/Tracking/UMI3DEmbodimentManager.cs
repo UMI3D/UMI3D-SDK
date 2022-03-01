@@ -25,7 +25,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
-    public class UMI3DEmbodimentManager : PersistentSingleton<UMI3DEmbodimentManager>
+    public class UMI3DEmbodimentManager : PersistentSingleBehaviour<UMI3DEmbodimentManager>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
 

@@ -27,7 +27,7 @@ namespace umi3d.cdk.volumes
     /// <summary>
     /// Manager for volumes created with external data (.obj).
     /// </summary>
-    public class ExternalVolumeDataManager : Singleton<ExternalVolumeDataManager>
+    public class ExternalVolumeDataManager : inetum.unityUtils.SingleBehaviour<ExternalVolumeDataManager>
     {
         private static readonly Dictionary<ulong, AbstractVolumeCell> cells = new Dictionary<ulong, AbstractVolumeCell>();
 

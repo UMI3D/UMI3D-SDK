@@ -526,7 +526,7 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
-            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
         /// <summary>
@@ -534,7 +534,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void ApplicationQuit()
         {
-            if (!QuittingManager.ApplicationIsQuitting)
+            if (!inetum.unityUtils.QuittingManager.ApplicationIsQuitting)
                 return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();

@@ -17,13 +17,24 @@ limitations under the License.
 using System.Collections;
 using UnityEngine;
 
-namespace umi3d.common
+namespace inetum.unityUtils
 {
-    public class PersistentSingleton<T> : QuittingManager where T : PersistentSingleton<T>
+    /// <summary>
+    /// An implementation of the singleton template for MonoBehaviour.
+    /// </summary>
+    /// <typeparam name="T">A Type.</typeparam>
+    /// <seealso cref="PersistentSingleBehaviour{T}"/>>
+    public class SingleBehaviour<T> : MonoBehaviour where T : SingleBehaviour<T>
     {
-        private const DebugScope scope = DebugScope.Common | DebugScope.Core;
 
         private static T instance;
+
+        /// <summary>
+        /// State if the application is currently Quitting. 
+        /// This is a direct reference to QuittingManager.ApplicationIsQuitting.
+        /// </summary>
+        /// <seealso cref="QuittingManager.ApplicationIsQuitting"/>>
+        public static bool ApplicationIsQuitting => QuittingManager.ApplicationIsQuitting;
 
         /// <summary>
         /// State if an instance of <typeparamref name="T"/> exist.
@@ -31,7 +42,9 @@ namespace umi3d.common
         public static bool Exists => !ApplicationIsQuitting && instance != null;
 
         /// <summary>
-        /// static rteference to the only instance of <typeparamref name="T"/>
+        /// Static reference to the only instance of <typeparamref name="T"/>
+        /// This will call MonoBehaviour method when Exist is false and therefore should not be called in an other thread in that case.
+        /// It is safe to call it from an other thread in all other cases.
         /// </summary>
         public static T Instance
         {
@@ -67,7 +80,7 @@ namespace umi3d.common
             set
             {
                 if (instance == null) instance = value;
-                else UMI3DLogger.LogError("Instance of " + typeof(T) + " already exist, Instance could not be set", scope);
+                else ReportLogError("Instance of " + typeof(T) + " already exist, Instance could not be set");
             }
         }
 
@@ -76,26 +89,49 @@ namespace umi3d.common
         /// </summary>
         protected virtual void Awake()
         {
+            _Awake();
+        }
+
+
+        /// <summary>
+        /// This Method is initializing the singleton. This should be overrided with care.
+        /// </summary>
+        protected virtual bool _Awake()
+        {
             if (instance != null && instance != this)
             {
                 if (instance.gameObject.name == gameObject.name)
-                    UMI3DLogger.LogWarning("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated. This could occur after reloaded a scene with a PersistentSingleton in it", scope);
+                    ReportLogWarning("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated. This could occur after reloaded a scene with a PersistentSingleton in it");
                 else
-                    UMI3DLogger.LogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated.", scope);
+                    ReportLogError("There is already a Singleton<" + typeof(T) + "> , instance on " + gameObject.name + " will be exterminated.");
                 Destroy(this);
+                return false;
             }
             else
             {
                 instance = this as T;
-                DontDestroyOnLoad(this);
+                return true;
             }
         }
 
+
+        /// <summary>
+        /// An override of StartCoroutine to make it static.
+        /// This will call Instance.StartCoroutine when Exist is true.
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
         public static new Coroutine StartCoroutine(IEnumerator enumerator)
         {
             return Exists ? (Instance as MonoBehaviour).StartCoroutine(enumerator) : null;
         }
 
+        /// <summary>
+        /// An override of StopCoroutine to make it static.
+        /// This will call Instance.StopCoroutine when Exist is true.
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <returns></returns>
         public static new void StopCoroutine(Coroutine coroutine)
         {
             if (Exists)
@@ -110,5 +146,21 @@ namespace umi3d.common
                 instance = null;
             }
         }
+
+
+        private static void ReportLogError(string s) { if (Exists) instance._LogError(s); }
+        private static void ReportLogWarning(string s) { if (Exists) instance._LogWarning(s); }
+
+        /// <summary>
+        /// This is a call to UnityEngine.Debug.LogError that can be overrided.
+        /// </summary>
+        /// <param name="s"></param>
+        protected virtual void _LogError(string s) { UnityEngine.Debug.LogError(s); }
+
+        /// <summary>
+        /// This is a call to UnityEngine.Debug.LogWarning that can be overrided.
+        /// </summary>
+        /// <param name="s"></param>
+        protected virtual void _LogWarning(string s) { UnityEngine.Debug.LogWarning(s); }
     }
 }

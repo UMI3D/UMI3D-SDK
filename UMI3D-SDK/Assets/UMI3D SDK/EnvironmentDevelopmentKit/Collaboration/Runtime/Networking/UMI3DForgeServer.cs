@@ -724,7 +724,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private void Start()
         {
-            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);

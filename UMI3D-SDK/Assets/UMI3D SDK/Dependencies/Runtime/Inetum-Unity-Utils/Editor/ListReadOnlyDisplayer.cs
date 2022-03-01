@@ -47,37 +47,37 @@ namespace inetum.unityUtils.editor
                     break;
                 case SerializedPropertyType.Vector2:
                     {
-                        var v = property.vector2Value;
+                        Vector2 v = property.vector2Value;
                         Display(property.GetName(), $"{v.x}{v.y}");
                     }
                     break;
                 case SerializedPropertyType.Vector3:
                     {
-                        var v = property.vector3Value;
+                        Vector3 v = property.vector3Value;
                         Display(property.GetName(), $"{v.x}{v.y}{v.z}");
                     }
                     break;
                 case SerializedPropertyType.Vector4:
                     {
-                        var v = property.vector4Value;
+                        Vector4 v = property.vector4Value;
                         Display(property.GetName(), $"{v.x}{v.y}{v.z}{v.w}");
                     }
                     break;
                 case SerializedPropertyType.Quaternion:
                     {
-                        var v = property.quaternionValue.eulerAngles;
+                        Vector3 v = property.quaternionValue.eulerAngles;
                         Display(property.GetName(), $"{v.x}{v.y}{v.z}");
                     }
                     break;
                 case SerializedPropertyType.Vector2Int:
                     {
-                        var v = property.vector2IntValue;
+                        Vector2Int v = property.vector2IntValue;
                         Display(property.GetName(), $"{v.x}{v.y}");
                     }
                     break;
                 case SerializedPropertyType.Vector3Int:
                     {
-                        var v = property.vector3IntValue;
+                        Vector3Int v = property.vector3IntValue;
                         Display(property.GetName(), $"{v.x}{v.y}{v.z}");
                     }
                     break;
@@ -87,9 +87,9 @@ namespace inetum.unityUtils.editor
             }
         }
 
-        static void Display(string name, object value)
+        private static void Display(string name, object value)
         {
-            var h = GUILayout.Height(15);
+            GUILayoutOption h = GUILayout.Height(15);
             EditorGUILayout.BeginHorizontal(h);
 
             EditorGUILayout.SelectableLabel(name, h);
@@ -97,10 +97,9 @@ namespace inetum.unityUtils.editor
             EditorGUILayout.EndHorizontal();
         }
 
-
-        static void DisplayOther(SerializedProperty property)
+        private static void DisplayOther(SerializedProperty property)
         {
-            var h = GUILayout.Height(15);
+            GUILayoutOption h = GUILayout.Height(15);
             if (property.isArray)
             {
                 if (property.arraySize > 0)
@@ -132,7 +131,7 @@ namespace inetum.unityUtils.editor
             }
             else
             {
-                var childs = property.GetVisibleChildren();
+                IEnumerable<SerializedProperty> childs = property.GetVisibleChildren();
                 if (childs.Count() > 0)
                 {
                     property.isExpanded = EditorGUILayout.Foldout(property.isExpanded, property.GetName());

@@ -24,7 +24,7 @@ using UnityEngine.Rendering;
 
 namespace umi3d.edk
 {
-    public class UMI3DEnvironment : Singleton<UMI3DEnvironment>
+    public class UMI3DEnvironment : SingleBehaviour<UMI3DEnvironment>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration;
 

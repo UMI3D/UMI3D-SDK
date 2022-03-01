@@ -62,11 +62,11 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source)
         {
-            using (var e = source.GetEnumerator())
+            using (IEnumerator<T> e = source.GetEnumerator())
             {
                 if (e.MoveNext())
                 {
-                    for (var value = e.Current; e.MoveNext(); value = e.Current)
+                    for (T value = e.Current; e.MoveNext(); value = e.Current)
                     {
                         yield return value;
                     }
@@ -87,7 +87,7 @@ namespace inetum.unityUtils
         {
             if (action == null)
                 throw new Exception("action should not be null");
-            using (var it = source.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
                 while (it.MoveNext())
                 {
                     action.Invoke(it.Current);
@@ -106,7 +106,7 @@ namespace inetum.unityUtils
         {
             if (action == null)
                 throw new Exception("action should not be null");
-            using (var it = source.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
                 while (it.MoveNext())
                 {
                     action.Invoke(it.Current);
@@ -120,7 +120,7 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static IEnumerable<DictionaryEntry> Entries(this IDictionary source)
         {
-            var it = source.GetEnumerator();
+            IDictionaryEnumerator it = source.GetEnumerator();
             if (it != null)
                 while (it.MoveNext())
                 {
@@ -187,7 +187,7 @@ namespace inetum.unityUtils
                 throw new Exception($"'at' [{at}] should be inferior to target Length [{target.Length}]");
             if (target.Length - at <= to - from)
                 throw new Exception($" target.Length - at [{target.Length} - {at}= {target.Length - at}] should be superior to to - from  [{to} - {from}= {to - from}]");
-            using (var it = source.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
             {
                 int j = 0;
                 while (j < from && it.MoveNext()) j++;
@@ -209,8 +209,8 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static IEnumerable<C> ZipOverflow<A, B, C>(this IEnumerable<A> source, IEnumerable<B> to, Func<A, B, C> zipFunction)
         {
-            using (var it = source.GetEnumerator())
-            using (var toIt = to.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
+            using (IEnumerator<B> toIt = to.GetEnumerator())
             {
                 while (toIt.MoveNext() && it.MoveNext())
                 {
@@ -243,7 +243,7 @@ namespace inetum.unityUtils
         /// Convert a IEnumerable<KeyValuePair<T,K>> to a Dictionary<T,K>
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<T,K> ToDictionary<T,K>(this IEnumerable<KeyValuePair<T,K>> source)
+        public static Dictionary<T, K> ToDictionary<T, K>(this IEnumerable<KeyValuePair<T, K>> source)
         {
             return source.ToDictionary(k => k.Key, k => k.Value);
         }

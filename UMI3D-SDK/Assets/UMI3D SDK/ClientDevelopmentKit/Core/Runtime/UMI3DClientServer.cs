@@ -20,7 +20,7 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DClientServer : PersistentSingleton<UMI3DClientServer>
+    public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>
     {
         /// <summary>
         /// Environment connected to.

@@ -28,7 +28,7 @@ namespace umi3d.cdk
     /// <summary>
     /// 
     /// </summary>
-    public class UMI3DEnvironmentLoader : Singleton<UMI3DEnvironmentLoader>
+    public class UMI3DEnvironmentLoader : inetum.unityUtils.SingleBehaviour<UMI3DEnvironmentLoader>
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 

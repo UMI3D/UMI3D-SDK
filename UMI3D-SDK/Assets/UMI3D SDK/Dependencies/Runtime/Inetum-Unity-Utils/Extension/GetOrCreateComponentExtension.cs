@@ -24,8 +24,8 @@ namespace inetum.unityUtils
 
         public static A GetOrAddComponent<A>(this GameObject gameObject) where A : Component
         {
-            var type = typeof(A);
-            var _comp = gameObject.GetComponent(type);
+            System.Type type = typeof(A);
+            Component _comp = gameObject.GetComponent(type);
             if (_comp == null)
                 _comp = gameObject.AddComponent(type);
             return _comp as A;

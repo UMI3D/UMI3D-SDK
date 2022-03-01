@@ -25,7 +25,7 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.userCapture
 {
-    public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
+    public class UMI3DClientUserTracking : SingleBehaviour<UMI3DClientUserTracking>
     {
         public Transform skeletonContainer;
         public Transform viewpoint;

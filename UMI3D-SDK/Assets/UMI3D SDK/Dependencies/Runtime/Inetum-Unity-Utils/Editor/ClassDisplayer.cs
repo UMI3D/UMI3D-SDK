@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #if UNITY_EDITOR
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -27,9 +25,9 @@ public static class ClassDisplayer
         if (obj == null) return;
 
         FieldInfo[] fields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        foreach (var field in fields)
+        foreach (FieldInfo field in fields)
         {
-            var value = field.GetValue(obj);
+            object value = field.GetValue(obj);
             if (value == obj) continue;
             switch (value)
             {
@@ -97,7 +95,7 @@ public static class ClassDisplayer
                     field.SetValue(obj, Quaternion.Euler(EditorGUILayout.Vector3Field(field.Name, v.eulerAngles)));
                     break;
                 default:
-                    if(value != null)
+                    if (value != null)
                     {
                         EditorGUI.indentLevel++;
                         Display(value);

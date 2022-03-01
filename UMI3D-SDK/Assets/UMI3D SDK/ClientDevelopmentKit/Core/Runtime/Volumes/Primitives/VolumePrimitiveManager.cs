@@ -26,7 +26,7 @@ namespace umi3d.cdk.volumes
     /// <summary>
     /// Centralise volume primitive management.
     /// </summary>
-    public class VolumePrimitiveManager : Singleton<VolumePrimitiveManager>
+    public class VolumePrimitiveManager : inetum.unityUtils.SingleBehaviour<VolumePrimitiveManager>
     {
         private static readonly Dictionary<ulong, AbstractPrimitive> primitives = new Dictionary<ulong, AbstractPrimitive>();
 

@@ -58,7 +58,7 @@ namespace umi3d.common
         Other = 1 << 28
     }
 
-    public class UMI3DLogger : PersistentSingleton<UMI3DLogger>
+    public class UMI3DLogger : inetum.unityUtils.PersistentSingleBehaviour<UMI3DLogger>
     {
         #region logging
         [SerializeField]

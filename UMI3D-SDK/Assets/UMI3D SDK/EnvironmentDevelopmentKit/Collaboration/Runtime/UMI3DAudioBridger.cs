@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DAudioBridger : Singleton<UMI3DAudioBridger>
+    public class UMI3DAudioBridger : inetum.unityUtils.SingleBehaviour<UMI3DAudioBridger>
     {
         [SerializeField]
         private bool _Spacialized = false;

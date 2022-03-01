@@ -21,7 +21,7 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DNavigation : Singleton<UMI3DNavigation>
+    public class UMI3DNavigation : inetum.unityUtils.SingleBehaviour<UMI3DNavigation>
     {
         public AbstractNavigation currentNav { get; protected set; } = null;
         public List<AbstractNavigation> navigations;
