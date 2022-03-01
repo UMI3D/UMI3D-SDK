@@ -36,7 +36,7 @@ namespace umi3d.cdk.menu.interaction
 
             if (tool.icon2D != null)
             {
-                FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(tool.icon2D.variants);
+                FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(tool.icon2D.variants);
 
                 if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
                     UMI3DResourcesManager.GetFile(

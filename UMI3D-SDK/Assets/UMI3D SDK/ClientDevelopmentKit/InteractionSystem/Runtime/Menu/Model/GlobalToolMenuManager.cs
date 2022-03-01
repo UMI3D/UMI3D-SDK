@@ -24,7 +24,7 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
-    public class GlobalToolMenuManager : Singleton<GlobalToolMenuManager>
+    public class GlobalToolMenuManager : inetum.unityUtils.SingleBehaviour<GlobalToolMenuManager>
     {
         public MenuAsset menuAsset;
 
@@ -148,7 +148,7 @@ namespace umi3d.cdk.interaction
         public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong toolId)
         {
             Texture2D icon2DTex = new Texture2D(0, 0);
-            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariante(interactionDto.icon2D.variants);
+            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(interactionDto.icon2D.variants);
             if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
             {
                 UMI3DResourcesManager.GetFile(
