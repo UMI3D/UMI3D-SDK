@@ -282,32 +282,6 @@ namespace umi3d.cdk.interaction
         #region CRUD
 
         /// <inheritdoc/>
-        //public override void CreateToolbox(Toolbox toolbox)
-        //{
-        //    toolboxMenu.Add(toolbox.sub);
-        //}
-
-        /// <inheritdoc/>
-        //public override void CreateTool(Tool tool)
-        //{
-        //    foreach (AbstractInteractionDto interaction in tool.dto.interactions)
-        //    {
-        //        interactionsIdToDto[interaction.id] = interaction;
-        //    }
-        //    tool.Menu.Subscribe(() =>
-        //    {
-        //        if (tool.Menu.toolSelected)
-        //        {
-        //            ReleaseTool(tool.id, new RequestedFromMenu());
-        //        }
-        //        else
-        //        {
-        //            SelectTool(tool.id, true, 0, new RequestedFromMenu());
-        //        }
-        //    });
-        //}
-
-        /// <inheritdoc/>
         public override Toolbox GetToolbox(ulong id)
         {
             if (!ToolboxExists(id))
