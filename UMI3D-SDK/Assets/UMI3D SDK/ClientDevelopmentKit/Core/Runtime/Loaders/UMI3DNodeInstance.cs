@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -65,6 +66,11 @@ namespace umi3d.cdk
         /// The list of Subnode instance when the model has tracked subMeshs. Empty if sub Models are not tracked.
         /// </summary>
         private List<UMI3DNodeInstance> _subNodeInstances;
+
+        public UMI3DNodeInstance(Action loadedCallback) : base(loadedCallback)
+        {
+        }
+
         public List<UMI3DNodeInstance> subNodeInstances
         {
             get

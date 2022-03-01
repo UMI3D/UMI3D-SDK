@@ -25,7 +25,7 @@ namespace umi3d.cdk.collaboration
 {
     public class LocalInfoSender
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
         private static readonly Dictionary<string, LocalInfoRequestParameterValue> autorizations = new Dictionary<string, LocalInfoRequestParameterValue>();
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace umi3d.cdk.collaboration
         {
             if (!(autorizations.ContainsKey(key) && autorizations[key].read))
             {
-                UMI3DLogger.LogWarning("Unautorized to read this local data : " + key,scope);
+                UMI3DLogger.LogWarning("Unautorized to read this local data : " + key, scope);
                 return null;
             }
 
@@ -105,7 +105,7 @@ namespace umi3d.cdk.collaboration
                         {
                             ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(
                                 () => { },
-                                (s) => UMI3DLogger.LogWarning("fail to send local datas to server : " + s,scope),
+                                (s) => UMI3DLogger.LogWarning("fail to send local datas to server : " + s, scope),
                                 key,
                                 bytes
                                 );

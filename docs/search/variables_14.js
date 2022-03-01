@@ -11,11 +11,14 @@ var searchData=
   ['verticaloverflow_8',['verticalOverflow',['../dd/dc3/classumi3d_1_1common_1_1_u_i_text_dto.html#a4c72ac1beb8c5c5e40407f34bd69c8f0',1,'umi3d::common::UITextDto']]],
   ['video_9',['video',['../da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player.html#a3fdc6573c57561944c106f4a5d03534a',1,'umi3d::edk::UMI3DVideoPlayer']]],
   ['videoplayer_10',['videoPlayer',['../dd/d17/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_user.html#aa96543be50cf6cf46fbd3008840e5200',1,'umi3d::edk::collaboration::UMI3DCollaborationUser']]],
-  ['videoresource_11',['videoResource',['../d9/dac/classumi3d_1_1common_1_1_u_m_i3_d_video_player_dto.html#ac0e7b24be25a1acedf916bdc7513bd1d',1,'umi3d::common::UMI3DVideoPlayerDto']]],
-  ['videosourceid_12',['videoSourceId',['../d8/ded/classumi3d_1_1common_1_1collaboration_1_1_user_dto.html#a1f35271a6a18557079d02bb2ca188468',1,'umi3d::common::collaboration::UserDto']]],
-  ['viewpoint_13',['viewpoint',['../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a7bf8f5242683071f843679d68d28d38d',1,'umi3d::cdk::userCapture::UMI3DClientUserTracking']]],
-  ['viewpointbonetype_14',['viewpointBonetype',['../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a1669f4865c286217ac04d5b96f927c8e',1,'umi3d::cdk::userCapture::UMI3DClientUserTracking']]],
-  ['volume_15',['volume',['../de/d13/classumi3d_1_1common_1_1_u_m_i3_d_audio_player_dto.html#a3fb50b76f50856d17661211781ecf9d0',1,'umi3d::common::UMI3DAudioPlayerDto']]],
-  ['volumeid_16',['volumeId',['../da/d90/classumi3d_1_1edk_1_1collaboration_1_1_relay_volume.html#aa12d69335c39a6becc0b0f158485a2b2',1,'umi3d::edk::collaboration::RelayVolume']]],
-  ['volumeid_17',['VolumeId',['../d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a85ccacdea3ba40f481b7d48578e96374',1,'umi3d::edk::UMI3DAbstractNode']]]
+  ['videoplayerstoload_11',['videoPlayersToLoad',['../dd/dfc/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player_loader.html#a926555835092a224010946faff33bae3',1,'umi3d::cdk::UMI3DVideoPlayerLoader']]],
+  ['videoresource_12',['videoResource',['../d9/dac/classumi3d_1_1common_1_1_u_m_i3_d_video_player_dto.html#ac0e7b24be25a1acedf916bdc7513bd1d',1,'umi3d::common::UMI3DVideoPlayerDto']]],
+  ['videosourceid_13',['videoSourceId',['../d8/ded/classumi3d_1_1common_1_1collaboration_1_1_user_dto.html#a1f35271a6a18557079d02bb2ca188468',1,'umi3d::common::collaboration::UserDto']]],
+  ['viewpoint_14',['viewpoint',['../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a7bf8f5242683071f843679d68d28d38d',1,'umi3d::cdk::userCapture::UMI3DClientUserTracking']]],
+  ['viewpointbonetype_15',['viewpointBonetype',['../d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html#a1669f4865c286217ac04d5b96f927c8e',1,'umi3d::cdk::userCapture::UMI3DClientUserTracking']]],
+  ['volume_16',['volume',['../de/d13/classumi3d_1_1common_1_1_u_m_i3_d_audio_player_dto.html#a3fb50b76f50856d17661211781ecf9d0',1,'umi3d::common::UMI3DAudioPlayerDto']]],
+  ['volumeid_17',['volumeId',['../da/db8/classumi3d_1_1common_1_1volume_1_1_volume_user_transit_dto.html#a1670059b619f9524449d900e3964eadb',1,'umi3d.common.volume.VolumeUserTransitDto.volumeId()'],['../da/d90/classumi3d_1_1edk_1_1collaboration_1_1_relay_volume.html#aa12d69335c39a6becc0b0f158485a2b2',1,'umi3d.edk.collaboration.RelayVolume.volumeId()']]],
+  ['volumeid_18',['VolumeId',['../d5/d14/classumi3d_1_1edk_1_1_u_m_i3_d_abstract_node.html#a85ccacdea3ba40f481b7d48578e96374',1,'umi3d::edk::UMI3DAbstractNode']]],
+  ['volumes_19',['volumes',['../d7/d86/classumi3d_1_1edk_1_1volume_1_1_volume_manager.html#a519a61762870229834f25e8744654631',1,'umi3d::edk::volume::VolumeManager']]],
+  ['volumestotrack_20',['volumesToTrack',['../db/d78/classumi3d_1_1cdk_1_1volumes_1_1_volume_tracker.html#abe0f89e891dead481aae6a1c38a3cac5',1,'umi3d::cdk::volumes::VolumeTracker']]]
 ];

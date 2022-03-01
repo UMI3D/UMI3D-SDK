@@ -30,7 +30,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DForgeClient : ForgeSocketBase
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
         private uint Me => UMI3DCollaborationClientServer.UserDto.dto.networkId;
 
@@ -431,6 +431,7 @@ namespace umi3d.cdk.collaboration
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
                     trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    trackingFrame.skeletonHighOffset = UMI3DNetworkingHelper.Read<float>(container);
                     trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
@@ -525,7 +526,7 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
-            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
         /// <summary>
@@ -533,7 +534,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void ApplicationQuit()
         {
-            if (!QuittingManager.ApplicationIsQuitting)
+            if (!inetum.unityUtils.QuittingManager.ApplicationIsQuitting)
                 return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();

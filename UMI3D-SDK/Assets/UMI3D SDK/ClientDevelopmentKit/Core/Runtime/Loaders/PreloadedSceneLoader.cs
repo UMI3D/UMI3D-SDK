@@ -27,7 +27,7 @@ namespace umi3d.cdk
     /// </summary>
     public class PreloadedSceneLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Load PreloadedSceneDto.
@@ -48,7 +48,7 @@ namespace umi3d.cdk
 
             if (resourceScene != null)
             {
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(resourceScene.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(resourceScene.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
@@ -62,11 +62,9 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle + "   " + o.ToString(),scope);
-                            SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
-
+                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
                         },
-                        e => UMI3DLogger.LogWarning(e,scope),
+                        e => UMI3DLogger.LogWarning(e, scope),
                         loader.DeleteObject
                         );
                 }
@@ -75,7 +73,7 @@ namespace umi3d.cdk
 
         private static void Unload(PreloadedSceneDto scenesdto, GameObject node)
         {
-            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariante(scenesdto.scene.variants).pathIfInBundle));
+            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle));
         }
 
         /// <summary>
@@ -96,7 +94,7 @@ namespace umi3d.cdk
                     case SetEntityListAddPropertyDto add:
                     case SetEntityListRemovePropertyDto rem:
                     case SetEntityListPropertyDto set:
-                        UMI3DLogger.Log($"Case not handled {property}",scope);
+                        UMI3DLogger.Log($"Case not handled {property}", scope);
                         break;
                     default:
                         var newList = (List<PreloadedSceneDto>)property.value;
@@ -150,7 +148,7 @@ namespace umi3d.cdk
                     case UMI3DOperationKeys.SetEntityListAddProperty:
                     case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     case UMI3DOperationKeys.SetEntityListProperty:
-                        UMI3DLogger.Log($"Case not handled {operationId}",scope);
+                        UMI3DLogger.Log($"Case not handled {operationId}", scope);
                         break;
                     default:
                         List<PreloadedSceneDto> newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(container);

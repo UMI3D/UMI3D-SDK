@@ -27,7 +27,7 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractMeshDtoLoader : IResourcesLoader
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public List<string> supportedFileExtentions;
         public List<string> ignoredFileExtentions;
@@ -84,7 +84,7 @@ namespace umi3d.cdk
             int invisibleLayer = LayerMask.NameToLayer("Invisible");
             if (invisibleLayer == -1)
             {
-                UMI3DLogger.LogWarning("Invisible Layer Not found \n Models in cache are not hidden \n You should add 'Invisible' layer in client project",scope);
+                UMI3DLogger.LogWarning("Invisible Layer Not found \n Models in cache are not hidden \n You should add 'Invisible' layer in client project", scope);
             }
             else
             {

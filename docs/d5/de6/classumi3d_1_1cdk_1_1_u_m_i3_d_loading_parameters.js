@@ -1,7 +1,7 @@
 var classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters =
 [
     [ "ChooseVariant", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a95e110ac9b80fe93e4ef877116086333", null ],
-    [ "ChooseVariante", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a481e87e47031a8865a3b91e161155109", null ],
+    [ "ChooseVariant", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a47d3f93dd81c4da7f792d6565cf14abd", null ],
     [ "loadSkybox", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ad9a5ea457e1051821b0317928c696532", null ],
     [ "ReadUMI3DExtension", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a01301f1e90387d74b80b50f3222edc29", null ],
     [ "ReadUMI3DProperty", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a5a53d9cb6696ff0c4f38fab3a02707fd", null ],
@@ -16,6 +16,7 @@ var classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters =
     [ "supportedformats", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ab461c624ec3fc11f8bf129fa4dddb278", null ],
     [ "AnchorLoader", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ac882fab02c181814558fac53d008f9db", null ],
     [ "avatarLoader", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ac8aa0131e63cdb2b5f761b64ca401913", null ],
+    [ "lineLoader", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#acf36cab3cc81401812d4c8a033f454e4", null ],
     [ "MaterialLoaders", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a3a9309caa84bbbf52041e1b78fbba02e", null ],
     [ "meshLoader", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a0d326e05115e6c0a76672c91962e52b4", null ],
     [ "nodeLoader", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ab82fccd2c1e2fc012ecf97045a005cc7", null ],

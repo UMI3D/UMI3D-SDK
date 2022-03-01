@@ -28,7 +28,7 @@ namespace umi3d.cdk.userCapture
 {
     public class UserAvatar : MonoBehaviour
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
 
         protected struct SavedTransform
@@ -73,9 +73,18 @@ namespace umi3d.cdk.userCapture
             {
                 if (item.obj != null)
                 {
-                    if (item.syncPos)
-                        item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
-                    item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
+                    if (!item.bonetype.Equals(BoneType.CenterFeet))
+                    {
+                        if (item.syncPos)
+                            item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
+                        item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
+                    }
+                    else
+                    {
+                        if (item.syncPos)
+                            item.obj.position = UMI3DClientUserTracking.Instance.skeletonContainer.TransformPoint(item.offsetPosition);
+                        item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.offsetRotation;
+                    }
                 }
             }
         }
@@ -94,7 +103,7 @@ namespace umi3d.cdk.userCapture
             if (dto.handPoses != null)
             {
                 foreach (UMI3DHandPoseDto pose in dto.handPoses)
-                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null);
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null).NotifyLoaded();
             }
 
             if (activeUserBindings && userBindings != null)
@@ -228,7 +237,7 @@ namespace umi3d.cdk.userCapture
                 }
                 else
                 {
-                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances",scope);
+                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances", scope);
                 }
             }
             else

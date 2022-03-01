@@ -1,7 +1,7 @@
 var classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters =
 [
     [ "ChooseVariant", "db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a42afd4541e513292b0fcef9899aa3721", null ],
-    [ "ChooseVariante", "db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#afb22d40e50cc2eb9826c2c6218c491f5", null ],
+    [ "ChooseVariant", "db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a02b024f91ddbbf5a19c88d83851d7b45", null ],
     [ "loadSkybox", "db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a12f089abc4fdf7d0917a295c50fbb891", null ],
     [ "ReadUMI3DExtension", "db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#ae786b67b9a7c4219e472d4bc0ae245b2", null ],
     [ "ReadUMI3DProperty", "db/de8/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_loading_parameters.html#a76fa6916061a53bb458125568ef5b531", null ],

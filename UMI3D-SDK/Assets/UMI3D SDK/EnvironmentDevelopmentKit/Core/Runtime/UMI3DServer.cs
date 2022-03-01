@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-    public class UMI3DServer : Singleton<UMI3DServer>
+    public class UMI3DServer : SingleBehaviour<UMI3DServer>
     {
         [SerializeField]
         protected string ip = "localhost";

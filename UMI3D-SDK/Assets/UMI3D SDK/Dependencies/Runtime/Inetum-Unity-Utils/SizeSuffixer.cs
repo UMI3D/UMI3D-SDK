@@ -15,16 +15,13 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace inetum.unityUtils
 {
 
     public class SizeSuffixer
     {
-        string powerToSuffix(int power)
+        private string powerToSuffix(int power)
         {
             if (power <= 0) { return unit; }
             if (power <= Suffixes.Length)
@@ -34,10 +31,11 @@ namespace inetum.unityUtils
             return "??" + unitShort;
         }
 
-        int KBenBytes { get; }
-        string unit { get; }
-        string unitShort { get; }
-        string[] Suffixes;
+        private int KBenBytes { get; }
+        private string unit { get; }
+        private string unitShort { get; }
+
+        private readonly string[] Suffixes;
 
         public SizeSuffixer(string unit, string unitShort, int KiloToUnitRatio = 1000)
         {

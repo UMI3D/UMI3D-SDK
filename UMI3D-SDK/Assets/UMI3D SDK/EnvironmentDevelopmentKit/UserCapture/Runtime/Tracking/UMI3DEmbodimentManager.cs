@@ -25,9 +25,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
-    public class UMI3DEmbodimentManager : PersistentSingleton<UMI3DEmbodimentManager>
+    public class UMI3DEmbodimentManager : PersistentSingleBehaviour<UMI3DEmbodimentManager>
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
 
         public UMI3DScene EmbodimentsScene;
         public GameObject SkeletonPrefab;
@@ -76,12 +76,12 @@ namespace umi3d.edk.userCapture
         public void JoinDtoReception(ulong userId, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
         {
             if (embodimentSize.ContainsKey(userId))
-                UMI3DLogger.LogWarning("Internal error : the user size is already registered",scope);
+                UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
             else
                 embodimentSize.Add(userId, (Vector3)userSize);
 
             if (embodimentTrackedBonetypes.ContainsKey(userId))
-                UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered",scope);
+                UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
             else
                 embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
         }
@@ -95,7 +95,7 @@ namespace umi3d.edk.userCapture
             var trackedUser = user as UMI3DTrackedUser;
             if (embodimentInstances.ContainsKey(user.Id()))
             {
-                UMI3DLogger.LogWarning("Internal error : the user is already registered",scope);
+                UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
                 return;
             }
 
@@ -106,7 +106,7 @@ namespace umi3d.edk.userCapture
             if (EmbodimentsScene != null)
                 embd.transform.SetParent(EmbodimentsScene.transform);
             else
-                UMI3DLogger.LogWarning("The embodiments scene is not set !",scope);
+                UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
 
             trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
@@ -132,14 +132,16 @@ namespace umi3d.edk.userCapture
         {
             if (!embodimentInstances.ContainsKey(userId))
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered",scope);
+                UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
                 return;
             }
 
             UMI3DAvatarNode userEmbd = embodimentInstances[userId];
             userEmbd.transform.localPosition = dto.position;
             userEmbd.transform.localRotation = dto.rotation;
-            userEmbd.transform.localScale = Vector3.one;
+            // userEmbd.transform.localScale = Vector3.one;
+
+            userEmbd.skeletonAnimator.transform.parent.position = userEmbd.transform.position + new Vector3(0, dto.skeletonHighOffset, 0);
 
             UpdateNodeTransform(userEmbd);
 
@@ -165,7 +167,7 @@ namespace umi3d.edk.userCapture
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered",scope);
+                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered", scope);
                 yield return new WaitForFixedUpdate();
             }
 
@@ -177,7 +179,7 @@ namespace umi3d.edk.userCapture
         {
             while (!embodimentInstances.ContainsKey(user.Id()))
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered",scope);
+                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered", scope);
                 yield return new WaitForFixedUpdate();
             }
 
@@ -193,7 +195,7 @@ namespace umi3d.edk.userCapture
         {
             if (!embodimentInstances.ContainsKey(user.Id()))
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is  not registered",scope);
+                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is  not registered", scope);
                 return;
             }
 

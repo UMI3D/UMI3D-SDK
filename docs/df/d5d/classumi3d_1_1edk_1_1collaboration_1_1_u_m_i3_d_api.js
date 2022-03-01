@@ -2,6 +2,7 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api =
 [
     [ "ReceiveLocalInfoEvent", "d1/db6/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api_1_1_receive_local_info_event.html", null ],
     [ "SendLocalinfoEvent", "d2/d0d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api_1_1_send_localinfo_event.html", null ],
+    [ "UMI3DApi", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a12e707443a2789846b8b118e46513c97", null ],
     [ "GetDirectory", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a28c66ae51306ccf776e0ac06b51cfb40", null ],
     [ "GetDirectoryAsZip", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#aa4a29954b88cbab975ac0cb3f54cdf40", null ],
     [ "GetEnvironment", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#ab86240c6718e5a1c2d494b14d77ddf8f", null ],
@@ -18,6 +19,7 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api =
     [ "PostEntity", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#ac98f21fba8674c9df045eb0f4979d5a9", null ],
     [ "PostPlayerLocalInfo", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a177f3eeea51a295877051dcd753f0b85", null ],
     [ "PostUploadFile", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#aca87d8ea65497a6f5120df4601470ed7", null ],
+    [ "Stop", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#ab2e8e2d38ded1527ee5dce883e3b2449", null ],
     [ "UpdateIdentity", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#a5900a7154b3d8c706503f765ee09d6e7", null ],
     [ "UpdateStatus", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html#abcb220dde942c055adc93e833424e243", null ]
 ];

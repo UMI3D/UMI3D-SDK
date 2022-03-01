@@ -49,69 +49,53 @@ namespace inetum.unityUtils
             }
 
             this.type = type;
-            var val = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            System.Collections.Generic.IEnumerable<FieldInfo> val = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                             .Where(fi => fi.IsLiteral && !fi.IsInitOnly);
             values = val.Select(fi => fi.GetValue(null)).ToArray();
             options = val.Select(fi => fi.Name).ToArray();
         }
 
-        static Action<object, object> UintWriter
-        {
-            get =>
-            (a, b) =>
-            {
+        private static Action<object, object> UintWriter => (a, b) =>
+                                                          {
 #if UNITY_EDITOR
-                if (a is SerializedProperty property && b is uint value)
-                {
-                    property.intValue = (int)value;
-                }
+                                                              if (a is SerializedProperty property && b is uint value)
+                                                              {
+                                                                  property.intValue = (int)value;
+                                                              }
 #endif
-            };
-        }
+                                                          };
 
-        static Func<object, object> UintReader
-        {
-            get =>
-            (a) =>
-            {
+        private static Func<object, object> UintReader => (a) =>
+                                                        {
 #if UNITY_EDITOR
-                if (a is SerializedProperty property)
-                {
-                    return (uint)property.intValue;
-                }
+                                                            if (a is SerializedProperty property)
+                                                            {
+                                                                return (uint)property.intValue;
+                                                            }
 #endif
-                return null;
-            };
-        }
+                                                            return null;
+                                                        };
 
-        static Action<object, object> stringWriter
-        {
-            get =>
-            (a, b) =>
-            {
+        private static Action<object, object> stringWriter => (a, b) =>
+                                                            {
 #if UNITY_EDITOR
-                if (a is SerializedProperty property && b is string value)
-                {
-                    property.stringValue = value;
-                }
+                                                                if (a is SerializedProperty property && b is string value)
+                                                                {
+                                                                    property.stringValue = value;
+                                                                }
 #endif
-            };
-        }
+                                                            };
 
-        static Func<object, object> stringReader
-        {
-            get =>
-            (a) =>
-            {
+        private static Func<object, object> stringReader => (a) =>
+                                                          {
 #if UNITY_EDITOR
-                if (a is SerializedProperty property)
-                {
-                    return property.stringValue;
-                }
+                                                              if (a is SerializedProperty property)
+                                                              {
+                                                                  return property.stringValue;
+                                                              }
 #endif
-                return null;
-            };
-        }
+                                                              return null;
+                                                          };
 
     }
 }

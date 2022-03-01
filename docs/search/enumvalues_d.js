@@ -1,12 +1,9 @@
 var searchData=
 [
-  ['ready_0',['READY',['../d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60a2baa69eafc7204f3bd8648eba580c489',1,'umi3d::common']]],
-  ['riggedavatardisplay_1',['RiggedAvatarDisplay',['../d8/da2/namespaceumi3d_1_1common.html#a4c402d2c4cce22c34eaa22fcb698503da634367817dc6d17699f48c30cc048fe3',1,'umi3d::common']]],
-  ['rx_2',['RX',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47af9c24782c24c237d16e79f18e2fa9046',1,'umi3d::common::interaction']]],
-  ['rx_5fry_3',['RX_RY',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a4220dfb9ebc9dfb55caaf25410be2548',1,'umi3d::common::interaction']]],
-  ['rx_5fry_5frz_4',['RX_RY_RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47ae390896627193c7cf3e52f511890912f',1,'umi3d::common::interaction']]],
-  ['rx_5frz_5',['RX_RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a2948b950db985e34bb5d76f7565e3389',1,'umi3d::common::interaction']]],
-  ['ry_6',['RY',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47accb21680cb44cbc3715ed8acc0145efe',1,'umi3d::common::interaction']]],
-  ['ry_5frz_7',['RY_RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47acb7fb9f9ed91cb20faeb36a38c350eba',1,'umi3d::common::interaction']]],
-  ['rz_8',['RZ',['../d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a25e29a048984cda66521f1eab1182666',1,'umi3d::common::interaction']]]
+  ['password_0',['Password',['../d8/da2/namespaceumi3d_1_1common.html#a445741bce73d476dd5c9f3350084d5efadc647eb65e6711e155375218212b3964',1,'umi3d::common']]],
+  ['pin_1',['Pin',['../d8/da2/namespaceumi3d_1_1common.html#a84d3e4e14e7f6c0ed37fa3a4343648beae78e14c5f18f793bdcd4726766f0fa44',1,'umi3d::common']]],
+  ['plane_2',['Plane',['../d8/da2/namespaceumi3d_1_1common.html#a5ee0153a5a9e0bc9e2409c8d71929644a0d3adee051531c15b3509b4d4d75ce7b',1,'umi3d::common']]],
+  ['private_3',['Private',['../db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0a47f9082fc380ca62d531096aa1d110f1',1,'umi3d::edk::collaboration::WebServiceMethodAttribute']]],
+  ['proximity_4',['Proximity',['../de/d7e/classumi3d_1_1edk_1_1collaboration_1_1_relay_description.html#a5e36d960b0a2f161cb5eefe20fadfb9daf8dfb524e6ddea9129cc2f955d55db19',1,'umi3d::edk::collaboration::RelayDescription']]],
+  ['public_5',['Public',['../db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0a3d067bedfe2f4677470dd6ccf64d05ed',1,'umi3d::edk::collaboration::WebServiceMethodAttribute']]]
 ];

@@ -21,7 +21,7 @@ namespace umi3d.cdk.menu
 {
     public class MenuTools : MonoBehaviour
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Interaction;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction;
 
         public MenuAsset menu;
 
@@ -49,8 +49,8 @@ namespace umi3d.cdk.menu
             menu.menu.RemoveAllMenuItem();
             menu.menu.RemoveAllSubMenu();
             ToMenuAux(menu.menu, this.transform);
-            UMI3DLogger.Log("Convertion done for " + menu.menu.Name,scope);
-            UMI3DLogger.Log(new List<AbstractMenu>(menu.menu.GetSubMenu()).Count,scope);
+            UMI3DLogger.Log("Convertion done for " + menu.menu.Name, scope);
+            UMI3DLogger.Log(new List<AbstractMenu>(menu.menu.GetSubMenu()).Count, scope);
 
         }
 
@@ -61,7 +61,7 @@ namespace umi3d.cdk.menu
             {
                 if (child.childCount == 0)
                 {
-                    UMI3DLogger.Log("add item",scope);
+                    UMI3DLogger.Log("add item", scope);
                     var menuItem = new umi3d.cdk.menu.MenuItem
                     {
                         Name = child.gameObject.name

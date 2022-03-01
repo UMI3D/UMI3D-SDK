@@ -53,9 +53,6 @@ namespace umi3d.cdk
             }
         }
 
-
-
-
         public static void PerformOperation(AbstractOperationDto operation, Action performed)
         {
             if (performed == null) performed = () => { };

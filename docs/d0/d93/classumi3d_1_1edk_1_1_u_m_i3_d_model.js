@@ -6,6 +6,7 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_model =
     [ "SetSubHierarchy", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a270e2649a2e31dd5b020112d62641a92", null ],
     [ "ToBytes", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#aa93fa3a55cbb907001747a2b7d725f3d", null ],
     [ "WriteProperties", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#ad7512cceac5e957bdf34b1ffa7b7cce1", null ],
+    [ "areSubobjectsAlreadyMarked", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#ac2eda05d54b0929ae95ac4a504722574", null ],
     [ "areSubobjectsTracked", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a221c7b2ea4edfcb7870033a2579a6634", null ],
     [ "idGenerator", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a4a674c9cb78c50637d47e239b5fa1b99", null ],
     [ "isPartOfNavmesh", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a00fc75865b32adaea48e47a3f80e3280", null ],

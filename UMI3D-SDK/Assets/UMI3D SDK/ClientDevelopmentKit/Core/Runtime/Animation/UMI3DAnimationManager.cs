@@ -18,7 +18,7 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DAnimationManager : Singleton<UMI3DAnimationManager>
+    public class UMI3DAnimationManager : inetum.unityUtils.SingleBehaviour<UMI3DAnimationManager>
     {
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 

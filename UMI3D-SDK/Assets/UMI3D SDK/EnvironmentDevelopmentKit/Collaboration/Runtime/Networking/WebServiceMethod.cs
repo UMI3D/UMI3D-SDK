@@ -26,7 +26,7 @@ namespace umi3d.edk.collaboration
 {
     public class WebServiceMethod
     {
-        const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public MethodInfo methodInfo;
         public object source;
@@ -67,7 +67,7 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ext)
             {
-                UMI3DLogger.LogError(ext,scope);
+                UMI3DLogger.LogError(ext, scope);
 
                 HttpListenerResponse res = e.Response;
                 res.ContentType = "text/html";

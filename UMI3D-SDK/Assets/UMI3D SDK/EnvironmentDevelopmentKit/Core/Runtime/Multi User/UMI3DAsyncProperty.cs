@@ -24,8 +24,64 @@ namespace umi3d.edk
     /// <summary>
     /// Define an object property that could have a different value depending on the UMI3DUser.
     /// </summary>
+    public abstract class UMI3DAsyncProperty
+    {
+        /// <summary>
+        /// Get a SetEntityOperation for this property for all users, regardless of async information.
+        /// </summary>
+        public abstract SetEntityProperty GetSetEntityOperationForAllUsers();
+
+        /// <summary>
+        /// Get a SetEntityOperation for this property for a given user.
+        /// </summary>
+        public abstract SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user);
+
+        /// <summary>
+        /// Get a SetEntityOperation for this property for users matching the given condition, regardless of async information.
+        /// </summary>
+        public abstract SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition);
+
+        /// <summary>
+        /// Indicates if the property is asynchronous.
+        /// i.e if some user have specific values
+        /// </summary>
+        public abstract bool isAsync { get; }
+
+        /// <summary>
+        /// Indicates if the property is desynchronous.
+        /// i.e if some user doesn't listen to change.
+        /// </summary>
+        public abstract bool isDeSync { get; }
+
+
+        public abstract IEnumerable<UMI3DUser> AsynchronousUser { get; }
+        public abstract IEnumerable<UMI3DUser> DesynchronousUser { get; }
+
+        /// <summary>
+        /// Set the property as synchronized/asynchronous.
+        /// </summary>
+        public abstract SetEntityProperty Sync();
+
+        /// <summary>
+        /// Set the property as synchronized/asynchronous for a user.
+        /// </summary>
+        /// <param name="user">the user</param>
+        /// <param name="isSync">Is the property async ?</param>
+        public abstract SetEntityProperty Sync(UMI3DUser user, bool isSync);
+
+        /// <summary>
+        /// The property will not notify update if desync.
+        /// </summary>
+        /// <param name="user">the user</param>
+        /// <param name="isSync">Is the property async ?</param>
+        public abstract SetEntityProperty DeSync(UMI3DUser user, bool isnotifying);
+    }
+
+    /// <summary>
+    /// Define an object property that could have a different value depending on the UMI3DUser.
+    /// </summary>
     /// <typeparam name="T">the type of the property value.</typeparam>
-    public class UMI3DAsyncProperty<T>
+    public class UMI3DAsyncProperty<T> : UMI3DAsyncProperty
     {
         /// <summary>
         /// The current default or synchronized value.
@@ -57,17 +113,11 @@ namespace umi3d.edk
         /// </summary>
         public Action<UMI3DUser, T> OnUserValueChanged;
 
-        /// <summary>
-        /// Indicates if the property is asynchronous.
-        /// i.e if some user have specific values
-        /// </summary>
-        public bool isAsync => asyncValues != null && asyncValues.Count > 0;
+        ///<inheritdoc/>
+        public override bool isAsync => asyncValues != null && asyncValues.Count > 0;
 
-        /// <summary>
-        /// Indicates if the property is desynchronous.
-        /// i.e if some user doesn't listen to change.
-        /// </summary>
-        public bool isDeSync => UserDesync != null && UserDesync.Count > 0;
+        ///<inheritdoc/>
+        public override bool isDeSync => UserDesync != null && UserDesync.Count > 0;
 
 
         /// <summary>
@@ -80,12 +130,11 @@ namespace umi3d.edk
         /// </summary>
         private readonly Func<T, UMI3DUser, object> Serializer;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<UMI3DUser> AsynchronousUser => asyncValues.Keys;
+        ///<inheritdoc/>
+        public override IEnumerable<UMI3DUser> AsynchronousUser => asyncValues.Keys;
 
-        public IEnumerable<UMI3DUser> DesynchronousUser => UserDesync.ToList();
+        ///<inheritdoc/>
+        public override IEnumerable<UMI3DUser> DesynchronousUser => UserDesync.ToList();
 
         /// <summary>
         /// UMI3DAsyncProperty constructor.
@@ -112,9 +161,6 @@ namespace umi3d.edk
             UserDesync = new HashSet<UMI3DUser>();
             UMI3DServer.Instance.OnUserLeave.AddListener((u) => { DeSync(u, true); });
         }
-
-
-
 
 
         /// <summary>
@@ -148,31 +194,21 @@ namespace umi3d.edk
         {
             if ((this.value == null && value == null || this.value != null && Equal(this.value, value)) && !forceOperation)
                 return null;
+
             this.value = value;
 
             if (OnValueChanged != null)
                 OnValueChanged.Invoke(value);
-            SetEntityProperty operation;
-            operation = new SetEntityProperty()
-            {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                value = Serializer(value, null)
-            };
+
             if (UMI3DEnvironment.Exists)
             {
                 if ((isAsync || isDeSync))
-                {
-                    operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
-                        user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
-                }
+                    return GetSetEntityOperationForUsers(user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
                 else
-                {
-                    operation += UMI3DServer.Instance.Users();
-                }
+                    return GetSetEntityOperationForAllUsers();
             }
-            return operation;
+
+            return null;
         }
 
         /// <summary>
@@ -183,15 +219,6 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(UMI3DUser user, T value, bool forceOperation = false)
         {
-            var operation = new SetEntityProperty()
-            {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                value = Serializer(value, user)
-            };
-            operation.users.Add(user);
-
             if (asyncValues.ContainsKey(user))
             {
                 if ((asyncValues[user] == null && value == null || Equal(asyncValues[user], value)) && !forceOperation)
@@ -204,7 +231,7 @@ namespace umi3d.edk
                     if (OnUserValueChanged != null)
                         OnUserValueChanged.Invoke(user, value);
                     if (!UserDesync.Contains(user) || forceOperation)
-                        return operation;
+                        return GetSetEntityOperationForUser(user);
                     else
                         return null;
                 }
@@ -216,39 +243,59 @@ namespace umi3d.edk
                 if (OnUserValueChanged != null)
                     OnUserValueChanged.Invoke(user, value);
                 if (!UserDesync.Contains(user) || forceOperation)
-                    return operation;
+                    return GetSetEntityOperationForUser(user);
                 else
                     return null;
             }
         }
 
-        /// <summary>
-        /// Set the property as synchronized/asynchronous.
-        /// </summary>
-        public SetEntityProperty Sync()
+        ///<inheritdoc/>
+        public override SetEntityProperty GetSetEntityOperationForAllUsers()
+        {
+            return GetSetEntityOperationForUsers(u => true);
+        }
+
+        ///<inheritdoc/>
+        public override SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user)
+        {
+            return new SetEntityProperty()
+            {
+                users = new HashSet<UMI3DUser>() { user },
+                entityId = entityId,
+                property = propertyId,
+                value = Serializer(GetValue(user), user)
+            };
+        }
+
+        ///<inheritdoc/>
+        public override SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition)
+        {
+            return new SetEntityProperty()
+            {
+                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(condition)),
+                entityId = entityId,
+                property = propertyId,
+                value = Serializer(value, null)
+            };
+        }
+
+
+
+        ///<inheritdoc/>
+        public override SetEntityProperty Sync()
         {
             SetEntityProperty operation = null;
             if (isAsync || isDeSync)
             {
-                operation = new SetEntityProperty()
-                {
-                    users = UMI3DServer.Instance.UserSet(),
-                    entityId = entityId,
-                    property = propertyId,
-                    value = Serializer(value, null)
-                };
+                operation = GetSetEntityOperationForAllUsers();
             }
             asyncValues.Clear();
             UserDesync.Clear();
             return operation;
         }
 
-        /// <summary>
-        /// Set the property as synchronized/asynchronous for a user.
-        /// </summary>
-        /// <param name="user">the user</param>
-        /// <param name="isSync">Is the property async ?</param>
-        public SetEntityProperty Sync(UMI3DUser user, bool isSync)
+        ///<inheritdoc/>
+        public override SetEntityProperty Sync(UMI3DUser user, bool isSync)
         {
             SetEntityProperty operation = null;
 
@@ -258,28 +305,18 @@ namespace umi3d.edk
             }
             else if (asyncValues.ContainsKey(user))
             {
-                if (!Equal(asyncValues[user], value) && !UserDesync.Contains(user))
-                {
-                    operation = new SetEntityProperty()
-                    {
-                        users = new HashSet<UMI3DUser>(),
-                        entityId = entityId,
-                        property = propertyId,
-                        value = Serializer(value, user)
-                    };
-                    operation.users.Add(user);
-                }
+                T userAsyncValue = asyncValues[user];
                 asyncValues.Remove(user);
+                if (!Equal(userAsyncValue, value) && !UserDesync.Contains(user))
+                {
+                    operation = GetSetEntityOperationForUser(user);
+                }
             }
             return operation;
         }
 
-        /// <summary>
-        /// THe property will not notify update if desync.
-        /// </summary>
-        /// <param name="user">the user</param>
-        /// <param name="isSync">Is the property async ?</param>
-        public SetEntityProperty DeSync(UMI3DUser user, bool isnotifying)
+        ///<inheritdoc/>
+        public override SetEntityProperty DeSync(UMI3DUser user, bool isnotifying)
         {
             SetEntityProperty operation = null;
             if (!isnotifying)
@@ -289,14 +326,7 @@ namespace umi3d.edk
             else if (UserDesync.Contains(user))
             {
                 UserDesync.Remove(user);
-                operation = new SetEntityProperty()
-                {
-                    users = new HashSet<UMI3DUser>(),
-                    entityId = entityId,
-                    property = propertyId,
-                    value = Serializer(GetValue(user), user)
-                };
-                operation.users.Add(user);
+                operation = GetSetEntityOperationForUser(user);
             }
             return operation;
         }
@@ -304,6 +334,7 @@ namespace umi3d.edk
         protected virtual T CopyOfValue(T value) { return value; }
 
     }
+
 
     /// <summary>
     /// Collection of Equality fonction for float and struct containing float using an epsilon range.

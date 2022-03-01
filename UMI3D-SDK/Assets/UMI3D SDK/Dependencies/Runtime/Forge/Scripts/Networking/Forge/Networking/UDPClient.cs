@@ -271,8 +271,8 @@ namespace BeardedManStudios.Forge.Networking
 						continue;
 
 					// This message was not from the server
-					if (groupEP.Address.ToString() != Server.IPEndPointHandle.Address.ToString() /*&&
-						groupEP.Port != Server.IPEndPointHandle.Port*/)
+					if (groupEP.Address != Server.IPEndPointHandle.Address &&
+						groupEP.Port != Server.IPEndPointHandle.Port)
 					{
 						if (packet.Size == 1 && (packet[0] == SERVER_BROADCAST_CODE || packet[1] == CLIENT_BROADCAST_CODE))
 						{

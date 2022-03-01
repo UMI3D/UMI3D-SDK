@@ -187,5 +187,23 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public abstract bool UpdateTools(ulong toolId, bool releasable, InteractionMappingReason reason = null);
 
+        /// <summary>
+        /// Request a Tool to be updated when one element was added on the tool.
+        /// </summary>
+        /// <param name="toolId">Id of the Tool.</param>
+        /// <param name="releasable">Is the tool releasable.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
+        public abstract bool UpdateAddOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
+
+        /// <summary>
+        /// Request a Tool to be updated when one element was removed on the tool.
+        /// </summary>
+        /// <param name="toolId">Id of the Tool.</param>
+        /// <param name="releasable">Is the tool releasable.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
+        public abstract bool UpdateRemoveOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
+
     }
 }

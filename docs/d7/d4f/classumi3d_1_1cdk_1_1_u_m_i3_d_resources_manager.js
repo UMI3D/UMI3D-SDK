@@ -7,6 +7,7 @@ var classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager =
     [ "Awake", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ab9c70a909946ac6cfd0015c3072d1f29", null ],
     [ "ClearCache", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ab10c5d7fa015a9b76b6de12351923090", null ],
     [ "GetSubModel", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#abacc752fa637b66a73ed5163967671ea", null ],
+    [ "OnDestroy", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#aa836864b1a07e608f33d82394226c0f0", null ],
     [ "librariesMap", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#aa8f6b30acc7d4f9d275893d40a6703f6", null ],
     [ "onLibrariesDownloaded", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#a3eeee9da5682550db71e7905a85825e4", null ],
     [ "onProgressChange", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#aa5209aa1933e1531bceb99054859e402", null ],

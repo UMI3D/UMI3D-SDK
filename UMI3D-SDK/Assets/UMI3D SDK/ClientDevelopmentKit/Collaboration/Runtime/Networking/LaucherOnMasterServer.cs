@@ -18,13 +18,12 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.SimpleJSON;
 using System;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
     public class LaucherOnMasterServer
     {
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
         private TCPMasterClient client = null;
         /// <summary>
@@ -102,7 +101,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e,scope);
+                UMI3DLogger.LogWarning(e, scope);
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
@@ -126,7 +125,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e,scope);
+                UMI3DLogger.LogWarning(e, scope);
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
@@ -153,7 +152,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e,scope);
+                UMI3DLogger.LogWarning(e, scope);
                 if (client != null)
                 {
                     client.Disconnect(true);
@@ -175,7 +174,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e,scope);
+                UMI3DLogger.LogWarning(e, scope);
                 if (client != null)
                 {
                     client.Disconnect(true);

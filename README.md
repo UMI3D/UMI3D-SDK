@@ -10,7 +10,7 @@ For more information about UMI3D, visit the [UMI3D Consortium's website](https:/
 
 ### Version And Documentation
 
-The Current UMI3D-SDK version is 2.3<br>
+The Current UMI3D-SDK version is 2.4<br>
 The documentation can be found [here](https://umi3d.github.io/UMI3D-SDK/index.html)<br>
 The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f1 (See [Unity Archive](https://unity3d.com/fr/get-unity/download/archive)).
 
@@ -30,8 +30,9 @@ The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f
 
 ### Installation through .unitypackage
 
-- [UMI3D Virtual World Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.3.r.211112/edk.unitypackage)
-- [UMI3D Browser Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.3.r.211112/cdk.unitypackage)
+- [UMI3D Virtual World Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.4.r.220208/edk.unitypackage)
+- [UMI3D Browser Development Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.4.r.220208/cdk.unitypackage)
+- [UMI3D Virtual World Starter Kit](https://github.com/UMI3D/UMI3D-SDK/releases/download/2.4.r.220208/server-starter-kit.unitypackage)
 
 ### Installation through Unity's Package Manager 
 
@@ -43,29 +44,29 @@ Open Your project manifest ('.\Packages\manifest.json')
 
 - For the **UMI3D Virtual World Development Kit** add the following lines at the top of the 'dependencies' array:
 ``` JSON
-	"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/InteractionSystem#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.edk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/Core#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.edk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/InteractionSystem#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.edk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/UserCapture#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.edk.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/Collaboration#2.3.r.211112",
+	"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/InteractionSystem#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.edk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/Core#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.edk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/InteractionSystem#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.edk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/UserCapture#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.edk.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/EnvironmentDevelopmentKit/Collaboration#2.4.r.220208",
 ```
 - For the **UMI3D Browser Development Kit** add the following lines at the top of the 'dependencies' array:
 ``` JSON
-	"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/InteractionSystem#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.cdk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/Core#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.cdk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/InteractionSystem#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.cdk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/UserCapture#2.3.r.211112",
-	"com.gfi-innovaton.umi3d.cdk.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/Collaboration#2.3.r.211112",
+	"com.gfi-innovaton.umi3d.dependencies":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Dependencies#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Core#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/InteractionSystem#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/UserCapture#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.common.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/Common/Collaboration#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.cdk.core":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/Core#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.cdk.interaction-system":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/InteractionSystem#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.cdk.user-capture":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/UserCapture#2.4.r.220208",
+	"com.gfi-innovaton.umi3d.cdk.collaboration":"https://github.com/Gfi-Innovation/UMI3D-SDK.git?path=/UMI3D-SDK/Assets/ClientDevelopmentKit/Collaboration#2.4.r.220208",
 ```
-The tag (#2.3.r.211112) can be set to any branch or tag on the sdk repo. Example: '#master', '#development', '#2.1.b.210104'
+The tag (#2.4.r.220208) can be set to any branch or tag on the sdk repo. Example: '#master', '#development', '#2.1.b.210104'
 
 To activate the intelsence of UMI3D-SDK in Visual Studio 2019, navigate to the menu :
 - **Edit > Preferences > External Tools** and check the option **Git packages**. It will be necesary to regenerate the project files.

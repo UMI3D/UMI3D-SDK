@@ -29,7 +29,7 @@
   <td id="projectlogo"><img alt="Logo" src="../../logo_umi3d_consortium.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">UMI3D Unity SDK
-   &#160;<span id="projectnumber">2.3.r.211112</span>
+   &#160;<span id="projectnumber">2.4.r.220208</span>
    </div>
    <div id="projectbrief">A UMI3D sdk implementation using Unity</div>
   </td>
@@ -132,6 +132,8 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a474dd5dd4bef2c179a20366de6b1ef10"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#a474dd5dd4bef2c179a20366de6b1ef10">ClearCache</a> (string VariantUrl, string LibraryId=null)</td></tr>
+<tr class="separator:a474dd5dd4bef2c179a20366de6b1ef10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fad0b162277e56c93126abaf825710d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#a6fad0b162277e56c93126abaf825710d">LoadLibrary</a> (string libraryId, Action finished, ulong SceneId=0)</td></tr>
 <tr class="memdesc:a6fad0b162277e56c93126abaf825710d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load a library.  <a href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#a6fad0b162277e56c93126abaf825710d">More...</a><br /></td></tr>
 <tr class="separator:a6fad0b162277e56c93126abaf825710d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -160,6 +162,11 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aa0fe2c90a5a9aacab8a4271b223610d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae9ae531c99ff9a6c20061b47fab87c34"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ae9ae531c99ff9a6c20061b47fab87c34">DownloadObject</a> (UnityWebRequest www, Action callback, Action&lt; <a class="el" href="../../d2/dc2/classumi3d_1_1cdk_1_1_umi3d_exception.html">Umi3dException</a> &gt; failCallback, Func&lt; <a class="el" href="../../de/d9e/classumi3d_1_1cdk_1_1_request_failed_argument.html">RequestFailedArgument</a>, bool &gt; shouldTryAgain=null)</td></tr>
 <tr class="separator:ae9ae531c99ff9a6c20061b47fab87c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_static_methods_classumi3d_1_1common_1_1_persistent_singleton"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classumi3d_1_1common_1_1_persistent_singleton')"><img src="../../closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html">umi3d.common.PersistentSingleton&lt; UMI3DResourcesManager &gt;</a></td></tr>
+<tr class="memitem:a081ae29ea3883c0aa2c9c90c18490bf9 inherit pub_static_methods_classumi3d_1_1common_1_1_persistent_singleton"><td class="memItemLeft" align="right" valign="top">new static Coroutine&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html#a081ae29ea3883c0aa2c9c90c18490bf9">StartCoroutine</a> (IEnumerator enumerator)</td></tr>
+<tr class="separator:a081ae29ea3883c0aa2c9c90c18490bf9 inherit pub_static_methods_classumi3d_1_1common_1_1_persistent_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4026bcee5cbc4413791e7343921d8e9e inherit pub_static_methods_classumi3d_1_1common_1_1_persistent_singleton"><td class="memItemLeft" align="right" valign="top">new static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html#a4026bcee5cbc4413791e7343921d8e9e">StopCoroutine</a> (Coroutine coroutine)</td></tr>
+<tr class="separator:a4026bcee5cbc4413791e7343921d8e9e inherit pub_static_methods_classumi3d_1_1common_1_1_persistent_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -177,14 +184,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ab9c70a909946ac6cfd0015c3072d1f29"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ab9c70a909946ac6cfd0015c3072d1f29">Awake</a> ()</td></tr>
 <tr class="memdesc:ab9c70a909946ac6cfd0015c3072d1f29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unity function call when a MonoBehaviour is created. Make sure to always call base.Awake() when overriding.  <a href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ab9c70a909946ac6cfd0015c3072d1f29">More...</a><br /></td></tr>
 <tr class="separator:ab9c70a909946ac6cfd0015c3072d1f29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classumi3d_1_1common_1_1_persistent_singleton"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classumi3d_1_1common_1_1_persistent_singleton')"><img src="../../closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html">umi3d.common.PersistentSingleton&lt; UMI3DResourcesManager &gt;</a></td></tr>
-<tr class="memitem:a15f56b381b21c3bb256fcb02827bcc90 inherit pro_methods_classumi3d_1_1common_1_1_persistent_singleton"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html#a15f56b381b21c3bb256fcb02827bcc90">OnDestroy</a> ()</td></tr>
-<tr class="separator:a15f56b381b21c3bb256fcb02827bcc90 inherit pro_methods_classumi3d_1_1common_1_1_persistent_singleton"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa836864b1a07e608f33d82394226c0f0"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#aa836864b1a07e608f33d82394226c0f0">OnDestroy</a> ()</td></tr>
+<tr class="separator:aa836864b1a07e608f33d82394226c0f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
 <tr class="memitem:ac2b55da6a83d79f575d977fd207f4cad"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="../../d3/dc7/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager_1_1_data_file.html">DataFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ac2b55da6a83d79f575d977fd207f4cad">Libraries</a><code> [get]</code></td></tr>
-<tr class="memdesc:ac2b55da6a83d79f575d977fd207f4cad"><td class="mdescLeft">&#160;</td><td class="mdescRight">inheritdoc/&gt;  <a href="../../d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html#ac2b55da6a83d79f575d977fd207f4cad">More...</a><br /></td></tr>
 <tr class="separator:ac2b55da6a83d79f575d977fd207f4cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header properties_classumi3d_1_1common_1_1_persistent_singleton"><td colspan="2" onclick="javascript:toggleInherit('properties_classumi3d_1_1common_1_1_persistent_singleton')"><img src="../../closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html">umi3d.common.PersistentSingleton&lt; UMI3DResourcesManager &gt;</a></td></tr>
 <tr class="memitem:acb005b0dd4b9aa1254af2f6d650b3eb8 inherit properties_classumi3d_1_1common_1_1_persistent_singleton"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html#acb005b0dd4b9aa1254af2f6d650b3eb8">Exists</a><code> [get]</code></td></tr>
@@ -285,7 +290,7 @@ Properties</h2></td></tr>
 </div>
 </div>
 <a id="ab10c5d7fa015a9b76b6de12351923090" name="ab10c5d7fa015a9b76b6de12351923090"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab10c5d7fa015a9b76b6de12351923090">&#9670;&nbsp;</a></span>ClearCache()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab10c5d7fa015a9b76b6de12351923090">&#9670;&nbsp;</a></span>ClearCache() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -297,6 +302,42 @@ Properties</h2></td></tr>
           <td></td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a474dd5dd4bef2c179a20366de6b1ef10" name="a474dd5dd4bef2c179a20366de6b1ef10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a474dd5dd4bef2c179a20366de6b1ef10">&#9670;&nbsp;</a></span>ClearCache() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool umi3d.cdk.UMI3DResourcesManager.ClearCache </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>VariantUrl</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>LibraryId</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>
@@ -744,6 +785,33 @@ Properties</h2></td></tr>
 
 </div>
 </div>
+<a id="aa836864b1a07e608f33d82394226c0f0" name="aa836864b1a07e608f33d82394226c0f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa836864b1a07e608f33d82394226c0f0">&#9670;&nbsp;</a></span>OnDestroy()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override void umi3d.cdk.UMI3DResourcesManager.OnDestroy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reimplemented from <a class="el" href="../../dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html#a15f56b381b21c3bb256fcb02827bcc90">umi3d.common.PersistentSingleton&lt; UMI3DResourcesManager &gt;</a>.</p>
+
+</div>
+</div>
 <a id="aa0fe2c90a5a9aacab8a4271b223610d5" name="aa0fe2c90a5a9aacab8a4271b223610d5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa0fe2c90a5a9aacab8a4271b223610d5">&#9670;&nbsp;</a></span>RemoveLibrary()</h2>
 
@@ -929,8 +997,6 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p>inheritdoc/&gt; </p>
 
 </div>
 </div>
