@@ -82,14 +82,8 @@ namespace umi3d.cdk
                 case InteractableDto i:
                     UMI3DInteractableLoader.ReadUMI3DExtension(i, node, finished, failed);
                     break;
-                case ToolboxDto t:
-                    UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
-                    break;
-                case AbstractVolumeDescriptorDto v:
-                    UMI3DVolumeLoader.ReadUMI3DExtension(v, callback, failed);
-                    break;
-                case ToolDto t:
-                    UMI3DToolLoader.ReadUMI3DExtension(t);
+                case GlobalToolDto t:
+                    UMI3DGlobalToolLoader.ReadUMI3DExtension(t, finished, failed);
                     finished?.Invoke();
                     break;
                 case UMI3DMeshNodeDto m:
@@ -142,11 +136,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DInteractableLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (UMI3DToolLoader.SetUMI3DProperty(entity, property))
-                return true;
-            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
-                return true;
-            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, property))
+            if (UMI3DGlobalToolLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -184,9 +174,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
-                return true;
-            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+            if (UMI3DGlobalToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (UMI3DVolumeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
@@ -221,9 +209,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DInteractableLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UMI3DToolLoader.ReadUMI3DProperty(ref value, propertyKey, container))
-                return true;
-            if (UMI3DToolBoxLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+            if (UMI3DGlobalToolLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (notificationLoader != null && notificationLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;

@@ -14,18 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.cdk.interaction;
-
-namespace umi3d.cdk.menu.interaction
+namespace umi3d.common.interaction
 {
-    /// <summary>
-    /// Toolbox sub menu.
-    /// </summary>
-    public class ToolboxSubMenu : Menu
+    public class GlobalToolDto : AbstractToolDto, IEntity
     {
         /// <summary>
-        /// Toolbox associated with this menu.
+        /// Toolbox in which the global tool is (if any).
         /// </summary>
-        public Toolbox toolbox;
+        /// <see cref="isInsideToolbox"/>
+        public ulong toolboxId;
+        public bool isInsideToolbox;
+
+        public GlobalToolDto() : base() { }
     }
 }

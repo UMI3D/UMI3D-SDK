@@ -45,7 +45,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return SetInteractions(dto, tool, property);
-                case UMI3DPropertyKeys.ToolActive:
+                case UMI3DPropertyKeys.AbstractToolActive:
                     dto.active = (bool)property.value;
                     break;
                 default:
@@ -75,7 +75,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return SetInteractions(dto, tool, operationId, propertyKey, container);
-                case UMI3DPropertyKeys.ToolActive:
+                case UMI3DPropertyKeys.AbstractToolActive:
                     dto.active = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 default:
@@ -102,7 +102,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return ReadInteractions(ref value, propertyKey, container);
-                case UMI3DPropertyKeys.ToolActive:
+                case UMI3DPropertyKeys.AbstractToolActive:
                     value = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 default:
