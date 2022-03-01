@@ -143,11 +143,6 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public abstract AbstractController GetController(ulong projectedToolId);
 
-
-        //public abstract void CreateToolbox(Toolbox toolbox);
-
-        //public abstract void CreateTool(Tool tool);
-
         /// <summary>
         /// Request the selection of a Tool.
         /// Be careful,this method could be called before the tool is added for async loading reasons.
