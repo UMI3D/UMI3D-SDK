@@ -893,8 +893,9 @@ namespace umi3d.cdk
                 {
                     WaitForAnEntityToBeLoaded(id, (e) =>
                     {
-                        if (!SetEntity(e, operationId, id, propertyKey, container))
-                            UMI3DLogger.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {container}", scope | DebugScope.Bytes);
+                        var newContainer = new ByteContainer(container);
+                        if (!SetEntity(e, operationId, id, propertyKey, newContainer))
+                            UMI3DLogger.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {newContainer}", scope | DebugScope.Bytes);
                     });
                 }
                 catch (Exception e)
