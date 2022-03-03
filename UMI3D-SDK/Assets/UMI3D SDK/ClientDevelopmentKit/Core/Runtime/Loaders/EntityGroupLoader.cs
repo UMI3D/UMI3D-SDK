@@ -66,7 +66,7 @@ namespace umi3d.cdk
                     default:
                         foreach (ulong e in groupDto.entitiesId)
                         {
-                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, container);
+                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, new ByteContainer(container));
                         }
                         break;
                 }
