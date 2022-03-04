@@ -59,7 +59,7 @@ namespace umi3d.edk.editor
         /// <param name="tool"></param>
         private void RemoveParent(object tool)
         {
-            if (tool is GlobalTool globalTool && globalTool == target)
+            if (tool is GlobalTool globalTool && globalTool.parent == target)
             {
                 globalTool.parent = null;
             }
