@@ -14,37 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// Dto use to help a masterserver to guide a user
     /// </summary>
-    [System.Serializable]
-    public class MediaDto : UMI3DDto
+    public class GateDto : UMI3DDto
     {
         /// <summary>
-        /// Name of the media.
+        /// Id of the gate.
         /// </summary>
-        public string name;
+        public string gateId;
 
         /// <summary>
-        /// The interaction's icon 2D. 
+        /// Data a server can give to an other server for experience quality.
         /// </summary>
-        public ResourceDto icon2D;
-
-        /// <summary>
-        /// The interaction's icon 3D. 
-        /// </summary>
-        public ResourceDto icon3D;
-
-        public string versionMajor;
-        public string versionMinor;
-        public string versionStatus;
-        public string versionDate;
-
-        public string url;
-
-        public MediaDto() : base() { }
-
+        public byte[] metaData;
     }
 }

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Collections.Generic;
 
 namespace umi3d.common.collaboration
 {
@@ -25,5 +26,10 @@ namespace umi3d.common.collaboration
     {
         public ulong userId = 0;
         public string login = null;
+        public ForgeConnectionDto connectionDto;
+        public string localToken;
+        public string headerToken;
+        public string key;
+        public List<LibrariesDto> libraries;
     }
 }

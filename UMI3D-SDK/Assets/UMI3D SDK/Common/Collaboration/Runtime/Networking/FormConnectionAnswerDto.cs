@@ -13,38 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using umi3d.common.interaction;
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// Connection dto to connect to a media with a form answer.
     /// </summary>
-    [System.Serializable]
-    public class MediaDto : UMI3DDto
+    public class FormConnectionAnswerDto : ConnectionDto
     {
         /// <summary>
-        /// Name of the media.
+        /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
-        public string name;
-
-        /// <summary>
-        /// The interaction's icon 2D. 
-        /// </summary>
-        public ResourceDto icon2D;
-
-        /// <summary>
-        /// The interaction's icon 3D. 
-        /// </summary>
-        public ResourceDto icon3D;
-
-        public string versionMajor;
-        public string versionMinor;
-        public string versionStatus;
-        public string versionDate;
-
-        public string url;
-
-        public MediaDto() : base() { }
-
+        public FormAnswerDto FormAnswerDto;
     }
 }

@@ -14,37 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// Tell a user to disconnect from an environment and connect to an other.
     /// </summary>
-    [System.Serializable]
-    public class MediaDto : UMI3DDto
+    public class RedirectionDto : UMI3DDto
     {
         /// <summary>
-        /// Name of the media.
+        /// MediaDto of the media to connect to.
         /// </summary>
-        public string name;
+        public MediaDto media;
 
         /// <summary>
-        /// The interaction's icon 2D. 
+        /// Gate data to help the new media where to redirect the user.
         /// </summary>
-        public ResourceDto icon2D;
-
-        /// <summary>
-        /// The interaction's icon 3D. 
-        /// </summary>
-        public ResourceDto icon3D;
-
-        public string versionMajor;
-        public string versionMinor;
-        public string versionStatus;
-        public string versionDate;
-
-        public string url;
-
-        public MediaDto() : base() { }
-
+        public GateDto gate;
     }
 }

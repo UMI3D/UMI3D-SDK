@@ -14,37 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// BaseConnection message to connect to a media.
     /// </summary>
-    [System.Serializable]
-    public class MediaDto : UMI3DDto
+    public class ConnectionDto : UMI3DDto
     {
         /// <summary>
-        /// Name of the media.
+        /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
-        public string name;
+        public string GlobalToken;
 
         /// <summary>
-        /// The interaction's icon 2D. 
+        /// Gate data to help the media where to redirect the user.
         /// </summary>
-        public ResourceDto icon2D;
+        public GateDto gate;
 
         /// <summary>
-        /// The interaction's icon 3D. 
+        /// State if the client want only to download library.
+        /// if false : the client to connect normaly.
+        /// if true : the client ask only for the library it will need in a later connection.
         /// </summary>
-        public ResourceDto icon3D;
-
-        public string versionMajor;
-        public string versionMinor;
-        public string versionStatus;
-        public string versionDate;
-
-        public string url;
-
-        public MediaDto() : base() { }
-
+        public bool LibraryPreloading;
     }
 }
