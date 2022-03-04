@@ -20,10 +20,10 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.editor
 {
-
     public class ListDisplayer<T>
     {
         private const char upArrow = '\u25B2';
@@ -31,6 +31,13 @@ namespace umi3d.edk.editor
         private const char cross = 'X';
         private const int buttonWidth = 25;
         private readonly Func<SerializedProperty, T> NewValue;
+
+        public class ObjectEvent : UnityEvent<object> { }
+
+        /// <summary>
+        /// Event raised when an element of the list is removed, if this element is an ObjectReference.
+        /// </summary>
+        public ObjectEvent onObjectRemoved = new ObjectEvent();
 
         public ListDisplayer(Func<SerializedProperty, T> newValue)
         {
@@ -145,16 +152,18 @@ namespace umi3d.edk.editor
                     if (GUILayout.Button(cross.ToString(), GUILayout.Width(buttonWidth)))
                     {
                         SerializedProperty elementProperty = ThisList.GetArrayElementAtIndex(i);
+
                         if (elementProperty.propertyType == SerializedPropertyType.ObjectReference && elementProperty.objectReferenceValue != default)
+                        {
+                            onObjectRemoved.Invoke(elementProperty.objectReferenceValue);
                             elementProperty.objectReferenceValue = default;
+                        }
                         ThisList.DeleteArrayElementAtIndex(i);
                     }
                     EditorGUI.indentLevel = indent;
                     EditorGUILayout.EndHorizontal();
                 }
                 EditorGUI.indentLevel--;
-
-
             }
         }
     }
