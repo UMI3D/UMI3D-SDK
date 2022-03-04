@@ -174,7 +174,7 @@ namespace umi3d.cdk
                                 if (clipa != null)
                                     audioSource.clip = clipa;
                                 else
-                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}", scope);
                             },
                             e => UMI3DLogger.LogWarning(e, scope),
                             loader.DeleteObject
