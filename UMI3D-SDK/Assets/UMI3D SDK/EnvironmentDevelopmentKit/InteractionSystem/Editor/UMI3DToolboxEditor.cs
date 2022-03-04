@@ -27,19 +27,51 @@ namespace umi3d.edk.editor
     [CustomEditor(typeof(Toolbox), true)]
     public class UMI3DToolboxEditor : UMI3DAbstractToolEditor
     {
+        /// <summary>
+        /// Serialized property which referes to <see cref="Toolbox.tools"/>.
+        /// </summary>
         private SerializedProperty subTools;
+
+        /// <summary>
+        /// Inspector displayer for <see cref="subTools"/>.
+        /// </summary>
         private ListDisplayer<GlobalTool> ListDisplayer = new ListDisplayer<GlobalTool>();
+
+
+        private static bool showList = true;
 
         protected override void OnEnable()
         {
             base.OnEnable();
             subTools = _target.FindProperty("tools");
+
+            ListDisplayer.onObjectRemoved.AddListener(RemoveParent);
         }
 
-        private static bool showList = true;
+        private void OnDisable()
+        {
+            ListDisplayer.onObjectRemoved.RemoveListener(RemoveParent);
+        }
+
+        /// <summary>
+        /// If a <see cref="GlobalTool"/> is removed from the list, resets its parent.
+        /// </summary>
+        /// <param name="tool"></param>
+        private void RemoveParent(object tool)
+        {
+            if (tool is GlobalTool globalTool && globalTool == target)
+            {
+                globalTool.parent = null;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         protected override void _OnInspectorGUI()
         {
             base._OnInspectorGUI();
+
             ListDisplayer.Display(ref showList, subTools, ((Toolbox)target).tools,
                 t =>
                 {

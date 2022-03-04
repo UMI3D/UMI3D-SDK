@@ -13,20 +13,45 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
+
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
-
     public class GlobalTool : AbstractTool, UMI3DLoadableEntity
     {
+        /// <summary>
+        /// Is this tool inside a <see cref="Toolbox"/> ?
+        /// </summary>
         public bool isInsideToolbox { get => parent != null; }
-        public Toolbox parent; //TODO PAREIL
 
+        /// <summary>
+        /// <see cref="Toolbox"/> parent if this tool is inside a toolbox.
+        /// </summary>
+        private Toolbox _parent;
+
+        /// <summary>
+        /// Getter/setter for <see cref="_parent"/>.
+        /// </summary>
+        public Toolbox parent
+        {
+            get => _parent;
+            set
+            {
+                if (value == this)
+                    UMI3DLogger.LogError("Impossible to set itself as a parent.", DebugScope.Interaction);
+                else
+                    _parent = value;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="users"></param>
+        /// <returns></returns>
         public virtual DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
@@ -37,6 +62,11 @@ namespace umi3d.edk.interaction
             return operation;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="users"></param>
+        /// <returns></returns>
         public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -47,14 +77,27 @@ namespace umi3d.edk.interaction
             return operation;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public virtual IEntity ToEntityDto(UMI3DUser user) => ToDto(user) as GlobalToolDto;
-        
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <returns></returns>
         protected override AbstractToolDto CreateDto()
         {
             return new GlobalToolDto();
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="user"></param>
         protected override void WriteProperties(AbstractToolDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
