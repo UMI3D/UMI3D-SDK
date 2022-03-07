@@ -106,12 +106,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start()
         {
-            if ((audioSource != null) && (audioSource.clip != null))
-            {
-                audioSource.Stop();
-                audioSource.Play();
-                OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
-            }
+            Start(0);
         }
 
         private Coroutine OnEndCoroutine;
@@ -266,12 +261,20 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
-            if ((audioSource != null) && (audioSource.clip != null))
+            if ((audioSource != null))
             {
-                audioSource.Stop();
-                audioSource.time = atTime;
-                audioSource.Play();
-                OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                if ((audioSource.clip != null))
+                {
+                    audioSource.Stop();
+                    if(atTime != 0)
+                        audioSource.time = atTime;
+                    audioSource.Play();
+                    OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                }
+                else
+                {
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
+                }
             }
         }
 
@@ -279,6 +282,20 @@ namespace umi3d.cdk
         {
             audioSource.time = frame / 1000f;
 
+        }
+
+        private IEnumerator StartAfterLoading()
+        {
+            while (!audioSource.clip)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            if (dto.playing)
+            {
+                ulong now = UMI3DClientServer.Instance.GetTime();
+                Start((float)(now - dto.startTime));
+            }
         }
     }
 }
