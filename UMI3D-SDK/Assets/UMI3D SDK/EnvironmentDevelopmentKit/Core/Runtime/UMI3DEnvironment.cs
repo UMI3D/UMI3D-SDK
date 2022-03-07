@@ -75,7 +75,7 @@ namespace umi3d.edk
             var res = new MediaDto
             {
                 name = environmentName,
-                connection = UMI3DServer.Instance.ToDto(),
+                //connection = UMI3DServer.Instance.ToDto(),
                 versionMajor = UMI3DVersion.major,
                 versionMinor = UMI3DVersion.minor,
                 versionStatus = UMI3DVersion.status,

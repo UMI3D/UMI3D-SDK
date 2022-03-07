@@ -16,7 +16,6 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.interaction;
 using System.Collections.Generic;
 using System;
 using inetum.unityUtils;
@@ -25,48 +24,29 @@ namespace umi3d.ms
 {
     public class MasterServer : Singleton<MasterServer>
     {
-        public class User
-        {
-            public string GlobalToken;
-            public GateDto gate;
-            public string GUID;
-            public string localToken;
-
-            public User(ConnectionDto connectionDto)
-            {
-                Update(connectionDto);
-            }
-            public void Update(ConnectionDto connectionDto)
-            {
-                GlobalToken = connectionDto.GlobalToken;
-                gate = connectionDto.gate;
-            }
-        }
-
-
         IIAM IAM; 
         Dictionary<string, User> userMap = new Dictionary<string, User>();
 
-        UMI3DDto RegisterUser(UMI3DDto dto)
+        public MasterServer() : base()
+        {}
+
+        public MasterServer(IIAM iAM): this()
+        {
+            this.IAM = iAM;
+        }
+
+        static UMI3DDto RegisterUser(ConnectionDto dto)
         {
             return Instance?._RegisterUser(dto);
         }
 
-
-
-        UMI3DDto _RegisterUser(UMI3DDto dto)
+        UMI3DDto _RegisterUser(ConnectionDto dto)
         {
-            User user;
-            switch (dto)
-            {
-                case FormConnectionAnswerDto formAnswer:
-                    user = GetUser(formAnswer);
-                    return IAM.isFormValid(user, formAnswer.FormAnswerDto) ? GetIdentityDto(user) : IAM.GenerateForm(user);
-                case ConnectionDto connectionDto:
-                    user = GetUser(connectionDto);
-                    return IAM.IsUserValid(user) ? GetIdentityDto(user) : IAM.GenerateForm(user);
-            }
-            return null;
+            User user = GetUser(dto);
+
+            return dto is FormConnectionAnswerDto formAnswer
+                ? IAM.isFormValid(user, formAnswer.FormAnswerDto) ? GetIdentityDto(user) : IAM.GenerateForm(user)
+                : IAM.IsUserValid(user) ? GetIdentityDto(user) : IAM.GenerateForm(user);
         }
 
         User GetUser(ConnectionDto connectionDto)
@@ -80,15 +60,6 @@ namespace umi3d.ms
 
             return userMap[id];
         }
-
-        interface IIAM
-        {
-            UMI3DDto GenerateForm(User user);
-            bool IsUserValid(User user);
-            string generateToken(User user);
-            bool isFormValid(User user,FormAnswerDto formAnswer);
-
-        } 
 
         string generateFakeToken()
         {

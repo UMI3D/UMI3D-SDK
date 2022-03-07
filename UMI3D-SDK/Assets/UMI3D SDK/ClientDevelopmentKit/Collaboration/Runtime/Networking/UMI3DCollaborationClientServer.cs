@@ -85,7 +85,7 @@ namespace umi3d.cdk.collaboration
         private void Start()
         {
             lastTokenUpdate = default;
-            HttpClient = new HttpClient(this);
+            HttpClient = new HttpClient();
             connected = false;
             joinning = false;
             UMI3DNetworkingHelper.AddModule(new UMI3DCollaborationNetworkingModule());
@@ -114,7 +114,7 @@ namespace umi3d.cdk.collaboration
         {
             Instance.Init();
             UMI3DLogger.Log("Init Connection", scope | DebugScope.Connection);
-            if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
+            if (Environement is ForgeConnectionDto connection)
             {
                 Instance.ForgeClient.ip = connection.host;
                 Instance.ForgeClient.port = connection.forgeServerPort;

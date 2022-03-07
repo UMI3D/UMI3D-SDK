@@ -222,7 +222,8 @@ namespace umi3d.cdk
             {
                 if (UMI3DClientServer.Media == null)
                     return false;
-                string url = UMI3DClientServer.Media.connection.httpUrl + '/';
+
+                string url = UMI3DClientServer.Environement.httpUrl + '/';
 
                 if (url == this.url) return true;
 

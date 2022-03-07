@@ -32,14 +32,14 @@ namespace umi3d.cdk.collaboration
 
         internal string ComputedToken;
 
-        private string httpUrl => UMI3DCollaborationClientServer.Media.connection.httpUrl;
+        private string httpUrl => UMI3DClientServer.Environement.httpUrl;
 
         private readonly ThreadDeserializer deserializer;
         /// <summary>
         /// Init HttpClient.
         /// </summary>
         /// <param name="UMI3DClientServer"></param>
-        public HttpClient(UMI3DCollaborationClientServer UMI3DClientServer)
+        public HttpClient()
         {
             UMI3DLogger.Log($"Init HttpClient", scope | DebugScope.Connection);
             deserializer = new ThreadDeserializer();
