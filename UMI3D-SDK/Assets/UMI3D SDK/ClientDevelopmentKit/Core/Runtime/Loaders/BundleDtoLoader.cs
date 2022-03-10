@@ -77,7 +77,7 @@ namespace umi3d.cdk
                                 callback.Invoke(bundle);
 
 #if UNITY_2020
-                            if (downloadHandlerAssetBundle?.error != null)
+                            else if (downloadHandlerAssetBundle?.error != null)
                                 throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
 #endif
                             else
