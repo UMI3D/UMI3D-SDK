@@ -64,6 +64,11 @@ namespace umi3d.cdk
                 line.startWidth = lineDto.startWidth;
                 line.positionCount = lineDto.positions.Count();
                 line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v).ToArray());
+                UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(lineDto.id);
+                if (nodeInstance != null)
+                    nodeInstance.renderers = new List<Renderer>() { line };
+                SetMaterialOverided(lineDto, nodeInstance);
+
                 finished?.Invoke();
             }, failed);
         }

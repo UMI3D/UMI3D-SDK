@@ -545,6 +545,14 @@ namespace umi3d.cdk
                 UMI3DLogger.LogWarning("Renderers list was empty, That should not happen", scope);
                 return node.renderers;
             }
+            if (((GlTFNodeDto)node.dto).extensions.umi3d is UMI3DLineDto)
+            {
+                if (node.renderers != null && node.renderers.Count > 0)
+                    return node.renderers;
+                node.renderers = new List<Renderer>() { node.gameObject.GetComponent<LineRenderer>() };
+                return node.renderers;
+
+            }
 
             UMI3DLogger.LogError("RendererNodeLoader used for non rendered node", scope);
             return new List<Renderer>();
