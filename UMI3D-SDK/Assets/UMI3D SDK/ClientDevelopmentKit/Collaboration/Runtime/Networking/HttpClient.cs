@@ -30,7 +30,7 @@ namespace umi3d.cdk.collaboration
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        internal string ComputedToken;
+        internal string HeaderToken;
 
         private string httpUrl => UMI3DClientServer.Environement.httpUrl;
 
@@ -57,7 +57,7 @@ namespace umi3d.cdk.collaboration
         public void SetToken(string token)
         {
             UMI3DLogger.Log($"SetToken {token}", scope | DebugScope.Connection);
-            ComputedToken = UMI3DNetworkingKeys.bearer + token;
+            HeaderToken = UMI3DNetworkingKeys.bearer + token;
         }
 
         private bool DefaultShouldTryAgain(RequestFailedArgument argument)
@@ -66,6 +66,22 @@ namespace umi3d.cdk.collaboration
         }
 
         #region user
+
+        /// <summary>
+        /// Connect to a media
+        /// </summary>
+        /// <param name="connectionDto"></param>
+        public void Connect(UMI3DDto connectionDto, string MasterUrl, Action<UMI3DDto> callback, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            Action<UnityWebRequest> action = (uwr) =>
+            {
+                UMI3DLogger.Log($"Received answer to Connect", scope | DebugScope.Connection);
+                byte[] res = uwr.downloadHandler.data;
+                deserializer.FromBson(res, callback);
+            };
+            UMI3DClientServer.StartCoroutine(_PostRequest(MasterUrl + UMI3DNetworkingKeys.connect, connectionDto.ToBson(), action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false));
+        }
+
         /// <summary>
         /// Send request using GET method to get the user Identity.
         /// </summary>
@@ -85,7 +101,7 @@ namespace umi3d.cdk.collaboration
                 byte[] res = uwr.downloadHandler.data;
                 deserializer.FromBson(res, action2);
             };
-            UMI3DClientServer.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.identity, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
+            UMI3DClientServer.StartCoroutine(_GetRequest(httpUrl + UMI3DNetworkingKeys.connectionInfo, action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
         /// <summary>
@@ -102,7 +118,7 @@ namespace umi3d.cdk.collaboration
                 //res ?
                 callback?.Invoke();
             };
-            UMI3DClientServer.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.identity_update, UMI3DCollaborationClientServer.UserDto.dto.ToBson(), action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
+            UMI3DClientServer.StartCoroutine(_PostRequest(httpUrl + UMI3DNetworkingKeys.connection_information_update, UMI3DCollaborationClientServer.UserDto.dto.ToBson(), action, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true));
         }
 
         /// <summary>
@@ -400,7 +416,7 @@ namespace umi3d.cdk.collaboration
         private IEnumerator _GetRequest(string url, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             var www = UnityWebRequest.Get(url);
-            if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
+            if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
             {
                 foreach ((string, string) item in headers)
@@ -441,7 +457,7 @@ namespace umi3d.cdk.collaboration
         private IEnumerator _PostRequest(string url, byte[] bytes, Action<UnityWebRequest> callback, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             UnityWebRequest www = CreatePostRequest(url, bytes, true);
-            if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, ComputedToken);
+            if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
             {
                 foreach ((string, string) item in headers)

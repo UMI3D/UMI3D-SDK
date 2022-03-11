@@ -43,7 +43,10 @@ namespace umi3d.cdk.collaboration
         public HttpClient HttpClient { get; private set; }
         public UMI3DForgeClient ForgeClient { get; private set; }
 
-        public static IdentityDto Identity = new IdentityDto();
+        private static PrivateIdentityDto Identity = null;
+        public static PublicIdentityDto PublicIdentity => new PublicIdentityDto() { login = Identity.login, userId = Identity.userId };
+
+        override protected ForgeConnectionDto connectionDto => Identity?.connectionDto;
 
         public class UserInfo
         {
@@ -107,49 +110,96 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Start the connection to a Master Server.
+        /// </summary>
+        public static void Connect(MediaDto media, GateDto gate = null)
+        {
+            if (Exists)
+            {
+                Instance._media = media;
+
+                var connection = new ConnectionDto()
+                {
+                    GlobalToken = Identity?.GlobalToken,
+                    gate = gate
+                };
+
+                Connect(connection);
+            }
+        }
+
+        public static void Connect(UMI3DDto dto)
+        {
+            if (Exists)
+            {
+                Instance.HttpClient.Connect(
+                    dto,
+                    Media.url,
+                    (answerDto) =>
+                    {
+                        if (answerDto is PrivateIdentityDto identity)
+                        {
+                            Identity = identity;
+                            ConnectToEnvironment();
+                        }
+                        else if (answerDto is ConnectionFormDto form)
+                        {
+                            Instance.Identifier.GetParameterDtos(form, (answer) => {
+                                Connect(answer);
+                            });
+                        }
+                    },
+                    (error) =>
+                    {
+
+                    });
+            }
+        }
+
+        public static void Logout()
+        {
+
+            Identity = null;
+        }
+
+        /// <summary>
         /// Start the connection workflow to the Environement defined by the Media variable in UMI3DBrowser.
         /// </summary>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        public static void Connect()
+        public static void ConnectToEnvironment()
         {
-            Instance.Init();
-            UMI3DLogger.Log("Init Connection", scope | DebugScope.Connection);
-            if (Environement is ForgeConnectionDto connection)
+            if (Exists)
             {
-                Instance.ForgeClient.ip = connection.host;
-                Instance.ForgeClient.port = connection.forgeServerPort;
-                Instance.ForgeClient.masterServerHost = connection.forgeMasterServerHost;
-                Instance.ForgeClient.masterServerPort = connection.forgeMasterServerPort;
-                Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
-                Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
+                Instance.Init();
+                UMI3DLogger.Log("Init Connection", scope | DebugScope.Connection);
+
+                Instance.ForgeClient.ip = Environement.host;
+                Instance.ForgeClient.port = Environement.forgeServerPort;
+                Instance.ForgeClient.masterServerHost = Environement.forgeMasterServerHost;
+                Instance.ForgeClient.masterServerPort = Environement.forgeMasterServerPort;
+                Instance.ForgeClient.natServerHost = Environement.forgeNatServerHost;
+                Instance.ForgeClient.natServerPort = Environement.forgeNatServerPort;
 
                 UMI3DLogger.Log($"ip:{Instance.ForgeClient.ip}:{Instance.ForgeClient.port}, master:{Instance.ForgeClient.masterServerHost}:{Instance.ForgeClient.masterServerPort}, nat:{Instance.ForgeClient.natServerHost }:{Instance.ForgeClient.natServerPort}", scope | DebugScope.Connection);
-
-                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((Auth) =>
-                {
-                    UMI3DLogger.Log("Get Identity", scope | DebugScope.Connection);
-                    UMI3DCollaborationClientServer.Identity.login = "";
-                    Auth.LoginSet = (s) =>
-                    {
-                        UMI3DCollaborationClientServer.Identity.login = s;
-                        Auth.LoginSet = null;
-                        UMI3DLogger.Log($"Login is {UMI3DCollaborationClientServer.Identity.login}", scope | DebugScope.Connection);
-                    };
-                    Instance.ForgeClient.Join(Auth);
-                });
+                void GetLocalToken(Action<string> callback) { callback?.Invoke(Identity?.localToken); }
+                var Auth = new common.collaboration.UMI3DAuthenticator(GetLocalToken);
+                SetToken(Identity.localToken);
+                Instance.ForgeClient.Join(Auth);
             }
         }
+
+
 
         /// <summary>
         /// Logout of the current server
         /// </summary>
-        public static void Logout(Action success, Action<string> failled)
+        public static void EnvironmentLogout(Action success, Action<string> failled)
         {
             if (Exists)
-                Instance._Logout(success, failled);
+                Instance._EnvironmentLogout(success, failled);
         }
 
-        private void _Logout(Action success, Action<string> failled)
+        private void _EnvironmentLogout(Action success, Action<string> failled)
         {
             UMI3DLogger.Log("Logout", scope | DebugScope.Connection);
             if (Connected())
@@ -160,18 +210,16 @@ namespace umi3d.cdk.collaboration
                     ForgeClient.Stop();
                     Start();
                     success?.Invoke();
-                    Identity = new IdentityDto();
                 },
                 (error) =>
                 {
                     UMI3DLogger.LogError("Logout failed", scope | DebugScope.Connection);
                     failled?.Invoke(error);
-                    Identity = new IdentityDto();
                 });
             }
             else
             {
-                Identity = new IdentityDto();
+
             }
         }
 
@@ -182,7 +230,7 @@ namespace umi3d.cdk.collaboration
         public void ConnectionLost()
         {
             UMI3DLogger.LogWarning("Connection Lost", scope | DebugScope.Connection);
-            UMI3DCollaborationClientServer.Logout(null, null);
+            UMI3DCollaborationClientServer.EnvironmentLogout(null, null);
 
             OnConnectionLost.Invoke();
         }
@@ -243,7 +291,7 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
             {
                 UMI3DLogger.Log($"Media received", scope | DebugScope.Connection);
-                Media = media; callback?.Invoke(media);
+                callback?.Invoke(media);
             }, failback, shouldTryAgain);
         }
 
@@ -267,6 +315,7 @@ namespace umi3d.cdk.collaboration
                     {
                         Instance.HttpClient.SendGetIdentity((user) =>
                         {
+                            //TODO Identity should be set by master serv
                             UserDto.Set(user);
                             Identity.userId = user.id;
                             Instance.Join();
@@ -405,6 +454,8 @@ namespace umi3d.cdk.collaboration
             bool Ok = true;
             bool librariesUpdated = UserDto.dto.librariesUpdated;
 
+            UMI3DLogger.Log($"Somthing to update {UserDto.formdto != null} {!UserDto.dto.librariesUpdated} ", scope | DebugScope.Connection);
+
             if (!UserDto.dto.librariesUpdated)
             {
 
@@ -442,15 +493,23 @@ namespace umi3d.cdk.collaboration
             }
             if (Ok)
             {
-                Instance.Identifier.GetParameterDtos(UserDto.formdto, (param) =>
+                UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
+                if (UserDto.formdto != null)
                 {
-                    UserDto.dto.parameters = param;
+                    Instance.Identifier.GetParameterDtos(UserDto.formdto, (param) =>
+                    {
+                        UserDto.dto.parameters = param;
+                        Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { UMI3DLogger.Log("error on post id :" + error, scope); });
+                    });
+                }
+                else
+                {
                     Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { UMI3DLogger.Log("error on post id :" + error, scope); });
-                });
+                }
             }
             else
             {
-                Logout(null, null);
+                EnvironmentLogout(null, null);
             }
         }
 
@@ -498,7 +557,7 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        protected override string _getAuthorization() { return HttpClient.ComputedToken; }
+        protected override string _getAuthorization() { return HttpClient.HeaderToken; }
 
         /// <summary>
         /// return HTTPClient if the server is a collaboration server.

@@ -65,7 +65,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public bool TryProccessRequest(object sender, HttpRequestEventArgs e, IdentityDto identity = null)
+        public bool TryProccessRequest(object sender, HttpRequestEventArgs e, PublicIdentityDto identity = null)
         {
             string path = e.Request.RawUrl;
             foreach (WebServiceMethod r in roots)

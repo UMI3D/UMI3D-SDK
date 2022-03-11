@@ -27,11 +27,6 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public abstract class ClientIdentifierApi : ScriptableObject
     {
-        /// <summary>
-        /// Should return a login and a password as a string for this client via the callback. 
-        /// </summary>
-        /// <param name="callback">Action to return the login and the password.</param>
-        public abstract void GetIdentity(Action<common.collaboration.UMI3DAuthenticator> callback);
 
         /// <summary>
         /// Should fill a formDto and return it via a callback.

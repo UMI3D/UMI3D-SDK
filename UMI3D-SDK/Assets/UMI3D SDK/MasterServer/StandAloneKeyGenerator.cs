@@ -16,15 +16,26 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using umi3d.common.collaboration;
-using System;
-using umi3d.common;
 using System.Threading.Tasks;
+using umi3d.common;
+using umi3d.common.interaction;
+using umi3d.ms;
+using UnityEngine;
 
-public interface IMasterServer
+public class StandAloneKeyGenerator : IKeyGenerator
 {
-    Task<UMI3DDto> Connect(ConnectionDto connectionDto);
+    public virtual string GenerateHeaderToken(string oldToken)
+    {
+        return new System.Guid().ToString();
+    }
 
-    Task<PrivateIdentityDto> RenewCredential(string globalTocken);
+    public virtual string GenerateKey(string oldKey)
+    {
+        return null;
+    }
+
+    public virtual string GenerateLocalToken(string oldToken)
+    {
+        return new System.Guid().ToString();
+    }
 }

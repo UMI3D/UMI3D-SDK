@@ -22,11 +22,8 @@ namespace umi3d.common.collaboration
     /// Abstract class to describe an operation
     /// </summary>
     [Serializable]
-    public class IdentityDto : UMI3DDto
+    public class IdentityDto : PublicIdentityDto
     {
-        public ulong userId = 0;
-        public string login = null;
-        public ForgeConnectionDto connectionDto;
         public string localToken;
         public string headerToken;
         public string key;

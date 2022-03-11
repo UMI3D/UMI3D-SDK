@@ -13,18 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using umi3d.common.collaboration;
 using System;
-using umi3d.common;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
-public interface IMasterServer
+namespace umi3d.common.collaboration
 {
-    Task<UMI3DDto> Connect(ConnectionDto connectionDto);
-
-    Task<PrivateIdentityDto> RenewCredential(string globalTocken);
+    /// <summary>
+    /// Abstract class to describe an operation
+    /// </summary>
+    [Serializable]
+    public class PrivateIdentityDto : IdentityDto
+    {
+        public string GlobalToken;
+        public ForgeConnectionDto connectionDto;
+    }
 }

@@ -67,24 +67,6 @@ namespace umi3d.edk
             InitDefinition();
         }
 
-        /// <summary>
-        /// Get scene's information required for client connection.
-        /// </summary>
-        public MediaDto ToDto()
-        {
-            var res = new MediaDto
-            {
-                name = environmentName,
-                //connection = UMI3DServer.Instance.ToDto(),
-                versionMajor = UMI3DVersion.major,
-                versionMinor = UMI3DVersion.minor,
-                versionStatus = UMI3DVersion.status,
-                versionDate = UMI3DVersion.date
-            };
-
-            return res;
-        }
-
         public virtual GlTFEnvironmentDto ToDto(UMI3DUser user)
         {
             var env = new GlTFEnvironmentDto
@@ -405,6 +387,8 @@ namespace umi3d.edk
                 return value;
             }
 
+            ulong lastId = 1;
+
             /// <summary>
             /// return a random ulong with a min value;
             /// </summary>
@@ -412,13 +396,16 @@ namespace umi3d.edk
             /// <returns></returns>
             private ulong LongRandom(ulong min)
             {
-                byte[] buf = new byte[64];
-                random.NextBytes(buf);
-                ulong longRand = (ulong)Mathf.Abs(BitConverter.ToInt64(buf, 0));
-                if (longRand < min) return longRand + min;
+                //byte[] buf = new byte[64];
+                //random.NextBytes(buf);
+                //ulong longRand = (ulong)Mathf.Abs(BitConverter.ToInt64(buf, 0));
+                //if (longRand < min) return longRand + min;
+                //return longRand;
+                if (lastId < min)
+                    lastId = min;
+                ulong longRand = lastId++;
                 return longRand;
             }
-
 
             public ulong Register(A obj)
             {

@@ -14,17 +14,59 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using System;
 using umi3d.common;
 using umi3d.common.interaction;
+using System.Threading.Tasks;
 
 namespace umi3d.ms
 {
     public interface IIAM
     {
-        UMI3DDto GenerateForm(User user);
-        bool IsUserValid(User user);
-        string generateToken(User user);
-        bool isFormValid(User user, FormAnswerDto formAnswer);
+        /// <summary>
+        /// Generate A formdto
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<ConnectionFormDto> GenerateForm(User user);
 
+        /// <summary>
+        /// State if a user is valid.
+        /// The globalToken shoulb be valide if true.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<bool> IsUserValid(User user);
+
+        /// <summary>
+        /// State if a user is valid.
+        /// The globalToken shoulb be valide if true.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="formAnswer"></param>
+        /// <returns></returns>
+        Task<bool> isFormValid(User user, FormAnswerDto formAnswer);
+
+        /// <summary>
+        /// Select an Environment for a user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<IEnvironment> GetEnvironment(User user);
+
+        /// <summary>
+        /// Return a list of library to donwload.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task<List<LibrariesDto>> GetLibraries(User user);
+
+        /// <summary>
+        /// Update user credential
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        Task RenewCredential(User user);
     }
 }

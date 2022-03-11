@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -31,7 +32,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DCollaborationServer : UMI3DServer
+    public class UMI3DCollaborationServer : UMI3DServer, IEnvironment
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         public static new UMI3DCollaborationServer Instance { get => UMI3DServer.Instance as UMI3DCollaborationServer; set => UMI3DServer.Instance = value; }
@@ -116,6 +117,19 @@ namespace umi3d.edk.collaboration
             return dto;
         }
 
+        public async Task Register(RegisterIdentityDto identityDto)
+        {
+            UMI3DLogger.Log($"User to be Created", scope);
+            UMI3DCollaborationServer.Collaboration.CreateUser(identityDto, UserCreatedCallback);
+            await Task.CompletedTask;
+        }
+
+        Task<ForgeConnectionDto> IEnvironment.ToDto()
+        {
+            return Task.FromResult(ToDto());
+        }
+
+
         internal void UpdateStatus(UMI3DCollaborationUser user, StatusDto dto)
         {
             user.SetStatus(dto.status);
@@ -153,7 +167,7 @@ namespace umi3d.edk.collaboration
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
-            http = new UMI3DHttp();
+            http = GetUMI3DHttp();
 
             forgeServer = UMI3DForgeServer.Create(
                 ip, httpPort,
@@ -162,7 +176,7 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
                 );
-            UMI3DAuthenticator auth = Identifier?.GetAuthenticator(ref Authentication);
+            UMI3DAuthenticator auth = new UMI3DAuthenticator();
             if (auth != null)
                 auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
             forgeServer.Host(auth);
@@ -171,16 +185,34 @@ namespace umi3d.edk.collaboration
             OnServerStart.Invoke();
         }
 
-        private void ShouldAcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action<bool> action)
+        protected virtual UMI3DHttp GetUMI3DHttp()
+        {
+            return new UMI3DHttp(new UMI3DApi());
+        }
+
+
+        private void ShouldAcceptPlayer(string identity, NetworkingPlayer player, Action<bool> action)
         {
             UMI3DLogger.Log($"Should accept player", scope);
-            UMI3DCollaborationServer.Collaboration.CreateUser(player, identity, action, UserCreatedCallback);
+            UMI3DCollaborationServer.Collaboration.ConnectUser(player, identity, action, UserCreatedCallback);
+        }
+
+        protected void UserRegisteredCallback(UMI3DCollaborationUser user, bool reconnection)
+        {
+            if (!reconnection)
+            {
+                UMI3DLogger.Log($"User Registered", scope);
+                OnUserRegistered.Invoke(user);
+            }
         }
 
         protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
             UMI3DLogger.Log($"User Created", scope);
-            OnUserCreated.Invoke(user);
+            if (!reconnection)
+            {
+                OnUserCreated.Invoke(user);
+            }
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
@@ -313,13 +345,13 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                byte[] data = Convert.FromBase64String(user.token);
-                var when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
-                if (when < DateTime.UtcNow)
-                {
-                    user.RenewToken();
-                    return false;
-                }
+                //byte[] data = Convert.FromBase64String(user.token);
+                //var when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
+                //if (when < DateTime.UtcNow)
+                //{
+                //    user.RenewToken();
+                //    return false;
+                //}
                 return true;
             }
         }

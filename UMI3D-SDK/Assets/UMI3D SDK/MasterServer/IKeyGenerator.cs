@@ -14,17 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using umi3d.common.collaboration;
-using System;
 using umi3d.common;
-using System.Threading.Tasks;
+using umi3d.common.interaction;
 
-public interface IMasterServer
+namespace umi3d.ms
 {
-    Task<UMI3DDto> Connect(ConnectionDto connectionDto);
+    public interface IKeyGenerator
+    {
+        string GenerateLocalToken(string oldToken);
 
-    Task<PrivateIdentityDto> RenewCredential(string globalTocken);
+        string GenerateHeaderToken(string oldToken);
+
+        string GenerateKey(string oldKey);
+    }
 }

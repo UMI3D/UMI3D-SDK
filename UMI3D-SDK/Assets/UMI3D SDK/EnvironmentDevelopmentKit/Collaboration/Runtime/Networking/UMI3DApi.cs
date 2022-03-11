@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.interaction;
@@ -50,20 +51,39 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpGet(UMI3DNetworkingKeys.identity, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
-        public void GetIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        [HttpGet(UMI3DNetworkingKeys.connectionInfo, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void GetConnectionInformation(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UMI3DLogger.Log($"Get Identity {user?.Id()}", scope);
-            var identity = new UserConnectionDto(user.ToUserDto())
+            UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
+            var connectionInformation = new UserConnectionDto(user.ToUserDto())
             {
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
                 //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
                 librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
             };
-            e.Response.WriteContent(identity.ToBson());
+            e.Response.WriteContent(connectionInformation.ToBson());
         }
 
+        /// <summary>
+        /// POST "/register"
+        /// Register a user.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        [HttpPost(UMI3DNetworkingKeys.register, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
+        public void Register(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DLogger.Log($"Register", scope);
+            HttpListenerResponse res = e.Response;
+
+            ReadDto(e.Request,
+                (dto) =>
+                {
+                    var id = dto as RegisterIdentityDto;
+                    Task.WaitAll(UMI3DCollaborationServer.Instance.Register(id));
+                });
+        }
 
         /// <summary>
         /// POST "/me/status"
@@ -99,22 +119,22 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpPost(UMI3DNetworkingKeys.identity_update, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
-        public void UpdateIdentity(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        [HttpPost(UMI3DNetworkingKeys.connection_information_update, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void UpdateConnectionInformation(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.GetUserFor(e.Request);
-            UMI3DLogger.Log($"Update identity {user?.Id()}", scope);
+            UMI3DLogger.Log($"Update Connection Information {user?.Id()}", scope);
             bool finished = false;
             ReadDto(e.Request, (dto) =>
             {
                 var anw = dto as UserConnectionAnswerDto;
-                UnityMainThreadDispatcher.Instance().Enqueue(_updateIdentity(user, anw));
+                UnityMainThreadDispatcher.Instance().Enqueue(_updateConnectionInformation(user, anw));
                 finished = true;
             });
             while (!finished) System.Threading.Thread.Sleep(1);
         }
 
-        private IEnumerator _updateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
+        private IEnumerator _updateConnectionInformation(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
         {
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
             user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
@@ -138,26 +158,6 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        #endregion
-
-        #region media
-        /// <summary>
-        /// Handles the GET Media Request received by the HTTP Server.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpGet(UMI3DNetworkingKeys.media, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
-        public void MediaRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
-        {
-            UMI3DLogger.Log($"Get Media", scope);
-            HttpListenerResponse res = e.Response;
-            byte[] message = null;
-            if (UMI3DEnvironment.Exists)
-            {
-                message = UMI3DEnvironment.Instance.ToDto().ToBson();
-            }
-            res.WriteContent(message);
-        }
         #endregion
 
         #region resources

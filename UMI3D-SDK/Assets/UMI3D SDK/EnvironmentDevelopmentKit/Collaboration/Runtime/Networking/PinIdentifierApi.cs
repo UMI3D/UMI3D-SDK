@@ -25,14 +25,5 @@ namespace umi3d.edk.collaboration
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        public string pin = "0000";
-
-        ///<inheritdoc/>
-        public override UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type)
-        {
-            if (type != AuthenticationType.Pin) UMI3DLogger.LogWarning($"PinIdentifierApi does not handle other AuthenticationType than PIN [ignored type : {type}]", scope);
-            type = AuthenticationType.Pin;
-            return new UMI3DAuthenticator(pin);
-        }
     }
 }

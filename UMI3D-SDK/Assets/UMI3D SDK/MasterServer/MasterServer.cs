@@ -18,35 +18,63 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 using inetum.unityUtils;
+using System.Threading.Tasks;
 
 namespace umi3d.ms
 {
-    public class MasterServer : Singleton<MasterServer>
+    public class MasterServer : Singleton<MasterServer>, IMasterServer
     {
-        IIAM IAM; 
+        IIAM IAM;
+        IKeyGenerator keyGenerator;
         Dictionary<string, User> userMap = new Dictionary<string, User>();
+
+        public string ip;
+        public string mediaName;
 
         public MasterServer() : base()
         {}
 
-        public MasterServer(IIAM iAM): this()
+        public MasterServer(IIAM iAM,IKeyGenerator keyGenerator): this()
         {
             this.IAM = iAM;
+            this.keyGenerator = keyGenerator;
         }
 
-        static UMI3DDto RegisterUser(ConnectionDto dto)
+        static public async Task<UMI3DDto> RegisterUser(ConnectionDto connectionDto)
         {
-            return Instance?._RegisterUser(dto);
+            if (Exists)
+               return await Instance?._RegisterUser(connectionDto);
+            else
+                throw new Exception("Instance of master server do not exist");
         }
 
-        UMI3DDto _RegisterUser(ConnectionDto dto)
+        async Task<UMI3DDto> _RegisterUser(ConnectionDto connectionDto)
         {
-            User user = GetUser(dto);
+            User user = GetUser(connectionDto);
 
-            return dto is FormConnectionAnswerDto formAnswer
-                ? IAM.isFormValid(user, formAnswer.FormAnswerDto) ? GetIdentityDto(user) : IAM.GenerateForm(user)
-                : IAM.IsUserValid(user) ? GetIdentityDto(user) : IAM.GenerateForm(user);
+            var dto = (connectionDto is FormConnectionAnswerDto formAnswer)
+                ? await IAM.isFormValid(user, formAnswer.FormAnswerDto) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user)
+                : await IAM.IsUserValid(user) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user);
+
+            UnityEngine.Debug.Log($"Register {dto}");
+
+            return dto;
+        }
+
+        async public Task<PrivateIdentityDto> RenewCredential(string globalTocken)
+        {
+            if (globalTocken != null && userMap.ContainsKey(globalTocken))
+            {
+                var user  = userMap[globalTocken];
+                if(user != null)
+                {
+                    await IAM.RenewCredential(user);
+                    return await GetIdentityDto(user);
+                }
+            }
+            return await Task.FromResult<PrivateIdentityDto>(null);
         }
 
         User GetUser(ConnectionDto connectionDto)
@@ -61,21 +89,67 @@ namespace umi3d.ms
             return userMap[id];
         }
 
+        /// <summary>
+        /// return a token that can be used to identify a user temporaly.
+        /// </summary>
+        /// <returns></returns>
         string generateFakeToken()
         {
             return (new Guid()).ToString();
         }
 
-        IdentityDto GetIdentityDto(User user) { throw new Exception(); }
+        async Task<PrivateIdentityDto> GetIdentityDto(User user) {
+            //General token is valid.
+            if (!userMap.ContainsKey(user.Token))
+            {
+                var tmp = userMap.FirstOrDefault(uk => uk.Value == user).Key;
+                userMap.Remove(tmp);
+                userMap.Add(user.Token, user);
+            }
 
-        string generateLocalToken()
-        {
-            return (new Guid()).ToString();
+            if (!user.LoadLibraryOnly)
+            {
+                //Select environment
+                var env = await IAM.GetEnvironment(user);
+
+                user.Set(await env.ToDto());
+                user.Set(
+                    keyGenerator.GenerateLocalToken(user.localToken),
+                    keyGenerator.GenerateHeaderToken(user.headearToken),
+                    keyGenerator.GenerateKey(user.key)
+                    );
+
+                await env.Register(user.RegisterIdentityDto());
+            }
+            var l = await IAM.GetLibraries(user);
+            var privateId = user.PrivateIdentityDto();
+            privateId.libraries = l;
+            return privateId;
         }
 
-        string generateKey()
+        async Task<UMI3DDto> IMasterServer.Connect(ConnectionDto connectionDto)
         {
-            return null;
+            return await _RegisterUser(connectionDto);
+        }
+
+
+        /// <summary>
+        /// Get scene's information required for client connection.
+        /// </summary>
+        public MediaDto ToDto()
+        {
+            var res = new MediaDto
+            {
+                name = mediaName,
+                url = ip,
+                //connection = UMI3DServer.Instance.ToDto(),
+                versionMajor = UMI3DVersion.major,
+                versionMinor = UMI3DVersion.minor,
+                versionStatus = UMI3DVersion.status,
+                versionDate = UMI3DVersion.date
+            };
+
+            return res;
         }
 
     }

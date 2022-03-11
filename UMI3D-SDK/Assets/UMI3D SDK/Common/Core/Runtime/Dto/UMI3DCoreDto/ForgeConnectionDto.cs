@@ -21,6 +21,7 @@ namespace umi3d.common
     {
         public string httpUrl;
         public string host;
+        public string ResourcesUrl;
         public string forgeMasterServerHost;
         public string forgeNatServerHost;
         public ushort forgeServerPort;

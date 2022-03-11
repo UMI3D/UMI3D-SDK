@@ -19,16 +19,20 @@ namespace umi3d.common
     public static class UMI3DNetworkingKeys
     {
         //users
-        public const string identity = "/me";
-        public const string identity_update = "/me/update";
+        public const string connectionInfo = "/me";
+        public const string connection_information_update = "/me/update";
         public const string status_update = "/me/status_update";
         public const string logout = "/logout";
         public const string localData = "/LocalData/key/:param";
         public const string uploadFile = "/uploadFile/:param";
 
+
+
         //MEDIA
         public const string root = "/";
         public const string media = "/media";
+        public const string connect = "/connect";
+        public const string renew_connect = "/renew_connect";
 
         //RESOURCES
         public const string libraries = "/libraries";
@@ -39,6 +43,7 @@ namespace umi3d.common
         public const string directory_zip = "/zip/";
 
         //ENVIRONMENT
+        public const string register = "/register";
         public const string environment = "/environment";
         public const string join = "/environment/join";
         public const string entity = "/environment/entity";

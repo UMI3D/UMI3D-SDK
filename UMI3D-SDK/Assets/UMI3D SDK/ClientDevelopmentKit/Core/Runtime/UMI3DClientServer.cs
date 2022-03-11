@@ -29,18 +29,13 @@ namespace umi3d.cdk
         /// <summary>
         /// Environment connected to.
         /// </summary>
-        protected ForgeConnectionDto connectionDto;
+        virtual protected ForgeConnectionDto connectionDto { get; }
         /// <summary>
         /// Environment connected to.
         /// </summary>
         public static MediaDto Media
         {
             get => Exists ? Instance._media : null;
-            set
-            {
-                if (Exists)
-                    Instance._media = value;
-            }
         }
         /// <summary>
         /// Environment connected to.
@@ -48,11 +43,6 @@ namespace umi3d.cdk
         public static ForgeConnectionDto Environement
         {
             get => Exists ? Instance.connectionDto : null;
-            set
-            {
-                if (Exists)
-                    Instance.connectionDto = value;
-            }
         }
 
 

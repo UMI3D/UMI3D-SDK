@@ -727,8 +727,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1140833858}
-  - component: {fileID: 1140833857}
   - component: {fileID: 1140833859}
+  - component: {fileID: 1140833857}
   m_Layer: 0
   m_Name: UMI3D Server
   m_TagString: Untagged
@@ -745,11 +745,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1140833856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7f31602af2cda7429594622827007a8, type: 3}
+  m_Script: {fileID: 11500000, guid: d96d5b0a7ff11a049965fb2f4824b946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ip: localhost
   OnUserJoin:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUserRegistered:
     m_PersistentCalls:
       m_Calls: []
   OnUserCreated:
@@ -786,8 +789,8 @@ MonoBehaviour:
   sessionId: 
   descriptionComment: 
   Authentication: 0
-  WaitTimeForPingAnswer: 1
-  MaxPingingTry: 3
+  WaitTimeForPingAnswer: 3
+  MaxPingingTry: 5
   OnServerStart:
     m_PersistentCalls:
       m_Calls: []

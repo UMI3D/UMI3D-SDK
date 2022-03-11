@@ -33,14 +33,14 @@ namespace umi3d.edk.collaboration
         public HttpRoutingUtil rootMapPOST = null;
         private readonly UMI3DApi root;
 
-        public UMI3DHttp()
+        public UMI3DHttp(UMI3DApi api)
         {
 
             httpsv = new HttpServer(UMI3DCollaborationServer.Instance.httpPort);
 
             // Set the document root path.
 
-            root = new UMI3DApi();
+            root = api;
             var rootMapGET = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpGet));
             var rootMapPOST = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpPost));
 

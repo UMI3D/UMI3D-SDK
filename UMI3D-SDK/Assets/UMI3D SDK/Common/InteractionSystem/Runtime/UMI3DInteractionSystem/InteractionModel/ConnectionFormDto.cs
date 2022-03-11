@@ -14,17 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using umi3d.common.collaboration;
-using System;
-using umi3d.common;
-using System.Threading.Tasks;
 
-public interface IMasterServer
+namespace umi3d.common.interaction
 {
-    Task<UMI3DDto> Connect(ConnectionDto connectionDto);
+    /// <summary>
+    /// 
+    /// </summary>
+    [System.Serializable]
+    public class ConnectionFormDto : FormDto
+    {
+        /// <summary>
+        /// An id used during the connection 
+        /// </summary>
+        public string temporaryUserId;
 
-    Task<PrivateIdentityDto> RenewCredential(string globalTocken);
+        public ConnectionFormDto() : base() { }
+    }
 }
