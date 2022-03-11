@@ -34,6 +34,10 @@ namespace umi3d.cdk.userCapture
 
         public bool trackingReception { get; protected set; }
 
+        /// <summary>
+        /// If true the avatar tracking are send, else false.
+        /// </summary>
+        public bool SendTracking => sendTracking;
         [SerializeField]
         protected bool sendTracking = true;
 
