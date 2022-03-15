@@ -267,14 +267,9 @@ namespace umi3d.cdk.menu.view
 
             menuToDisplayer.Add(menu, container);
             foreach (AbstractMenu sub in menu.GetSubMenu())
-            {
                 CreateSubMenu(container, sub, depth);
-            }
-
             foreach (AbstractMenuItem item in menu.GetMenuItems())
-            {
                 CreateItem(container, item);
-            }
             return container;
         }
 
@@ -291,7 +286,6 @@ namespace umi3d.cdk.menu.view
             {
                 AbstractMenuDisplayContainer subContainer = recursivelyCreateDisplay(subMenu, containerDepth + 1);
 
-                subContainer.SetMenuItem(subMenu);
                 subContainer.parent = container;
                 SetMenuAction(container, subMenu, subContainer, containerDepth + 1);
                 if (subMenu.navigable)
