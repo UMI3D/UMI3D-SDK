@@ -30,20 +30,22 @@ namespace umi3d.cdk.menu
         /// Add a menu item to this menu.
         /// </summary>
         /// <param name="menuItem">Menu item to add</param>
-        public override void Add(AbstractMenuItem menuItem)
+        public override void Add(AbstractMenuItem abstractMenuItem)
         {
-            if (menuItem is MenuItem)
+            if (abstractMenuItem is MenuItem menuItem)
             {
-                MenuItems.Add(menuItem as MenuItem);
+                if(!MenuItems.Contains(menuItem))
+                    MenuItems.Add(menuItem);
                 onContentChange.Invoke();
                 onAbstractMenuItemAdded.Invoke(menuItem);
             }
-            else if (menuItem is Menu)
+            else if (abstractMenuItem is Menu menu)
             {
-                SubMenu.Add(menuItem as Menu);
-                (menuItem as Menu).onContentChange.AddListener(() => onContentChange.Invoke());
+                if (!SubMenu.Contains(menu))
+                    SubMenu.Add(menu);
+                menu.onContentChange.AddListener(() => onContentChange.Invoke());
                 onContentChange.Invoke();
-                onAbstractMenuItemAdded.Invoke(menuItem);
+                onAbstractMenuItemAdded.Invoke(menu);
             }
         }
 

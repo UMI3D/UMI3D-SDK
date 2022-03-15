@@ -113,44 +113,9 @@ namespace umi3d.cdk
 
         private static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, uint operationId, uint propertyKey, ByteContainer container)
         {
-            int index;
-            ulong value;
-
-            List<ulong> list = groupDto.entitiesId;
-            switch (operationId)
-            {
-                case UMI3DOperationKeys.SetEntityListAddProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(container);
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
-
-                    if (index == list.Count())
-                        list.Add(value);
-                    else if (index < list.Count() && index >= 0)
-                        list.Insert(index, value);
-                    else
-                        UMI3DLogger.LogWarning($"Add value ignore for {index} in collection of size {list.Count}", scope);
-                    break;
-                case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(container);
-
-                    if (index < list.Count && index >= 0)
-                        list.RemoveAt(index);
-                    else
-                        UMI3DLogger.LogWarning($"Remove value ignore for {index} in collection of size {list.Count}", scope);
-                    break;
-                case UMI3DOperationKeys.SetEntityListProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(container);
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
-
-                    if (index < list.Count() && index >= 0)
-                        list[index] = value;
-                    else
-                        UMI3DLogger.LogWarning($"Set value ignore for {index} in collection of size {list.Count}", scope);
-                    break;
-                default:
-                    groupDto.entitiesId = UMI3DNetworkingHelper.ReadList<ulong>(container);
-                    break;
-            }
+            if (groupDto.entitiesId == null)
+                groupDto.entitiesId = new List<ulong>();
+            UMI3DNetworkingHelper.ReadList(operationId, container, groupDto.entitiesId);
         }
 
     }

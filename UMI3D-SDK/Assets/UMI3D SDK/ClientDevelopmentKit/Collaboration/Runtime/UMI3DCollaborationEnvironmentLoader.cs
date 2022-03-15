@@ -37,7 +37,7 @@ namespace umi3d.cdk.collaboration
             var dto = (_dto?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
-            OnUpdateUserList.Invoke();
+            OnUpdateUserList?.Invoke();
         }
 
         ///<inheritdoc/>
@@ -87,7 +87,7 @@ namespace umi3d.cdk.collaboration
                         var _user = new UMI3DUser(user);
                         UserList.Insert(add.index, _user);
                         dto.userList.Insert(add.index, user);
-                        OnUpdateUserList.Invoke();
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
                 case SetEntityListRemovePropertyDto rem:
@@ -98,7 +98,7 @@ namespace umi3d.cdk.collaboration
                             UserList.RemoveAt(rem.index);
                             dto.userList.RemoveAt(rem.index);
                             Olduser.Destroy();
-                            OnUpdateUserList.Invoke();
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
@@ -117,7 +117,7 @@ namespace umi3d.cdk.collaboration
                             var _user2 = new UMI3DUser(user2);
                             UserList.Add(_user2);
                             dto.userList.Add(user2);
-                            OnUpdateUserList.Invoke();
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
@@ -127,7 +127,7 @@ namespace umi3d.cdk.collaboration
                             user.Destroy();
                         dto.userList = property.value as List<UserDto>;
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
-                        OnUpdateUserList.Invoke();
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
             }
@@ -154,7 +154,7 @@ namespace umi3d.cdk.collaboration
                         var _user = new UMI3DUser(user);
                         UserList.Insert(index, _user);
                         dto.userList.Insert(index, user);
-                        OnUpdateUserList.Invoke();
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
@@ -166,7 +166,7 @@ namespace umi3d.cdk.collaboration
                             UserList.RemoveAt(index);
                             dto.userList.RemoveAt(index);
                             Olduser.Destroy();
-                            OnUpdateUserList.Invoke();
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
@@ -186,7 +186,7 @@ namespace umi3d.cdk.collaboration
                             var _user = new UMI3DUser(user);
                             UserList.Add(_user);
                             dto.userList.Add(user);
-                            OnUpdateUserList.Invoke();
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
@@ -196,7 +196,7 @@ namespace umi3d.cdk.collaboration
                             ouser.Destroy();
                         dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(container);
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
-                        OnUpdateUserList.Invoke();
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
             }

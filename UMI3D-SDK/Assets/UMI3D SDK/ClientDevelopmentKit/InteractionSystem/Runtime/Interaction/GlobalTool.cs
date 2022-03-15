@@ -30,19 +30,20 @@ namespace umi3d.cdk.interaction
         public static List<GlobalTool> GetGlobalTools() => instances.Values.ToList();
         public static GlobalTool GetGlobalTool(ulong id) => instances[id];
 
+        public void Delete() { instances.Remove(id); }
 
         public AbstractToolDto dto { get; protected set; }
 
-        public GlobalTool(AbstractToolDto abstractDto) : base(abstractDto) 
+        public Toolbox parent;
+
+        public bool isInsideToolbox => parent != null;
+
+        public GlobalTool(AbstractToolDto abstractDto,Toolbox parent) : base(abstractDto) 
         {
-            instances.Add(abstractDto.id, this);
-            abstractDto = dto;
+            this.parent = parent;
+            instances.Add(id, this);
         }
 
-        protected override AbstractToolDto abstractDto 
-        { 
-            get => dto; 
-            set => dto = value; 
-        }
+        protected override AbstractToolDto abstractDto { get => dto; set => dto = value as GlobalToolDto; }
     }
 }

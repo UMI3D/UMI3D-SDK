@@ -206,30 +206,9 @@ namespace umi3d.cdk
 
         private bool UpdateChain(uint operationId, uint propertyKey, ByteContainer container)
         {
-            switch (operationId)
-            {
-                case UMI3DOperationKeys.SetEntityListAddProperty:
-                    int ind = UMI3DNetworkingHelper.Read<int>(container);
-                    OperationChain value = UMI3DNetworkingHelper.Read<OperationChain>(container);
-                    if (ind == operationChains.Count())
-                        operationChains.Add(value);
-                    else if (ind < operationChains.Count() && ind >= 0)
-                        operationChains.Insert(ind, value);
-                    else
-                        UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {operationChains.Count}", scope);
-                    break;
-                case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    operationChains.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
-                    break;
-                case UMI3DOperationKeys.SetEntityListProperty:
-                    int index = UMI3DNetworkingHelper.Read<int>(container);
-                    OperationChain v = UMI3DNetworkingHelper.Read<OperationChain>(container);
-                    operationChains[index] = v;
-                    break;
-                default:
-                    operationChains = UMI3DNetworkingHelper.ReadList<OperationChain>(container);
-                    break;
-            }
+            if (operationChains == null)
+                operationChains = new List<OperationChain>();
+            UMI3DNetworkingHelper.ReadList(operationId, container, operationChains);
             return true;
         }
 

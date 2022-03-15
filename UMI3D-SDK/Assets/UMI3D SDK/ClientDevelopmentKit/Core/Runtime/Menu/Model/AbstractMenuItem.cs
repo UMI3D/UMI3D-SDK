@@ -69,7 +69,8 @@ namespace umi3d.cdk.menu
         /// <see cref="UnSubscribe(UnityAction)"/>
         public virtual void Subscribe(UnityAction callback)
         {
-            subscribers.Add(callback);
+            if(!subscribers.Contains(callback))
+                subscribers.Add(callback);
         }
 
         /// <summary>

@@ -45,25 +45,25 @@ namespace umi3d.edk.editor
             base.OnEnable();
             subTools = _target.FindProperty("tools");
 
-            ListDisplayer.onObjectRemoved.AddListener(RemoveParent);
+            //ListDisplayer.onObjectRemoved.AddListener(RemoveParent);
         }
 
         private void OnDisable()
         {
-            ListDisplayer.onObjectRemoved.RemoveListener(RemoveParent);
+            //ListDisplayer.onObjectRemoved.RemoveListener(RemoveParent);
         }
 
-        /// <summary>
-        /// If a <see cref="GlobalTool"/> is removed from the list, resets its parent.
-        /// </summary>
-        /// <param name="tool"></param>
-        private void RemoveParent(object tool)
-        {
-            if (tool is GlobalTool globalTool && globalTool.parent == target)
-            {
-                globalTool.parent = null;
-            }
-        }
+        ///// <summary>
+        ///// If a <see cref="GlobalTool"/> is removed from the list, resets its parent.
+        ///// </summary>
+        ///// <param name="tool"></param>
+        //private void RemoveParent(object tool)
+        //{
+        //    if (tool is GlobalTool globalTool && globalTool.objectparent.GetValue() == target)
+        //    {
+        //        globalTool.objectparent.SetValue(target);
+        //    }
+        //}
 
         /// <summary>
         /// <inheritdoc/>
@@ -71,23 +71,23 @@ namespace umi3d.edk.editor
         protected override void _OnInspectorGUI()
         {
             base._OnInspectorGUI();
-
-            ListDisplayer.Display(ref showList, subTools, ((Toolbox)target).tools,
-                t =>
-                {
-                    switch (t)
+            if(target is Toolbox toolbox)
+                ListDisplayer.Display(ref showList, subTools, toolbox.editorTools,
+                    t =>
                     {
-                        case GlobalTool i:
-                            i.parent = (Toolbox)target;
-                            return new List<GlobalTool>() { i };
-                        case GameObject g:
-                            List<GlobalTool> tools = g.GetComponents<GlobalTool>().ToList();
-                            tools.ForEach(tool => tool.parent = (Toolbox)target);
-                            return tools;
-                        default:
-                            return null;
-                    }
-                });
+                        switch (t)
+                        {
+                            case GlobalTool i:
+                                //i.Setparent(toolbox);
+                                return new List<GlobalTool>() { i };
+                            case GameObject g:
+                                List<GlobalTool> tools = g.GetComponents<GlobalTool>().ToList();
+                                //tools.ForEach(tool => tool.Setparent(toolbox));
+                                return tools;
+                            default:
+                                return null;
+                        }
+                    });
         }
     }
 }

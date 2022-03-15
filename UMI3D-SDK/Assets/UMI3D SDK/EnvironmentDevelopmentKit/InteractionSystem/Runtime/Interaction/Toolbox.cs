@@ -16,42 +16,80 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
-    public class Toolbox : GlobalTool
+    public class Toolbox : GlobalTool, UMI3DLoadableEntity
     {
         [SerializeField, EditorReadOnly]
-        public List<GlobalTool> tools = new List<GlobalTool>();
+        private List<GlobalTool> tools = new List<GlobalTool>();
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// getter setter for tool field in editor;
+        /// </summary>
+        public List<GlobalTool> editorTools { get => tools; set => tools = value; }
+#endif
+
+        public UMI3DAsyncListProperty<GlobalTool> objectTools { get { Register(); return _objectTools; } protected set => _objectTools = value; }
+
+        private UMI3DAsyncListProperty<GlobalTool> _objectTools;
+
+        protected override void InitDefinition(ulong id)
+        {
+            base.InitDefinition(id);
+            objectTools = new UMI3DAsyncListProperty<GlobalTool>(toolId, UMI3DPropertyKeys.ToolboxTools, tools, (i, u) => UMI3DEnvironment.Instance.useDto ? i.ToDto(u) : (object)i);
+            objectTools.OnUserValueChanged += (u, l) => { tools = l; };
+        }
 
         protected override void WriteProperties(AbstractToolDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
             ToolboxDto tbDto = dto as ToolboxDto;
-            tbDto.isInsideToolbox = parent != null;
-            if (parent != null) tbDto.toolboxId = parent.Id();
-            tbDto.tools = tools.ConvertAll(t => t.ToDto(user) as GlobalToolDto);
+            tbDto.tools = objectTools.GetValue(user).ConvertAll(t => t.ToDto(user) as GlobalToolDto);
         }
+
         protected override AbstractToolDto CreateDto()
         {
             return new ToolboxDto();
         }
 
-        protected virtual void Awake()
+
+        /// <summary>
+        /// Return load operation
+        /// </summary>
+        /// <returns></returns>
+        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
-            RecursivelySetParenthood();
+            var operation = new LoadEntity()
+            {
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+            };
+            return operation;
         }
 
-        public void RecursivelySetParenthood()
+        /// <summary>
+        /// Return delete operation
+        /// </summary>
+        /// <returns></returns>
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
-            tools.ForEach(t =>
+            var operation = new DeleteEntity()
             {
-                t.parent = this;
-                if (t is Toolbox)
-                    (t as Toolbox).RecursivelySetParenthood();
-            });
+                entityId = Id(),
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
+            };
+            return operation;
+        }
+
+        ///<inheritdoc/>
+        public IEntity ToEntityDto(UMI3DUser user)
+        {
+            return ToDto(user) as ToolboxDto;
         }
     }
 }

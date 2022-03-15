@@ -107,6 +107,7 @@ namespace umi3d.edk.editor
                 ListSize = ThisList.arraySize;
                 EditorGUI.BeginChangeCheck();
                 ListSize = EditorGUILayout.IntField("Size", ListSize);
+                if (ListSize < 0) ListSize = 0;
                 if (EditorGUI.EndChangeCheck())
                 {
                     if (ListSize != ThisList.arraySize)

@@ -355,6 +355,35 @@ namespace umi3d.common
             }
         }
 
+        public static void ReadList<T>(uint operationId, ByteContainer container, List<T> list)
+        {
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.SetEntityListAddProperty:
+                    int ind = UMI3DNetworkingHelper.Read<int>(container);
+                    T value = UMI3DNetworkingHelper.Read<T>(container);
+                    if (ind == list.Count)
+                        list.Add(value);
+                    else if (ind < list.Count && ind >= 0)
+                        list.Insert(ind, value);
+                    else
+                        UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
+                    break;
+                case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    list.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
+                    break;
+                case UMI3DOperationKeys.SetEntityListProperty:
+                    int index = UMI3DNetworkingHelper.Read<int>(container);
+                    T v = UMI3DNetworkingHelper.Read<T>(container);
+                    list[index] = v;
+                    break;
+                default:
+                    list.Clear();
+                    list.AddRange(UMI3DNetworkingHelper.ReadList<T>(container));
+                    break;
+            }
+        }
+
         /// <summary>
         /// Generic class to describe a Dictionary entry that can be read from a ByteContainer
         /// </summary>
