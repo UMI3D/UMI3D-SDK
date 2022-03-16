@@ -163,6 +163,9 @@ namespace umi3d.cdk.menu.view
         /// <param name="update">Should the display be updated (in case of changes in menu)</param>
         public void Display(bool update)
         {
+            if (menu == null || menu.Count == 0)
+                return;
+
             if (update || !isDisplaying)
             {
                 if (isDisplaying)
@@ -174,14 +177,10 @@ namespace umi3d.cdk.menu.view
                         Navigate(last as AbstractMenu);
                 }
                 else
-                {
                     CreateDisplay();
-                }
             }
             else
-            {
                 Display();
-            }
 
             onDisplay.Invoke();
         }
