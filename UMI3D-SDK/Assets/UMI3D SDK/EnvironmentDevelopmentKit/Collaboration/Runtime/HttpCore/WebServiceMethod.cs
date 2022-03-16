@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Reflection;
 using System.Text;
-using umi3d.common;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -26,13 +25,12 @@ namespace umi3d.edk.collaboration
 {
     public class WebServiceMethod
     {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public MethodInfo methodInfo;
-        public object source;
+        public IHttpApi source;
         public WebServiceMethodAttribute attribute;
 
-        public WebServiceMethod(object source, MethodInfo methodInfo, WebServiceMethodAttribute attribute)
+        public WebServiceMethod(IHttpApi source, MethodInfo methodInfo, WebServiceMethodAttribute attribute)
         {
             this.methodInfo = methodInfo;
             this.source = source;
@@ -45,7 +43,7 @@ namespace umi3d.edk.collaboration
             {
                 if (attribute.security == WebServiceMethodAttribute.Security.Private)
                 {
-                    if (UMI3DCollaborationServer.IsAuthenticated(e.Request))
+                    if (source.isAuthenticated(e.Request))
                     {
                         methodInfo.Invoke(source, new object[] { sender, e, attribute.GetParametersFrom(uri) });
                     }
@@ -67,8 +65,6 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ext)
             {
-                UMI3DLogger.LogError(ext, scope);
-
                 HttpListenerResponse res = e.Response;
                 res.ContentType = "text/html";
                 res.ContentEncoding = Encoding.UTF8;

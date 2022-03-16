@@ -32,7 +32,7 @@ using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 
-public class UMI3DStandAloneApi : UMI3DApi
+public class UMI3DStandAloneApi : IHttpApi
 {
 
     private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
@@ -79,7 +79,7 @@ public class UMI3DStandAloneApi : UMI3DApi
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e">Represents the event data for the HTTP request event</param>
-    [HttpGet(UMI3DNetworkingKeys.renew_connect, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
+    [HttpGet(UMI3DNetworkingKeys.renew_connect, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
     public void RenewConnectionRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
     {
         UMI3DLogger.Log($"Get Media", scope);
@@ -112,4 +112,9 @@ public class UMI3DStandAloneApi : UMI3DApi
         res.WriteContent(message);
     }
     #endregion
+
+    public bool isAuthenticated(HttpListenerRequest request)
+    {
+        throw new NotImplementedException();
+    }
 }

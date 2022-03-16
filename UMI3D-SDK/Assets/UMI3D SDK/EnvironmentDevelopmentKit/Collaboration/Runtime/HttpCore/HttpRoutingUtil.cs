@@ -17,37 +17,36 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebSocketSharp.Net;
 using System.Reflection;
-using umi3d.common;
-using umi3d.common.collaboration;
 using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
     public class HttpRoutingUtil
     {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public Type attributeType { get; private set; }
 
         public List<WebServiceMethod> roots = new List<WebServiceMethod>();
 
-        public HttpRoutingUtil(object Object, Type attributeType) : this(new List<object>() { Object }, attributeType) { }
+        public HttpRoutingUtil( Type attributeType) : this(null, attributeType) { }
 
-        public HttpRoutingUtil(List<object> objects, Type attributeType)
+        public HttpRoutingUtil(List<IHttpApi> apis, Type attributeType)
         {
             Clear();
             this.attributeType = attributeType;
-            AddRoot(objects);
+            if(apis != null)
+                AddRoot(apis);
         }
 
-        public void AddRoot(object Object) { AddRoot(new List<object>() { Object }); }
+        public void AddRoot(IHttpApi api) { AddRoot(new List<IHttpApi>() { api }); }
 
-        public void AddRoot(List<object> objects)
+        public void AddRoot(List<IHttpApi> apis)
         {
-            foreach (object obj in objects)
+            foreach (IHttpApi api in apis)
             {
-                MethodInfo[] methods = obj.GetType().GetMethods();
+                MethodInfo[] methods = api.GetType().GetMethods();
                 foreach (MethodInfo method in methods)
                 {
                     object[] attrArray = method.GetCustomAttributes(attributeType, false);
@@ -59,13 +58,13 @@ namespace umi3d.edk.collaboration
                         {
                             throw new Exception("Multiple Attribute path [" + attribute.path + "] detected!");
                         }
-                        roots.Add(new WebServiceMethod(obj, method, attribute));
+                        roots.Add(new WebServiceMethod(api, method, attribute));
                     }
                 }
             }
         }
 
-        public bool TryProccessRequest(object sender, HttpRequestEventArgs e, PublicIdentityDto identity = null)
+        public bool TryProccessRequest(object sender, HttpRequestEventArgs e)
         {
             string path = e.Request.RawUrl;
             foreach (WebServiceMethod r in roots)
@@ -76,7 +75,6 @@ namespace umi3d.edk.collaboration
                     return true;
                 }
             }
-            UMI3DLogger.Log("no post root " + path, scope);
             return false;
         }
 

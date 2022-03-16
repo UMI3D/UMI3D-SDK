@@ -33,11 +33,11 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DApi
+    public class UMI3DEnvironmentApi : IHttpApi
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        public UMI3DApi()
+        public UMI3DEnvironmentApi()
         { }
 
         public void Stop()
@@ -726,6 +726,11 @@ namespace umi3d.edk.collaboration
             response.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotImplemented;
             response.StatusDescription = description;
             UMI3DLogger.LogError($"501 {description}", scope);
+        }
+
+        public bool isAuthenticated(HttpListenerRequest request)
+        {
+            return UMI3DCollaborationServer.IsAuthenticated(request);
         }
         #endregion
 

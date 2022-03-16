@@ -53,6 +53,8 @@ namespace umi3d.edk.collaboration
 
         public IdentifierApi Identifier;
 
+        [EditorReadOnly]
+        public bool isWorldController;
 
         [EditorReadOnly]
         public bool useRandomForgePort;
@@ -154,6 +156,8 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public override void Init()
         {
+
+
             UMI3DLogger.Log($"Server Init", scope);
             base.Init();
             if (collaborativeModule == null)
@@ -167,7 +171,8 @@ namespace umi3d.edk.collaboration
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
-            http = GetUMI3DHttp();
+            http = new UMI3DHttp(httpPort);
+            UMI3DHttp.Instance.AddRoot(new UMI3DEnvironmentApi());
 
             forgeServer = UMI3DForgeServer.Create(
                 ip, httpPort,
@@ -183,11 +188,15 @@ namespace umi3d.edk.collaboration
 
             isRunning = true;
             OnServerStart.Invoke();
-        }
 
-        protected virtual UMI3DHttp GetUMI3DHttp()
-        {
-            return new UMI3DHttp(new UMI3DApi());
+            if (isWorldController)
+            {
+                new umi3d.ms.MasterServer(new StandAloneIAM(this), new StandAloneKeyGenerator());
+                UMI3DHttp.Instance.AddRoot(new UMI3DStandAloneApi());
+                umi3d.ms.MasterServer.Instance.ip = GetHttpUrl();
+                umi3d.ms.MasterServer.Instance.mediaName = UMI3DCollaborationEnvironment.Instance.environmentName;
+            }
+
         }
 
 

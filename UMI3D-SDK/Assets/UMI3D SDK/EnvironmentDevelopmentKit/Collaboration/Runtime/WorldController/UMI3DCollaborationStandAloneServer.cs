@@ -28,17 +28,8 @@ public class UMI3DCollaborationStandAloneServer : UMI3DCollaborationServer
 {
     public override void Init()
     {
-        new umi3d.ms.MasterServer(new StandAloneIAM(this), new StandAloneKeyGenerator());
 
-        base.Init();
-
-        umi3d.ms.MasterServer.Instance.ip = GetHttpUrl();
-        umi3d.ms.MasterServer.Instance.mediaName = UMI3DCollaborationEnvironment.Instance.environmentName;
     }
 
-    protected override UMI3DHttp GetUMI3DHttp()
-    {
-        return new UMI3DHttp(new UMI3DStandAloneApi());
-    }
 
 }
