@@ -77,47 +77,31 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start()
         {
-            if (started) return;
-            progress = 0;
-            if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
-            foreach (OperationChain chain in operationChains)
-            {
-                float p = GetProgress();
-                if (p < chain.startOnProgress)
-                {
-                    Coroutines.Add(UMI3DAnimationManager.StartCoroutine(WaitForProgress(chain.startOnProgress, () =>
-                    {
-                        if (chain.IsByte)
-                            UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
-                        else
-                            UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
-                    })));
-                }
-
-                if (p == chain.startOnProgress)
-                {
-                    if (chain.IsByte)
-                        UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
-                    else
-                        UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
-                }
-            }
-            PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
+            Start(0);
         }
 
         ///<inheritdoc/>
         public override void Stop()
         {
             if (!started) return;
-            if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
+            if (PlayingCoroutines != null)
+            {
+                UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
+                PlayingCoroutines = null;
+            }
+
             foreach (Coroutine c in Coroutines)
                 UMI3DAnimationManager.StopCoroutine(c);
+            Coroutines.Clear();
         }
 
         ///<inheritdoc/>
         public override void OnEnd()
         {
             PlayingCoroutines = null;
+            foreach (Coroutine c in Coroutines)
+                UMI3DAnimationManager.StopCoroutine(c);
+            Coroutines.Clear();
             started = false;
             base.OnEnd();
         }
@@ -206,30 +190,11 @@ namespace umi3d.cdk
 
         private bool UpdateChain(uint operationId, uint propertyKey, ByteContainer container)
         {
-            switch (operationId)
-            {
-                case UMI3DOperationKeys.SetEntityListAddProperty:
-                    int ind = UMI3DNetworkingHelper.Read<int>(container);
-                    OperationChain value = UMI3DNetworkingHelper.Read<OperationChain>(container);
-                    if (ind == operationChains.Count())
-                        operationChains.Add(value);
-                    else if (ind < operationChains.Count() && ind >= 0)
-                        operationChains.Insert(ind, value);
-                    else
-                        UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {operationChains.Count}", scope);
-                    break;
-                case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    operationChains.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
-                    break;
-                case UMI3DOperationKeys.SetEntityListProperty:
-                    int index = UMI3DNetworkingHelper.Read<int>(container);
-                    OperationChain v = UMI3DNetworkingHelper.Read<OperationChain>(container);
-                    operationChains[index] = v;
-                    break;
-                default:
-                    operationChains = UMI3DNetworkingHelper.ReadList<OperationChain>(container);
-                    break;
-            }
+            if (operationChains == null)
+                operationChains = new List<OperationChain>();
+            UMI3DNetworkingHelper.ReadList(operationId, container, operationChains);
+            Stop();
+            Start(progress);
             return true;
         }
 

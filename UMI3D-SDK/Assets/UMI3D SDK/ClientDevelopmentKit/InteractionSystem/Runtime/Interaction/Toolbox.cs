@@ -26,10 +26,11 @@ namespace umi3d.cdk.interaction
         public static List<Toolbox> GetToolboxes() => instances.Values.ToList().Where(tool => tool is Toolbox).ToList().ConvertAll(t => t as Toolbox);
         public static Toolbox GetToolbox(ulong id) => instances[id] as Toolbox;
 
-        public Toolbox(AbstractToolDto abstractDto) : base(abstractDto) { }
+        public Toolbox(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto, parent) { }
 
-        public List<GlobalTool> GetTools() => (abstractDto as ToolboxDto).tools.ConvertAll(tdto => GlobalTool.GetGlobalTool(tdto.id));
+        public List<GlobalToolDto> tools { get => (abstractDto as ToolboxDto).tools; set => (abstractDto as ToolboxDto).tools = value; }
 
-        public void SetTools(List<GlobalToolDto> tools) => (abstractDto as ToolboxDto).tools = tools;
+        protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolboxDto; }
+
     }
 }

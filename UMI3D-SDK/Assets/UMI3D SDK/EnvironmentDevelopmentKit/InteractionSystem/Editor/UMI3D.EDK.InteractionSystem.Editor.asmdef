@@ -2,7 +2,8 @@
     "name": "UMI3D.EDK.InteractionSystem.Editor",
     "references": [
         "GUID:bd1e79932365b4a42a92d7959336a91d",
-        "GUID:b4198c314735c7a489a1cff640f6c36f"
+        "GUID:b4198c314735c7a489a1cff640f6c36f",
+        "GUID:260f6d2a9a3243446ba8d9c686824226"
     ],
     "includePlatforms": [
         "Editor"

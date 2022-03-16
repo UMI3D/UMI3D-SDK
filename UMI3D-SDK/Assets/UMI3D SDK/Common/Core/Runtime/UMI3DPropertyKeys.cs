@@ -92,6 +92,7 @@ namespace umi3d.common
         public const uint AbstractToolIcon3D = 5104;
         public const uint AbstractToolInteractions = 5105;
         public const uint AbstractToolActive = 5106;
+        public const uint GlobalToolParent = 5107;
 
         public const uint InteractableNodeId = 5201;
         public const uint InteractableNotifyHoverPosition = 5202;

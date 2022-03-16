@@ -16,15 +16,8 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    public class GlobalToolDto : AbstractToolDto, IEntity
+    public class GlobalToolDto : AbstractToolDto
     {
-        /// <summary>
-        /// Toolbox in which the global tool is (if any).
-        /// </summary>
-        /// <see cref="isInsideToolbox"/>
-        public ulong toolboxId;
-        public bool isInsideToolbox;
-
         public GlobalToolDto() : base() { }
     }
 }

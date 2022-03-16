@@ -13,54 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
+
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
-
-    public class GlobalTool : AbstractTool, UMI3DLoadableEntity
+    public class GlobalTool : AbstractTool
     {
-        public bool isInsideToolbox { get => parent != null; }
-        public Toolbox parent; //TODO PAREIL
-
-        public virtual DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
-        {
-            var operation = new DeleteEntity()
-            {
-                entityId = Id(),
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
-            };
-            return operation;
-        }
-
-        public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
-        {
-            var operation = new LoadEntity()
-            {
-                entities = new List<UMI3DLoadableEntity>() { this },
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
-            };
-            return operation;
-        }
-
-        public virtual IEntity ToEntityDto(UMI3DUser user) => ToDto(user) as GlobalToolDto;
-        
-
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <returns></returns>
         protected override AbstractToolDto CreateDto()
         {
             return new GlobalToolDto();
-        }
-
-        protected override void WriteProperties(AbstractToolDto dto, UMI3DUser user)
-        {
-            base.WriteProperties(dto, user);
-            GlobalToolDto gtDto = dto as GlobalToolDto;
-            gtDto.isInsideToolbox = this.isInsideToolbox;
-            gtDto.toolboxId = isInsideToolbox ? parent.Id() : 0;
         }
     }
 }

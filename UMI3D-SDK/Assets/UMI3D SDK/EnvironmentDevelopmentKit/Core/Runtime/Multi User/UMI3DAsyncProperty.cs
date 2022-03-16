@@ -219,6 +219,9 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(UMI3DUser user, T value, bool forceOperation = false)
         {
+            if (user == null)
+                return SetValue(value, forceOperation);
+
             if (asyncValues.ContainsKey(user))
             {
                 if ((asyncValues[user] == null && value == null || Equal(asyncValues[user], value)) && !forceOperation)

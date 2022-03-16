@@ -54,7 +54,15 @@ namespace umi3d.cdk
                 if (line == null)
                 {
                     line = node.AddComponent<LineRenderer>();
-                    line.material = new Material(Shader.Find("Sprites/Default"));
+                    Shader umi3dShader = Shader.Find("UMI3D/default_UMI3D_shader");
+                    if (umi3dShader != null)
+                    {
+                        line.material = new Material(umi3dShader);
+                    }
+                    else
+                    {
+                        line.material = new Material(Shader.Find("Sprites/Default"));
+                    }
                 }
                 line.startColor = lineDto.startColor;
                 line.endColor = lineDto.endColor;
@@ -64,6 +72,11 @@ namespace umi3d.cdk
                 line.startWidth = lineDto.startWidth;
                 line.positionCount = lineDto.positions.Count();
                 line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v).ToArray());
+                UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(lineDto.id);
+                if (nodeInstance != null)
+                    nodeInstance.renderers = new List<Renderer>() { line };
+                SetMaterialOverided(lineDto, nodeInstance);
+
                 finished?.Invoke();
             }, failed);
         }

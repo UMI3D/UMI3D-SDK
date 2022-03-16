@@ -21,6 +21,7 @@ using UnityEngine;
 using umi3d.cdk.menu;
 using umi3d.cdk.menu.interaction;
 using umi3d.common.interaction;
+using System.Linq;
 
 namespace umi3d.cdk.interaction
 {
@@ -50,11 +51,12 @@ namespace umi3d.cdk.interaction
                 tbmenu.Setup(tool as Toolbox);
 
                 ToolboxDto dto = tool.dto as ToolboxDto;
-                if (dto.isInsideToolbox)
+
+                if (!tool.isInsideToolbox)
                 {
-                    if (toolboxIdToMenu.ContainsKey(dto.toolboxId))
+                    if (toolboxIdToMenu.ContainsKey(tool.parent.id))
                     {
-                        ToolboxMenu parentMenu = (toolboxIdToMenu[dto.toolboxId] as ToolboxMenu);
+                        ToolboxMenu parentMenu = (toolboxIdToMenu[tool.parent.id] as ToolboxMenu);
                         parentMenu.Add(tbmenu);
                         tbmenu.parent = parentMenu;
                         toolboxIdToMenu.Add(dto.id, tbmenu);
@@ -72,10 +74,10 @@ namespace umi3d.cdk.interaction
                     toolboxIdToMenu.Add(dto.id, tbmenu);
                 }
 
-                foreach(AbstractMenuItem menu in new List<AbstractMenuItem>(menuToStoreInMenuAsset))
+                foreach(AbstractMenuItem menu in menuToStoreInMenuAsset.ToList())
                 {
                     GlobalToolMenu gtm = menu as GlobalToolMenu;
-                    if ((gtm != null) && ((gtm.tool.dto as GlobalToolDto).toolboxId == dto.id))
+                    if ((gtm != null) && (tool.parent.id == dto.id))
                     {
                         tbmenu.Add(gtm);
                         gtm.parent = tbmenu;
@@ -83,7 +85,7 @@ namespace umi3d.cdk.interaction
                     }
 
                     ToolboxMenu tbm = menu as ToolboxMenu;
-                    if ((tbm != null) && ((tbm.toolbox.dto as ToolboxDto).toolboxId == dto.id))
+                    if ((tbm != null) && (tool.parent.id == dto.id))
                     {
                         tbmenu.Add(tbm);
                         tbm.parent = tbmenu;
@@ -96,11 +98,11 @@ namespace umi3d.cdk.interaction
                 GlobalToolMenu menu = new GlobalToolMenu();
                 menu.Setup(tool);
                 GlobalToolDto dto = tool.dto as GlobalToolDto;
-                if (dto.isInsideToolbox)
+                if (tool.isInsideToolbox)
                 {
-                    if (toolboxIdToMenu.ContainsKey(dto.toolboxId))
+                    if (toolboxIdToMenu.ContainsKey(tool.parent.id))
                     {
-                        ToolboxMenu parentMenu = toolboxIdToMenu[dto.toolboxId] as ToolboxMenu;
+                        ToolboxMenu parentMenu = toolboxIdToMenu[tool.parent.id] as ToolboxMenu;
                         parentMenu.Add(menu);
                         menu.parent = parentMenu;
                     }

@@ -178,30 +178,9 @@ namespace umi3d.cdk
 
         private bool UpdateChain(uint operationId, uint propertyKey, ByteContainer container)
         {
-            switch (operationId)
-            {
-                case UMI3DOperationKeys.SetEntityListAddProperty:
-                    int ind = UMI3DNetworkingHelper.Read<int>(container);
-                    UMI3DAnimationDto.AnimationChainDto value = UMI3DNetworkingHelper.Read<UMI3DAnimationDto.AnimationChainDto>(container);
-                    if (ind == dto.animationChain.Count())
-                        dto.animationChain.Add(value);
-                    else if (ind < dto.animationChain.Count() && ind >= 0)
-                        dto.animationChain.Insert(ind, value);
-                    else
-                        UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {dto.animationChain.Count}", scope);
-                    break;
-                case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    dto.animationChain.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
-                    break;
-                case UMI3DOperationKeys.SetEntityListProperty:
-                    int index = UMI3DNetworkingHelper.Read<int>(container);
-                    UMI3DAnimationDto.AnimationChainDto v = UMI3DNetworkingHelper.Read<UMI3DAnimationDto.AnimationChainDto>(container);
-                    dto.animationChain[index] = v;
-                    break;
-                default:
-                    dto.animationChain = UMI3DNetworkingHelper.ReadList<UMI3DAnimationDto.AnimationChainDto>(container);
-                    break;
-            }
+            if (dto.animationChain == null)
+                dto.animationChain = new List<UMI3DAnimationDto.AnimationChainDto>();
+            UMI3DNetworkingHelper.ReadList(operationId, container, dto.animationChain);
             return true;
         }
 

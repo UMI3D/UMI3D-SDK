@@ -28,8 +28,14 @@ namespace umi3d.cdk.menu.interaction
 
         public GlobalTool tool { get; private set; }
 
+        void SubcribedMethode()
+        {
+            AbstractInteractionMapper.Instance.SelectTool(tool.id, true, this.tool.id, new RequestedFromMenu());
+        }
+
         public void Setup(GlobalTool tool)
         {
+            RemoveAll();
             this.tool = tool;
             Name = tool.name;
             icon2D = new Texture2D(0, 0);
@@ -47,10 +53,7 @@ namespace umi3d.cdk.menu.interaction
 
             tool.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id)));
 
-            Subscribe(() =>
-            {
-                AbstractInteractionMapper.Instance.SelectTool(tool.id, true, this.tool.id, new RequestedFromMenu());
-            });
+            Subscribe(SubcribedMethode);
         }
     }
 }

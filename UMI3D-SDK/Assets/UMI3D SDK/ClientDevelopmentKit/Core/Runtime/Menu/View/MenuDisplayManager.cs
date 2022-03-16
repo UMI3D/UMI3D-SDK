@@ -163,6 +163,9 @@ namespace umi3d.cdk.menu.view
         /// <param name="update">Should the display be updated (in case of changes in menu)</param>
         public void Display(bool update)
         {
+            if (menu == null || menu.Count == 0)
+                return;
+
             if (update || !isDisplaying)
             {
                 if (isDisplaying)
@@ -174,14 +177,10 @@ namespace umi3d.cdk.menu.view
                         Navigate(last as AbstractMenu);
                 }
                 else
-                {
                     CreateDisplay();
-                }
             }
             else
-            {
                 Display();
-            }
 
             onDisplay.Invoke();
         }
@@ -267,14 +266,9 @@ namespace umi3d.cdk.menu.view
 
             menuToDisplayer.Add(menu, container);
             foreach (AbstractMenu sub in menu.GetSubMenu())
-            {
                 CreateSubMenu(container, sub, depth);
-            }
-
             foreach (AbstractMenuItem item in menu.GetMenuItems())
-            {
                 CreateItem(container, item);
-            }
             return container;
         }
 
@@ -291,7 +285,6 @@ namespace umi3d.cdk.menu.view
             {
                 AbstractMenuDisplayContainer subContainer = recursivelyCreateDisplay(subMenu, containerDepth + 1);
 
-                subContainer.SetMenuItem(subMenu);
                 subContainer.parent = container;
                 SetMenuAction(container, subMenu, subContainer, containerDepth + 1);
                 if (subMenu.navigable)
