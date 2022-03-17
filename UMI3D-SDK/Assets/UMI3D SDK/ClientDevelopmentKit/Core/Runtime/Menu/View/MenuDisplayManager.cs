@@ -22,6 +22,8 @@ namespace umi3d.cdk.menu.view
     public partial class MenuDisplayManager
     {
         public MenuAsset menuAsset;
+        [SerializeField]
+        private bool m_displayedOnStart = false;
         /// <summary>
         /// Should call the Hide function when the Back function is called on root.
         /// </summary>
@@ -67,19 +69,7 @@ namespace umi3d.cdk.menu.view
         /// Is the menu being displayed ?
         /// </summary>
         public bool isDisplaying { get; protected set; }
-        //public AbstractMenuItem LastMenuUnderNavigation
-        //{
-        //    get
-        //    {
-        //        if (lastMenuContainerUnderNavigation.menu is MenuItem lastMenuItem)
-        //        if (menuToDisplayer.ContainsKey(lastMenuContainerUnderNavigation.menu))
-        //        {
-
-        //        }
-        //    }
-        //}
         public AbstractMenuDisplayContainer lastMenuContainerUnderNavigation { get; protected set; }
-
 
         /// <summary>
         /// Instantiated container (if any)
@@ -91,37 +81,27 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         private readonly Dictionary<AbstractMenu, AbstractMenuDisplayContainer> menuToDisplayer = new Dictionary<AbstractMenu, AbstractMenuDisplayContainer>();
         private readonly Dictionary<AbstractMenuItem, AbstractDisplayer> itemToDisplayer = new Dictionary<AbstractMenuItem, AbstractDisplayer>();
+
+        private AbstractMenuDisplayContainer m_root { get; set; } = null;
     }
 
     public partial class MenuDisplayManager
     {
-        public void AddMenuToRoot(AbstractMenu abstractMenu)
-        {
-            menu.Add(abstractMenu);
-        }
-
-        public void RemoveMenuFromRootWithoutDestroy(AbstractMenu abstractMenu)
-        {
-            menu.RemoveWithoutNotify(abstractMenu);
-        }
-
         /// <summary>
         /// Display the menu.
         /// </summary>
         /// <param name="update">Should the display be updated (in case of changes in menu)</param>
         public void Display(bool update)
         {
-            if (menu == null || menu.Count == 0)
-                return;
-
             if (!isDisplaying)
                 CreateDisplay();
             else if (update)
             {
                 Hide(true);
                 CreateDisplay();
-                //if (LastMenuUnderNavigation is AbstractMenu lastMenu)
-                //    Navigate(lastMenu);
+                AbstractMenuItem last = lastMenuContainerUnderNavigation.menu;
+                if (last is AbstractMenu lastMenu)
+                    Navigate(lastMenu);
             }
             else
             {
@@ -276,10 +256,11 @@ namespace umi3d.cdk.menu.view
             if (isDisplaying || menuAsset == null || menu == null)
                 return;
 
-            AbstractMenuDisplayContainer root = CreateSubMenu(null, menu, 0);
-            root.backButtonPressed.AddListener(firstButtonBackButtonPressed.Invoke);
-            lastMenuContainerUnderNavigation = root;
-            recursivelyDisplayContainer(root, 0);
+            m_root = CreateSubMenu(null, menu, 0);
+            m_root.backButtonPressed.AddListener(firstButtonBackButtonPressed.Invoke);
+            if (lastMenuContainerUnderNavigation == null)
+                lastMenuContainerUnderNavigation = m_root;
+            recursivelyDisplayContainer(m_root, 0);
             isDisplaying = true;
         }
 
@@ -296,20 +277,16 @@ namespace umi3d.cdk.menu.view
                 return menuToDisplayer[subMenu];
 
             AbstractMenuDisplayContainer subContainer = containerSelector.ChooseContainer(subMenu, containerDepth);
-            if (!firstContainerInScene)
+            if ((containerDepth > 0) || !firstContainerInScene)
                 subContainer = Instantiate(subContainer, this.transform);
 
-            //menu.OnDestroy.AddListener(() =>
-            //{
-            //    menu.onAbstractMenuItemAdded.RemoveAllListeners();
-            //    this.onDestroy.RemoveListener(OnManagerDestroyedAction);
-            //    if ((parentContainer != null) && (parentContainer.gameObject != null))
-            //        parentContainer?.Remove(container, false);
-            //    if ((container != null) && (container.gameObject != null))
-            //        Destroy(container.gameObject);
-            //});
-
             subContainer.SetMenuItem(subMenu);
+
+            foreach (AbstractMenu sub in subMenu.GetSubMenu())
+                CreateSubMenu(subContainer, sub, containerDepth + 1);
+            foreach (AbstractMenuItem item in subMenu.GetMenuItems())
+                CreateItem(subContainer, item);
+
             if (container != null)
             {
                 subContainer.parent = container;
@@ -318,11 +295,6 @@ namespace umi3d.cdk.menu.view
             }
             containers.Add(subContainer);
             menuToDisplayer.Add(subMenu, subContainer);
-
-            foreach (AbstractMenu sub in subMenu.GetSubMenu())
-                CreateSubMenu(subContainer, sub, containerDepth + 1);
-            foreach (AbstractMenuItem item in subMenu.GetMenuItems())
-                CreateItem(subContainer, item);
 
             SetMenuAction(container, subMenu, subContainer, containerDepth);
             if (subMenu.navigable)
@@ -343,7 +315,7 @@ namespace umi3d.cdk.menu.view
         /// <param name="menuItem"></param>
         private void CreateItem(AbstractMenuDisplayContainer container, AbstractMenuItem menuItem)
         {
-            if (itemToDisplayer.ContainsKey(menuItem) && itemToDisplayer[menuItem] == null)
+            if (itemToDisplayer.ContainsKey(menuItem) && itemToDisplayer[menuItem] != null)
                 return;
 
             AbstractDisplayer disp = ChooseDisplayer(menuItem);
@@ -366,34 +338,70 @@ namespace umi3d.cdk.menu.view
         /// <param name="containerDepth"></param>
         private void SetMenuAction(AbstractMenuDisplayContainer container, AbstractMenu subMenu, AbstractMenuDisplayContainer subContainer, int containerDepth)
         {
-            UnityAction<AbstractMenuItem> onItemAdded = (menuItem) =>
+            UnityAction<AbstractMenuItem> onItemAdded = (subSubMenuItem) =>
             {
                 if (!menuToDisplayer.TryGetValue(subMenu, out AbstractMenuDisplayContainer currentSubContainer))
                     return;
-                if (menuItem is AbstractMenu menu) 
-                    CreateSubMenu(currentSubContainer, menu, containerDepth);
+                if (subSubMenuItem is AbstractMenu subSubMenu) 
+                    CreateSubMenu(currentSubContainer, subSubMenu, containerDepth + 1);
                 else 
-                    CreateItem(currentSubContainer, menuItem);
+                    CreateItem(currentSubContainer, subSubMenuItem);
             };
+            subMenu.onAbstractMenuItemAdded.AddListener(onItemAdded);
+
+            UnityAction<AbstractMenuItem> onItemRemoved = (subSubMenuItem) =>
+            {
+                if (!menuToDisplayer.TryGetValue(subMenu, out AbstractMenuDisplayContainer currentSubContainer))
+                    return;
+                if (subSubMenuItem is AbstractMenu subSubMenu)
+                    RemoveSubMenu(currentSubContainer, subSubMenu);
+                else
+                    RemoveItem(currentSubContainer, subSubMenuItem);
+            };
+            subMenu.OnAbstractMenuItemRemoved.AddListener(onItemAdded);
+
 
             UnityAction OnManagerDestroyedAction = () =>
             {
                 subMenu.onAbstractMenuItemAdded.RemoveListener(onItemAdded);
+                subMenu.OnAbstractMenuItemRemoved.RemoveListener(onItemRemoved);
             };
-
-            subMenu.onAbstractMenuItemAdded.AddListener(onItemAdded);
+            this.onDestroy.AddListener(OnManagerDestroyedAction);
 
             subMenu.OnDestroy.AddListener(() =>
             {
-                subMenu.onAbstractMenuItemAdded.RemoveAllListeners();
                 this.onDestroy.RemoveListener(OnManagerDestroyedAction);
+
                 if ((container != null) && (container.gameObject != null))
                     container?.Remove(subContainer, false);
+
                 if ((subContainer != null) && (subContainer.gameObject != null))
                     Destroy(subContainer.gameObject);
             });
+        }
 
-            this.onDestroy.AddListener(OnManagerDestroyedAction);
+        private void RemoveSubMenu(AbstractMenuDisplayContainer container, AbstractMenu subMenu)
+        {
+            if (!menuToDisplayer.TryGetValue(subMenu, out AbstractMenuDisplayContainer subContainer))
+                return;
+            if (lastMenuContainerUnderNavigation == subContainer)
+                lastMenuContainerUnderNavigation = m_root;
+            container?.Remove(subContainer, false);
+            menuToDisplayer.Remove(subMenu);
+            foreach (AbstractMenu subSubMenu in subMenu.GetSubMenu())
+                RemoveSubMenu(subContainer, subSubMenu);
+            foreach (AbstractMenuItem subItem in subMenu.GetMenuItems())
+                RemoveItem(subContainer, subItem);
+            Destroy(subContainer.gameObject);
+        }
+
+        private void RemoveItem(AbstractMenuDisplayContainer container, AbstractMenuItem menuItem)
+        {
+            if (!itemToDisplayer.TryGetValue(menuItem, out AbstractDisplayer displayer))
+                return;
+            container?.Remove(displayer, false);
+            itemToDisplayer.Remove(menuItem);
+            Destroy(displayer.gameObject);
         }
 
         #endregion
@@ -407,6 +415,12 @@ namespace umi3d.cdk.menu.view
             {
                 menuAsset.menu = new Menu();
             }
+        }
+
+        private void Start()
+        {
+            if (m_displayedOnStart)
+                Display();
         }
 
         /// <summary>
@@ -475,16 +489,6 @@ namespace umi3d.cdk.menu.view
             }
 
         }
-
-        
-
-        
-
-        
-
-        
-
-        
 
         /// <summary>
         /// Find a given submenu in <see cref="menu"/> and return its path.
