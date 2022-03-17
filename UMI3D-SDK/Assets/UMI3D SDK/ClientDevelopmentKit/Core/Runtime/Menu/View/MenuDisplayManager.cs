@@ -88,32 +88,118 @@ namespace umi3d.cdk.menu.view
     public partial class MenuDisplayManager
     {
         /// <summary>
-        /// Display the menu.
+        /// Creates the menu, and displays it.
         /// </summary>
-        /// <param name="update">Should the display be updated (in case of changes in menu)</param>
-        public void Display(bool update)
+        /// <param name="update"></param>
+        /// <param name="navigateToLastMenu"></param>
+        public void CreateMenuAndDisplay(bool update, bool navigateToLastMenu)
         {
-            if (!isDisplaying)
-                CreateDisplay();
-            else if (update)
+            if (isDisplaying && !update)
+                return;
+
+            Clear();
+            m_root = CreateSubMenu(null, menu, 0);
+            m_root.backButtonPressed.AddListener(firstButtonBackButtonPressed.Invoke);
+            if (lastMenuContainerUnderNavigation == null)
+                lastMenuContainerUnderNavigation = m_root;
+            if (navigateToLastMenu)
             {
-                Hide(true);
-                CreateDisplay();
                 AbstractMenuItem last = lastMenuContainerUnderNavigation.menu;
                 if (last is AbstractMenu lastMenu)
                     Navigate(lastMenu);
+                onDisplay.Invoke();
             }
             else
+                Display(update);
+        }
+
+        /// <summary>
+        /// Clear the display.
+        /// </summary>
+        [ContextMenu("Clear")]
+        public void Clear()
+        {
+            menuToDisplayer.Clear();
+            itemToDisplayer.Clear();
+            isDisplaying = false;
+
+            if ((containers == null) || (containers.Count == 0))
+                return;
+
+            containers[0].Hide();
+            containers[0].backButtonPressed.RemoveListener(firstButtonBackButtonPressed.Invoke);
+
+            for (int i = 0; i < containers.Count; i++)
             {
-                foreach (AbstractMenuDisplayContainer container in containers)
-                {
-                    container.Display();
-                    container.Expand();
-                }
+                containers[i].Clear();
+                if (firstContainerInScene && i == 0)
+                    continue;
+                if (containers[i] != null)
+                    Destroy(containers[i].gameObject);
             }
 
+            containers.Clear();
+        }
+
+        /// <summary>
+        /// Displays the Root MenuDisplayer.
+        /// </summary>
+        /// <param name="update"></param>
+        public void Display(bool update)
+        {
+            if (isDisplaying && !update)
+                return;
+            ApplyDisplayDepthOnDisplayerDisplayStatus(m_root, 0);
+            isDisplaying = true;
             onDisplay.Invoke();
         }
+
+        /// <summary>
+        /// Displays And Expands All containers.
+        /// <param name="update"></param>
+        /// </summary>
+        public void DisplayAndExpandAll(bool update)
+        {
+            if (isDisplaying && !update)
+                return;
+
+            foreach (AbstractMenuDisplayContainer container in containers)
+            {
+                container.Display();
+                container.Expand();
+            }
+
+            isDisplaying = true;
+            onDisplay.Invoke();
+        }
+
+        ///// <summary>
+        ///// Display the menu.
+        ///// </summary>
+        ///// <param name="update">Should the display be updated (in case of changes in menu)</param>
+        //public void Display(bool update)
+        //{
+        //    if (!isDisplaying)
+        //        CreateMenuAndDisplay();
+        //    else if (update)
+        //    {
+        //        Hide(true);
+        //        CreateMenuAndDisplay();
+        //        AbstractMenuItem last = lastMenuContainerUnderNavigation.menu;
+        //        if (last is AbstractMenu lastMenu)
+        //            Navigate(lastMenu);
+        //    }
+        //    //else
+        //    //{
+        //    //    foreach (AbstractMenuDisplayContainer container in containers)
+        //    //    {
+        //    //        container.Display();
+        //    //        container.Expand();
+        //    //    }
+        //    //}
+
+        //    onDisplay.Invoke();
+        //}
 
         /// <summary>
         /// Hide the menu.
@@ -122,14 +208,14 @@ namespace umi3d.cdk.menu.view
         public void Hide(bool clear = false)
         {
             onHide.Invoke();
-            if (clear)
-                Clear();
-            else
+            if (!clear)
             {
                 foreach (AbstractMenuDisplayContainer container in containers)
                     container.Hide();
                 isDisplaying = false;
             }
+            else
+                Clear();
         }
 
         /// <summary>
@@ -139,7 +225,45 @@ namespace umi3d.cdk.menu.view
         /// <see cref="AbstractMenuDisplayContainer.Expand(bool)"/>
         public void Expand(bool update)
         {
+            if (isDisplaying && !update)
+                return;
             if (containers.Count > 0) containers[0].Expand(update);
+            isDisplaying = true;
+            onDisplay.Invoke();
+        }
+
+        /// <summary>
+        /// Expand all the menus.
+        /// </summary>
+        public void ExpandAll()
+        {
+            foreach (AbstractMenuDisplayContainer container in containers)
+                container.Expand();
+            isDisplaying = true;
+            onDisplay.Invoke();
+        }
+
+        /// <summary>
+        /// Collapse the Root MenuDisplayer.
+        /// </summary>
+        public void Collapse(bool update)
+        {
+            onHide.Invoke();
+            if (!isDisplaying && !update)
+                return;
+            if (containers.Count > 0) containers[0].Collapse(update);
+            isDisplaying = false;
+        }
+
+        /// <summary>
+        /// Collapse all the menus.
+        /// </summary>
+        public void CollapseAll()
+        {
+            onHide.Invoke();
+            foreach (AbstractMenuDisplayContainer container in containers)
+                container.Collapse();
+            isDisplaying = false;
         }
 
         /// <summary>
@@ -248,21 +372,19 @@ namespace umi3d.cdk.menu.view
             => Expand(false);
 
         /// <summary>
-        /// Create the menu display, and display it.
+        /// Collapse the Root MenuDisplayer. Without updating.
         /// </summary>
-        [ContextMenu("Display Create")]
-        private void CreateDisplay()
-        {
-            if (isDisplaying || menuAsset == null || menu == null)
-                return;
+        /// <see cref="Collapse(bool)"/>
+        [ContextMenu("Collapse")]
+        private void Collapse()
+            => Collapse(false);
 
-            m_root = CreateSubMenu(null, menu, 0);
-            m_root.backButtonPressed.AddListener(firstButtonBackButtonPressed.Invoke);
-            if (lastMenuContainerUnderNavigation == null)
-                lastMenuContainerUnderNavigation = m_root;
-            recursivelyDisplayContainer(m_root, 0);
-            isDisplaying = true;
-        }
+        /// <summary>
+        /// Create the menu, and display it.
+        /// </summary>
+        [ContextMenu("Create Display")]
+        private void CreateMenuAndDisplay()
+            => CreateMenuAndDisplay(false, false);
 
         /// <summary>
         /// Create a container for a menu and add it into a container
@@ -281,6 +403,8 @@ namespace umi3d.cdk.menu.view
                 subContainer = Instantiate(subContainer, this.transform);
 
             subContainer.SetMenuItem(subMenu);
+            containers.Add(subContainer);
+            menuToDisplayer.Add(subMenu, subContainer);
 
             foreach (AbstractMenu sub in subMenu.GetSubMenu())
                 CreateSubMenu(subContainer, sub, containerDepth + 1);
@@ -293,8 +417,6 @@ namespace umi3d.cdk.menu.view
                 subContainer.backButtonPressed.AddListener(() => Navigate(container.menu as AbstractMenu));
                 container.Insert(subContainer, false);
             }
-            containers.Add(subContainer);
-            menuToDisplayer.Add(subMenu, subContainer);
 
             SetMenuAction(container, subMenu, subContainer, containerDepth);
             if (subMenu.navigable)
@@ -358,7 +480,7 @@ namespace umi3d.cdk.menu.view
                 else
                     RemoveItem(currentSubContainer, subSubMenuItem);
             };
-            subMenu.OnAbstractMenuItemRemoved.AddListener(onItemAdded);
+            subMenu.OnAbstractMenuItemRemoved.AddListener(onItemRemoved);
 
 
             UnityAction OnManagerDestroyedAction = () =>
@@ -378,6 +500,38 @@ namespace umi3d.cdk.menu.view
                 if ((subContainer != null) && (subContainer.gameObject != null))
                     Destroy(subContainer.gameObject);
             });
+        }
+
+        /// <summary>
+        /// Display, hide, expand or collapse [displayer] according to the [depth] of thi displayer and the value of [displayDepth].
+        /// </summary>
+        /// <param name="displayer"></param>
+        /// <param name="depth"></param>
+        private void ApplyDisplayDepthOnDisplayerDisplayStatus(AbstractDisplayer displayer, int depth)
+        {
+            if (displayer is AbstractMenuDisplayContainer container)
+            {
+                if (depth <= displayDepth + 1)
+                {
+                    container.Display(true);
+                    if (depth <= displayDepth)
+                        container.Expand(true);
+                    else
+                        container.Collapse(true);
+                }
+                else
+                    container.Hide();
+
+                foreach (AbstractDisplayer subDisplayer in container)
+                    ApplyDisplayDepthOnDisplayerDisplayStatus(subDisplayer, depth + 1);
+            }
+            else
+            {
+                if (depth <= displayDepth)
+                    displayer.Display(true);
+                else
+                    displayer.Hide();
+            }
         }
 
         private void RemoveSubMenu(AbstractMenuDisplayContainer container, AbstractMenu subMenu)
@@ -411,10 +565,9 @@ namespace umi3d.cdk.menu.view
     {
         private void Awake()
         {
+            Debug.Assert(menuAsset != null, "MenuAsset null in MenuDisplayManager.");
             if (menuAsset.menu == null)
-            {
                 menuAsset.menu = new Menu();
-            }
         }
 
         private void Start()
@@ -451,46 +604,6 @@ namespace umi3d.cdk.menu.view
         }
 
         /// <summary>
-        /// Internal function for menu display.
-        /// </summary>
-        /// <param name="menu"></param>
-        /// <param name="depth"></param>
-        /// <returns></returns>
-        private void recursivelyDisplayContainer(AbstractMenuDisplayContainer container, int depth)
-        {
-            if (depth > displayDepth)
-            {
-                if (depth > displayDepth + 1)
-                    container.Hide();
-                else
-                    container.Display(true);
-                container.Collapse(true);
-            }
-            else
-            {
-                lastMenuContainerUnderNavigation = container;
-                container.Display(true);
-                container.Expand(true);
-            }
-            foreach (AbstractDisplayer item in container)
-            {
-                AbstractMenuDisplayContainer subContainer;
-                if ((subContainer = item as AbstractMenuDisplayContainer) != null)
-                {
-                    recursivelyDisplayContainer(subContainer, depth + 1);
-                }
-                else
-                {
-                    if (depth <= displayDepth)
-                        item.Display(true);
-                    else
-                        item.Hide();
-                }
-            }
-
-        }
-
-        /// <summary>
         /// Find a given submenu in <see cref="menu"/> and return its path.
         /// </summary>
         /// <param name="menuToFind"></param>
@@ -519,53 +632,6 @@ namespace umi3d.cdk.menu.view
 
             return aux(menu);
         }
-
-        /// <summary>
-        /// Clear the display.
-        /// </summary>
-        [ContextMenu("Clear")]
-        private void Clear()
-        {
-            if (firstContainerInScene)
-            {
-                if (containers.Count > 0)
-                {
-
-                    containers[0].Hide();
-                    foreach (AbstractDisplayer displayer in containers[0])
-                    {
-                        Destroy(displayer.gameObject);
-                    }
-                    containers[0].Clear();
-                    for (int i = 1; i < containers.Count; i++)
-                    {
-                        containers[i].Clear();
-                        Destroy(containers[i].gameObject);
-                    }
-
-                    containers = new List<AbstractMenuDisplayContainer>();
-                }
-            }
-            else
-            {
-                if ((containers != null) && (containers.Count > 0))
-                {
-                    containers[0].backButtonPressed.RemoveListener(firstButtonBackButtonPressed.Invoke);
-                    for (int i = 0; i < containers.Count; i++)
-                    {
-                        containers[i].Clear();
-                        if (containers[i] != null)
-                            Destroy(containers[i].gameObject);
-                    }
-                }
-                containers = new List<AbstractMenuDisplayContainer>();
-            }
-
-            menuToDisplayer.Clear();
-            itemToDisplayer.Clear();
-            isDisplaying = false;
-        }
-
 
         private void OnDestroy()
         {
