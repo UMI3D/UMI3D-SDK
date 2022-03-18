@@ -17,25 +17,11 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using umi3d.common;
-using umi3d.common.interaction;
-using umi3d.worldController;
 using UnityEngine;
 
-public class StandAloneKeyGenerator : IKeyGenerator
+public interface IWorldController_Environment
 {
-    public virtual string GenerateHeaderToken(string oldToken)
-    {
-        return new System.Guid().ToString();
-    }
+    Task NotifyUserJoin(string uid);
 
-    public virtual string GenerateKey(string oldKey)
-    {
-        return null;
-    }
-
-    public virtual string GenerateLocalToken(string oldToken)
-    {
-        return new System.Guid().ToString();
-    }
+    Task Pong(IClient client);
 }

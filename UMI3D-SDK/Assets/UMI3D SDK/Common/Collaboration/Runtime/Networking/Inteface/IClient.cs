@@ -16,15 +16,12 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using umi3d.common.collaboration;
-using System;
-using umi3d.common;
-using System.Threading.Tasks;
+using UnityEngine;
 
-public interface IMasterServer
+public interface IClient
 {
-    Task<UMI3DDto> Connect(ConnectionDto connectionDto);
+    void Update(IdentityDto identity);
 
-    Task<PrivateIdentityDto> RenewCredential(string globalTocken);
+    void Ping();
 }

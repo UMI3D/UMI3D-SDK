@@ -70,7 +70,7 @@ public class UMI3DStandAloneApi : IHttpApi
 
     async void RegisterUser(ConnectionDto dto, Action<UMI3DDto> callback)
     {
-        UMI3DDto res = await umi3d.ms.MasterServer.RegisterUser(dto);
+        UMI3DDto res = await umi3d.worldController.WorldController.RegisterUser(dto);
         callback.Invoke(res);
     }
 
@@ -85,9 +85,9 @@ public class UMI3DStandAloneApi : IHttpApi
         UMI3DLogger.Log($"Get Media", scope);
         HttpListenerResponse res = e.Response;
         byte[] message = null;
-        if (umi3d.ms.MasterServer.Exists)
+        if (umi3d.worldController.WorldController.Exists)
         {
-            message = umi3d.ms.MasterServer.Instance.ToDto().ToBson();
+            message = umi3d.worldController.WorldController.Instance.ToDto().ToBson();
         }
         res.WriteContent(message);
     }
@@ -105,9 +105,9 @@ public class UMI3DStandAloneApi : IHttpApi
         UMI3DLogger.Log($"Get Media", scope);
         HttpListenerResponse res = e.Response;
         byte[] message = null;
-        if (umi3d.ms.MasterServer.Exists)
+        if (umi3d.worldController.WorldController.Exists)
         {
-            message = umi3d.ms.MasterServer.Instance.ToDto().ToBson();
+            message = umi3d.worldController.WorldController.Instance.ToDto().ToBson();
         }
         res.WriteContent(message);
     }

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
-using umi3d.ms;
+using umi3d.worldController;
 using UnityEngine;
 
 public class StandAloneIAM : IIAM
@@ -29,6 +29,29 @@ public class StandAloneIAM : IIAM
 
     public async virtual Task<ConnectionFormDto> GenerateForm(User user)
     {
+        var form = new ConnectionFormDto()
+        {
+            temporaryUserId = user.id,
+            name = "Connection",
+            description = null,
+            fields = new List<AbstractParameterDto>()
+        };
+
+        form.fields.Add(
+            new StringParameterDto()
+            {
+                name = "Login",
+                value = ""
+            });
+        form.fields.Add(
+            new StringParameterDto()
+            {
+                name = "Password",
+                value = ""
+            });
+
+
+
         return await Task.FromResult<ConnectionFormDto>(null);
     }
 

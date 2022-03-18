@@ -17,7 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.common.collaboration;
 
-namespace umi3d.ms
+namespace umi3d.worldController
 {
     public class User
     {
@@ -30,10 +30,13 @@ namespace umi3d.ms
         public string headearToken => privateIdentity.headerToken;
         public string key => privateIdentity.key;
 
+        public string id;
+
         static Dictionary<ulong, User> ids = new Dictionary<ulong, User>();
 
-        public User(ConnectionDto connectionDto)
+        public User(ConnectionDto connectionDto, string id)
         {
+            this.id = id;
             privateIdentity = new PrivateIdentityDto();
             privateIdentity.userId = NewID();
             Update(connectionDto);

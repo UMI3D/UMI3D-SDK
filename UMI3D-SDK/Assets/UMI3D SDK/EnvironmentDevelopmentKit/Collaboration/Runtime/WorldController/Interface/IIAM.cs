@@ -20,7 +20,7 @@ using umi3d.common;
 using umi3d.common.interaction;
 using System.Threading.Tasks;
 
-namespace umi3d.ms
+namespace umi3d.worldController
 {
     public interface IIAM
     {

@@ -14,13 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.collaboration;
-using umi3d.common;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using umi3d.common;
+using UnityEngine;
 
-public interface IEnvironment
-{
-    Task Register(RegisterIdentityDto identityDto);
-
-    Task<ForgeConnectionDto> ToDto();
+public interface IWorldController {
+    Task<MediaDto> GetMediaDto();
 }

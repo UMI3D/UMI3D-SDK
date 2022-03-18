@@ -18,24 +18,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.interaction;
-using umi3d.worldController;
+using umi3d.common.collaboration;
 using UnityEngine;
 
-public class StandAloneKeyGenerator : IKeyGenerator
+public interface IEnvironment
 {
-    public virtual string GenerateHeaderToken(string oldToken)
-    {
-        return new System.Guid().ToString();
-    }
+    Task Register(RegisterIdentityDto identityDto);
 
-    public virtual string GenerateKey(string oldKey)
-    {
-        return null;
-    }
-
-    public virtual string GenerateLocalToken(string oldToken)
-    {
-        return new System.Guid().ToString();
-    }
+    Task<ForgeConnectionDto> ToDto();
 }

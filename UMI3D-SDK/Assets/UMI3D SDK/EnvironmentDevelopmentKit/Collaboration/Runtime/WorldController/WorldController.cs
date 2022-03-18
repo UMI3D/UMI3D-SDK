@@ -22,9 +22,9 @@ using System.Linq;
 using inetum.unityUtils;
 using System.Threading.Tasks;
 
-namespace umi3d.ms
+namespace umi3d.worldController
 {
-    public class MasterServer : Singleton<MasterServer>, IMasterServer
+    public class WorldController : Singleton<WorldController>, IWorldController_Client, IWorldController_Environment, IWorldController
     {
         IIAM IAM;
         IKeyGenerator keyGenerator;
@@ -33,10 +33,10 @@ namespace umi3d.ms
         public string ip;
         public string mediaName;
 
-        public MasterServer() : base()
+        public WorldController() : base()
         {}
 
-        public MasterServer(IIAM iAM,IKeyGenerator keyGenerator): this()
+        public WorldController(IIAM iAM,IKeyGenerator keyGenerator): this()
         {
             this.IAM = iAM;
             this.keyGenerator = keyGenerator;
@@ -84,7 +84,7 @@ namespace umi3d.ms
             if (userMap.ContainsKey(id))
                 userMap[id].Update(connectionDto);
             else
-                userMap.Add(id, new User(connectionDto));
+                userMap.Add(id, new User(connectionDto, id));
 
             return userMap[id];
         }
@@ -127,7 +127,7 @@ namespace umi3d.ms
             return privateId;
         }
 
-        async Task<UMI3DDto> IMasterServer.Connect(ConnectionDto connectionDto)
+        async Task<UMI3DDto> IWorldController_Client.Connect(ConnectionDto connectionDto)
         {
             return await _RegisterUser(connectionDto);
         }
@@ -152,5 +152,19 @@ namespace umi3d.ms
             return res;
         }
 
+        async virtual public Task NotifyUserJoin(string uid)
+        {
+            await Task.CompletedTask;
+        }
+
+        async virtual public Task Pong(IClient client)
+        {
+            await Task.CompletedTask;
+        }
+
+        async virtual public Task<MediaDto> GetMediaDto()
+        {
+            return await Task.FromResult(ToDto());
+        }
     }
 }

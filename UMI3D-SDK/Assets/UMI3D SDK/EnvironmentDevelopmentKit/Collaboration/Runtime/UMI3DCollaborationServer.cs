@@ -191,10 +191,10 @@ namespace umi3d.edk.collaboration
 
             if (isWorldController)
             {
-                new umi3d.ms.MasterServer(new StandAloneIAM(this), new StandAloneKeyGenerator());
+                new umi3d.worldController.WorldController(new StandAloneIAM(this), new StandAloneKeyGenerator());
                 UMI3DHttp.Instance.AddRoot(new UMI3DStandAloneApi());
-                umi3d.ms.MasterServer.Instance.ip = GetHttpUrl();
-                umi3d.ms.MasterServer.Instance.mediaName = UMI3DCollaborationEnvironment.Instance.environmentName;
+                umi3d.worldController.WorldController.Instance.ip = GetHttpUrl();
+                umi3d.worldController.WorldController.Instance.mediaName = UMI3DCollaborationEnvironment.Instance.environmentName;
             }
 
         }

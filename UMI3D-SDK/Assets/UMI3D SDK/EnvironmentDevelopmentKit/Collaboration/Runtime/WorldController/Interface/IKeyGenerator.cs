@@ -14,22 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
-using umi3d.edk.collaboration;
-using UnityEngine;
-using WebSocketSharp.Server;
+using umi3d.common.interaction;
 
-public class UMI3DCollaborationStandAloneServer : UMI3DCollaborationServer
+namespace umi3d.worldController
 {
-    public override void Init()
+    public interface IKeyGenerator
     {
+        string GenerateLocalToken(string oldToken);
 
+        string GenerateHeaderToken(string oldToken);
+
+        string GenerateKey(string oldKey);
     }
-
-
 }
