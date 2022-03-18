@@ -24,6 +24,8 @@ namespace umi3d.cdk.menu.view
         public MenuAsset menuAsset;
         [SerializeField]
         private bool m_displayedOnStart = false;
+        [SerializeField]
+        private bool m_collapseOnStart = false;
         /// <summary>
         /// Should call the Hide function when the Back function is called on root.
         /// </summary>
@@ -467,6 +469,7 @@ namespace umi3d.cdk.menu.view
                     RemoveSubMenu(currentSubContainer, subSubMenu);
                 else
                     RemoveItem(currentSubContainer, subSubMenuItem);
+                Display(true);
             };
             subMenu.OnAbstractMenuItemRemoved.AddListener(onItemRemoved);
 
@@ -564,7 +567,11 @@ namespace umi3d.cdk.menu.view
         private void Start()
         {
             if (m_displayedOnStart)
+            {
                 CreateMenuAndDisplay();
+                if (m_collapseOnStart)
+                    Collapse();
+            }
         }
 
         /// <summary>
