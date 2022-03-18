@@ -29,8 +29,11 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         public bool hideOnBack = false;
         /// <summary>
-        /// All containers <= displayDepth will be Display, All displayers < ...(wip)
+        /// Displayer : Display <= displayDepth < Hide
+        /// Container : Display <= displayDepth + 1 < Hide
+        /// Container : Expand <= displayDepth < Collapse
         /// </summary>
+        [Tooltip("Displayer : Display <= displayDepth < Hide. Container : Display <= displayDepth + 1 < Hide; Expand <= displayDepth < Collapse")]
         public int displayDepth = 1;
 
         /// <summary>
@@ -65,10 +68,11 @@ namespace umi3d.cdk.menu.view
                 return menuAsset.menu;
             }
         }
+        public bool IsMenuCreated { get; protected set; } = false;
         /// <summary>
         /// Is the menu being displayed ?
         /// </summary>
-        public bool isDisplaying { get; protected set; }
+        public bool isDisplaying { get; protected set; } = false;
         public AbstractMenuDisplayContainer lastMenuContainerUnderNavigation { get; protected set; }
 
         /// <summary>
@@ -94,8 +98,9 @@ namespace umi3d.cdk.menu.view
         /// <param name="navigateToLastMenu"></param>
         public void CreateMenuAndDisplay(bool update, bool navigateToLastMenu)
         {
-            if (isDisplaying && !update)
+            if (IsMenuCreated && !update)
                 return;
+            IsMenuCreated = true;
 
             Clear();
             m_root = CreateSubMenu(null, menu, 0);
@@ -119,6 +124,9 @@ namespace umi3d.cdk.menu.view
         [ContextMenu("Clear")]
         public void Clear()
         {
+            if (!IsMenuCreated)
+                return;
+
             menuToDisplayer.Clear();
             itemToDisplayer.Clear();
             isDisplaying = false;
@@ -173,34 +181,6 @@ namespace umi3d.cdk.menu.view
             onDisplay.Invoke();
         }
 
-        ///// <summary>
-        ///// Display the menu.
-        ///// </summary>
-        ///// <param name="update">Should the display be updated (in case of changes in menu)</param>
-        //public void Display(bool update)
-        //{
-        //    if (!isDisplaying)
-        //        CreateMenuAndDisplay();
-        //    else if (update)
-        //    {
-        //        Hide(true);
-        //        CreateMenuAndDisplay();
-        //        AbstractMenuItem last = lastMenuContainerUnderNavigation.menu;
-        //        if (last is AbstractMenu lastMenu)
-        //            Navigate(lastMenu);
-        //    }
-        //    //else
-        //    //{
-        //    //    foreach (AbstractMenuDisplayContainer container in containers)
-        //    //    {
-        //    //        container.Display();
-        //    //        container.Expand();
-        //    //    }
-        //    //}
-
-        //    onDisplay.Invoke();
-        //}
-
         /// <summary>
         /// Hide the menu.
         /// </summary>
@@ -248,9 +228,9 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         public void Collapse(bool update)
         {
-            onHide.Invoke();
             if (!isDisplaying && !update)
                 return;
+            onHide.Invoke();
             if (containers.Count > 0) containers[0].Collapse(update);
             isDisplaying = false;
         }
@@ -273,64 +253,53 @@ namespace umi3d.cdk.menu.view
         public void Navigate(AbstractMenu submenu)
         {
             if (!menuToDisplayer.TryGetValue(submenu, out AbstractMenuDisplayContainer displayer))
-            {
                 throw new System.Exception("Internal error : no displayer found for this menu");
-            }
-            lastMenuContainerUnderNavigation = displayer;
-            if (displayer.parent == null)
+
+            AbstractMenuDisplayContainer precDisplayer = displayer.parent;
+            if (precDisplayer == null)
             {
+                lastMenuContainerUnderNavigation = displayer;
                 displayer.Display();
+                displayer.Collapse();
+                displayer.Expand();
+                return;
+            }
+
+            AbstractMenuDisplayContainer currentDisplayer;
+            if (displayer.generationOffsetOnExpand >= 0)
+            {
+                AbstractMenuDisplayContainer VirtualDisplayer = displayer;
+                int offset = displayer.generationOffsetOnExpand;
+                while (offset > -1 && VirtualDisplayer.parent != null)
+                {
+                    while (offset > -1 && VirtualDisplayer.parent != null)
+                    {
+                        VirtualDisplayer = VirtualDisplayer.parent;
+                        offset--;
+                    }
+                    offset = VirtualDisplayer.generationOffsetOnExpand;
+                }
+                currentDisplayer = VirtualDisplayer;
+            }
+            else
+                currentDisplayer = displayer;
+
+            AbstractMenuDisplayContainer precCurrentDisplayer = currentDisplayer.parent;
+            if (precCurrentDisplayer != null && !precCurrentDisplayer.isExpanded)
+                Navigate(precCurrentDisplayer.menu as AbstractMenu);
+
+            lastMenuContainerUnderNavigation = displayer;
+
+            currentDisplayer.Display();
+            currentDisplayer.Collapse();
+
+            if (currentDisplayer == displayer)
+            {
+                CollapseSiblings(precDisplayer, displayer);
                 displayer.Expand(true);
             }
             else
-            {
-                AbstractMenuDisplayContainer Currentdisplayer;
-                if (displayer.generationOffsetOnExpand < 0)
-                {
-                    Currentdisplayer = displayer;
-                }
-                else
-                {
-                    AbstractMenuDisplayContainer VirtualDisplayer = displayer;
-                    int offset = displayer.generationOffsetOnExpand;
-                    while (offset > -1 && VirtualDisplayer.parent != null)
-                    {
-                        while (offset > -1 && VirtualDisplayer.parent != null)
-                        {
-                            VirtualDisplayer = VirtualDisplayer.parent;
-                            offset--;
-                        }
-                        offset = VirtualDisplayer.generationOffsetOnExpand;
-
-                    }
-                    Currentdisplayer = VirtualDisplayer;
-                }
-
-                if (Currentdisplayer.parent != null && !Currentdisplayer.parent.isExpanded)
-                {
-                    Navigate(Currentdisplayer.parent.menu as AbstractMenu);
-                }
-                Currentdisplayer.Display();
-                Currentdisplayer.Collapse();
-                if (Currentdisplayer != displayer)
-                {
-                    Currentdisplayer.ExpandAs(displayer, true);
-                }
-                else
-                {
-                    //Collapse all siblings if parrallel navigation isn't allowed
-                    if (!displayer.parent.parallelNavigation)
-                    {
-                        foreach (AbstractDisplayer siblings in displayer.parent)
-                        {
-
-                            if ((siblings is AbstractMenuDisplayContainer) && ((siblings as AbstractMenuDisplayContainer) != displayer))
-                                (siblings as AbstractMenuDisplayContainer).Collapse();
-                        }
-                    }
-                    displayer.Expand(true);
-                }
-            }
+                currentDisplayer.ExpandAs(displayer, true);
         }
 
         /// <summary>
@@ -378,6 +347,25 @@ namespace umi3d.cdk.menu.view
         [ContextMenu("Collapse")]
         private void Collapse()
             => Collapse(false);
+
+        /// <summary>
+        /// Collapse all the siblings of [containers] if [precContainer].parallelNavigation == false. Apply on parent too.
+        /// </summary>
+        /// <param name="precContainre"></param>
+        /// <param name="container"></param>
+        private void CollapseSiblings(AbstractMenuDisplayContainer precContainre, AbstractMenuDisplayContainer container)
+        {
+            if (precContainre == null || precContainre.parallelNavigation)
+                return;
+
+            foreach (AbstractDisplayer sibling in precContainre)
+            {
+                if (!(sibling is AbstractMenuDisplayContainer siblingContainter) || siblingContainter == container)
+                    continue;
+                siblingContainter.Collapse(true);
+            }
+            CollapseSiblings(precContainre.parent, precContainre);
+        }
 
         /// <summary>
         /// Create the menu, and display it.
@@ -520,7 +508,10 @@ namespace umi3d.cdk.menu.view
                         container.Collapse(true);
                 }
                 else
+                {
+                    container.Collapse(true);
                     container.Hide();
+                }
 
                 foreach (AbstractDisplayer subDisplayer in container)
                     ApplyDisplayDepthOnDisplayerDisplayStatus(subDisplayer, depth + 1);
@@ -573,7 +564,7 @@ namespace umi3d.cdk.menu.view
         private void Start()
         {
             if (m_displayedOnStart)
-                Display();
+                CreateMenuAndDisplay();
         }
 
         /// <summary>
