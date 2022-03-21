@@ -156,8 +156,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public override void Init()
         {
-
-
             UMI3DLogger.Log($"Server Init", scope);
             base.Init();
             if (collaborativeModule == null)

@@ -190,7 +190,12 @@ namespace umi3d.common.collaboration
                         {
                             variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
                         };
-                        if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
+                        if(texture.variants.Count == 0)
+                        {
+                            result = default(T);
+                            readable = true;
+                            return true;
+                        } else if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
                             && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
                             && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId))
                         {
@@ -210,6 +215,12 @@ namespace umi3d.common.collaboration
                     {
                         variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
                     };
+                    if (resource.variants.Count == 0)
+                    {
+                        result = default(T);
+                        readable = true;
+                        return true;
+                    }
                     readable = true;
                     result = (T)Convert.ChangeType(resource, typeof(T));
                     return true;
@@ -322,6 +333,7 @@ namespace umi3d.common.collaboration
 
         public override bool Write<T>(T value, out Bytable bytable)
         {
+            UnityEngine.Debug.Log($"Hello {typeof(T)}");
             switch (value)
             {
                 case LocalInfoRequestParameterValue localInfovalue:
@@ -418,13 +430,23 @@ namespace umi3d.common.collaboration
                     break;
                 case GateDto gate:
                     bytable = UMI3DNetworkingHelper.Write(gate.gateId)
-                        + UMI3DNetworkingHelper.Write(gate.metaData);
+                        + UMI3DNetworkingHelper.WriteCollection(gate.metaData);
                     break;
                 default:
+                    if (typeof(T) == typeof(ResourceDto))
+                    {
+                        // value is null
+                        bytable = UMI3DNetworkingHelper.WriteCollection(new System.Collections.Generic.List<FileDto>());
+                        return true;
+                    }
+                    UnityEngine.Debug.Log($"No {typeof(T)} {typeof(T) == typeof(ResourceDto)}");
                     bytable = null;
                     return false;
             }
             return true;
         }
+
+
+
     }
 }
