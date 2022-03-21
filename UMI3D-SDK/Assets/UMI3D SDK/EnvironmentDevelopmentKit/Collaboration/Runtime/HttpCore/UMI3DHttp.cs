@@ -42,8 +42,8 @@ namespace umi3d.edk.collaboration
 
             httpsv = new HttpServer(port);
 
-            var rootMapGET = new HttpRoutingUtil(typeof(HttpGet));
-            var rootMapPOST = new HttpRoutingUtil(typeof(HttpPost));
+            rootMapGET = new HttpRoutingUtil(typeof(HttpGet));
+            rootMapPOST = new HttpRoutingUtil(typeof(HttpPost));
 
             httpsv.OnGet += (object sender, HttpRequestEventArgs e) =>
             {

@@ -40,7 +40,6 @@ public class UMI3DStandAloneApi : IHttpApi
     [HttpPost(UMI3DNetworkingKeys.connect, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
     public void Connection(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
     {
-        Debug.Log("hello");
         byte[] bytes = default(byte[]);
         using (var memstream = new MemoryStream())
         {
@@ -56,8 +55,6 @@ public class UMI3DStandAloneApi : IHttpApi
         MainThreadManager.Run(() => RegisterUser(dto as ConnectionDto, (res) => { finished = true; result = res; }));
         while (!finished)
             System.Threading.Thread.Sleep(1);
-
-        Debug.Log("hey");
 
         if (result != null)
         {

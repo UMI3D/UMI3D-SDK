@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System;
 using System.Collections;
@@ -136,6 +137,7 @@ namespace umi3d.edk.collaboration
 
         private IEnumerator _updateConnectionInformation(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
         {
+            UMI3DLogger.Log($"Update Connection Information {user?.Id()} {dto?.status} {dto?.librariesUpdated} {dto?.parameters?.answers?.Select((a)=>a.parameter.ToString()).ToString<string>()}", scope);
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
             user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
             yield break;

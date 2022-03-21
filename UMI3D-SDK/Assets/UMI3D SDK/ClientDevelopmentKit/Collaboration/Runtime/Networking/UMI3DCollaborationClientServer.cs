@@ -44,6 +44,9 @@ namespace umi3d.cdk.collaboration
         public UMI3DForgeClient ForgeClient { get; private set; }
 
         private static PrivateIdentityDto Identity = null;
+
+        static bool needToGetFirstConnectionInfo = true;
+
         public static PublicIdentityDto PublicIdentity => new PublicIdentityDto() { login = Identity.login, userId = Identity.userId };
 
         override protected ForgeConnectionDto connectionDto => Identity?.connectionDto;
@@ -112,23 +115,40 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Start the connection to a Master Server.
         /// </summary>
-        public static void Connect(MediaDto media, GateDto gate = null)
+        public static void Connect(MediaDto media, GateDto gate = null, bool preloading = false)
         {
             if (Exists)
             {
-                Instance._media = media;
-
-                var connection = new ConnectionDto()
+                void _connect()
                 {
-                    GlobalToken = Identity?.GlobalToken,
-                    gate = gate
-                };
+                    if (Instance._media != null)
+                    {
+                        if (Instance._media.url != media.url)
+                        {
+                            Identity = null;
+                        }
+                    }
+                    Instance._media = media;
 
-                Connect(connection);
+                    var connection = new ConnectionDto()
+                    {
+                        GlobalToken = Identity?.GlobalToken,
+                        gate = gate,
+                        LibraryPreloading = preloading
+                    };
+
+                    Connect(connection);
+                }
+
+
+                EnvironmentLogout(
+                    _connect,
+                    (s) => { _connect(); }
+                    );
             }
         }
 
-        public static void Connect(UMI3DDto dto)
+        public static void Connect(ConnectionDto dto)
         {
             if (Exists)
             {
@@ -145,7 +165,14 @@ namespace umi3d.cdk.collaboration
                         else if (answerDto is ConnectionFormDto form)
                         {
                             Instance.Identifier.GetParameterDtos(form, (answer) => {
-                                Connect(answer);
+                                var _answer = new FormConnectionAnswerDto()
+                                {
+                                    FormAnswerDto = answer,
+                                    GlobalToken = form.temporaryUserId,
+                                    gate = dto.gate,
+                                    LibraryPreloading = dto.LibraryPreloading
+                                };
+                                Connect(_answer);
                             });
                         }
                     },
@@ -219,7 +246,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-
+                failled?.Invoke("Not Connected");
             }
         }
 
@@ -305,14 +332,16 @@ namespace umi3d.cdk.collaboration
             switch (statusDto.status)
             {
                 case StatusType.CREATED:
+                    needToGetFirstConnectionInfo = false;
                     UMI3DCollaborationClientServer.Instance.HttpClient.SendGetIdentity((user) =>
                     {
                         StartCoroutine(Instance.UpdateIdentity(user));
                     }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                     break;
                 case StatusType.READY:
-                    if (Identity.userId == 0)
+                    if (needToGetFirstConnectionInfo)
                     {
+                        needToGetFirstConnectionInfo = false;
                         Instance.HttpClient.SendGetIdentity((user) =>
                         {
                             //TODO Identity should be set by master serv
@@ -391,14 +420,16 @@ namespace umi3d.cdk.collaboration
                     switch (statusDto.status)
                     {
                         case StatusType.CREATED:
+                            needToGetFirstConnectionInfo = false;
                             Instance.HttpClient.SendGetIdentity((user) =>
                             {
                                 StartCoroutine(Instance.UpdateIdentity(user));
                             }, (error) => { UMI3DLogger.Log("error on get id :" + error, scope); });
                             break;
                         case StatusType.READY:
-                            if (Identity.userId == 0)
+                            if (needToGetFirstConnectionInfo)
                             {
+                                needToGetFirstConnectionInfo = false;
                                 Instance.HttpClient.SendGetIdentity((user) =>
                                 {
                                     UserDto.Set(user);
@@ -425,6 +456,7 @@ namespace umi3d.cdk.collaboration
 
         private void Join()
         {
+            UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             if (joinning || connected) return;
             UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
             joinning = true;
@@ -515,11 +547,13 @@ namespace umi3d.cdk.collaboration
 
         private void EnterScene(EnterDto enter)
         {
+            UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
             useDto = enter.usedDto;
             UMI3DEnvironmentLoader.Instance.NotifyLoad();
             HttpClient.SendGetEnvironment(
                 (environement) =>
                 {
+                    UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
                     Action setStatus = () =>
                     {
                         UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);

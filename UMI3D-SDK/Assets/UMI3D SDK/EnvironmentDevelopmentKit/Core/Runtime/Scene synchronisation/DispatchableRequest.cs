@@ -27,13 +27,18 @@ namespace umi3d.edk
 
         public DispatchableRequest(bool reliable, HashSet<UMI3DUser> users)
         {
-            this.users = users ?? new HashSet<UMI3DUser>();
+            this.users = users ?? (UMI3DServer.Exists ? UMI3DServer.Instance.UserSetWhenHasJoined() : new HashSet<UMI3DUser>());
             this.reliable = reliable;
         }
 
         public abstract byte[] ToBytes();
 
         public abstract byte[] ToBson();
+
+        public void Dispatch()
+        {
+            UMI3DServer.Dispatch(this);
+        }
 
     }
 }

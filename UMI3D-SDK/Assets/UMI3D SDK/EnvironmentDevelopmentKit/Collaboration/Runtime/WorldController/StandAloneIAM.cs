@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -40,19 +42,21 @@ public class StandAloneIAM : IIAM
         form.fields.Add(
             new StringParameterDto()
             {
+                id = 1,
                 name = "Login",
                 value = ""
             });
         form.fields.Add(
             new StringParameterDto()
             {
+                id = 2,
                 name = "Password",
                 value = ""
             });
 
 
 
-        return await Task.FromResult<ConnectionFormDto>(null);
+        return await Task.FromResult<ConnectionFormDto>(form);
     }
 
     public async virtual Task<IEnvironment> GetEnvironment(User user)
@@ -69,6 +73,9 @@ public class StandAloneIAM : IIAM
     {
         if (user.Token == null)
             user.Set(new System.Guid().ToString());
+
+        formAnswer.answers.ForEach((s) => Debug.Log($"{s?.id} : {s?.parameter}"));
+
         return await Task.FromResult(true);
     }
 
@@ -76,7 +83,8 @@ public class StandAloneIAM : IIAM
     {
         if (user.Token == null)
             user.Set(new System.Guid().ToString());
-        return await Task.FromResult(true);
+
+        return await Task.FromResult(false);
     }
 
     public async virtual Task RenewCredential(User user)

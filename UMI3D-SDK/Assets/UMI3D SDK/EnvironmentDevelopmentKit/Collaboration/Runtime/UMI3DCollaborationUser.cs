@@ -113,6 +113,7 @@ namespace umi3d.edk.collaboration
         public override void SetStatus(StatusType status)
         {
             bool isSame = status == this.status;
+            UMI3DLogger.Log($"Set Status {Id()} {status} {isSame}", scope);
             base.SetStatus(status);
             if (!isSame)
                 UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);

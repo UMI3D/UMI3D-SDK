@@ -307,6 +307,13 @@ namespace umi3d.cdk.collaboration
                             });
                         }
                         break;
+                    case RedirectionDto redirection:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationClientServer.Connect(redirection.media,redirection.gate);
+                        });
+
+                        break;
                     default:
                         UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
                         break;
@@ -375,6 +382,13 @@ namespace umi3d.cdk.collaboration
                                    bytesToUpload);
                             });
                         }
+                        break;
+                    case UMI3DOperationKeys.RedirectionRequest:
+                        RedirectionDto redirection = UMI3DNetworkingHelper.Read<RedirectionDto>(container);
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationClientServer.Connect(redirection.media, redirection.gate);
+                        });
                         break;
                     default:
                         MainThreadManager.Run(() =>

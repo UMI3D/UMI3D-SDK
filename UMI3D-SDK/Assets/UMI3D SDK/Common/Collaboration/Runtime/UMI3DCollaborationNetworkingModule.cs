@@ -235,6 +235,84 @@ namespace umi3d.common.collaboration
                     }
 
                     return true;
+                case true when typeof(T) == typeof(RedirectionDto):
+                    MediaDto media;
+                    GateDto gate;
+                    if (
+                        UMI3DNetworkingHelper.TryRead<MediaDto>(container, out media)
+                        && UMI3DNetworkingHelper.TryRead<GateDto>(container, out gate)
+                        )
+                    {
+
+                        var redirection = new RedirectionDto
+                        {
+                            media = media,
+                            gate = gate
+                        };
+                        readable = true;
+                        result = (T)Convert.ChangeType(redirection, typeof(T));
+
+                        return true;
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
+                case true when typeof(T) == typeof(GateDto):
+                    string gateid;
+                    byte[] data;
+                    if (
+                        UMI3DNetworkingHelper.TryRead<string>(container, out gateid)
+                        )
+                    {
+                        data = UMI3DNetworkingHelper.ReadArray<byte>(container);
+
+                        var _gate = new GateDto
+                        {
+                            gateId = gateid,
+                            metaData = data
+                        };
+                        readable = true;
+                        result = (T)Convert.ChangeType(_gate, typeof(T));
+
+                        return true;
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
+                case true when typeof(T) == typeof(MediaDto):
+                    string name, versionMajor, versionMinor, versionStatus, versionDate, url;
+                    ResourceDto icon2D, icon3D;
+                    if (
+                        UMI3DNetworkingHelper.TryRead(container, out name)
+                        && UMI3DNetworkingHelper.TryRead(container, out icon2D)
+                        && UMI3DNetworkingHelper.TryRead(container, out icon3D)
+                        && UMI3DNetworkingHelper.TryRead(container, out versionMajor)
+                        && UMI3DNetworkingHelper.TryRead(container, out versionMinor)
+                        && UMI3DNetworkingHelper.TryRead(container, out versionStatus)
+                        && UMI3DNetworkingHelper.TryRead(container, out versionDate)
+                        && UMI3DNetworkingHelper.TryRead(container, out url)
+                        )
+                    {
+                        var _media = new MediaDto
+                        {
+                            name = name,
+                            icon2D = icon2D,
+                            icon3D = icon3D,
+                            versionMajor = versionMajor,
+                            versionMinor = versionMinor,
+                            versionStatus = versionStatus,
+                            versionDate = versionDate,
+                            url = url
+                        };
+                        readable = true;
+                        result = (T)Convert.ChangeType(_media, typeof(T));
+
+                        return true;
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
+
                 default:
                     result = default(T);
                     readable = false;
@@ -323,6 +401,24 @@ namespace umi3d.common.collaboration
                         + UMI3DNetworkingHelper.Write(fileDto.metrics?.size ?? 0f)
                         + UMI3DNetworkingHelper.Write(fileDto.pathIfInBundle)
                         + UMI3DNetworkingHelper.Write(fileDto.libraryKey);
+                    break;
+                case RedirectionDto redirection:
+                    bytable = UMI3DNetworkingHelper.Write(redirection.media)
+                        + UMI3DNetworkingHelper.Write(redirection.gate);
+                    break;
+                case MediaDto media:
+                    bytable = UMI3DNetworkingHelper.Write(media.name)
+                        + UMI3DNetworkingHelper.Write(media.icon2D)
+                        + UMI3DNetworkingHelper.Write(media.icon3D)
+                        + UMI3DNetworkingHelper.Write(media.versionMajor)
+                        + UMI3DNetworkingHelper.Write(media.versionMinor)
+                        + UMI3DNetworkingHelper.Write(media.versionStatus)
+                        + UMI3DNetworkingHelper.Write(media.versionDate)
+                        + UMI3DNetworkingHelper.Write(media.url);
+                    break;
+                case GateDto gate:
+                    bytable = UMI3DNetworkingHelper.Write(gate.gateId)
+                        + UMI3DNetworkingHelper.Write(gate.metaData);
                     break;
                 default:
                     bytable = null;
