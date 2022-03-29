@@ -52,7 +52,7 @@ namespace umi3d.cdk.interaction
 
                 ToolboxDto dto = tool.dto as ToolboxDto;
 
-                if (!tool.isInsideToolbox)
+                if (tool.isInsideToolbox)
                 {
                     if (toolboxIdToMenu.ContainsKey(tool.parent.id))
                     {
