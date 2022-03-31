@@ -81,7 +81,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="form"></param>
         /// <param name="sendLocalInfo">If true and if read access is true, Send the local info to server by http POST request.</param>
-        public static void CheckFormToUpdateAuthorizations(FormDto form, bool sendLocalInfo = true)
+        public static async void CheckFormToUpdateAuthorizations(FormDto form, bool sendLocalInfo = true)
         {
             foreach (AbstractParameterDto param in form.fields)
             {
@@ -103,18 +103,15 @@ namespace umi3d.cdk.collaboration
                         byte[] bytes = GetLocalInfo(key);
                         if (bytes != null)
                         {
-                            ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(
-                                () => { },
+                            await ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(
                                 (s) => UMI3DLogger.LogWarning("fail to send local datas to server : " + s, scope),
                                 key,
                                 bytes
                                 );
-
                         }
                     }
                 }
             }
         }
-
     }
 }

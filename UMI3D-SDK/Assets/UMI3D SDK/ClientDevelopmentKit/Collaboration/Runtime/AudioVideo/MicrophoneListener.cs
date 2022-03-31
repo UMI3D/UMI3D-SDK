@@ -705,10 +705,10 @@ namespace umi3d.cdk.collaboration
                     {
                         int encodedLength = encoder.Encode(frameBuffer, outputBuffer);
                         if (UMI3DCollaborationClientServer.Exists
-                            && UMI3DCollaborationClientServer.Instance?.ForgeClient != null
-                            && UMI3DCollaborationClientServer.UserDto.dto.status == StatusType.ACTIVE)
+                            && UMI3DCollaborationClientServer.Connected()
+                            && UMI3DCollaborationClientServer.Instance.status == StatusType.ACTIVE)
                         {
-                            UMI3DCollaborationClientServer.Instance.ForgeClient.SendVOIP(encodedLength, outputBuffer);
+                            UMI3DCollaborationClientServer.Instance.SendVOIP(encodedLength, outputBuffer);
                         }
                     }
                 }

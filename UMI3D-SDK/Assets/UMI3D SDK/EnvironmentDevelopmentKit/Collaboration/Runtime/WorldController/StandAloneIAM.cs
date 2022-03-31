@@ -81,9 +81,11 @@ public class StandAloneIAM : IIAM
 
     public async virtual Task<bool> IsUserValid(User user)
     {
-        if (user.Token == null)
-            user.Set(new System.Guid().ToString());
 
+        if (user.Token != null)
+            return await Task.FromResult(true);
+
+        user.Set(new System.Guid().ToString());
         return await Task.FromResult(false);
     }
 

@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 
 namespace umi3d.cdk
@@ -59,9 +60,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="argument">failed request argument</param>
         /// <returns></returns>
-        public virtual bool TryAgainOnHttpFail(RequestFailedArgument argument)
+        public virtual async Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument)
         {
-            return false;
+            return await Task.FromResult(false);
         }
 
         public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
@@ -80,21 +81,41 @@ namespace umi3d.cdk
         protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
 
-        public static void GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        public static async void GetFile(string url, Action<byte[]> callback, Action<string> onError)
         {
             if (Exists)
-                Instance._GetFile(url, callback, onError);
+            {
+                var bytes = await Instance._GetFile(url, onError);
+                if (bytes != null)
+                    callback.Invoke(bytes);
+            }
+            else
+                onError?.Invoke($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { onError.Invoke("GetFile Not Implemented"); }
+        protected virtual async Task<byte[]> _GetFile(string url, Action<string> onError)
+        {
+            onError.Invoke("GetFile Not Implemented");
+            return await Task.FromResult<byte[]>(null);
+        }
 
-        public static void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
+        public static async void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
         {
             if (Exists)
-                Instance._GetEntity(ids, callback, onError);
+            {
+                var dto = await Instance._GetEntity(ids, onError);
+                if (dto != null)
+                    callback.Invoke(dto);
+            }
+            else
+                onError?.Invoke($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual void _GetEntity(List<ulong> id, Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
+        protected virtual async Task<LoadEntityDto> _GetEntity(List<ulong> id, Action<string> onError)
+        {
+            onError.Invoke("GetEntity Not Implemented");
+            return await Task.FromResult<LoadEntityDto>(null);
+        }
 
         public virtual ulong GetId() { return 0; }
 
@@ -108,6 +129,8 @@ namespace umi3d.cdk
         /// return HTTPClient if the server is a collaboration server. return null in that case
         /// </summary>
         public virtual Object GetHttpClient() { return null; }
+
+        public virtual double GetRoundTripLAtency() { return 0; }
 
     }
 }

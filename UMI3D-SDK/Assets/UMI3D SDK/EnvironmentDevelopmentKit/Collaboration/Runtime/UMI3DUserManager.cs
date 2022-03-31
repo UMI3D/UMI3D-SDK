@@ -212,6 +212,7 @@ namespace umi3d.edk.collaboration
                 if (users.ContainsKey(LoginDto.userId))
                 {
                     user = users[LoginDto.userId];
+                    user.Update(LoginDto);
                     reconnection = true;
                 }
                 else

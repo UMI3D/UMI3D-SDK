@@ -80,7 +80,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="user"></param>
         private void OnAudioFrequencyChanged(UMI3DUser user)
         {
-            if (user.id == UMI3DCollaborationClientServer.UserDto.dto.id)
+            if (user.id == UMI3DCollaborationClientServer.Instance.GetId())
                 MicrophoneListener.UpdateFrequency(user.audioFrequency);
             if (GlobalReader.ContainsKey(user.id))
                 GlobalReader[user.id].UpdateFrequency(user.audioFrequency);

@@ -26,7 +26,7 @@ public class StandAloneKeyGenerator : IKeyGenerator
 {
     public virtual string GenerateHeaderToken(string oldToken)
     {
-        return new System.Guid().ToString();
+        return System.Guid.NewGuid().ToString();
     }
 
     public virtual string GenerateKey(string oldKey)
@@ -36,6 +36,6 @@ public class StandAloneKeyGenerator : IKeyGenerator
 
     public virtual string GenerateLocalToken(string oldToken)
     {
-        return new System.Guid().ToString();
+        return System.Guid.NewGuid().ToString();
     }
 }

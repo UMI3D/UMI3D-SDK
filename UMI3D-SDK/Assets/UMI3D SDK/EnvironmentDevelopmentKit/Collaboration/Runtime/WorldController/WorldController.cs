@@ -52,6 +52,7 @@ namespace umi3d.worldController
 
         async Task<UMI3DDto> _RegisterUser(ConnectionDto connectionDto)
         {
+            UnityEngine.Debug.Log($"Register {connectionDto}");
             User user = GetUser(connectionDto);
 
             var dto = (connectionDto is FormConnectionAnswerDto formAnswer)
