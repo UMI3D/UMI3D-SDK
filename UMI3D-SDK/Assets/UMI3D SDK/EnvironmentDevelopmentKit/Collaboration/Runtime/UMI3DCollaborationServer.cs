@@ -121,7 +121,7 @@ namespace umi3d.edk.collaboration
 
         public async Task Register(RegisterIdentityDto identityDto)
         {
-            UMI3DLogger.Log($"User to be Created", scope);
+            UMI3DLogger.Log($"User to be Created {identityDto.login} {identityDto.userId} {identityDto.localToken}", scope);
             UMI3DCollaborationServer.Collaboration.CreateUser(identityDto, UserCreatedCallback);
             await Task.CompletedTask;
         }

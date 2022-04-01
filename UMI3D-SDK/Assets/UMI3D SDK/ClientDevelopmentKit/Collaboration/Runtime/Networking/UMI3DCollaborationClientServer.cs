@@ -184,7 +184,7 @@ namespace umi3d.cdk.collaboration
                 UnityAction a = () => needNewToken = false;
                 UMI3DCollaborationClientServer.Instance.OnNewToken.AddListener(a);
                 while (needNewToken && !((DateTime.UtcNow - argument.date).TotalMilliseconds > environmentClient.maxMillisecondToWait))
-                    await Task.Yield();
+                    await UMI3DAsyncManager.Yield();
                 UMI3DCollaborationClientServer.Instance.OnNewToken.RemoveListener(a);
                 return true;
             }
@@ -197,12 +197,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="url">Url used for the get request.</param>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        public static async void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public static async Task<MediaDto> GetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Get media at {url}", scope | DebugScope.Connection);
-            var media = await HttpClient.SendGetMedia(url, failback, shouldTryAgain);
-            UMI3DLogger.Log($"Media received", scope | DebugScope.Connection);
-            callback?.Invoke(media);
+            return await HttpClient.SendGetMedia(url, shouldTryAgain);
         }
 
         /// <summary>
@@ -234,17 +232,17 @@ namespace umi3d.cdk.collaboration
 
 
         ///<inheritdoc/>
-        protected override async Task<byte[]> _GetFile(string url, Action<string> onError)
+        protected override async Task<byte[]> _GetFile(string url)
         {
             UMI3DLogger.Log($"GetFile {url}", scope);
-            return await environmentClient?.GetFile(url, onError);
+            return await environmentClient?.GetFile(url);
         }
 
         ///<inheritdoc/>
-        protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids, Action<string> onError)
+        protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
         {
             UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
-            return await environmentClient?.GetEntity(ids, onError);
+            return await environmentClient?.GetEntity(ids);
         }
 
         ///<inheritdoc/>

@@ -538,12 +538,16 @@ namespace umi3d.cdk
                         LoadEntity(item, performed2);
                 }
             };
-            Action<string> error = (s) =>
+
+            try
             {
-                UMI3DLogger.LogError(s, scope);
+                UMI3DClientServer.GetEntity(ids, callback);
+            }
+            catch(Exception e)
+            {
+                UMI3DLogger.LogError(e.Message, scope);
                 performed2.Invoke();
-            };
-            UMI3DClientServer.GetEntity(ids, callback, error);
+            }
         }
 
         /// <summary>

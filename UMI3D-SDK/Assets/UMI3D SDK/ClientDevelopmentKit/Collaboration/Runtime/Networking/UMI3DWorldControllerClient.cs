@@ -90,13 +90,7 @@ namespace umi3d.cdk.collaboration
         {
             if (UMI3DCollaborationClientServer.Exists)
             {
-               var answerDto = await  HttpClient.Connect(
-                    dto,
-                    media.url,
-                    (error) =>
-                    {
-
-                    });
+                var answerDto = await HttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
                 {
                     Connected(identity);

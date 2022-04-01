@@ -85,36 +85,34 @@ namespace umi3d.cdk
         {
             if (Exists)
             {
-                var bytes = await Instance._GetFile(url, onError);
+                var bytes = await Instance._GetFile(url);
                 if (bytes != null)
                     callback.Invoke(bytes);
             }
             else
-                onError?.Invoke($"Instance of UMI3DClientServer is null");
+                throw new Exception($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual async Task<byte[]> _GetFile(string url, Action<string> onError)
+        protected virtual Task<byte[]> _GetFile(string url)
         {
-            onError.Invoke("GetFile Not Implemented");
-            return await Task.FromResult<byte[]>(null);
+            throw new NotImplementedException();
         }
 
-        public static async void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
+        public static async void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback)
         {
             if (Exists)
             {
-                var dto = await Instance._GetEntity(ids, onError);
+                var dto = await Instance._GetEntity(ids);
                 if (dto != null)
                     callback.Invoke(dto);
             }
             else
-                onError?.Invoke($"Instance of UMI3DClientServer is null");
+                throw new Exception($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual async Task<LoadEntityDto> _GetEntity(List<ulong> id, Action<string> onError)
+        protected virtual Task<LoadEntityDto> _GetEntity(List<ulong> id)
         {
-            onError.Invoke("GetEntity Not Implemented");
-            return await Task.FromResult<LoadEntityDto>(null);
+            throw new NotImplementedException();
         }
 
         public virtual ulong GetId() { return 0; }

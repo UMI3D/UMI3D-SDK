@@ -85,6 +85,12 @@ namespace umi3d.common
                 while(!completed)
                 {
                     await Task.Yield();
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                    {
+                        throw new Exception("Application is not playing");
+                    }
+#endif
                 }
                 return result;
             }

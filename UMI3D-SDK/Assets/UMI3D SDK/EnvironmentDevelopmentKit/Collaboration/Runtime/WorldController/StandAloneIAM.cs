@@ -29,6 +29,8 @@ public class StandAloneIAM : IIAM
     protected readonly IEnvironment environment;
     public StandAloneIAM(IEnvironment environment) { this.environment = environment; }
 
+    List<string> tokens = new List<string>();
+
     public async virtual Task<ConnectionFormDto> GenerateForm(User user)
     {
         var form = new ConnectionFormDto()
@@ -71,28 +73,34 @@ public class StandAloneIAM : IIAM
 
     public async virtual Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
     {
-        if (user.Token == null)
-            user.Set(new System.Guid().ToString());
-
         formAnswer.answers.ForEach((s) => Debug.Log($"{s?.id} : {s?.parameter}"));
-
+        SetToken(user);
         return await Task.FromResult(true);
     }
 
     public async virtual Task<bool> IsUserValid(User user)
     {
-
-        if (user.Token != null)
+        if (user.Token != null && tokens.Contains(user.Token))
             return await Task.FromResult(true);
 
-        user.Set(new System.Guid().ToString());
         return await Task.FromResult(false);
     }
 
     public async virtual Task RenewCredential(User user)
     {
-        if (user.Token == null)
-            user.Set(new System.Guid().ToString());
+        SetToken(user);
         await Task.CompletedTask;
     }
+
+    public void SetToken(User user)
+    {
+        if(user.Token == null || !tokens.Contains(user.Token))
+        {
+            var token = System.Guid.NewGuid().ToString();
+            tokens.Add(token);
+            user.Set(token);
+        }
+
+    }
+
 }

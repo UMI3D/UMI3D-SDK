@@ -113,10 +113,11 @@ namespace umi3d.cdk.collaboration
             bool ok = false;
             if (IsConnected())
             {
-                await HttpClient.SendPostLogout(
-                (error) =>
+                try
                 {
-                });
+                    await HttpClient.SendPostLogout();
+                }
+                finally { };
 
                 ForgeClient.Stop();
                 ok = true;
@@ -166,40 +167,45 @@ namespace umi3d.cdk.collaboration
         /// <param name="message"></param>
         public async void OnMessage(object message)
         {
-            switch (message)
+            try
             {
-                case TokenDto tokenDto:
-                    SetToken(tokenDto.token);
-                    break;
-                case StatusDto statusDto:
-                    switch (statusDto.status)
-                    {
-                        case StatusType.CREATED:
-                            needToGetFirstConnectionInfo = false;
-                            var user = await HttpClient.SendGetIdentity(
-                                (error) => { /*UMI3DLogger.Log("error on get id :" + error, scope);*/ });
-                            UpdateIdentity(user);
-                            break;
-                        case StatusType.READY:
-                            if (needToGetFirstConnectionInfo)
-                            {
+                switch (message)
+                {
+                    case TokenDto tokenDto:
+                        SetToken(tokenDto.token);
+                        break;
+                    case StatusDto statusDto:
+                        switch (statusDto.status)
+                        {
+                            case StatusType.CREATED:
                                 needToGetFirstConnectionInfo = false;
-                                var _user = await HttpClient.SendGetIdentity(
-                                    (error) => { /*UMI3DLogger.Log("error on get id :" + error, scope);*/ });
-                                UserDto.Set(_user);
-                                Join();
-                            }
-                            else
-                            {
-                                Join();
-                            }
+                                var user = await HttpClient.SendGetIdentity();
+                                UpdateIdentity(user);
+                                break;
+                            case StatusType.READY:
+                                if (needToGetFirstConnectionInfo)
+                                {
+                                    needToGetFirstConnectionInfo = false;
+                                    var _user = await HttpClient.SendGetIdentity();
+                                    UserDto.Set(_user);
+                                    Join();
+                                }
+                                else
+                                {
+                                    Join();
+                                }
 
-                            break;
-                    }
-                    break;
-                case StatusRequestDto statusRequestDto:
-                    HttpClient.SendPostUpdateStatusAsync(UserDto.answerDto.status,null);
-                    break;
+                                break;
+                        }
+                        break;
+                    case StatusRequestDto statusRequestDto:
+                        HttpClient.SendPostUpdateStatusAsync(UserDto.answerDto.status, null);
+                        break;
+                }
+            }
+            catch
+            {
+                Debug.LogWarning($"Error on OnMessage({message})");
             }
         }
 
@@ -209,30 +215,34 @@ namespace umi3d.cdk.collaboration
         /// <param name="status"></param>
         public async void OnStatusChanged(StatusDto statusDto)
         {
-            switch (statusDto.status)
+            try
             {
-                case StatusType.CREATED:
-                    needToGetFirstConnectionInfo = false;
-                    var user = await HttpClient.SendGetIdentity(
-                        (error) => { /*UMI3DLogger.Log("error on get id :" + error, scope);*/ });
-                    UpdateIdentity(user);
-                    break;
-                case StatusType.READY:
-                    if (needToGetFirstConnectionInfo)
-                    {
+                switch (statusDto.status)
+                {
+                    case StatusType.CREATED:
                         needToGetFirstConnectionInfo = false;
-                        var _user = await HttpClient.SendGetIdentity(
-                            (error) => { /*UMI3DLogger.Log("error on get id :" + error, scope);*/ });
-                        UserDto.Set(_user);
-                        
-                        Join();
-                    }
-                    else
-                    {
-                        Join();
-                    }
+                        var user = await HttpClient.SendGetIdentity();
+                        UpdateIdentity(user);
+                        break;
+                    case StatusType.READY:
+                        if (needToGetFirstConnectionInfo)
+                        {
+                            needToGetFirstConnectionInfo = false;
+                            var _user = await HttpClient.SendGetIdentity();
+                            UserDto.Set(_user);
+                            Join();
+                        }
+                        else
+                        {
+                            Join();
+                        }
 
-                    break;
+                        break;
+                }
+            }
+            catch
+            {
+                Debug.LogWarning($"Error on OnStatusChanged({statusDto})");
             }
         }
 
@@ -243,65 +253,74 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private async void UpdateIdentity(UserConnectionDto user)
         {
-            //UMI3DLogger.Log($"UpdateIdentity {user.id}", scope | DebugScope.Connection);
-            UserDto.Set(user);
-            //Identity.userId = user.id;
-            bool Ok = true;
-            bool librariesUpdated = UserDto.answerDto.librariesUpdated;
-
-            //UMI3DLogger.Log($"Somthing to update {UserDto.formdto != null} {!UserDto.answerDto.librariesUpdated} ", scope | DebugScope.Connection);
-
-            if (!UserDto.answerDto.librariesUpdated)
+            try
             {
+                //UMI3DLogger.Log($"UpdateIdentity {user.id}", scope | DebugScope.Connection);
+                UserDto.Set(user);
+                //Identity.userId = user.id;
+                bool Ok = true;
+                bool librariesUpdated = UserDto.answerDto.librariesUpdated;
 
-                var LibrariesDto = await HttpClient.SendGetLibraries(
-                    (error) => { Ok = false; /*UMI3DLogger.Log("error on get Libraries: " + error, scope);*/ }
-                    );
+                //UMI3DLogger.Log($"Somthing to update {UserDto.formdto != null} {!UserDto.answerDto.librariesUpdated} ", scope | DebugScope.Connection);
 
-               // UMI3DLogger.Log($"Ask to download Libraries", scope | DebugScope.Connection);
-                var b = await UMI3DCollaborationClientServer.Instance.Identifier.ShouldDownloadLibraries(
-                    UMI3DResourcesManager.LibrariesToDownload(LibrariesDto)
-                    );
-
-                if (!b)
+                if (!UserDto.answerDto.librariesUpdated)
                 {
-                    Ok = false;
-                    //UMI3DLogger.Log($"libraries Dowload aborted", scope | DebugScope.Connection);
-                }
-                else
-                {
-                    UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
-                        worldControllerClient.name,
-                        () =>
-                        {
-                            librariesUpdated = true;
-                        },
-                        (error) => { Ok = false;/* UMI3DLogger.Log("error on download Libraries :" + error, scope);*/ }
+                    LibrariesDto LibrariesDto = await HttpClient.SendGetLibraries();
+
+                    // UMI3DLogger.Log($"Ask to download Libraries", scope | DebugScope.Connection);
+                    var b = await UMI3DCollaborationClientServer.Instance.Identifier.ShouldDownloadLibraries(
+                        UMI3DResourcesManager.LibrariesToDownload(LibrariesDto)
                         );
+
+                    if (!b)
+                    {
+                        Ok = false;
+                        //UMI3DLogger.Log($"libraries Dowload aborted", scope | DebugScope.Connection);
+                    }
+                    else
+                    {
+                        UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
+                            worldControllerClient.name,
+                            () =>
+                            {
+                                librariesUpdated = true;
+                            },
+                            (error) => { Ok = false;/* UMI3DLogger.Log("error on download Libraries :" + error, scope);*/ }
+                            );
+                    }
+
+                    while (!librariesUpdated && Ok)
+                        await UMI3DAsyncManager.Yield();
+                    UserDto.answerDto.librariesUpdated = librariesUpdated;
                 }
 
-                while (!librariesUpdated && Ok)
-                    await Task.Yield();
-                UserDto.answerDto.librariesUpdated = librariesUpdated;
-            }
-
-            if (Ok)
-            {
-                //UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
-                if (UserDto.formdto != null)
+                if (Ok)
                 {
-                    var param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.formdto);
-                    UserDto.answerDto.parameters = param;
-                    await HttpClient.SendPostUpdateIdentity(UserDto.answerDto,(error) => { /*UMI3DLogger.Log("error on post id :" + error, scope);*/ });
+                    //UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
+                    if (UserDto.formdto != null)
+                    {
+                        var param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.formdto);
+                        UserDto.answerDto.parameters = param;
+                        await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
+                    }
+                    else
+                    {
+                        await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
+                    }
                 }
                 else
                 {
-                    await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, (error) => { /*UMI3DLogger.Log("error on post id :" + error, scope);*/ });
+                    await Logout();
                 }
             }
-            else
+            catch (UMI3DAsyncManagerException e)
+            {
+                //This exeception is thrown only when app is stopping.
+            }
+            catch
             {
                 await Logout();
+                throw;
             }
         }
 
@@ -323,33 +342,40 @@ namespace umi3d.cdk.collaboration
                 trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<uint, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(x => x.Key, x => x.Value),
                 userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
             };
-
-            var enter = await HttpClient.SendPostJoin(
-                joinDto,
-                (error) => { isJoinning = false; /*UMI3DLogger.LogError("error on get id :" + error, scope);*/ });
-            isJoinning = false; isConnecting = false; isConnected = true; EnterScene(enter);
+            try
+            {
+                var enter = await HttpClient.SendPostJoin(joinDto);
+                isConnecting = false; isConnected = true; EnterScene(enter);
+            }
+            finally
+            {
+                isJoinning = false;
+            }
         }
 
         private async void EnterScene(EnterDto enter)
         {
-            //UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
-            useDto = enter.usedDto;
-            UMI3DEnvironmentLoader.Instance.NotifyLoad();
-            var environement = await HttpClient.SendGetEnvironment(
-                (error) => { /*UMI3DLogger.Log("error on get Environement :" + error, scope);*/ });
-            //UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
-            Action setStatus = () =>
+            try
             {
-                async void set()
+                //UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
+                useDto = enter.usedDto;
+                UMI3DEnvironmentLoader.Instance.NotifyLoad();
+                var environement = await HttpClient.SendGetEnvironment();
+                //UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
+                Action setStatus = () =>
                 {
+                    async void set()
+                    {
                     //UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
                     UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
-                    UserDto.answerDto.status = StatusType.ACTIVE;
-                    await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
-                }
-                set();
-            };
-            UMI3DEnvironmentLoader.StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
+                        UserDto.answerDto.status = StatusType.ACTIVE;
+                        await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
+                    }
+                    set();
+                };
+                UMI3DEnvironmentLoader.StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
+            }
+            catch { }
         }
 
         /// <summary>
@@ -378,19 +404,18 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public async Task<byte[]> GetFile(string url, Action<string> onError)
+        public async Task<byte[]> GetFile(string url)
         {
             //UMI3DLogger.Log($"GetFile {url}", scope);
-            return await HttpClient.SendGetPrivate(url, onError);
+            return await HttpClient.SendGetPrivate(url);
         }
 
         ///<inheritdoc/>
-        public async Task<LoadEntityDto> GetEntity(List<ulong> ids, Action<string> onError)
+        public async Task<LoadEntityDto> GetEntity(List<ulong> ids)
         {
             //UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
             var dto = new EntityRequestDto() { entitiesId = ids };
-            return await HttpClient.SendPostEntity(dto, onError);
+            return await HttpClient.SendPostEntity(dto);
         }
-
     }
 }

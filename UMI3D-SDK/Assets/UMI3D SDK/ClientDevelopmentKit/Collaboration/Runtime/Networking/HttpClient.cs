@@ -76,9 +76,9 @@ namespace umi3d.cdk.collaboration
         /// Connect to a media
         /// </summary>
         /// <param name="connectionDto"></param>
-        public static async Task<UMI3DDto> Connect(UMI3DDto connectionDto, string MasterUrl, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public static async Task<UMI3DDto> Connect(UMI3DDto connectionDto, string MasterUrl, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            var uwr = await _PostRequest(null, MasterUrl + UMI3DNetworkingKeys.connect, connectionDto.ToBson(), onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
+            var uwr = await _PostRequest(null, MasterUrl + UMI3DNetworkingKeys.connect, connectionDto.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
             UMI3DLogger.Log($"Received answer to Connect", scope | DebugScope.Connection);
             var dto = uwr?.downloadHandler.data != null ? UMI3DDto.FromBson(uwr?.downloadHandler.data) : null;
             return dto;
@@ -89,10 +89,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<UserConnectionDto> SendGetIdentity(Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<UserConnectionDto> SendGetIdentity(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send Get Identity", scope | DebugScope.Connection);
-            var uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connectionInfo, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connectionInfo, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received Get Identity", scope | DebugScope.Connection);
             var dto = await deserializer.FromBson(uwr?.downloadHandler.data);
             return dto as UserConnectionDto;
@@ -106,7 +106,18 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public async void SendPostUpdateIdentityAsync(UserConnectionAnswerDto answer, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            await SendPostUpdateIdentity(answer, onError, shouldTryAgain);
+            try
+            {
+                await SendPostUpdateIdentity(answer, shouldTryAgain);
+            }
+            catch (UMI3DAsyncManagerException e)
+            {
+
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -114,10 +125,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostUpdateIdentity(UserConnectionAnswerDto answer, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostUpdateIdentity(UserConnectionAnswerDto answer, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostUpdateIdentity", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, answer.ToBson(), onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, answer.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostUpdateIdentity", scope | DebugScope.Connection);
         }
 
@@ -128,9 +139,20 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async void SendPostUpdateStatusAsync(StatusType status, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async void SendPostUpdateStatusAsync(StatusType status, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            await SendPostUpdateStatus(status, onError, shouldTryAgain);
+            try
+            {
+                await SendPostUpdateStatus(status, shouldTryAgain);
+            }
+            catch(UMI3DAsyncManagerException e)
+            {
+
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         /// <summary>
@@ -138,10 +160,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostUpdateStatus(StatusType status, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostUpdateStatus(StatusType status, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostUpdateStatus", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.status_update, new StatusDto() { status = status }.ToBson(), onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.status_update, new StatusDto() { status = status }.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostUpdateStatus", scope | DebugScope.Connection);
         }
 
@@ -150,10 +172,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostLogout(Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostLogout(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostLogout", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.logout, new UMI3DDto().ToBson(), onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.logout, new UMI3DDto().ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostLogout", scope | DebugScope.Connection);
         }
         #endregion
@@ -164,9 +186,9 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<MediaDto> SendGetMedia(Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain)
+        public async Task<MediaDto> SendGetMedia(Func<RequestFailedArgument, bool> shouldTryAgain)
         {
-            return await SendGetMedia(httpUrl + UMI3DNetworkingKeys.media, onError, shouldTryAgain);
+            return await SendGetMedia(httpUrl + UMI3DNetworkingKeys.media, shouldTryAgain);
         }
 
         /// <summary>
@@ -175,10 +197,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="url">Url to send the resquest to. For a vanilla server add '/media' at the end of the server url.</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public static async Task<MediaDto> SendGetMedia(string url, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public static async Task<MediaDto> SendGetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetMedia", scope | DebugScope.Connection);
-            var uwr = await _GetRequest(null, url, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
+            var uwr = await _GetRequest(null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
             UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
             var dto = uwr?.downloadHandler.data != null ? UMI3DDto.FromBson(uwr?.downloadHandler.data) : null;
             return dto as MediaDto;
@@ -194,10 +216,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="url">Url.</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<LibrariesDto> SendGetLibraries(Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<LibrariesDto> SendGetLibraries(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetLibraries", scope | DebugScope.Connection);
-            var uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.libraries, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.libraries, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received GetLibraries", scope | DebugScope.Connection);
             var dto = await deserializer.FromBson(uwr?.downloadHandler.data);
             return dto as LibrariesDto;
@@ -209,10 +231,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback"></param>
         /// <param name="onError"></param>
         /// <param name="shouldTryAgain"></param>
-        public async Task<LoadEntityDto> SendPostEntity(EntityRequestDto id, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<LoadEntityDto> SendPostEntity(EntityRequestDto id, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostEntity", scope | DebugScope.Connection);
-            var uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.entity, id.ToBson(), onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.entity, id.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostEntity", scope | DebugScope.Connection);
             var dto = await deserializer.FromBson(uwr?.downloadHandler.data);
             return dto as LoadEntityDto;
@@ -224,10 +246,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="url">Url</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<byte[]> SendGetPublic(string url, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<byte[]> SendGetPublic(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetPublic {url}", scope | DebugScope.Connection);
-            var uwr = await _GetRequest(HeaderToken, url, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
+            var uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
             UMI3DLogger.Log($"received getPublic {url}", scope | DebugScope.Connection);
             return uwr?.downloadHandler.data;
         }
@@ -238,10 +260,10 @@ namespace umi3d.cdk.collaboration
         /// <param name="url">Url</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<byte[]> SendGetPrivate(string url, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<byte[]> SendGetPrivate(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetPrivate {url}", scope | DebugScope.Connection);
-            var uwr = await _GetRequest(HeaderToken, url, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received GetPrivate {url}", scope | DebugScope.Connection);
             return uwr?.downloadHandler.data;
         }
@@ -253,10 +275,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<GlTFEnvironmentDto> SendGetEnvironment(Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<GlTFEnvironmentDto> SendGetEnvironment(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetEnvironment", scope | DebugScope.Connection);
-            var uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.environment, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.environment, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received GetEnvironment", scope | DebugScope.Connection);
             var dto = await deserializer.FromBson(uwr?.downloadHandler.data);
             return dto as GlTFEnvironmentDto;
@@ -267,10 +289,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<EnterDto> SendPostJoin(JoinDto join, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<EnterDto> SendPostJoin(JoinDto join, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostJoin", scope | DebugScope.Connection);
-            var uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.join, join.ToBson(), onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.join, join.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostJoin", scope | DebugScope.Connection);
             var dto = await deserializer.FromBson(uwr?.downloadHandler.data);
             return dto as EnterDto;
@@ -281,10 +303,10 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostSceneRequest(Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostSceneRequest(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostSceneRequest", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.scene, null, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.scene, null, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostSceneRequest", scope | DebugScope.Connection);
         }
 
@@ -297,11 +319,11 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <param name="key">Local data file key.</param>
-        public async Task SendPostLocalInfo(Action<string> onError, string key, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostLocalInfo(string key, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostLocalInfo {key}", scope | DebugScope.Connection);
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
-            await _PostRequest(HeaderToken, url, bytes, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            await _PostRequest(HeaderToken, url, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received PostLocalInfo {key}", scope | DebugScope.Connection);
         }
 
@@ -311,11 +333,11 @@ namespace umi3d.cdk.collaboration
         /// <param name="url">Url</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<byte[]> SendGetLocalInfo(string key, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<byte[]> SendGetLocalInfo(string key, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetLocalInfo {key}", scope | DebugScope.Connection);
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
-            var uwr = await _GetRequest(HeaderToken, url, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            var uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
             UMI3DLogger.Log($"Received GetLocalInfo {key}", scope | DebugScope.Connection);
             return uwr?.downloadHandler.data;
         }
@@ -332,14 +354,14 @@ namespace umi3d.cdk.collaboration
         /// <param name="fileName">Name of the uploaded file.</param>
         /// <param name="bytes">the file in bytes.</param>
         /// <param name="shouldTryAgain"></param>
-        public async Task SendPostFile(Action<string> onError, string token, string fileName, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostFile(string token, string fileName, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.uploadFile, ":param", token);
             var headers = new List<(string, string)>
             {
                 (UMI3DNetworkingKeys.contentHeader, fileName)
             };
-            await _PostRequest(HeaderToken, url, bytes, onError, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers);
+            await _PostRequest(HeaderToken, url, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers);
         }
         #endregion
 
@@ -351,8 +373,11 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        private static async Task<UnityWebRequest> _GetRequest(string HeaderToken, string url, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        private static async Task<UnityWebRequest> _GetRequest(string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
+            if (!UMI3DClientServer.Exists)
+                return null;
+
             var www = UnityWebRequest.Get(url);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
@@ -365,26 +390,19 @@ namespace umi3d.cdk.collaboration
             DateTime date = DateTime.UtcNow;
             var operation = www.SendWebRequest();
             while (!operation.isDone)
-                await Task.Yield();
+                await UMI3DAsyncManager.Yield();
 
+#if UNITY_2020_1_OR_NEWER
+            if (www.result > UnityWebRequest.Result.Success)
+#else
             if (www.isNetworkError || www.isHttpError)
+#endif
             {
 
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
-                    return await _GetRequest(HeaderToken, url, onError, ShouldTryAgain, UseCredential, headers, tryCount);
+                    return await _GetRequest(HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                {
-                    if (onError != null)
-                    {
-                        onError.Invoke(www.error + " Failed to post " + www.url);
-                    }
-                    else
-                    {
-                        UMI3DLogger.LogError(www.error, scope);
-                        UMI3DLogger.LogError("Failed to post " + www.url, scope);
-                    }
-                    return null;
-                }
+                    throw new Umi3dException(www.responseCode, www.error + " Failed to get " + www.url);
             }
             return www;
         }
@@ -397,8 +415,11 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        private static async Task<UnityWebRequest> _PostRequest(string HeaderToken, string url, byte[] bytes, Action<string> onError, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        private static async Task<UnityWebRequest> _PostRequest(string HeaderToken, string url, byte[] bytes, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
+            if (!UMI3DClientServer.Exists)
+                return null;
+
             UnityWebRequest www = CreatePostRequest(url, bytes, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
@@ -412,26 +433,19 @@ namespace umi3d.cdk.collaboration
 
             var operation = www.SendWebRequest();
             while (!operation.isDone)
-                await Task.Yield();
+                await UMI3DAsyncManager.Yield();
 
+#if UNITY_2020_1_OR_NEWER
+            if (www.result > UnityWebRequest.Result.Success)
+#else
             if (www.isNetworkError || www.isHttpError)
+#endif
             {
 
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
-                    return await _PostRequest(HeaderToken, url, bytes, onError, ShouldTryAgain, UseCredential, headers, tryCount);
+                    return await _PostRequest(HeaderToken, url, bytes, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                {
-                    if (onError != null)
-                    {
-                        onError.Invoke(www.error + " Failed to post " + www.url);
-                    }
-                    else
-                    {
-                        UMI3DLogger.LogError(www.error, scope);
-                        UMI3DLogger.LogError("Failed to post " + www.url, scope);
-                    }
-                    return null;
-                }
+                    throw new Umi3dException(www.responseCode, www.error + " Failed to post " + www.url);
             }
             return www;
         }

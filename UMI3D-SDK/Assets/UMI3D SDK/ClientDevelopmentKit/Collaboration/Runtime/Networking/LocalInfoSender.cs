@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using umi3d.common;
@@ -103,11 +104,14 @@ namespace umi3d.cdk.collaboration
                         byte[] bytes = GetLocalInfo(key);
                         if (bytes != null)
                         {
-                            await ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(
-                                (s) => UMI3DLogger.LogWarning("fail to send local datas to server : " + s, scope),
-                                key,
-                                bytes
-                                );
+                            try
+                            {
+                                await ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(key, bytes);
+                            }
+                            catch (Exception e)
+                            {
+                                UMI3DLogger.LogWarning("fail to send local datas to server : " + e.Message, scope);
+                            }
                         }
                     }
                 }

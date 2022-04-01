@@ -387,19 +387,27 @@ namespace umi3d.cdk.collaboration
 
         async void SendGetLocalInfo(string key)
         {
-            var bytes = await environmentClient.HttpClient.SendGetLocalInfo(key,
-                 (error) => { UMI3DLogger.Log("error on get local info : " + key, scope); }
-                );
-            LocalInfoSender.SetLocalInfo(key, bytes);
+            try
+            {
+                var bytes = await environmentClient.HttpClient.SendGetLocalInfo(key);
+                LocalInfoSender.SetLocalInfo(key, bytes);
+            }
+            catch
+            {
+                UMI3DLogger.Log("error on get local info : " + key, scope);
+            }
         }
 
         async void SendPostFile(string token, string fileName, byte[] bytesToUpload)
         {
-            await environmentClient.HttpClient.SendPostFile(
-                   (error) => { UMI3DLogger.Log("error on upload file : " + fileName, scope); },
-                   token,
-                   fileName,
-                   bytesToUpload);
+            try
+            {
+                await environmentClient.HttpClient.SendPostFile(token, fileName, bytesToUpload);
+            }
+            catch
+            {
+                UMI3DLogger.Log("error on upload file : " + fileName, scope);
+            }
         }
 
         #endregion
