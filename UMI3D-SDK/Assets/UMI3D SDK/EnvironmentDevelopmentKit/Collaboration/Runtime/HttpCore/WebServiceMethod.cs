@@ -41,9 +41,9 @@ namespace umi3d.edk.collaboration
         {
             try
             {
-                if (attribute.security == WebServiceMethodAttribute.Security.Private)
+                if (attribute.security != WebServiceMethodAttribute.Security.Public)
                 {
-                    if (source.isAuthenticated(e.Request))
+                    if (source.isAuthenticated(e.Request, attribute.security != WebServiceMethodAttribute.Security.Private))
                     {
                         methodInfo.Invoke(source, new object[] { sender, e, attribute.GetParametersFrom(uri) });
                     }

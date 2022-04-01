@@ -70,7 +70,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string token { get => identityDto?.localToken; }
 
-
         /// <summary>
         /// The unique user login.
         /// </summary>

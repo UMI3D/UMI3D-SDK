@@ -21,5 +21,5 @@ using WebSocketSharp.Net;
 
 public interface IHttpApi
 {
-    bool isAuthenticated(HttpListenerRequest request);
+    bool isAuthenticated(HttpListenerRequest request, bool allowOldToken);
 }

@@ -110,7 +110,7 @@ public class UMI3DStandAloneApi : IHttpApi
     }
     #endregion
 
-    public bool isAuthenticated(HttpListenerRequest request)
+    public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
     {
         throw new NotImplementedException();
     }

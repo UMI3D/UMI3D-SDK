@@ -35,6 +35,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
         private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
+
+        private readonly List<string> oldTokenOfUpdatedUser = new List<string>();
+
+
         private UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
 
@@ -100,30 +104,30 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
-        public UMI3DCollaborationUser GetUserByToken(string authorization)
+        public (UMI3DCollaborationUser user, bool oldToken) GetUserByToken(string authorization)
         {
-            lock (users)
-            {
-                foreach (UMI3DCollaborationUser u in users.Values)
-                {
-                    if (UMI3DNetworkingKeys.bearer + u.token == authorization)
-                        return u;
-                }
+            if (authorization.StartsWith(UMI3DNetworkingKeys.bearer)){
+                var token = authorization.Remove(0, UMI3DNetworkingKeys.bearer.Length);
+                return GetUserByNakedToken(token);
             }
-            return null;
+            return (null, false);
         }
 
-        public UMI3DCollaborationUser GetUserByNakedToken(string token)
+        public (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
         {
             lock (users)
             {
                 foreach (UMI3DCollaborationUser u in users.Values)
                 {
                     if (u.token == token)
-                        return u;
+                        return (u, true);
+                }
+                if (oldTokenOfUpdatedUser.Contains(token))
+                {
+                    return (null, true);
                 }
             }
-            return null;
+            return (null, false);
         }
 
         /// <summary>
@@ -157,6 +161,7 @@ namespace umi3d.edk.collaboration
         /// <param name="user"></param>
         public void Logout(UMI3DCollaborationUser user)
         {
+            Debug.Log($"logout {user.Id()} {user.networkPlayer.NetworkId}");
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
             lock (users)
             {
@@ -173,15 +178,16 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public void ConnectionClose(UMI3DCollaborationUser user)
+        public void ConnectionClose(UMI3DCollaborationUser user,uint networkId)
         {
-            user?.SetStatus(StatusType.MISSING);
+            if(user.networkPlayer.NetworkId == networkId)
+                user?.SetStatus(StatusType.MISSING);
         }
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
             Debug.Log(token);
-            var user = GetUserByNakedToken(token);
+            var user = GetUserByNakedToken(token).user;
             UnityEngine.Debug.Log($"user {user}");
             if (user != null)
             {
@@ -212,7 +218,11 @@ namespace umi3d.edk.collaboration
                 if (users.ContainsKey(LoginDto.userId))
                 {
                     user = users[LoginDto.userId];
+                    oldTokenOfUpdatedUser.Add(user.token);
+                    forgeMap.Remove(user.networkPlayer.NetworkId);
+                    (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer,true);
                     user.Update(LoginDto);
+                    user.SetStatus(StatusType.CREATED);
                     reconnection = true;
                 }
                 else

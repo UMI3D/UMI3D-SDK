@@ -68,6 +68,7 @@ namespace umi3d.common.collaboration
 
         public void AcceptChallenge(NetWorker networker, BMSByte challenge, Action<BMSByte> authServerAction, Action rejectServerAction)
         {
+            UnityEngine.Debug.LogWarning($"Challenge {(getLocalToken != null)}");
             if (getLocalToken != null)
                 MainThreadManager.Run(() =>
                 {
@@ -105,10 +106,12 @@ namespace umi3d.common.collaboration
         {
             if (shouldAccdeptPlayer == null)
             {
+                UMI3DLogger.Log($"AcceptPlayer A", scope);
                 authServerAction();
             }
             else
             {
+                UMI3DLogger.Log($"AcceptPlayer B", scope);
                 shouldAccdeptPlayer(token, player, (b) =>
                 {
                     if (b)

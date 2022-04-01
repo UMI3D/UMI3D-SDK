@@ -319,6 +319,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
         {
+            Debug.Log("Load");
             onProgressChange.Invoke(0.1f);
             isEnvironmentLoaded = false;
 
@@ -379,6 +380,7 @@ namespace umi3d.cdk
             {
                 onFinish();
             }
+            Debug.Log("End Load");
         }
 
         #endregion
@@ -600,8 +602,21 @@ namespace umi3d.cdk
                 DeleteEntity(entity, null);
             }
             UMI3DResourcesManager.Instance.ClearCache();
+
+            Instance.entities.Clear();
+            Instance.entitywaited.Clear();
+            Instance.entityToBeLoaded.Clear();
+            Instance.entityFailedToBeLoaded.Clear();
+
             Instance.isEnvironmentLoaded = false;
-        }
+
+            Instance.environment = null;
+            Instance.nodesToInstantiate = 0;
+            Instance.instantiatedNodes = 0;
+            Instance.resourcesToLoad = 0;
+            Instance.loadedResources = 0;
+
+    }
 
         /// <summary>
         /// Load environment.

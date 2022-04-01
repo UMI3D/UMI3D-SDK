@@ -341,12 +341,12 @@ namespace umi3d.edk.collaboration
 
         #region security
 
-        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request)
+        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request,bool allowOldToken = false)
         {
             if (!Exists)
                 return false;
-            UMI3DCollaborationUser user = GetUserFor(request);
-            if (user == null)
+            var c = GetUserFor(request);
+            if (c.user == null && !(c.oldToken && allowOldToken))
             {
                 return false;
             }
@@ -363,12 +363,12 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public static UMI3DCollaborationUser GetUserFor(WebSocketSharp.Net.HttpListenerRequest request)
+        public static (UMI3DCollaborationUser user, bool oldToken) GetUserFor(WebSocketSharp.Net.HttpListenerRequest request)
         {
             string authorization = request.Headers[UMI3DNetworkingKeys.Authorization];
             if (authorization == null)
             {
-                return null;
+                return (null,false);
             }
             else
             {
@@ -407,10 +407,11 @@ namespace umi3d.edk.collaboration
         ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
+            if(user is UMI3DCollaborationUser _user && _user?.networkPlayer?.NetworkId != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(_user,_user.networkPlayer.NetworkId));
         }
 
-        private IEnumerator _lookForMissing(UMI3DCollaborationUser user)
+        private IEnumerator _lookForMissing(UMI3DCollaborationUser user, uint networkId)
         {
             UMI3DLogger.Log($"look For missing", scope);
             if (user == null) yield break;
@@ -418,7 +419,7 @@ namespace umi3d.edk.collaboration
             int count = 0;
             while (count++ < MaxPingingTry)
             {
-                if (user.status == StatusType.MISSING)
+                if (user.status == StatusType.MISSING && user.networkPlayer.NetworkId == networkId)
                 {
                     Ping(user);
                 }

@@ -82,7 +82,7 @@ namespace umi3d.cdk.collaboration
         /// <returns>True if the client is connected.</returns>
         public static bool Connected()
         {
-            return environmentClient.IsConnected();
+            return environmentClient?.IsConnected() ?? false;
         }
 
         /// <summary>
@@ -93,17 +93,17 @@ namespace umi3d.cdk.collaboration
             UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
             if (await wc.Connect())
             {
-                if (environmentClient != null)
-                    await environmentClient.Logout();
+                var env = environmentClient;
+                environmentClient = null;
+                UMI3DEnvironmentLoader.Clear();
+
+                if (env != null)
+                    await env.Logout();
                 if (worldControllerClient != null)
                     worldControllerClient.Logout();
 
                 worldControllerClient = wc;
                 environmentClient = wc.ConnectToEnvironment();
-            }
-            else
-            {
-
             }
         }
 
@@ -114,7 +114,6 @@ namespace umi3d.cdk.collaboration
                 media = dto,
                 gate = null
             });
-
         }
 
         public static async void Logout()
