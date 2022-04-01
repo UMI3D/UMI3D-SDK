@@ -27,17 +27,9 @@ namespace umi3d.common.collaboration
             issueChallengeAction(player, ObjectMapper.BMSByte());
         }
 
-        //private const string sepparator = ":";
         private readonly Action<Action<string>> getLocalToken;
         public Action<string, NetworkingPlayer, Action<bool>> shouldAccdeptPlayer;
-        //private readonly Action<Action<(string, string)>> getLoginPassword;
-        //private readonly Action<Action<PublicIdentityDto>> getIdentity;
-        //private readonly Action<string, Action<bool>> getAuthorized;
-        //public Action<PublicIdentityDto, NetworkingPlayer, Action<bool>> shouldAccdeptPlayer;
-        //private readonly string pin;
-        //private readonly AuthenticationType authenticationType;
 
-        //public Action<string> LoginSet;
 
         public UMI3DAuthenticator(Action<Action<string>> getLocalToken)
         {
@@ -49,26 +41,9 @@ namespace umi3d.common.collaboration
 
         }
 
-        //public UMI3DAuthenticator(string pin)
-        //{
-        //    this.pin = pin;
-        //    authenticationType = AuthenticationType.Pin;
-        //}
-
-        //public UMI3DAuthenticator(Action<string, Action<bool>> getAuthorized)
-        //{
-        //    this.getAuthorized = getAuthorized;
-        //    authenticationType = AuthenticationType.Basic;
-        //}
-
-        //public UMI3DAuthenticator()
-        //{
-        //    authenticationType = AuthenticationType.None;
-        //}
 
         public void AcceptChallenge(NetWorker networker, BMSByte challenge, Action<BMSByte> authServerAction, Action rejectServerAction)
         {
-            UnityEngine.Debug.LogWarning($"Challenge {(getLocalToken != null)}");
             if (getLocalToken != null)
                 MainThreadManager.Run(() =>
                 {
@@ -81,11 +56,6 @@ namespace umi3d.common.collaboration
                 rejectServerAction.Invoke();
             
         }
-
-        //public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
-        //{
-        //    issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
-        //}
 
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
@@ -106,12 +76,10 @@ namespace umi3d.common.collaboration
         {
             if (shouldAccdeptPlayer == null)
             {
-                UMI3DLogger.Log($"AcceptPlayer A", scope);
                 authServerAction();
             }
             else
             {
-                UMI3DLogger.Log($"AcceptPlayer B", scope);
                 shouldAccdeptPlayer(token, player, (b) =>
                 {
                     if (b)
@@ -121,47 +89,5 @@ namespace umi3d.common.collaboration
                 });
             }
         }
-
-        //private void sendAuthServerAction(string auth, Action<BMSByte> authServerAction)
-        //{
-        //    getIdentity((id) =>
-        //    {
-        //        authServerAction(ObjectMapper.BMSByte(auth, id.ToBson()));
-        //    });
-        //}
-
-        //private void getAuthLoginPassword(Action<string> callback)
-        //{
-        //    if (getLoginPassword == null)
-        //    {
-        //        callback?.Invoke("");
-        //    }
-        //    else
-        //    {
-        //        getLoginPassword.Invoke((k) =>
-        //        {
-        //            (string login, string password) = k;
-        //            LoginSet?.Invoke(login);
-        //            callback.Invoke(login + sepparator + password);
-        //        });
-        //    }
-        //}
-
-        //private void getAuthPin(Action<string> callback)
-        //{
-        //    if (getPin == null)
-        //    {
-        //        callback?.Invoke("");
-        //    }
-        //    else
-        //    {
-        //        getPin.Invoke((pin) =>
-        //        {
-        //            callback.Invoke(pin);
-        //        });
-        //    }
-        //}
-
-
     }
 }

@@ -146,6 +146,9 @@ namespace umi3d.cdk.collaboration
         {
             if (client != null) client.Disconnect(true);
             client = null;
+            if (NetworkManager.Instance?.Networker != null)
+                NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
+            NetworkManager.Instance?.Disconnect();
         }
 
         #region signaling
@@ -172,7 +175,6 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void AcceptedByServer(NetWorker sender)
         {
-
         }
 
         /// <summary>
@@ -181,16 +183,15 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void DisconnectedFromServer(NetWorker sender)
         {
-            NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
+            if(NetworkManager.Instance?.Networker != null)
+                NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
             MainThreadManager.Run(() =>
             {
-                NetworkManager.Instance.Disconnect();
+                NetworkManager.Instance?.Disconnect();
                 if (client != null)
-                    UMI3DCollaborationClientServer.Instance.ConnectionLost();
+                    environmentClient?.ConnectionLost();
             });
         }
-
-
 
         /// <inheritdoc/>
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
@@ -532,12 +533,15 @@ namespace umi3d.cdk.collaboration
         /// <param name="isReliable"></param>
         protected void SendBinaryData(int channel, byte[] data, bool isReliable)
         {
-            ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
-            bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
-            bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
+            if (IsConnected)
+            {
+                ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
+                bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
+                bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-            var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
-            client.Send(bin, isReliable);
+                var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
+                client.Send(bin, isReliable);
+            }
         }
 
         #region MonoBehaviour

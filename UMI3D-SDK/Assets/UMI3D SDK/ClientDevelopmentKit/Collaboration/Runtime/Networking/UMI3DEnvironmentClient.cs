@@ -108,6 +108,20 @@ namespace umi3d.cdk.collaboration
             return true;
         }
 
+        public async void ConnectionLost()
+        {
+            if (IsConnected())
+            {
+                Debug.Log($"Connection lost for {worldControllerClient.Identity.localToken}");
+                if (UMI3DCollaborationClientServer.Exists)
+                    UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
+            }
+            await Task.Yield();
+
+            isConnecting = false;
+            isConnected = false;
+        }
+
         public async Task<bool> Logout()
         {
             bool ok = false;
@@ -144,8 +158,6 @@ namespace umi3d.cdk.collaboration
         void GetLocalToken(Action<string> callback) { 
             callback?.Invoke(worldControllerClient.Identity.localToken);
         }
-
-
 
 
         /// <summary>
@@ -355,6 +367,7 @@ namespace umi3d.cdk.collaboration
 
         private async void EnterScene(EnterDto enter)
         {
+            Debug.Log($"Enter scene");
             try
             {
                 //UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
@@ -385,6 +398,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         public void Send(AbstractBrowserRequestDto dto, bool reliable)
         {
+            Debug.Log(worldControllerClient.Identity.localToken);
             ForgeClient.SendBrowserRequest(dto, reliable);
         }
 

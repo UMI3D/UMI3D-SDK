@@ -49,6 +49,7 @@ namespace umi3d.cdk.collaboration
 
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
+        public UnityEvent OnRedirection = new UnityEvent();
 
         public ClientIdentifierApi Identifier;
 
@@ -93,6 +94,8 @@ namespace umi3d.cdk.collaboration
             UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
             if (await wc.Connect())
             {
+                Instance.OnRedirection.Invoke();
+
                 var env = environmentClient;
                 environmentClient = null;
                 UMI3DEnvironmentLoader.Clear();
@@ -101,6 +104,9 @@ namespace umi3d.cdk.collaboration
                     await env.Logout();
                 if (worldControllerClient != null)
                     worldControllerClient.Logout();
+
+                //Connection will not restart without this...
+                await Task.Yield();
 
                 worldControllerClient = wc;
                 environmentClient = wc.ConnectToEnvironment();
@@ -145,12 +151,14 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Notify that the connection with the server was lost.
         /// </summary>
-        public void ConnectionLost()
+        public void ConnectionLost(UMI3DEnvironmentClient client)
         {
-            UMI3DLogger.LogWarning("Connection Lost", scope | DebugScope.Connection);
-            UMI3DCollaborationClientServer.EnvironmentLogout(null, null);
+            if (environmentClient == client)
+            {
+                UMI3DCollaborationClientServer.EnvironmentLogout(null, null);
 
-            OnConnectionLost.Invoke();
+                OnConnectionLost.Invoke();
+            }
         }
 
 

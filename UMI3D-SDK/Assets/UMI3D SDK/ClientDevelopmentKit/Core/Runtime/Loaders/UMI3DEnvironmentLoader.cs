@@ -328,7 +328,6 @@ namespace umi3d.cdk
             nodesToInstantiate = dto.scenes.Count;
             foreach (GlTFSceneDto sce in dto.scenes)
                 nodesToInstantiate += sce.nodes.Count;
-
             //
             // Load resources
             //
@@ -615,6 +614,10 @@ namespace umi3d.cdk
             Instance.instantiatedNodes = 0;
             Instance.resourcesToLoad = 0;
             Instance.loadedResources = 0;
+
+            Instance.started = false;
+            Instance.downloaded = false;
+            Instance.loaded = false;
 
     }
 
