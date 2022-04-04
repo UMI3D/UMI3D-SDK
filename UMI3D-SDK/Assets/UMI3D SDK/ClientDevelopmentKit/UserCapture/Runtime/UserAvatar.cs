@@ -442,6 +442,8 @@ namespace umi3d.cdk.userCapture
                         node.updatePose = true;
                     else
                         boundRigs.Remove(savedTransform.obj);
+
+                    savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
                 }
                 else
                 {
