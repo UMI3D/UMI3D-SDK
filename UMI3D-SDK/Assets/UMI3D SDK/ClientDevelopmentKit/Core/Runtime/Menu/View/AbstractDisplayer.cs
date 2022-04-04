@@ -20,12 +20,11 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.view
 {
-
     /// <summary>
     /// Abstract base class for menu display.
     /// </summary>
     [System.Serializable]
-    public abstract class AbstractDisplayer : MonoBehaviour, ISelectable
+    public abstract partial class AbstractDisplayer : MonoBehaviour
     {
         public abstract void Display(bool forceUpdate = false);
         public abstract void Hide();
@@ -58,12 +57,14 @@ namespace umi3d.cdk.menu.view
         /// <returns>1 to infinity if compatible and 0 if not</returns>
         public abstract int IsSuitableFor(AbstractMenuItem menu);
 
-
         /// <summary>
         /// Selection event subscribers.
         /// </summary>
         private readonly List<UnityAction> subscribers = new List<UnityAction>();
+    }
 
+    public abstract partial class AbstractDisplayer : ISelectable
+    {
         /// <summary>
         /// Raise selection event.
         /// </summary>
@@ -71,9 +72,7 @@ namespace umi3d.cdk.menu.view
         public virtual void Select()
         {
             foreach (UnityAction sub in subscribers)
-            {
                 sub.Invoke();
-            }
         }
 
         /// <summary>
@@ -82,9 +81,7 @@ namespace umi3d.cdk.menu.view
         /// <param name="callback">Callback to raise on selection</param>
         /// <see cref="UnSubscribe(UnityAction)"/>
         public virtual void Subscribe(UnityAction callback)
-        {
-            subscribers.Add(callback);
-        }
+            => subscribers.Add(callback);
 
         /// <summary>
         /// Unsubscribe a callback from the selection event.
@@ -92,9 +89,6 @@ namespace umi3d.cdk.menu.view
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction)"/>
         public virtual void UnSubscribe(UnityAction callback)
-        {
-            subscribers.Remove(callback);
-        }
-
+            => subscribers.Remove(callback);
     }
 }

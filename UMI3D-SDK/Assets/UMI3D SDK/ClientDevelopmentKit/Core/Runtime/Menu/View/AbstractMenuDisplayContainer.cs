@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,14 +25,16 @@ namespace umi3d.cdk.menu.view
     /// Abstract class for display containers (such as carousels, raidals, ...).
     /// </summary>
     [System.Serializable]
-    public abstract class AbstractMenuDisplayContainer : AbstractDisplayer, IEnumerable<AbstractDisplayer>
+    public abstract partial class AbstractMenuDisplayContainer : AbstractDisplayer
     {
-
         /// <summary>
-        /// Is the container being displayed ?
+        /// Is the container being expanded ?
         /// </summary>
         [SerializeField]
         public bool isExpanded { get; protected set; }
+        /// <summary>
+        /// Is the container being displayed ?
+        /// </summary>
         public bool isDisplayed { get; protected set; }
 
         #region Navigation
@@ -43,9 +46,7 @@ namespace umi3d.cdk.menu.view
 
         [ContextMenu("Back")]
         public void Back()
-        {
-            CurrentMenuDisplayContainer()?.backButtonPressed.Invoke();
-        }
+            => CurrentMenuDisplayContainer()?.backButtonPressed.Invoke();
 
         /// <summary>
         /// Generation to replace on Expand. Negative value means no replacement; 0 replace siblings;
@@ -89,6 +90,17 @@ namespace umi3d.cdk.menu.view
         #endregion
 
         #region Data management
+
+        /// <summary>
+        /// Action raised when new item is added.
+        /// </summary>
+        public Action<AbstractDisplayer> OnItemAdded;
+
+        /// <summary>
+        /// Called when the [displayer] is added.
+        /// </summary>
+        /// <param name="displayer"></param>
+        protected abstract void ItemAdded(AbstractDisplayer displayer);
 
         /// <summary>
         /// Get the number of item in this Container
@@ -158,24 +170,21 @@ namespace umi3d.cdk.menu.view
         protected abstract IEnumerable<AbstractDisplayer> GetDisplayers();
 
         #endregion
-        #region Enumerable
 
+    }
+
+    public abstract partial class AbstractMenuDisplayContainer : IEnumerable<AbstractDisplayer>
+    {
         public IEnumerator<AbstractDisplayer> GetEnumerator()
-        {
-            return GetDisplayers().GetEnumerator();
-        }
+            => GetDisplayers().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+            => this.GetEnumerator();
 
         public abstract AbstractDisplayer this[int i]
         {
             get;
             set;
         }
-
-        #endregion
     }
 }
