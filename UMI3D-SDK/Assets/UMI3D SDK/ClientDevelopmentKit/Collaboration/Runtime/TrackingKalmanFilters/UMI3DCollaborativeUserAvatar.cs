@@ -64,7 +64,15 @@ namespace umi3d.cdk.collaboration
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
                         if (boneBindingDto.syncPosition)
                             st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
-                        st.obj.rotation = boneTransform.rotation * (Quaternion)boneBindingDto.offsetRotation;
+                        if (boneBindingDto.syncRotation)
+                            st.obj.rotation = boneTransform.rotation * (Quaternion)boneBindingDto.offsetRotation;
+                        if (boneBindingDto.freezeWorldScale)
+                        {
+                            Vector3 WscaleMemory = st.savedLossyScale;
+                            Vector3 WScaleParent = st.obj.parent.lossyScale;
+
+                            st.obj.localScale = new Vector3(WscaleMemory.x / WScaleParent.x, WscaleMemory.y / WScaleParent.y, WscaleMemory.z / WScaleParent.z) + boneBindingDto.offsetScale;
+                        }
                     }
                 }
             }
@@ -216,9 +224,10 @@ namespace umi3d.cdk.collaboration
                                 var savedTransform = new SavedTransform
                                 {
                                     obj = obj,
-                                    savedParent = obj.parent,
                                     savedPosition = obj.localPosition,
-                                    savedRotation = obj.localRotation
+                                    savedRotation = obj.localRotation,
+                                    savedLocalScale = obj.localScale,
+                                    savedLossyScale = obj.lossyScale
                                 };
 
                                 savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);

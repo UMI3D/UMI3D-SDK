@@ -34,9 +34,10 @@ namespace umi3d.cdk.userCapture
         protected struct SavedTransform
         {
             public Transform obj;
-            public Transform savedParent;
             public Vector3 savedPosition;
             public Quaternion savedRotation;
+            public Vector3 savedLocalScale;
+            public Vector3 savedLossyScale;
         }
 
         protected struct BoundObject
@@ -51,7 +52,11 @@ namespace umi3d.cdk.userCapture
             public Transform obj;
             public Vector3 offsetPosition;
             public Quaternion offsetRotation;
+            public Vector3 offsetScale;
             public bool syncPos;
+            public bool syncRot;
+            public bool freezeWorldScale;
+            public Vector3 frozenLossyScale;
         }
 
         public List<Transform> boundRigs = new List<Transform>();
@@ -77,13 +82,23 @@ namespace umi3d.cdk.userCapture
                     {
                         if (item.syncPos)
                             item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
-                        item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
+                        if (item.syncRot)
+                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;               
                     }
                     else
                     {
                         if (item.syncPos)
                             item.obj.position = UMI3DClientUserTracking.Instance.skeletonContainer.TransformPoint(item.offsetPosition);
-                        item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.offsetRotation;
+                        if (item.syncRot)
+                            item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.offsetRotation;
+                    }
+
+                    if (item.freezeWorldScale)
+                    {
+                        Vector3 WscaleMemory = item.frozenLossyScale;
+                        Vector3 WScaleParent = item.obj.parent.lossyScale;
+
+                        item.obj.localScale = new Vector3(WscaleMemory.x / WScaleParent.x, WscaleMemory.y / WScaleParent.y, WscaleMemory.z / WScaleParent.z) + item.offsetScale;
                     }
                 }
             }
@@ -231,9 +246,7 @@ namespace umi3d.cdk.userCapture
             {
                 if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
                 {
-
                     WaitForRig(dto, bone);
-
                 }
                 else
                 {
@@ -287,7 +300,8 @@ namespace umi3d.cdk.userCapture
                 bonetype = dto.boneType,
                 obj = obj,
                 offsetPosition = dto.offsetPosition,
-                offsetRotation = dto.offsetRotation
+                offsetRotation = dto.offsetRotation,
+                offsetScale = dto.offsetScale
             });
         }
 
@@ -326,9 +340,10 @@ namespace umi3d.cdk.userCapture
                 var savedTransform = new SavedTransform
                 {
                     obj = obj,
-                    savedParent = obj.parent,
                     savedPosition = obj.localPosition,
-                    savedRotation = obj.localRotation
+                    savedRotation = obj.localRotation,
+                    savedLocalScale = obj.localScale,
+                    savedLossyScale = obj.lossyScale
                 };
 
                 savedTransforms.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, savedTransform);
@@ -339,7 +354,11 @@ namespace umi3d.cdk.userCapture
                     obj = obj,
                     offsetPosition = dto.offsetPosition,
                     offsetRotation = dto.offsetRotation,
-                    syncPos = dto.syncPosition
+                    offsetScale = dto.offsetScale,
+                    syncPos = dto.syncPosition,
+                    syncRot = dto.syncRotation,
+                    freezeWorldScale = dto.freezeWorldScale,
+                    frozenLossyScale = obj.lossyScale
                 });
 
                 if (dto.rigName == "")
@@ -356,7 +375,10 @@ namespace umi3d.cdk.userCapture
                         Bound bound = bounds[index];
                         bound.offsetPosition = dto.offsetPosition;
                         bound.offsetRotation = dto.offsetRotation;
+                        bound.offsetScale = dto.offsetScale;
                         bound.syncPos = dto.syncPosition;
+                        bound.syncRot = dto.syncRotation;
+                        bound.freezeWorldScale = dto.freezeWorldScale;
                         bounds[index] = bound;
                     }
                     else
@@ -367,8 +389,12 @@ namespace umi3d.cdk.userCapture
                             obj = obj,
                             offsetPosition = dto.offsetPosition,
                             offsetRotation = dto.offsetRotation,
-                            syncPos = dto.syncPosition
-                        });
+                            offsetScale = dto.offsetScale,
+                            syncPos = dto.syncPosition,
+                            syncRot = dto.syncRotation,
+                            freezeWorldScale = dto.freezeWorldScale,
+                            frozenLossyScale = obj.lossyScale
+                        }) ;
                     }
                 }
             }
@@ -395,17 +421,20 @@ namespace umi3d.cdk.userCapture
                             {
                                 savedTransform.obj.localPosition = (node.dto as GlTFNodeDto).position;
                                 savedTransform.obj.localRotation = (node.dto as GlTFNodeDto).rotation;
+                                savedTransform.obj.localScale = (node.dto as GlTFNodeDto).scale;
                             }
                             else if (node.dto is GlTFSceneDto)
                             {
                                 savedTransform.obj.localPosition = (node.dto as GlTFSceneDto).extensions.umi3d.position;
                                 savedTransform.obj.localRotation = (node.dto as GlTFSceneDto).extensions.umi3d.rotation;
+                                savedTransform.obj.localScale = (node.dto as GlTFSceneDto).extensions.umi3d.scale;
                             }
                         }
                         else
                         {
                             savedTransform.obj.localPosition = savedTransform.savedPosition;
                             savedTransform.obj.localRotation = savedTransform.savedRotation;
+                            savedTransform.obj.localScale = savedTransform.savedLocalScale;
                         }
                     }
 
