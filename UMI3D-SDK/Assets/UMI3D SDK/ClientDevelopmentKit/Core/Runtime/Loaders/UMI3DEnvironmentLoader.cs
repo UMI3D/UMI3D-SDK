@@ -319,7 +319,6 @@ namespace umi3d.cdk
         /// <returns></returns>
         public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
         {
-            Debug.Log("Load");
             onProgressChange.Invoke(0.1f);
             isEnvironmentLoaded = false;
 
@@ -379,7 +378,6 @@ namespace umi3d.cdk
             {
                 onFinish();
             }
-            Debug.Log("End Load");
         }
 
         #endregion

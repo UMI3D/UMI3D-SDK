@@ -49,7 +49,7 @@ public class StandAloneIAM : IIAM
                 value = ""
             });
         form.fields.Add(
-            new StringParameterDto()
+            new PasswordParameterDto()
             {
                 id = 2,
                 name = "Password",

@@ -367,7 +367,6 @@ namespace umi3d.cdk.collaboration
 
         private async void EnterScene(EnterDto enter)
         {
-            Debug.Log($"Enter scene");
             try
             {
                 //UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
