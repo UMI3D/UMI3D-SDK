@@ -41,37 +41,6 @@ namespace umi3d.cdk
             {
                 void SetMaterial(Material newMat)
                 {
-
-                    // Material newMat = new Material(Shader.Find("glTF/PbrMetallicRoughness"));
-                    /*unity standard shader
-                               newMat.color = (Vector4)( dto.pbrMetallicRoughness.baseColorFactor);
-                               LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
-                               LoadTextureInMaterial(ext.normalTexture, "_BumpMap", newMat);
-                               LoadTextureInMaterial(ext.emissiveTexture, "_EmissionMap", newMat);
-                               LoadTextureInMaterial(ext.heightTexture, "_ParallaxMap", newMat);
-
-                               */
-                    //         newMat.EnableKeyword(StandardShaderHelper.KW_EMISSION);
-                    //        newMat.EnableKeyword(StandardShaderHelper.KW_METALLIC_ROUGNESS_MAP);
-                    //        StandardShaderHelper.SetAlphaModeBlend(newMat);
-
-                    //gltf shader
-                    //
-                    /*    newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
-                        newMat.SetColor("_EmissionColor", (Vector4)(Vector3)dto.emissiveFactor);
-                        newMat.SetFloat("_Metallic", dto.pbrMetallicRoughness.metallicFactor);
-                        newMat.SetFloat("_Roughness", dto.pbrMetallicRoughness.roughnessFactor);
-
-                        LoadTextureInMaterial(ext.baseColorTexture, "_MainTex", newMat);
-                        LoadTextureInMaterial(ext.normalTexture, "_BumpMap", newMat);
-                        LoadTextureInMaterial(ext.emissiveTexture, "_EmissionMap", newMat);
-                        LoadTextureInMaterial(ext.metallicRoughnessTexture, "_MetallicGlossMap", newMat);
-                        LoadTextureInMaterial(ext.occlusionTexture, "_OcclusionMap", newMat);
-
-                        newMat.SetFloat("_BumpScale", ((UMI3DMaterialDto)dto.extensions.umi3d).normalTexture.scale);
-                        */
-
-                    //MRTK Shader
                     newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
                     if (newMat.color.a < 1)
                     {
@@ -91,19 +60,21 @@ namespace umi3d.cdk
                     LoadTextureInMaterial(ext.id, ext.normalTexture, MRTKShaderUtils.NormalMap, newMat);
                     LoadTextureInMaterial(ext.id, ext.heightTexture, MRTKShaderUtils.BumpMap, newMat);
 
-
                     LoadTextureInMaterial(ext.id, ext.emissiveTexture, MRTKShaderUtils.EmissionMap, newMat);
-                    LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
-                    LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
 
                     // TODO optimise combine chanel map 
-                    if (ext.channelTexture != null)
+                    if (ext.channelTexture != null && ext.channelTexture.variants.Count > 0)
                     {
                         LoadTextureInMaterial(ext.id, ext.channelTexture, MRTKShaderUtils.ChannelMap, newMat);
                     }
-
                     else if (ext.emissiveTexture != null || ext.occlusionTexture != null || ext.metallicRoughnessTexture != null || ext.metallicTexture != null || ext.roughnessTexture != null)
                     {
+#if USING_URP
+                        LoadTextureInMaterial(ext.id, ext.occlusionTexture, MRTKShaderUtils.OcclusionMap, newMat);
+
+                        LoadTextureInMaterial(ext.id, ext.metallicTexture, MRTKShaderUtils.MetallicMap, newMat);
+                        LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+#else
                         Texture2D channelMap;
                         if (ext.metallicRoughnessTexture != null)
                         {
@@ -138,7 +109,7 @@ namespace umi3d.cdk
                                 });
                             });
                         }
-
+#endif
                     }
 
                     newMat.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, ext.normalTexture.scale);

@@ -124,7 +124,7 @@ namespace MrtkShader
             return Combine(metallicSmoothnessMap, metallicSmoothnessMap, emissionMap, metallicSmoothnessMap, gltfMetallicMapChannel, gltfOcclusionMapChannel, emissionMapChannel, gltfSmoothnessMapChannel);
         }
 
-        private static Texture2D InverseMap(Texture2D map)
+        public static Texture2D InverseMap(Texture2D map)
         {
             if (map == null)
                 return null;

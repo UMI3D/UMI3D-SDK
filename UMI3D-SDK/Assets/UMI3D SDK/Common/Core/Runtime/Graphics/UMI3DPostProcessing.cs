@@ -13,10 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if UNITY_POST_PROCESSING
 
 using UnityEngine;
+
+#if USING_URP
+using UnityEngine.Rendering.Universal;
+#else
 using UnityEngine.Rendering.PostProcessing;
+#endif
 
 namespace umi3d.common.graphics
 {
@@ -29,12 +33,30 @@ namespace umi3d.common.graphics
             return MainCamera ?? base._GetCamera();
         }
 
+#if USING_URP
+        public UnityEngine.Rendering.Volume volume;
+#else
         public PostProcessVolume m_Volume;
         public Vignette m_Vignette;
         public Bloom m_Bloom;
+#endif
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            Debug.Assert(volume != null);
+        }
 
         protected override void _ResetBloom()
         {
+#if USING_URP
+            if (volume != null)
+            {
+                if (volume.profile.TryGet(out Bloom oldm))
+                    volume.profile.Remove<Bloom>();
+            }
+#else
             // Create an instance of a vignette
             Bloom defaultBloom = ScriptableObject.CreateInstance<Bloom>();
 
@@ -58,6 +80,7 @@ namespace umi3d.common.graphics
                     volume.sharedProfile.RemoveSettings<Bloom>();
                 volume.sharedProfile.AddSettings(defaultBloom);
             }
+#endif
         }
 
         protected override void _ResetFog()
@@ -72,6 +95,13 @@ namespace umi3d.common.graphics
 
         protected override void _ResetVignette()
         {
+#if USING_URP
+            if (volume != null)
+            {
+                if (volume.profile.TryGet(out Vignette oldv))
+                    volume.profile.Remove<Vignette>();
+            }
+#else
             // Create an instance of a vignette
 
             Vignette vignette = ScriptableObject.CreateInstance<Vignette>();
@@ -84,7 +114,6 @@ namespace umi3d.common.graphics
             vignette.roundness.Override(0f);
             vignette.rounded.Override(false);
 
-
             PostProcessVolume volume = GetCamera().GetComponent<PostProcessVolume>();
             if (volume != null)
             {
@@ -92,10 +121,28 @@ namespace umi3d.common.graphics
                     volume.sharedProfile.RemoveSettings<Vignette>();
                 volume.sharedProfile.AddSettings(vignette);
             }
+#endif
         }
 
         protected override void _SetBloom(UMI3DGlobalBloom bloom)
         {
+#if USING_URP
+            if (!volume.profile.TryGet(out Bloom bloomComponent))
+                bloomComponent = volume.profile.Add<Bloom>(true);
+
+            bloomComponent.active = bloom.BloomEnabled;
+            bloomComponent.intensity.value = bloom.Intensity;
+            bloomComponent.threshold.value = bloom.Threshold;
+            bloomComponent.scatter.value = bloom.Scatter;
+            bloomComponent.tint.value = bloom.Tint;
+            bloomComponent.clamp.value = bloom.Clamp;
+            bloomComponent.highQualityFiltering.value = bloom.HighQualityFiltering;
+#if UNITY_2020
+            bloomComponent.skipIterations.value = bloom.SkipIterations;
+#endif
+            bloomComponent.dirtTexture.value = bloom.Dirt_Texture;
+            bloomComponent.dirtIntensity.value = bloom.Dirt_Intensity;
+#else
             // Create an instance of a vignette
             m_Bloom = ScriptableObject.CreateInstance<Bloom>();
 
@@ -116,6 +163,7 @@ namespace umi3d.common.graphics
             if (m_Volume.sharedProfile.TryGetSettings(out Bloom oldm))
                 m_Volume.sharedProfile.RemoveSettings<Bloom>();
             m_Volume.sharedProfile.AddSettings(m_Bloom);
+#endif
         }
 
         protected override void _SetFog(UMI3DFogSettings fogSettings)
@@ -130,7 +178,18 @@ namespace umi3d.common.graphics
 
         protected override void _SetVignette(UMI3DGlobalVignette vignette)
         {
-            // Create an instance of a vignette
+#if USING_URP
+            if (!volume.profile.TryGet(out Vignette vignetteComponent))
+                vignetteComponent = volume.profile.Add<Vignette>(true);
+
+            vignetteComponent.active = vignette.VignetteEnabled;
+            vignetteComponent.color.value = vignette.Color;
+            vignetteComponent.center.value = vignette.Center;
+            vignetteComponent.intensity.value = vignette.Intensity;
+            vignetteComponent.smoothness.value = vignette.Smoothness;
+            vignetteComponent.rounded.value = vignette.Rounded;
+#else
+// Create an instance of a vignette
             if (m_Vignette == null)
                 m_Vignette = ScriptableObject.CreateInstance<Vignette>();
             m_Vignette.enabled.Override(vignette.VignetteEnabled);
@@ -148,8 +207,10 @@ namespace umi3d.common.graphics
             if (m_Volume.sharedProfile.TryGetSettings(out Vignette oldv))
                 m_Volume.sharedProfile.RemoveSettings<Vignette>();
             m_Volume.sharedProfile.AddSettings(m_Vignette);
+#endif
         }
 
+#if !USING_URP
         private VignetteMode Convert(UMI3DGlobalVignette.VignetteMode vignette)
         {
             switch (vignette)
@@ -161,6 +222,7 @@ namespace umi3d.common.graphics
             }
             return 0;
         }
+#endif
 
         private FogMode Convert(UMI3DFogSettings.FogMode fogMode)
         {
@@ -178,4 +240,3 @@ namespace umi3d.common.graphics
 
     }
 }
-#endif

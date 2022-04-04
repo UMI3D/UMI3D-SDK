@@ -46,7 +46,7 @@ namespace MrtkShader
                 this.action = action;
             }
 
-  
+
 
         }
 
@@ -60,7 +60,9 @@ namespace MrtkShader
         public static void ApplyShaderProperty<T>(this Material mat, ShaderProperty<T> shaderProperty, T value)
         {
             if (shaderProperty.keyword != null)
+            {
                 mat.EnableKeyword(shaderProperty.keyword);
+            }
             if (shaderProperty.action != null)
             {
                 shaderProperty.action.Invoke(mat, shaderProperty, value);
@@ -96,9 +98,48 @@ namespace MrtkShader
         }
 
         public static ShaderProperty<Color> MainColor = new ShaderProperty<Color>("_Color", Color.white);
+#if USING_URP
+
+        public static ShaderProperty<Texture2D> MainTex = new ShaderProperty<Texture2D>("_BaseMap", null, null,
+    (m, s, v) =>
+    {
+        m.DisableKeyword("_DISABLE_ALBEDO_MAP");
+        m.SetTexture(s.propertyName, v);
+    });
+
+        public static ShaderProperty<Color> EmissiveColor = new ShaderProperty<Color>("_EmissionColor", Color.black, "_EMISSION");
+        public static ShaderProperty<Texture2D> ChannelMap = new ShaderProperty<Texture2D>("_ChannelMap", null, "_METALLICSPECGLOSSMAP",
+    (m, s, v) =>
+    {
+        m.SetTexture("_MetallicGlossMap", v);
+        m.SetTexture("_OcclusionMap", v);
+    });
+
+        public static ShaderProperty<Texture2D> MetallicMap = new ShaderProperty<Texture2D>("_MetallicGlossMap", null, "_METALLICSPECGLOSSMAP");
+
+        public static ShaderProperty<Texture2D> RoughnessMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
+            (m, s, v) =>
+            {
+                Debug.LogWarning("Warning rougness map not supported, must be contained in a channel map or with a metallic map");
+            });
+
+        public static ShaderProperty<Texture2D> EmissionMap = new ShaderProperty<Texture2D>("_EmissionMap", null, "_EMISSION");
+        public static ShaderProperty<Texture2D> NormalMap = new ShaderProperty<Texture2D>("_BumpMap", null, "_NORMALMAP");
+        public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null);
+
+#else
+
+        public static ShaderProperty<Texture2D> MainTex = new ShaderProperty<Texture2D>("_MainTex", null, null,
+            (m, s, v) =>
+            {
+                m.DisableKeyword("_DISABLE_ALBEDO_MAP");
+
+                m.SetTexture(s.propertyName, v);
+            }
+
+            );
+
         public static ShaderProperty<Color> EmissiveColor = new ShaderProperty<Color>("_EmissiveColor", Color.black, "_EMISSION");
-        public static ShaderProperty<Color> ClippingBorderColor = new ShaderProperty<Color>("_ClippingBorderColor", Color.white);
-        public static ShaderProperty<Texture2D> BumpMap = new ShaderProperty<Texture2D>("_BumpMap", null);
         public static ShaderProperty<Texture2D> ChannelMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
             (m, s, v) =>
             {
@@ -118,8 +159,7 @@ namespace MrtkShader
 
             }
             );
-
-        public static ShaderProperty<Texture2D> RoughnessMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
+             public static ShaderProperty<Texture2D> RoughnessMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
             (m, s, v) =>
             {
                 Texture2D chanelMap = (Texture2D)m.GetTexture(s.propertyName);
@@ -143,16 +183,6 @@ namespace MrtkShader
             }
             );
 
-
-        public static ShaderProperty<Texture2D> MainTex = new ShaderProperty<Texture2D>("_MainTex", null, null,
-            (m, s, v) =>
-            {
-                m.DisableKeyword("_DISABLE_ALBEDO_MAP");
-
-                m.SetTexture(s.propertyName, v);
-            }
-
-            );
         public static ShaderProperty<Texture2D> NormalMap = new ShaderProperty<Texture2D>("_NormalMap", null, "_NORMAL_MAP");
         public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null,null,
             (m, s, v) =>
@@ -164,6 +194,11 @@ namespace MrtkShader
                 m.ApplyShaderProperty(ChannelMap, combined);
 
             });
+#endif
+
+        public static ShaderProperty<Color> ClippingBorderColor = new ShaderProperty<Color>("_ClippingBorderColor", Color.white);
+        public static ShaderProperty<Texture2D> BumpMap = new ShaderProperty<Texture2D>("_BumpMap", null);
+
         public static ShaderProperty<float> Metallic = new ShaderProperty<float>("_Metallic", 0f);
         public static ShaderProperty<float> Smoothness = new ShaderProperty<float>("_Smoothness", 0.5f);
         public static ShaderProperty<float> NormalMapScale = new ShaderProperty<float>("_NormalMapScale", 1f);
