@@ -32,86 +32,124 @@ using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
 
-public class UMI3DStandAloneApi : IHttpApi
+namespace umi3d.worldController
 {
 
-    private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
-
-    [HttpPost(UMI3DNetworkingKeys.connect, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
-    public void Connection(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+    public class UMI3DStandAloneApi : IHttpApi
     {
-        byte[] bytes = default(byte[]);
-        using (var memstream = new MemoryStream())
-        {
-            byte[] buffer = new byte[512];
-            int bytesRead = default(int);
-            while ((bytesRead = e.Request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
-                memstream.Write(buffer, 0, bytesRead);
-            bytes = memstream.ToArray();
-        }
-        var dto = UMI3DDto.FromBson(bytes);
-        bool finished = false;
-        UMI3DDto result = null;
-        MainThreadManager.Run(() => RegisterUser(dto as ConnectionDto, (res) => { finished = true; result = res; }));
-        while (!finished)
-            System.Threading.Thread.Sleep(1);
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+        private readonly WorldControlerAPI api;
 
-        if (result != null)
+        public UMI3DStandAloneApi(WorldControlerAPI api)
         {
-            Debug.Log($"result {result} {(result as PrivateIdentityDto)?.userId} {(result as PrivateIdentityDto)?.GlobalToken}");
+            this.api = api;
+        }
+
+        [HttpPost(UMI3DNetworkingKeys.connect, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
+        public void Connection(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            byte[] bytes = default(byte[]);
+            using (var memstream = new MemoryStream())
+            {
+                byte[] buffer = new byte[512];
+                int bytesRead = default(int);
+                while ((bytesRead = e.Request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
+                    memstream.Write(buffer, 0, bytesRead);
+                bytes = memstream.ToArray();
+            }
+            var dto = UMI3DDto.FromBson(bytes);
+            bool finished = false;
+            UMI3DDto result = null;
+            MainThreadManager.Run(() => ConnectUser(dto as ConnectionDto, (res) => { finished = true; result = res; }));
+            while (!finished)
+                System.Threading.Thread.Sleep(1);
+
+            if (result != null)
+            {
+                //Debug.Log($"result {result} {(result as PrivateIdentityDto)?.userId} {(result as PrivateIdentityDto)?.GlobalToken}");
+                HttpListenerResponse res = e.Response;
+                res.WriteContent(result.ToBson());
+            }
+
+        }
+
+        async void ConnectUser(ConnectionDto dto, Action<UMI3DDto> callback)
+        {
+            try
+            {
+                UMI3DDto res = await api.Connect(dto);
+                callback?.Invoke(res);
+            }
+            catch
+            {
+                callback?.Invoke(null);
+            }
+        }
+
+        /// <summary>
+        /// Handles the GET Media Request received by the HTTP Server.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        [HttpGet(UMI3DNetworkingKeys.renew_connect, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void RenewConnectionRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            byte[] bytes = default(byte[]);
+            using (var memstream = new MemoryStream())
+            {
+                byte[] buffer = new byte[512];
+                int bytesRead = default(int);
+                while ((bytesRead = e.Request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
+                    memstream.Write(buffer, 0, bytesRead);
+                bytes = memstream.ToArray();
+            }
+            var dto = UMI3DDto.FromBson(bytes);
+            bool finished = false;
+            UMI3DDto result = null;
+            MainThreadManager.Run(() => RenewCredential(dto as PrivateIdentityDto, (res) => { finished = true; result = res; }));
+            while (!finished)
+                System.Threading.Thread.Sleep(1);
+
+            if (result != null)
+            {
+                //Debug.Log($"result {result} {(result as PrivateIdentityDto)?.userId} {(result as PrivateIdentityDto)?.GlobalToken}");
+                HttpListenerResponse res = e.Response;
+                res.WriteContent(result.ToBson());
+            }
+        }
+
+        async void RenewCredential(PrivateIdentityDto dto, Action<UMI3DDto> callback)
+        {
+            try
+            {
+                UMI3DDto res = await api.RenewCredential(dto);
+                callback?.Invoke(res);
+            }
+            catch
+            {
+                callback?.Invoke(null);
+            }
+        }
+
+
+        #region media
+        /// <summary>
+        /// Handles the GET Media Request received by the HTTP Server.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">Represents the event data for the HTTP request event</param>
+        [HttpGet(UMI3DNetworkingKeys.media, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
+        public void MediaRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DLogger.Log($"Get Media", scope);
             HttpListenerResponse res = e.Response;
-            res.WriteContent(result.ToBson());
+            res.WriteContent(api.ToDto().ToBson());
         }
+        #endregion
 
-    }
-
-    async void RegisterUser(ConnectionDto dto, Action<UMI3DDto> callback)
-    {
-        UMI3DDto res = await umi3d.worldController.WorldController.RegisterUser(dto);
-        callback.Invoke(res);
-    }
-
-    /// <summary>
-    /// Handles the GET Media Request received by the HTTP Server.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e">Represents the event data for the HTTP request event</param>
-    [HttpGet(UMI3DNetworkingKeys.renew_connect, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
-    public void RenewConnectionRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
-    {
-        UMI3DLogger.Log($"Get Media", scope);
-        HttpListenerResponse res = e.Response;
-        byte[] message = null;
-        if (umi3d.worldController.WorldController.Exists)
+        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
         {
-            message = umi3d.worldController.WorldController.Instance.ToDto().ToBson();
+            throw new NotImplementedException();
         }
-        res.WriteContent(message);
-    }
-
-
-    #region media
-    /// <summary>
-    /// Handles the GET Media Request received by the HTTP Server.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e">Represents the event data for the HTTP request event</param>
-    [HttpGet(UMI3DNetworkingKeys.media, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
-    public void MediaRequest(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
-    {
-        UMI3DLogger.Log($"Get Media", scope);
-        HttpListenerResponse res = e.Response;
-        byte[] message = null;
-        if (umi3d.worldController.WorldController.Exists)
-        {
-            message = umi3d.worldController.WorldController.Instance.ToDto().ToBson();
-        }
-        res.WriteContent(message);
-    }
-    #endregion
-
-    public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
-    {
-        throw new NotImplementedException();
     }
 }

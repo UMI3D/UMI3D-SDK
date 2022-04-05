@@ -144,23 +144,16 @@ namespace umi3d.edk.collaboration
         /// method called when param <see cref="sessionId"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetIconServerUrl(string arg) { UMI3DCollaborationServer.Instance.iconServerUrl = arg; }
+        protected virtual void SetIconServerUrl(string arg)
+        {
+            Debug.Log("SetIconServerUrl Not Implemented");
+        }
 
         /// <summary>
         /// method called when param <see cref="ipParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetIp(string arg) { UMI3DCollaborationServer.Instance.SetIP(arg); }
-
-        /// <summary>
-        /// method called when param <see cref="authParam"/> is found
-        /// </summary>
-        /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetAuth(string arg)
-        {
-            if (Enum.TryParse(arg, out common.AuthenticationType result))
-                UMI3DCollaborationServer.Instance.Authentication = result;
-        }
 
         /// <summary>
         /// method called when param <see cref="tokenParam"/> is found
@@ -352,9 +345,6 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.ipParam))
                     SetIp(conf.ipParam);
 
-                if (!string.IsNullOrEmpty(conf.authParam))
-                    SetAuth(conf.authParam);
-
                 if (conf.tokenLifeParam > 0)
                     SetTokenLife(conf.tokenLifeParam.ToString());
 
@@ -460,11 +450,6 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetIp(args[i]);
-                }
-                else if (args[i].Equals(authParam, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (++i < length)
-                        SetAuth(args[i]);
                 }
                 else if (args[i].Equals(tokenLifeParam, StringComparison.OrdinalIgnoreCase))
                 {

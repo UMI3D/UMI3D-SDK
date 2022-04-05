@@ -104,7 +104,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async void SendPostUpdateIdentityAsync(UserConnectionAnswerDto answer, Action<string> onError, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async void SendPostUpdateIdentityAsync(UserConnectionAnswerDto answer, bool throwError = false, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             try
             {
@@ -116,7 +116,8 @@ namespace umi3d.cdk.collaboration
             }
             catch
             {
-                throw;
+                if(throwError)
+                    throw;
             }
         }
 
@@ -139,7 +140,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async void SendPostUpdateStatusAsync(StatusType status, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async void SendPostUpdateStatusAsync(StatusType status, bool throwError = false, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             try
             {
@@ -151,7 +152,8 @@ namespace umi3d.cdk.collaboration
             }
             catch
             {
-                throw;
+                if(throwError)
+                    throw;
             }
         }
 

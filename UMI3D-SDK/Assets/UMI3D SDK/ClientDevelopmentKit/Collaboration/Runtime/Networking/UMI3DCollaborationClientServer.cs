@@ -42,7 +42,6 @@ namespace umi3d.cdk.collaboration
         private static UMI3DWorldControllerClient worldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 
-        static bool needToGetFirstConnectionInfo = true;
         public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
 
         override protected ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
@@ -53,7 +52,15 @@ namespace umi3d.cdk.collaboration
 
         public ClientIdentifierApi Identifier;
 
-        public StatusType status => environmentClient?.UserDto.answerDto.status ?? StatusType.NONE;
+        public StatusType status
+        {
+            get => environmentClient?.status ?? StatusType.NONE;
+            set
+            {
+                if (environmentClient != null)
+                    environmentClient.status = value;
+            }
+        }
 
         protected override void OnDestroy()
         {
@@ -91,25 +98,30 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static async void Connect(RedirectionDto redirection)
         {
-            UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
-            if (await wc.Connect())
+            if (Exists)
             {
-                Instance.OnRedirection.Invoke();
+                Instance.status = StatusType.AWAY;
+                UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
+                if (await wc.Connect())
+                {
+                    Instance.OnRedirection.Invoke();
 
-                var env = environmentClient;
-                environmentClient = null;
-                UMI3DEnvironmentLoader.Clear();
+                    var env = environmentClient;
+                    environmentClient = null;
+                    UMI3DEnvironmentLoader.Clear();
 
-                if (env != null)
-                    await env.Logout();
-                if (worldControllerClient != null)
-                    worldControllerClient.Logout();
+                    if (env != null)
+                        await env.Logout();
+                    if (worldControllerClient != null)
+                        worldControllerClient.Logout();
 
-                //Connection will not restart without this...
-                await Task.Yield();
+                    //Connection will not restart without this...
+                    await Task.Yield();
 
-                worldControllerClient = wc;
-                environmentClient = wc.ConnectToEnvironment();
+                    worldControllerClient = wc;
+                    environmentClient = wc.ConnectToEnvironment();
+                    environmentClient.status = StatusType.ACTIVE;
+                }
             }
         }
 
@@ -185,15 +197,15 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private async Task<bool> TryAgain(RequestFailedArgument argument)
         {
-            bool needNewToken = argument.GetRespondCode() == 401 && (environmentClient.lastTokenUpdate - argument.date).TotalMilliseconds < 0;
+            bool needNewToken = environmentClient != null && environmentClient.IsConnected() && argument.GetRespondCode() == 401 && (environmentClient.lastTokenUpdate - argument.date).TotalMilliseconds < 0;
             if (needNewToken)
             {
                 UnityAction a = () => needNewToken = false;
                 UMI3DCollaborationClientServer.Instance.OnNewToken.AddListener(a);
-                while (needNewToken && !((DateTime.UtcNow - argument.date).TotalMilliseconds > environmentClient.maxMillisecondToWait))
+                while (environmentClient != null && environmentClient.IsConnected() && needNewToken && !((DateTime.UtcNow - argument.date).TotalMilliseconds > environmentClient.maxMillisecondToWait))
                     await UMI3DAsyncManager.Yield();
                 UMI3DCollaborationClientServer.Instance.OnNewToken.RemoveListener(a);
-                return true;
+                return environmentClient != null && environmentClient.IsConnected();
             }
             return false;
         }
@@ -231,9 +243,11 @@ namespace umi3d.cdk.collaboration
         }
 
 
-        public void SendVOIP(int length, byte[] sample)
+        public static void SendVOIP(int length, byte[] sample)
         {
-            environmentClient?.SendVOIP(length, sample);
+            if (Exists && Connected()
+                && Instance.status == StatusType.ACTIVE)
+                environmentClient?.SendVOIP(length, sample);
         }
 
 

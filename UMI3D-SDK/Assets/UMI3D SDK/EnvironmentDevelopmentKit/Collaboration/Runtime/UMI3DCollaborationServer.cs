@@ -53,8 +53,8 @@ namespace umi3d.edk.collaboration
 
         public IdentifierApi Identifier;
 
-        [EditorReadOnly]
-        public bool isWorldController;
+        [EditorReadOnly, Tooltip("World controller for stand alone api. If the ")]
+        public worldController.WorldControlerAPI WorldController;
 
         [EditorReadOnly]
         public bool useRandomForgePort;
@@ -77,11 +77,6 @@ namespace umi3d.edk.collaboration
         public ushort httpPort;
 
         /// <summary>
-        /// url of an image that could be displayed by browser to show different awailable environments.
-        /// </summary>
-        public string iconServerUrl;
-
-        /// <summary>
         /// Forge server session id
         /// </summary>
         [HideInInspector]
@@ -91,8 +86,6 @@ namespace umi3d.edk.collaboration
         /// Forge server description scene (comment)
         /// </summary>
         public string descriptionComment = "";
-
-        public AuthenticationType Authentication;
 
         ///<inheritdoc/>
         protected override string _GetHttpUrl()
@@ -122,7 +115,7 @@ namespace umi3d.edk.collaboration
         public async Task Register(RegisterIdentityDto identityDto)
         {
             UMI3DLogger.Log($"User to be Created {identityDto.login} {identityDto.userId} {identityDto.localToken}", scope);
-            UMI3DCollaborationServer.Collaboration.CreateUser(identityDto, UserCreatedCallback);
+            UMI3DCollaborationServer.Collaboration.CreateUser(identityDto, UserRegisteredCallback);
             await Task.CompletedTask;
         }
 
@@ -187,12 +180,9 @@ namespace umi3d.edk.collaboration
             isRunning = true;
             OnServerStart.Invoke();
 
-            if (isWorldController)
+            if (WorldController != null)
             {
-                new umi3d.worldController.WorldController(new StandAloneIAM(this), new StandAloneKeyGenerator());
-                UMI3DHttp.Instance.AddRoot(new UMI3DStandAloneApi());
-                umi3d.worldController.WorldController.Instance.ip = GetHttpUrl();
-                umi3d.worldController.WorldController.Instance.mediaName = UMI3DCollaborationEnvironment.Instance.environmentName;
+                WorldController.Setup(UMI3DCollaborationEnvironment.Instance.environmentName, GetHttpUrl());
             }
 
         }
@@ -206,6 +196,7 @@ namespace umi3d.edk.collaboration
 
         protected void UserRegisteredCallback(UMI3DCollaborationUser user, bool reconnection)
         {
+            user.SetStatus(StatusType.REGISTERED);
             if (!reconnection)
             {
                 UMI3DLogger.Log($"User Registered", scope);
@@ -216,6 +207,7 @@ namespace umi3d.edk.collaboration
         protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
             UMI3DLogger.Log($"User Created", scope);
+            user.SetStatus(StatusType.CREATED);
             if (!reconnection)
             {
                 OnUserCreated.Invoke(user);

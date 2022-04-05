@@ -111,6 +111,11 @@ namespace umi3d.cdk.collaboration
             client.onPingPong += SetRoundTripLatency;
             client.disconnected += DisconnectedFromServer;
             client.serverAccepted += AcceptedByServer;
+            client.connectAttemptFailed += RejectedByServer;
+            client.bindFailure += BindFailed;
+            client.bindSuccessful += BindSucceded;
+            client.forcedDisconnect += (n) => { Debug.Log("Force disconnect"); };
+            client.playerAccepted += (n,p) => { Debug.Log("Player Accepted"); };
 
             if (natServerHost.Trim().Length == 0)
                 client.Connect(ip, (ushort)port);
@@ -175,6 +180,26 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void AcceptedByServer(NetWorker sender)
         {
+            Debug.Log("Accepted by server");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        private void RejectedByServer(NetWorker sender)
+        {
+            Debug.Log("Rejected by server");
+        }
+
+        private void BindFailed(NetWorker sender)
+        {
+            Debug.Log("Bind Failed");
+        }
+
+        private void BindSucceded(NetWorker sender)
+        {
+            Debug.Log("Bind Succeded");
         }
 
         /// <summary>
@@ -211,7 +236,7 @@ namespace umi3d.cdk.collaboration
                 case StatusRequestDto statusRequestDto:
                     MainThreadManager.Run(() =>
                     {
-                        environmentClient.HttpClient.SendPostUpdateStatusAsync(environmentClient.UserDto.answerDto.status, null);
+                        environmentClient.HttpClient.SendPostUpdateStatusAsync(environmentClient.UserDto.answerDto.status);
                     });
                     break;
             }

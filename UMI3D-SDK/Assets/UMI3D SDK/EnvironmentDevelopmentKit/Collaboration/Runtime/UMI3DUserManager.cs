@@ -186,9 +186,9 @@ namespace umi3d.edk.collaboration
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            Debug.Log(token);
+            //Debug.Log(token);
             var user = GetUserByNakedToken(token).user;
-            UnityEngine.Debug.Log($"user {user}");
+            //UnityEngine.Debug.Log($"user {user}");
             if (user != null)
             {
                 var reconnection = user.networkPlayer != null;

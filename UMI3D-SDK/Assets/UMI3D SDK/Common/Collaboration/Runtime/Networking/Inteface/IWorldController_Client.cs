@@ -26,7 +26,7 @@ public interface IWorldController_Client
 {
     Task<UMI3DDto> Connect(ConnectionDto connectionDto);
 
-    Task<PrivateIdentityDto> RenewCredential(string globalTocken);
+    Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto);
 
     Task Pong(IClient client);
 }

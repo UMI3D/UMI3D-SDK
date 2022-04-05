@@ -14,62 +14,68 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-using inetum.unityUtils;
-using System.Threading.Tasks;
+using UnityEngine;
+
 
 namespace umi3d.worldController
 {
-    public class WorldController : Singleton<WorldController>, IWorldController_Client, IWorldController_Environment, IWorldController
+    [CreateAssetMenu(fileName = "SandAloneWorldControlerAPI", menuName = "UMI3D/SandAlone WorldControler")]
+    public class SandAloneWorldControlerAPI : WorldControlerAPI
     {
         IIAM IAM;
         IKeyGenerator keyGenerator;
         Dictionary<string, User> userMap = new Dictionary<string, User>();
 
-        public string ip;
-        public string mediaName;
-
-        public WorldController() : base()
-        {}
-
-        public WorldController(IIAM iAM,IKeyGenerator keyGenerator): this()
+        public override void Setup(string name, string ip)
         {
-            this.IAM = iAM;
-            this.keyGenerator = keyGenerator;
+            base.Setup(name, ip);
+            IAM = new StandAloneIAM(edk.collaboration.UMI3DCollaborationServer.Instance);
+            keyGenerator = new StandAloneKeyGenerator();
         }
 
-        static public async Task<UMI3DDto> RegisterUser(ConnectionDto connectionDto)
+        public virtual void SetIcon(string ip)
         {
-            if (Exists)
-               return await Instance?._RegisterUser(connectionDto);
-            else
-                throw new Exception("Instance of master server do not exist");
+            base.Setup(name, ip);
+            IAM = new StandAloneIAM(edk.collaboration.UMI3DCollaborationServer.Instance);
+            keyGenerator = new StandAloneKeyGenerator();
         }
 
-        async Task<UMI3DDto> _RegisterUser(ConnectionDto connectionDto)
+        public override async Task<UMI3DDto> Connect(ConnectionDto connectionDto)
         {
-            UnityEngine.Debug.Log($"Register {connectionDto}");
             User user = GetUser(connectionDto);
 
             var dto = (connectionDto is FormConnectionAnswerDto formAnswer)
                 ? await IAM.isFormValid(user, formAnswer.FormAnswerDto) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user)
                 : await IAM.IsUserValid(user) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user);
 
-            UnityEngine.Debug.Log($"Register {dto}");
+            //UnityEngine.Debug.Log($"Register {dto}");
 
             return dto;
         }
 
-        async public Task<PrivateIdentityDto> RenewCredential(string globalTocken)
+        public override Task NotifyUserJoin(string uid)
         {
-            if (globalTocken != null && userMap.ContainsKey(globalTocken))
+            throw new System.NotImplementedException();
+        }
+
+        public override Task Pong(IClient client)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override async Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto)
+        {
+            if (identityDto?.GlobalToken != null && userMap.ContainsKey(identityDto.GlobalToken))
             {
-                var user  = userMap[globalTocken];
-                if(user != null)
+                var user = userMap[identityDto.GlobalToken];
+                if (user != null)
                 {
                     await IAM.RenewCredential(user);
                     return await GetIdentityDto(user);
@@ -77,6 +83,7 @@ namespace umi3d.worldController
             }
             return await Task.FromResult<PrivateIdentityDto>(null);
         }
+
 
         User GetUser(ConnectionDto connectionDto)
         {
@@ -99,7 +106,9 @@ namespace umi3d.worldController
             return (new Guid()).ToString();
         }
 
-        async Task<PrivateIdentityDto> GetIdentityDto(User user) {
+
+        async Task<PrivateIdentityDto> GetIdentityDto(User user)
+        {
             //General token is valid.
             if (!userMap.ContainsKey(user.Token))
             {
@@ -128,44 +137,6 @@ namespace umi3d.worldController
             return privateId;
         }
 
-        async Task<UMI3DDto> IWorldController_Client.Connect(ConnectionDto connectionDto)
-        {
-            return await _RegisterUser(connectionDto);
-        }
 
-
-        /// <summary>
-        /// Get scene's information required for client connection.
-        /// </summary>
-        public MediaDto ToDto()
-        {
-            var res = new MediaDto
-            {
-                name = mediaName,
-                url = ip,
-                //connection = UMI3DServer.Instance.ToDto(),
-                versionMajor = UMI3DVersion.major,
-                versionMinor = UMI3DVersion.minor,
-                versionStatus = UMI3DVersion.status,
-                versionDate = UMI3DVersion.date
-            };
-
-            return res;
-        }
-
-        async virtual public Task NotifyUserJoin(string uid)
-        {
-            await Task.CompletedTask;
-        }
-
-        async virtual public Task Pong(IClient client)
-        {
-            await Task.CompletedTask;
-        }
-
-        async virtual public Task<MediaDto> GetMediaDto()
-        {
-            return await Task.FromResult(ToDto());
-        }
     }
 }

@@ -704,12 +704,8 @@ namespace umi3d.cdk.collaboration
                     if (ShouldSend)
                     {
                         int encodedLength = encoder.Encode(frameBuffer, outputBuffer);
-                        if (UMI3DCollaborationClientServer.Exists
-                            && UMI3DCollaborationClientServer.Connected()
-                            && UMI3DCollaborationClientServer.Instance.status == StatusType.ACTIVE)
-                        {
-                            UMI3DCollaborationClientServer.Instance.SendVOIP(encodedLength, outputBuffer);
-                        }
+                        UMI3DCollaborationClientServer.SendVOIP(encodedLength, outputBuffer);
+
                     }
                 }
                 Thread.Sleep(sleepTimeMiliseconde);

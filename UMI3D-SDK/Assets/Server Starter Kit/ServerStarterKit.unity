@@ -745,7 +745,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1140833856}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d96d5b0a7ff11a049965fb2f4824b946, type: 3}
+  m_Script: {fileID: 11500000, guid: f7f31602af2cda7429594622827007a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ip: localhost
@@ -776,6 +776,7 @@ MonoBehaviour:
   useIp: 0
   tokenLifeTime: 10
   Identifier: {fileID: 11400000, guid: 63bab823452c6f14680ef4444b481bf1, type: 2}
+  WorldController: {fileID: 11400000, guid: f42371fba2c3f8745a445d07468902ef, type: 2}
   useRandomForgePort: 0
   forgePort: 0
   forgeMasterServerHost: 
@@ -785,10 +786,8 @@ MonoBehaviour:
   forgeMaxNbPlayer: 32
   useRandomHttpPort: 0
   httpPort: 0
-  iconServerUrl: 
   sessionId: 
   descriptionComment: 
-  Authentication: 0
   WaitTimeForPingAnswer: 3
   MaxPingingTry: 5
   OnServerStart:
