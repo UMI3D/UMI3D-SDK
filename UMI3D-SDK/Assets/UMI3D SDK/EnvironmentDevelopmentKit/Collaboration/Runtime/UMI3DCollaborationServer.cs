@@ -77,6 +77,11 @@ namespace umi3d.edk.collaboration
         public ushort httpPort;
 
         /// <summary>
+        /// url of an image that could be displayed by browser to show different awailable environments.
+        /// </summary>
+        public string iconServerUrl;
+
+        /// <summary>
         /// Forge server session id
         /// </summary>
         [HideInInspector]

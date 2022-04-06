@@ -141,13 +141,10 @@ namespace umi3d.edk.collaboration
         protected virtual void SetSessionComment(string arg) { UMI3DCollaborationServer.Instance.descriptionComment = arg; }
 
         /// <summary>
-        /// method called when param <see cref="sessionId"/> is found
+        /// method called when param <see cref="iconUrlParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetIconServerUrl(string arg)
-        {
-            Debug.Log("SetIconServerUrl Not Implemented");
-        }
+        protected virtual void SetIconServerUrl(string arg) { UMI3DCollaborationServer.Instance.iconServerUrl = arg; }
 
         /// <summary>
         /// method called when param <see cref="ipParam"/> is found
