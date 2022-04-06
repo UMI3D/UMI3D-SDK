@@ -66,7 +66,6 @@ namespace umi3d.worldController
 
             if (result != null)
             {
-                //Debug.Log($"result {result} {(result as PrivateIdentityDto)?.userId} {(result as PrivateIdentityDto)?.GlobalToken}");
                 HttpListenerResponse res = e.Response;
                 res.WriteContent(result.ToBson());
             }
@@ -112,7 +111,6 @@ namespace umi3d.worldController
 
             if (result != null)
             {
-                //Debug.Log($"result {result} {(result as PrivateIdentityDto)?.userId} {(result as PrivateIdentityDto)?.GlobalToken}");
                 HttpListenerResponse res = e.Response;
                 res.WriteContent(result.ToBson());
             }

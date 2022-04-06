@@ -30,6 +30,8 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DEnvironmentClient
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+
         bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
         public bool IsConnected() => ForgeClient != null ? isConnected && ForgeClient.IsConnected : false;
 
@@ -166,16 +168,10 @@ namespace umi3d.cdk.collaboration
 
         public async void ConnectionLost()
         {
+            UMI3DLogger.Log($"Connection lost with environment [Was Connected: {IsConnected()}]", scope);
             if (IsConnected())
-            {
-                Debug.Log($"Connection lost for {worldControllerClient.Identity.localToken}");
                 if (UMI3DCollaborationClientServer.Exists)
                     UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
-            }
-            else
-            {
-                Debug.Log($"Connection lost (B) for {worldControllerClient.Identity.localToken}");
-            }
             await Task.Yield();
 
             isConnecting = false;
@@ -242,7 +238,6 @@ namespace umi3d.cdk.collaboration
         /// <param name="message"></param>
         public async void OnMessage(object message)
         {
-            Debug.Log($"hello {message}");
             try
             {
                 switch (message)
@@ -281,7 +276,7 @@ namespace umi3d.cdk.collaboration
             }
             catch
             {
-                Debug.LogWarning($"Error on OnMessage({message})");
+                UMI3DLogger.LogWarning($"Error on OnMessage({message})", scope);
             }
         }
 
@@ -318,7 +313,7 @@ namespace umi3d.cdk.collaboration
             }
             catch
             {
-                Debug.LogWarning($"Error on OnStatusChanged({statusDto})");
+                UMI3DLogger.LogWarning($"Error on OnStatusChanged({statusDto})", scope);
             }
         }
 
@@ -462,7 +457,6 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         public void Send(AbstractBrowserRequestDto dto, bool reliable)
         {
-            Debug.Log(worldControllerClient.Identity.localToken);
             ForgeClient.SendBrowserRequest(dto, reliable);
         }
 

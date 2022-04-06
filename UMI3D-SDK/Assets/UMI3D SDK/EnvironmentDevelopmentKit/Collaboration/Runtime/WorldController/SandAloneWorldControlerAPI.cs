@@ -55,8 +55,6 @@ namespace umi3d.worldController
                 ? await IAM.isFormValid(user, formAnswer.FormAnswerDto) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user)
                 : await IAM.IsUserValid(user) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user);
 
-            //UnityEngine.Debug.Log($"Register {dto}");
-
             return dto;
         }
 

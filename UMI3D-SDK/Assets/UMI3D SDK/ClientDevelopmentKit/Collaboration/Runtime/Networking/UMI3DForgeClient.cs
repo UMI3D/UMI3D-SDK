@@ -114,8 +114,8 @@ namespace umi3d.cdk.collaboration
             client.connectAttemptFailed += RejectedByServer;
             client.bindFailure += BindFailed;
             client.bindSuccessful += BindSucceded;
-            client.forcedDisconnect += (n) => { Debug.Log("Force disconnect"); };
-            client.playerAccepted += (n,p) => { Debug.Log("Player Accepted"); };
+            client.forcedDisconnect += (n) => { UMI3DLogger.Log("Force disconnect", scope); };
+            client.playerAccepted += (n,p) => { UMI3DLogger.Log("Player Accepted", scope); };
 
             if (natServerHost.Trim().Length == 0)
                 client.Connect(ip, (ushort)port);
@@ -180,7 +180,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void AcceptedByServer(NetWorker sender)
         {
-            Debug.Log("Accepted by server");
+            UMI3DLogger.Log("Accepted by server", scope);
         }
 
         /// <summary>
@@ -189,17 +189,17 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void RejectedByServer(NetWorker sender)
         {
-            Debug.Log("Rejected by server");
+            UMI3DLogger.Log("rejected by server", scope);
         }
 
         private void BindFailed(NetWorker sender)
         {
-            Debug.Log("Bind Failed");
+            UMI3DLogger.Log("Bind Failed", scope);
         }
 
         private void BindSucceded(NetWorker sender)
         {
-            Debug.Log("Bind Succeded");
+            UMI3DLogger.Log("Bind Succeded", scope);
         }
 
         /// <summary>

@@ -469,7 +469,6 @@ namespace umi3d.edk.collaboration
             {
                 if (u is UMI3DCollaborationUser user)
                 {
-                    Debug.Log(user.status);
                     if (user.status == StatusType.NONE)
                     {
                         continue;

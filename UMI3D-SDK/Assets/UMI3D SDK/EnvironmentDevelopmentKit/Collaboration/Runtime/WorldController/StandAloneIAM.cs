@@ -74,7 +74,6 @@ namespace umi3d.worldController
 
         public async virtual Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
         {
-            formAnswer.answers.ForEach((s) => Debug.Log($"{s?.id} : {s?.parameter}"));
             SetToken(user);
             return await Task.FromResult(true);
         }

@@ -333,7 +333,6 @@ namespace umi3d.common.collaboration
 
         public override bool Write<T>(T value, out Bytable bytable)
         {
-            UnityEngine.Debug.Log($"Hello {typeof(T)}");
             switch (value)
             {
                 case LocalInfoRequestParameterValue localInfovalue:
@@ -439,7 +438,6 @@ namespace umi3d.common.collaboration
                         bytable = UMI3DNetworkingHelper.WriteCollection(new System.Collections.Generic.List<FileDto>());
                         return true;
                     }
-                    UnityEngine.Debug.Log($"No {typeof(T)} {typeof(T) == typeof(ResourceDto)}");
                     bytable = null;
                     return false;
             }

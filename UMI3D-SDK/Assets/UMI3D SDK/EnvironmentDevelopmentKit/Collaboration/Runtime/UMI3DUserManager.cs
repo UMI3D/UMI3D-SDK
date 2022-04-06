@@ -161,7 +161,7 @@ namespace umi3d.edk.collaboration
         /// <param name="user"></param>
         public void Logout(UMI3DCollaborationUser user)
         {
-            Debug.Log($"logout {user.Id()} {user.networkPlayer.NetworkId}");
+            UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId}",scope);
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
             lock (users)
             {
@@ -186,9 +186,7 @@ namespace umi3d.edk.collaboration
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            //Debug.Log(token);
             var user = GetUserByNakedToken(token).user;
-            //UnityEngine.Debug.Log($"user {user}");
             if (user != null)
             {
                 var reconnection = user.networkPlayer != null;

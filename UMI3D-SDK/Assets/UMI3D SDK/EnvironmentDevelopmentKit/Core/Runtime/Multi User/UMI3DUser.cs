@@ -57,7 +57,6 @@ namespace umi3d.edk
 
         public virtual void SetStatus(StatusType status)
         {
-            UnityEngine.Debug.Log(status);
             this.status = status;
         }
 
