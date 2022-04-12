@@ -64,28 +64,69 @@ namespace umi3d.cdk.menu.view
         public AbstractMenuDisplayContainer parent;
 
         /// <summary>
-        /// Display child
+        /// Expands and displays child
         /// </summary>
         /// <param name="forceUpdate"></param>
-        public abstract void Expand(bool forceUpdate = false);
+        public virtual void Expand(bool forceUpdate = false)
+        {
+            if (isExpanded && !forceUpdate)
+                return;
+            isExpanded = true;
+            ExpandImp();
+        }
 
         /// <summary>
-        /// Hide without destroying
+        /// Expands [container] and displays child of [container]
         /// </summary>
+        /// <param name="container"></param>
         /// <param name="forceUpdate"></param>
-        public abstract void Collapse(bool forceUpdate = false);
+        public virtual void ExpandAs(AbstractMenuDisplayContainer container, bool forceUpdate = false)
+        {
+            if (container.isExpanded && !forceUpdate)
+                return;
+            container.isExpanded = true;
+            ExpandAsImp(container);
+        }
 
         /// <summary>
-        /// Display child of Container
+        /// Collapses and hide children without destroying
         /// </summary>
-        /// <param name="container"> container to display</param>
         /// <param name="forceUpdate"></param>
-        public abstract void ExpandAs(AbstractMenuDisplayContainer container, bool forceUpdate = false);
+        public virtual void Collapse(bool forceUpdate = false)
+        {
+            if (!isExpanded && !forceUpdate)
+                return;
+            isExpanded = false;
+            CollapseImp();
+        }
 
         /// <summary>
         /// The AbstractMenuDisplayContainer that have is content displayed in this container. 
         /// </summary>
         public abstract AbstractMenuDisplayContainer CurrentMenuDisplayContainer();
+
+        #region navigation Implementation
+
+        /// <summary>
+        /// Implementation of the Expand methode.
+        /// <see cref="Expand"/>
+        /// </summary>
+        protected abstract void ExpandImp();
+
+        /// <summary>
+        /// Implementation of the ExpandAs methode.
+        /// <see cref="ExpandAs(AbstractMenuDisplayContainer, bool)"/>
+        /// </summary>
+        /// <param name="container"></param>
+        protected abstract void ExpandAsImp(AbstractMenuDisplayContainer container);
+
+        /// <summary>
+        /// Implementation of the Collapse methode.
+        /// <see cref="Collapse(bool)"/>
+        /// </summary>
+        protected abstract void CollapseImp();
+
+        #endregion
 
         #endregion
 
