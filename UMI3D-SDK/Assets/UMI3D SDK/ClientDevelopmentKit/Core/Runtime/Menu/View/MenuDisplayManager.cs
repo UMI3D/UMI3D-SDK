@@ -26,6 +26,9 @@ namespace umi3d.cdk.menu.view
         private bool m_displayedOnStart = false;
         [SerializeField]
         private bool m_collapseOnStart = false;
+        /// <summary>
+        /// Updates display to display depth when a new item is added.
+        /// </summary>
         [SerializeField]
         private bool m_displayWhenAddNewItem = false;
         [SerializeField]
@@ -286,7 +289,6 @@ namespace umi3d.cdk.menu.view
         /// <param name="submenu"></param>
         public void Navigate(AbstractMenu submenu)
         {
-            //Debug.Log($"last menu = [{lastMenuContainerUnderNavigation.menu.Name}]");
             if (!menuToDisplayer.TryGetValue(submenu, out AbstractMenuDisplayContainer displayer))
                 throw new System.Exception("Internal error : no displayer found for this menu");
 
