@@ -19,6 +19,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu
 {
     public class AbstractMenuItemAdded : UnityEvent<AbstractMenuItem> { }
+    public class AbstractMenuItemRemoved : UnityEvent<AbstractMenuItem> { }
 
 
     /// <summary>
@@ -40,9 +41,14 @@ namespace umi3d.cdk.menu
         public UnityEvent onContentChange = new UnityEvent();
 
         /// <summary>
-        /// Event raised when menu content has been changed.
+        /// Event raised when a sub menu has been added.
         /// </summary>
         public AbstractMenuItemAdded onAbstractMenuItemAdded = new AbstractMenuItemAdded();
+
+        /// <summary>
+        /// Event raised when a sub-menu has been removed.
+        /// </summary>
+        public AbstractMenuItemRemoved OnAbstractMenuItemRemoved = new AbstractMenuItemRemoved();
 
         /// <summary>
         /// Submenus contained in this menu.
