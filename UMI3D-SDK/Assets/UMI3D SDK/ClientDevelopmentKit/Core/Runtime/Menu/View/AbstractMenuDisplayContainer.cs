@@ -133,17 +133,6 @@ namespace umi3d.cdk.menu.view
         #region Data management
 
         /// <summary>
-        /// Action raised when new item is added.
-        /// </summary>
-        public Action<AbstractDisplayer> OnItemAdded;
-
-        /// <summary>
-        /// Called when the [displayer] is added.
-        /// </summary>
-        /// <param name="displayer"></param>
-        protected abstract void ItemAdded(AbstractDisplayer displayer);
-
-        /// <summary>
         /// Get the number of item in this Container
         /// </summary>
         /// <returns></returns>
