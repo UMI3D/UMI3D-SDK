@@ -31,7 +31,7 @@ namespace umi3d.edk.collaboration
     /// <summary>
     /// 
     /// </summary>
-    public class UMI3DForgeServer : ForgeSocketBase
+    public class UMI3DForgeServer : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -139,7 +139,7 @@ namespace umi3d.edk.collaboration
                 string serverId = UMI3DCollaborationServer.Instance.sessionId;
                 string serverName = UMI3DCollaborationEnvironment.Instance.environmentName;// ok
                 string type = string.IsNullOrEmpty(environmentType) ? UMI3DCollaborationEnvironment.Instance.environmentName : environmentType;
-                string mode = /*string.IsNullOrEmpty(UMI3DCollaborationServer.Instance.iconServerUrl) ? */"public/picture.png";// : UMI3DCollaborationServer.Instance.iconServerUrl;
+                string mode = string.IsNullOrEmpty(UMI3DCollaborationServer.Instance.iconServerUrl) ? "public/picture.png" : UMI3DCollaborationServer.Instance.iconServerUrl;
                 string comment = UMI3DCollaborationServer.Instance.descriptionComment;
 
                 masterServerData = (mgr as UMI3DNetworkManager).MasterServerRegisterData(server, connectionPort.ToString(), serverId, serverName, type, mode, comment);

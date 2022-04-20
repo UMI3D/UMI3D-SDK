@@ -23,5 +23,5 @@ public interface IWorldController_Environment
 {
     Task NotifyUserJoin(string uid);
 
-    Task Pong(IClient client);
+    Task NotifyUserLeave(string uid);
 }

@@ -19,11 +19,12 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.collaboration;
 using UnityEngine;
 
 namespace umi3d.worldController
 {
-    public abstract class WorldControlerAPI : ScriptableObject, IWorldController_Client, IWorldController_Environment, IWorldController
+    public abstract class StandAloneWorldControllerAPI : WorldControllerAPI, IWorldController_Client, IWorldController
     {
         public virtual string worldName { get; set; }
         public virtual string ip { get; set; }
@@ -31,10 +32,10 @@ namespace umi3d.worldController
         public umi3d.edk.UMI3DResource Icon2D;
         public umi3d.edk.UMI3DResource Icon3D;
 
-        public virtual void Setup(string name, string ip)
+        public override void Setup()
         {
-            worldName = name;
-            this.ip = ip;
+            worldName = UMI3DCollaborationEnvironment.Instance.environmentName;
+            this.ip = edk.UMI3DServer.GetHttpUrl();
             edk.collaboration.UMI3DHttp.Instance.AddRoot(new worldController.UMI3DStandAloneApi(this));
         }
 
@@ -63,8 +64,6 @@ namespace umi3d.worldController
             return res;
         }
 
-        public abstract Task NotifyUserJoin(string uid);
-        public abstract Task Pong(IClient client);
         public abstract Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto);
 
     }

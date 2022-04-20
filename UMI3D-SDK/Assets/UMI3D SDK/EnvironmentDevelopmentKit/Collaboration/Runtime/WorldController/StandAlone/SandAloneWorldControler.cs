@@ -27,22 +27,15 @@ using UnityEngine;
 namespace umi3d.worldController
 {
     [CreateAssetMenu(fileName = "SandAloneWorldControlerAPI", menuName = "UMI3D/SandAlone WorldControler")]
-    public class SandAloneWorldControlerAPI : WorldControlerAPI
+    public class SandAloneWorldControler : StandAloneWorldControllerAPI
     {
         IIAM IAM;
         IKeyGenerator keyGenerator;
         Dictionary<string, User> userMap = new Dictionary<string, User>();
 
-        public override void Setup(string name, string ip)
+        public override void Setup()
         {
-            base.Setup(name, ip);
-            IAM = new StandAloneIAM(edk.collaboration.UMI3DCollaborationServer.Instance);
-            keyGenerator = new StandAloneKeyGenerator();
-        }
-
-        public virtual void SetIcon(string ip)
-        {
-            base.Setup(name, ip);
+            base.Setup();
             IAM = new StandAloneIAM(edk.collaboration.UMI3DCollaborationServer.Instance);
             keyGenerator = new StandAloneKeyGenerator();
         }
@@ -59,11 +52,6 @@ namespace umi3d.worldController
         }
 
         public override Task NotifyUserJoin(string uid)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public override Task Pong(IClient client)
         {
             throw new System.NotImplementedException();
         }
@@ -135,6 +123,9 @@ namespace umi3d.worldController
             return privateId;
         }
 
-
+        public override Task NotifyUserLeave(string uid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

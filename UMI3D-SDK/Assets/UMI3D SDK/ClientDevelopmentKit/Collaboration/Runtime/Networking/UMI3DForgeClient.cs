@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// 
     /// </summary>
-    public class UMI3DForgeClient : ForgeSocketBase
+    public class UMI3DForgeClient : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 

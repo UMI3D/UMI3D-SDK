@@ -38,9 +38,9 @@ namespace umi3d.worldController
     public class UMI3DStandAloneApi : IHttpApi
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
-        private readonly WorldControlerAPI api;
+        private readonly StandAloneWorldControllerAPI api;
 
-        public UMI3DStandAloneApi(WorldControlerAPI api)
+        public UMI3DStandAloneApi(StandAloneWorldControllerAPI api)
         {
             this.api = api;
         }

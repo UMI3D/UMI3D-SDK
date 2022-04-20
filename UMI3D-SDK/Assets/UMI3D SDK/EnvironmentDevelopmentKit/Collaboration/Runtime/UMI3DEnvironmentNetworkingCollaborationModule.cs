@@ -23,7 +23,30 @@ namespace umi3d.edk.collaboration
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
-            result = default;
+            switch (true)
+            {
+                case true when typeof(T) == typeof(RegisterIdentityDto):
+                    if (container.length < 2 * sizeof(uint) + 4 * sizeof(ulong))
+                    {
+                        result = default(T);
+                        readable = false;
+                        return true;
+                    }
+                    var identity = new RegisterIdentityDto
+                    {
+                        userId = UMI3DNetworkingHelper.Read<ulong>(container),
+                        login = UMI3DNetworkingHelper.Read<string>(container),
+                        localToken = UMI3DNetworkingHelper.Read<string>(container),
+                        key = UMI3DNetworkingHelper.Read<string>(container),
+                        libraries = UMI3DNetworkingHelper.ReadList<LibrariesDto>(container),
+                        metaData = UMI3DNetworkingHelper.ReadArray<byte>(container)
+                    };
+                    result = (T)(object)identity;
+                    readable = true;
+                    return true;
+            }
+
+            result = default(T);
             readable = false;
             return false;
         }
@@ -50,7 +73,16 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0);
                     return true;
-            }
+                case RegisterIdentityDto identity:
+                    bytable = UMI3DNetworkingHelper.Write(identity.userId)
+                        + UMI3DNetworkingHelper.Write(identity.login)
+                        + UMI3DNetworkingHelper.Write(identity.localToken)
+                        + UMI3DNetworkingHelper.Write(identity.key)
+                        + UMI3DNetworkingHelper.Write(identity.libraries)
+                        + UMI3DNetworkingHelper.Write(identity.metaData);
+                    return true;
+
+    }
             bytable = null;
             return false;
         }

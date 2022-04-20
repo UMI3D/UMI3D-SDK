@@ -53,8 +53,9 @@ namespace umi3d.edk.collaboration
 
         public IdentifierApi Identifier;
 
-        [EditorReadOnly, Tooltip("World controller for stand alone api. If the ")]
-        public worldController.WorldControlerAPI WorldController;
+        [EditorReadOnly, Tooltip("World controller for stand alone api.")]
+        public worldController.WorldControllerAPI WorldController;
+
 
         [EditorReadOnly]
         public bool useRandomForgePort;
@@ -170,6 +171,8 @@ namespace umi3d.edk.collaboration
             http = new UMI3DHttp(httpPort);
             UMI3DHttp.Instance.AddRoot(new UMI3DEnvironmentApi());
 
+            WorldController.Setup();
+
             forgeServer = UMI3DForgeServer.Create(
                 ip, httpPort,
                 forgePort,//UDPServer config
@@ -177,18 +180,18 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
                 );
+
             UMI3DAuthenticator auth = new UMI3DAuthenticator();
+
             if (auth != null)
                 auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
+
             forgeServer.Host(auth);
 
             isRunning = true;
             OnServerStart.Invoke();
 
-            if (WorldController != null)
-            {
-                WorldController.Setup(UMI3DCollaborationEnvironment.Instance.environmentName, GetHttpUrl());
-            }
+
 
         }
 

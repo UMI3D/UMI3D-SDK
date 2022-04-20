@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2022 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,16 +16,26 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using umi3d.common.collaboration;
-using System;
-using umi3d.common;
 using System.Threading.Tasks;
+using umi3d.common;
+using umi3d.common.collaboration;
+using UnityEngine;
 
-public interface IWorldController_Client
+namespace umi3d.worldController
 {
-    Task<UMI3DDto> Connect(ConnectionDto connectionDto);
+    public abstract class WorldControllerAPI : ScriptableObject, IWorldController_Environment
+    {
+        public abstract Task NotifyUserJoin(string uid);
 
-    Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto);
+        public abstract Task NotifyUserLeave(string uid);
 
+        public virtual void Setup() { }
+
+
+        public virtual void Stop()
+        {
+        }
+
+
+    }
 }
