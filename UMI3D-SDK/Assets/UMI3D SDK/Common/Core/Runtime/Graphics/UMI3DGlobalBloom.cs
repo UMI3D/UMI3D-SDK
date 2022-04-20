@@ -31,12 +31,23 @@ namespace umi3d.common.graphics
         [SerializeField]
         private float threshold = 1f;
 
+#if USING_URP
+
+        [SerializeField]
+        [Range(0f, 1f)]
+        private float scatter = 0.5f;
+
+        [SerializeField]
+        private bool highQualityFiltering = false;
+
+        [SerializeField]
+        [Range(0, 16)]
+        private int skipIterations = 1;
+
+#else
         [SerializeField]
         [Range(0f, 1f)]
         private float softKnee = 0.5f;
-
-        [SerializeField]
-        private float clamp = 65472f;
 
         [SerializeField]
         [Range(1f, 10f)]
@@ -47,11 +58,15 @@ namespace umi3d.common.graphics
         private float anamorphicRatio = 0f;
 
         [SerializeField]
-        [ColorUsageAttribute(false, true)]
-        private Color color = Color.white;
+        private bool fastMode = false;
+#endif
 
         [SerializeField]
-        private bool fastMode = false;
+        [ColorUsageAttribute(false, true)]
+        private Color tint = Color.white;
+
+        [SerializeField]
+        private float clamp = 65472f;
 
         [Header("Dirtiness")]
         private readonly Texture dirt_Texture = null;
@@ -62,12 +77,21 @@ namespace umi3d.common.graphics
         public bool BloomEnabled => bloomEnabled;
         public float Intensity => intensity;
         public float Threshold => threshold;
-        public float SoftKnee => softKnee;
         public float Clamp => clamp;
+        public Color Tint => tint;
+
+#if USING_URP
+
+        public float Scatter => scatter;
+        public bool HighQualityFiltering => highQualityFiltering;
+        public int SkipIterations => skipIterations;
+
+#else
         public float Diffusion => diffusion;
         public float AnamorphicRatio => anamorphicRatio;
-        public Color Color => color;
         public bool FastMode => fastMode;
+        public float SoftKnee => softKnee;
+#endif
         public Texture Dirt_Texture => dirt_Texture;
         public float Dirt_Intensity => dirt_Intensity;
 
