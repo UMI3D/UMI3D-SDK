@@ -775,7 +775,7 @@ MonoBehaviour:
       m_Calls: []
   useIp: 0
   tokenLifeTime: 10
-  Identifier: {fileID: 11400000, guid: 63bab823452c6f14680ef4444b481bf1, type: 2}
+  Identifier: {fileID: 11400000, guid: ba81d976e475d254fa8a1879e691bf1e, type: 2}
   WorldController: {fileID: 11400000, guid: f42371fba2c3f8745a445d07468902ef, type: 2}
   useRandomForgePort: 0
   forgePort: 0
@@ -786,6 +786,7 @@ MonoBehaviour:
   forgeMaxNbPlayer: 32
   useRandomHttpPort: 0
   httpPort: 0
+  iconServerUrl: 
   sessionId: 
   descriptionComment: 
   WaitTimeForPingAnswer: 3
