@@ -32,8 +32,8 @@ namespace umi3d.cdk.menu
             {
                 if (abstractMenuItem is Menu menu)
                     menu.onContentChange.AddListener(onContentChange.Invoke);
-                onContentChange.Invoke();
                 onAbstractMenuItemAdded.Invoke(abstractMenuItem);
+                onContentChange.Invoke();
                 return true;
             }
             else
@@ -59,6 +59,51 @@ namespace umi3d.cdk.menu
                 SubMenu.Add(menu);
                 return true;
             }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="abstractMenuItem"></param>
+        /// <returns></returns>
+        public override bool Remove(AbstractMenuItem abstractMenuItem)
+        {
+            if (RemoveWithoutNotify(abstractMenuItem))
+            {
+                OnAbstractMenuItemRemoved?.Invoke(abstractMenuItem);
+                onContentChange.Invoke();
+                if (abstractMenuItem is Menu menu)
+                    menu.onContentChange.RemoveAllListeners();
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public void Destroy()
+        {
+            onAbstractMenuItemAdded.RemoveAllListeners();
+            OnAbstractMenuItemRemoved.RemoveAllListeners();
+            OnDestroy.Invoke();
+            OnDestroy.RemoveAllListeners();
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="abstractMenuItem"></param>
+        /// <returns></returns>
+        public override bool RemoveWithoutNotify(AbstractMenuItem abstractMenuItem)
+        {
+            if (!Contains(abstractMenuItem))
+                return false;
+
+            if (abstractMenuItem is MenuItem menuItem)
+                return MenuItems.Remove(menuItem);
+            else if (abstractMenuItem is Menu menu)
+                return SubMenu.Remove(menu);
             else
                 return false;
         }
@@ -100,43 +145,7 @@ namespace umi3d.cdk.menu
         public override IEnumerable<AbstractMenu> GetSubMenu()
             => SubMenu;
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="abstractMenuItem"></param>
-        /// <returns></returns>
-        public override bool Remove(AbstractMenuItem abstractMenuItem)
-        {
-            if (RemoveWithoutNotify(abstractMenuItem))
-            {
-                abstractMenuItem.OnDestroy.Invoke();
-                abstractMenuItem.OnDestroy.RemoveAllListeners();
-                onContentChange.Invoke();
-                if (abstractMenuItem is Menu menu)
-                    menu.onContentChange.RemoveAllListeners();
-                return true;
-            }
-            else
-                return false;
-        }
-
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        /// <param name="abstractMenuItem"></param>
-        /// <returns></returns>
-        public override bool RemoveWithoutNotify(AbstractMenuItem abstractMenuItem)
-        {
-            if (!Contains(abstractMenuItem))
-                return false;
-
-            if (abstractMenuItem is MenuItem menuItem)
-                return MenuItems.Remove(menuItem);
-            else if (abstractMenuItem is Menu menu)
-                return SubMenu.Remove(menu);
-            else
-                return false;
-        }
+        
 
         ///<inheritdoc/>
         public override string ToString()

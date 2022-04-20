@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using umi3d.cdk.menu;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,6 +26,11 @@ namespace umi3d.cdk.interaction
     [System.Serializable]
     public abstract class AbstractUMI3DInput : MonoBehaviour
     {
+        /// <summary>
+        /// Menu that will contain this input.
+        /// </summary>
+        public AbstractMenu Menu;
+
         [SerializeField]
         public AbstractController controller { get; protected set; }
 

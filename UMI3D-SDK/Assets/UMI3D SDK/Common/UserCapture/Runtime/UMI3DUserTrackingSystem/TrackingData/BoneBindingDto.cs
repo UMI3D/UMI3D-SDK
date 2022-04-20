@@ -45,6 +45,16 @@ namespace umi3d.common.userCapture
         public bool syncPosition;
 
         /// <summary>
+        /// Define if the binding has to synchronize the object rotation with the bone rotation.
+        /// </summary>
+        public bool syncRotation;
+
+        /// <summary>
+        /// Define if the binding has to synchronize the object position with the bone position.
+        /// </summary>
+        public bool freezeWorldScale;
+
+        /// <summary>
         /// The binded BoneType.
         /// </summary>
         public uint boneType;
@@ -57,6 +67,8 @@ namespace umi3d.common.userCapture
         public SerializableVector3 offsetPosition;
 
         public SerializableVector4 offsetRotation;
+
+        public SerializableVector3 offsetScale;
 
         public bool IsCountable()
         {
@@ -73,7 +85,10 @@ namespace umi3d.common.userCapture
                 + UMI3DNetworkingHelper.Write(objectId)
                 + UMI3DNetworkingHelper.Write(offsetPosition)
                 + UMI3DNetworkingHelper.Write(offsetRotation)
-                + UMI3DNetworkingHelper.Write(syncPosition);
+                + UMI3DNetworkingHelper.Write(offsetScale)
+                + UMI3DNetworkingHelper.Write(syncPosition)
+                + UMI3DNetworkingHelper.Write(syncRotation)
+                + UMI3DNetworkingHelper.Write(freezeWorldScale);
         }
     }
 }
