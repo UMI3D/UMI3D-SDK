@@ -44,8 +44,11 @@ namespace umi3d.common.graphics
         protected override void Awake()
         {
             base.Awake();
-
+#if USING_URP
             Debug.Assert(volume != null);
+#else
+            Debug.Assert(m_Volume != null);
+#endif
         }
 
         protected override void _ResetBloom()
@@ -153,7 +156,7 @@ namespace umi3d.common.graphics
             m_Bloom.clamp.Override(bloom.Clamp);
             m_Bloom.diffusion.Override(bloom.Diffusion);
             m_Bloom.anamorphicRatio.Override(bloom.AnamorphicRatio);
-            m_Bloom.color.Override(bloom.Color);
+            m_Bloom.color.Override(bloom.Tint);
             m_Bloom.fastMode.Override(bloom.FastMode);
             m_Bloom.dirtTexture.Override(bloom.Dirt_Texture);
             m_Bloom.dirtIntensity.Override(bloom.Dirt_Intensity);
