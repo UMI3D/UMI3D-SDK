@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UMI3DBaseMaterial
+  m_Name: UMI3D Default Render Pipeline BaseMaterial
   m_Shader: {fileID: 4800000, guid: 080274c3e8c7562499bd82410e2b1862, type: 3}
   m_ShaderKeywords: _ALPHABLEND_ON _DIRECTIONAL_LIGHT _DISABLE_ALBEDO_MAP _HOVER_LIGHT
     _SPECULAR_HIGHLIGHTS _SPHERICAL_HARMONICS

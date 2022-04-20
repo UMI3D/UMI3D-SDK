@@ -21,24 +21,8 @@ namespace umi3d.common.graphics
 {
     public class UMI3DGlobalVignette : MonoBehaviour
     {
-        public enum VignetteMode
-        {
-            /// <summary>
-            /// This mode offers parametric controls for the position, shape and intensity of the Vignette.
-            /// </summary>
-            Classic,
-
-            /// <summary>
-            /// This mode multiplies a custom texture mask over the screen to create a Vignette effect.
-            /// </summary>
-            Masked
-        }
-
         [SerializeField]
         private bool vignetteEnabled = false;
-
-        [SerializeField]
-        private VignetteMode mode = VignetteMode.Classic;
 
         [SerializeField]
         private Color color = Color.black;
@@ -55,20 +39,45 @@ namespace umi3d.common.graphics
         private float smoothness = 0f;
 
         [SerializeField]
-        [Range(0f, 1f)]
-        private float roundness = 0f;
-
-        [SerializeField]
         private bool rounded = false;
 
+#if USING_URP
+
+#else
+        public enum VignetteMode
+        {
+            /// <summary>
+            /// This mode offers parametric controls for the position, shape and intensity of the Vignette.
+            /// </summary>
+            Classic,
+
+            /// <summary>
+            /// This mode multiplies a custom texture mask over the screen to create a Vignette effect.
+            /// </summary>
+            Masked
+        }
+
+        [SerializeField]
+        private VignetteMode mode = VignetteMode.Classic;
+
+        [SerializeField]
+        [Range(0f, 1f)]
+        private float roundness = 0f;
+#endif
+
         public bool VignetteEnabled => vignetteEnabled;
-        public VignetteMode Mode => mode;
         public Color Color => color;
         public Vector2 Center => center;
         public float Intensity => intensity;
         public float Smoothness => smoothness;
-        public float Roundness => roundness;
         public bool Rounded => rounded;
+
+#if !USING_URP
+
+    public VignetteMode Mode => mode;
+    public float Roundness => roundness;
+
+#endif
 
         public static void ResetGlobalVignette()
         {
