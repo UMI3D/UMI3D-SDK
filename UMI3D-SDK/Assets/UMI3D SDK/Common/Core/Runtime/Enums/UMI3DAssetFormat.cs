@@ -25,7 +25,9 @@ namespace umi3d.common
         public const string jpg = "jpg";
         //Unity
         public const string unity_standalone = "unity_standalone";
+        public const string unity_standalone_urp = "unity_standalone_urp";
         public const string unity_android = "unity_android";
+        public const string unity_android_urp = "unity_android_urp";
         public const string unity_ios = "unity_ios";
     }
 }
