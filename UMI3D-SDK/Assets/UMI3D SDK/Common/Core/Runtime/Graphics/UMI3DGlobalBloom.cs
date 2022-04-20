@@ -44,9 +44,6 @@ namespace umi3d.common.graphics
         [Range(0, 16)]
         private int skipIterations = 1;
 
-        [SerializeField]
-        [ColorUsageAttribute(false, true)]
-        private Color tint = Color.white;
 #else
         [SerializeField]
         [Range(0f, 1f)]
@@ -63,6 +60,10 @@ namespace umi3d.common.graphics
         [SerializeField]
         private bool fastMode = false;
 #endif
+
+        [SerializeField]
+        [ColorUsageAttribute(false, true)]
+        private Color tint = Color.white;
 
         [SerializeField]
         private float clamp = 65472f;
