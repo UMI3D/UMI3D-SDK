@@ -166,6 +166,7 @@ namespace umi3d.cdk.menu.view
         {
             if (isDisplaying && !update)
                 return;
+            CreateMenuAndDisplay();
             ApplyDisplayDepthOnDisplayerDisplayStatus(m_root, 0);
             isDisplaying = true;
             onDisplay.Invoke();
@@ -189,34 +190,6 @@ namespace umi3d.cdk.menu.view
             isDisplaying = true;
             onDisplay.Invoke();
         }
-
-        ///// <summary>
-        ///// Display the menu.
-        ///// </summary>
-        ///// <param name="update">Should the display be updated (in case of changes in menu)</param>
-        //public void Display(bool update)
-        //{
-        //    if (!isDisplaying)
-        //        CreateMenuAndDisplay();
-        //    else if (update)
-        //    {
-        //        Hide(true);
-        //        CreateMenuAndDisplay();
-        //        AbstractMenuItem last = lastMenuContainerUnderNavigation.menu;
-        //        if (last is AbstractMenu lastMenu)
-        //            Navigate(lastMenu);
-        //    }
-        //    //else
-        //    //{
-        //    //    foreach (AbstractMenuDisplayContainer container in containers)
-        //    //    {
-        //    //        container.Display();
-        //    //        container.Expand();
-        //    //    }
-        //    //}
-
-        //    onDisplay.Invoke();
-        //}
 
         /// <summary>
         /// Hide the menu.
@@ -338,6 +311,11 @@ namespace umi3d.cdk.menu.view
                 currentDisplayer.ExpandAs(displayer, true);
         }
 
+        /// <summary>
+        /// Collapse [container] siblings.
+        /// </summary>
+        /// <param name="precContainre"></param>
+        /// <param name="container"></param>
         private void CollapseSiblings(AbstractMenuDisplayContainer precContainre, AbstractMenuDisplayContainer container)
         {
             if (precContainre == null || precContainre.parallelNavigation)
@@ -560,6 +538,11 @@ namespace umi3d.cdk.menu.view
             }
         }
 
+        /// <summary>
+        /// Remove [subMenu] from [container] and remove its children.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="subMenu"></param>
         private void RemoveSubMenu(AbstractMenuDisplayContainer container, AbstractMenu subMenu)
         {
             if (!menuToDisplayer.TryGetValue(subMenu, out AbstractMenuDisplayContainer subContainer))
@@ -575,6 +558,11 @@ namespace umi3d.cdk.menu.view
             Destroy(subContainer.gameObject);
         }
 
+        /// <summary>
+        /// Remove [menuItem] from [container].
+        /// </summary>
+        /// <param name="container"></param>
+        /// <param name="menuItem"></param>
         private void RemoveItem(AbstractMenuDisplayContainer container, AbstractMenuItem menuItem)
         {
             if (!itemToDisplayer.TryGetValue(menuItem, out AbstractDisplayer displayer))
