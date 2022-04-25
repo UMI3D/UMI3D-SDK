@@ -46,6 +46,9 @@ namespace umi3d.cdk.collaboration
 
         override protected ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
 
+        public UnityEvent OnLeaving = new UnityEvent();
+        public UnityEvent OnLeavingEnvironment = new UnityEvent();
+
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
         public UnityEvent OnRedirection = new UnityEvent();
@@ -140,6 +143,8 @@ namespace umi3d.cdk.collaboration
                 await environmentClient.Logout();
             if (worldControllerClient != null)
                 worldControllerClient.Logout();
+            Instance.OnLeavingEnvironment.Invoke();
+            Instance.OnLeaving.Invoke();
         }
 
         /// <summary>
@@ -157,6 +162,7 @@ namespace umi3d.cdk.collaboration
                 success?.Invoke();
             else
                 failled?.Invoke("Failled to Logout");
+            Instance.OnLeavingEnvironment.Invoke();
         }
 
 

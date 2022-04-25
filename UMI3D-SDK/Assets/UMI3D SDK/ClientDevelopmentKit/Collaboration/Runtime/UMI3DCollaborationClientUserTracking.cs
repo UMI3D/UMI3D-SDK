@@ -37,11 +37,11 @@ namespace umi3d.cdk.collaboration
             {
                 if (targetTrackingFPS > 0)
                 {
-                    BonesIterator();
-
                     if (UMI3DCollaborationClientServer.Connected())
+                    {
+                        BonesIterator();
                         UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
-
+                    }
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
                 else
