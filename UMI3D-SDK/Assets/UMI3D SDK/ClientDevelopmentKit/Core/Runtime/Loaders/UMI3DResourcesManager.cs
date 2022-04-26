@@ -220,7 +220,7 @@ namespace umi3d.cdk
 
             private bool MatchServerUrl()
             {
-                if (UMI3DClientServer.Media == null)
+                if (UMI3DClientServer.Environement == null)
                     return false;
 
                 string url = UMI3DClientServer.Environement.httpUrl + '/';

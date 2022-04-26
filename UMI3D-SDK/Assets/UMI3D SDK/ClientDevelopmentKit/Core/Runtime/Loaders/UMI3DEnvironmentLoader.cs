@@ -245,7 +245,9 @@ namespace umi3d.cdk
         {
             //UMI3DLogger.Log("GetBaseMaterial",scope);
             if (baseMaterial == null)
-                return null;
+            {
+                throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
+            }
             return new Material(baseMaterial);
         }
 
