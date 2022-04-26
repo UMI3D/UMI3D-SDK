@@ -22,7 +22,7 @@ namespace umi3d
         public static readonly string major = "2";
         public static readonly string minor = "5";
         public static readonly string status = "wolrdController";
-        public static readonly string date = "220425";
+        public static readonly string date = "220426";
 
     }
 }
