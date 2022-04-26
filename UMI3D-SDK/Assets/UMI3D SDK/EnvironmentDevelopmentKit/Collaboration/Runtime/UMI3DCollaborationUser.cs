@@ -34,7 +34,7 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
             this.identityDto = identity;
-            UMI3DEnvironment.Register(this);
+            UMI3DEnvironment.Register(this, userId);
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
