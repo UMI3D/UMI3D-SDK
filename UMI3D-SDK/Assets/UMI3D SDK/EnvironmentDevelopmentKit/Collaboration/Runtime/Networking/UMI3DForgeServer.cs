@@ -445,11 +445,22 @@ namespace umi3d.edk.collaboration
 
         #region VoIP
 
+        static List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
+
+        public delegate void ChatbotFrame(Binary frame);
+        public static ChatbotFrame OnChatbotFrame;
+
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+
+            if (VoipInterceptionList.Contains(user))
+            {
+                OnChatbotFrame(frame);
+                return;
+            }
+            
             if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
                 RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
@@ -729,6 +740,20 @@ namespace umi3d.edk.collaboration
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
         }
+
+        public static void SetUserVOIPInterception(UMI3DCollaborationUser user, bool intercept)
+        {
+            if (intercept)
+            {
+                if (!VoipInterceptionList.Contains(user))
+                {
+                    VoipInterceptionList.Add(user);
+                }
+            }
+            else
+                VoipInterceptionList.Remove(user);
+        }
+
 
         /// <summary>
         /// 
