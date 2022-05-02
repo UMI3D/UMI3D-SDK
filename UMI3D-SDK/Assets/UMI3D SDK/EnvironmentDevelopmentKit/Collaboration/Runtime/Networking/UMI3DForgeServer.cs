@@ -448,7 +448,7 @@ namespace umi3d.edk.collaboration
         static List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
 
         public delegate void AudioFrame(UMI3DCollaborationUser user,Binary frame);
-        public static AudioFrame OnChatbotFrame;
+        public static AudioFrame OnAudioFrame;
 
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
@@ -457,7 +457,7 @@ namespace umi3d.edk.collaboration
 
             if (VoipInterceptionList.Contains(user))
             {
-                OnChatbotFrame(user, frame);
+                OnAudioFrame(user, frame);
                 return;
             }
             
