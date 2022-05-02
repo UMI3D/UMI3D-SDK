@@ -29,15 +29,17 @@ namespace umi3d.worldController
     [CreateAssetMenu(fileName = "SandAloneWorldControlerAPI", menuName = "UMI3D/SandAlone WorldControler")]
     public class SandAloneWorldControler : StandAloneWorldControllerAPI
     {
-        IIAM IAM;
-        IKeyGenerator keyGenerator;
-        Dictionary<string, User> userMap = new Dictionary<string, User>();
+        protected IIAM IAM;
+        protected IKeyGenerator keyGenerator;
+        protected Dictionary<string, User> userMap = new Dictionary<string, User>();
 
         public override void Setup()
         {
             base.Setup();
-            IAM = new StandAloneIAM(edk.collaboration.UMI3DCollaborationServer.Instance);
-            keyGenerator = new StandAloneKeyGenerator();
+            if (IAM == null)
+                IAM = new StandAloneIAM(edk.collaboration.UMI3DCollaborationServer.Instance);
+            if (keyGenerator == null)
+                keyGenerator = new StandAloneKeyGenerator();
         }
 
         public override async Task<UMI3DDto> Connect(ConnectionDto connectionDto)
