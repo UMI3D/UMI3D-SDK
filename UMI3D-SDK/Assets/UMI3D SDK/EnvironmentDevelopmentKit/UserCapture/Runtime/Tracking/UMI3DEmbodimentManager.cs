@@ -136,8 +136,6 @@ namespace umi3d.edk.userCapture
                 return;
             }
 
-            return;
-
             UMI3DAvatarNode userEmbd = embodimentInstances[userId];
             userEmbd.transform.localPosition = dto.position;
             userEmbd.transform.localRotation = dto.rotation;
