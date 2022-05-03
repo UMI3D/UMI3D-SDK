@@ -78,7 +78,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Time since the connection started.
         /// </summary>
-        public ulong Timestep
+        public static ulong Timestep
         {
             get
             {
@@ -91,7 +91,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Used to determine how much bandwidth (in bytes) hass been read
         /// </summary>
-        public ulong BandwidthIn
+        public static ulong BandwidthIn
         {
             get
             {
@@ -104,7 +104,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Used to determine how much bandwidth (in bytes) hass been written
         /// </summary>
-        public ulong BandwidthOut
+        public static ulong BandwidthOut
         {
             get
             {
