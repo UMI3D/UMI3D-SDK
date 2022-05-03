@@ -245,7 +245,9 @@ namespace umi3d.cdk
         {
             //UMI3DLogger.Log("GetBaseMaterial",scope);
             if (baseMaterial == null)
-                return null;
+            {
+                throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
+            }
             return new Material(baseMaterial);
         }
 
@@ -327,7 +329,6 @@ namespace umi3d.cdk
             nodesToInstantiate = dto.scenes.Count;
             foreach (GlTFSceneDto sce in dto.scenes)
                 nodesToInstantiate += sce.nodes.Count;
-
             //
             // Load resources
             //
@@ -538,12 +539,16 @@ namespace umi3d.cdk
                         LoadEntity(item, performed2);
                 }
             };
-            Action<string> error = (s) =>
+
+            try
             {
-                UMI3DLogger.LogError(s, scope);
+                UMI3DClientServer.GetEntity(ids, callback);
+            }
+            catch(Exception e)
+            {
+                UMI3DLogger.LogError(e.Message, scope);
                 performed2.Invoke();
-            };
-            UMI3DClientServer.GetEntity(ids, callback, error);
+            }
         }
 
         /// <summary>
@@ -596,8 +601,25 @@ namespace umi3d.cdk
                 DeleteEntity(entity, null);
             }
             UMI3DResourcesManager.Instance.ClearCache();
+
+            Instance.entities.Clear();
+            Instance.entitywaited.Clear();
+            Instance.entityToBeLoaded.Clear();
+            Instance.entityFailedToBeLoaded.Clear();
+
             Instance.isEnvironmentLoaded = false;
-        }
+
+            Instance.environment = null;
+            Instance.nodesToInstantiate = 0;
+            Instance.instantiatedNodes = 0;
+            Instance.resourcesToLoad = 0;
+            Instance.loadedResources = 0;
+
+            Instance.started = false;
+            Instance.downloaded = false;
+            Instance.loaded = false;
+
+    }
 
         /// <summary>
         /// Load environment.

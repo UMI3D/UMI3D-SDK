@@ -33,10 +33,9 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string ipParam = "";
         /// <summary>
-        /// Set the Authentification type. 
-        /// <see cref="common.AuthenticationType"/>
+        /// Set the public ip of the server.
         /// </summary>
-        public string authParam = "";
+        public string resourcesDefaultUrlParam = "";
         /// <summary>
         /// Set the token life span.
         /// </summary>

@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 
 namespace umi3d.cdk
@@ -25,20 +26,26 @@ namespace umi3d.cdk
         /// <summary>
         /// Environment connected to.
         /// </summary>
-        protected MediaDto environment;
-
+        protected MediaDto _media;
+        /// <summary>
+        /// Environment connected to.
+        /// </summary>
+        virtual protected ForgeConnectionDto connectionDto { get; }
         /// <summary>
         /// Environment connected to.
         /// </summary>
         public static MediaDto Media
         {
-            get => Exists ? Instance.environment : null;
-            set
-            {
-                if (Exists)
-                    Instance.environment = value;
-            }
+            get => Exists ? Instance._media : null;
         }
+        /// <summary>
+        /// Environment connected to.
+        /// </summary>
+        public static ForgeConnectionDto Environement
+        {
+            get => Exists ? Instance.connectionDto : null;
+        }
+
 
         public static string getAuthorization()
         {
@@ -53,9 +60,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="argument">failed request argument</param>
         /// <returns></returns>
-        public virtual bool TryAgainOnHttpFail(RequestFailedArgument argument)
+        public virtual async Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument)
         {
-            return false;
+            return await Task.FromResult(false);
         }
 
         public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
@@ -74,21 +81,39 @@ namespace umi3d.cdk
         protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
 
-        public static void GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        public static async void GetFile(string url, Action<byte[]> callback, Action<string> onError)
         {
             if (Exists)
-                Instance._GetFile(url, callback, onError);
+            {
+                var bytes = await Instance._GetFile(url);
+                if (bytes != null)
+                    callback.Invoke(bytes);
+            }
+            else
+                throw new Exception($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { onError.Invoke("GetFile Not Implemented"); }
+        protected virtual Task<byte[]> _GetFile(string url)
+        {
+            throw new NotImplementedException();
+        }
 
-        public static void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
+        public static async void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback)
         {
             if (Exists)
-                Instance._GetEntity(ids, callback, onError);
+            {
+                var dto = await Instance._GetEntity(ids);
+                if (dto != null)
+                    callback.Invoke(dto);
+            }
+            else
+                throw new Exception($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual void _GetEntity(List<ulong> id, Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
+        protected virtual Task<LoadEntityDto> _GetEntity(List<ulong> id)
+        {
+            throw new NotImplementedException();
+        }
 
         public virtual ulong GetId() { return 0; }
 
@@ -102,6 +127,8 @@ namespace umi3d.cdk
         /// return HTTPClient if the server is a collaboration server. return null in that case
         /// </summary>
         public virtual Object GetHttpClient() { return null; }
+
+        public virtual double GetRoundTripLAtency() { return 0; }
 
     }
 }

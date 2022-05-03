@@ -26,11 +26,22 @@ namespace umi3d.edk.collaboration
     public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
-        public UMI3DCollaborationUser(string login)
+
+        private RegisterIdentityDto identityDto;
+
+        protected override ulong userId { get => identityDto.userId; set { } }
+
+        public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
-            this.login = login;
+            this.identityDto = identity;
+            UMI3DEnvironment.Register(this, userId);
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
+        }
+
+        public void Update(RegisterIdentityDto identity)
+        {
+            this.identityDto = identity;
         }
 
         public void InitConnection(UMI3DForgeServer connection)
@@ -40,7 +51,7 @@ namespace umi3d.edk.collaboration
             {
                 librariesUpdated = !UMI3DEnvironment.UseLibrary()
             };
-            RenewToken();
+            //RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
         }
 
@@ -57,8 +68,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The user token
         /// </summary>
-        public string token { get; private set; }
-
+        public string token { get => identityDto?.localToken; }
 
         /// <summary>
         /// The unique user login.
@@ -77,17 +87,17 @@ namespace umi3d.edk.collaboration
         }
 
 
-        public string RenewToken()
-        {
-            DateTime date = DateTime.UtcNow;
-            date = date.AddSeconds(UMI3DCollaborationServer.Instance.tokenLifeTime);
-            byte[] time = BitConverter.GetBytes(date.ToBinary());
-            byte[] key = Guid.NewGuid().ToByteArray();
-            string token = Convert.ToBase64String(time.Concat(key).ToArray());
-            this.token = token;
-            forgeServer.SendSignalingMessage(networkPlayer, ToTokenDto());
-            return token;
-        }
+        //public string RenewToken()
+        //{
+        //    DateTime date = DateTime.UtcNow;
+        //    date = date.AddSeconds(UMI3DCollaborationServer.Instance.tokenLifeTime);
+        //    byte[] time = BitConverter.GetBytes(date.ToBinary());
+        //    byte[] key = Guid.NewGuid().ToByteArray();
+        //    string token = Convert.ToBase64String(time.Concat(key).ToArray());
+        //    this.token = token;
+        //    forgeServer.SendSignalingMessage(networkPlayer, ToTokenDto());
+        //    return token;
+        //}
 
         public virtual TokenDto ToTokenDto()
         {
@@ -102,6 +112,7 @@ namespace umi3d.edk.collaboration
         public override void SetStatus(StatusType status)
         {
             bool isSame = status == this.status;
+            UMI3DLogger.Log($"Set Status {Id()} {status} {isSame}", scope);
             base.SetStatus(status);
             if (!isSame)
                 UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);

@@ -15,40 +15,40 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Text;
-using umi3d.common;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DHttp
+    public class UMI3DHttp : inetum.unityUtils.Singleton<UMI3DHttp>
     {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
         private readonly HttpServer httpsv;
 
-        public HttpRoutingUtil rootMapGET = null;
-        public HttpRoutingUtil rootMapPOST = null;
-        private readonly UMI3DApi root;
+        public HttpRoutingUtil rootMapGET;
+        public HttpRoutingUtil rootMapPOST;
 
-        public UMI3DHttp()
+        public void AddRoot(IHttpApi Object)
+        {
+            rootMapGET.AddRoot(Object);
+            rootMapPOST.AddRoot(Object);
+        }
+
+        public UMI3DHttp() : base() { }
+
+        public UMI3DHttp(ushort port) : this()
         {
 
-            httpsv = new HttpServer(UMI3DCollaborationServer.Instance.httpPort);
+            httpsv = new HttpServer(port);
 
-            // Set the document root path.
-
-            root = new UMI3DApi();
-            var rootMapGET = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpGet));
-            var rootMapPOST = new HttpRoutingUtil(new List<object>() { root }, typeof(HttpPost));
+            rootMapGET = new HttpRoutingUtil(typeof(HttpGet));
+            rootMapPOST = new HttpRoutingUtil(typeof(HttpPost));
 
             httpsv.OnGet += (object sender, HttpRequestEventArgs e) =>
             {
                 if (!rootMapGET.TryProccessRequest(sender, e))
                 {
-                    UMI3DLogger.Log("get environement", scope);
                     string path = e.Request.RawUrl;
                     WebSocketSharp.Net.HttpListenerResponse res = e.Response;
                     if (path == "/")
@@ -78,7 +78,6 @@ namespace umi3d.edk.collaboration
             {
                 if (!rootMapPOST.TryProccessRequest(sender, e))
                 {
-                    UMI3DLogger.Log("post error " + e.Request.RawUrl, scope);
                 }
             };
 
@@ -102,7 +101,7 @@ namespace umi3d.edk.collaboration
 
         public void Destroy()
         {
-            root.Stop();
+            Stop();
         }
     }
 }

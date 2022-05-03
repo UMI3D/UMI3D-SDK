@@ -14,6 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Threading;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -27,6 +31,7 @@ namespace inetum.unityUtils
     /// <seealso cref="PersistentSingleBehaviour{T}"/>>
     public class QuittingManager : MonoBehaviour
     {
+
         private static bool applicationIsQuitting = false;
         /// <summary>
         /// Should be set to true when the application is quitting.
@@ -59,6 +64,9 @@ namespace inetum.unityUtils
         {
             if (!ShouldWaitForApplicationToQuit)
                 ApplicationIsQuitting = true;
+#if UNITY_EDITOR
+            ApplicationIsQuitting = true;
+#endif
         }
     }
 }

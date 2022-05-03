@@ -88,6 +88,16 @@ namespace umi3d.edk
             return ip;
         }
 
+        public static string GetResourcesUrl()
+        {
+            return Instance._GetResourcesUrl();
+        }
+
+        protected virtual string _GetResourcesUrl()
+        {
+            return ip;
+        }
+
         /*
         /// <summary>
         /// Return the Url of the websocket server.
@@ -175,6 +185,7 @@ namespace umi3d.edk
 
         #region session
         public UMI3DUserEvent OnUserJoin = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserRegistered = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserCreated = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserReady = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserAway = new UMI3DUserEvent();

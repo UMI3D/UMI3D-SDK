@@ -28,7 +28,7 @@ namespace umi3d.edk
         /// <summary>
         /// The unique user identifier.
         /// </summary>
-        private ulong userId;
+        virtual protected ulong userId { get; set; } = 0;
 
         public bool hasJoined => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING;
         /// <summary>

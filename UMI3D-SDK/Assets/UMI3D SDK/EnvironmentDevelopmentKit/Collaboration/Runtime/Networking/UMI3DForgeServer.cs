@@ -31,7 +31,7 @@ namespace umi3d.edk.collaboration
     /// <summary>
     /// 
     /// </summary>
-    public class UMI3DForgeServer : ForgeSocketBase
+    public class UMI3DForgeServer : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -181,7 +181,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user);
+                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user, player.NetworkId);
                 });
             }
         }
@@ -193,6 +193,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerAuthenticated(NetworkingPlayer player, NetWorker sender)
         {
+            UMI3DLogger.Log("Player Authenticated", scope);
             //UMI3DLogger.Log($"Player { player.NetworkId } {player.Name} authenticated",scope);
         }
 
@@ -203,6 +204,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         private void PlayerAccepted(NetworkingPlayer player, NetWorker sender)
         {
+            UMI3DLogger.Log("Player Accepted", scope);
             playerCount = server.Players.Count;
         }
 
@@ -234,7 +236,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user);
+                    UMI3DCollaborationServer.Collaboration.ConnectionClose(user, player.NetworkId);
                 });
             }
         }
@@ -348,6 +350,8 @@ namespace umi3d.edk.collaboration
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            if (user == null) return;
+
             if (UMI3DEnvironment.Instance.useDto)
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
@@ -696,7 +700,7 @@ namespace umi3d.edk.collaboration
             {
                 MainThreadManager.Run(() =>
                 {
-                    UMI3DLogger.Log($"Error on send binary to {player.NetworkId} (from {bin.Sender?.NetworkId}) on channel {channel} [{e}]", scope);
+                    UMI3DLogger.Log($"Error on send binary to {player?.NetworkId} (from {bin?.Sender?.NetworkId}) on channel {channel} [{e}]", scope);
                 });
             }
         }

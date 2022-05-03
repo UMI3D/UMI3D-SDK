@@ -41,7 +41,7 @@ namespace umi3d.cdk.menu.interaction
                     UMI3DResourcesManager.GetFile(
                         icon2DFile.url,
                         rawData => this.icon2D.LoadRawTextureData(rawData),
-                        e => Debug.LogError(e));
+                        e => UMI3DLogger.LogError(e, DebugScope.Interaction));
                 }
             }
 

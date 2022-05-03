@@ -156,7 +156,7 @@ namespace umi3d.cdk.interaction
                 UMI3DResourcesManager.GetFile(
                     icon2DFile.url,
                     rawData => icon2DTex.LoadRawTextureData(rawData),
-                    e => Debug.LogError(e));
+                    e => UMI3DLogger.LogError(e, DebugScope.Interaction));
             }
             
 
@@ -286,7 +286,7 @@ namespace umi3d.cdk.interaction
                     break;
                 default:
                     result = new MenuItem();
-                    result.Subscribe(() => Debug.Log($"Missing case for {dto?.GetType()}"));
+                    result.Subscribe(() => UMI3DLogger.LogError($"Missing case for {dto?.GetType()}", DebugScope.Interaction));
                     break;
             }
             result.Name = dto.name;

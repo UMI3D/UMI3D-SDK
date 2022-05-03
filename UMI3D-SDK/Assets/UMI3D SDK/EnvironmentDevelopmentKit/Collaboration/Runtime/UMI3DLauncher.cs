@@ -50,6 +50,12 @@ namespace umi3d.edk.collaboration
         /// Set the http port.
         /// </summary>
         public const string httpPortParam = Separator + "httpport";
+
+        /// <summary>
+        /// Set the http port.
+        /// </summary>
+        public const string resourcesDefaultUrlParam = Separator + "resourcesDefaultUrlParam";
+
         /// <summary>
         /// Set the websocket port.
         /// </summary>
@@ -141,7 +147,7 @@ namespace umi3d.edk.collaboration
         protected virtual void SetSessionComment(string arg) { UMI3DCollaborationServer.Instance.descriptionComment = arg; }
 
         /// <summary>
-        /// method called when param <see cref="sessionId"/> is found
+        /// method called when param <see cref="iconUrlParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetIconServerUrl(string arg) { UMI3DCollaborationServer.Instance.iconServerUrl = arg; }
@@ -151,16 +157,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetIp(string arg) { UMI3DCollaborationServer.Instance.SetIP(arg); }
-
-        /// <summary>
-        /// method called when param <see cref="authParam"/> is found
-        /// </summary>
-        /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetAuth(string arg)
-        {
-            if (Enum.TryParse(arg, out common.AuthenticationType result))
-                UMI3DCollaborationServer.Instance.Authentication = result;
-        }
 
         /// <summary>
         /// method called when param <see cref="tokenParam"/> is found
@@ -187,6 +183,15 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = true;
             }
+        }
+
+        /// <summary>
+        /// method called when param <see cref="resourcesDefaultUrlParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetResourcesDefaultUrl(string arg)
+        {
+            UMI3DCollaborationServer.Instance.resourcesUrl = arg;
         }
 
         /// <summary>
@@ -352,8 +357,8 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.ipParam))
                     SetIp(conf.ipParam);
 
-                if (!string.IsNullOrEmpty(conf.authParam))
-                    SetAuth(conf.authParam);
+                if (!string.IsNullOrEmpty(conf.resourcesDefaultUrlParam))
+                    SetResourcesDefaultUrl(conf.resourcesDefaultUrlParam);
 
                 if (conf.tokenLifeParam > 0)
                     SetTokenLife(conf.tokenLifeParam.ToString());
@@ -461,10 +466,10 @@ namespace umi3d.edk.collaboration
                     if (++i < length)
                         SetIp(args[i]);
                 }
-                else if (args[i].Equals(authParam, StringComparison.OrdinalIgnoreCase))
+                else if (args[i].Equals(resourcesDefaultUrlParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
-                        SetAuth(args[i]);
+                        SetResourcesDefaultUrl(args[i]);
                 }
                 else if (args[i].Equals(tokenLifeParam, StringComparison.OrdinalIgnoreCase))
                 {

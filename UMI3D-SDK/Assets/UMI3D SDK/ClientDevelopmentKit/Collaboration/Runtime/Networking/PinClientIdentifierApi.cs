@@ -29,11 +29,6 @@ namespace umi3d.cdk.collaboration
     {
         public string Pin = "defaultPin";
 
-        ///<inheritdoc/>
-        public override void GetIdentity(Action<UMI3DAuthenticator> callback)
-        {
-            callback?.Invoke(new common.collaboration.UMI3DAuthenticator(GetPin, GetLoginPassword, GetIdentity));
-        }
 
         private void GetPin(Action<string> callback)
         {
@@ -45,9 +40,9 @@ namespace umi3d.cdk.collaboration
             callback?.Invoke((null, Pin));
         }
 
-        private void GetIdentity(Action<IdentityDto> callback)
+        private void GetIdentity(Action<PublicIdentityDto> callback)
         {
-            callback?.Invoke(UMI3DCollaborationClientServer.Identity);
+            callback?.Invoke(UMI3DCollaborationClientServer.PublicIdentity);
         }
 
     }

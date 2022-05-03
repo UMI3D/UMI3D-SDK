@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace umi3d.common
@@ -59,9 +60,41 @@ namespace umi3d.common
 
         public void FromBson(byte[] bson, Action<UMI3DDto> action)
         {
-            if (action != null && bson != null)
-                lock (queue)
-                    queue.Enqueue((bson, action));
+            if (action != null)
+            {
+                if (bson != null)
+                    lock (queue)
+                        queue.Enqueue((bson, action));
+                else
+                    action.Invoke(null);
+            }
+        }
+
+        public async Task<UMI3DDto> FromBson(byte[] bson)
+        {
+            if (bson != null)
+            {
+                UMI3DDto result = null;
+                bool completed = false;
+                Action<UMI3DDto> action = (v) =>
+                {
+                    result = v;
+                    completed = true;
+                };
+                FromBson(bson, action);
+                while(!completed)
+                {
+                    await Task.Yield();
+#if UNITY_EDITOR
+                    if (!Application.isPlaying)
+                    {
+                        throw new Exception("Application is not playing");
+                    }
+#endif
+                }
+                return result;
+            }
+            return null;
         }
 
         private void ThreadUpdate()

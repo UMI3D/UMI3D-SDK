@@ -37,22 +37,12 @@ namespace umi3d.common
         /// </summary>
         public ResourceDto icon3D;
 
-        /// <summary>
-        /// Type of Navigation.
-        /// </summary>
-        public NavigationType navigationType;
-
-        /// <summary>
-        /// Type of Environment
-        /// </summary>
-        public EnvironmentType environmentType;
-
         public string versionMajor;
         public string versionMinor;
         public string versionStatus;
         public string versionDate;
 
-        public ForgeConnectionDto connection;
+        public string url;
 
         public MediaDto() : base() { }
 

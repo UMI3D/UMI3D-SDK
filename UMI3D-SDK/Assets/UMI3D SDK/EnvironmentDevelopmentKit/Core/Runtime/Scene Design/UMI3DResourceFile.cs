@@ -74,7 +74,7 @@ namespace umi3d.edk
                 path = "/" + path;
             }
             if (isLocalFile)
-                return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));
+                return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, path));
             else
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }

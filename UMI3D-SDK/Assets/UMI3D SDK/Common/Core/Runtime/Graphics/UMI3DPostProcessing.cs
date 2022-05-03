@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+#if USING_URP || UNITY_POST_PROCESSING 
+
 using UnityEngine;
 
 #if USING_URP
@@ -243,3 +245,4 @@ namespace umi3d.common.graphics
 
     }
 }
+#endif

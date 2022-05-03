@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
+using System.Threading.Tasks;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk
@@ -25,7 +26,6 @@ namespace umi3d.cdk
     /// </summary>
     public class RequestFailedArgument
     {
-        private readonly Action tryAgain;
         public DateTime date { get; private set; }
 
         private readonly UnityWebRequest request;
@@ -59,31 +59,24 @@ namespace umi3d.cdk
         }
 
         public Func<RequestFailedArgument, bool> ShouldTryAgain { get; private set; }
-        public RequestFailedArgument(UnityWebRequest request, Action tryAgain, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
+        public RequestFailedArgument(UnityWebRequest request, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
         {
             this.request = request;
-            this.tryAgain = tryAgain;
             this.count = count;
             this.date = date;
             this.ShouldTryAgain = ShouldTryAgain;
         }
 
-        public RequestFailedArgument(long responseCode, Action tryAgain, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
+        public RequestFailedArgument(long responseCode, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
         {
             this.request = null;
             this.responseCode = responseCode;
-            this.tryAgain = tryAgain;
             this.count = count;
             this.date = date;
             this.ShouldTryAgain = ShouldTryAgain;
         }
 
         public int count { get; private set; }
-
-        public virtual void TryAgain()
-        {
-            tryAgain.Invoke();
-        }
 
     }
 

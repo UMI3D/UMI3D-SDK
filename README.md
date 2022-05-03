@@ -25,6 +25,15 @@ The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f
 - **File > Build Settings**: The architecture for Windows Standalone is x86_64.
 - **Edit > Project Settings > Player > Other Settings**: Api compatibility Level is .NET 4.x
 
+### Known issues
+
+- **Error with newtonsoft**:
+	Newtonsoft is used by many library. It migth already be used in your project or a unity library.
+	first set "player settings -> other settings -> Configuration -> Assembly Version Validation" to false
+	Then look for newtonsoft dll in the edk and exclude all plateform.
+- **Error with undeterministic version**:
+	deterministic build player settings -> other settings -> Script compilation -> Use deterministic compilation : false
+
 ---
 ## Installation
 

@@ -727,8 +727,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1140833858}
-  - component: {fileID: 1140833857}
   - component: {fileID: 1140833859}
+  - component: {fileID: 1140833857}
   m_Layer: 0
   m_Name: UMI3D Server
   m_TagString: Untagged
@@ -752,6 +752,9 @@ MonoBehaviour:
   OnUserJoin:
     m_PersistentCalls:
       m_Calls: []
+  OnUserRegistered:
+    m_PersistentCalls:
+      m_Calls: []
   OnUserCreated:
     m_PersistentCalls:
       m_Calls: []
@@ -772,7 +775,8 @@ MonoBehaviour:
       m_Calls: []
   useIp: 0
   tokenLifeTime: 10
-  Identifier: {fileID: 11400000, guid: 63bab823452c6f14680ef4444b481bf1, type: 2}
+  Identifier: {fileID: 11400000, guid: ba81d976e475d254fa8a1879e691bf1e, type: 2}
+  WorldController: {fileID: 11400000, guid: f42371fba2c3f8745a445d07468902ef, type: 2}
   useRandomForgePort: 0
   forgePort: 0
   forgeMasterServerHost: 
@@ -785,9 +789,8 @@ MonoBehaviour:
   iconServerUrl: 
   sessionId: 
   descriptionComment: 
-  Authentication: 0
-  WaitTimeForPingAnswer: 1
-  MaxPingingTry: 3
+  WaitTimeForPingAnswer: 3
+  MaxPingingTry: 5
   OnServerStart:
     m_PersistentCalls:
       m_Calls: []

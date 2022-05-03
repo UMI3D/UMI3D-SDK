@@ -22,116 +22,57 @@ namespace umi3d.common.collaboration
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
 
-        private const string sepparator = ":";
-        private readonly Action<Action<string>> getPin;
-        private readonly Action<Action<(string, string)>> getLoginPassword;
-        private readonly Action<Action<IdentityDto>> getIdentity;
-        private readonly Action<string, Action<bool>> getAuthorized;
-        public Action<IdentityDto, NetworkingPlayer, Action<bool>> shouldAccdeptPlayer;
-        private readonly string pin;
-        private readonly AuthenticationType authenticationType;
-
-        public Action<string> LoginSet;
-
-        public UMI3DAuthenticator(Action<Action<string>> getPin, Action<Action<(string, string)>> getLoginPassword, Action<Action<IdentityDto>> getIdentity)
+        public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
         {
-            this.getIdentity = getIdentity;
-            this.getPin = getPin;
-            this.getLoginPassword = getLoginPassword;
-            authenticationType = AuthenticationType.None;
+            issueChallengeAction(player, ObjectMapper.BMSByte());
         }
 
-        public UMI3DAuthenticator(string pin)
-        {
-            this.pin = pin;
-            authenticationType = AuthenticationType.Pin;
-        }
+        private readonly Action<Action<string>> getLocalToken;
+        public Action<string, NetworkingPlayer, Action<bool>> shouldAccdeptPlayer;
 
-        public UMI3DAuthenticator(Action<string, Action<bool>> getAuthorized)
+
+        public UMI3DAuthenticator(Action<Action<string>> getLocalToken)
         {
-            this.getAuthorized = getAuthorized;
-            authenticationType = AuthenticationType.Basic;
+            this.getLocalToken = getLocalToken;
         }
 
         public UMI3DAuthenticator()
         {
-            authenticationType = AuthenticationType.None;
+
         }
+
 
         public void AcceptChallenge(NetWorker networker, BMSByte challenge, Action<BMSByte> authServerAction, Action rejectServerAction)
         {
-            AuthenticationType type = challenge.GetBasicType<AuthenticationType>();
-            switch (type)
-            {
-                case AuthenticationType.None:
-                    MainThreadManager.Run(() =>
+            if (getLocalToken != null)
+                MainThreadManager.Run(() =>
+                {
+                    getLocalToken((g) =>
                     {
-                        sendAuthServerAction("", authServerAction);
+                        authServerAction(ObjectMapper.BMSByte(g));
                     });
-                    break;
-                case AuthenticationType.Basic:
-                    MainThreadManager.Run(() =>
-                    {
-                        getAuthLoginPassword((auth) => sendAuthServerAction(auth, authServerAction));
-                    });
-                    break;
-                case AuthenticationType.Pin:
-                    MainThreadManager.Run(() =>
-                    {
-                        getAuthPin((auth) => sendAuthServerAction(auth, authServerAction));
-                    });
-                    break;
-                default:
-                    UMI3DLogger.LogWarning($"Unknow AuthenticationType [{type}]", scope);
-                    rejectServerAction();
-                    break;
-            }
-        }
-
-        public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
-        {
-            issueChallengeAction(player, ObjectMapper.BMSByte(authenticationType));
+                });
+            else
+                rejectServerAction.Invoke();
+            
         }
 
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
             string basicString = response.GetBasicType<string>();
-            var identity = UMI3DDto.FromBson(response.GetByteArray(response.StartIndex())) as IdentityDto;
 
             MainThreadManager.Run(() =>
             {
-                switch (authenticationType)
-                {
-                    case AuthenticationType.None:
-                        AcceptPlayer(identity, player, () => authUserAction(player), () => rejectUserAction(player));
-                        break;
 
-                    case AuthenticationType.Basic:
-
-                        getAuthorized(basicString, (answer) =>
-                            {
-                                if (answer)
-                                    AcceptPlayer(identity, player, () => authUserAction(player), () => rejectUserAction(player));
-                                else
-                                    rejectUserAction(player);
-                            });
-                        break;
-
-                    case AuthenticationType.Pin:
-                        if (basicString == pin)
-                            AcceptPlayer(identity, player, () => authUserAction(player), () => rejectUserAction(player));
+                        if (basicString != null)
+                            AcceptPlayer(basicString, player, () => authUserAction(player), () => rejectUserAction(player));
                         else
                             rejectUserAction(player);
-                        break;
-                    default:
-                        UMI3DLogger.LogWarning($"Unknow AuthenticationType [{authenticationType}]", scope);
-                        rejectUserAction(player);
-                        break;
-                }
+
             });
         }
 
-        private void AcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
+        private void AcceptPlayer(string token, NetworkingPlayer player, Action authServerAction, Action rejectServerAction)
         {
             if (shouldAccdeptPlayer == null)
             {
@@ -139,57 +80,14 @@ namespace umi3d.common.collaboration
             }
             else
             {
-                shouldAccdeptPlayer(identity, player, (b) =>
+                shouldAccdeptPlayer(token, player, (b) =>
                 {
                     if (b)
                         authServerAction();
                     else
                         rejectServerAction();
                 });
-
             }
         }
-
-        private void sendAuthServerAction(string auth, Action<BMSByte> authServerAction)
-        {
-            getIdentity((id) =>
-            {
-                authServerAction(ObjectMapper.BMSByte(auth, id.ToBson()));
-            });
-        }
-
-        private void getAuthLoginPassword(Action<string> callback)
-        {
-            if (getLoginPassword == null)
-            {
-                callback?.Invoke("");
-            }
-            else
-            {
-                getLoginPassword.Invoke((k) =>
-                {
-                    (string login, string password) = k;
-                    LoginSet?.Invoke(login);
-                    callback.Invoke(login + sepparator + password);
-                });
-            }
-        }
-
-        private void getAuthPin(Action<string> callback)
-        {
-            if (getPin == null)
-            {
-                callback?.Invoke("");
-            }
-            else
-            {
-                getPin.Invoke((pin) =>
-                {
-                    callback.Invoke(pin);
-                });
-            }
-        }
-
-
     }
 }

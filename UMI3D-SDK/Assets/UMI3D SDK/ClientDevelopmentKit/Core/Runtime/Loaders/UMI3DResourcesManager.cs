@@ -220,9 +220,10 @@ namespace umi3d.cdk
 
             private bool MatchServerUrl()
             {
-                if (UMI3DClientServer.Media == null)
+                if (UMI3DClientServer.Environement == null)
                     return false;
-                string url = UMI3DClientServer.Media.connection.httpUrl + '/';
+
+                string url = UMI3DClientServer.Environement.resourcesUrl + '/';
 
                 if (url == this.url) return true;
 
@@ -648,23 +649,32 @@ namespace umi3d.cdk
             DateTime date = DateTime.UtcNow;
             Action<Umi3dException> error2 = (reason) =>
             {
-                if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(
-                     new RequestFailedArgument(
-                         reason.errorCode,
-                         () => StartCoroutine(
-                             urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1)),
-                         tryCount,
-                         date,
-                         ShouldTryAgain
-                         )))
+                async void retry()
                 {
-                    error?.Invoke(reason);
+                    if (await UMI3DClientServer.Instance.TryAgainOnHttpFail(
+                         new RequestFailedArgument(
+                             reason.errorCode,
+                             tryCount,
+                             date,
+                             ShouldTryAgain
+                             )))
+                    {
+                        urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1);
+                    }
+                    else
+                    {
+                        error?.Invoke(reason);
+                    }
                 }
+
+                retry();
             };
 
             urlToObject.Invoke(path, extension, objectData.authorization, succes, error2, bundlePath);
             yield break;
         }
+
+
 
         private void _LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {

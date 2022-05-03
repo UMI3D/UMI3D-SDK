@@ -100,7 +100,7 @@ namespace umi3d.cdk.volumes
 
             Action<Umi3dException> failed = e =>
             {
-                Debug.LogError("Failed to load obj file : " + e.Message);
+                UMI3DLogger.LogError("Failed to load obj file : " + e.Message,DebugScope.Other);
             };
 
             loader.UrlToObject(dto.objFile, ".obj", UMI3DClientServer.getAuthorization(), success, failed);

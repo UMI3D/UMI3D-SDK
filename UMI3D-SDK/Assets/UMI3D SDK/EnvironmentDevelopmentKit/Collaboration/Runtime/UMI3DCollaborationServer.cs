@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -31,7 +32,7 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DCollaborationServer : UMI3DServer
+    public class UMI3DCollaborationServer : UMI3DServer, IEnvironment
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         public static new UMI3DCollaborationServer Instance { get => UMI3DServer.Instance as UMI3DCollaborationServer; set => UMI3DServer.Instance = value; }
@@ -51,6 +52,9 @@ namespace umi3d.edk.collaboration
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
+
+        [EditorReadOnly, Tooltip("World controller for stand alone api.")]
+        public worldController.WorldControllerAPI WorldController;
 
 
         [EditorReadOnly]
@@ -73,6 +77,13 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly]
         public ushort httpPort;
 
+        [EditorReadOnly]
+        [Tooltip("set to this HttpUrl if empty")]
+        /// <summary>
+        /// Url of the default resources server. Set to this HttpUrl if empty.
+        /// </summary>
+        public string resourcesUrl;
+
         /// <summary>
         /// url of an image that could be displayed by browser to show different awailable environments.
         /// </summary>
@@ -89,12 +100,15 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string descriptionComment = "";
 
-        public AuthenticationType Authentication;
-
         ///<inheritdoc/>
         protected override string _GetHttpUrl()
         {
             return "http://" + ip + ":" + httpPort;
+        }
+
+        protected override string _GetResourcesUrl()
+        {
+            return string.IsNullOrEmpty(this.resourcesUrl) ? _GetHttpUrl() : this.resourcesUrl;
         }
 
         /// <summary>
@@ -105,16 +119,30 @@ namespace umi3d.edk.collaboration
         {
             var dto = new ForgeConnectionDto
             {
-                host = ip,
+                forgeHost = ip,
                 httpUrl = _GetHttpUrl(),
                 forgeServerPort = forgePort,
                 forgeMasterServerHost = forgeMasterServerHost,
                 forgeMasterServerPort = forgeMasterServerPort,
                 forgeNatServerHost = forgeNatServerHost,
-                forgeNatServerPort = forgeNatServerPort
+                forgeNatServerPort = forgeNatServerPort,
+                resourcesUrl = _GetResourcesUrl(),
             };
             return dto;
         }
+
+        public async Task Register(RegisterIdentityDto identityDto)
+        {
+            UMI3DLogger.Log($"User to be Created {identityDto.login} {identityDto.userId} {identityDto.localToken}", scope);
+            UMI3DCollaborationServer.Collaboration.CreateUser(identityDto, UserRegisteredCallback);
+            await Task.CompletedTask;
+        }
+
+        Task<ForgeConnectionDto> IEnvironment.ToDto()
+        {
+            return Task.FromResult(ToDto());
+        }
+
 
         internal void UpdateStatus(UMI3DCollaborationUser user, StatusDto dto)
         {
@@ -153,7 +181,10 @@ namespace umi3d.edk.collaboration
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
-            http = new UMI3DHttp();
+            http = new UMI3DHttp(httpPort);
+            UMI3DHttp.Instance.AddRoot(new UMI3DEnvironmentApi());
+
+            WorldController.Setup();
 
             forgeServer = UMI3DForgeServer.Create(
                 ip, httpPort,
@@ -162,25 +193,46 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost, forgeNatServerPort, //Forge Nat Hole Punching Server,
                 forgeMaxNbPlayer //MAX NB of Players
                 );
-            UMI3DAuthenticator auth = Identifier?.GetAuthenticator(ref Authentication);
+
+            UMI3DAuthenticator auth = new UMI3DAuthenticator();
+
             if (auth != null)
                 auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
+
             forgeServer.Host(auth);
 
             isRunning = true;
             OnServerStart.Invoke();
+
+
+
         }
 
-        private void ShouldAcceptPlayer(IdentityDto identity, NetworkingPlayer player, Action<bool> action)
+
+        private void ShouldAcceptPlayer(string identity, NetworkingPlayer player, Action<bool> action)
         {
             UMI3DLogger.Log($"Should accept player", scope);
-            UMI3DCollaborationServer.Collaboration.CreateUser(player, identity, action, UserCreatedCallback);
+            UMI3DCollaborationServer.Collaboration.ConnectUser(player, identity, action, UserCreatedCallback);
+        }
+
+        protected void UserRegisteredCallback(UMI3DCollaborationUser user, bool reconnection)
+        {
+            user.SetStatus(StatusType.REGISTERED);
+            if (!reconnection)
+            {
+                UMI3DLogger.Log($"User Registered", scope);
+                OnUserRegistered.Invoke(user);
+            }
         }
 
         protected void UserCreatedCallback(UMI3DCollaborationUser user, bool reconnection)
         {
             UMI3DLogger.Log($"User Created", scope);
-            OnUserCreated.Invoke(user);
+            user.SetStatus(StatusType.CREATED);
+            if (!reconnection)
+            {
+                OnUserCreated.Invoke(user);
+            }
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
@@ -302,34 +354,34 @@ namespace umi3d.edk.collaboration
 
         #region security
 
-        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request)
+        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request,bool allowOldToken = false)
         {
             if (!Exists)
                 return false;
-            UMI3DCollaborationUser user = GetUserFor(request);
-            if (user == null)
+            var c = GetUserFor(request);
+            if (c.user == null && !(c.oldToken && allowOldToken))
             {
                 return false;
             }
             else
             {
-                byte[] data = Convert.FromBase64String(user.token);
-                var when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
-                if (when < DateTime.UtcNow)
-                {
-                    user.RenewToken();
-                    return false;
-                }
+                //byte[] data = Convert.FromBase64String(user.token);
+                //var when = DateTime.FromBinary(BitConverter.ToInt64(data, 0));
+                //if (when < DateTime.UtcNow)
+                //{
+                //    user.RenewToken();
+                //    return false;
+                //}
                 return true;
             }
         }
 
-        public static UMI3DCollaborationUser GetUserFor(WebSocketSharp.Net.HttpListenerRequest request)
+        public static (UMI3DCollaborationUser user, bool oldToken) GetUserFor(WebSocketSharp.Net.HttpListenerRequest request)
         {
             string authorization = request.Headers[UMI3DNetworkingKeys.Authorization];
             if (authorization == null)
             {
-                return null;
+                return (null,false);
             }
             else
             {
@@ -368,10 +420,11 @@ namespace umi3d.edk.collaboration
         ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(user as UMI3DCollaborationUser));
+            if(user is UMI3DCollaborationUser _user && _user?.networkPlayer?.NetworkId != null)
+            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(_user,_user.networkPlayer.NetworkId));
         }
 
-        private IEnumerator _lookForMissing(UMI3DCollaborationUser user)
+        private IEnumerator _lookForMissing(UMI3DCollaborationUser user, uint networkId)
         {
             UMI3DLogger.Log($"look For missing", scope);
             if (user == null) yield break;
@@ -379,7 +432,7 @@ namespace umi3d.edk.collaboration
             int count = 0;
             while (count++ < MaxPingingTry)
             {
-                if (user.status == StatusType.MISSING)
+                if (user.status == StatusType.MISSING && user.networkPlayer.NetworkId == networkId)
                 {
                     Ping(user);
                 }
@@ -436,6 +489,7 @@ namespace umi3d.edk.collaboration
                     {
                         continue;
                     }
+                    
                     if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                     {
                         NavigationToBeSend[user] = dispatchableRequest;
