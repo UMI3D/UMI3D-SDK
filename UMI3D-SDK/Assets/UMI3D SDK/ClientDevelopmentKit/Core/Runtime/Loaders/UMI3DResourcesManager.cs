@@ -223,7 +223,7 @@ namespace umi3d.cdk
                 if (UMI3DClientServer.Environement == null)
                     return false;
 
-                string url = UMI3DClientServer.Environement.httpUrl + '/';
+                string url = UMI3DClientServer.Environement.resourcesUrl + '/';
 
                 if (url == this.url) return true;
 

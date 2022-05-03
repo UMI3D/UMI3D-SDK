@@ -77,6 +77,13 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly]
         public ushort httpPort;
 
+        [EditorReadOnly]
+        [Tooltip("set to this HttpUrl if empty")]
+        /// <summary>
+        /// Url of the default resources server. Set to this HttpUrl if empty.
+        /// </summary>
+        public string resourcesUrl;
+
         /// <summary>
         /// url of an image that could be displayed by browser to show different awailable environments.
         /// </summary>
@@ -99,6 +106,11 @@ namespace umi3d.edk.collaboration
             return "http://" + ip + ":" + httpPort;
         }
 
+        protected override string _GetResourcesUrl()
+        {
+            return string.IsNullOrEmpty(this.resourcesUrl) ? _GetHttpUrl() : this.resourcesUrl;
+        }
+
         /// <summary>
         /// Get the ForgeConnectionDto.
         /// </summary>
@@ -107,13 +119,14 @@ namespace umi3d.edk.collaboration
         {
             var dto = new ForgeConnectionDto
             {
-                host = ip,
+                forgeHost = ip,
                 httpUrl = _GetHttpUrl(),
                 forgeServerPort = forgePort,
                 forgeMasterServerHost = forgeMasterServerHost,
                 forgeMasterServerPort = forgeMasterServerPort,
                 forgeNatServerHost = forgeNatServerHost,
-                forgeNatServerPort = forgeNatServerPort
+                forgeNatServerPort = forgeNatServerPort,
+                resourcesUrl = _GetResourcesUrl(),
             };
             return dto;
         }

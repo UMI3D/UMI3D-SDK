@@ -138,7 +138,7 @@ namespace umi3d.cdk.collaboration
             disconected = false;
 
             ForgeClient = UMI3DForgeClient.Create(this);
-            ForgeClient.ip = connectionDto.host;
+            ForgeClient.ip = connectionDto.forgeHost;
             ForgeClient.port = connectionDto.forgeServerPort;
             ForgeClient.masterServerHost = connectionDto.forgeMasterServerHost;
             ForgeClient.masterServerPort = connectionDto.forgeMasterServerPort;

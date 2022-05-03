@@ -50,6 +50,12 @@ namespace umi3d.edk.collaboration
         /// Set the http port.
         /// </summary>
         public const string httpPortParam = Separator + "httpport";
+
+        /// <summary>
+        /// Set the http port.
+        /// </summary>
+        public const string resourcesDefaultUrlParam = Separator + "resourcesDefaultUrlParam";
+
         /// <summary>
         /// Set the websocket port.
         /// </summary>
@@ -177,6 +183,15 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = true;
             }
+        }
+
+        /// <summary>
+        /// method called when param <see cref="resourcesDefaultUrlParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetResourcesDefaultUrl(string arg)
+        {
+            UMI3DCollaborationServer.Instance.resourcesUrl = arg;
         }
 
         /// <summary>
@@ -342,6 +357,9 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.ipParam))
                     SetIp(conf.ipParam);
 
+                if (!string.IsNullOrEmpty(conf.resourcesDefaultUrlParam))
+                    SetResourcesDefaultUrl(conf.resourcesDefaultUrlParam);
+
                 if (conf.tokenLifeParam > 0)
                     SetTokenLife(conf.tokenLifeParam.ToString());
 
@@ -447,6 +465,11 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetIp(args[i]);
+                }
+                else if (args[i].Equals(resourcesDefaultUrlParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetResourcesDefaultUrl(args[i]);
                 }
                 else if (args[i].Equals(tokenLifeParam, StringComparison.OrdinalIgnoreCase))
                 {

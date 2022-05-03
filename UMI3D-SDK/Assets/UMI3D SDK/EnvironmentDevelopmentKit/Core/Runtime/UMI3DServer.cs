@@ -88,6 +88,16 @@ namespace umi3d.edk
             return ip;
         }
 
+        public static string GetResourcesUrl()
+        {
+            return Instance._GetResourcesUrl();
+        }
+
+        protected virtual string _GetResourcesUrl()
+        {
+            return ip;
+        }
+
         /*
         /// <summary>
         /// Return the Url of the websocket server.
