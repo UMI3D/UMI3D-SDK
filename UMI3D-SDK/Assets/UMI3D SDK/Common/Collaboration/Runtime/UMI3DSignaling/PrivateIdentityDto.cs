@@ -26,5 +26,6 @@ namespace umi3d.common.collaboration
     {
         public string GlobalToken;
         public ForgeConnectionDto connectionDto;
+        public List<LibrariesDto> libraries;
     }
 }

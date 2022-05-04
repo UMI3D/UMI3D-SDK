@@ -38,7 +38,6 @@ namespace umi3d.edk.collaboration
                         login = UMI3DNetworkingHelper.Read<string>(container),
                         localToken = UMI3DNetworkingHelper.Read<string>(container),
                         key = UMI3DNetworkingHelper.Read<string>(container),
-                        libraries = UMI3DNetworkingHelper.ReadList<LibrariesDto>(container),
                         metaData = UMI3DNetworkingHelper.ReadArray<byte>(container)
                     };
                     result = (T)(object)identity;
@@ -78,7 +77,6 @@ namespace umi3d.edk.collaboration
                         + UMI3DNetworkingHelper.Write(identity.login)
                         + UMI3DNetworkingHelper.Write(identity.localToken)
                         + UMI3DNetworkingHelper.Write(identity.key)
-                        + UMI3DNetworkingHelper.Write(identity.libraries)
                         + UMI3DNetworkingHelper.Write(identity.metaData);
                     return true;
 
