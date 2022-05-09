@@ -147,6 +147,23 @@ namespace inetum.unityUtils
             }
         }
 
+        public static void Destroy()
+        {
+            if (Exists)
+            {
+                Instance._Destroy();
+                GameObject.Destroy(Instance);
+            }
+            instance = null;
+        }
+
+        /// <summary>
+        /// Called before setting the instance to null and destroying it;
+        /// </summary>
+        protected virtual void _Destroy()
+        {
+        }
+
 
         private static void ReportLogError(string s) { if (Exists) instance._LogError(s); }
         private static void ReportLogWarning(string s) { if (Exists) instance._LogWarning(s); }

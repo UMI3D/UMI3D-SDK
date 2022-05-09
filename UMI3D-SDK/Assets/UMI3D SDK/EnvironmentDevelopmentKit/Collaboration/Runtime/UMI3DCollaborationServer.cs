@@ -160,7 +160,7 @@ namespace umi3d.edk.collaboration
         {
             base.OnDestroy();
             if (!Exists)
-                http?.Destroy();
+                UMI3DHttp.Destroy();
         }
 
         /// <summary>
@@ -181,6 +181,7 @@ namespace umi3d.edk.collaboration
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
+            UMI3DHttp.Destroy();
             http = new UMI3DHttp(httpPort);
             UMI3DHttp.Instance.AddRoot(new UMI3DEnvironmentApi());
 

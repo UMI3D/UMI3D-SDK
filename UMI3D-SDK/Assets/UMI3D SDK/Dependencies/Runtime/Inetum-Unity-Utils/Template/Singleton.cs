@@ -66,5 +66,20 @@ namespace inetum.unityUtils
                 instance = this as T;
             }
         }
+
+        public static void Destroy()
+        {
+            if(Exists)
+                Instance._Destroy();
+            instance = null;
+            
+        }
+
+        /// <summary>
+        /// Called before setting the instance to null;
+        /// </summary>
+        protected virtual void _Destroy()
+        {
+        }
     }
 }

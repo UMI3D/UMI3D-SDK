@@ -43,8 +43,7 @@ namespace umi3d.cdk.collaboration
             userId = privateIdentity.userId,
             headerToken = privateIdentity.headerToken,
             localToken = privateIdentity.localToken,
-            key = privateIdentity.key,
-            libraries = privateIdentity.libraries
+            key = privateIdentity.key
         };
 
         bool isConnecting, isConnected;

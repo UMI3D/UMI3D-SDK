@@ -99,7 +99,7 @@ namespace umi3d.edk.collaboration
                 httpsv.Stop();
         }
 
-        public void Destroy()
+        protected override void _Destroy()
         {
             Stop();
         }
