@@ -34,14 +34,14 @@ namespace umi3d.common
 
         // Should be used to serialize UMI3D Data Transfer Object to bson.
         /// <param name="dto">UMI3D Data Transfer Object to serialize.</param>
-        public static byte[] ToBson(UMI3DDto dto)
+        public static byte[] ToBson(UMI3DDto dto, TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
             var ms = new MemoryStream();
             using (var writer = new BsonWriter(ms))
             {
                 var serializer = new JsonSerializer
                 {
-                    TypeNameHandling = TypeNameHandling.All
+                    TypeNameHandling = typeNameHandling
                 };
                 serializer.Serialize(writer, dto);
             }
@@ -50,24 +50,24 @@ namespace umi3d.common
 
         // Should be used to serialize UMI3D Data Transfer Object to json.
         /// <param name="dto">UMI3D Data Transfer Object to serialize.</param>
-        public static string ToJson(UMI3DDto dto)
+        public static string ToJson(UMI3DDto dto, TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
             return JsonConvert.SerializeObject(dto, Formatting.Indented, new JsonSerializerSettings
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = typeNameHandling
             });
         }
 
         // Should be used to serialize this object to bson.
-        public byte[] ToBson()
+        public byte[] ToBson(TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
-            return ToBson(this);
+            return ToBson(this, typeNameHandling);
         }
 
         // Should be used to serialize this object to json.
-        public string ToJson()
+        public string ToJson(TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
-            return ToJson(this);
+            return ToJson(this, typeNameHandling);
         }
 
         #endregion
@@ -78,16 +78,30 @@ namespace umi3d.common
 
         // Should be used to deserialize a UMI3D Data Transfer Object from bson.
         /// <param name="dto">a bson serialized UMI3D Data Transfer Object.</param>
-        public static UMI3DDto FromBson(byte[] bson)
+        public static UMI3DDto FromBson(byte[] bson, TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
             var ms = new MemoryStream(bson);
             using (var reader = new BsonReader(ms))
             {
                 var serializer = new JsonSerializer
                 {
-                    TypeNameHandling = TypeNameHandling.All
+                    TypeNameHandling = typeNameHandling
                 };
                 UMI3DDto dto = serializer.Deserialize<UMI3DDto>(reader);
+                return dto;
+            }
+        }
+
+        public static T FromBson<T>(byte[] bson, TypeNameHandling typeNameHandling = TypeNameHandling.All)
+        {
+            var ms = new MemoryStream(bson);
+            using (var reader = new BsonReader(ms))
+            {
+                var serializer = new JsonSerializer
+                {
+                    TypeNameHandling = typeNameHandling
+                };
+                T dto = serializer.Deserialize<T>(reader);
                 return dto;
             }
         }
@@ -102,10 +116,16 @@ namespace umi3d.common
             });
         }
 
+
+        public static T FromJson<T>(string json, TypeNameHandling typeNameHandling = TypeNameHandling.All, System.Collections.Generic.IList<JsonConverter> converters = null)
+        {
+            return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings
+            {
+                TypeNameHandling = typeNameHandling,
+                Converters = converters,
+            });
+        }
         #endregion
 
     }
-
-
-
 }

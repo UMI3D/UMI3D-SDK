@@ -321,6 +321,11 @@ namespace umi3d.cdk
         /// <returns></returns>
         public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
         {
+            if (baseMaterial == null)
+            {
+                throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
+            }
+
             onProgressChange.Invoke(0.1f);
             isEnvironmentLoaded = false;
 

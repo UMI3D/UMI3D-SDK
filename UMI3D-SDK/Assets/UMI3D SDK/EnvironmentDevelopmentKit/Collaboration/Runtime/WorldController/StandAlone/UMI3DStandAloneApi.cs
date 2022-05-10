@@ -49,27 +49,66 @@ namespace umi3d.worldController
         public void Connection(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             byte[] bytes = default(byte[]);
+
             using (var memstream = new MemoryStream())
             {
                 byte[] buffer = new byte[512];
                 int bytesRead = default(int);
+
                 while ((bytesRead = e.Request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
             }
-            var dto = UMI3DDto.FromBson(bytes);
+            if(bytes == null)
+            {
+                Error(e.Response, "Missing data");
+                return;
+            }    
+
+            var text = bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : null;
+
+            if (text == null)
+            {
+                Error(e.Response, "Can not read string from byte");
+                return;
+            }
+
+            ConnectionDto dto = UMI3DDto.FromJson<FormConnectionAnswerDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+
+            if (dto == null)
+            {
+                Error(e.Response, "Json is not valid");
+                return;
+            }
+
+            if (dto is FormConnectionAnswerDto _dto && _dto.FormAnswerDto == null)
+            {
+                dto = new ConnectionDto()
+                {
+                    gate = _dto.gate,
+                    GlobalToken = _dto.GlobalToken,
+                    LibraryPreloading = _dto.LibraryPreloading
+                };
+            }
+
             bool finished = false;
             UMI3DDto result = null;
-            MainThreadManager.Run(() => ConnectUser(dto as ConnectionDto, (res) => { finished = true; result = res; }));
+            MainThreadManager.Run(() => ConnectUser(dto, (res) => { finished = true; result = res; }));
+
             while (!finished)
                 System.Threading.Thread.Sleep(1);
 
             if (result != null)
             {
                 HttpListenerResponse res = e.Response;
-                res.WriteContent(result.ToBson());
+                res.WriteContent( System.Text.Encoding.UTF8.GetBytes( result.ToJson(Newtonsoft.Json.TypeNameHandling.None) ));
             }
+        }
 
+        void Error(HttpListenerResponse res, string errorMessage)
+        {
+            res.StatusCode = 400;
+            res.StatusDescription = errorMessage;
         }
 
         async void ConnectUser(ConnectionDto dto, Action<UMI3DDto> callback)
