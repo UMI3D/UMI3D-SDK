@@ -74,7 +74,7 @@ namespace umi3d.cdk.interaction
                     toolboxIdToMenu.Add(dto.id, tbmenu);
                 }
 
-                foreach(AbstractMenuItem menu in menuToStoreInMenuAsset.ToList())
+                foreach (AbstractMenuItem menu in menuToStoreInMenuAsset.ToList())
                 {
                     GlobalToolMenu gtm = menu as GlobalToolMenu;
                     if ((gtm != null) && (tool.parent.id == dto.id))
@@ -143,10 +143,10 @@ namespace umi3d.cdk.interaction
             else
             {
                 GlobalToolMenu gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
-                gtmenu.parent.Remove(gtmenu); 
+                gtmenu.parent.Remove(gtmenu);
             }
         }
-    
+
         public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong toolId)
         {
             Texture2D icon2DTex = new Texture2D(0, 0);
@@ -158,17 +158,57 @@ namespace umi3d.cdk.interaction
                     rawData => icon2DTex.LoadRawTextureData(rawData),
                     e => UMI3DLogger.LogError(e, DebugScope.Interaction));
             }
-            
+
 
             if (interactionDto is EventDto evt)
-                return new EventMenuItem()
+            {
+                var eventMenuItem = new EventMenuItem()
                 {
                     icon2D = icon2DTex,
                     interaction = evt,
-                    toggle = evt.hold,
+                    hold = evt.hold,
                     Name = evt.name,
                     toolId = toolId
                 };
+
+                eventMenuItem.Subscribe((val) =>
+                {
+                    if (val)
+                    {
+                        if (evt.hold)
+                        {
+                            var eventdto = new EventStateChangedDto
+                            {
+                                active = true,
+                                id = evt.id,
+                                toolId = toolId,
+                            };
+                            UMI3DClientServer.SendData(eventdto, true);
+                        }
+                        else
+                        {
+                            var eventdto = new EventTriggeredDto
+                            {
+                                id = evt.id,
+                                toolId = toolId,
+                            };
+                            UMI3DClientServer.SendData(eventdto, true);
+                        }
+                    }
+                    else
+                    {
+                        var eventdto = new EventStateChangedDto
+                        {
+                            active = false,
+                            id = evt.id,
+                            toolId = toolId,
+                        };
+                        UMI3DClientServer.SendData(eventdto, true);
+                    }
+                });
+
+                return eventMenuItem;
+            }
 
 
             if (interactionDto is FormDto form)
@@ -181,17 +221,18 @@ namespace umi3d.cdk.interaction
                     interaction = form
                 };
 
-            
+
 
             if (interactionDto is LinkDto link)
                 throw new System.NotImplementedException(); //todo
 
             if (interactionDto is AbstractParameterDto param)
                 return GetInteractionItem(param).Item1;
-            
+
 
             throw new System.Exception("Unknown dto !");
         }
+
 
         public static (MenuItem, ParameterSettingRequestDto) GetInteractionItem(AbstractInteractionDto dto)
         {
