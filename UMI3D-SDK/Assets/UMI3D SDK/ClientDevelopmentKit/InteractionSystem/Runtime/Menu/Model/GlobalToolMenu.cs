@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.cdk.interaction;
 using umi3d.common;
 using UnityEngine;
@@ -27,11 +25,6 @@ namespace umi3d.cdk.menu.interaction
         public AbstractMenu parent;
 
         public GlobalTool tool { get; private set; }
-
-        void SubcribedMethode()
-        {
-            AbstractInteractionMapper.Instance.SelectTool(tool.id, true, this.tool.id, new RequestedFromMenu());
-        }
 
         public void Setup(GlobalTool tool)
         {
@@ -48,12 +41,10 @@ namespace umi3d.cdk.menu.interaction
                     UMI3DResourcesManager.GetFile(
                         icon2DFile.url,
                         rawData => this.icon2D.LoadRawTextureData(rawData),
-                        e => UMI3DLogger.LogError(e,DebugScope.Interaction));
+                        e => UMI3DLogger.LogError(e, DebugScope.Interaction));
             }
 
             tool.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id)));
-
-            Subscribe(SubcribedMethode);
         }
     }
 }
