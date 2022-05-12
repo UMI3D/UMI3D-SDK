@@ -61,7 +61,8 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<ulong>(user.audioSourceId)
                     + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId)
-                    + UMI3DNetworkingHelper.Write<uint>(user.networkId);
+                    + UMI3DNetworkingHelper.Write<uint>(user.networkId)
+                     + UMI3DNetworkingHelper.Write<string>(user.login);
                     return true;
                 case UMI3DCollaborationUser user:
                     bytable = UMI3DNetworkingHelper.Write<ulong>(user.Id())
@@ -70,7 +71,8 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<ulong>(user.audioPlayer?.Id() ?? 0)
                     + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0)
-                    + UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0);
+                    + UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0)
+                    + UMI3DNetworkingHelper.Write<string>(user.login);
                     return true;
                 case RegisterIdentityDto identity:
                     bytable = UMI3DNetworkingHelper.Write(identity.userId)
@@ -80,7 +82,7 @@ namespace umi3d.edk.collaboration
                         + UMI3DNetworkingHelper.Write(identity.metaData);
                     return true;
 
-    }
+            }
             bytable = null;
             return false;
         }

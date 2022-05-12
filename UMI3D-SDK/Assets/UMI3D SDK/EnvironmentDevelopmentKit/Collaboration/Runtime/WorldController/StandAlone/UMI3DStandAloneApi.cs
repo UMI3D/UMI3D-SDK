@@ -180,7 +180,7 @@ namespace umi3d.worldController
         {
             UMI3DLogger.Log($"Get Media", scope);
             HttpListenerResponse res = e.Response;
-            res.WriteContent(api.ToDto().ToBson());
+            res.WriteContent(System.Text.Encoding.UTF8.GetBytes(api.ToDto().ToJson(Newtonsoft.Json.TypeNameHandling.None)));
         }
         #endregion
 

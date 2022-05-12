@@ -29,19 +29,29 @@ namespace umi3d.edk.collaboration
 
         private RegisterIdentityDto identityDto;
 
-        protected override ulong userId { get => identityDto.userId; set { } }
+        protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }
+        /// <summary>
+        /// The unique user login.
+        /// </summary>
+        public string login { get => identityDto.login; }
+        /// <summary>
+        /// The unique user login.
+        /// </summary>
+        public byte[] metadata { get => identityDto.metaData; }
 
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
-            this.identityDto = identity;
-            UMI3DEnvironment.Register(this, userId);
+            this.identityDto = identity ?? new RegisterIdentityDto();
+            userId = UMI3DEnvironment.Register(this, userId);
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
 
         public void Update(RegisterIdentityDto identity)
         {
-            this.identityDto = identity;
+            var id = Id();
+            this.identityDto = identity ?? new RegisterIdentityDto();
+            userId = id;
         }
 
         public void InitConnection(UMI3DForgeServer connection)
@@ -70,10 +80,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string token { get => identityDto?.localToken; }
 
-        /// <summary>
-        /// The unique user login.
-        /// </summary>
-        public string login;
+
 
         public UMI3DForgeServer forgeServer;
 
@@ -129,7 +136,8 @@ namespace umi3d.edk.collaboration
                 networkId = networkPlayer?.NetworkId ?? 0,
                 audioSourceId = audioPlayer?.Id() ?? 0,
                 audioFrequency = audioFrequency,
-                videoSourceId = videoPlayer?.Id() ?? 0
+                videoSourceId = videoPlayer?.Id() ?? 0,
+                login = login
             };
             return user;
         }

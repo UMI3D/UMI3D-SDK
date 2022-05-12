@@ -26,7 +26,7 @@ namespace umi3d.common
     {
         private Thread thread;
         private readonly int sleepTimeMiliseconde = 50;
-        private readonly Queue<(byte[], Action<UMI3DDto>)> queue;
+        private readonly Queue<(byte[], Action<UMI3DDto> ,Newtonsoft.Json.TypeNameHandling)> bsonQueue;
         private readonly object runningLock = new object();
         private bool running;
 
@@ -46,7 +46,7 @@ namespace umi3d.common
 
         public ThreadDeserializer()
         {
-            queue = new Queue<(byte[], Action<UMI3DDto>)>();
+            bsonQueue = new Queue<(byte[], Action<UMI3DDto>, Newtonsoft.Json.TypeNameHandling)>();
             Running = true;
             thread = new Thread(ThreadUpdate);
             if (!thread.IsAlive)
@@ -58,19 +58,19 @@ namespace umi3d.common
             Running = false;
         }
 
-        public void FromBson(byte[] bson, Action<UMI3DDto> action)
+        public void FromBson(byte[] bson, Action<UMI3DDto> action, Newtonsoft.Json.TypeNameHandling type = Newtonsoft.Json.TypeNameHandling.All)
         {
             if (action != null)
             {
                 if (bson != null)
-                    lock (queue)
-                        queue.Enqueue((bson, action));
+                    lock (bsonQueue)
+                        bsonQueue.Enqueue((bson, action, type));
                 else
                     action.Invoke(null);
             }
         }
 
-        public async Task<UMI3DDto> FromBson(byte[] bson)
+        public async Task<UMI3DDto> FromBson(byte[] bson, Newtonsoft.Json.TypeNameHandling type = Newtonsoft.Json.TypeNameHandling.All)
         {
             if (bson != null)
             {
@@ -81,7 +81,7 @@ namespace umi3d.common
                     result = v;
                     completed = true;
                 };
-                FromBson(bson, action);
+                FromBson(bson, action, type);
                 while(!completed)
                 {
                     await Task.Yield();
@@ -103,17 +103,17 @@ namespace umi3d.common
             {
                 try
                 {
-                    (byte[], Action<UMI3DDto>) c = default;
+                    (byte[], Action<UMI3DDto>, Newtonsoft.Json.TypeNameHandling) c = default;
                     bool set = false;
-                    lock (queue)
-                        if (queue.Count > 0)
+                    lock (bsonQueue)
+                        if (bsonQueue.Count > 0)
                         {
-                            c = queue.Dequeue();
+                            c = bsonQueue.Dequeue();
                             set = true;
                         }
                     if (set)
                     {
-                        var dto = UMI3DDto.FromBson(c.Item1);
+                        var dto = UMI3DDto.FromBson(c.Item1,c.Item3);
                         MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => c.Item2.Invoke(dto));
                     }
                 }

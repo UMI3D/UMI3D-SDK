@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
             switch (true)
             {
                 case true when typeof(T) == typeof(UserDto):
-                    if (container.length < 2 * sizeof(uint) + 4 * sizeof(ulong))
+                    if (container.length < 2 * sizeof(uint) + 4 * sizeof(ulong) + sizeof(int))
                     {
                         result = default(T);
                         readable = false;
@@ -42,7 +42,8 @@ namespace umi3d.cdk.collaboration
                         audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
                         audioFrequency = UMI3DNetworkingHelper.Read<int>(container),
                         videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
-                        networkId = UMI3DNetworkingHelper.Read<uint>(container)
+                        networkId = UMI3DNetworkingHelper.Read<uint>(container),
+                        login = UMI3DNetworkingHelper.Read<string>(container)
                     };
                     result = (T)(object)user;
                     readable = true;

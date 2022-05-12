@@ -30,6 +30,7 @@ namespace umi3d.common.collaboration
         public int audioFrequency;
         public ulong videoSourceId;
         public uint networkId;
+        public string login;
 
         public UserDto(UserDto source)
         {
@@ -40,6 +41,7 @@ namespace umi3d.common.collaboration
             this.videoSourceId = source.videoSourceId;
             this.networkId = source.networkId;
             this.id = source.id;
+            this.login = source.login;
         }
 
         public UserDto() { }

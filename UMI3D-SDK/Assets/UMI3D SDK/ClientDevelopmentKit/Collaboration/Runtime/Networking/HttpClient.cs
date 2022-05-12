@@ -292,8 +292,9 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Send GetMedia", scope | DebugScope.Connection);
             var uwr = await _GetRequest(null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
             UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
-            var dto = uwr?.downloadHandler.data != null ? UMI3DDto.FromBson(uwr?.downloadHandler.data) : null;
-            return dto as MediaDto;
+            if (uwr?.downloadHandler.data == null) return null;
+            var json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
+            return UMI3DDto.FromJson<UMI3DDto>(json,Newtonsoft.Json.TypeNameHandling.None) as MediaDto;
         }
 
         #endregion
