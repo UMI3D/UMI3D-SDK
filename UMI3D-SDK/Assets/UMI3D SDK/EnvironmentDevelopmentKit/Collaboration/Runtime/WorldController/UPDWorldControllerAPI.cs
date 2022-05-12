@@ -106,15 +106,15 @@ namespace umi3d.worldController
         }
 
 
-        public override Task NotifyUserJoin(string uid)
+        public override Task NotifyUserJoin(UMI3DCollaborationUser user)
         {
-            forgeClient.Send((new WorldControllerUserJoinMessage(uid)).ToBytable().ToBytes());
+            forgeClient.Send((new WorldControllerUserJoinMessage(user.login)).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserLeave(string uid)
+        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
         {
-            forgeClient.Send((new WorldControllerUserLeaveMessage(uid)).ToBytable().ToBytes());
+            forgeClient.Send((new WorldControllerUserLeaveMessage(user.login)).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
     }

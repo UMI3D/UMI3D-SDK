@@ -21,13 +21,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.collaboration;
 using UnityEngine;
 
 
 namespace umi3d.worldController
 {
     [CreateAssetMenu(fileName = "SandAloneWorldControlerAPI", menuName = "UMI3D/SandAlone WorldControler")]
-    public class SandAloneWorldControler : StandAloneWorldControllerAPI
+    public class StandAloneWorldControler : StandAloneWorldControllerAPI
     {
         protected IIAM IAM;
         protected IKeyGenerator keyGenerator;
@@ -53,7 +54,7 @@ namespace umi3d.worldController
             return dto;
         }
 
-        public override Task NotifyUserJoin(string uid)
+        public override Task NotifyUserJoin(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;
         }
@@ -125,7 +126,7 @@ namespace umi3d.worldController
             return privateId;
         }
 
-        public override Task NotifyUserLeave(string uid)
+        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;
         }

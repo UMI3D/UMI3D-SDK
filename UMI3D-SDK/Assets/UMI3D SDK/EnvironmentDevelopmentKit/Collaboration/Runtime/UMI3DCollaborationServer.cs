@@ -259,6 +259,8 @@ namespace umi3d.edk.collaboration
         /// <param name="user">user that join</param>
         public void NotifyUserJoin(UMI3DUser user)
         {
+            if (user is UMI3DCollaborationUser _user)
+                WorldController.NotifyUserJoin(_user);
             OnUserJoin.Invoke(user);
         }
 
@@ -411,6 +413,7 @@ namespace umi3d.edk.collaboration
         private void _Logout(UMI3DCollaborationUser user)
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
+            WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
 

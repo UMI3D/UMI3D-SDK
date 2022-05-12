@@ -17,11 +17,12 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using umi3d.edk.collaboration;
 using UnityEngine;
 
 public interface IWorldController_Environment
 {
-    Task NotifyUserJoin(string uid);
+    Task NotifyUserJoin(UMI3DCollaborationUser user);
 
-    Task NotifyUserLeave(string uid);
+    Task NotifyUserLeave(UMI3DCollaborationUser user);
 }

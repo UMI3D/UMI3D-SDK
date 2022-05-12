@@ -19,15 +19,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.collaboration;
 using UnityEngine;
 
 namespace umi3d.worldController
 {
     public abstract class WorldControllerAPI : ScriptableObject, IWorldController_Environment
     {
-        public abstract Task NotifyUserJoin(string uid);
+        public abstract Task NotifyUserJoin(UMI3DCollaborationUser user);
 
-        public abstract Task NotifyUserLeave(string uid);
+        public abstract Task NotifyUserLeave(UMI3DCollaborationUser user);
 
         public virtual void Setup() { }
 
