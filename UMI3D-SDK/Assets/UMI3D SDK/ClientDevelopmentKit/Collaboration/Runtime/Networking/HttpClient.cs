@@ -294,7 +294,7 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
             if (uwr?.downloadHandler.data == null) return null;
             var json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-            return UMI3DDto.FromJson<UMI3DDto>(json,Newtonsoft.Json.TypeNameHandling.None) as MediaDto;
+            return UMI3DDto.FromJson<MediaDto>(json,Newtonsoft.Json.TypeNameHandling.None) as MediaDto;
         }
 
         #endregion
