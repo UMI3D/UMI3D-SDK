@@ -55,7 +55,7 @@ namespace umi3d.worldController
 
         public override Task NotifyUserJoin(string uid)
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public override async Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto)
@@ -127,7 +127,7 @@ namespace umi3d.worldController
 
         public override Task NotifyUserLeave(string uid)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

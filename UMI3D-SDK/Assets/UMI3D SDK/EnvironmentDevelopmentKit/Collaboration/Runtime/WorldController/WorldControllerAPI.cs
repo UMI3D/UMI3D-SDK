@@ -31,6 +31,7 @@ namespace umi3d.worldController
 
         public virtual void Setup() { }
 
+        public virtual void SetupAfterServerStart() { }
 
         public virtual void Stop()
         {

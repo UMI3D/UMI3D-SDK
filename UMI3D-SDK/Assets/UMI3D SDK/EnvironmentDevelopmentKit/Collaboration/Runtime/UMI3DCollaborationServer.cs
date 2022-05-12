@@ -203,10 +203,10 @@ namespace umi3d.edk.collaboration
             forgeServer.Host(auth);
 
             isRunning = true;
+
+
+            WorldController.SetupAfterServerStart();
             OnServerStart.Invoke();
-
-
-
         }
 
 
