@@ -99,7 +99,7 @@ namespace umi3d.cdk.userCapture
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != 0)
+                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
                     if (sendCameraProperties)
@@ -120,7 +120,7 @@ namespace umi3d.cdk.userCapture
         /// <returns></returns>
         protected virtual IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == 0)
+            while (UMI3DClientServer.Instance.GetUserId() == 0)
             {
                 yield return null;
             }
@@ -165,7 +165,7 @@ namespace umi3d.cdk.userCapture
                     position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     refreshFrequency = targetTrackingFPS,
-                    userId = UMI3DClientServer.Instance.GetId(),
+                    userId = UMI3DClientServer.Instance.GetUserId(),
                 };
 
                 skeletonParsedEvent.Invoke();

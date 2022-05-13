@@ -34,6 +34,7 @@ namespace umi3d.edk.collaboration
         /// Contain the users connected to the scene.
         /// </summary>
         private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
+        private readonly Dictionary<string, UMI3DCollaborationUser> guidMap = new Dictionary<string, UMI3DCollaborationUser>();
         private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
 
         private readonly List<string> oldTokenOfUpdatedUser = new List<string>();
@@ -168,6 +169,7 @@ namespace umi3d.edk.collaboration
                 users.Remove(user.Id());
                 SetLastUpdate();
             }
+            guidMap.Remove(user.guid);
             forgeMap.Remove(user.networkPlayer.NetworkId);
             user.SetStatus(StatusType.NONE);
             user.Logout();
@@ -213,9 +215,9 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DCollaborationUser user;
                 bool reconnection = false;
-                if (users.ContainsKey(LoginDto.userId))
+                if (guidMap.ContainsKey(LoginDto.guid))
                 {
-                    user = users[LoginDto.userId];
+                    user = guidMap[LoginDto.guid];
                     oldTokenOfUpdatedUser.Add(user.token);
                     forgeMap.Remove(user.networkPlayer.NetworkId);
                     (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer,true);
@@ -227,6 +229,7 @@ namespace umi3d.edk.collaboration
                 {
                     user = new UMI3DCollaborationUser(LoginDto);
                     users.Add(user.Id(), user);
+                    guidMap.Add(LoginDto.guid, user);
                     SetLastUpdate();
                 }
                 onUserCreated.Invoke(user, reconnection);

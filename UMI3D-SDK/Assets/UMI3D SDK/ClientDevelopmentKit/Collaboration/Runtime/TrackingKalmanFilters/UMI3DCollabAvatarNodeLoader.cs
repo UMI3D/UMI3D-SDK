@@ -43,7 +43,7 @@ namespace umi3d.cdk.collaboration
             }
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                if (!(dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
+                if (!(dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetUserId()))
                 {
                     UserAvatar ua = node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
                     ua.Set(dto as UMI3DAvatarNodeDto);

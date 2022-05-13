@@ -61,6 +61,7 @@ namespace umi3d.worldController
             }
             if(bytes == null)
             {
+                Debug.Log("Missing data");
                 Error(e.Response, "Missing data");
                 return;
             }    
@@ -69,14 +70,15 @@ namespace umi3d.worldController
 
             if (text == null)
             {
+                Debug.Log("Can not read string from byte");
                 Error(e.Response, "Can not read string from byte");
                 return;
             }
-
             ConnectionDto dto = UMI3DDto.FromJson<FormConnectionAnswerDto>(text, Newtonsoft.Json.TypeNameHandling.None);
 
             if (dto == null)
             {
+                Debug.Log("Json is not valid");
                 Error(e.Response, "Json is not valid");
                 return;
             }
@@ -118,8 +120,9 @@ namespace umi3d.worldController
                 UMI3DDto res = await api.Connect(dto);
                 callback?.Invoke(res);
             }
-            catch
+            catch(Exception e)
             {
+                Debug.Log(e.Message+" "+e.StackTrace);
                 callback?.Invoke(null);
             }
         }

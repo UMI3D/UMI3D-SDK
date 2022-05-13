@@ -30,39 +30,23 @@ namespace umi3d.worldController
         public string headearToken => privateIdentity.headerToken;
         public string key => privateIdentity.key;
 
-        public string id;
+        public string globalToken;
 
         static Dictionary<ulong, User> ids = new Dictionary<ulong, User>();
 
-        public User(ConnectionDto connectionDto, string id)
+        public User(ConnectionDto connectionDto, string globalToken)
         {
-            this.id = id;
+            this.globalToken = globalToken;
             privateIdentity = new PrivateIdentityDto();
-            privateIdentity.userId = NewID();
+            privateIdentity.guid = NewID();
             Update(connectionDto);
         }
 
         #region id
         private readonly System.Random random = new System.Random();
-        private ulong NewID()
+        private string NewID()
         {
-            ulong value = LongRandom(100010);
-            while (ids.ContainsKey(value)) value = LongRandom(100010);
-            return value;
-        }
-
-        /// <summary>
-        /// return a random ulong with a min value;
-        /// </summary>
-        /// <param name="min">min value for this ulong. this should be inferior to 4,294,967,295/2</param>
-        /// <returns></returns>
-        private ulong LongRandom(ulong max)
-        {
-            byte[] buf = new byte[64];
-            random.NextBytes(buf);
-            ulong longRand = (ulong)UnityEngine.Mathf.Abs(System.BitConverter.ToInt64(buf, 0));
-            if (longRand > max) return longRand + max;
-            return longRand;
+            return System.Guid.NewGuid().ToString();
         }
         #endregion
 
@@ -97,8 +81,8 @@ namespace umi3d.worldController
 
         private void SetPublicIdentity(PublicIdentityDto identity)
         {
-            identity.userId = privateIdentity.userId;
             identity.login = privateIdentity.login;
+            identity.displayName = privateIdentity.displayName;
         }
 
         private void SetIdentity(IdentityDto identity)
@@ -106,6 +90,7 @@ namespace umi3d.worldController
             identity.localToken = privateIdentity.localToken;
             identity.headerToken = privateIdentity.headerToken;
             identity.key = privateIdentity.key;
+            identity.guid = privateIdentity.guid;
             SetPublicIdentity(identity);
         }
 

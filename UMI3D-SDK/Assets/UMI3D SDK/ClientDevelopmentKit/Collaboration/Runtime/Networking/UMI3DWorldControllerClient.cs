@@ -30,17 +30,22 @@ namespace umi3d.cdk.collaboration
         public string name => media?.name;
         GateDto gate;
         string globalToken;
+        UMI3DEnvironmentClient environment;
         PrivateIdentityDto privateIdentity;
-        public PublicIdentityDto PublicIdentity => new PublicIdentityDto() 
-        { 
-            login = privateIdentity.login, 
-            userId = privateIdentity.userId 
+        public PublicIdentityDto PublicIdentity => new PublicIdentityDto()
+        {
+            userId = privateIdentity.userId,
+            login = privateIdentity.login,
+            displayName = privateIdentity.displayName
+
         };
 
         public IdentityDto Identity => new IdentityDto()
         {
-            login = privateIdentity.login,
             userId = privateIdentity.userId,
+            login = privateIdentity.login,
+            displayName = privateIdentity.displayName,
+            guid = privateIdentity.guid,
             headerToken = privateIdentity.headerToken,
             localToken = privateIdentity.localToken,
             key = privateIdentity.key
@@ -73,9 +78,11 @@ namespace umi3d.cdk.collaboration
             this.globalToken = globalToken;
         }
 
+        public ulong GetUserID() { return environment?.GetUserID() ?? 0; }
+
         public async Task<bool> Connect(bool downloadLibraryOnly = false)
         {
-            if(!isConnected && !isConnecting)
+            if (!isConnected && !isConnecting)
                 return await Connect(new ConnectionDto()
                 {
                     GlobalToken = this.globalToken,
@@ -101,7 +108,7 @@ namespace umi3d.cdk.collaboration
                     var _answer = new FormConnectionAnswerDto()
                     {
                         FormAnswerDto = answer,
-                        GlobalToken = form.temporaryUserId,
+                        GlobalToken = form.GlobalToken,
                         gate = dto.gate,
                         LibraryPreloading = dto.LibraryPreloading
                     };
@@ -132,9 +139,9 @@ namespace umi3d.cdk.collaboration
 
         public UMI3DEnvironmentClient ConnectToEnvironment()
         {
-           var env = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this);
-            if (env.Connect())
-                return env;
+            environment = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this);
+            if (environment.Connect())
+                return environment;
             else
                 return null;
         }

@@ -84,7 +84,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="id">the user id</param>
         public static void SkeletonCreation(ulong id)
         {
-            if (id != UMI3DClientServer.Instance.GetId())
+            if (id != UMI3DClientServer.Instance.GetUserId())
             {
                 var ua = UMI3DClientUserTracking.Instance.embodimentDict[id] as UMI3DCollaborativeUserAvatar;
                 ua.skeleton = Instantiate((UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking).UnitSkeleton, ua.transform);

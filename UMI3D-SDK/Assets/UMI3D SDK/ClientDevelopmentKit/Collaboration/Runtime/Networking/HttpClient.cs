@@ -94,7 +94,7 @@ namespace umi3d.cdk.collaboration
             var dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
             var dto2 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new FooConverter() });
 
-            if (dto1.GlobalToken != null)
+            if (dto1?.GlobalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else
                 return dto2;

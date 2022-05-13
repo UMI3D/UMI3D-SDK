@@ -26,5 +26,6 @@ namespace umi3d.common.collaboration
     {
         public ulong userId = 0;
         public string login = null;
+        public string displayName = null;
     }
 }

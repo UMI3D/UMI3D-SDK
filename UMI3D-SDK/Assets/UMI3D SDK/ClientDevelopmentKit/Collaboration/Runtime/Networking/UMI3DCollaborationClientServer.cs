@@ -273,7 +273,7 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public override ulong GetId() { return worldControllerClient.PublicIdentity.userId; }
+        public override ulong GetUserId() { return worldControllerClient?.GetUserID() ?? 0; }
 
         ///<inheritdoc/>
         public override ulong GetTime()

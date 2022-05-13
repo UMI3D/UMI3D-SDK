@@ -36,7 +36,7 @@ namespace umi3d.worldController
         {
             var form = new ConnectionFormDto()
             {
-                temporaryUserId = user.id,
+                GlobalToken = user.globalToken,
                 name = "Connection",
                 description = null,
                 fields = new List<AbstractParameterDto>()

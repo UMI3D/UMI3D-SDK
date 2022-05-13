@@ -242,7 +242,7 @@ namespace umi3d.cdk.userCapture
 
         protected void UpdateBindingPosition(BoneBindingDto dto)
         {
-            if (userId == UMI3DClientServer.Instance.GetId())
+            if (userId == UMI3DClientServer.Instance.GetUserId())
             {
                 if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
                 {

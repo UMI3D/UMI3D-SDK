@@ -27,5 +27,6 @@ namespace umi3d.common.collaboration
         public string localToken;
         public string headerToken;
         public string key;
+        public string guid;
     }
 }

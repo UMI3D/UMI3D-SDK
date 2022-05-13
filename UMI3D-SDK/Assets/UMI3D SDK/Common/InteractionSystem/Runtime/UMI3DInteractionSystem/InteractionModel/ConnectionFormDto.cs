@@ -27,7 +27,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// An id used during the connection 
         /// </summary>
-        public string temporaryUserId;
+        public string GlobalToken;
 
         public ConnectionFormDto() : base() { }
     }

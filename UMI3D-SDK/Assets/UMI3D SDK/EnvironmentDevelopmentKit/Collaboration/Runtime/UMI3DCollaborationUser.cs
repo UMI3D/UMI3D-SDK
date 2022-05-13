@@ -34,15 +34,23 @@ namespace umi3d.edk.collaboration
         /// The unique user login.
         /// </summary>
         public string login { get => identityDto.login; }
+
+        /// <summary>
+        /// The unique user login.
+        /// </summary>
+        public string guid { get => identityDto.guid; }
+
         /// <summary>
         /// The unique user login.
         /// </summary>
         public byte[] metadata { get => identityDto.metaData; }
 
+        static ulong lastGivenUserId = 1;
+
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
-            userId = UMI3DEnvironment.Register(this, userId);
+            userId = UMI3DEnvironment.Register(this, lastGivenUserId++);
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }

@@ -115,7 +115,7 @@ namespace umi3d.cdk
             throw new NotImplementedException();
         }
 
-        public virtual ulong GetId() { return 0; }
+        public virtual ulong GetUserId() { return 0; }
 
         /// <summary>
         /// return time server in millisecond, use synchronised time in collaborative cases.

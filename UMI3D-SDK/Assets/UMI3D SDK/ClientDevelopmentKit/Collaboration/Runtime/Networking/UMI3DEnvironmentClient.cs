@@ -40,6 +40,8 @@ namespace umi3d.cdk.collaboration
         public readonly ForgeConnectionDto connectionDto;
         UMI3DWorldControllerClient worldControllerClient;
 
+        public ulong GetUserID() { return UserDto.answerDto.id; }
+
         public DateTime lastTokenUpdate { get; private set; }
         public HttpClient HttpClient { get; private set; }
         public UMI3DForgeClient ForgeClient { get; private set; }
@@ -270,7 +272,7 @@ namespace umi3d.cdk.collaboration
                         }
                         break;
                     case StatusRequestDto statusRequestDto:
-                        HttpClient.SendPostUpdateStatusAsync(UserDto.answerDto.status,true);
+                        HttpClient.SendPostUpdateStatusAsync(UserDto.answerDto.status, true);
                         break;
                 }
             }
