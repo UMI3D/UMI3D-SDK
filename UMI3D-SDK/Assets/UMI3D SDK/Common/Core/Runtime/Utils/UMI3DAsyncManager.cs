@@ -22,6 +22,20 @@ public class UMI3DAsyncManager
 {
     public static async Task Yield()
     {
+        ErrorIfQuitting();
+        await Task.Yield();
+    }
+
+    public static async Task Delay(int milliseconds)
+    {
+        ErrorIfQuitting();
+        await Task.Delay(milliseconds);
+        ErrorIfQuitting();
+
+    }
+
+    private static void ErrorIfQuitting()
+    {
         if (QuittingManager.ApplicationIsQuitting)
             throw new UMI3DAsyncManagerException("Application is quitting");
 #if UNITY_EDITOR
@@ -30,11 +44,9 @@ public class UMI3DAsyncManager
             throw new UMI3DAsyncManagerException("Application is not playing");
         }
 #endif
-        await Task.Yield();
+
     }
-
 }
-
 public class UMI3DAsyncManagerException : System.Exception
 {
     public UMI3DAsyncManagerException(string message) : base(message)

@@ -158,7 +158,7 @@ namespace umi3d.cdk.collaboration
         async void Join(BeardedManStudios.Forge.Networking.IUserAuthenticator authenticator)
         {
             ForgeClient.Join(authenticator);
-            await Task.Delay(10000);
+            await UMI3DAsyncManager.Delay(10000);
             if (!ForgeClient.IsConnected && !disconected)
             {
                 isConnecting = false;

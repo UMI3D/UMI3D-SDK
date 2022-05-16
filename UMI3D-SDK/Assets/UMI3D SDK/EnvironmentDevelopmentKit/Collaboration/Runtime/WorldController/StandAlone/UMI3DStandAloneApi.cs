@@ -83,13 +83,13 @@ namespace umi3d.worldController
                 return;
             }
 
-            if (dto is FormConnectionAnswerDto _dto && _dto.FormAnswerDto == null)
+            if (dto is FormConnectionAnswerDto _dto && _dto.formAnswerDto == null)
             {
                 dto = new ConnectionDto()
                 {
                     gate = _dto.gate,
-                    GlobalToken = _dto.GlobalToken,
-                    LibraryPreloading = _dto.LibraryPreloading
+                    globalToken = _dto.globalToken,
+                    libraryPreloading = _dto.libraryPreloading
                 };
             }
 

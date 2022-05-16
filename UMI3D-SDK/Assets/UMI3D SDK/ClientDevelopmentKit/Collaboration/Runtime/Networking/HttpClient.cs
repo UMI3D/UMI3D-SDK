@@ -20,6 +20,7 @@ using Newtonsoft.Json.Schema;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -92,7 +93,7 @@ namespace umi3d.cdk.collaboration
         static UMI3DDto ReadConnectAnswer(string text)
         {
             var dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
-            var dto2 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new FooConverter() });
+            var dto2 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
 
             if (dto1?.GlobalToken != null && dto1?.connectionDto != null)
                 return dto1;
@@ -100,7 +101,7 @@ namespace umi3d.cdk.collaboration
                 return dto2;
         }
 
-        public class FooConverter : Newtonsoft.Json.JsonConverter
+        public class ParameterConverter : Newtonsoft.Json.JsonConverter
         {
             public override bool CanRead => true;
 
@@ -115,21 +116,26 @@ namespace umi3d.cdk.collaboration
             {
                 JObject jo = JObject.Load(reader);
                 AbstractParameterDto dto = null;
-                if (jo.TryGetValue("possibleValues", out JToken tokenA))
-                {
-                    UnityEngine.Debug.Log(tokenA.Type.ToString());
-                }
+                bool isArray = false;
+                JToken tokenA;
+                isArray = jo.TryGetValue("possibleValues", out tokenA);
+
                 if (jo.TryGetValue("value", out JToken token))
                 {
-                    var obj = token.Value<object>();
-
                     switch (token.Type)
                     {
                         case JTokenType.String:
-                            dto = new StringParameterDto()
-                            {
-                                value = token.ToObject<string>()
-                            };
+                            if (isArray)
+                                dto = new EnumParameterDto<string>()
+                                {
+                                    possibleValues = tokenA.Values<string>().ToList(),
+                                    value = token.ToObject<string>()
+                                };
+                            else
+                                dto = new StringParameterDto()
+                                {
+                                    value = token.ToObject<string>()
+                                };
                             break;
                         case JTokenType.Boolean:
                             dto = new BooleanParameterDto()
@@ -138,16 +144,30 @@ namespace umi3d.cdk.collaboration
                             };
                             break;
                         case JTokenType.Float:
-                            dto = new FloatParameterDto()
-                            {
-                                value = token.ToObject<float>()
-                            };
+                            if (isArray)
+                                dto = new EnumParameterDto<float>()
+                                {
+                                    possibleValues = tokenA.Values<float>().ToList(),
+                                    value = token.ToObject<float>()
+                                };
+                            else
+                                dto = new FloatParameterDto()
+                                {
+                                    value = token.ToObject<float>()
+                                };
                             break;
                         case JTokenType.Integer:
-                            dto = new IntegerParameterDto()
-                            {
-                                value = token.ToObject<int>()
-                            };
+                            if (isArray)
+                                dto = new EnumParameterDto<int>()
+                                {
+                                    possibleValues = tokenA.Values<int>().ToList(),
+                                    value = token.ToObject<int>()
+                                };
+                            else
+                                dto = new IntegerParameterDto()
+                                {
+                                    value = token.ToObject<int>()
+                                };
                             break;
                     }
                 }

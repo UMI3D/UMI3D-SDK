@@ -110,9 +110,9 @@ namespace umi3d.worldController
 
         public void Update(ConnectionDto connectionDto)
         {
-            privateIdentity.GlobalToken = connectionDto.GlobalToken;
+            privateIdentity.GlobalToken = connectionDto.globalToken;
             gate = connectionDto.gate;
-            LoadLibraryOnly = connectionDto.LibraryPreloading;
+            LoadLibraryOnly = connectionDto.libraryPreloading;
         }
 
         public void Set(string globalToken)

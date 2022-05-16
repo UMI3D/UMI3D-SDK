@@ -36,7 +36,7 @@ namespace umi3d.worldController
         {
             var form = new ConnectionFormDto()
             {
-                GlobalToken = user.globalToken,
+                globalToken = user.globalToken,
                 name = "Connection",
                 description = null,
                 fields = new List<AbstractParameterDto>()
@@ -56,7 +56,14 @@ namespace umi3d.worldController
                     name = "Password",
                     value = ""
                 });
-
+            form.fields.Add(
+                new EnumParameterDto<string>()
+                {
+                    id = 3,
+                    name = "Select an option",
+                    possibleValues = new List<string>() { "ValueA", "ValueB", "ValueC", "ValueD", "Une Pomme", "@&&&é" },
+                    value = ""
+                });
 
 
             return await Task.FromResult(form);
@@ -74,6 +81,8 @@ namespace umi3d.worldController
 
         public async virtual Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
         {
+            UnityEngine.Debug.Log(formAnswer.ToJson(Newtonsoft.Json.TypeNameHandling.None));
+
             SetToken(user);
             return await Task.FromResult(true);
         }

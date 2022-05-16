@@ -85,9 +85,9 @@ namespace umi3d.cdk.collaboration
             if (!isConnected && !isConnecting)
                 return await Connect(new ConnectionDto()
                 {
-                    GlobalToken = this.globalToken,
+                    globalToken = this.globalToken,
                     gate = this.gate,
-                    LibraryPreloading = downloadLibraryOnly
+                    libraryPreloading = downloadLibraryOnly
                 });
             return false;
         }
@@ -107,10 +107,10 @@ namespace umi3d.cdk.collaboration
                     FormAnswerDto answer = await GetFormAnswer(form);
                     var _answer = new FormConnectionAnswerDto()
                     {
-                        FormAnswerDto = answer,
-                        GlobalToken = form.GlobalToken,
+                        formAnswerDto = answer,
+                        globalToken = form.globalToken,
                         gate = dto.gate,
-                        LibraryPreloading = dto.LibraryPreloading
+                        libraryPreloading = dto.libraryPreloading
                     };
                     return await Connect(_answer);
                 }

@@ -24,7 +24,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
-        public string GlobalToken;
+        public string globalToken;
 
         /// <summary>
         /// Gate data to help the media where to redirect the user.
@@ -36,6 +36,6 @@ namespace umi3d.common.collaboration
         /// if false : the client to connect normaly.
         /// if true : the client ask only for the library it will need in a later connection.
         /// </summary>
-        public bool LibraryPreloading;
+        public bool libraryPreloading;
     }
 }

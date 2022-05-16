@@ -25,6 +25,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
-        public FormAnswerDto FormAnswerDto;
+        public FormAnswerDto formAnswerDto;
     }
 }
