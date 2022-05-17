@@ -486,8 +486,6 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private static async Task<UnityWebRequest> _GetRequest(string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
-            if (!UMI3DClientServer.Exists)
-                return null;
 
             var www = UnityWebRequest.Get(url);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
@@ -528,8 +526,6 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private static async Task<UnityWebRequest> _PostRequest(string HeaderToken, string url, string contentType, byte[] bytes, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
-            if (!UMI3DClientServer.Exists)
-                return null;
 
             UnityWebRequest www = CreatePostRequest(url, bytes, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);

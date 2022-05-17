@@ -59,12 +59,12 @@ namespace umi3d.worldController
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
             }
-            if(bytes == null)
+            if (bytes == null)
             {
                 Debug.Log("Missing data");
                 Error(e.Response, "Missing data");
                 return;
-            }    
+            }
 
             var text = bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : null;
 
@@ -103,7 +103,7 @@ namespace umi3d.worldController
             if (result != null)
             {
                 HttpListenerResponse res = e.Response;
-                res.WriteContent( System.Text.Encoding.UTF8.GetBytes( result.ToJson(Newtonsoft.Json.TypeNameHandling.None) ));
+                res.WriteContent(System.Text.Encoding.UTF8.GetBytes(result.ToJson(Newtonsoft.Json.TypeNameHandling.None)));
             }
         }
 
@@ -120,9 +120,9 @@ namespace umi3d.worldController
                 UMI3DDto res = await api.Connect(dto);
                 callback?.Invoke(res);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                Debug.Log(e.Message+" "+e.StackTrace);
+                Debug.Log(e.Message + " " + e.StackTrace);
                 callback?.Invoke(null);
             }
         }
