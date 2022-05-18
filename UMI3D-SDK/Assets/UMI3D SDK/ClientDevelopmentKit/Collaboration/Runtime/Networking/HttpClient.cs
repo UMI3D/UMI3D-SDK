@@ -86,7 +86,9 @@ namespace umi3d.cdk.collaboration
             var bytes = System.Text.Encoding.UTF8.GetBytes(connectionDto.ToJson(Newtonsoft.Json.TypeNameHandling.None));
             var uwr = await _PostRequest(null, MasterUrl + UMI3DNetworkingKeys.connect, "application/json", bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
             UMI3DLogger.Log($"Received answer to Connect", scope | DebugScope.Connection);
-            var dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data)) : null;
+
+            var dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.RegularExpressions.Regex.Unescape(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data))) : null;
+
             return dto;
         }
 
@@ -171,6 +173,8 @@ namespace umi3d.cdk.collaboration
                             break;
                     }
                 }
+                if (dto == null)
+                    return null;
 
                 if (jo.TryGetValue("description", out JToken tokend))
                     dto.description = tokend.ToObject<string>();
@@ -314,7 +318,7 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
             if (uwr?.downloadHandler.data == null) return null;
             var json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-            return UMI3DDto.FromJson<MediaDto>(json,Newtonsoft.Json.TypeNameHandling.None) as MediaDto;
+            return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None) as MediaDto;
         }
 
         #endregion
@@ -486,7 +490,6 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private static async Task<UnityWebRequest> _GetRequest(string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
-
             var www = UnityWebRequest.Get(url);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
@@ -527,7 +530,7 @@ namespace umi3d.cdk.collaboration
         private static async Task<UnityWebRequest> _PostRequest(string HeaderToken, string url, string contentType, byte[] bytes, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
 
-            UnityWebRequest www = CreatePostRequest(url, bytes, true);
+            UnityWebRequest www = CreatePostRequest(url, bytes, contentType, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
             {
@@ -548,7 +551,6 @@ namespace umi3d.cdk.collaboration
             if (www.isNetworkError || www.isHttpError)
 #endif
             {
-
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
                     return await _PostRequest(HeaderToken, url, contentType, bytes, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
@@ -564,10 +566,12 @@ namespace umi3d.cdk.collaboration
         /// <param name="bytes">Data send via post method.</param>
         /// <param name="withResult">require a result</param>
         /// <returns></returns>
-        private static UnityWebRequest CreatePostRequest(string url, byte[] bytes, bool withResult = false)
+        private static UnityWebRequest CreatePostRequest(string url, byte[] bytes, string contentType = null, bool withResult = false)
         {
             var requestU = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST);
             var uH = new UploadHandlerRaw(bytes);
+            if (contentType != null)
+                uH.contentType = contentType;
             requestU.uploadHandler = uH;
             if (withResult)
                 requestU.downloadHandler = new DownloadHandlerBuffer();
