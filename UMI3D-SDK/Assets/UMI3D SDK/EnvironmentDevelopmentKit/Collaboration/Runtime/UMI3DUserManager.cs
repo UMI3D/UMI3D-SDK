@@ -259,7 +259,7 @@ namespace umi3d.edk.collaboration
         {
             yield return new WaitForFixedUpdate();
             SetEntityProperty op = objectUserList.Add(user);
-            op.users.Remove(user);
+            op.users = new HashSet<UMI3DUser>(op.users.Where((u) => u.hasJoined));
             var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(op);
             UMI3DServer.Dispatch(tr);
@@ -290,7 +290,7 @@ namespace umi3d.edk.collaboration
                 index = index,
                 value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
             };
-            operation += UMI3DCollaborationServer.Collaboration.Users;
+            operation += UMI3DCollaborationServer.Collaboration.Users.Where((u) => u.hasJoined);
             var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(operation);
             UMI3DServer.Dispatch(tr);

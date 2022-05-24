@@ -81,7 +81,7 @@ namespace umi3d.edk.interaction
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
