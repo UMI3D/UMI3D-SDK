@@ -82,7 +82,7 @@ namespace umi3d.edk
             var operation = new LoadEntity()
             {
                 entities = new List<UMI3DLoadableEntity>() { this },
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
             };
             return operation;
         }

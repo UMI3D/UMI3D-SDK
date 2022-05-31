@@ -580,8 +580,7 @@ namespace umi3d.edk.collaboration
         }
         public override HashSet<UMI3DUser> UserSetWhenHasJoined()
         {
-            return new HashSet<UMI3DUser>(Collaboration.Users);
-
+            return new HashSet<UMI3DUser>(Collaboration.Users.Where((u) => u.hasJoined));
         }
 
         #region session

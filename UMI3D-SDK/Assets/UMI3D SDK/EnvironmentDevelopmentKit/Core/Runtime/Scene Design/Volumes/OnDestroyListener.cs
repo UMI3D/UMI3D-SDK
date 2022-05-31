@@ -32,7 +32,7 @@ namespace umi3d.edk
                     new DeleteEntity()
                     {
                         entityId = entity.Id(),
-                        users = UMI3DServer.Instance.UserSet()
+                        users = UMI3DServer.Instance.UserSetWhenHasJoined()
                     });
 
             if (deleteOperations.Count > 0)
