@@ -54,15 +54,13 @@ namespace umi3d.cdk
                 if (line == null)
                 {
                     line = node.AddComponent<LineRenderer>();
-                    Shader umi3dShader = Shader.Find("UMI3D/default_UMI3D_shader");
-                    if (umi3dShader != null)
+                    Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
+
+                    if (UMI3DMat == null)
                     {
-                        line.material = new Material(umi3dShader);
+                        UMI3DMat = new Material(Shader.Find("Sprites/Default"));
                     }
-                    else
-                    {
-                        line.material = new Material(Shader.Find("Sprites/Default"));
-                    }
+                    line.material = UMI3DMat;
                 }
                 line.startColor = lineDto.startColor;
                 line.endColor = lineDto.endColor;
