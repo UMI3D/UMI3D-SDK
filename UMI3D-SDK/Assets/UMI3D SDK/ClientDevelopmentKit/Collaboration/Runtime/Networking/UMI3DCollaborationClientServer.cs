@@ -143,8 +143,11 @@ namespace umi3d.cdk.collaboration
                 await environmentClient.Logout();
             if (worldControllerClient != null)
                 worldControllerClient.Logout();
-            Instance.OnLeavingEnvironment.Invoke();
-            Instance.OnLeaving.Invoke();
+            if (Exists)
+            {
+                Instance.OnLeavingEnvironment.Invoke();
+                Instance.OnLeaving.Invoke();
+            }
         }
 
         /// <summary>
