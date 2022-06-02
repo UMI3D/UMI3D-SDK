@@ -29,6 +29,7 @@ namespace umi3d.edk.userCapture
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
 
+        [Tooltip("Should not be changed when Play Mode is running.")]
         public bool ActivateEmbodiments = true;
 
         public UMI3DScene EmbodimentsScene;
