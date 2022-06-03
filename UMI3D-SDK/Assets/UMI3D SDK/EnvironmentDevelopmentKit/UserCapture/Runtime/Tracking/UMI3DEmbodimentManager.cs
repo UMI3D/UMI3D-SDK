@@ -29,6 +29,9 @@ namespace umi3d.edk.userCapture
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
 
+        [Tooltip("Should not be changed when Play Mode is running.")]
+        public bool ActivateEmbodiments = true;
+
         public UMI3DScene EmbodimentsScene;
         public GameObject SkeletonPrefab;
 
@@ -58,9 +61,12 @@ namespace umi3d.edk.userCapture
         ///<inheritdoc/>
         protected virtual void Start()
         {
-            UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
-            UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
-            WriteCollections();
+            if (ActivateEmbodiments)
+            {
+                UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
+                UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
+                WriteCollections();
+            }
         }
 
         #region Tracking Data
@@ -75,15 +81,18 @@ namespace umi3d.edk.userCapture
 
         public void JoinDtoReception(ulong userId, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
         {
-            if (embodimentSize.ContainsKey(userId))
-                UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
-            else
-                embodimentSize.Add(userId, (Vector3)userSize);
+            if (ActivateEmbodiments)
+            {
+                if (embodimentSize.ContainsKey(userId))
+                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
+                else
+                    embodimentSize.Add(userId, (Vector3)userSize);
 
-            if (embodimentTrackedBonetypes.ContainsKey(userId))
-                UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
-            else
-                embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
+                if (embodimentTrackedBonetypes.ContainsKey(userId))
+                    UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
+                else
+                    embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
+            }
         }
 
         /// <summary>
@@ -92,35 +101,38 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned UMI3DUser</param>
         protected void CreateEmbodiment(UMI3DUser user)
         {
-            var trackedUser = user as UMI3DTrackedUser;
-            if (embodimentInstances.ContainsKey(user.Id()))
+            if (ActivateEmbodiments)
             {
-                UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
-                return;
+                var trackedUser = user as UMI3DTrackedUser;
+                if (embodimentInstances.ContainsKey(user.Id()))
+                {
+                    UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
+                    return;
+                }
+
+                var embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
+                embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
+                embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
+
+                if (EmbodimentsScene != null)
+                    embd.transform.SetParent(EmbodimentsScene.transform);
+                else
+                    UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
+
+                trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
+
+                LoadAvatarNode(trackedUser.Avatar);
+
+                GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
+                skeleton.transform.localScale = embodimentSize[user.Id()];
+
+                trackedUser.Avatar.userId = user.Id();
+                trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
+
+                embodimentInstances.Add(user.Id(), trackedUser.Avatar);
+
+                NewEmbodiment.Invoke(trackedUser.Avatar);
             }
-
-            var embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
-            embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
-            embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
-
-            if (EmbodimentsScene != null)
-                embd.transform.SetParent(EmbodimentsScene.transform);
-            else
-                UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
-
-            trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
-
-            LoadAvatarNode(trackedUser.Avatar);
-
-            GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
-            skeleton.transform.localScale = embodimentSize[user.Id()];
-
-            trackedUser.Avatar.userId = user.Id();
-            trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
-
-            embodimentInstances.Add(user.Id(), trackedUser.Avatar);
-
-            NewEmbodiment.Invoke(trackedUser.Avatar);
         }
 
 
@@ -130,22 +142,24 @@ namespace umi3d.edk.userCapture
         /// <param name="dto">a dto containing the tracking data</param>
         public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId)
         {
-            if (!embodimentInstances.ContainsKey(userId))
+            if (ActivateEmbodiments)
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
-                return;
+                if (!embodimentInstances.ContainsKey(userId))
+                {
+                    UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
+                    return;
+                }
+
+                UMI3DAvatarNode userEmbd = embodimentInstances[userId];
+                userEmbd.transform.localPosition = dto.position;
+                userEmbd.transform.localRotation = dto.rotation;
+
+                userEmbd.skeletonAnimator.transform.parent.position = userEmbd.transform.position + new Vector3(0, dto.skeletonHighOffset, 0);
+
+                UpdateNodeTransform(userEmbd);
+
+                userEmbd.UpdateEmbodiment(dto);
             }
-
-            UMI3DAvatarNode userEmbd = embodimentInstances[userId];
-            userEmbd.transform.localPosition = dto.position;
-            userEmbd.transform.localRotation = dto.rotation;
-            // userEmbd.transform.localScale = Vector3.one;
-
-            userEmbd.skeletonAnimator.transform.parent.position = userEmbd.transform.position + new Vector3(0, dto.skeletonHighOffset, 0);
-
-            UpdateNodeTransform(userEmbd);
-
-            userEmbd.UpdateEmbodiment(dto);
         }
 
         /// <summary>
@@ -155,12 +169,14 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned user</param>
         public void UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
         {
-            StartCoroutine(_UserCameraReception(dto, user));
+            if (ActivateEmbodiments)
+                StartCoroutine(_UserCameraReception(dto, user));
         }
 
         public void UserCameraReception(uint operationKey, ByteContainer container, UMI3DUser user)
         {
-            StartCoroutine(_UserCameraReception(operationKey, container, user));
+            if (ActivateEmbodiments)
+                StartCoroutine(_UserCameraReception(operationKey, container, user));
         }
 
         private IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
@@ -193,18 +209,21 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned user</param>
         protected void DeleteEmbodiment(UMI3DUser user)
         {
-            if (!embodimentInstances.ContainsKey(user.Id()))
+            if (ActivateEmbodiments)
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is  not registered", scope);
-                return;
+                if (!embodimentInstances.ContainsKey(user.Id()))
+                {
+                    UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is  not registered", scope);
+                    return;
+                }
+
+                UMI3DAvatarNode embd = embodimentInstances[user.Id()];
+
+                DeleteEmbodimentObj(embd);
+
+                Destroy(embd.transform.gameObject);
+                embodimentInstances.Remove(user.Id());
             }
-
-            UMI3DAvatarNode embd = embodimentInstances[user.Id()];
-
-            DeleteEmbodimentObj(embd);
-
-            Destroy(embd.transform.gameObject);
-            embodimentInstances.Remove(user.Id());
         }
 
         /// <summary>
