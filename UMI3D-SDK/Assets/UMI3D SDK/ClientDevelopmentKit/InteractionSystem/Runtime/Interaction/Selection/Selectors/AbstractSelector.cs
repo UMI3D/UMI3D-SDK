@@ -13,26 +13,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Base class for selectors.
+    /// Selector manages selection intent detectors and decides which detected objects are selected
+    /// </summary>
     public abstract class AbstractSelector : MonoBehaviour
     {
         public List<int> deactivationRequesters = new List<int>();
 
         public bool activated { get; protected set; }
 
+        protected virtual void ActivateInternal()
+        { activated = true; }
 
-        protected virtual void ActivateInternal() { activated = true; }
-        protected virtual void DeactivateInternal() { activated = false; }
+        protected virtual void DeactivateInternal()
+        { activated = false; }
 
         protected virtual void Awake()
         {
             ActivateInternal();
         }
-
 
         /// <summary>
         /// Activate the Selector.
@@ -61,9 +67,5 @@ namespace umi3d.cdk.interaction
         /// Select the object currently pointed at.
         /// </summary>
         public abstract void Select();
-
-
-
-
     }
 }
