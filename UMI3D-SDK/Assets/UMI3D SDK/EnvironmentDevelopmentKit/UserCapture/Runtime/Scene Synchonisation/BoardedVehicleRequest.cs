@@ -21,58 +21,48 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    public class VehicleRequest : TeleportRequest
+    public class BoardedVehicleRequest : VehicleRequest
     {
-        public ulong VehicleId = 0;
-        public ulong BodyPoseId = 0;
-        public bool StopNavigation = false;
+        public ulong BodyAnimationId = 0;
         public bool ChangeBonesToStream = false;
         public List<uint> BonesToStream = new List<uint>();
 
-        public VehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
+        public BoardedVehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
         {
-            this.VehicleId = 0;
-            this.BodyPoseId = 0;
-            this.StopNavigation = false;
+            this.BodyAnimationId = 0;
             this.ChangeBonesToStream = false;
             this.BonesToStream = new List<uint>();
         }
 
-        public VehicleRequest(ulong vehicleId, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool stopNavigation = false, ulong bodyPoseId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, bool reliable = true) : base(position, rotation, reliable)
+        public BoardedVehicleRequest(ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, ulong vehicleId = 0, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(vehicleId, stopNavigation, position, rotation, reliable)
         {
-            this.VehicleId = vehicleId;
-            this.BodyPoseId = bodyPoseId;
-            this.StopNavigation = stopNavigation;
+            this.BodyAnimationId = bodyAnimationId;
             this.ChangeBonesToStream = changeBonesToStream;
             this.BonesToStream = (bonesToStream == null) ? new List<uint>() : bonesToStream;
         }
 
         protected override uint GetOperationKey()
         {
-            return UMI3DOperationKeys.VehicleRequest;
+            return UMI3DOperationKeys.BoardedVehicleRequest;
         }
 
         protected override Bytable ToBytable()
         {
             if (rotation == null) rotation = new SerializableVector4();
             return base.ToBytable()
-                + UMI3DNetworkingHelper.Write(VehicleId)
-                + UMI3DNetworkingHelper.Write(BodyPoseId)
-                + UMI3DNetworkingHelper.Write(StopNavigation)
+                + UMI3DNetworkingHelper.Write(BodyAnimationId)
                 + UMI3DNetworkingHelper.Write(ChangeBonesToStream)
                 + UMI3DNetworkingHelper.WriteCollection(BonesToStream);
         }
 
-        protected override NavigateDto CreateDto() { return new VehicleDto(); }
-        
+        protected override NavigateDto CreateDto() { return new BoardedVehicleDto(); }
+
         protected override void WriteProperties(NavigateDto dto)
         {
             base.WriteProperties(dto);
-            if (dto is VehicleDto vDto)
+            if (dto is BoardedVehicleDto vDto)
             {
-                vDto.VehicleId = VehicleId;
-                vDto.BodyPoseId = BodyPoseId;
-                vDto.StopNavigation = StopNavigation;
+                vDto.BodyAnimationId = BodyAnimationId;
                 vDto.ChangeBonesToStream = ChangeBonesToStream;
                 vDto.BonesToStream = BonesToStream;
             }

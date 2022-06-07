@@ -338,32 +338,53 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.VehicleRequest:
                         {
-                            var pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                            var rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                            var vehicleId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            var bodyPoseId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            var stopNavigation = UMI3DNetworkingHelper.Read<bool>(container);
-                            var changeBonesToStream = UMI3DNetworkingHelper.Read<bool>(container);
-                            var bonesToStream = UMI3DNetworkingHelper.ReadList<uint>(container);
+                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            SerializableVector4 rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                            ulong vehicleId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            bool stopNavigation = UMI3DNetworkingHelper.Read<bool>(container);
 
-                            var vehicleDto = new VehicleDto()
+                            var nav = new VehicleDto()
                             {
                                 position = pos,
                                 rotation = rot,
                                 VehicleId = vehicleId,
-                                BodyPoseId = bodyPoseId,
                                 StopNavigation = stopNavigation,
+                            };
+
+                            MainThreadManager.Run(() =>
+                            {
+                                StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            });
+                        }
+                        break;
+                    case UMI3DOperationKeys.BoardedVehicleRequest:
+                        {
+                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            SerializableVector4 rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                            ulong vehicleId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            bool stopNavigation = UMI3DNetworkingHelper.Read<bool>(container);
+                            ulong bodyAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            bool changeBonesToStream = UMI3DNetworkingHelper.Read<bool>(container);
+                            System.Collections.Generic.List<uint> bonesToStream = UMI3DNetworkingHelper.ReadList<uint>(container);
+
+                            var nav = new BoardedVehicleDto()
+                            {
+                                position = pos,
+                                rotation = rot,
+                                VehicleId = vehicleId,
+                                StopNavigation = stopNavigation,
+                                BodyAnimationId = bodyAnimationId,
                                 ChangeBonesToStream = changeBonesToStream,
                                 BonesToStream = bonesToStream
                             };
 
                             MainThreadManager.Run(() =>
                             {
-                                UMI3DClientUserTracking.Instance.EmbarkVehicle(vehicleDto);
+                                StartCoroutine(UMI3DNavigation.Navigate(nav));
+                                UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
                             });
                         }
                         break;
-
                     case UMI3DOperationKeys.GetLocalInfoRequest:
                         var key = UMI3DNetworkingHelper.Read<string>(container);
                         MainThreadManager.Run(() =>

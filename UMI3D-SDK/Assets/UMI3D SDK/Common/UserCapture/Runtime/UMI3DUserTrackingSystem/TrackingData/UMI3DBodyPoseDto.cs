@@ -14,25 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace umi3d.common.userCapture
 {
-    [System.Serializable]
-    public class VehicleDto : TeleportDto
+    public class UMI3DBodyPoseDto : AbstractEntityDto, IEntity
     {
-        public ulong VehicleId = 0;
+        public string Name;
 
-        public ulong BodyPoseId = 0;
+        public bool IsActive;
+        public bool IsRelativeToNode;
+        public bool AllowOverriding;
 
-        public bool StopNavigation = false;
+        public SerializableVector3 BodyPosition;
+        public SerializableVector3 BodyEulerRotation;
 
-        public bool ChangeBonesToStream = false;
+        //public Dictionary<uint, SerializableVector3> JointRotations = new Dictionary<uint, SerializableVector3>();
 
-        public List<uint> BonesToStream = new List<uint>();
-
-
-        public VehicleDto() : base() { }
+        public Dictionary<uint, KeyValuePair<SerializableVector3, SerializableVector3>> TargetTransforms = new Dictionary<uint, KeyValuePair<SerializableVector3, SerializableVector3>>();
     }
 }

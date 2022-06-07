@@ -147,6 +147,8 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (UMI3DBodyPoseLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DProperty(entity, property))
@@ -185,6 +187,8 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (UMI3DBodyPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
@@ -217,6 +221,8 @@ namespace umi3d.cdk
             if (avatarLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (UMI3DHandPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DBodyPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;

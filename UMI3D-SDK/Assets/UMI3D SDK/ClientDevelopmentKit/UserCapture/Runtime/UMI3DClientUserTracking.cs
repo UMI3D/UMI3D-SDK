@@ -56,8 +56,11 @@ namespace umi3d.cdk.userCapture
         public UnityEvent startingSendingTracking;
 
         public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
+        public class BodyPoseEvent : UnityEvent<UMI3DBodyPoseDto> { };
 
         public HandPoseEvent handPoseEvent = new HandPoseEvent();
+
+        public BodyPoseEvent bodyPoseEvent = new BodyPoseEvent();
 
         public class AvatarEvent : UnityEvent<ulong> { };
 
@@ -155,7 +158,7 @@ namespace umi3d.cdk.userCapture
                 {
                     bones = bonesList,
                     position = transform.localPosition, //this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
-                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
+                    rotation = transform.localRotation,//Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     refreshFrequency = targetTrackingFPS,
                     userId = UMI3DClientServer.Instance.GetId(),
                 };
@@ -224,52 +227,20 @@ namespace umi3d.cdk.userCapture
             startingSendingTracking.Invoke();
         }
 
-        UMI3DNodeInstance globalVehicle;
-
-        public void EmbarkVehicle(VehicleDto vehicleDto)
+        public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
         {
-            TeleportDto nav = null;
-
-            if (vehicleDto.VehicleId == 0)
+            if (vehicleDto.BodyAnimationId != 0)
             {
-                UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true);
-                nav = new TeleportDto() { position = vehicleDto.position, rotation = vehicleDto.rotation };
-
-                globalVehicle.Delete -= new Action(() => UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true));
-                globalVehicle = null;
-
-                var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
-
-                bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
-
-                setStreamedBones(bones);
-            }
-            else
-            {
-                UMI3DNodeInstance vehicle = UMI3DEnvironmentLoader.GetNode(vehicleDto.VehicleId);
-
-                if (vehicle != null)
-                {
-                    globalVehicle = vehicle;
-
-                    UMI3DClientUserTracking.Instance.transform.SetParent(vehicle.transform, true);
-
-                    globalVehicle.Delete += new Action(() => UMI3DClientUserTracking.Instance.transform.SetParent(UMI3DNavigation.Instance.transform, true));
-
-                    var tempPosition = vehicle.transform.TransformPoint(vehicleDto.position);
-                    var tempRotation = vehicle.transform.rotation * vehicleDto.rotation;
-                    nav = new TeleportDto() { position = tempPosition, rotation = tempRotation };
-
-                    var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
-
-                    bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
-
-                    setStreamedBones(bones);
-                }
+                UMI3DNodeAnimation anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
+                if (anim != null)
+                    anim.Start();
             }
 
-            if (nav != null)
-                StartCoroutine(UMI3DNavigation.Navigate(nav));
+            var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+
+            bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+
+            setStreamedBones(bones);
         }
     }
 }
