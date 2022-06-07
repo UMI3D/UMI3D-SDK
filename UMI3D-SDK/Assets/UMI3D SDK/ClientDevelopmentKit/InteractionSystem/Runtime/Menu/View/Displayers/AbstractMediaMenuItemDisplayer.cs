@@ -26,7 +26,7 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Media menu item to display.
         /// </summary>
-        public MediaMenuItem mediaMenuItem { get { return menu as MediaMenuItem; } }
+        public MediaMenuItem mediaMenuItem => menu as MediaMenuItem;
 
 
         /// <summary>

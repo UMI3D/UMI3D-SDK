@@ -31,9 +31,11 @@ namespace umi3d.edk
         ///<inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
-            var res = new GlTFMaterialDto();
-            res.extensions = new GlTFMaterialExtensions()
-            { umi3d = new ExternalMaterialDto() };
+            var res = new GlTFMaterialDto
+            {
+                extensions = new GlTFMaterialExtensions()
+                { umi3d = new ExternalMaterialDto() }
+            };
             ((ExternalMaterialDto)res.extensions.umi3d).resource = resource.ToDto();
             ((ExternalMaterialDto)res.extensions.umi3d).id = GetId();
             ((ExternalMaterialDto)res.extensions.umi3d).shaderProperties = shaderProperties;
@@ -58,7 +60,7 @@ namespace umi3d.edk
         {
             if (!registered)
             {
-                ExternalMaterialDto matDto = new ExternalMaterialDto()
+                var matDto = new ExternalMaterialDto()
                 {
                     resource = resource.ToDto(),
                 };
@@ -70,11 +72,10 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
-            Debug.Log("id external mat " + id);
-            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o,u) => new UMI3DShaderPropertyDto(o), null, (d) =>
-           {
-               return new Dictionary<string, object>(d);
-           }); ;
+            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
+            {
+                return new Dictionary<string, object>(d);
+            }); ;
             //   objectShaderProperties.OnInnerValueChanged += (string s, object o) => { shaderProperties[s] = o; };
             //      objectShaderProperties.OnInnerValueAdded += (string s, object o) => { shaderProperties.Add(s, o); };
             //    objectShaderProperties.OnInnerValueRemoved += (string s) => { shaderProperties.Remove(s); };

@@ -1022,8 +1022,12 @@ namespace BeardedManStudios.Forge.Networking
         /// </summary>
         public void SetUserAuthenticator(IUserAuthenticator authenticator)
         {
+
             if (IsConnected)
+            {
+                UnityEngine.Debug.LogWarning("User already connected");
                 throw new BaseNetworkException("The NetWorker is already connected");
+            }
 
             this.authenticator = authenticator;
         }

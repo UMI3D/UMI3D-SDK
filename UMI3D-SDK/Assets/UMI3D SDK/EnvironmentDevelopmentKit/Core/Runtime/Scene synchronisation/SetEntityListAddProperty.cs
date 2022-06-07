@@ -28,11 +28,13 @@ namespace umi3d.edk
         ///<inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            var setEntity = new SetEntityListAddPropertyDto();
-            setEntity.property = property;
-            setEntity.entityId = entityId;
-            setEntity.value = value;
-            setEntity.index = index;
+            var setEntity = new SetEntityListAddPropertyDto
+            {
+                property = property,
+                entityId = entityId,
+                value = value,
+                index = index
+            };
             return setEntity;
         }
 
@@ -48,7 +50,7 @@ namespace umi3d.edk
         }
         public static SetEntityListAddProperty operator -(SetEntityListAddProperty a, IEnumerable<UMI3DUser> b)
         {
-            foreach (var u in b)
+            foreach (UMI3DUser u in b)
             {
                 if (a.users.Contains(u)) a.users.Remove(u);
             }

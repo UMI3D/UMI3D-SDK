@@ -1,4 +1,4 @@
 var classumi3d_1_1common_1_1_load_entity_dto =
 [
-    [ "entity", "d4/dd7/classumi3d_1_1common_1_1_load_entity_dto.html#a4bf47a75706095afb76562da57bf4993", null ]
+    [ "entities", "d4/dd7/classumi3d_1_1common_1_1_load_entity_dto.html#aa0c511a36f14f04f3ad6837694dbc3e8", null ]
 ];

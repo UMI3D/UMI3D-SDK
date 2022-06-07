@@ -36,9 +36,11 @@ namespace umi3d.edk
 
         public override GlTFMaterialDto ToDto()
         {
-            var res = new GlTFMaterialDto();
-            res.extensions = new GlTFMaterialExtensions()
-            { umi3d = new UMI3DOriginalMaterialDto() };
+            var res = new GlTFMaterialDto
+            {
+                extensions = new GlTFMaterialExtensions()
+                { umi3d = new UMI3DOriginalMaterialDto() }
+            };
             ((UMI3DOriginalMaterialDto)res.extensions.umi3d).id = GetId();
 
             ((UMI3DOriginalMaterialDto)res.extensions.umi3d).shaderProperties = shaderProperties;
@@ -56,7 +58,7 @@ namespace umi3d.edk
         {
             if (!registered)
             {
-                UMI3DOriginalMaterialDto matDto = new UMI3DOriginalMaterialDto();
+                var matDto = new UMI3DOriginalMaterialDto();
                 RegisterMaterial(matDto);
             }
             return matId;
@@ -65,7 +67,6 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
-            Debug.Log("id original mat " + id);
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
             {
                 return new Dictionary<string, object>(d);

@@ -1,4 +1,19 @@
-﻿using System.Collections.Generic;
+﻿/*
+Copyright 2019 - 2021 Inetum
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 
@@ -23,7 +38,7 @@ namespace umi3d.edk
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
 
-        ulong notificationId;
+        private ulong notificationId;
 
         public ulong Id()
         {
@@ -32,7 +47,7 @@ namespace umi3d.edk
             return notificationId;
         }
 
-        void Register()
+        private void Register()
         {
             if (notificationId == 0 && UMI3DEnvironment.Exists)
             {
@@ -57,7 +72,7 @@ namespace umi3d.edk
 
         public IEntity ToEntityDto(UMI3DUser user)
         {
-            var dto = CreateDto();
+            NotificationDto dto = CreateDto();
             WriteProperties(dto, user);
             return dto;
         }
@@ -80,8 +95,8 @@ namespace umi3d.edk
         {
             var operation = new LoadEntity()
             {
-                entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
@@ -95,13 +110,13 @@ namespace umi3d.edk
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

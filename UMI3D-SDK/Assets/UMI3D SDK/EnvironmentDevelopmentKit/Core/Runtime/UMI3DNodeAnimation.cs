@@ -55,9 +55,9 @@ namespace umi3d.edk
         }
 
         [SerializeField, EditorReadOnly]
-        float duration = 10f;
+        private float duration = 10f;
         [SerializeField, EditorReadOnly]
-        List<OperationChain> animationChain = null;
+        private List<OperationChain> animationChain = null;
         private UMI3DAsyncProperty<float> objectDuration;
         private UMI3DAsyncListProperty<OperationChain> objectAnimationChain;
 
@@ -76,7 +76,7 @@ namespace umi3d.edk
             var equality = new UMI3DAsyncPropertyEquality();
             base.InitDefinition(id);
             ObjectDuration = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationDuration, duration, null, equality.FloatEquality);
-            ObjectAnimationChain = new UMI3DAsyncListProperty<OperationChain>(id, UMI3DPropertyKeys.AnimationChain, animationChain, (o, u) => o?.Todto(u));
+            ObjectAnimationChain = new UMI3DAsyncListProperty<OperationChain>(id, UMI3DPropertyKeys.AnimationChain, animationChain, (o, u) => UMI3DEnvironment.Instance.useDto ? o?.Todto(u) : (object)o);
 
             ObjectDuration.OnValueChanged += (d) => duration = d;
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;

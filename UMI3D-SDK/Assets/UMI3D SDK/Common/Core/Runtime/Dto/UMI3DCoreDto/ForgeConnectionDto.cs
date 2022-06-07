@@ -20,7 +20,8 @@ namespace umi3d.common
     public class ForgeConnectionDto : UMI3DDto
     {
         public string httpUrl;
-        public string host;
+        public string resourcesUrl;
+        public string forgeHost;
         public string forgeMasterServerHost;
         public string forgeNatServerHost;
         public ushort forgeServerPort;

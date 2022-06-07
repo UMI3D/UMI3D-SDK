@@ -1,8 +1,10 @@
 var classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator =
 [
-    [ "Register", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a2e5180f9b45afdee0ab1441431bcf8f8", null ],
-    [ "Register", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a702525fcfb9c8e8006c97286861d856c", null ],
-    [ "Remove", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a94d6e487f0bdb8ac09bef0bd5a44af14", null ],
-    [ "this[string key]", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a9ab1839bca96b1b0213b359c95046bd3", null ],
-    [ "Values", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a297b90abefbd04f9b93533bef6d2ab9c", null ]
+    [ "IsOldId", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#ab55867d1e4eb776c0f1856c110b088f3", null ],
+    [ "Register", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a8514eef2825c39cc4bece5d6b80d29af", null ],
+    [ "Register", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#af6c7c1e2decdbccb439dc063a2e2f502", null ],
+    [ "Remove", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a2ecccc856a34d145c4f63d358b62aa5d", null ],
+    [ "old", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a3bcbb6b7d79dfaf6ff0df40d62754a80", null ],
+    [ "this[ulong key]", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a1fd59fd9afde3fd35e7df47ffba7f53b", null ],
+    [ "Values", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html#a15de8740c1bb3a656ffab9d1bfc8a649", null ]
 ];

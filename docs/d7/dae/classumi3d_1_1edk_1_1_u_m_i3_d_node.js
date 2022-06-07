@@ -1,8 +1,9 @@
 var classumi3d_1_1edk_1_1_u_m_i3_d_node =
 [
     [ "CreateDto", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a0a3040fb91a3f8f500efb1bb0c3d72e3", null ],
-    [ "InitDefinition", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a040ec3fce8dbb727fb6d8446951f4a69", null ],
+    [ "InitDefinition", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ab8b1c601779b8a7b1b1f9d4e20300562", null ],
     [ "SearchCollider", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a2b0c9422074f27d90de882710e3561f4", null ],
+    [ "ToBytes", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a0df54686dc64bcd9d5988091dc484039", null ],
     [ "ToEntityDto", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#afc4cf5e5968b123f01dc9de9719bcea5", null ],
     [ "ToUMI3DNodeDto", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#aed5667dbce8dfa02cc1d7d05dcb1f446", null ],
     [ "WriteProperties", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ab92393ca7dc3eb9b7d4ab9aa1e96eafb", null ],
@@ -16,6 +17,7 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_node =
     [ "customMeshCollider", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3cac414162f44b8a490bdd69fd03dd99", null ],
     [ "hasCollider", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#aa90fd343111f72689ecaaae12f17fb78", null ],
     [ "isMeshCustom", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ac5c705b469e2bf7584dc2361ce7e29c0", null ],
+    [ "skinnedRendererLinks", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3289850baa803eac4ea420c8f3e160ac", null ],
     [ "objectColliderBoxSize", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a404051209bb94bcd9f270c748316e5f6", null ],
     [ "objectColliderCenter", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a5c6ec5b8d0a77bf719a16dc55328acfb", null ],
     [ "objectColliderDirection", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a8632cfa494369ae735a8ca0f81243a3f", null ],

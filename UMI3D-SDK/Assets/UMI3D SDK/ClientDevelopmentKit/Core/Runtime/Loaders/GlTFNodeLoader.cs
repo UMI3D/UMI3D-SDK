@@ -27,6 +27,8 @@ namespace umi3d.cdk
     /// </summary>
     public class GlTFNodeLoader
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -52,32 +54,43 @@ namespace umi3d.cdk
         /// <param name="finished">Callback called when all nodes are loaded.</param>
         /// <param name="LoadedNodesCount">Action called each time a node is loaded with the count of all loaded node in parameter.</param>
         /// <returns></returns>
-        public IEnumerator LoadNodes(IEnumerable<GlTFNodeDto> nodes, System.Action finished, System.Action<int> LoadedNodesCount = null)
+        public IEnumerator LoadNodes(IEnumerable<GlTFNodeDto> nodes, System.Action finished, System.Action<int> ToLoadNodesCount = null, System.Action<int> LoadedNodesCount = null)
         {
             int count = 0;
             int total = nodes.Count();
+            ToLoadNodesCount?.Invoke(total);
             LoadedNodesCount?.Invoke(0);
             foreach (UMI3DNodeInstance node in nodes.Select(n => CreateNode(n)))
             {
-                GlTFNodeDto dto = node.dto as GlTFNodeDto;
+                var dto = node.dto as GlTFNodeDto;
 
                 // Read glTF extensions
                 count += 1;
-                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
-                    () => { count -= 1; LoadedNodesCount?.Invoke(total - count); }, 
-                    (s) => { count -= 1; Debug.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}"); });
-                ReadLightingExtensions(dto, node.gameObject);
 
-                // Important: all nodes in the scene must be registred before to handle hierarchy. 
-                // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
-                node.transform.localPosition = dto.position;
-                node.transform.localRotation = dto.rotation;
-                node.transform.localScale = dto.scale;
+                void actionAfterLoading()
+                {
+                    ReadLightingExtensions(dto, node.gameObject);
+                    // Important: all nodes in the scene must be registred before to handle hierarchy. 
+                    // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
+                    node.transform.localPosition = dto.position;
+                    node.transform.localRotation = dto.rotation;
+                    node.transform.localScale = dto.scale;
+                    node.SendOnPoseUpdated();
+                    node.NotifyLoaded();
+
+                    count -= 1;
+                    LoadedNodesCount?.Invoke(total - count);
+                };
+
+                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject,
+                    actionAfterLoading,
+                    (s) => { actionAfterLoading(); UMI3DLogger.LogWarning($"Failed to read Umi3d extension [{dto.name}] : {s}", scope); });
             }
             if (finished != null)
             {
-                LoadedNodesCount?.Invoke(total);
                 yield return new WaitUntil(() => count <= 0);
+                LoadedNodesCount?.Invoke(total);
+                yield return null;
                 finished.Invoke();
             }
             yield return null;
@@ -88,9 +101,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
+        private UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
         {
-            GameObject go = new GameObject(dto.name);
+            var go = new GameObject(dto.name);
             return UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
         }
 
@@ -114,24 +127,27 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns>state if the property was handled</returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, property))
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            var dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Position:
                     node.transform.localPosition = dto.position = (SerializableVector3)property.value;
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
                     node.transform.localRotation = dto.rotation = (SerializableVector4)property.value;
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
                     node.transform.localScale = dto.scale = (SerializableVector3)property.value;
+                    node.SendOnPoseUpdated();
                     break;
                 default:
                     return false;
@@ -146,24 +162,27 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns>state if the property was handled</returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(entity, operationId, propertyKey, container))
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            GlTFNodeDto dto = (node.dto as GlTFNodeDto);
+            var dto = (node.dto as GlTFNodeDto);
             if (dto == null) return false;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
                     dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
+                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                    node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    node.SendOnPoseUpdated();
                     break;
                 default:
                     return false;
@@ -171,7 +190,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.ReadLightPorperty(ref value, propertyKey, container))
                 return true;

@@ -80,12 +80,12 @@ namespace umi3d.cdk
         /// <summary>
 		/// Std of process 
 		/// </summary>
-        private double q;
+        private readonly double q;
 
         /// <summary>
 		/// Std of measurement 
 		/// </summary>
-        private double r;
+        private readonly double r;
 
         /// <summary>
 		/// Covariance of process
@@ -147,7 +147,7 @@ namespace umi3d.cdk
         {
             if (m == 0)
             {
-                var mNum = measurements.Length;
+                int mNum = measurements.Length;
                 if (mNum > 0)
                 {
                     m = mNum;
@@ -156,7 +156,7 @@ namespace umi3d.cdk
                 }
             }
 
-            var z = Matrix.Build.Dense(m, 1, 0);
+            Matrix<double> z = Matrix.Build.Dense(m, 1, 0);
             z.SetColumn(0, measurements);
 
             //sigma points around x

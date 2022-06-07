@@ -17,68 +17,119 @@ using System.Collections.Generic;
 
 namespace umi3d.cdk.menu
 {
-    //[System.Serializable]
     public class Menu : AbstractMenu
     {
-        //[SerializeField]
         public List<MenuItem> MenuItems = new List<MenuItem>();
-
-        //[SerializeField]
         public List<Menu> SubMenu = new List<Menu>();
 
         /// <summary>
-        /// Add a menu item to this menu.
+        /// <inheritdoc/>
         /// </summary>
-        /// <param name="menuItem">Menu item to add</param>
-        public override void Add(AbstractMenuItem menuItem)
+        /// <param name="abstractMenuItem">Menu or menuItem to add</param>
+        public override bool Add(AbstractMenuItem abstractMenuItem)
         {
-            if (menuItem is MenuItem)
+            if (AddWithoutNotify(abstractMenuItem))
             {
-                MenuItems.Add(menuItem as MenuItem);
+                if (abstractMenuItem is Menu menu)
+                    menu.onContentChange.AddListener(onContentChange.Invoke);
+                onAbstractMenuItemAdded.Invoke(abstractMenuItem);
                 onContentChange.Invoke();
-                onAbstractMenuItemAdded.Invoke(menuItem);
+                return true;
             }
-            else if (menuItem is Menu)
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="abstractMenuItem"></param>
+        public override bool AddWithoutNotify(AbstractMenuItem abstractMenuItem)
+        {
+            if (Contains(abstractMenuItem))
+                return false;
+
+            if (abstractMenuItem is MenuItem menuItem)
             {
-                SubMenu.Add(menuItem as Menu);
-                (menuItem as Menu).onContentChange.AddListener(() => onContentChange.Invoke());
-                onContentChange.Invoke();
-                onAbstractMenuItemAdded.Invoke(menuItem);
+                MenuItems.Add(menuItem);
+                return true;
             }
+            else if (abstractMenuItem is Menu menu)
+            {
+                SubMenu.Add(menu);
+                return true;
+            }
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="abstractMenuItem"></param>
+        /// <returns></returns>
+        public override bool Remove(AbstractMenuItem abstractMenuItem)
+        {
+            if (RemoveWithoutNotify(abstractMenuItem))
+            {
+                OnAbstractMenuItemRemoved?.Invoke(abstractMenuItem);
+                onContentChange.Invoke();
+                if (abstractMenuItem is Menu menu)
+                    menu.onContentChange.RemoveAllListeners();
+                return true;
+            }
+            else
+                return false;
+        }
+
+        public void Destroy()
+        {
+            onAbstractMenuItemAdded.RemoveAllListeners();
+            OnAbstractMenuItemRemoved.RemoveAllListeners();
+            OnDestroy.Invoke();
+            OnDestroy.RemoveAllListeners();
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="abstractMenuItem"></param>
+        /// <returns></returns>
+        public override bool RemoveWithoutNotify(AbstractMenuItem abstractMenuItem)
+        {
+            if (!Contains(abstractMenuItem))
+                return false;
+
+            if (abstractMenuItem is MenuItem menuItem)
+                return MenuItems.Remove(menuItem);
+            else if (abstractMenuItem is Menu menu)
+                return SubMenu.Remove(menu);
+            else
+                return false;
         }
 
         ///<inheritdoc/>
-        public override bool Contains(AbstractMenuItem menuItem)
+        public override bool Contains(AbstractMenuItem abstractMenuItem)
         {
-            if (menuItem is MenuItem)
-            {
-                return MenuItems.Contains(menuItem as MenuItem);
-            }
-            else if (menuItem is Menu)
-            {
-                return SubMenu.Contains(menuItem as Menu);
-            }
-            return false;
+            if (abstractMenuItem is MenuItem menuItem)
+                return MenuItems.Contains(menuItem);
+            else if (abstractMenuItem is Menu menu)
+                return SubMenu.Contains(menu);
+            else
+                return false;
         }
 
         ///<inheritdoc/>
-        public override int Count
-        {
-            get => MenuItems.Count + SubMenu.Count;
-        }
+        public override int Count => MenuItems.Count + SubMenu.Count;
 
         ///<inheritdoc/>
         public override IEnumerable<AbstractMenuItem> GetItems()
         {
-            List<AbstractMenuItem> items = new List<AbstractMenuItem>();
+            var items = new List<AbstractMenuItem>();
             foreach (MenuItem item in GetMenuItems())
-            {
                 items.Add(item);
-            }
             foreach (Menu item in GetSubMenu())
-            {
                 items.Add(item);
-            }
             return items;
         }
 
@@ -86,49 +137,18 @@ namespace umi3d.cdk.menu
         /// Menu items contained in this menu.
         /// </summary>
         public override IEnumerable<AbstractMenuItem> GetMenuItems()
-        {
-            return MenuItems;
-        }
+            => MenuItems;
 
         /// <summary>
         /// Submenus contained in this menu.
         /// </summary>
         public override IEnumerable<AbstractMenu> GetSubMenu()
-        {
-            return SubMenu;
-        }
+            => SubMenu;
 
-        /// <summary>
-        /// Remove a menu item from this menu.
-        /// </summary>
-        /// <param name="menuItem">Menu item to remove</param>
-        public override bool Remove(AbstractMenuItem menuItem)
-        {
-            bool result = false;
-            if (Contains(menuItem))
-            {
-                if (menuItem is MenuItem)
-                {
-                    menuItem.OnDestroy.Invoke();
-                    menuItem.OnDestroy.RemoveAllListeners();
-                    result = MenuItems.Remove(menuItem as MenuItem);
-                    onContentChange.Invoke();
-                }
-                else if (menuItem is Menu)
-                {
-                    menuItem.OnDestroy.Invoke();
-                    menuItem.OnDestroy.RemoveAllListeners();
-                    result = SubMenu.Remove(menuItem as Menu);
-                    onContentChange.Invoke();
-                }
-            }
-            return result;
-        }
+        
 
         ///<inheritdoc/>
         public override string ToString()
-        {
-            return Name;
-        }
+            => Name;
     }
 }

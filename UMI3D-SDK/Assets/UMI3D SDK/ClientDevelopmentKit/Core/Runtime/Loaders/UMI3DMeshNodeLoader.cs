@@ -42,12 +42,12 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dExecption(0,"dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException("Dto should be an UMI3DAbstractNodeDto"));
                 return;
             }
 
@@ -55,7 +55,7 @@ namespace umi3d.cdk
             {
 
                 //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
@@ -63,9 +63,10 @@ namespace umi3d.cdk
                 string pathIfInBundle = fileToLoad.pathIfInBundle;
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 Vector3 offset = Vector3.zero;
-                if (loader is AbstractMeshDtoLoader)
-                    offset = ((AbstractMeshDtoLoader)loader).GetRotationOffset();
+                if (loader is AbstractMeshDtoLoader meshLoader)
+                    offset = meshLoader.GetRotationOffset();
                 if (loader != null)
+                {
                     UMI3DResourcesManager.LoadFile(
                         nodeDto.id,
                         fileToLoad,
@@ -75,16 +76,19 @@ namespace umi3d.cdk
                         {
                             if (o is GameObject g && dto is UMI3DMeshNodeDto meshDto)
                             {
-                                CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset);
-                                finished.Invoke();
+                                CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset, finished);
                             }
                             else
-                                failed?.Invoke(new Umi3dExecption(0, $"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
-
+                            {
+                                failed?.Invoke(new Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
+                            }
                         },
                         failed,
                         loader.DeleteObject
                         );
+                }
+                else
+                    failed.Invoke(new Umi3dException($"No loader found for {ext}"));
             }, failed);
         }
 
@@ -97,13 +101,13 @@ namespace umi3d.cdk
         /// <returns></returns>
         private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
-            string url = UMI3DEnvironmentLoader.Parameters.ChooseVariante(dto.mesh.variants).url;
+            string url = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.mesh.variants).url;
             if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
             {
-                GameObject copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
-                foreach (var lodgroup in copy.GetComponentsInChildren<LODGroup>())
+                var copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
+                foreach (LODGroup lodgroup in copy.GetComponentsInChildren<LODGroup>())
                     GameObject.Destroy(lodgroup);
-                Dictionary<string, Transform> subObjectsReferences = new Dictionary<string, Transform>();
+                var subObjectsReferences = new Dictionary<string, Transform>();
                 foreach (Transform child in copy.GetComponentsInChildren<Transform>())
                 {
                     if (!ignoredPrimitiveNameForSubObjectsLoading.Contains(child.name)) // ignore game objects created by the gltf importer or other importer 
@@ -124,7 +128,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
+        private void CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, Action finished)
         {
             GameObject root = null;
             if (dto.areSubobjectsTracked)
@@ -135,13 +139,13 @@ namespace umi3d.cdk
             {
                 root = go;
             }
-            GameObject instance = GameObject.Instantiate(root, parent, true);
+            var instance = GameObject.Instantiate(root, parent, true);
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
 
-            foreach (var renderer in renderers)
+            foreach (Renderer renderer in renderers)
             {
                 renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 renderer.receiveShadows = dto.receiveShadow;
@@ -153,7 +157,7 @@ namespace umi3d.cdk
             ColliderDto colliderDto = (dto).colliderDto;
             SetCollider(dto.id, nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
-
+            finished?.Invoke();
         }
 
 

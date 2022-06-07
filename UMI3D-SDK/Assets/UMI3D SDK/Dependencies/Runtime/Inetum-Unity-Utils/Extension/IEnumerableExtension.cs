@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -61,11 +62,11 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source)
         {
-            using (var e = source.GetEnumerator())
+            using (IEnumerator<T> e = source.GetEnumerator())
             {
                 if (e.MoveNext())
                 {
-                    for (var value = e.Current; e.MoveNext(); value = e.Current)
+                    for (T value = e.Current; e.MoveNext(); value = e.Current)
                     {
                         yield return value;
                     }
@@ -75,7 +76,28 @@ namespace inetum.unityUtils
 
 
         /// <summary>
+        /// Do an action for each element when they are requested. 
+        /// For an instant call of the action see <see cref="ForEach{A}(IEnumerable{A}, Action{A})"/>
+        /// </summary>
+        /// <typeparam name="A"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public static IEnumerable<A> Do<A>(this IEnumerable<A> source, Action<A> action)
+        {
+            if (action == null)
+                throw new Exception("action should not be null");
+            using (IEnumerator<A> it = source.GetEnumerator())
+                while (it.MoveNext())
+                {
+                    action.Invoke(it.Current);
+                    yield return it.Current;
+                }
+        }
+
+        /// <summary>
         /// Do an action for each element. Could be use full for debug purpose.
+        /// For an IEnimerable call see <see cref="Do{A}(IEnumerable{A}, Action{A})"/>
         /// </summary>
         /// <typeparam name="A"></typeparam>
         /// <param name="source"></param>
@@ -84,10 +106,25 @@ namespace inetum.unityUtils
         {
             if (action == null)
                 throw new Exception("action should not be null");
-            using (var it = source.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
                 while (it.MoveNext())
                 {
                     action.Invoke(it.Current);
+                }
+        }
+
+        /// <summary>
+        /// Return the collection of DictionaryEntry in this IDictionary
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static IEnumerable<DictionaryEntry> Entries(this IDictionary source)
+        {
+            IDictionaryEnumerator it = source.GetEnumerator();
+            if (it != null)
+                while (it.MoveNext())
+                {
+                    yield return (DictionaryEntry)it.Current;
                 }
         }
 
@@ -150,7 +187,7 @@ namespace inetum.unityUtils
                 throw new Exception($"'at' [{at}] should be inferior to target Length [{target.Length}]");
             if (target.Length - at <= to - from)
                 throw new Exception($" target.Length - at [{target.Length} - {at}= {target.Length - at}] should be superior to to - from  [{to} - {from}= {to - from}]");
-            using (var it = source.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
             {
                 int j = 0;
                 while (j < from && it.MoveNext()) j++;
@@ -172,8 +209,8 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static IEnumerable<C> ZipOverflow<A, B, C>(this IEnumerable<A> source, IEnumerable<B> to, Func<A, B, C> zipFunction)
         {
-            using (var it = source.GetEnumerator())
-            using (var toIt = to.GetEnumerator())
+            using (IEnumerator<A> it = source.GetEnumerator())
+            using (IEnumerator<B> toIt = to.GetEnumerator())
             {
                 while (toIt.MoveNext() && it.MoveNext())
                 {
@@ -206,7 +243,7 @@ namespace inetum.unityUtils
         /// Convert a IEnumerable<KeyValuePair<T,K>> to a Dictionary<T,K>
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<T,K> ToDictionary<T,K>(this IEnumerable<KeyValuePair<T,K>> source)
+        public static Dictionary<T, K> ToDictionary<T, K>(this IEnumerable<KeyValuePair<T, K>> source)
         {
             return source.ToDictionary(k => k.Key, k => k.Value);
         }

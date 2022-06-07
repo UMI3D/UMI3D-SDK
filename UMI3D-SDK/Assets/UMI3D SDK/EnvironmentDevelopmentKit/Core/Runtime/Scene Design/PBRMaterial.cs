@@ -70,7 +70,6 @@ namespace umi3d.edk
                 UMI3DMaterialDto matDto = this.textures.ToDto();
                 RegisterMaterial(matDto);
             }
-            //   Debug.Log("Material id : " + textures.id);
             return textures.id;
         }
 
@@ -86,7 +85,6 @@ namespace umi3d.edk
         ///<inheritdoc/>
         protected override void OnEnable()
         {
-            //        Debug.Log("init mat id");
 
             textures.id = 0;
             registered = false;
@@ -112,7 +110,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> objectNormalTextureScale { get { Id(); return _objectNormalTextureScale; } protected set => _objectNormalTextureScale = value; }
         public UMI3DAsyncProperty<float> objectHeightTextureScale { get { Id(); return _objectHeightTextureScale; } protected set => _objectHeightTextureScale = value; }
 
-        private UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
 
         private UMI3DAsyncProperty<Color> _objectBaseColorFactor;
         private UMI3DAsyncProperty<float> _objectMetallicFactor;
@@ -131,17 +129,15 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingOffset;
         private UMI3DAsyncProperty<float> _objectNormalTextureScale;
         private UMI3DAsyncProperty<float> _objectHeightTextureScale;
-        private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
+        private readonly UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
         ///<inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
-            Debug.Log("id mat " + id);
             objectRoughnessFactor = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.RoughnessFactor, this.roughnessFactor, null, pCompare.FloatEquality);
             objectRoughnessFactor.OnValueChanged += (float f) =>
             {
                 roughnessFactor = f;
-                /*Debug.Log("change roughness " + f.ToString());*/
             };
 
             objectMetallicFactor = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.MetallicFactor, this.metallicFactor, null, pCompare.FloatEquality);
@@ -205,11 +201,10 @@ namespace umi3d.edk
 
         public static void UpdateTexture(UMI3DAsyncProperty<UMI3DTextureResource> objectTexture, UMI3DTextureResource newTexture)
         {
-            Transaction transaction = new Transaction();
+            var transaction = new Transaction();
             Operation op = objectTexture.SetValue(newTexture);
-            if (op != null)
-                transaction.Operations.Add(op);
-            if (transaction.Operations.Count > 0)
+            transaction.AddIfNotNull(op);
+            if (transaction.Count() > 0)
             {
                 transaction.reliable = false;
                 UMI3DServer.Dispatch(transaction);

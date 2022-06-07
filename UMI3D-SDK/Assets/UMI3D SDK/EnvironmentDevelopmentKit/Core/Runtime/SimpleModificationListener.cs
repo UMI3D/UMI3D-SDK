@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,54 +26,57 @@ namespace umi3d.edk
     [Obsolete("This class isn't mean to be use in production", false)]
     public partial class SimpleModificationListener : MonoBehaviour
     {
-        UMI3DNode[] nodes;
-        UMI3DScene[] scenes;
-        public float time = 0f;
-        float timeTmp = 0;
-        public int max = 0;
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Editor;
 
-        Dictionary<ulong, Dictionary<ulong, SetEntityProperty>> sets;
+        private UMI3DNode[] nodes;
+        private UMI3DScene[] scenes;
+        public float time = 0f;
+        private float timeTmp = 0;
+        public int max = 0;
+        private Dictionary<ulong, Dictionary<ulong, SetEntityProperty>> sets;
 
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             nodes = GetComponentsInChildren<UMI3DNode>();
             scenes = GetComponentsInChildren<UMI3DScene>();
         }
 
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             if (UMI3DServer.Exists)
             {
-                foreach (var node in nodes)
+                foreach (UMI3DNode node in nodes)
                     Update(node);
 
-                foreach (var scene in scenes)
+                foreach (UMI3DScene scene in scenes)
                     MaterialUpdate(scene);
 
                 Dispatch();
             }
         }
 
-        void Dispatch()
+        private void Dispatch()
         {
             if (checkTime() || checkMax())
             {
 
                 var transaction = new Transaction();
-                transaction.Operations = sets.SelectMany(p => p.Value).Select(p => (Operation)p.Value).ToList();
-                if (transaction.Operations.Count > 0)
+                transaction.AddIfNotNull(sets.SelectMany(p => p.Value).Select(p => (Operation)p.Value));
+                if (transaction.Count() > 0)
                 {
                     transaction.reliable = false;
                     UMI3DServer.Dispatch(transaction);
                     sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
                 }
+                nodes = GetComponentsInChildren<UMI3DNode>();
+                scenes = GetComponentsInChildren<UMI3DScene>();
             }
         }
 
-        bool checkTime()
+        private bool checkTime()
         {
             timeTmp -= Time.deltaTime;
             if (time == 0 || timeTmp <= 0)
@@ -83,13 +87,14 @@ namespace umi3d.edk
             return false;
         }
 
-        bool checkMax()
+        private bool checkMax()
         {
             return (max != 0) && (sets.SelectMany(p => p.Value).Count() > max);
         }
 
         private void Update(UMI3DNode obj)
         {
+            if (obj == null) return;
             if (sets == null) sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
             if (!sets.ContainsKey(obj.Id())) sets[obj.Id()] = new Dictionary<ulong, SetEntityProperty>();
 
@@ -107,6 +112,7 @@ namespace umi3d.edk
 
         private void MaterialUpdate(UMI3DScene scene)
         {
+            if (scene == null) return;
             if (sets == null) sets = new Dictionary<ulong, Dictionary<ulong, SetEntityProperty>>();
 
 
@@ -139,7 +145,7 @@ namespace umi3d.edk
                     case OriginalMaterial extmat:
                         break;
                     default:
-                        Debug.LogWarning("unsupported material type");
+                        UMI3DLogger.LogWarning("unsupported material type", scope);
                         break;
                 }
 
@@ -175,7 +181,7 @@ namespace umi3d.edk
         {
             if (obj != null)
             {
-                var rectTransform = obj.GetComponent<RectTransform>();
+                RectTransform rectTransform = obj.GetComponent<RectTransform>();
                 setOperation(obj.AnchoredPosition.SetValue(rectTransform.anchoredPosition));
                 setOperation(obj.AnchoredPosition3D.SetValue(rectTransform.anchoredPosition3D));
                 setOperation(obj.AnchorMax.SetValue(rectTransform.anchorMax));
@@ -188,8 +194,8 @@ namespace umi3d.edk
                 if (obj is UICanvas)
                 {
                     var canvas = obj as UICanvas;
-                    var canvasScaler = obj.GetComponent<CanvasScaler>();
-                    var Canvas = obj.GetComponent<Canvas>();
+                    CanvasScaler canvasScaler = obj.GetComponent<CanvasScaler>();
+                    Canvas Canvas = obj.GetComponent<Canvas>();
                     setOperation(canvas.DynamicPixelPerUnit.SetValue(canvasScaler.dynamicPixelsPerUnit));
                     setOperation(canvas.ReferencePixelPerUnit.SetValue(canvasScaler.referencePixelsPerUnit));
                     setOperation(canvas.OrderInLayer.SetValue(Canvas.sortingOrder));
@@ -197,7 +203,7 @@ namespace umi3d.edk
                 if (obj is UIImage)
                 {
                     var image = obj as UIImage;
-                    var Image = obj.GetComponent<Image>();
+                    Image Image = obj.GetComponent<Image>();
                     setOperation(image.Color.SetValue(Image.color));
                     setOperation(image.ImageType.SetValue(Image.type));
                     //update sprite
@@ -206,7 +212,7 @@ namespace umi3d.edk
                 if (obj is UIText)
                 {
                     var text = obj as UIText;
-                    var Text = obj.GetComponent<Text>();
+                    Text Text = obj.GetComponent<Text>();
                     setOperation(text.Alignment.SetValue(Text.alignment));
                     setOperation(text.AlignByGeometry.SetValue(Text.alignByGeometry));
                     setOperation(text.TextColor.SetValue(Text.color));
@@ -225,7 +231,7 @@ namespace umi3d.edk
             }
         }
 
-        void setOperation(SetEntityProperty operation)
+        private void setOperation(SetEntityProperty operation)
         {
             if (operation != null)
             {
@@ -236,9 +242,9 @@ namespace umi3d.edk
                 }
                 catch (Exception e)
                 {
-                    Debug.LogError(e);
-                    Debug.Log("entityid = " + operation.entityId);
-                    Debug.Log("property = " + operation.property);
+                    UMI3DLogger.LogError(e, scope);
+                    UMI3DLogger.Log("entityid = " + operation.entityId, scope);
+                    UMI3DLogger.Log("property = " + operation.property, scope);
 
                 }
 

@@ -14,12 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
-using UnityEngine;
 
 namespace umi3d.cdk
 {
@@ -34,7 +31,7 @@ namespace umi3d.cdk
         /// <param name="dto"></param>
         public static void Load(UMI3DHandPoseDto dto)
         {
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
         }
 
         /// <summary>

@@ -20,13 +20,13 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    static public class UMI3DAnimationLoader
+    public static class UMI3DAnimationLoader
     {
-        static public void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public static void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             if (dto == null)
             {
-                failed?.Invoke(new Umi3dExecption("dto shouldn't be null"));
+                failed?.Invoke(new Umi3dException("dto shouldn't be null"));
                 return;
             }
 
@@ -42,7 +42,7 @@ namespace umi3d.cdk
                     new UMI3DNodeAnimation(nodeAnimation);
                     break;
                 case UMI3DVideoPlayerDto videoPlayer:
-                    new UMI3DVideoPlayer(videoPlayer);
+                    UMI3DVideoPlayerLoader.LoadVideo(videoPlayer);
                     break;
                 case UMI3DAudioPlayerDto audioPlayer:
                     new UMI3DAudioPlayer(audioPlayer);
@@ -52,21 +52,21 @@ namespace umi3d.cdk
         }
 
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var anim = entity?.Object as UMI3DAbstractAnimation;
             if (anim == null) return false;
             return anim.SetUMI3DProperty(entity, property);
         }
 
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var anim = entity?.Object as UMI3DAbstractAnimation;
             if (anim == null) return false;
             return anim.SetUMI3DProperty(entity, operationId, propertyKey, container);
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container);
         }

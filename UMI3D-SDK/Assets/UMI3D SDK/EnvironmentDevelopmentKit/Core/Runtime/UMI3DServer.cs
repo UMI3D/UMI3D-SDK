@@ -15,12 +15,14 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk
 {
-    public class UMI3DServer : Singleton<UMI3DServer>
+    public class UMI3DServer : SingleBehaviour<UMI3DServer>
     {
         [SerializeField]
         protected string ip = "localhost";
@@ -44,14 +46,13 @@ namespace umi3d.edk
         public static string dataPath = "../data/";
         public static string publicDataPath = "/public";
         public static string privateDataPath = "/private";
+        private string publicDataFullPath;
+        private string privateDataFullPath;
+        private string dataFullPath;
 
-        string publicDataFullPath;
-        string privateDataFullPath;
-        string dataFullPath;
-
-        public static string publicRepository { get { return Instance == null ? null : Instance.publicDataFullPath; } }
-        public static string privateRepository { get { return Instance == null ? null : Instance.privateDataFullPath; } }
-        public static string dataRepository { get { return Instance == null ? null : Instance.dataFullPath; } }
+        public static string publicRepository => Instance == null ? null : Instance.publicDataFullPath;
+        public static string privateRepository => Instance == null ? null : Instance.privateDataFullPath;
+        public static string dataRepository => Instance == null ? null : Instance.dataFullPath;
 
         public static bool IsInDataRepository(string path)
         {
@@ -77,12 +78,22 @@ namespace umi3d.edk
         /// Return the Url of the Http Server.
         /// </summary>
         /// <returns></returns>
-        static public string GetHttpUrl()
+        public static string GetHttpUrl()
         {
             return Instance._GetHttpUrl();
         }
 
         protected virtual string _GetHttpUrl()
+        {
+            return ip;
+        }
+
+        public static string GetResourcesUrl()
+        {
+            return Instance._GetResourcesUrl();
+        }
+
+        protected virtual string _GetResourcesUrl()
         {
             return ip;
         }
@@ -109,6 +120,19 @@ namespace umi3d.edk
 
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
+        }
+
+        public virtual HashSet<UMI3DUser> UserSet()
+        {
+            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
+        }
+        public virtual HashSet<UMI3DUser> UserSetWhenHasJoined()
+        {
+            return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where((u) => u.hasJoined));
+        }
+        public virtual IEnumerable<UMI3DUser> Users()
+        {
+            return UMI3DEnvironment.GetEntities<UMI3DUser>();
         }
 
         /// <summary>
@@ -142,12 +166,12 @@ namespace umi3d.edk
         protected virtual void LookForMissing(UMI3DUser user) { }
 
 
-        static public void Dispatch(Transaction transaction)
+        public static void Dispatch(Transaction transaction)
         {
             if (Exists) Instance._Dispatch(transaction);
         }
 
-        static public void Dispatch(DispatchableRequest dispatchableRequest)
+        public static void Dispatch(DispatchableRequest dispatchableRequest)
         {
             if (Exists) Instance._Dispatch(dispatchableRequest);
         }
@@ -161,6 +185,7 @@ namespace umi3d.edk
 
         #region session
         public UMI3DUserEvent OnUserJoin = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserRegistered = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserCreated = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserReady = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserAway = new UMI3DUserEvent();

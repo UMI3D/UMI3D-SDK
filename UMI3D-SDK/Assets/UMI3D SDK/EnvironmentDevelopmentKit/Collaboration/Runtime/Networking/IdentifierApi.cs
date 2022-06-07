@@ -18,17 +18,15 @@ using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;
-using UnityEngine;
 using umi3d.edk.interaction;
+using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
-    public abstract class IdentifierApi : ScriptableObject
+    [CreateAssetMenu(fileName = "DefaultIdentifierApi", menuName = "UMI3D/Default Identifier")]
+    public class IdentifierApi : ScriptableObject
     {
-
-        Dictionary<ulong, bool> librariesUpdateStatus;
-
-        public virtual UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type) { return null; }
+        private Dictionary<ulong, bool> librariesUpdateStatus;
 
         /// <summary>
         /// Update a client status acording to a userconnectionDto
@@ -44,16 +42,17 @@ namespace umi3d.edk.collaboration
             return librariesUpdateStatus[user.Id()] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
         }
 
-
-        void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, FormAnswerDto param)
+        private void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, FormAnswerDto param)
         {
             if (param != null)
-                foreach (var dto in param.answers)
+            {
+                foreach (ParameterSettingRequestDto dto in param.answers)
                 {
-                    var interaction = UMI3DEnvironment.GetEntity<AbstractInteraction>(dto.id);
+                    AbstractInteraction interaction = UMI3DEnvironment.GetEntity<AbstractInteraction>(dto.id);
                     if (interaction is LocalInfoParameter local)
                         local.ChageUserLocalInfo(user, dto.parameter as LocalInfoRequestParameterValue);
                 }
+            }
         }
 
         /// <summary>

@@ -14,10 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -32,61 +34,58 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
-        public static new UMI3DCollaborationClientServer Instance { get { return UMI3DClientServer.Instance as UMI3DCollaborationClientServer; } set { UMI3DClientServer.Instance = value; } }
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        public static bool useDto { protected set; get; } = false;
+        public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
+        public static bool useDto => environmentClient?.useDto ?? false;
 
-        static public DateTime lastTokenUpdate { get; private set; }
-        public HttpClient HttpClient { get; private set; }
-        public UMI3DForgeClient ForgeClient { get; private set; }
+        private static UMI3DWorldControllerClient worldControllerClient;
+        private static UMI3DEnvironmentClient environmentClient;
 
-        static public IdentityDto Identity = new IdentityDto();
+        public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
 
-        public class UserInfo
-        {
-            public FormDto formdto;
-            public UserConnectionAnswerDto dto;
+        override protected ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
 
-            public UserInfo()
-            {
-                formdto = new FormDto();
-                dto = new UserConnectionAnswerDto();
-            }
-
-            public void Set(UserConnectionDto dto)
-            {
-                var param = this.dto.parameters;
-                this.dto = new UserConnectionAnswerDto(dto);
-                this.dto.parameters = param;
-                this.formdto = dto.parameters;
-            }
-        }
-
-        static public UserInfo UserDto = new UserInfo();
+        public UnityEvent OnLeaving = new UnityEvent();
+        public UnityEvent OnLeavingEnvironment = new UnityEvent();
 
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
+        public UnityEvent OnRedirection = new UnityEvent();
 
         public ClientIdentifierApi Identifier;
 
+        public StatusType status
+        {
+            get => environmentClient?.status ?? StatusType.NONE;
+            set
+            {
+                if (environmentClient != null)
+                    environmentClient.status = value;
+            }
+        }
 
-        static bool connected = false;
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Clear();
+        }
 
+        public async void Clear()
+        {
+            if (Exists)
+            {
+                worldControllerClient?.Clear();
+                await environmentClient?.Clear();
+            }
+        }
 
         private void Start()
         {
-            lastTokenUpdate = default;
-            HttpClient = new HttpClient(this);
-            connected = false;
-            joinning = false;
             UMI3DNetworkingHelper.AddModule(new UMI3DCollaborationNetworkingModule());
             UMI3DNetworkingHelper.AddModule(new common.collaboration.UMI3DCollaborationNetworkingModule());
         }
 
-        public void Init()
-        {
-            ForgeClient = UMI3DForgeClient.Create();
-        }
 
         /// <summary>
         /// State if the Client is connected to a Server.
@@ -94,70 +93,102 @@ namespace umi3d.cdk.collaboration
         /// <returns>True if the client is connected.</returns>
         public static bool Connected()
         {
-            return Exists && Instance?.ForgeClient != null ? Instance.ForgeClient.IsConnected && connected : false;
+            return environmentClient?.IsConnected() ?? false;
         }
 
         /// <summary>
-        /// Start the connection workflow to the Environement defined by the Media variable in UMI3DBrowser.
+        /// Start the connection to a Master Server.
         /// </summary>
-        /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void Connect()
+        public static async void Connect(RedirectionDto redirection, Action<string> failed = null)
         {
-            Instance.Init();
-            if (UMI3DCollaborationClientServer.Media.connection is ForgeConnectionDto connection)
+            try
             {
-                Instance.ForgeClient.ip = connection.host;
-                Instance.ForgeClient.port = connection.forgeServerPort;
-                Instance.ForgeClient.masterServerHost = connection.forgeMasterServerHost;
-                Instance.ForgeClient.masterServerPort = connection.forgeMasterServerPort;
-                Instance.ForgeClient.natServerHost = connection.forgeNatServerHost;
-                Instance.ForgeClient.natServerPort = connection.forgeNatServerPort;
-
-                UMI3DCollaborationClientServer.Instance.Identifier.GetIdentity((Auth) =>
+                if (Exists)
                 {
-                    UMI3DCollaborationClientServer.Identity.login = "";
-                    Auth.LoginSet = (s) =>
+                    Instance.status = StatusType.AWAY;
+                    UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
+                    if (await wc.Connect())
                     {
-                        UMI3DCollaborationClientServer.Identity.login = s;
-                        Auth.LoginSet = null;
-                    };
-                    Instance.ForgeClient.Join(Auth);
-                });
+                        Instance.OnRedirection.Invoke();
+
+                        var env = environmentClient;
+                        environmentClient = null;
+                        UMI3DEnvironmentLoader.Clear();
+
+                        if (env != null)
+                            await env.Logout();
+                        if (worldControllerClient != null)
+                            worldControllerClient.Logout();
+
+                        //Connection will not restart without this...
+                        await Task.Yield();
+
+                        worldControllerClient = wc;
+                        environmentClient = wc.ConnectToEnvironment();
+                        environmentClient.status = StatusType.ACTIVE;
+                    }
+                }
+                else
+                    failed?.Invoke("Client Server do not exist");
+            }
+            catch (Exception e)
+            {
+                failed?.Invoke(e.Message);
+            }
+        }
+
+        public static void Connect(MediaDto dto, Action<string> failed = null)
+        {
+            Connect(new RedirectionDto()
+            {
+                media = dto,
+                gate = null
+            }, failed);
+        }
+
+        public static async void Logout()
+        {
+            if (environmentClient != null)
+                await environmentClient.Logout();
+            if (worldControllerClient != null)
+                worldControllerClient.Logout();
+            if (Exists)
+            {
+                Instance.OnLeavingEnvironment.Invoke();
+                Instance.OnLeaving.Invoke();
             }
         }
 
         /// <summary>
         /// Logout of the current server
         /// </summary>
-        static public void Logout(Action success, Action<string> failled)
+        public static void EnvironmentLogout(Action success, Action<string> failled)
         {
             if (Exists)
-                Instance._Logout(success, failled);
+                Instance._EnvironmentLogout(success, failled);
         }
-        void _Logout(Action success, Action<string> failled)
+
+        private async void _EnvironmentLogout(Action success, Action<string> failled)
         {
-            if (Connected())
-                HttpClient.SendPostLogout(() =>
-                {
-                    ForgeClient.Stop();
-                    Start();
-                    success?.Invoke();
-                    Identity = new IdentityDto();
-                },
-                (error) => { failled.Invoke(error); Identity = new IdentityDto(); });
+            if (await environmentClient.Logout())
+                success?.Invoke();
             else
-                Identity = new IdentityDto();
+                failled?.Invoke("Failled to Logout");
+            Instance.OnLeavingEnvironment.Invoke();
         }
 
 
         /// <summary>
         /// Notify that the connection with the server was lost.
         /// </summary>
-        public void ConnectionLost()
+        public void ConnectionLost(UMI3DEnvironmentClient client)
         {
-            UMI3DCollaborationClientServer.Logout(null, null);
+            if (environmentClient == client)
+            {
+                UMI3DCollaborationClientServer.EnvironmentLogout(null, null);
 
-            OnConnectionLost.Invoke();
+                OnConnectionLost.Invoke();
+            }
         }
 
 
@@ -166,40 +197,36 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="argument">failed request argument</param>
         /// <returns></returns>
-        public override bool TryAgainOnHttpFail(RequestFailedArgument argument)
+        public override async Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument)
         {
             if (argument.ShouldTryAgain(argument))
             {
-                StartCoroutine(TryAgain(argument));
-                return true;
+                UMI3DLogger.LogWarning($"Http request failed [{argument}], try again", scope | DebugScope.Connection);
+                return await TryAgain(argument);
             }
+            UMI3DLogger.LogError($"Http request failed [{argument}], abort", scope | DebugScope.Connection);
             return false;
         }
 
-
-
-        double maxMillisecondToWait = 10000;
         /// <summary>
         /// launch a new request
         /// </summary>
         /// <param name="argument">argument used in the request</param>
         /// <returns></returns>
-        IEnumerator TryAgain(RequestFailedArgument argument)
+        private async Task<bool> TryAgain(RequestFailedArgument argument)
         {
-            bool newToken = argument.GetRespondCode() == 401 && (lastTokenUpdate - argument.date).TotalMilliseconds < 0;
-            if (newToken)
+            bool needNewToken = environmentClient != null && environmentClient.IsConnected() && argument.GetRespondCode() == 401 && (environmentClient.lastTokenUpdate - argument.date).TotalMilliseconds < 0;
+            if (needNewToken)
             {
-                UnityAction a = () => newToken = true;
-                OnNewToken.AddListener(a);
-                yield return new WaitUntil(() => {
-                    bool tooLong = ((DateTime.UtcNow - argument.date).TotalMilliseconds > maxMillisecondToWait);
-                    return newToken || tooLong;
-                });
-                OnNewToken.RemoveListener(a);
+                UnityAction a = () => needNewToken = false;
+                UMI3DCollaborationClientServer.Instance.OnNewToken.AddListener(a);
+                while (environmentClient != null && environmentClient.IsConnected() && needNewToken && !((DateTime.UtcNow - argument.date).TotalMilliseconds > environmentClient.maxMillisecondToWait))
+                    await UMI3DAsyncManager.Yield();
+                UMI3DCollaborationClientServer.Instance.OnNewToken.RemoveListener(a);
+                return environmentClient != null && environmentClient.IsConnected();
             }
-            argument.TryAgain();
+            return false;
         }
-
 
         /// <summary>
         /// Get a media dto at a raw url using a get http request.
@@ -207,73 +234,11 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="url">Url used for the get request.</param>
         /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        static public void GetMedia(string url, Action<MediaDto> callback = null, Action<string> failback = null, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public static async Task<MediaDto> GetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            UMI3DCollaborationClientServer.Instance.HttpClient.SendGetMedia(url, (media) =>
-            {
-                Media = media; Instance._setMedia(); callback?.Invoke(media);
-            }, failback, shouldTryAgain);
+            UMI3DLogger.Log($"Get media at {url}", scope | DebugScope.Connection);
+            return await HttpClient.SendGetMedia(url, shouldTryAgain);
         }
-
-        void _setMedia()
-        {
-
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="status"></param>
-        static public void OnStatusChanged(StatusDto statusDto)
-        {
-            switch (statusDto.status)
-            {
-                case StatusType.CREATED:
-                    UMI3DCollaborationClientServer.Instance.HttpClient.SendGetIdentity((user) =>
-                    {
-                        Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                    }, (error) => { Debug.Log("error on get id :" + error); });
-                    break;
-                case StatusType.READY:
-                    if (Identity.userId == 0)
-                        Instance.HttpClient.SendGetIdentity((user) =>
-                        {
-                            UserDto.Set(user);
-                            Identity.userId = user.id;
-                            Instance.Join();
-
-                        }, (error) => { Debug.Log("error on get id :" + error); });
-                    else
-                        Instance.Join();
-                    break;
-            }
-        }
-
-
-        /// <summary>
-        /// Set the token used to communicate to the server.
-        /// </summary>
-        /// <param name="token"></param>
-        static public void SetToken(string token)
-        {
-            if (Exists)
-            {
-                lastTokenUpdate = DateTime.UtcNow;
-                Instance?.HttpClient?.SetToken(token);
-                BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
-                {
-                    Instance?.StartCoroutine(Instance.OnNewTokenNextFrame());
-                });
-            }
-        }
-
-        IEnumerator OnNewTokenNextFrame()
-        {
-            yield return new WaitForFixedUpdate();
-            OnNewToken?.Invoke();
-        }
-
 
         /// <summary>
         /// Send a BrowserRequestDto on a RTC
@@ -282,7 +247,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         protected override void _Send(AbstractBrowserRequestDto dto, bool reliable)
         {
-            ForgeClient.SendBrowserRequest(dto, reliable);
+            environmentClient?.Send(dto, reliable);
         }
 
         /// <summary>
@@ -292,171 +257,52 @@ namespace umi3d.cdk.collaboration
         /// <param name="reliable">is the data channel used reliable</param>
         protected override void _SendTracking(AbstractBrowserRequestDto dto)
         {
-            ForgeClient.SendTrackingFrame(dto);
+            environmentClient?.SendTracking(dto);
         }
 
-        /// <summary>
-        /// Handles the message comming from the websockekt server.
-        /// </summary>
-        /// <param name="message"></param>
-        static public void OnMessage(object message)
-        {
-            switch (message)
-            {
-                case TokenDto tokenDto:
-                    SetToken(tokenDto.token);
-                    break;
-                case StatusDto statusDto:
-                    switch (statusDto.status)
-                    {
-                        case StatusType.CREATED:
-                            Instance.HttpClient.SendGetIdentity((user) =>
-                            {
-                                Instance.StartCoroutine(Instance.UpdateIdentity(user));
-                            }, (error) => { Debug.Log("error on get id :" + error); });
-                            break;
-                        case StatusType.READY:
-                            if (Identity.userId == 0)
-                                Instance.HttpClient.SendGetIdentity((user) =>
-                                {
-                                    UserDto.Set(user);
-                                    Identity.userId = user.id;
-                                    Instance.Join();
 
-                                }, (error) => { Debug.Log("error on get id :" + error); });
-                            else
-                                Instance.Join();
-                            break;
-                    }
-                    break;
-                case StatusRequestDto statusRequestDto:
-                    Instance.HttpClient.SendPostUpdateStatus(null, null);
-                    break;
-            }
+        public static void SendVOIP(int length, byte[] sample)
+        {
+            if (Exists && Connected()
+                && Instance.status == StatusType.ACTIVE)
+                environmentClient?.SendVOIP(length, sample);
         }
 
-        bool joinning;
-        void Join()
+
+
+        ///<inheritdoc/>
+        protected override async Task<byte[]> _GetFile(string url)
         {
-            if (joinning || connected) return;
-            joinning = true;
-
-            JoinDto joinDto = new JoinDto()
-            {
-                trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<uint, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(x => x.Key, x => x.Value),
-                userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
-            };
-
-            Instance.HttpClient.SendPostJoin(
-                joinDto,
-                (enter) => { joinning = false; connected = true; Instance.EnterScene(enter); },
-                (error) => { joinning = false; Debug.Log("error on get id :" + error); });
-        }
-
-        /// <summary>
-        /// Coroutine to handle identity.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        IEnumerator UpdateIdentity(UserConnectionDto user)
-        {
-            UserDto.Set(user);
-            Identity.userId = user.id;
-            bool Ok = true;
-            bool librariesUpdated = UserDto.dto.librariesUpdated;
-
-            if (!UserDto.dto.librariesUpdated)
-            {
-                HttpClient.SendGetLibraries(
-                    (LibrariesDto) =>
-                    {
-                        Instance.Identifier.ShouldDownloadLibraries(
-                            UMI3DResourcesManager.LibrariesToDownload(LibrariesDto),
-                            b =>
-                            {
-                                if (!b)
-                                {
-                                    Ok = false;
-                                }
-                                else
-                                    UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
-                                        Media.name,
-                                        () =>
-                                        {
-                                            librariesUpdated = true;
-                                        },
-                                        (error) => { Ok = false; Debug.Log("error on download Libraries :" + error); }
-                                        );
-                            });
-                    },
-                    (error) => { Ok = false; Debug.Log("error on get Libraries: " + error); }
-                    );
-
-                yield return new WaitUntil(() => { return librariesUpdated || !Ok; });
-                UserDto.dto.librariesUpdated = librariesUpdated;
-            }
-            if (Ok)
-                Instance.Identifier.GetParameterDtos(UserDto.formdto, (param) =>
-                {
-                    UserDto.dto.parameters = param;
-                    Instance.HttpClient.SendPostUpdateIdentity(() => { }, (error) => { Debug.Log("error on post id :" + error); });
-                });
-            else
-                Logout(null, null);
-        }
-
-        void EnterScene(EnterDto enter)
-        {
-            useDto = enter.usedDto;
-            HttpClient.SendGetEnvironment(
-                (environement) =>
-                {
-                    Action setStatus = () =>
-                    {
-                        UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
-                        UserDto.dto.status = StatusType.ACTIVE;
-                        HttpClient.SendPostUpdateIdentity(null, null);
-                    };
-                    StartCoroutine(UMI3DEnvironmentLoader.Instance.Load(environement, setStatus, null));
-                },
-                (error) => { Debug.Log("error on get Environement :" + error); });
+            UMI3DLogger.Log($"GetFile {url}", scope);
+            return await environmentClient?.GetFile(url);
         }
 
         ///<inheritdoc/>
-        protected override void OnDestroy()
+        protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
         {
-            base.OnDestroy();
+            UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
+            return await environmentClient?.GetEntity(ids);
         }
 
         ///<inheritdoc/>
-        protected override void _GetFile(string url, Action<byte[]> callback, Action<string> onError)
-        {
-            HttpClient.SendGetPrivate(url, callback, onError);
-        }
-
-        ///<inheritdoc/>
-        protected override void _GetEntity(ulong id, Action<LoadEntityDto> callback, Action<string> onError)
-        {
-            var dto = new EntityRequestDto() { entityId = id };
-            HttpClient.SendPostEntity(dto, callback, onError);
-        }
-
-        ///<inheritdoc/>
-        public override ulong GetId() { return Identity.userId; }
+        public override ulong GetUserId() { return worldControllerClient?.GetUserID() ?? 0; }
 
         ///<inheritdoc/>
         public override ulong GetTime()
         {
-            return ForgeClient.GetNetWorker().Time.Timestep;
+            return environmentClient?.TimeStep ?? 0;
         }
 
         ///<inheritdoc/>
-        protected override string _getAuthorization() { return HttpClient.ComputedToken; }
+        public override double GetRoundTripLAtency() { return environmentClient?.ForgeClient?.RoundTripLatency ?? 0; }
+
+        ///<inheritdoc/>
+        protected override string _getAuthorization() { return environmentClient?.HttpClient.HeaderToken; }
 
         /// <summary>
         /// return HTTPClient if the server is a collaboration server.
         /// </summary>
-        public override object GetHttpClient() { return HttpClient; }
+        public override object GetHttpClient() { return environmentClient?.HttpClient; }
 
     }
 }

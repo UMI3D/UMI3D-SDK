@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace umi3d.cdk.interaction
         /// Currently projected tool's id.
         /// </summary>
         protected AbstractTool currentTool = null;
-        public AbstractTool tool { get { return currentTool; } }
+        public AbstractTool tool => currentTool;
 
         /// <summary>
         /// Controller's inputs.
@@ -56,7 +57,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if the user is currently using the selected Tool
         /// </summary>
-        public bool Interacting { get { return isInteracting(); } }
+        public bool Interacting => isInteracting();
 
         /// <summary>
         /// Check if the user is currently manipulating the tools menu
@@ -66,7 +67,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if the user is currently manipulating the tools menu
         /// </summary>
-        public bool Navigating { get { return isNavigating(); } }
+        public bool Navigating => isNavigating();
 
         /// <summary>
         /// Clear all menus and the projected tools
@@ -170,7 +171,9 @@ namespace umi3d.cdk.interaction
                 throw new System.Exception("A tool is already projected !");
 
             if (RequiresMenu(tool))
+            {
                 CreateInteractionsMenuFor(tool);
+            }
             else
             {
                 AbstractInteractionDto[] interactions = tool.interactions.ToArray();
@@ -211,8 +214,7 @@ namespace umi3d.cdk.interaction
             if (currentTool.id != tool.id)
                 throw new System.Exception("This tool is not currently projected on this controller");
 
-            AbstractUMI3DInput[] inputs;
-            if (associatedInputs.TryGetValue(tool.id, out inputs))
+            if (associatedInputs.TryGetValue(tool.id, out AbstractUMI3DInput[] inputs))
             {
                 foreach (AbstractUMI3DInput input in inputs)
                 {
@@ -222,6 +224,38 @@ namespace umi3d.cdk.interaction
                 associatedInputs.Remove(tool.id);
             }
             currentTool = null;
+        }
+
+        /// <summary>
+        /// Change a tool on this controller to add a new interaction
+        /// </summary>
+        /// <param name="tool"></param>
+        /// <param name="releasable"></param>
+        /// <param name="abstractInteractionDto"></param>
+        /// <param name="reason"></param>
+        public virtual void AddUpdate(AbstractTool tool, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason)
+        {
+            if (currentTool != tool)
+                throw new System.Exception("Try to update wrong tool");
+
+            if (RequiresMenu(tool))
+            {
+                CreateInteractionsMenuFor(tool);
+            }
+            else
+            {
+                var interaction = new AbstractInteractionDto[] { abstractInteractionDto };
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interaction, tool.id, GetCurrentHoveredId());
+                if (associatedInputs.ContainsKey(tool.id))
+                {
+                    associatedInputs[tool.id] = associatedInputs[tool.id].Concat(inputs).ToArray();
+                }
+                else
+                {
+                    associatedInputs.Add(tool.id, inputs);
+                }
+            }
+            currentTool = tool;
         }
     }
 }

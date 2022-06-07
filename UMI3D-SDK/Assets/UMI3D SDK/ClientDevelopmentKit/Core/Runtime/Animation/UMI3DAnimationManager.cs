@@ -18,16 +18,16 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DAnimationManager : Singleton<UMI3DAnimationManager>
+    public class UMI3DAnimationManager : inetum.unityUtils.SingleBehaviour<UMI3DAnimationManager>
     {
-        static public UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
+        public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
-        static public void Start(ulong id)
+        public static void Start(ulong id)
         {
             Get(id)?.Start();
         }
 
-        static public void Stop(ulong id)
+        public static void Stop(ulong id)
         {
             Get(id)?.Stop();
         }

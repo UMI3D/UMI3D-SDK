@@ -36,17 +36,17 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dExecption(0,"dto should be an  UMI3DAbstractNodeDto"));
+                failed.Invoke(new Umi3dException("dto should be an UMI3DAbstractNodeDto"));
                 return;
             }
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
+                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetUserId()))
                 {
                     UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
                     ua.Set(dto as UMI3DAvatarNodeDto);
@@ -90,7 +90,9 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
 
@@ -102,7 +104,9 @@ namespace umi3d.cdk
                             embd.SetActiveBindings((bool)property.value);
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
                 default:
@@ -146,7 +150,9 @@ namespace umi3d.cdk
                             }
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
 
@@ -158,7 +164,9 @@ namespace umi3d.cdk
                             embd.SetActiveBindings(UMI3DNetworkingHelper.Read<bool>(container));
                         }
                         else
+                        {
                             throw new System.Exception("Internal error");
+                        }
                     }
                     break;
                 default:

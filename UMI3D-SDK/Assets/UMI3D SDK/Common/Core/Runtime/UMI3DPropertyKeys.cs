@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    static public class UMI3DPropertyKeys
+    public static class UMI3DPropertyKeys
     {
         public const uint None = 0;
 
@@ -62,6 +62,14 @@ namespace umi3d.common
         public const uint CastShadow = 3004;
         public const uint ReceiveShadow = 3005;
         public const uint IgnoreModelMaterialOverride = 3006;
+        public const uint LineUseWorldSpace = 3007;
+        public const uint LineLoop = 3008;
+        public const uint LinePositions = 3009;
+        public const uint LineStartColor = 3010;
+        public const uint LineEndColor = 3011;
+        public const uint LineStartWidth = 3012;
+        public const uint LineEndWidth = 3013;
+
         #endregion
 
         #region KHR_light
@@ -76,21 +84,15 @@ namespace umi3d.common
 
         #region tool
         // 5000 - 5999
-        public const uint ToolboxName = 5001;
-        public const uint ToolboxDescription = 5002;
-        public const uint ToolboxIcon2D = 5003;
-        public const uint ToolboxIcon3D = 5004;
-        public const uint ToolboxTools = 5005;
-        public const uint ToolboxSceneId = 5006;
-
-        public const uint ToolboxActive = 5010;
-        public const uint ToolActive = 5011;
+        public const uint ToolboxTools = 5001;
 
         public const uint AbstractToolName = 5101;
         public const uint AbstractToolDescription = 5102;
         public const uint AbstractToolIcon2D = 5103;
         public const uint AbstractToolIcon3D = 5104;
         public const uint AbstractToolInteractions = 5105;
+        public const uint AbstractToolActive = 5106;
+        public const uint GlobalToolParent = 5107;
 
         public const uint InteractableNodeId = 5201;
         public const uint InteractableNotifyHoverPosition = 5202;
@@ -228,6 +230,13 @@ namespace umi3d.common
 
         //List of overided materials
         public const uint OverideMaterialId = 14401;
+        #endregion
+
+        #region Volumes
+        public const uint VolumePrimitive_Box_Center = 15007;
+        public const uint VolumePrimitive_Box_Size = 15008;
+        public const uint VolumePrimitive_Cylinder_Height = 15009;
+        public const uint VolumePrimitive_Cylinder_Radius = 15010;
         #endregion
     }
 }

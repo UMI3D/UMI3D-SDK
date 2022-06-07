@@ -18,37 +18,10 @@ using System.Collections.Generic;
 
 namespace umi3d.common.interaction
 {
-    /// <summary>
-    /// Abstract class to describe an interaction Toolbox.
-    /// </summary>
-    [System.Serializable]
-    public class ToolboxDto : AbstractEntityDto, IEntity
+    public class ToolboxDto : GlobalToolDto, IEntity
     {
-        /// <summary>
-        /// Name of the interaction.
-        /// </summary>
-        public string name = null;
-
-        /// <summary>
-        /// Description of the interaction.
-        /// </summary>
-        public string description = null;
-
-        /// <summary>
-        /// 2D icon.
-        /// </summary>
-        public ResourceDto icon2D = null;
-
-        public bool Active;
-
-        /// <summary>
-        /// 3D icon.
-        /// </summary>
-        public ResourceDto icon3D = null;
-
-        public List<ToolDto> tools = new List<ToolDto>();
+        public List<GlobalToolDto> tools;
 
         public ToolboxDto() : base() { }
-
     }
 }

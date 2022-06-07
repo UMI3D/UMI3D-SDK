@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    static public class UMI3DObjectKeys
+    public static class UMI3DObjectKeys
     {
         public const byte None = 0;
 

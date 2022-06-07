@@ -31,7 +31,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
+        private readonly List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
 
         ///<inheritdoc/>
         public override string GetValue()

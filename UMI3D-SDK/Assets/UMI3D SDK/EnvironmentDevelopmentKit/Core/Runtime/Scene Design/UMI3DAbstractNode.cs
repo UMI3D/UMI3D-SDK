@@ -55,13 +55,13 @@ namespace umi3d.edk
         /// The public Getter for object's parent Id.
         /// </summary>
         /// <returns></returns>
-        UMI3DAbstractNode Parent
+        private UMI3DAbstractNode Parent
         {
             get
             {
                 if (transform.parent != null)
                 {
-                    var p = transform.parent.gameObject.GetComponent<UMI3DAbstractNode>();
+                    UMI3DAbstractNode p = transform.parent.gameObject.GetComponent<UMI3DAbstractNode>();
                     return p;
                 }
                 return null;
@@ -169,8 +169,8 @@ namespace umi3d.edk
         {
             var operation = new LoadEntity()
             {
-                entity = this,
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(u => u.hasJoined))
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
@@ -184,7 +184,7 @@ namespace umi3d.edk
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = new HashSet<UMI3DUser>(users ?? UMI3DEnvironment.GetEntities<UMI3DUser>())
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
             };
             return operation;
         }
@@ -197,8 +197,10 @@ namespace umi3d.edk
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(() =>
             {
                 if (this != null)
-                    foreach (var f in GetComponents<UMI3DUserFilter>())
+                {
+                    foreach (UMI3DUserFilter f in GetComponents<UMI3DUserFilter>())
                         AddConnectionFilter(f);
+                }
             });
 
             objectId = id;
@@ -211,8 +213,10 @@ namespace umi3d.edk
             objectParentId = new UMI3DAsyncProperty<UMI3DAbstractNode>(objectId, UMI3DPropertyKeys.ParentId, Parent, (UMI3DAbstractNode node, UMI3DUser user) => node.Id());
             objectParentId.OnValueChanged += (UMI3DAbstractNode node) => { if (transform.parent != node?.transform) transform.SetParent(node?.transform); };
 
-            var PropertyEquality = new UMI3DAsyncPropertyEquality();
-            PropertyEquality.epsilon = 0.000001f;
+            var PropertyEquality = new UMI3DAsyncPropertyEquality
+            {
+                epsilon = 0.000001f
+            };
 
             objectPosition = new UMI3DAsyncProperty<Vector3>(objectId, UMI3DPropertyKeys.Position, transform.localPosition, ToUMI3DSerializable.ToSerializableVector3, PropertyEquality.Vector3Equality);
             objectPosition.OnValueChanged += (Vector3 p) => transform.localPosition = p;
@@ -248,7 +252,7 @@ namespace umi3d.edk
 
         public virtual Bytable ToBytes(UMI3DUser user)
         {
-            var anchor = objectAnchor.GetValue(user);
+            UMI3DAnchorDto anchor = objectAnchor.GetValue(user);
             return UMI3DNetworkingHelper.Write(Id())
                 + UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0)
                 + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
@@ -272,11 +276,13 @@ namespace umi3d.edk
             var res = new List<UMI3DAbstractNode>();
             foreach (Transform ct in transform)
             {
-                var child = ct.gameObject.GetComponent<UMI3DAbstractNode>();
+                UMI3DAbstractNode child = ct.gameObject.GetComponent<UMI3DAbstractNode>();
                 if (child != null)
                 {
                     if (child is UMI3DScene)
+                    {
                         res.Add(child);
+                    }
                     else if (child is UMI3DNode)
                     {
                         res.Add(child);
@@ -296,7 +302,7 @@ namespace umi3d.edk
             var res = new List<UMI3DNode>();
             foreach (Transform ct in transform)
             {
-                var child = ct.gameObject.GetComponent<UMI3DAbstractNode>();
+                UMI3DAbstractNode child = ct.gameObject.GetComponent<UMI3DAbstractNode>();
                 if (child != null)
                 {
                     if (child.LoadOnConnection(user) && child is UMI3DNode obj)
@@ -316,7 +322,7 @@ namespace umi3d.edk
             if (transform == null) transform = this.transform;
             else if (transform.gameObject.GetComponent<UMI3DAbstractNode>() != null) return res;
 
-            var others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode) && i.LoadOnConnection(user));
+            IEnumerable<UMI3DLoadableEntity> others = transform.gameObject.GetComponents<UMI3DLoadableEntity>()?.Where(i => !(i is UMI3DAbstractNode) && i.LoadOnConnection(user));
             if (others != null)
             {
                 res.AddRange(others);
@@ -334,7 +340,7 @@ namespace umi3d.edk
         #endregion
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

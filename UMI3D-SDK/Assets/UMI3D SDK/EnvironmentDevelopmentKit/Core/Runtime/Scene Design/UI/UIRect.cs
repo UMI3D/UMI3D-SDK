@@ -28,45 +28,44 @@ namespace umi3d.edk
         /// <summary>
         /// Pivot position relative to the anchor.
         /// </summary>
-        Vector2 anchoredPosition { get { return GetComponent<RectTransform>().anchoredPosition; } }
+        private Vector2 anchoredPosition => GetComponent<RectTransform>().anchoredPosition;
 
         /// <summary>
         /// 3D pivot position relative to the anchor.
         /// </summary>
-        Vector3 anchoredPosition3D { get { return GetComponent<RectTransform>().anchoredPosition3D; } }
+        private Vector3 anchoredPosition3D => GetComponent<RectTransform>().anchoredPosition3D;
 
         /// <summary>
         /// Normalized position of the upper right corner in the parent UIRect.
         /// </summary>
-        Vector2 anchorMax { get { return GetComponent<RectTransform>().anchorMax; } }
+        private Vector2 anchorMax => GetComponent<RectTransform>().anchorMax;
 
         /// <summary>
         /// NNormalized position of the lower left corner in the parent UIRect.
         /// </summary>
-        Vector2 anchorMin { get { return GetComponent<RectTransform>().anchorMin; } }
+        private Vector2 anchorMin => GetComponent<RectTransform>().anchorMin;
 
         /// <summary>
         /// Distance between the upper right corner of this rectangle and the upper right anchor.
         /// </summary>
-        Vector2 offsetMax { get { return GetComponent<RectTransform>().offsetMax; } }
+        private Vector2 offsetMax => GetComponent<RectTransform>().offsetMax;
 
         /// <summary>
         /// Distance between the lower left corner of this rectangle and the lower left anchor.
         /// </summary>
-        Vector2 offsetMin { get { return GetComponent<RectTransform>().offsetMin; } }
+        private Vector2 offsetMin => GetComponent<RectTransform>().offsetMin;
 
         /// <summary>
         /// Pivot point.
         /// </summary>
-        Vector2 pivot { get { return GetComponent<RectTransform>().pivot; } }
+        private Vector2 pivot => GetComponent<RectTransform>().pivot;
 
         /// <summary>
         /// Relative size of the rectangle relative to the distance between upper right and lower left anchors.
         /// </summary>
-        Vector2 sizeDelta { get { return GetComponent<RectTransform>().sizeDelta; } }
+        private Vector2 sizeDelta => GetComponent<RectTransform>().sizeDelta;
 
-
-        bool rectMask { get { return GetComponent<RectMask2D>() != null; } }
+        private bool rectMask => GetComponent<RectMask2D>() != null;
 
 
         ///<see cref="anchoredPosition"/>
@@ -96,7 +95,7 @@ namespace umi3d.edk
         ///<see cref="rectMask"/>
         public UMI3DAsyncProperty<bool> RectMask { get { Register(); return _rectMask; } protected set => _rectMask = value; }
 
-        UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
 
         private UMI3DAsyncProperty<Vector2> _anchoredPosition;
         private UMI3DAsyncProperty<Vector3> _anchoredPosition3D;
@@ -138,7 +137,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UIRectDto rectDto = dto as UIRectDto;
+            var rectDto = dto as UIRectDto;
             rectDto.anchoredPosition = AnchoredPosition.GetValue(user);
             rectDto.anchoredPosition3D = AnchoredPosition3D.GetValue(user);
             rectDto.anchorMax = AnchorMax.GetValue(user);

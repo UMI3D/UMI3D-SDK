@@ -27,6 +27,7 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractMeshDtoLoader : IResourcesLoader
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public List<string> supportedFileExtentions;
         public List<string> ignoredFileExtentions;
@@ -46,7 +47,7 @@ namespace umi3d.cdk
         }
 
         /// <see cref="IResourcesLoader.UrlToObject"/>
-        public abstract void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dExecption> failCallback, string pathIfObjectInBundle = "");
+        public abstract void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "");
 
         /// <summary>
         /// Return the object itself because its not in a bundle.
@@ -83,7 +84,7 @@ namespace umi3d.cdk
             int invisibleLayer = LayerMask.NameToLayer("Invisible");
             if (invisibleLayer == -1)
             {
-                Debug.LogWarning("Invisible Layer Not found \n Models in cache are not hidden \n You should add 'Invisible' layer in client project");
+                UMI3DLogger.LogWarning("Invisible Layer Not found \n Models in cache are not hidden \n You should add 'Invisible' layer in client project", scope);
             }
             else
             {

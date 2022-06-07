@@ -16,7 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    static public class UMI3DOperationKeys
+    public static class UMI3DOperationKeys
     {
         public const uint Transaction = 1;
         public const uint LoadEntity = 2;
@@ -25,6 +25,7 @@ namespace umi3d.common
         public const uint TeleportationRequest = 5;
         public const uint UploadFileRequest = 6;
         public const uint GetLocalInfoRequest = 7;
+        public const uint RedirectionRequest = 8;
 
         public const uint SetEntityProperty = 101;
         public const uint SetEntityDictionnaryProperty = 103;
@@ -65,8 +66,10 @@ namespace umi3d.common
         public const uint UserTrackingFrame = 10013;
         public const uint BoardedVehicleRequest = 10014;
 
+        public const uint VolumeUserTransit = 10100;
+
     }
-    static public class UMI3DParameterKeys
+    public static class UMI3DParameterKeys
     {
         public const uint FloatRange = 1;
         public const uint IntRange = 2;

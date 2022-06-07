@@ -28,9 +28,9 @@ namespace umi3d.edk
         /// <summary>
         /// The unique user identifier.
         /// </summary>
-        private ulong userId;
+        virtual protected ulong userId { get; set; } = 0;
 
-        public bool hasJoined { get => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING; }
+        public bool hasJoined => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING;
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
@@ -66,7 +66,7 @@ namespace umi3d.edk
         }
 
         #region filter
-        HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         public bool LoadOnConnection(UMI3DUser user)
         {

@@ -31,7 +31,7 @@ namespace umi3d.edk
         /// <summary>
         /// The name of the modified property
         /// </summary>
-        public ulong property;
+        public uint property;
 
         /// <summary>
         /// The new value for the property

@@ -16,8 +16,6 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.userCapture;
-using umi3d.edk;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture
@@ -32,19 +30,17 @@ namespace umi3d.edk.userCapture
         public UMI3DHandPose HandPose;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             if (NodeAnimation != null && HandPose != null)
             {
                 HandPose.HoverAnimation = HoverPose;
 
-                HashSet<UMI3DUser> users = new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
+                var op = new List<UMI3DNodeAnimation.OperationChain>();
 
-                List<UMI3DNodeAnimation.OperationChain> op = new List<UMI3DNodeAnimation.OperationChain>();
-
-                SetEntityProperty operation = new SetEntityProperty()
+                var operation = new SetEntityProperty()
                 {
-                    users = users,
+                    users = UMI3DServer.Instance.UserSetWhenHasJoined(),
                     entityId = HandPose.Id(),
                     property = UMI3DPropertyKeys.ActiveHandPose,
                     value = ActivePose

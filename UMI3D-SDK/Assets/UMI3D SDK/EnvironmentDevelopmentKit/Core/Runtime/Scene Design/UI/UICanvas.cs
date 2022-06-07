@@ -32,9 +32,11 @@ namespace umi3d.edk
         /// <see cref="Cascade"/>
         public bool autoCascade = false;
 
-        float _dynamicPixelsPerUnit { get { return GetComponent<CanvasScaler>().dynamicPixelsPerUnit; } }
-        float _referencePixelsPerUnit { get { return GetComponent<CanvasScaler>().referencePixelsPerUnit; } }
-        int _orderInLayer { get { return GetComponent<Canvas>().sortingOrder; } }
+        private float _dynamicPixelsPerUnit => GetComponent<CanvasScaler>().dynamicPixelsPerUnit;
+
+        private float _referencePixelsPerUnit => GetComponent<CanvasScaler>().referencePixelsPerUnit;
+
+        private int _orderInLayer => GetComponent<Canvas>().sortingOrder;
 
         /// <summary>
         /// Dynamic pixels per unit.
@@ -51,7 +53,7 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAsyncProperty<int> OrderInLayer { get { Register(); return orderInLayer; } protected set => orderInLayer = value; }
 
-        UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
+        private readonly UMI3DAsyncPropertyEquality equality = new UMI3DAsyncPropertyEquality();
         private UMI3DAsyncProperty<float> dynamicPixelPerUnit;
         private UMI3DAsyncProperty<float> referencePixelPerUnit;
         private UMI3DAsyncProperty<int> orderInLayer;
@@ -75,7 +77,7 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            UICanvasDto canvasDto = dto as UICanvasDto;
+            var canvasDto = dto as UICanvasDto;
             canvasDto.dynamicPixelsPerUnit = DynamicPixelPerUnit.GetValue(user);
             canvasDto.referencePixelsPerUnit = ReferencePixelPerUnit.GetValue(user);
             canvasDto.orderInLayer = OrderInLayer.GetValue(user);
@@ -106,16 +108,16 @@ namespace umi3d.edk
         /// <see cref="UIRect"/>
         public void Cascade()
         {
-            var texts = GetComponentsInChildren<Text>(true).Where(txt => txt.GetComponent<UIText>() == null);
-            foreach (var t in texts)
+            System.Collections.Generic.IEnumerable<Text> texts = GetComponentsInChildren<Text>(true).Where(txt => txt.GetComponent<UIText>() == null);
+            foreach (Text t in texts)
                 t.gameObject.AddComponent<UIText>();
 
-            var images = GetComponentsInChildren<Image>(true).Where(img => img.GetComponent<UIImage>() == null);
-            foreach (var i in images)
+            System.Collections.Generic.IEnumerable<Image> images = GetComponentsInChildren<Image>(true).Where(img => img.GetComponent<UIImage>() == null);
+            foreach (Image i in images)
                 i.gameObject.AddComponent<UIImage>();
 
-            var rects = GetComponentsInChildren<RectTransform>(true).Where(rect => rect.GetComponent<UIRect>() == null);
-            foreach (var r in rects)
+            System.Collections.Generic.IEnumerable<RectTransform> rects = GetComponentsInChildren<RectTransform>(true).Where(rect => rect.GetComponent<UIRect>() == null);
+            foreach (RectTransform r in rects)
                 r.gameObject.AddComponent<UIRect>();
         }
 

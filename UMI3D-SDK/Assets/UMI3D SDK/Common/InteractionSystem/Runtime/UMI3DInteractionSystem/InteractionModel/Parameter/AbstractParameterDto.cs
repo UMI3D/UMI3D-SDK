@@ -33,9 +33,10 @@ namespace umi3d.common.interaction
     /// Parameter dto.
     /// </summary>
     [System.Serializable]
-    public abstract class AbstractParameterDto : AbstractInteractionDto {
-        abstract public object GetValue();
-    
+    public abstract class AbstractParameterDto : AbstractInteractionDto
+    {
+        public abstract object GetValue();
+
     }
 
 }

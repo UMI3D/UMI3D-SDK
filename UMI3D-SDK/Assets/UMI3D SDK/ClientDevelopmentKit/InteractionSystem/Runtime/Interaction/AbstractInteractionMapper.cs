@@ -143,11 +143,6 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public abstract AbstractController GetController(ulong projectedToolId);
 
-
-        public abstract void CreateToolbox(Toolbox toolbox);
-
-        public abstract void CreateTool(Tool tool);
-
         /// <summary>
         /// Request the selection of a Tool.
         /// Be careful,this method could be called before the tool is added for async loading reasons.
@@ -186,6 +181,24 @@ namespace umi3d.cdk.interaction
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
         public abstract bool UpdateTools(ulong toolId, bool releasable, InteractionMappingReason reason = null);
+
+        /// <summary>
+        /// Request a Tool to be updated when one element was added on the tool.
+        /// </summary>
+        /// <param name="toolId">Id of the Tool.</param>
+        /// <param name="releasable">Is the tool releasable.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
+        public abstract bool UpdateAddOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
+
+        /// <summary>
+        /// Request a Tool to be updated when one element was removed on the tool.
+        /// </summary>
+        /// <param name="toolId">Id of the Tool.</param>
+        /// <param name="releasable">Is the tool releasable.</param>
+        /// <param name="reason">Interaction mapping reason.</param>
+        /// <returns></returns>
+        public abstract bool UpdateRemoveOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
 
     }
 }

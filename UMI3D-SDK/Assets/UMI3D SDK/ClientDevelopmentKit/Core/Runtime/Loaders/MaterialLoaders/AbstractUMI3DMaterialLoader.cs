@@ -23,8 +23,9 @@ namespace umi3d.cdk
 {
     public abstract class AbstractUMI3DMaterialLoader
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
-        public abstract void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback);
+        public abstract void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null);
 
         public abstract bool IsSuitableFor(GlTFMaterialDto gltfMatDto);
 
@@ -83,13 +84,14 @@ namespace umi3d.cdk
                     alternativeCallback.Invoke(null);
                 return;
             }
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(textureDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     id,
                     fileToLoad,
@@ -110,15 +112,18 @@ namespace umi3d.cdk
                             }
                             catch
                             {
-                                Debug.LogError("invalid texture key : " + materialKey);
+                                UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
                             }
                         }
                         else
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                        {
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                        }
                     },
-                    Debug.LogWarning,
+                    e => UMI3DLogger.LogWarning(e, scope),
                     loader.DeleteObject
                     );
+            }
         }
 
         [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
@@ -126,13 +131,14 @@ namespace umi3d.cdk
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(textureDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
+            {
                 UMI3DResourcesManager.LoadFile(
                     id,
                     fileToLoad,
@@ -153,15 +159,18 @@ namespace umi3d.cdk
                             }
                             catch
                             {
-                                Debug.LogError("invalid texture key : " + materialKey);
+                                UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
                             }
                         }
                         else
-                            Debug.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}");
+                        {
+                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                        }
                     },
-                    Debug.LogWarning,
+                    e => UMI3DLogger.LogWarning(e, scope),
                     loader.DeleteObject
                     );
+            }
         }
 
 
@@ -233,7 +242,7 @@ namespace umi3d.cdk
                             }
                             break;
                         default:
-                            Debug.LogWarning("unsupported type for shader property");
+                            UMI3DLogger.LogWarning("unsupported type for shader property", scope);
                             break;
                     }
                 }

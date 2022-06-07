@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -27,20 +28,15 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public abstract class ClientIdentifierApi : ScriptableObject
     {
-        /// <summary>
-        /// Should return a login and a password as a string for this client via the callback. 
-        /// </summary>
-        /// <param name="callback">Action to return the login and the password.</param>
-        public abstract void GetIdentity(Action<common.collaboration.UMI3DAuthenticator> callback);
 
         /// <summary>
         /// Should fill a formDto and return it via a callback.
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>
-        public virtual void GetParameterDtos(FormDto parameter, Action<FormAnswerDto> callback)
+        public virtual async Task<FormAnswerDto> GetParameterDtos(FormDto parameter)
         {
-            callback.Invoke(new FormAnswerDto()
+            return await Task.FromResult(new FormAnswerDto()
             {
                 id = parameter.id,
                 toolId = 0,
@@ -55,9 +51,9 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="LibrariesId">Ids of all library that need to be downloaded or updated</param>
         /// <param name="callback">Action to return the answer</param>
-        public virtual void ShouldDownloadLibraries(List<string> LibrariesId, Action<bool> callback)
+        public virtual async Task<bool> ShouldDownloadLibraries(List<string> LibrariesId)
         {
-            callback.Invoke(true);
+            return await Task.FromResult(true);
         }
     }
 }

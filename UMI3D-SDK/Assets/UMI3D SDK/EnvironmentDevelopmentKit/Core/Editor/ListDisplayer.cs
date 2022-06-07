@@ -20,18 +20,24 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.edk.editor
 {
-
     public class ListDisplayer<T>
     {
-        const char upArrow = '\u25B2';
-        const char downArrow = '\u25bc';
-        const char cross = 'X';
-        const int buttonWidth = 25;
+        private const char upArrow = '\u25B2';
+        private const char downArrow = '\u25bc';
+        private const char cross = 'X';
+        private const int buttonWidth = 25;
+        private readonly Func<SerializedProperty, T> NewValue;
 
-        Func<SerializedProperty, T> NewValue;
+        public class ObjectEvent : UnityEvent<object> { }
+
+        /// <summary>
+        /// Event raised when an element of the list is removed, if this element is an ObjectReference.
+        /// </summary>
+        public ObjectEvent onObjectRemoved = new ObjectEvent();
 
         public ListDisplayer(Func<SerializedProperty, T> newValue)
         {
@@ -58,6 +64,7 @@ namespace umi3d.edk.editor
                 Event evt = Event.current;
                 Rect rect = GUILayoutUtility.GetLastRect();
                 if (rect.Contains(evt.mousePosition))
+                {
                     switch (evt.type)
                     {
                         case EventType.DragUpdated:
@@ -87,6 +94,7 @@ namespace umi3d.edk.editor
                             evt.Use();
                             break;
                     }
+                }
             }
 
             if (showList)
@@ -99,7 +107,9 @@ namespace umi3d.edk.editor
                 ListSize = ThisList.arraySize;
                 EditorGUI.BeginChangeCheck();
                 ListSize = EditorGUILayout.IntField("Size", ListSize);
+                if (ListSize < 0) ListSize = 0;
                 if (EditorGUI.EndChangeCheck())
+                {
                     if (ListSize != ThisList.arraySize)
                     {
                         while (ListSize > ThisList.arraySize)
@@ -111,6 +121,8 @@ namespace umi3d.edk.editor
                             ThisList.DeleteArrayElementAtIndex(ThisList.arraySize - 1);
                         }
                     }
+                }
+
                 if (GUILayout.Button("Add"))
                 {
                     if (ThisList.arraySize == 0)
@@ -140,17 +152,19 @@ namespace umi3d.edk.editor
                     EditorGUI.EndDisabledGroup();
                     if (GUILayout.Button(cross.ToString(), GUILayout.Width(buttonWidth)))
                     {
-                        var elementProperty = ThisList.GetArrayElementAtIndex(i);
+                        SerializedProperty elementProperty = ThisList.GetArrayElementAtIndex(i);
+
                         if (elementProperty.propertyType == SerializedPropertyType.ObjectReference && elementProperty.objectReferenceValue != default)
+                        {
+                            onObjectRemoved.Invoke(elementProperty.objectReferenceValue);
                             elementProperty.objectReferenceValue = default;
+                        }
                         ThisList.DeleteArrayElementAtIndex(i);
                     }
                     EditorGUI.indentLevel = indent;
                     EditorGUILayout.EndHorizontal();
                 }
                 EditorGUI.indentLevel--;
-
-
             }
         }
     }

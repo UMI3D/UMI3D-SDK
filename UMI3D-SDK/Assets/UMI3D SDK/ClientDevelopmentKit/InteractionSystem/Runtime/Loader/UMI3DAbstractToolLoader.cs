@@ -45,7 +45,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return SetInteractions(dto, tool, property);
-                case UMI3DPropertyKeys.ToolActive:
+                case UMI3DPropertyKeys.AbstractToolActive:
                     dto.active = (bool)property.value;
                     break;
                 default:
@@ -75,7 +75,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return SetInteractions(dto, tool, operationId, propertyKey, container);
-                case UMI3DPropertyKeys.ToolActive:
+                case UMI3DPropertyKeys.AbstractToolActive:
                     dto.active = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 default:
@@ -84,7 +84,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -102,7 +102,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return ReadInteractions(ref value, propertyKey, container);
-                case UMI3DPropertyKeys.ToolActive:
+                case UMI3DPropertyKeys.AbstractToolActive:
                     value = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
                 default:
@@ -111,7 +111,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, ByteContainer container)
+        private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             AbstractInteractionDto value;
@@ -121,12 +121,20 @@ namespace umi3d.cdk.interaction
                 case UMI3DOperationKeys.SetEntityListAddProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
                     value = UMI3DNetworkingHelper.Read<AbstractInteractionDto>(container);
-                    dto.interactions.Add(value);
-                    break;
+                    if (index == dto.interactions.Count)
+                        dto.interactions.Add(value);
+                    else if (index < dto.interactions.Count)
+                        dto.interactions.Insert(index, value);
+                    else return false;
+                    tool.Added(value); break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
                     if (index < dto.interactions.Count)
+                    {
+                        AbstractInteractionDto removed = dto.interactions[index];
                         dto.interactions.RemoveAt(index);
+                        tool.Removed(removed);
+                    }
                     else return false;
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
@@ -135,16 +143,17 @@ namespace umi3d.cdk.interaction
                     if (index < dto.interactions.Count)
                         dto.interactions[index] = value;
                     else return false;
+                    tool.Updated();
                     break;
                 default:
                     dto.interactions = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(container);
+                    tool.Updated();
                     break;
             }
-            tool.Updated();
             return true;
         }
 
-        static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, SetEntityPropertyDto property)
+        private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, SetEntityPropertyDto property)
         {
             switch (property)
             {
@@ -169,7 +178,7 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
-        static bool ReadInteractions(ref object value, uint propertyKey, ByteContainer container)
+        private static bool ReadInteractions(ref object value, uint propertyKey, ByteContainer container)
         {
             value = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(container);
             return true;
@@ -179,7 +188,7 @@ namespace umi3d.cdk.interaction
         public static AbstractInteractionDto ReadAbstractInteractionDto(ByteContainer container, out bool readable)
         {
             AbstractInteractionDto interaction;
-            var interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
+            byte interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
             switch (interactionCase)
             {
                 case UMI3DInteractionKeys.Event:
@@ -261,7 +270,7 @@ namespace umi3d.cdk.interaction
             return interaction;
         }
 
-        static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto,ByteContainer container)
+        private static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto, ByteContainer container)
         {
             interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);
             interactionDto.name = UMI3DNetworkingHelper.Read<string>(container);

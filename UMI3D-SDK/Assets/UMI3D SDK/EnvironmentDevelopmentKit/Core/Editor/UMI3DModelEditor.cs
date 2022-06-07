@@ -24,16 +24,15 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class UMI3DModelEditor : RenderedNodeEditor
     {
+        private SerializedProperty variants;
+        private SerializedProperty areSubobjectsTracked;
+        private SerializedProperty areSubobjectsMarked;
+        private SerializedProperty isRightHanded;
+        private SerializedProperty isPartOfNavmesh;
+        private SerializedProperty isTraversable;
 
-        SerializedProperty variants;
-        SerializedProperty areSubobjectsTracked;
-        SerializedProperty isRightHanded;
-        SerializedProperty isPartOfNavmesh;
-        SerializedProperty isTraversable;
-
-        private Editor _materialEditor = null;
-
-        bool foldout;
+        private readonly Editor _materialEditor = null;
+        private readonly bool foldout;
 
         ///<inheritdoc/>
         protected override void OnEnable()
@@ -42,13 +41,14 @@ namespace umi3d.edk.editor
 
             variants = serializedObject.FindProperty("model.variants");
             areSubobjectsTracked = serializedObject.FindProperty("areSubobjectsTracked");
+            areSubobjectsMarked = serializedObject.FindProperty("areSubobjectsAlreadyMarked");
             isRightHanded = serializedObject.FindProperty("isRightHanded");
             isPartOfNavmesh = serializedObject.FindProperty("isPartOfNavmesh");
             isTraversable = serializedObject.FindProperty("isTraversable");
 
         }
 
-        void OnDisable()
+        private void OnDisable()
         {
             if (_materialEditor != null) { DestroyImmediate(_materialEditor); }
         }
@@ -64,7 +64,11 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(variants, true);
             EditorGUILayout.PropertyField(areSubobjectsTracked);
             if (areSubobjectsTracked.boolValue)
+            {
                 EditorGUILayout.PropertyField(isRightHanded);
+                EditorGUILayout.PropertyField(areSubobjectsMarked);
+            }
+
             EditorGUILayout.PropertyField(isTraversable);
             EditorGUILayout.PropertyField(isPartOfNavmesh);
 

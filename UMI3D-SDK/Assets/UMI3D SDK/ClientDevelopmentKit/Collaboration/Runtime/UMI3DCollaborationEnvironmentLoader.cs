@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -27,6 +28,7 @@ namespace umi3d.cdk.collaboration
         public static new UMI3DCollaborationEnvironmentLoader Instance { get => UMI3DEnvironmentLoader.Instance as UMI3DCollaborationEnvironmentLoader; set => UMI3DEnvironmentLoader.Instance = value; }
 
         public List<UMI3DUser> UserList;
+        public static event Action OnUpdateUserList;
 
         ///<inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
@@ -35,6 +37,7 @@ namespace umi3d.cdk.collaboration
             var dto = (_dto?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+            OnUpdateUserList?.Invoke();
         }
 
         ///<inheritdoc/>
@@ -74,7 +77,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        bool SetUserList(UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
+        private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
         {
             switch (property)
             {
@@ -84,16 +87,18 @@ namespace umi3d.cdk.collaboration
                         var _user = new UMI3DUser(user);
                         UserList.Insert(add.index, _user);
                         dto.userList.Insert(add.index, user);
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
                 case SetEntityListRemovePropertyDto rem:
                     {
                         if (UserList.Count > rem.index)
                         {
-                            var Olduser = UserList[rem.index];
+                            UMI3DUser Olduser = UserList[rem.index];
                             UserList.RemoveAt(rem.index);
                             dto.userList.RemoveAt(rem.index);
                             Olduser.Destroy();
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
@@ -112,15 +117,17 @@ namespace umi3d.cdk.collaboration
                             var _user2 = new UMI3DUser(user2);
                             UserList.Add(_user2);
                             dto.userList.Add(user2);
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
                 default:
                     {
-                        foreach (var user in UserList)
+                        foreach (UMI3DUser user in UserList)
                             user.Destroy();
                         dto.userList = property.value as List<UserDto>;
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
             }
@@ -133,7 +140,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
+        private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
             UserDto user;
@@ -147,6 +154,7 @@ namespace umi3d.cdk.collaboration
                         var _user = new UMI3DUser(user);
                         UserList.Insert(index, _user);
                         dto.userList.Insert(index, user);
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
@@ -154,10 +162,11 @@ namespace umi3d.cdk.collaboration
                         index = UMI3DNetworkingHelper.Read<int>(container);
                         if (UserList.Count > index)
                         {
-                            var Olduser = UserList[index];
+                            UMI3DUser Olduser = UserList[index];
                             UserList.RemoveAt(index);
                             dto.userList.RemoveAt(index);
                             Olduser.Destroy();
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
@@ -177,15 +186,17 @@ namespace umi3d.cdk.collaboration
                             var _user = new UMI3DUser(user);
                             UserList.Add(_user);
                             dto.userList.Add(user);
+                            OnUpdateUserList?.Invoke();
                         }
                         break;
                     }
                 default:
                     {
-                        foreach (var ouser in UserList)
+                        foreach (UMI3DUser ouser in UserList)
                             ouser.Destroy();
                         dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(container);
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+                        OnUpdateUserList?.Invoke();
                         break;
                     }
             }

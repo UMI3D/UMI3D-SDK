@@ -19,6 +19,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu
 {
     public class AbstractMenuItemAdded : UnityEvent<AbstractMenuItem> { }
+    public class AbstractMenuItemRemoved : UnityEvent<AbstractMenuItem> { }
 
 
     /// <summary>
@@ -40,9 +41,14 @@ namespace umi3d.cdk.menu
         public UnityEvent onContentChange = new UnityEvent();
 
         /// <summary>
-        /// Event raised when menu content has been changed.
+        /// Event raised when a sub menu has been added.
         /// </summary>
         public AbstractMenuItemAdded onAbstractMenuItemAdded = new AbstractMenuItemAdded();
+
+        /// <summary>
+        /// Event raised when a sub-menu has been removed.
+        /// </summary>
+        public AbstractMenuItemRemoved OnAbstractMenuItemRemoved = new AbstractMenuItemRemoved();
 
         /// <summary>
         /// Submenus contained in this menu.
@@ -64,24 +70,37 @@ namespace umi3d.cdk.menu
         /// Add a menu item to this menu.
         /// </summary>
         /// <param name="menuItem">Menu item to add</param>
-        public abstract void Add(AbstractMenuItem menuItem);
+        public abstract bool Add(AbstractMenuItem abstractMenuItem);
 
         /// <summary>
-        /// Remove an item from this menu.
+        /// Add a menu item to this menu without notify events.
+        /// </summary>
+        /// <param name="abstractMenuItem"></param>
+        /// <returns></returns>
+        public abstract bool AddWithoutNotify(AbstractMenuItem abstractMenuItem);
+
+        /// <summary>
+        /// Remove a menu or a menuItem from this menu.
         /// </summary>
         /// <param name="menuItem">item to remove</param>
         public abstract bool Remove(AbstractMenuItem menuItem);
 
         /// <summary>
-        /// Return true if the item is in collection.
+        /// Remove a menu or menuItem from this menu without notify events.
         /// </summary>
-        /// <param name="menuItem">item to check</param>
-        public abstract bool Contains(AbstractMenuItem menuItem);
+        /// <param name="abstractMenu"></param>
+        /// <returns></returns>
+        public abstract bool RemoveWithoutNotify(AbstractMenuItem abstractMenu);
 
         /// <summary>
         /// Return true if the item is in collection.
         /// </summary>
         /// <param name="menuItem">item to check</param>
+        public abstract bool Contains(AbstractMenuItem abstractMenuItem);
+
+        /// <summary>
+        /// Return the number of Items and sub-menus.
+        /// </summary>
         public abstract int Count { get; }
 
         /// <summary>
@@ -89,7 +108,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAllSubMenu()
         {
-            List<AbstractMenu> menus = new List<AbstractMenu>(GetSubMenu());
+            var menus = new List<AbstractMenu>(GetSubMenu());
             foreach (AbstractMenu sub in menus)
                 Remove(sub);
         }
@@ -99,7 +118,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAllMenuItem()
         {
-            List<AbstractMenuItem> menuItems = new List<AbstractMenuItem>(GetMenuItems());
+            var menuItems = new List<AbstractMenuItem>(GetMenuItems());
             foreach (AbstractMenuItem item in menuItems)
                 Remove(item);
         }
@@ -109,7 +128,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         public virtual void RemoveAll()
         {
-            List<AbstractMenuItem> Items = new List<AbstractMenuItem>(GetItems());
+            var Items = new List<AbstractMenuItem>(GetItems());
             foreach (AbstractMenuItem item in Items)
                 Remove(item);
         }

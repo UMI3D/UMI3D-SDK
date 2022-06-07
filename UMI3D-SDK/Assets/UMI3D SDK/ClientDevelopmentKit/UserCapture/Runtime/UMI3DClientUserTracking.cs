@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,20 +25,25 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.userCapture
 {
-    public class UMI3DClientUserTracking : Singleton<UMI3DClientUserTracking>
+    public class UMI3DClientUserTracking : SingleBehaviour<UMI3DClientUserTracking>
     {
         public Transform skeletonContainer;
         public Transform viewpoint;
         [ConstEnum(typeof(BoneType), typeof(uint))]
         public uint viewpointBonetype;
 
+        public bool trackingReception { get; protected set; }
+
+        /// <summary>
+        /// If true the avatar tracking are send, else false.
+        /// </summary>
+        public bool SendTracking => sendTracking;
         [SerializeField]
         protected bool sendTracking = true;
 
         [SerializeField]
         protected float targetTrackingFPS = 15;
-
-        List<uint> streamedBonetypes = new List<uint>();
+        private List<uint> streamedBonetypes = new List<uint>();
 
         public Dictionary<ulong, UserAvatar> embodimentDict = new Dictionary<ulong, UserAvatar>();
 
@@ -84,6 +88,7 @@ namespace umi3d.cdk.userCapture
             startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
         }
 
         /// <summary>
@@ -97,7 +102,7 @@ namespace umi3d.cdk.userCapture
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetId() != 0)
+                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
                     if (sendCameraProperties)
@@ -106,7 +111,9 @@ namespace umi3d.cdk.userCapture
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }
                 else
+                {
                     yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
+                }
             }
         }
 
@@ -116,12 +123,12 @@ namespace umi3d.cdk.userCapture
         /// <returns></returns>
         protected virtual IEnumerator DispatchCamera()
         {
-            while (UMI3DClientServer.Instance.GetId() == 0)
+            while (UMI3DClientServer.Instance.GetUserId() == 0)
             {
                 yield return null;
             }
 
-            UserCameraPropertiesDto newCameraProperties = new UserCameraPropertiesDto()
+            var newCameraProperties = new UserCameraPropertiesDto()
             {
                 scale = 1f,
                 projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
@@ -143,7 +150,7 @@ namespace umi3d.cdk.userCapture
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
-                List<BoneDto> bonesList = new List<BoneDto>();
+                var bonesList = new List<BoneDto>();
                 foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
                 {
                     if (streamedBonetypes.Contains(bone.boneType))
@@ -157,10 +164,11 @@ namespace umi3d.cdk.userCapture
                 LastFrameDto = new UserTrackingFrameDto()
                 {
                     bones = bonesList,
+                    skeletonHighOffset = skeletonContainer.localPosition.y,
                     position = transform.localPosition, //this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
                     rotation = transform.localRotation,//Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
                     refreshFrequency = targetTrackingFPS,
-                    userId = UMI3DClientServer.Instance.GetId(),
+                    userId = UMI3DClientServer.Instance.GetUserId(),
                 };
 
                 skeletonParsedEvent.Invoke();
@@ -176,7 +184,9 @@ namespace umi3d.cdk.userCapture
         public virtual bool RegisterEmbd(ulong id, UserAvatar u)
         {
             if (embodimentDict.ContainsKey(id))
+            {
                 return false;
+            }
             else
             {
                 embodimentDict.Add(id, u);

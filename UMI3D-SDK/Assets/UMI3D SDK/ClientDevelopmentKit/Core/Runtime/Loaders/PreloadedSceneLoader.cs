@@ -27,6 +27,8 @@ namespace umi3d.cdk
     /// </summary>
     public class PreloadedSceneLoader
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
         /// <summary>
         /// Load PreloadedSceneDto.
         /// </summary>
@@ -34,24 +36,25 @@ namespace umi3d.cdk
         /// <param name="node">node on which the scene should be loaded.</param>
         /// <param name="finished">finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public static void ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public static void ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             CreatePreloadedScene(dto, node);
             finished?.Invoke();
         }
 
-        static void CreatePreloadedScene(PreloadedSceneDto scenesdto, GameObject node)
+        private static void CreatePreloadedScene(PreloadedSceneDto scenesdto, GameObject node)
         {
             ResourceDto resourceScene = scenesdto.scene;
 
             if (resourceScene != null)
             {
-                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariante(resourceScene.variants);  // Peut etre ameliore
+                FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(resourceScene.variants);  // Peut etre ameliore
 
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 if (loader != null)
+                {
                     UMI3DResourcesManager.LoadFile(
                         UMI3DGlobalID.EnvironementId,
                         fileToLoad,
@@ -59,19 +62,18 @@ namespace umi3d.cdk
                         loader.ObjectFromCache,
                         (o) =>
                         {
-                            Debug.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle + "   " + o.ToString());
-                            SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
-
+                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
                         },
-                        Debug.LogWarning,
+                        e => UMI3DLogger.LogWarning(e, scope),
                         loader.DeleteObject
                         );
+                }
             }
         }
 
-        static void Unload(PreloadedSceneDto scenesdto, GameObject node)
+        private static void Unload(PreloadedSceneDto scenesdto, GameObject node)
         {
-            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariante(scenesdto.scene.variants).pathIfInBundle));
+            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle));
         }
 
         /// <summary>
@@ -80,33 +82,34 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null) return false;
-            var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
             if (dto == null) return false;
             if (property.property == UMI3DPropertyKeys.PreloadedScenes)
+            {
                 switch (property)
                 {
                     case SetEntityListAddPropertyDto add:
                     case SetEntityListRemovePropertyDto rem:
                     case SetEntityListPropertyDto set:
-                        Debug.Log($"Case not handled {property}");
+                        UMI3DLogger.Log($"Case not handled {property}", scope);
                         break;
                     default:
                         var newList = (List<PreloadedSceneDto>)property.value;
-                        var oldList = dto.preloadedScenes;
+                        List<PreloadedSceneDto> oldList = dto.preloadedScenes;
                         var scenesToUnload = new List<PreloadedSceneDto>();
                         var scenesToLoad = new List<PreloadedSceneDto>();
 
-                        foreach (var newScene in newList)
+                        foreach (PreloadedSceneDto newScene in newList)
                         {
                             if (!oldList.Contains(newScene))
                             {
                                 scenesToLoad.Add(newScene);
                             }
                         }
-                        foreach (var oldScene in oldList)
+                        foreach (PreloadedSceneDto oldScene in oldList)
                         {
                             if (!newList.Contains(oldScene))
                             {
@@ -114,14 +117,16 @@ namespace umi3d.cdk
                             }
                         }
 
-                        foreach (var scene in scenesToLoad)
+                        foreach (PreloadedSceneDto scene in scenesToLoad)
                             CreatePreloadedScene(scene, null);
 
-                        foreach (var scene in scenesToUnload)
+                        foreach (PreloadedSceneDto scene in scenesToUnload)
                             Unload(scene, null);
 
                         break;
                 }
+            }
+
             return true;
         }
 
@@ -131,33 +136,34 @@ namespace umi3d.cdk
         /// <param name="entity">entity to update.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        static public bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
-            var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
             if (dto == null) return false;
             if (propertyKey == UMI3DPropertyKeys.PreloadedScenes)
+            {
                 switch (operationId)
                 {
                     case UMI3DOperationKeys.SetEntityListAddProperty:
                     case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     case UMI3DOperationKeys.SetEntityListProperty:
-                        Debug.Log($"Case not handled {operationId}");
+                        UMI3DLogger.Log($"Case not handled {operationId}", scope);
                         break;
                     default:
-                        var newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(container);
-                        var oldList = dto.preloadedScenes;
+                        List<PreloadedSceneDto> newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(container);
+                        List<PreloadedSceneDto> oldList = dto.preloadedScenes;
                         var scenesToUnload = new List<PreloadedSceneDto>();
                         var scenesToLoad = new List<PreloadedSceneDto>();
 
-                        foreach (var newScene in newList)
+                        foreach (PreloadedSceneDto newScene in newList)
                         {
                             if (!oldList.Contains(newScene))
                             {
                                 scenesToLoad.Add(newScene);
                             }
                         }
-                        foreach (var oldScene in oldList)
+                        foreach (PreloadedSceneDto oldScene in oldList)
                         {
                             if (!newList.Contains(oldScene))
                             {
@@ -165,18 +171,20 @@ namespace umi3d.cdk
                             }
                         }
 
-                        foreach (var scene in scenesToLoad)
+                        foreach (PreloadedSceneDto scene in scenesToLoad)
                             CreatePreloadedScene(scene, null);
 
-                        foreach (var scene in scenesToUnload)
+                        foreach (PreloadedSceneDto scene in scenesToUnload)
                             Unload(scene, null);
 
                         break;
                 }
+            }
+
             return true;
         }
 
-        static public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             return false;
         }

@@ -21,13 +21,13 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DNavigation : Singleton<UMI3DNavigation>
+    public class UMI3DNavigation : inetum.unityUtils.SingleBehaviour<UMI3DNavigation>
     {
         public AbstractNavigation currentNav { get; protected set; } = null;
         public List<AbstractNavigation> navigations;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             currentNav = navigations.FirstOrDefault();
             currentNav.Activate();
@@ -37,9 +37,10 @@ namespace umi3d.cdk
         /// Move the user acording to a NavigationDto
         /// </summary>
         /// <param name="dto"></param>
-        static public IEnumerator Navigate(NavigateDto dto)
+        public static IEnumerator Navigate(NavigateDto dto)
         {
             if (Exists && Instance.currentNav != null)
+            {
                 switch (dto)
                 {
                     case VehicleDto vehicleDto:
@@ -52,6 +53,8 @@ namespace umi3d.cdk
                         Instance.currentNav.Navigate(dto);
                         break;
                 }
+            }
+
             yield break;
         }
     }

@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -25,7 +27,14 @@ namespace umi3d.cdk
     public class UMI3DNodeInstance : UMI3DEntityInstance
     {
         public GameObject gameObject;
-        public Transform transform { get { return gameObject.transform; } }
+        public Transform transform => gameObject.transform;
+
+        /// <summary>
+        /// Event call when the transform is updated.
+        /// </summary>
+        public UnityEvent OnPoseUpdated = new UnityEvent();
+
+        public void SendOnPoseUpdated() { OnPoseUpdated.Invoke(); }
 
         public bool updatePose = true;
 
@@ -38,7 +47,7 @@ namespace umi3d.cdk
                     _renderers = new List<Renderer>();
                 return _renderers;
             }
-            set { _renderers = value; }
+            set => _renderers = value;
         }
 
         private List<Collider> _colliders;
@@ -50,13 +59,18 @@ namespace umi3d.cdk
                     _colliders = new List<Collider>();
                 return _colliders;
             }
-            set { _colliders = value; }
+            set => _colliders = value;
         }
 
         /// <summary>
         /// The list of Subnode instance when the model has tracked subMeshs. Empty if sub Models are not tracked.
         /// </summary>
         private List<UMI3DNodeInstance> _subNodeInstances;
+
+        public UMI3DNodeInstance(Action loadedCallback) : base(loadedCallback)
+        {
+        }
+
         public List<UMI3DNodeInstance> subNodeInstances
         {
             get
@@ -65,7 +79,7 @@ namespace umi3d.cdk
                     _subNodeInstances = new List<UMI3DNodeInstance>();
                 return _subNodeInstances;
             }
-            set { _subNodeInstances = value; }
+            set => _subNodeInstances = value;
         }
 
     }

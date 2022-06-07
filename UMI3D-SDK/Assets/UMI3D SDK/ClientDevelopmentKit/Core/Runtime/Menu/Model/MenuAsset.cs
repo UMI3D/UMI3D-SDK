@@ -22,6 +22,5 @@ namespace umi3d.cdk.menu
     {
         [SerializeField]
         public Menu menu = new Menu();
-
     }
 }

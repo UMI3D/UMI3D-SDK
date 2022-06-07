@@ -26,33 +26,48 @@ namespace umi3d.cdk
 
     public class UMI3DSceneLoader : UMI3DAbstractNodeLoader
     {
-        UMI3DEnvironmentLoader EnvironementLoader;
-
-        public UMI3DSceneLoader(UMI3DEnvironmentLoader EnvironementLoader)
-        {
-            this.EnvironementLoader = EnvironementLoader;
-        }
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         /// <summary>
         /// Create a GLTFScene based on a GLTFSceneDto
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="finished"></param>
-        public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> LoadedNodesCount)
+        public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> ToLoadNodesCount, System.Action<int> LoadedNodesCount)
         {
-            GameObject go = new GameObject(dto.name);
-            UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go,
-                () =>
+            if (UMI3DEnvironmentLoader.Exists)
+            {
+
+                var go = new GameObject(dto.name);
+                UMI3DNodeInstance node = UMI3DEnvironmentLoader.RegisterNodeInstance(
+                    dto.extensions.umi3d.id,
+                    dto,
+                    go,
+                    () =>
+                    {
+                        UMI3DSceneNodeDto sceneDto = dto.extensions.umi3d;
+                        foreach (string library in sceneDto.LibrariesId)
+                            UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
+                    });
+
+                void finished2()
                 {
-                    var sceneDto = dto.extensions.umi3d;
-                    foreach (var library in sceneDto.LibrariesId)
-                        UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
-                });
-            go.transform.SetParent(EnvironementLoader.transform);
-            //Load Materials
-            LoadSceneMaterials(dto, () => { EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount)); });
-            //Load Nodes
-            //     EnvironementLoader.StartCoroutine(EnvironementLoader.nodeLoader.LoadNodes(dto.nodes, finished, LoadedNodesCount));
+                    node.NotifyLoaded();
+                    finished?.Invoke();
+                }
+
+                go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
+                //Load Materials and then Nodes
+                LoadSceneMaterials(dto,
+                    () =>
+                    {
+                        UMI3DEnvironmentLoader.StartCoroutine(
+                            UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, finished2, ToLoadNodesCount, LoadedNodesCount));
+                    }
+                );
+            }
+            else
+                finished?.Invoke();
         }
 
         /// <summary>
@@ -60,7 +75,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="node"></param>
         /// <param name="dto"></param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dExecption> failed)
+        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
         {
             base.ReadUMI3DExtension(dto, node, () =>
             {
@@ -69,12 +84,12 @@ namespace umi3d.cdk
                 node.transform.localPosition = sceneDto.position;
                 node.transform.localRotation = sceneDto.rotation;
                 node.transform.localScale = sceneDto.scale;
-                foreach (var library in sceneDto.LibrariesId)
+                foreach (string library in sceneDto.LibrariesId)
                     UMI3DResourcesManager.LoadLibrary(library, null, sceneDto.id);
                 int count = 0;
                 if (sceneDto.otherEntities != null)
                 {
-                    foreach (var entity in sceneDto.otherEntities)
+                    foreach (IEntity entity in sceneDto.otherEntities)
                     {
                         count++;
                         UMI3DEnvironmentLoader.LoadEntity(entity, () => { count--; if (count == 0) finished.Invoke(); });
@@ -101,24 +116,33 @@ namespace umi3d.cdk
             }
             if (base.SetUMI3DProperty(entity, property))
                 return true;
-            UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
+            var dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
             if (dto == null) return false;
             switch (property.property)
             {
                 case UMI3DPropertyKeys.Position:
                     dto.position = (SerializableVector3)property.value;
                     if (node.updatePose)
+                    {
                         node.transform.localPosition = dto.position;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Rotation:
                     dto.rotation = (SerializableVector4)property.value;
                     if (node.updatePose)
+                    {
                         node.transform.localRotation = dto.rotation;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = (SerializableVector3)property.value;
                     if (node.updatePose)
+                    {
                         node.transform.localScale = dto.scale;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 default:
                     return false;
@@ -137,28 +161,37 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null)
             {
-                return SetUMI3DMaterialProperty(entity, operationId, propertyKey, container); ;
+                return SetUMI3DMaterialProperty(entity, operationId, propertyKey, container);
             }
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
+            var dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
             if (dto == null) return false;
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
                     dto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
                     if (node.updatePose)
+                    {
                         node.transform.localPosition = dto.position;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Rotation:
                     dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
                     if (node.updatePose)
+                    {
                         node.transform.localRotation = dto.rotation;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 case UMI3DPropertyKeys.Scale:
                     dto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
                     if (node.updatePose)
+                    {
                         node.transform.localScale = dto.scale;
+                        node.SendOnPoseUpdated();
+                    }
                     break;
                 default:
                     return false;
@@ -202,13 +235,14 @@ namespace umi3d.cdk
                             m.name = material.name;
                         //register the material
                         UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m);
+                        entity.NotifyLoaded();
                     }
                     );
 
                 }
                 catch
                 {
-                    Debug.LogError("this material failed to load : " + material.name);
+                    UMI3DLogger.LogError("this material failed to load : " + material.name, scope);
                 }
             }
             callback.Invoke();
@@ -221,7 +255,7 @@ namespace umi3d.cdk
 
         private bool SwitchOnMaterialProperties(UMI3DEntityInstance entity, SetEntityPropertyDto property, Material materialToModify)
         {
-            GlTFMaterialDto glTFMaterialDto = entity?.dto as GlTFMaterialDto;
+            var glTFMaterialDto = entity?.dto as GlTFMaterialDto;
             ulong id = (glTFMaterialDto?.extensions?.umi3d as AbstractEntityDto).id;
 
             switch (property.property)
@@ -250,7 +284,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
-                    Debug.LogWarning("Height Texture not supported");
+                    UMI3DLogger.LogWarning("Height Texture not supported", scope);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
@@ -272,8 +306,8 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    Debug.LogWarning("not totaly implemented");
-                    var extension = glTFMaterialDto.extensions.umi3d;
+                    UMI3DLogger.LogWarning("not totaly implemented", scope);
+                    IMaterialDto extension = glTFMaterialDto.extensions.umi3d;
                     switch (property)
                     {
                         case SetEntityDictionaryAddPropertyDto p:
@@ -281,14 +315,17 @@ namespace umi3d.cdk
                             if (extension.shaderProperties.ContainsKey((string)p.key))
                             {
                                 extension.shaderProperties[(string)p.key] = ((UMI3DShaderPropertyDto)p.value).value;
-                                Debug.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value");
+                                UMI3DLogger.LogWarning("this key (" + p.key.ToString() + ") already exists. Update old value", scope);
                             }
                             else
+                            {
                                 extension.shaderProperties.Add((string)p.key, ((UMI3DShaderPropertyDto)p.value).value);
+                            }
+
                             break;
                         case SetEntityDictionaryRemovePropertyDto p:
                             extension.shaderProperties.Remove((string)p.key);
-                            Debug.LogWarning("Warning a property is removed but it cannot be applied");
+                            UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied", scope);
                             break;
                         case SetEntityDictionaryPropertyDto p:
                             extension.shaderProperties[(string)p.key] = ((UMI3DShaderPropertyDto)p.value).value;
@@ -305,7 +342,7 @@ namespace umi3d.cdk
                     break;
 
                 default:
-                    UMI3DMaterialDto uMI3DMaterialDto = glTFMaterialDto?.extensions?.umi3d as UMI3DMaterialDto;
+                    var uMI3DMaterialDto = glTFMaterialDto?.extensions?.umi3d as UMI3DMaterialDto;
                     if (uMI3DMaterialDto == null)
                         return false;
 
@@ -359,7 +396,7 @@ namespace umi3d.cdk
                             break;
 
                         case UMI3DPropertyKeys.HeightTextureScale:
-                            //Debug.LogWarning("Height Texture not supported");
+                            //UMI3DLogger.LogWarning("Height Texture not supported",scope);
                             AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, (TextureDto)property.value, MRTKShaderUtils.BumpMap, materialToModify);
                             uMI3DMaterialDto.heightTexture = (ScalableTextureDto)property.value;
                             break;
@@ -371,65 +408,160 @@ namespace umi3d.cdk
         }
 
 
-        private bool SwitchOnMaterialProperties(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container, Material materialToModify)
+        private bool SwitchOnMaterialProperties(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container, object materialToModify)
         {
-            GlTFMaterialDto glTFMaterialDto = entity?.dto as GlTFMaterialDto;
-            ulong id = (glTFMaterialDto?.extensions?.umi3d as AbstractEntityDto).id;
+            var glTFMaterialDto = entity?.dto as GlTFMaterialDto;
+            ulong id = (glTFMaterialDto?.extensions?.umi3d as AbstractEntityDto)?.id ?? 0;
 
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.RoughnessFactor:
                     //        ((Material)entity.Object).SetFloat("_Roughness", (float)(double)property.value);
                     //      ((Material)entity.Object).SetFloat("_Smoothness", RoughnessToSmoothness((float)(double)property.value)); 
-                    var rf = UMI3DNetworkingHelper.Read<float>(container);
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.Smoothness, RoughnessToSmoothness(rf));
+                    float rf = UMI3DNetworkingHelper.Read<float>(container);
+                    if (materialToModify is Material)
+                    {
+                        (materialToModify as Material).ApplyShaderProperty(MRTKShaderUtils.Smoothness, RoughnessToSmoothness(rf));
+                    }
+                    else if (materialToModify is List<Material>)
+                    {
+                        foreach (Material itemToModify in materialToModify as List<Material>)
+                        {
+                            itemToModify.ApplyShaderProperty(MRTKShaderUtils.Smoothness, RoughnessToSmoothness(rf));
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
 
                     glTFMaterialDto.pbrMetallicRoughness.roughnessFactor = rf;
                     break;
 
                 case UMI3DPropertyKeys.MetallicFactor:
-                    var mf = UMI3DNetworkingHelper.Read<float>(container);
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.Metallic, mf);
+                    float mf = UMI3DNetworkingHelper.Read<float>(container);
+                    if (materialToModify is Material)
+                    {
+                        (materialToModify as Material).ApplyShaderProperty(MRTKShaderUtils.Metallic, mf);
+                    }
+                    else if (materialToModify is List<Material>)
+                    {
+                        foreach (Material itemToModify in materialToModify as List<Material>)
+                        {
+                            itemToModify.ApplyShaderProperty(MRTKShaderUtils.Metallic, mf);
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                     glTFMaterialDto.pbrMetallicRoughness.metallicFactor = mf;
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    var bc = UMI3DNetworkingHelper.Read<Color>(container);
-                    materialToModify.color = bc;
+                    Color bc = UMI3DNetworkingHelper.Read<Color>(container);
+                    if (materialToModify is Material)
+                    {
+                        (materialToModify as Material).color = bc;
+                    }
+                    else if (materialToModify is List<Material>)
+                    {
+                        foreach (Material itemToModify in materialToModify as List<Material>)
+                        {
+                            itemToModify.color = bc;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                     glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = bc;
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    var ef = UMI3DNetworkingHelper.Read<Color>(container);
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ef);
+                    Color ef = UMI3DNetworkingHelper.Read<Color>(container);
+                    if (materialToModify is Material)
+                    {
+                        (materialToModify as Material).ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ef);
+                    }
+                    else if (materialToModify is List<Material>)
+                    {
+                        foreach (Material itemToModify in materialToModify as List<Material>)
+                        {
+                            itemToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ef);
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                     glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)ef;
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
-                    Debug.LogWarning("Height Texture not supported");
+                    UMI3DLogger.LogWarning("Height Texture not supported", scope);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
                     Vector2 offset = UMI3DNetworkingHelper.Read<Vector2>(container);
-                    foreach (string textureName in materialToModify.GetTexturePropertyNames())
+                    if (materialToModify is Material)
                     {
-                        materialToModify.SetTextureOffset(textureName, offset);
+                        foreach (string textureName in (materialToModify as Material).GetTexturePropertyNames())
+                        {
+                            (materialToModify as Material).SetTextureOffset(textureName, offset);
+                        }
                     }
+                    else if (materialToModify is List<Material>)
+                    {
+                        foreach (Material itemToModify in materialToModify as List<Material>)
+                        {
+                            foreach (string textureName in itemToModify.GetTexturePropertyNames())
+                            {
+                                itemToModify.SetTextureOffset(textureName, offset);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                     glTFMaterialDto.extensions.KHR_texture_transform.offset = offset;
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
-                    var scale = UMI3DNetworkingHelper.Read<Vector2>(container);
-                    foreach (string textureName in materialToModify.GetTexturePropertyNames())
+                    Vector2 scale = UMI3DNetworkingHelper.Read<Vector2>(container);
+                    if (materialToModify is Material)
                     {
-                        materialToModify.SetTextureScale(textureName, scale);
+                        foreach (string textureName in (materialToModify as Material).GetTexturePropertyNames())
+                        {
+                            (materialToModify as Material).SetTextureScale(textureName, scale);
+                        }
                     }
+                    else if (materialToModify is List<Material>)
+                    {
+                        foreach (Material itemToModify in materialToModify as List<Material>)
+                        {
+                            foreach (string textureName in itemToModify.GetTexturePropertyNames())
+                            {
+                                itemToModify.SetTextureScale(textureName, scale);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
                     glTFMaterialDto.extensions.KHR_texture_transform.scale = scale;
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    Debug.LogWarning("not totaly implemented");
-                    var extension = glTFMaterialDto.extensions.umi3d;
+                    UMI3DLogger.LogWarning("Shader Properties are not totaly implemented", scope);
+                    IMaterialDto extension = glTFMaterialDto.extensions.umi3d;
                     string key;
                     object value;
                     //TODO
@@ -441,15 +573,18 @@ namespace umi3d.cdk
                             if (extension.shaderProperties.ContainsKey(key))
                             {
                                 extension.shaderProperties[key] = value;
-                                Debug.LogWarning($"this key [{key}] already exists. Update old value");
+                                UMI3DLogger.LogWarning($"this key [{key}] already exists. Update old value", scope);
                             }
                             else
+                            {
                                 extension.shaderProperties.Add(key, value);
+                            }
+
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
                             extension.shaderProperties.Remove((string)key);
-                            Debug.LogWarning("Warning a property is removed but it cannot be applied");
+                            UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied", scope);
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
@@ -463,74 +598,242 @@ namespace umi3d.cdk
                             break;
                     }
                     if (materialToModify != null)
-                        AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(id, extension.shaderProperties, materialToModify);
+                    {
+                        if (materialToModify is Material)
+                        {
+                            AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(id, extension.shaderProperties, materialToModify as Material);
+                        }
+                        else if (materialToModify is List<Material>)
+                        {
+                            foreach (Material itemToModify in materialToModify as List<Material>)
+                            {
+                                AbstractUMI3DMaterialLoader.ReadAdditionalShaderProperties(id, extension.shaderProperties, itemToModify);
+                            }
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
                     break;
 
                 default:
-                    UMI3DMaterialDto uMI3DMaterialDto = glTFMaterialDto?.extensions?.umi3d as UMI3DMaterialDto;
+                    var uMI3DMaterialDto = glTFMaterialDto?.extensions?.umi3d as UMI3DMaterialDto;
                     if (uMI3DMaterialDto == null)
                         return false;
                     switch (propertyKey)
                     {
                         case UMI3DPropertyKeys.Maintexture:
-                            var mt = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mt, MRTKShaderUtils.MainTex, materialToModify);
+                            TextureDto mt = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mt, MRTKShaderUtils.MainTex, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mt, MRTKShaderUtils.MainTex, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.baseColorTexture = mt;
                             break;
 
                         case UMI3DPropertyKeys.NormalTexture:
-                            var nt = UMI3DNetworkingHelper.Read<ScalableTextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, nt, MRTKShaderUtils.NormalMap, materialToModify);
+                            ScalableTextureDto nt = UMI3DNetworkingHelper.Read<ScalableTextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, nt, MRTKShaderUtils.NormalMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, nt, MRTKShaderUtils.NormalMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.normalTexture = nt;
                             break;
 
                         case UMI3DPropertyKeys.EmissiveTexture:
-                            var et = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, et, MRTKShaderUtils.EmissionMap, materialToModify);
+                            TextureDto et = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, et, MRTKShaderUtils.EmissionMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, et, MRTKShaderUtils.EmissionMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.emissiveTexture = et;
                             break;
 
                         case UMI3DPropertyKeys.RoughnessTexture:
-                            var rt = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, rt, MRTKShaderUtils.RoughnessMap, materialToModify);
+                            TextureDto rt = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, rt, MRTKShaderUtils.RoughnessMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, rt, MRTKShaderUtils.RoughnessMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.roughnessTexture = rt;
                             break;
 
                         case UMI3DPropertyKeys.MetallicTexture:
-                            var met = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, met, MRTKShaderUtils.MetallicMap, materialToModify);
+                            TextureDto met = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, met, MRTKShaderUtils.MetallicMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, met, MRTKShaderUtils.MetallicMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.metallicTexture = met;
                             break;
 
                         case UMI3DPropertyKeys.ChannelTexture:
-                            var ct = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, ct, MRTKShaderUtils.ChannelMap, materialToModify);
+                            TextureDto ct = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, ct, MRTKShaderUtils.ChannelMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, ct, MRTKShaderUtils.ChannelMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.channelTexture = ct;
                             break;
 
                         case UMI3DPropertyKeys.MetallicRoughnessTexture:
-                            var mrt = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mrt, MRTKShaderUtils.MetallicMap, materialToModify);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mrt, MRTKShaderUtils.RoughnessMap, materialToModify);
+                            TextureDto mrt = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mrt, MRTKShaderUtils.MetallicMap, materialToModify as Material);
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mrt, MRTKShaderUtils.RoughnessMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mrt, MRTKShaderUtils.MetallicMap, itemToModify);
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, mrt, MRTKShaderUtils.RoughnessMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.metallicRoughnessTexture = mrt;
 
                             break;
 
                         case UMI3DPropertyKeys.OcclusionTexture:
-                            var ot = UMI3DNetworkingHelper.Read<TextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, ot, MRTKShaderUtils.OcclusionMap, materialToModify);
+                            TextureDto ot = UMI3DNetworkingHelper.Read<TextureDto>(container);
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, ot, MRTKShaderUtils.OcclusionMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, ot, MRTKShaderUtils.OcclusionMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.occlusionTexture = ot;
                             break;
 
                         case UMI3DPropertyKeys.NormalTextureScale:
-                            var nts = UMI3DNetworkingHelper.Read<float>(container);
-                            materialToModify.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, nts);
+                            float nts = UMI3DNetworkingHelper.Read<float>(container);
+                            if (materialToModify is Material)
+                            {
+                                (materialToModify as Material).ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, nts);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    (materialToModify as Material).ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, nts);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.normalTexture.scale = nts;
                             break;
 
                         case UMI3DPropertyKeys.HeightTextureScale:
-                            var hts = UMI3DNetworkingHelper.Read<ScalableTextureDto>(container);
-                            AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, hts, MRTKShaderUtils.BumpMap, materialToModify);
+                            ScalableTextureDto hts = UMI3DNetworkingHelper.Read<ScalableTextureDto>(container);
+                            //UMI3DLogger.LogWarning("Height Texture not supported");
+                            if (materialToModify is Material)
+                            {
+                                AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, hts, MRTKShaderUtils.BumpMap, materialToModify as Material);
+                            }
+                            else if (materialToModify is List<Material>)
+                            {
+                                foreach (Material itemToModify in materialToModify as List<Material>)
+                                {
+                                    AbstractUMI3DMaterialLoader.LoadTextureInMaterial(id, hts, MRTKShaderUtils.BumpMap, itemToModify);
+                                }
+                            }
+                            else
+                            {
+                                return false;
+                            }
+
                             uMI3DMaterialDto.heightTexture = hts;
                             break;
                         default:
@@ -565,22 +868,11 @@ namespace umi3d.cdk
 
         public bool SetUMI3DMaterialProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (entity != null && entity.Object is Material)
+            if (entity != null && entity.Object != null && (entity.Object is Material || entity.Object is List<Material>))
             {
-                return SwitchOnMaterialProperties(entity, operationId, propertyKey, container, (Material)entity.Object);
+                return SwitchOnMaterialProperties(entity, operationId, propertyKey, container, entity.Object);
             }
 
-            if (entity != null && entity.Object is List<Material>)
-            {
-                bool res = false;
-                foreach (Material item in (List<Material>)entity.Object)
-                {
-
-                    if (SwitchOnMaterialProperties(entity, operationId, propertyKey, container, item))
-                        res = true;
-                }
-                return res;
-            }
             return false;
         }
 
@@ -637,7 +929,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
-                    Debug.LogWarning("Height Texture not supported");
+                    UMI3DLogger.LogWarning("Height Texture not supported", scope);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
@@ -657,7 +949,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
-                    Debug.LogWarning("not totaly implemented");
+                    UMI3DLogger.LogWarning("not totaly implemented", scope);
                     break;
 
                 default:
