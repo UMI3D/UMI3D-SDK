@@ -61,6 +61,11 @@ namespace umi3d.cdk
                                         UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
                                         AbstractMeshDtoLoader.ShowModelRecursively(instance);
 
+                                        if (!rootDto.isRightHanded)
+                                        {
+                                            instance.transform.localEulerAngles += new Vector3(0, 180, 0);
+                                        }
+
                                         Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
                                         if (renderers != null)
                                         {
