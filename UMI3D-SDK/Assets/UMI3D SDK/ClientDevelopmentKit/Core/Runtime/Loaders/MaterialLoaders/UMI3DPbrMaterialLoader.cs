@@ -53,7 +53,6 @@ namespace umi3d.cdk
                         newMat.renderQueue = 3000;
 #if USING_URP
                         newMat.SetFloat("_Surface", 1);
-                        newMat.renderQueue = 3000;
 #endif
                     }
                     newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)(Vector3)dto.emissiveFactor);
