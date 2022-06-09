@@ -42,7 +42,7 @@ namespace umi3d.cdk
                 void SetMaterial(Material newMat)
                 {
                     newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
-                    if (newMat.color.a < 1)
+                    if (newMat.color.a < 1 || dto.alphaMode == "BLEND")
                     {
                         newMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
                         newMat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
@@ -51,6 +51,9 @@ namespace umi3d.cdk
                         newMat.DisableKeyword("_ALPHABLEND_ON");
                         newMat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
                         newMat.renderQueue = 3000;
+#if USING_URP
+                        newMat.SetFloat("_Surface", 1);
+#endif
                     }
                     newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)(Vector3)dto.emissiveFactor);
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
