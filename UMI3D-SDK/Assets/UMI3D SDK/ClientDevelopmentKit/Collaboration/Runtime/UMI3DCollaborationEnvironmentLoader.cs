@@ -51,10 +51,33 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.UserList:
                     return SetUserList(dto, property);
+
+                case UMI3DPropertyKeys.UserMicrophoneStatus:
+                case UMI3DPropertyKeys.UserAttentionRequired:
+                case UMI3DPropertyKeys.UserAvatarStatus:
+                case UMI3DPropertyKeys.UserAudioFrequency:
+                    return UpdateUser(property.property, entity, property.value);
+
                 default:
                     return false;
             }
         }
+
+        bool UpdateUser(ulong property, UMI3DEntityInstance userInstance, object value) {
+            if (userInstance.dto is UserDto dto)
+            {
+                var user = GetUser(dto);
+                return user?.UpdateUser(property, value) ?? false;
+            }
+
+            return false; 
+        }
+
+        UMI3DUser GetUser(UserDto dto)
+        {
+            return UserList.FirstOrDefault(u => u.id == dto.id);
+        }
+
 
         protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
@@ -66,6 +89,21 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.UserList:
                     return SetUserList(dto, operationId, propertyKey, container);
+
+                case UMI3DPropertyKeys.UserMicrophoneStatus:
+                case UMI3DPropertyKeys.UserAttentionRequired:
+                case UMI3DPropertyKeys.UserAvatarStatus:
+                    {
+                        bool value = UMI3DNetworkingHelper.Read<bool>(container);
+                        return UpdateUser(propertyKey, entity, value);
+                    }
+
+                case UMI3DPropertyKeys.UserAudioFrequency:
+                    {
+                        int value = UMI3DNetworkingHelper.Read<int>(container);
+                        return UpdateUser(propertyKey, entity, value);
+                    }
+
                 default:
                     return false;
             }
@@ -142,15 +180,12 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
         {
-            int index;
-            UserDto user;
-
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
                     {
-                        index = UMI3DNetworkingHelper.Read<int>(container);
-                        user = UMI3DNetworkingHelper.Read<UserDto>(container);
+                        int index = UMI3DNetworkingHelper.Read<int>(container);
+                        UserDto user = UMI3DNetworkingHelper.Read<UserDto>(container);
                         var _user = new UMI3DUser(user);
                         UserList.Insert(index, _user);
                         dto.userList.Insert(index, user);
@@ -159,7 +194,7 @@ namespace umi3d.cdk.collaboration
                     }
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     {
-                        index = UMI3DNetworkingHelper.Read<int>(container);
+                        int index = UMI3DNetworkingHelper.Read<int>(container);
                         if (UserList.Count > index)
                         {
                             UMI3DUser Olduser = UserList[index];
@@ -172,8 +207,8 @@ namespace umi3d.cdk.collaboration
                     }
                 case UMI3DOperationKeys.SetEntityListProperty:
                     {
-                        index = UMI3DNetworkingHelper.Read<int>(container);
-                        user = UMI3DNetworkingHelper.Read<UserDto>(container);
+                        int index = UMI3DNetworkingHelper.Read<int>(container);
+                        UserDto user = UMI3DNetworkingHelper.Read<UserDto>(container);
                         if (0 > index)
                             break;
                         if (UserList.Count > index)
@@ -192,8 +227,8 @@ namespace umi3d.cdk.collaboration
                     }
                 default:
                     {
-                        foreach (UMI3DUser ouser in UserList)
-                            ouser.Destroy();
+                        foreach (UMI3DUser user in UserList)
+                            user.Destroy();
                         dto.userList = UMI3DNetworkingHelper.ReadList<UserDto>(container);
                         UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
                         OnUpdateUserList?.Invoke();

@@ -88,7 +88,7 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Received answer to Connect", scope | DebugScope.Connection);
 
             var dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.RegularExpressions.Regex.Unescape(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data))) : null;
-
+            
             return dto;
         }
 

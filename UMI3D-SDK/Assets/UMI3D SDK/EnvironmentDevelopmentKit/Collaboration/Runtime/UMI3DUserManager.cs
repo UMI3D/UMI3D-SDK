@@ -307,5 +307,94 @@ namespace umi3d.edk.collaboration
                 users[id].SetStatus(status);
             }
         }
+
+        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequest dto)
+        {
+            Transaction tr = new Transaction();
+            tr.reliable = true;
+            switch (dto.operation)
+            {
+                case UMI3DOperationKeys.UserMicrophoneStatus:
+                    if (users.ContainsKey(dto.id))
+                        tr.AddIfNotNull(users[dto.id].microphoneStatus.SetValue(dto.value));
+                    break;
+
+                case UMI3DOperationKeys.UserAvatarStatus:
+                    if (users.ContainsKey(dto.id))
+                        tr.AddIfNotNull(users[dto.id].avatarStatus.SetValue(dto.value));
+                    break;
+
+                case UMI3DOperationKeys.UserAttentionStatus:
+                    if (users.ContainsKey(dto.id))
+                        tr.AddIfNotNull(users[dto.id].attentionRequired.SetValue(dto.value));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllMicrophoneStatus:
+                    foreach (var u in users.Values)
+                        tr.AddIfNotNull(u.microphoneStatus.SetValue(false));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAvatarStatus:
+                    foreach (var u in users.Values)
+                        tr.AddIfNotNull(u.avatarStatus.SetValue(false));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAttentionStatus:
+                    foreach (var u in users.Values)
+                        tr.AddIfNotNull(u.attentionRequired.SetValue(false));
+                    break;
+            }
+            tr.Dispatch();
+        }
+
+        public void CollaborationRequest(UMI3DUser user, uint operationKey, ByteContainer container)
+        {
+            bool value;
+            ulong id;
+            Transaction tr = new Transaction();
+            tr.reliable = true;
+            switch (operationKey)
+            {
+                case UMI3DOperationKeys.UserMicrophoneStatus:
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+
+                    if (users.ContainsKey(id))
+                        tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
+                    break;
+
+                case UMI3DOperationKeys.UserAvatarStatus:
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    if (users.ContainsKey(id))
+                        tr.AddIfNotNull(users[id].avatarStatus.SetValue(value));
+                    break;
+
+                case UMI3DOperationKeys.UserAttentionStatus:
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    if (users.ContainsKey(id))
+                        tr.AddIfNotNull(users[id].attentionRequired.SetValue(value));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllMicrophoneStatus:
+                    foreach (var u in users.Values)
+                        tr.AddIfNotNull(u.microphoneStatus.SetValue(false));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAvatarStatus:
+                    foreach (var u in users.Values)
+                        tr.AddIfNotNull(u.avatarStatus.SetValue(false));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAttentionStatus:
+                    foreach (var u in users.Values)
+                        tr.AddIfNotNull(u.attentionRequired.SetValue(false));
+                    break;
+            }
+            tr.Dispatch();
+        }
+
+
     }
 }

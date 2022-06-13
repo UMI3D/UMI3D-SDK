@@ -47,10 +47,40 @@ namespace umi3d.edk.collaboration
 
         static ulong lastGivenUserId = 1;
 
+        /// <summary>
+        /// Current id for ForgeNetworkingRemastered
+        /// </summary>
+        public NetworkingPlayer networkPlayer { get; set; }
+
+        /// <summary>
+        /// The user token
+        /// </summary>
+        public string token { get => identityDto?.localToken; }
+
+        public UMI3DForgeServer forgeServer;
+
+        public UMI3DAudioPlayer audioPlayer;
+        
+        public UMI3DAudioPlayer videoPlayer;
+
+        public UMI3DAsyncProperty<int> audioFrequency;
+        public UMI3DAsyncProperty<bool> microphoneStatus;
+        public UMI3DAsyncProperty<bool> avatarStatus;
+        public UMI3DAsyncProperty<bool> attentionRequired;
+
+
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
+            
+
             this.identityDto = identity ?? new RegisterIdentityDto();
             userId = UMI3DEnvironment.Register(this, lastGivenUserId++);
+
+            audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
+            microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);
+            avatarStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAvatarStatus, true);
+            attentionRequired = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAttentionRequired, false);
+
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
@@ -77,24 +107,6 @@ namespace umi3d.edk.collaboration
         {
             UMI3DEnvironment.Remove(this);
         }
-
-        /// <summary>
-        /// Current id for ForgeNetworkingRemastered
-        /// </summary>
-        public NetworkingPlayer networkPlayer { get; set; }
-
-        /// <summary>
-        /// The user token
-        /// </summary>
-        public string token { get => identityDto?.localToken; }
-
-
-
-        public UMI3DForgeServer forgeServer;
-
-        public UMI3DAudioPlayer audioPlayer;
-        public int audioFrequency = 12000;
-        public UMI3DAudioPlayer videoPlayer;
 
         public void NotifyUpdate()
         {
@@ -143,9 +155,12 @@ namespace umi3d.edk.collaboration
                 avatarId = Avatar == null ? 0 : Avatar.Id(),
                 networkId = networkPlayer?.NetworkId ?? 0,
                 audioSourceId = audioPlayer?.Id() ?? 0,
-                audioFrequency = audioFrequency,
+                audioFrequency = audioFrequency.GetValue(),
                 videoSourceId = videoPlayer?.Id() ?? 0,
-                login = login
+                login = login,
+                microphoneStatus = microphoneStatus.GetValue(),
+                avatarStatus = avatarStatus.GetValue(),
+                attentionRequired = attentionRequired.GetValue(),
             };
             return user;
         }

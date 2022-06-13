@@ -62,6 +62,9 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkId)
+                    + UMI3DNetworkingHelper.Write(user.microphoneStatus)
+                    + UMI3DNetworkingHelper.Write(user.avatarStatus)
+                    + UMI3DNetworkingHelper.Write(user.attentionRequired)
                      + UMI3DNetworkingHelper.Write<string>(user.login);
                     return true;
                 case UMI3DCollaborationUser user:
@@ -69,9 +72,12 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<uint>((uint)user.status)
                     + UMI3DNetworkingHelper.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id())
                     + UMI3DNetworkingHelper.Write<ulong>(user.audioPlayer?.Id() ?? 0)
-                    + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
+                    + UMI3DNetworkingHelper.Write<int>(user.audioFrequency.GetValue())
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0)
+                    + UMI3DNetworkingHelper.Write(user.microphoneStatus.GetValue())
+                    + UMI3DNetworkingHelper.Write(user.avatarStatus.GetValue())
+                    + UMI3DNetworkingHelper.Write(user.attentionRequired.GetValue())
                     + UMI3DNetworkingHelper.Write<string>(user.login);
                     return true;
                 case RegisterIdentityDto identity:
