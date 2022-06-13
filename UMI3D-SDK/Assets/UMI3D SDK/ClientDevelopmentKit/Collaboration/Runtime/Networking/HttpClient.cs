@@ -94,7 +94,7 @@ namespace umi3d.cdk.collaboration
 
         static UMI3DDto ReadConnectAnswer(string text)
         {
-            var dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+            var dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new IdentityConverter() });
             var dto2 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
 
             if (dto1?.GlobalToken != null && dto1?.connectionDto != null)
@@ -186,6 +186,43 @@ namespace umi3d.cdk.collaboration
                     dto.icon2D = tokenI2.ToObject<ResourceDto>();
                 if (jo.TryGetValue("icon3D", out JToken tokenI3))
                     dto.icon3D = tokenI3.ToObject<ResourceDto>();
+
+                return dto;
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public class IdentityConverter : Newtonsoft.Json.JsonConverter
+        {
+            public override bool CanRead => true;
+
+            public override bool CanWrite => false;
+
+            public override bool CanConvert(Type objectType)
+            {
+                return (objectType == typeof(ForgeConnectionDto));
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                JObject jo = JObject.Load(reader);
+                ConnectionDto dto = null;
+                try
+                {
+                    return jo.ToObject<ForgeConnectionDto>();
+                }
+                catch
+                {
+                    return UMI3DDto.FromJson<ForgeConnectionDto>(jo.ToObject<string>(), Newtonsoft.Json.TypeNameHandling.None);
+                }
+
+
+                if (dto == null)
+                    return null;
 
                 return dto;
             }
@@ -554,7 +591,7 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
                     return await _PostRequest(HeaderToken, url, contentType, bytes, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                    throw new Umi3dException(www.responseCode, www.error + " Failed to post " + www.url);
+                    throw new Umi3dException(www.responseCode, System.Text.Encoding.ASCII.GetString(bytes) + "\n +++++++++++++++++++++++++++++++++\n" + www.error + " Failed to post " + www.url + "\n " + www.downloadHandler.text);
             }
             return www;
         }
