@@ -96,9 +96,9 @@ namespace MrtkShader
                     break;
             }
         }
-
-        public static ShaderProperty<Color> MainColor = new ShaderProperty<Color>("_Color", Color.white);
 #if USING_URP
+
+        public static ShaderProperty<Color> MainColor = new ShaderProperty<Color>("_BaseColor", Color.white);
 
         public static ShaderProperty<Texture2D> MainTex = new ShaderProperty<Texture2D>("_BaseMap", null, null,
     (m, s, v) =>
@@ -128,6 +128,8 @@ namespace MrtkShader
         public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null);
 
 #else
+
+    public static ShaderProperty<Color> MainColor = new ShaderProperty<Color>("_Color", Color.white);
 
         public static ShaderProperty<Texture2D> MainTex = new ShaderProperty<Texture2D>("_MainTex", null, null,
             (m, s, v) =>

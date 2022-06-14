@@ -63,8 +63,9 @@ namespace umi3d.edk.collaboration
         {
             if (volumeId == 0 && UMI3DEnvironment.Exists)
             {
-                UMI3DEnvironment.Register(this);
+                volumeId = UMI3DEnvironment.Register(this);
             }
+
             return volumeId;
         }
 
@@ -219,7 +220,12 @@ namespace umi3d.edk.collaboration
                 return false;
 
             RelayDescription relay = DicoRelays[channel];
-            RelayDescription.Strategy strategy = sender.RelayRoom.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
+            RelayDescription.Strategy strategy;
+
+            if (to.Avatar.RelayRoom == null)
+                strategy = relay.OutsideVolume;
+            else
+                strategy = to.Avatar.RelayRoom.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
 
             if (strategy.sendData)
             {

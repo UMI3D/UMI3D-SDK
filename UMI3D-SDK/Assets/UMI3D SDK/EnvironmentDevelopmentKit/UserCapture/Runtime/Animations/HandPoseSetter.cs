@@ -193,6 +193,8 @@ namespace umi3d.edk.userCapture
                 HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftLittleIntermediate, nameof(BoneType.LeftLittleIntermediate), ScriptableHand.Get(nameof(BoneType.LeftLittleIntermediate)).Rot));
                 HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftLittleDistal, nameof(BoneType.LeftLittleDistal), ScriptableHand.Get(nameof(BoneType.LeftLittleDistal)).Rot));
             }
+
+            EditorUtility.SetDirty(HandPose);
         }
 
         public void LoadPose()
