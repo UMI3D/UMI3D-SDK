@@ -368,7 +368,7 @@ namespace umi3d.edk.collaboration
                     {
                         RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                        if (relayVolume != null)
+                        if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
                         {
                             MainThreadManager.Run(() =>
                             {
@@ -412,7 +412,7 @@ namespace umi3d.edk.collaboration
                     {
                         RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                        if (relayVolume != null)
+                        if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
                         {
                             MainThreadManager.Run(() =>
                             {
@@ -451,7 +451,7 @@ namespace umi3d.edk.collaboration
 
         static List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
 
-        public delegate void AudioFrame(UMI3DCollaborationUser user,Binary frame);
+        public delegate void AudioFrame(UMI3DCollaborationUser user, Binary frame);
         public static AudioFrame OnAudioFrame;
 
         /// <inheritdoc/>
@@ -464,12 +464,12 @@ namespace umi3d.edk.collaboration
                 OnAudioFrame(user, frame);
                 return;
             }
-            
+
             if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
                 RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                if (relayVolume != null)
+                if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.VoIP))
                 {
                     MainThreadManager.Run(() =>
                     {
