@@ -87,20 +87,34 @@ namespace umi3d.cdk.collaboration
             var uwr = await _PostRequest(null, MasterUrl + UMI3DNetworkingKeys.connect, "application/json", bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
             UMI3DLogger.Log($"Received answer to Connect", scope | DebugScope.Connection);
 
-            var dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.RegularExpressions.Regex.Unescape(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data))) : null;
+            var dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data)) : null;
 
             return dto;
         }
 
         static UMI3DDto ReadConnectAnswer(string text)
         {
-            var dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new IdentityConverter() });
-            var dto2 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
+            PrivateIdentityDto dto1 = null;
+            FakePrivateIdentityDto dto2 = null;
 
-            if (dto1?.GlobalToken != null && dto1?.connectionDto != null)
+            try
+            {
+                dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+            }
+            catch (Exception)
+            {
+                dto2 = UMI3DDto.FromJson<FakePrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+            }
+
+            var dto3 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
+
+            if (dto1 != null && dto1?.GlobalToken != null && dto1?.connectionDto != null)
                 return dto1;
+            else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
+                return dto2.ToPrivateIdentity();
             else
-                return dto2;
+                return dto3;
+
         }
 
         public class ParameterConverter : Newtonsoft.Json.JsonConverter
@@ -196,40 +210,27 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public class IdentityConverter : Newtonsoft.Json.JsonConverter
+        private class FakePrivateIdentityDto : IdentityDto
         {
-            public override bool CanRead => true;
+            public string GlobalToken;
+            public string connectionDto;
+            public List<LibrariesDto> libraries;
 
-            public override bool CanWrite => false;
-
-            public override bool CanConvert(Type objectType)
+            public PrivateIdentityDto ToPrivateIdentity()
             {
-                return (objectType == typeof(ForgeConnectionDto));
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                JObject jo = JObject.Load(reader);
-                ConnectionDto dto = null;
-                try
+                return new PrivateIdentityDto()
                 {
-                    return jo.ToObject<ForgeConnectionDto>();
-                }
-                catch
-                {
-                    return UMI3DDto.FromJson<ForgeConnectionDto>(jo.ToObject<string>(), Newtonsoft.Json.TypeNameHandling.None);
-                }
-
-
-                if (dto == null)
-                    return null;
-
-                return dto;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
+                    GlobalToken = GlobalToken,
+                    connectionDto = UMI3DDto.FromJson<ForgeConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
+                    libraries = libraries,
+                    localToken = localToken,
+                    headerToken = headerToken,
+                    guid = guid,
+                    displayName = displayName,
+                    key = key,
+                    login = login,
+                    userId = userId
+                };
             }
         }
 
@@ -591,7 +592,10 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
                     return await _PostRequest(HeaderToken, url, contentType, bytes, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                    throw new Umi3dException(www.responseCode, System.Text.Encoding.ASCII.GetString(bytes) + "\n +++++++++++++++++++++++++++++++++\n" + www.error + " Failed to post " + www.url + "\n " + www.downloadHandler.text);
+                {
+                    UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(bytes));
+                    throw new Umi3dException(www.responseCode, www.error + " Failed to post " + www.url + "\n " + www.downloadHandler.text);
+                }
             }
             return www;
         }
