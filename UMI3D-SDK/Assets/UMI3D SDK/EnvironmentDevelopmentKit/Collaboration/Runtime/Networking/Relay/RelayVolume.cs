@@ -349,5 +349,15 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
         }
+
+        /// <summary>
+        /// Checks if this relay defines a strategy for <paramref name="channelType"/>.
+        /// </summary>
+        /// <param name="channelType"></param>
+        /// <returns></returns>
+        public bool HasStrategyFor(DataChannelTypes channelType)
+        {
+            return DicoRelays.ContainsKey(channelType);
+        }
     }
 }
