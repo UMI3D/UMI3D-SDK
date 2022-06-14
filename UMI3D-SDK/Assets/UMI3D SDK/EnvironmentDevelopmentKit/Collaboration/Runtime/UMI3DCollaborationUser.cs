@@ -36,6 +36,11 @@ namespace umi3d.edk.collaboration
         public string login { get => identityDto.login; }
 
         /// <summary>
+        /// The unique user display Name.
+        /// </summary>
+        public string displayName { get => identityDto.displayName; }
+
+        /// <summary>
         /// The unique user login.
         /// </summary>
         public string guid { get => identityDto.guid; }
@@ -157,7 +162,7 @@ namespace umi3d.edk.collaboration
                 audioSourceId = audioPlayer?.Id() ?? 0,
                 audioFrequency = audioFrequency.GetValue(),
                 videoSourceId = videoPlayer?.Id() ?? 0,
-                login = login,
+                login = string.IsNullOrEmpty(displayName) ? (string.IsNullOrEmpty(login) ? Id().ToString() : login) : displayName,
                 microphoneStatus = microphoneStatus.GetValue(),
                 avatarStatus = avatarStatus.GetValue(),
                 attentionRequired = attentionRequired.GetValue(),
