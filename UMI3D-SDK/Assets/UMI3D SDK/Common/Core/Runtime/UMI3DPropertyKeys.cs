@@ -46,6 +46,11 @@ namespace umi3d.common
         public const uint PreloadedScenes = 2001;
         public const uint UserList = 2002;
 
+        public const uint UserAudioFrequency = 2011;
+        public const uint UserMicrophoneStatus = 2012;
+        public const uint UserAvatarStatus = 2013;
+        public const uint UserAttentionRequired = 2014;
+
         public const uint AmbientType = 2101;
         public const uint AmbientSkyColor = 2102;
         public const uint AmbientHorizontalColor = 2103;

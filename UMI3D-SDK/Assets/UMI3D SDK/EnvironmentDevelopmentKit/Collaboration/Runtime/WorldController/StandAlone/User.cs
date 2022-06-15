@@ -23,7 +23,7 @@ namespace umi3d.worldController
     {
         public bool LoadLibraryOnly;
         public GateDto gate;
-        private PrivateIdentityDto privateIdentity;
+        private readonly PrivateIdentityDto privateIdentity;
         public string Token => privateIdentity.GlobalToken;
 
         public string localToken => privateIdentity.localToken;
@@ -31,14 +31,15 @@ namespace umi3d.worldController
         public string key => privateIdentity.key;
 
         public string globalToken;
-
-        static Dictionary<ulong, User> ids = new Dictionary<ulong, User>();
+        private static readonly Dictionary<ulong, User> ids = new Dictionary<ulong, User>();
 
         public User(ConnectionDto connectionDto, string globalToken)
         {
             this.globalToken = globalToken;
-            privateIdentity = new PrivateIdentityDto();
-            privateIdentity.guid = NewID();
+            privateIdentity = new PrivateIdentityDto
+            {
+                guid = NewID()
+            };
             Update(connectionDto);
         }
 
@@ -120,7 +121,7 @@ namespace umi3d.worldController
             privateIdentity.GlobalToken = globalToken;
         }
 
-        public void Set(string localToken,string headerToken,string key)
+        public void Set(string localToken, string headerToken, string key)
         {
             privateIdentity.localToken = localToken;
             privateIdentity.headerToken = headerToken;

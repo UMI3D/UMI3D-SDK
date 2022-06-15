@@ -14,10 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.worldController
 {
@@ -30,13 +27,13 @@ namespace umi3d.worldController
     }
 
     public class WorldControllerMessage : IBytable
-    { 
+    {
         public virtual bool IsCountable()
         {
             return true;
         }
 
-        public virtual uint messageId { get => 0; }
+        public virtual uint messageId => 0;
 
         protected virtual Bytable GetMessage()
         {
@@ -55,14 +52,14 @@ namespace umi3d.worldController
     }
     public class WorldControllerUserJoinMessage : WorldControllerMessage
     {
-        string uid;
+        private readonly string uid;
 
         public WorldControllerUserJoinMessage(string uid)
         {
             this.uid = uid;
         }
 
-        public override uint messageId { get => 1; }
+        public override uint messageId => 1;
 
         protected override Bytable GetMessage()
         {
@@ -77,7 +74,7 @@ namespace umi3d.worldController
 
         }
 
-        public override uint messageId { get => 2; }
+        public override uint messageId => 2;
     }
 
 

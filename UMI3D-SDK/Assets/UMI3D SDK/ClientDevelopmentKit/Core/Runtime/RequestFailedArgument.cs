@@ -16,7 +16,6 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
-using System.Threading.Tasks;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk

@@ -13,18 +13,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.common.interaction;
-using UnityEngine;
 using System.Linq;
+using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
     public class Toolbox : GlobalTool
     {
-        public static List<Toolbox> GetToolboxes() => instances.Values.ToList().Where(tool => tool is Toolbox).ToList().ConvertAll(t => t as Toolbox);
-        public static Toolbox GetToolbox(ulong id) => instances[id] as Toolbox;
+        public static List<Toolbox> GetToolboxes()
+        {
+            return instances.Values.ToList().Where(tool => tool is Toolbox).ToList().ConvertAll(t => t as Toolbox);
+        }
+
+        public static Toolbox GetToolbox(ulong id)
+        {
+            return instances[id] as Toolbox;
+        }
 
         public Toolbox(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto, parent) { }
 

@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using inetum.unityUtils;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -48,7 +47,7 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractToolDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            ToolboxDto tbDto = dto as ToolboxDto;
+            var tbDto = dto as ToolboxDto;
             tbDto.tools = objectTools.GetValue(user).ConvertAll(t => t.ToDto(user) as GlobalToolDto);
         }
 

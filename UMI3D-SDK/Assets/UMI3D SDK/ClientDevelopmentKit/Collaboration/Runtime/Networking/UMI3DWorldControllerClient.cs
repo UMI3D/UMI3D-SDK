@@ -14,24 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;
-using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
     public class UMI3DWorldControllerClient
     {
-        MediaDto media;
+        private readonly MediaDto media;
         public string name => media?.name;
-        GateDto gate;
-        string globalToken;
-        UMI3DEnvironmentClient environment;
-        PrivateIdentityDto privateIdentity;
+
+        private readonly GateDto gate;
+        private string globalToken;
+        private UMI3DEnvironmentClient environment;
+        private PrivateIdentityDto privateIdentity;
         public PublicIdentityDto PublicIdentity => new PublicIdentityDto()
         {
             userId = privateIdentity.userId,
@@ -51,10 +49,11 @@ namespace umi3d.cdk.collaboration
             key = privateIdentity.key
         };
 
-        bool isConnecting, isConnected;
-        public bool IsConnected() => isConnected;
-
-
+        private readonly bool isConnecting, isConnected;
+        public bool IsConnected()
+        {
+            return isConnected;
+        }
 
         public UMI3DWorldControllerClient(MediaDto media)
         {
@@ -92,11 +91,11 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
-        async Task<bool> Connect(ConnectionDto dto)
+        private async Task<bool> Connect(ConnectionDto dto)
         {
             if (UMI3DCollaborationClientServer.Exists)
             {
-                var answerDto = await HttpClient.Connect(dto, media.url);
+                UMI3DDto answerDto = await HttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
                 {
                     Connected(identity);
@@ -118,13 +117,13 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
-        void Connected(PrivateIdentityDto identity)
+        private void Connected(PrivateIdentityDto identity)
         {
             globalToken = identity.GlobalToken;
             privateIdentity = identity;
         }
 
-        async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)
+        private async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)
         {
             return await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
         }

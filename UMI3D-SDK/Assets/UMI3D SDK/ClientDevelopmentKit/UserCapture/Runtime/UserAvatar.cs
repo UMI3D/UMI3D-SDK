@@ -83,7 +83,7 @@ namespace umi3d.cdk.userCapture
                         if (item.syncPos)
                             item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
                         if (item.syncRot)
-                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;               
+                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.offsetRotation;
                     }
                     else
                     {
@@ -394,7 +394,7 @@ namespace umi3d.cdk.userCapture
                             syncRot = dto.syncRotation,
                             freezeWorldScale = dto.freezeWorldScale,
                             frozenLossyScale = obj.lossyScale
-                        }) ;
+                        });
                     }
                 }
             }

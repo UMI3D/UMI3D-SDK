@@ -64,6 +64,8 @@ namespace umi3d.cdk.collaboration
             {
                 if (Exists)
                 {
+                    if (UMI3DCollaborationEnvironmentLoader.Exists)
+                        UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser()?.SetMicrophoneStatus(!value);
                     if (Instance.muted != value)
                     {
                         if (value) Instance.StopRecording();
@@ -192,7 +194,14 @@ namespace umi3d.cdk.collaboration
         {
             IsMute = IsMute;
             audioSource = GetComponent<AudioSource>();
+            UMI3DUser.OnUserMicrophoneStatusUpdated.AddListener(OnUserMicrophoneStatusUpdated);
             UMI3DLogger.Register(this);
+        }
+
+        private void OnUserMicrophoneStatusUpdated(UMI3DUser user)
+        {
+            if (user.id == UMI3DCollaborationClientServer.Instance.GetUserId())
+                IsMute = !user.microphoneStatus;
         }
 
         private void _UpdateFrequency(int frequency)

@@ -81,7 +81,9 @@ namespace umi3d.cdk.menu.view
         /// <param name="callback">Callback to raise on selection</param>
         /// <see cref="UnSubscribe(UnityAction)"/>
         public virtual void Subscribe(UnityAction callback)
-            => subscribers.Add(callback);
+        {
+            subscribers.Add(callback);
+        }
 
         /// <summary>
         /// Unsubscribe a callback from the selection event.
@@ -89,6 +91,8 @@ namespace umi3d.cdk.menu.view
         /// <param name="callback">Callback to unsubscribe</param>
         /// <see cref="Subscribe(UnityAction)"/>
         public virtual void UnSubscribe(UnityAction callback)
-            => subscribers.Remove(callback);
+        {
+            subscribers.Remove(callback);
+        }
     }
 }

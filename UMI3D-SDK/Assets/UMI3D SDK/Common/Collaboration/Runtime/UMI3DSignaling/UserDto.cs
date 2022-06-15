@@ -31,6 +31,9 @@ namespace umi3d.common.collaboration
         public ulong videoSourceId;
         public uint networkId;
         public string login;
+        public bool microphoneStatus;
+        public bool avatarStatus;
+        public bool attentionRequired;
 
         public UserDto(UserDto source)
         {
@@ -42,6 +45,9 @@ namespace umi3d.common.collaboration
             this.networkId = source.networkId;
             this.id = source.id;
             this.login = source.login;
+            this.microphoneStatus = source.microphoneStatus;
+            this.avatarStatus = source.avatarStatus;
+            this.attentionRequired = source.attentionRequired;
         }
 
         public UserDto() { }
