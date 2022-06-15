@@ -17,7 +17,6 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
-using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration

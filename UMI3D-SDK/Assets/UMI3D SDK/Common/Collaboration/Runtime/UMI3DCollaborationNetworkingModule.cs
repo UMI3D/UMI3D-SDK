@@ -199,14 +199,15 @@ namespace umi3d.common.collaboration
                         {
                             variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
                         };
-                        if(texture.variants.Count == 0)
+                        if (texture.variants.Count == 0)
                         {
                             result = default(T);
                             readable = true;
                             return true;
-                        } else if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
-                            && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
-                            && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId))
+                        }
+                        else if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
+                          && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
+                          && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId))
                         {
                             texture.animationId = animationId;
                             texture.audioSourceId = audioSourceId;

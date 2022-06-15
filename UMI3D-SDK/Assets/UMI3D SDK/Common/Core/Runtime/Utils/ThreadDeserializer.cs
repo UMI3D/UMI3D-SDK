@@ -26,7 +26,7 @@ namespace umi3d.common
     {
         private Thread thread;
         private readonly int sleepTimeMiliseconde = 50;
-        private readonly Queue<(byte[], Action<UMI3DDto> ,Newtonsoft.Json.TypeNameHandling)> bsonQueue;
+        private readonly Queue<(byte[], Action<UMI3DDto>, Newtonsoft.Json.TypeNameHandling)> bsonQueue;
         private readonly object runningLock = new object();
         private bool running;
 
@@ -82,7 +82,7 @@ namespace umi3d.common
                     completed = true;
                 };
                 FromBson(bson, action, type);
-                while(!completed)
+                while (!completed)
                 {
                     await Task.Yield();
 #if UNITY_EDITOR
@@ -113,7 +113,7 @@ namespace umi3d.common
                         }
                     if (set)
                     {
-                        var dto = UMI3DDto.FromBson(c.Item1,c.Item3);
+                        var dto = UMI3DDto.FromBson(c.Item1, c.Item3);
                         MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => c.Item2.Invoke(dto));
                     }
                 }

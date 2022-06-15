@@ -14,14 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine;
 
 namespace umi3d.worldController
 {
@@ -30,9 +26,9 @@ namespace umi3d.worldController
         protected readonly IEnvironment environment;
         public StandAloneIAM(IEnvironment environment) { this.environment = environment; }
 
-        List<string> tokens = new List<string>();
+        private readonly List<string> tokens = new List<string>();
 
-        public async virtual Task<ConnectionFormDto> GenerateForm(User user)
+        public virtual async Task<ConnectionFormDto> GenerateForm(User user)
         {
             var form = new ConnectionFormDto()
             {
@@ -69,17 +65,17 @@ namespace umi3d.worldController
             return await Task.FromResult(form);
         }
 
-        public async virtual Task<IEnvironment> GetEnvironment(User user)
+        public virtual async Task<IEnvironment> GetEnvironment(User user)
         {
             return await Task.FromResult(environment);
         }
 
-        public async virtual Task<List<LibrariesDto>> GetLibraries(User user)
+        public virtual async Task<List<LibrariesDto>> GetLibraries(User user)
         {
             return await Task.FromResult<List<LibrariesDto>>(null);
         }
 
-        public async virtual Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
+        public virtual async Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
         {
             UnityEngine.Debug.Log(formAnswer.ToJson(Newtonsoft.Json.TypeNameHandling.None));
 
@@ -87,7 +83,7 @@ namespace umi3d.worldController
             return await Task.FromResult(true);
         }
 
-        public async virtual Task<bool> IsUserValid(User user)
+        public virtual async Task<bool> IsUserValid(User user)
         {
             if (user.Token != null && tokens.Contains(user.Token))
                 return await Task.FromResult(true);
@@ -95,7 +91,7 @@ namespace umi3d.worldController
             return await Task.FromResult(false);
         }
 
-        public async virtual Task RenewCredential(User user)
+        public virtual async Task RenewCredential(User user)
         {
             SetToken(user);
             await Task.CompletedTask;
@@ -105,7 +101,7 @@ namespace umi3d.worldController
         {
             if (user.Token == null || !tokens.Contains(user.Token))
             {
-                var token = System.Guid.NewGuid().ToString();
+                string token = System.Guid.NewGuid().ToString();
                 tokens.Add(token);
                 user.Set(token);
             }

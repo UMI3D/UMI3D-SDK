@@ -471,9 +471,9 @@ namespace umi3d.edk.collaboration
 
         #region VoIP
 
-        static List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
+        private static readonly List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
 
-        public delegate void AudioFrame(UMI3DCollaborationUser user,Binary frame);
+        public delegate void AudioFrame(UMI3DCollaborationUser user, Binary frame);
         public static AudioFrame OnAudioFrame;
 
         /// <inheritdoc/>
@@ -486,7 +486,7 @@ namespace umi3d.edk.collaboration
                 OnAudioFrame(user, frame);
                 return;
             }
-            
+
             if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
                 RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];

@@ -16,15 +16,10 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -44,7 +39,7 @@ namespace umi3d.cdk.collaboration
 
         public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
 
-        override protected ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
+        protected override ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
 
         public UnityEvent OnLeaving = new UnityEvent();
         public UnityEvent OnLeavingEnvironment = new UnityEvent();
@@ -111,7 +106,7 @@ namespace umi3d.cdk.collaboration
                     {
                         Instance.OnRedirection.Invoke();
 
-                        var env = environmentClient;
+                        UMI3DEnvironmentClient env = environmentClient;
                         environmentClient = null;
                         UMI3DEnvironmentLoader.Clear();
 

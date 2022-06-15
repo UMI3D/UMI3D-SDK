@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.common;
-using UnityEngine;
+using System.Linq;
 using umi3d.cdk.menu;
 using umi3d.cdk.menu.interaction;
+using umi3d.common;
 using umi3d.common.interaction;
-using System.Linq;
+using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
@@ -32,9 +31,9 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Menus needing to be stored into menuAsset.menu but missing their parent (not recieved yet).
         /// </summary>
-        private List<AbstractMenuItem> menuToStoreInMenuAsset = new List<AbstractMenuItem>();
+        private readonly List<AbstractMenuItem> menuToStoreInMenuAsset = new List<AbstractMenuItem>();
 
-        private Dictionary<ulong, AbstractMenuItem> toolboxIdToMenu = new Dictionary<ulong, AbstractMenuItem>();
+        private readonly Dictionary<ulong, AbstractMenuItem> toolboxIdToMenu = new Dictionary<ulong, AbstractMenuItem>();
 
         private void Start()
         {
@@ -43,20 +42,20 @@ namespace umi3d.cdk.interaction
             UMI3DGlobalToolLoader.SubscribeToGlobalToolDelete(OnToolDelete);
         }
 
-        void OnToolCreation(GlobalTool tool)
+        private void OnToolCreation(GlobalTool tool)
         {
             if (tool is Toolbox)
             {
-                ToolboxMenu tbmenu = new ToolboxMenu();
+                var tbmenu = new ToolboxMenu();
                 tbmenu.Setup(tool as Toolbox);
 
-                ToolboxDto dto = tool.dto as ToolboxDto;
+                var dto = tool.dto as ToolboxDto;
 
                 if (tool.isInsideToolbox)
                 {
                     if (toolboxIdToMenu.ContainsKey(tool.parent.id))
                     {
-                        ToolboxMenu parentMenu = (toolboxIdToMenu[tool.parent.id] as ToolboxMenu);
+                        var parentMenu = (toolboxIdToMenu[tool.parent.id] as ToolboxMenu);
                         parentMenu.Add(tbmenu);
                         tbmenu.parent = parentMenu;
                         toolboxIdToMenu.Add(dto.id, tbmenu);
@@ -76,7 +75,7 @@ namespace umi3d.cdk.interaction
 
                 foreach (AbstractMenuItem menu in menuToStoreInMenuAsset.ToList())
                 {
-                    GlobalToolMenu gtm = menu as GlobalToolMenu;
+                    var gtm = menu as GlobalToolMenu;
                     if ((gtm != null) && (tool.parent.id == dto.id))
                     {
                         tbmenu.Add(gtm);
@@ -84,7 +83,7 @@ namespace umi3d.cdk.interaction
                         menuToStoreInMenuAsset.Remove(menu);
                     }
 
-                    ToolboxMenu tbm = menu as ToolboxMenu;
+                    var tbm = menu as ToolboxMenu;
                     if ((tbm != null) && (tool.parent.id == dto.id))
                     {
                         tbmenu.Add(tbm);
@@ -95,14 +94,14 @@ namespace umi3d.cdk.interaction
             }
             else
             {
-                GlobalToolMenu menu = new GlobalToolMenu();
+                var menu = new GlobalToolMenu();
                 menu.Setup(tool);
-                GlobalToolDto dto = tool.dto as GlobalToolDto;
+                var dto = tool.dto as GlobalToolDto;
                 if (tool.isInsideToolbox)
                 {
                     if (toolboxIdToMenu.ContainsKey(tool.parent.id))
                     {
-                        ToolboxMenu parentMenu = toolboxIdToMenu[tool.parent.id] as ToolboxMenu;
+                        var parentMenu = toolboxIdToMenu[tool.parent.id] as ToolboxMenu;
                         parentMenu.Add(menu);
                         menu.parent = parentMenu;
                     }
@@ -119,37 +118,37 @@ namespace umi3d.cdk.interaction
             }
         }
 
-        void OnToolUpdate(GlobalTool tool)
+        private void OnToolUpdate(GlobalTool tool)
         {
             if (tool is Toolbox)
             {
-                ToolboxMenu tbmenu = toolboxIdToMenu[tool.id] as ToolboxMenu;
+                var tbmenu = toolboxIdToMenu[tool.id] as ToolboxMenu;
                 tbmenu.Setup(tool as Toolbox);
             }
             else
             {
-                GlobalToolMenu gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
+                var gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
                 gtmenu.Setup(tool);
             }
         }
 
-        void OnToolDelete(GlobalTool tool)
+        private void OnToolDelete(GlobalTool tool)
         {
             if (tool is Toolbox)
             {
-                ToolboxMenu tbmenu = toolboxIdToMenu[tool.id] as ToolboxMenu;
+                var tbmenu = toolboxIdToMenu[tool.id] as ToolboxMenu;
                 tbmenu.parent.Remove(tbmenu);
             }
             else
             {
-                GlobalToolMenu gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
+                var gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
                 gtmenu.parent.Remove(gtmenu);
             }
         }
 
         public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong toolId)
         {
-            Texture2D icon2DTex = new Texture2D(0, 0);
+            var icon2DTex = new Texture2D(0, 0);
             FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(interactionDto.icon2D.variants);
             if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
             {
@@ -308,7 +307,7 @@ namespace umi3d.cdk.interaction
                     result = s;
                     break;
                 case LocalInfoRequestParameterDto localInfoRequestParameterDto:
-                    LocalInfoRequestInputMenuItem localReq = new LocalInfoRequestInputMenuItem() { dto = localInfoRequestParameterDto };
+                    var localReq = new LocalInfoRequestInputMenuItem() { dto = localInfoRequestParameterDto };
                     localReq.NotifyValueChange(localInfoRequestParameterDto.value);
                     requestDto = new ParameterSettingRequestDto()
                     {

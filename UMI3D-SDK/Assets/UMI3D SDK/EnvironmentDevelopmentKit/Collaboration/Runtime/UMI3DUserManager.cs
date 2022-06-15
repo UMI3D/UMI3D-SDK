@@ -107,8 +107,9 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public (UMI3DCollaborationUser user, bool oldToken) GetUserByToken(string authorization)
         {
-            if (authorization.StartsWith(UMI3DNetworkingKeys.bearer)){
-                var token = authorization.Remove(0, UMI3DNetworkingKeys.bearer.Length);
+            if (authorization.StartsWith(UMI3DNetworkingKeys.bearer))
+            {
+                string token = authorization.Remove(0, UMI3DNetworkingKeys.bearer.Length);
                 return GetUserByNakedToken(token);
             }
             return (null, false);
@@ -162,7 +163,7 @@ namespace umi3d.edk.collaboration
         /// <param name="user"></param>
         public void Logout(UMI3DCollaborationUser user)
         {
-            UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId}",scope);
+            UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId}", scope);
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
             lock (users)
             {
@@ -180,18 +181,18 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public void ConnectionClose(UMI3DCollaborationUser user,uint networkId)
+        public void ConnectionClose(UMI3DCollaborationUser user, uint networkId)
         {
-            if(user.networkPlayer.NetworkId == networkId)
+            if (user.networkPlayer.NetworkId == networkId)
                 user?.SetStatus(StatusType.MISSING);
         }
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            var user = GetUserByNakedToken(token).user;
+            UMI3DCollaborationUser user = GetUserByNakedToken(token).user;
             if (user != null)
             {
-                var reconnection = user.networkPlayer != null;
+                bool reconnection = user.networkPlayer != null;
                 if (reconnection)
                     forgeMap.Remove(user.networkPlayer.NetworkId);
 
@@ -220,7 +221,7 @@ namespace umi3d.edk.collaboration
                     user = guidMap[LoginDto.guid];
                     oldTokenOfUpdatedUser.Add(user.token);
                     forgeMap.Remove(user.networkPlayer.NetworkId);
-                    (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer,true);
+                    (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer, true);
                     user.Update(LoginDto);
                     user.SetStatus(StatusType.CREATED);
                     reconnection = true;
@@ -310,8 +311,10 @@ namespace umi3d.edk.collaboration
 
         public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequest dto)
         {
-            Transaction tr = new Transaction();
-            tr.reliable = true;
+            var tr = new Transaction
+            {
+                reliable = true
+            };
             switch (dto.operation)
             {
                 case UMI3DOperationKeys.UserMicrophoneStatus:
@@ -330,17 +333,17 @@ namespace umi3d.edk.collaboration
                     break;
 
                 case UMI3DOperationKeys.MuteAllMicrophoneStatus:
-                    foreach (var u in users.Values)
+                    foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.microphoneStatus.SetValue(false));
                     break;
 
                 case UMI3DOperationKeys.MuteAllAvatarStatus:
-                    foreach (var u in users.Values)
+                    foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.avatarStatus.SetValue(false));
                     break;
 
                 case UMI3DOperationKeys.MuteAllAttentionStatus:
-                    foreach (var u in users.Values)
+                    foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.attentionRequired.SetValue(false));
                     break;
             }
@@ -351,8 +354,10 @@ namespace umi3d.edk.collaboration
         {
             bool value;
             ulong id;
-            Transaction tr = new Transaction();
-            tr.reliable = true;
+            var tr = new Transaction
+            {
+                reliable = true
+            };
             switch (operationKey)
             {
                 case UMI3DOperationKeys.UserMicrophoneStatus:
@@ -377,17 +382,17 @@ namespace umi3d.edk.collaboration
                     break;
 
                 case UMI3DOperationKeys.MuteAllMicrophoneStatus:
-                    foreach (var u in users.Values)
+                    foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.microphoneStatus.SetValue(false));
                     break;
 
                 case UMI3DOperationKeys.MuteAllAvatarStatus:
-                    foreach (var u in users.Values)
+                    foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.avatarStatus.SetValue(false));
                     break;
 
                 case UMI3DOperationKeys.MuteAllAttentionStatus:
-                    foreach (var u in users.Values)
+                    foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.attentionRequired.SetValue(false));
                     break;
             }

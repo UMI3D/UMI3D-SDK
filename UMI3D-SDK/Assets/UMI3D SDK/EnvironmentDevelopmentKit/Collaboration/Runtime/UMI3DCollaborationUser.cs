@@ -15,8 +15,6 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking;
-using System;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
@@ -33,24 +31,24 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The unique user login.
         /// </summary>
-        public string login { get => identityDto.login; }
+        public string login => identityDto.login;
 
         /// <summary>
         /// The unique user display Name.
         /// </summary>
-        public string displayName { get => identityDto.displayName; }
+        public string displayName => identityDto.displayName;
 
         /// <summary>
         /// The unique user login.
         /// </summary>
-        public string guid { get => identityDto.guid; }
+        public string guid => identityDto.guid;
 
         /// <summary>
         /// The unique user login.
         /// </summary>
-        public byte[] metadata { get => identityDto.metaData; }
+        public byte[] metadata => identityDto.metaData;
 
-        static ulong lastGivenUserId = 1;
+        private static ulong lastGivenUserId = 1;
 
         /// <summary>
         /// Current id for ForgeNetworkingRemastered
@@ -60,12 +58,12 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The user token
         /// </summary>
-        public string token { get => identityDto?.localToken; }
+        public string token => identityDto?.localToken;
 
         public UMI3DForgeServer forgeServer;
 
         public UMI3DAudioPlayer audioPlayer;
-        
+
         public UMI3DAudioPlayer videoPlayer;
 
         public UMI3DAsyncProperty<int> audioFrequency;
@@ -76,7 +74,7 @@ namespace umi3d.edk.collaboration
 
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
-            
+
 
             this.identityDto = identity ?? new RegisterIdentityDto();
             userId = UMI3DEnvironment.Register(this, lastGivenUserId++);
@@ -92,7 +90,7 @@ namespace umi3d.edk.collaboration
 
         public void Update(RegisterIdentityDto identity)
         {
-            var id = Id();
+            ulong id = Id();
             this.identityDto = identity ?? new RegisterIdentityDto();
             userId = id;
         }

@@ -44,9 +44,9 @@ namespace umi3d.edk.collaboration
         public void Stop()
         { }
 
-
-        UMI3DCollaborationUser GetUserFor(HttpListenerRequest request) { 
-            var c = UMI3DCollaborationServer.GetUserFor(request);
+        private UMI3DCollaborationUser GetUserFor(HttpListenerRequest request)
+        {
+            (UMI3DCollaborationUser user, bool oldToken) c = UMI3DCollaborationServer.GetUserFor(request);
             return c.user;
         }
 
@@ -61,15 +61,15 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.connectionInfo, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void GetConnectionInformation(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-                UMI3DCollaborationUser user = GetUserFor(e.Request);
-                UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
-                var connectionInformation = new UserConnectionDto(user.ToUserDto())
-                {
-                    parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
-                    //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-                    librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
-                };
-                e.Response.WriteContent(connectionInformation.ToBson());
+            UMI3DCollaborationUser user = GetUserFor(e.Request);
+            UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
+            var connectionInformation = new UserConnectionDto(user.ToUserDto())
+            {
+                parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
+                //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
+                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
+            };
+            e.Response.WriteContent(connectionInformation.ToBson());
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace umi3d.edk.collaboration
 
         private IEnumerator _updateConnectionInformation(UMI3DCollaborationUser user, UserConnectionAnswerDto dto)
         {
-            UMI3DLogger.Log($"Update Connection Information {user?.Id()} {dto?.status} {dto?.librariesUpdated} {dto?.parameters?.answers?.Select((a)=>a.parameter.ToString()).ToString<string>()}", scope);
+            UMI3DLogger.Log($"Update Connection Information {user?.Id()} {dto?.status} {dto?.librariesUpdated} {dto?.parameters?.answers?.Select((a) => a.parameter.ToString()).ToString<string>()}", scope);
             user.SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(user, dto));
             user.forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
             yield break;
@@ -158,7 +158,7 @@ namespace umi3d.edk.collaboration
         [HttpPost(UMI3DNetworkingKeys.logout, WebServiceMethodAttribute.Security.PrivateAllowOldToken, WebServiceMethodAttribute.Type.Method)]
         public void Logout(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            var c = UMI3DCollaborationServer.GetUserFor(e.Request);
+            (UMI3DCollaborationUser user, bool oldToken) c = UMI3DCollaborationServer.GetUserFor(e.Request);
             if (c.user != null)
             {
                 UMI3DLogger.Log($"Logout {c.user.Id()}", scope);

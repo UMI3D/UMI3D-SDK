@@ -87,7 +87,7 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Instantiated container (if any)
         /// </summary>
-        private List<AbstractMenuDisplayContainer> containers = new List<AbstractMenuDisplayContainer>();
+        private readonly List<AbstractMenuDisplayContainer> containers = new List<AbstractMenuDisplayContainer>();
 
         /// <summary>
         /// Associate a menu to its displayer (if any).
@@ -351,14 +351,18 @@ namespace umi3d.cdk.menu.view
         /// <see cref="Display(bool)"/>
         [ContextMenu("Display")]
         private void Display()
-            => Display(false);
+        {
+            Display(false);
+        }
 
         /// <summary>
         /// Hide the menu (without clearing).
         /// </summary>
         [ContextMenu("Hide")]
         private void Hide()
-            => Hide(false);
+        {
+            Hide(false);
+        }
 
         /// <summary>
         /// Expand the Root MenuDisplayer. Without updating.
@@ -366,7 +370,9 @@ namespace umi3d.cdk.menu.view
         /// <see cref="Expand(bool)"/>
         [ContextMenu("Expand")]
         private void Expand()
-            => Expand(false);
+        {
+            Expand(false);
+        }
 
         /// <summary>
         /// Collapse the Root MenuDisplayer. Without updating.
@@ -374,14 +380,18 @@ namespace umi3d.cdk.menu.view
         /// <see cref="Collapse(bool)"/>
         [ContextMenu("Collapse")]
         private void Collapse()
-            => Collapse(false);
+        {
+            Collapse(false);
+        }
 
         /// <summary>
         /// Create the menu, and display it.
         /// </summary>
         [ContextMenu("Create Display")]
         private void CreateMenuAndDisplay()
-            => CreateMenuAndDisplay(false, false);
+        {
+            CreateMenuAndDisplay(false, false);
+        }
 
         /// <summary>
         /// Create a container for a menu and add it into a container

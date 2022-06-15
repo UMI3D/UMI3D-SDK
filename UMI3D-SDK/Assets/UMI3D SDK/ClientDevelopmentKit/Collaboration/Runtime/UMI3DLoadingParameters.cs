@@ -24,7 +24,6 @@ using umi3d.cdk.volumes;
 using umi3d.common;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
-using umi3d.common.volume;
 using UnityEngine;
 
 namespace umi3d.cdk

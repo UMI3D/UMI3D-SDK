@@ -16,11 +16,6 @@ limitations under the License.
 
 namespace umi3d.common
 {
-
-    using System.Collections;
-    using System.Collections.Generic;
-    using UnityEngine;
-
     public class ConferenceBrowserRequest : AbstractBrowserRequestDto
     {
         public uint operation;
@@ -71,7 +66,7 @@ namespace umi3d.common
 
         public override Bytable ToBytableArray(params object[] parameters)
         {
-            if(operation != UMI3DOperationKeys.MuteAllAttentionStatus && operation != UMI3DOperationKeys.MuteAllAvatarStatus && operation != UMI3DOperationKeys.MuteAllMicrophoneStatus )
+            if (operation != UMI3DOperationKeys.MuteAllAttentionStatus && operation != UMI3DOperationKeys.MuteAllAvatarStatus && operation != UMI3DOperationKeys.MuteAllMicrophoneStatus)
                 return base.ToBytableArray(parameters)
                     + UMI3DNetworkingHelper.Write(id)
                     + UMI3DNetworkingHelper.Write(value);
