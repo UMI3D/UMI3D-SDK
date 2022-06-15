@@ -358,7 +358,6 @@ namespace umi3d.edk.collaboration
                 case UMI3DOperationKeys.UserMicrophoneStatus:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     value = UMI3DNetworkingHelper.Read<bool>(container);
-
                     if (users.ContainsKey(id))
                         tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
                     break;

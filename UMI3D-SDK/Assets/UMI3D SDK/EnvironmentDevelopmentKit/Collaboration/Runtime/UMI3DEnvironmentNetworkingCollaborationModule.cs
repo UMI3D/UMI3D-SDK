@@ -78,7 +78,7 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write(user.microphoneStatus.GetValue())
                     + UMI3DNetworkingHelper.Write(user.avatarStatus.GetValue())
                     + UMI3DNetworkingHelper.Write(user.attentionRequired.GetValue())
-                    + UMI3DNetworkingHelper.Write<string>(user.login);
+                    + UMI3DNetworkingHelper.Write<string>(string.IsNullOrEmpty(user.displayName) ? (string.IsNullOrEmpty(user.login) ? user.Id().ToString() : user.login) : user.displayName);
                     return true;
                 case RegisterIdentityDto identity:
                     bytable = UMI3DNetworkingHelper.Write(identity.userId)
