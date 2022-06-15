@@ -84,12 +84,20 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"Register", scope);
             HttpListenerResponse res = e.Response;
 
-            ReadDto(e.Request,
-                (dto) =>
-                {
-                    var id = dto as RegisterIdentityDto;
-                    Task.WaitAll(UMI3DCollaborationServer.Instance.Register(id));
-                });
+            byte[] bytes = ReadObject(e.Request);
+
+            RegisterIdentityDto dto;
+
+            try
+            {
+                dto = UMI3DDto.FromBson(bytes) as RegisterIdentityDto;
+            }
+            catch
+            {
+                dto = UMI3DDto.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
+            }
+
+            Task.WaitAll(UMI3DCollaborationServer.Instance.Register(dto));
         }
 
         /// <summary>
