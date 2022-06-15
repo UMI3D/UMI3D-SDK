@@ -549,7 +549,7 @@ namespace umi3d.cdk
             {
                 UMI3DClientServer.GetEntity(ids, callback);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 UMI3DLogger.LogError(e.Message, scope);
                 performed2.Invoke();
@@ -624,7 +624,7 @@ namespace umi3d.cdk
             Instance.downloaded = false;
             Instance.loaded = false;
 
-    }
+        }
 
         /// <summary>
         /// Load environment.
@@ -1033,9 +1033,10 @@ namespace umi3d.cdk
             if (!Exists) return false;
             ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
             uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
+            uint frequence = UMI3DNetworkingHelper.Read<uint>(container);
             WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                StartInterpolation(e, entityId, propertyKey, container);
+                StartInterpolation(e, entityId, propertyKey, frequence, container);
             }
             );
             return true;
@@ -1095,7 +1096,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        public static bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, ByteContainer container)
+        public static bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, uint frequence, ByteContainer container)
         {
             if (!Instance.entityFilters.ContainsKey(entityId))
             {

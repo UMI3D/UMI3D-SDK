@@ -30,6 +30,8 @@ namespace umi3d.cdk.collaboration
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
 
+        public UMI3DUser GetClientUser() => UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
+
         ///<inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
         {
@@ -63,14 +65,15 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        bool UpdateUser(ulong property, UMI3DEntityInstance userInstance, object value) {
+        bool UpdateUser(ulong property, UMI3DEntityInstance userInstance, object value)
+        {
             if (userInstance.dto is UserDto dto)
             {
                 var user = GetUser(dto);
                 return user?.UpdateUser(property, value) ?? false;
             }
 
-            return false; 
+            return false;
         }
 
         UMI3DUser GetUser(UserDto dto)
@@ -83,17 +86,19 @@ namespace umi3d.cdk.collaboration
         {
             if (base._SetUMI3DPorperty(entity, operationId, propertyKey, container)) return true;
             if (entity == null) return false;
-            var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-            if (dto == null) return false;
+
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.UserList:
+                    var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
+                    if (dto == null) return false;
                     return SetUserList(dto, operationId, propertyKey, container);
 
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
                     {
+
                         bool value = UMI3DNetworkingHelper.Read<bool>(container);
                         return UpdateUser(propertyKey, entity, value);
                     }

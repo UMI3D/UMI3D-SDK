@@ -41,17 +41,20 @@ namespace umi3d.cdk.collaboration
         public bool avatarStatus => dto.avatarStatus;
         public bool attentionRequired => dto.attentionRequired;
 
+        public string login => dto?.login;
+
+        public bool isClient => id == UMI3DCollaborationClientServer.Instance.GetUserId();
 
         public UMI3DUser(UserDto user)
         {
             dto = user;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null);
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
             OnNewUser.Invoke(this);
         }
 
         public void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id,null);
+            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
             OnRemoveUser.Invoke(this);
         }
 
@@ -113,9 +116,9 @@ namespace umi3d.cdk.collaboration
 
         public void SetMicrophoneStatus(bool microphoneStatus)
         {
-            if(dto.microphoneStatus != microphoneStatus)
+            if (dto.microphoneStatus != microphoneStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus),true);
+                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus), true);
             }
         }
         public void SetAvatarStatus(bool avatarStatus)
