@@ -21,8 +21,12 @@ namespace umi3d.common
     /// </summary>
     public class NotificationDto : AbstractEntityDto, IEntity
     {
+        public enum NotificationPriority { Low, Medium, High }
+
+        public NotificationPriority priority;
         public string title;
         public string content;
+        public string[] callback;
         /// <summary>
         /// a notification with a duration of 0 should stay visible untile a DeleteEntityDto is received
         /// </summary>
