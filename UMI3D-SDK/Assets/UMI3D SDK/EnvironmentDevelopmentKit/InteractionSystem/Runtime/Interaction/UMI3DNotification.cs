@@ -16,12 +16,16 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
+using umi3d.common.interaction;
+using UnityEngine.Events;
 using static umi3d.common.NotificationDto;
 
 namespace umi3d.edk
 {
     public class UMI3DNotification : UMI3DLoadableEntity
     {
+        public class NotificationCallbackEvent : UnityEvent<bool> { }
+
         public UMI3DAsyncProperty<NotificationPriority> priorityProperty;
         public UMI3DAsyncProperty<string> titleProperty;
         public UMI3DAsyncProperty<string> contentProperty;
@@ -29,6 +33,9 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> durationProperty;
         public UMI3DAsyncProperty<UMI3DResource> icon2dProperty;
         public UMI3DAsyncProperty<UMI3DResource> icon3dProperty;
+
+
+        public NotificationCallbackEvent CallbackTrigger = new NotificationCallbackEvent();
 
         public UMI3DNotification(NotificationPriority priority, string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d)
         {
@@ -135,6 +142,17 @@ namespace umi3d.edk
                 users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
             };
             return operation;
+        }
+
+        public void OnCallbackReceived(NotificationCallbackDto notificationCallback)
+        {
+            CallbackTrigger.Invoke(notificationCallback.callback);
+        }
+
+        public void OnCallbackReceived(ByteContainer container)
+        {
+            bool callback = UMI3DNetworkingHelper.Read<bool>(container);
+            CallbackTrigger.Invoke(callback);
         }
 
         #region filter

@@ -70,6 +70,7 @@ namespace umi3d.common
         public const uint ToolReleased = 10011;
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
+        public const uint NotificationCallback = 10014;
 
         public const uint VolumeUserTransit = 10100;
 
