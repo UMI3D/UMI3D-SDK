@@ -177,12 +177,14 @@ namespace umi3d.common
 
         #region notification
         // 12000-12999
-        public const uint NotificationTitle = 12001;
-        public const uint NotificationContent = 12002;
-        public const uint NotificationDuration = 12003;
-        public const uint NotificationIcon2D = 12004;
-        public const uint NotificationIcon3D = 12005;
-        public const uint NotificationObjectId = 12006;
+        public const uint NotificationPriority = 12001;
+        public const uint NotificationTitle = 12002;
+        public const uint NotificationContent = 12003;
+        public const uint NotificationCallback = 12004;
+        public const uint NotificationDuration = 12005;
+        public const uint NotificationIcon2D = 12006;
+        public const uint NotificationIcon3D = 12007;
+        public const uint NotificationObjectId = 12008;
         #endregion
 
         #region Animation

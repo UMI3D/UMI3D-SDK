@@ -16,24 +16,49 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
+using umi3d.common.interaction;
+using UnityEngine.Events;
+using static umi3d.common.NotificationDto;
 
 namespace umi3d.edk
 {
     public class UMI3DNotification : UMI3DLoadableEntity
     {
+        public class NotificationCallbackEvent : UnityEvent<bool> { }
+
+        public UMI3DAsyncProperty<NotificationPriority> priorityProperty;
         public UMI3DAsyncProperty<string> titleProperty;
         public UMI3DAsyncProperty<string> contentProperty;
+        public UMI3DAsyncProperty<string[]> callbackProperty;
         public UMI3DAsyncProperty<float> durationProperty;
         public UMI3DAsyncProperty<UMI3DResource> icon2dProperty;
         public UMI3DAsyncProperty<UMI3DResource> icon3dProperty;
 
-        public UMI3DNotification(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d)
+
+        public NotificationCallbackEvent CallbackTrigger = new NotificationCallbackEvent();
+
+        public UMI3DNotification(NotificationPriority priority, string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d)
         {
             Register();
             var PropertyEquality = new UMI3DAsyncPropertyEquality();
+            this.priorityProperty = new UMI3DAsyncProperty<NotificationPriority>(notificationId, UMI3DPropertyKeys.NotificationPriority, priority);
             this.titleProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationTitle, title);
             this.contentProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationContent, content);
+            this.callbackProperty = new UMI3DAsyncProperty<string[]>(notificationId, UMI3DPropertyKeys.NotificationContent, null);
             this.durationProperty = new UMI3DAsyncProperty<float>(notificationId, UMI3DPropertyKeys.NotificationDuration, duration, null, PropertyEquality.FloatEquality);
+            this.icon2dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon2d, (r, u) => r.ToDto());
+            this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
+        }
+
+        public UMI3DNotification(NotificationPriority priority, string title, string content, string[] callback, UMI3DResource icon2d, UMI3DResource icon3d)
+        {
+            Register();
+            var PropertyEquality = new UMI3DAsyncPropertyEquality();
+            this.priorityProperty = new UMI3DAsyncProperty<NotificationPriority>(notificationId, UMI3DPropertyKeys.NotificationPriority, priority);
+            this.titleProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationTitle, title);
+            this.contentProperty = new UMI3DAsyncProperty<string>(notificationId, UMI3DPropertyKeys.NotificationContent, content);
+            this.callbackProperty = new UMI3DAsyncProperty<string[]>(notificationId, UMI3DPropertyKeys.NotificationContent, callback);
+            this.durationProperty = new UMI3DAsyncProperty<float>(notificationId, UMI3DPropertyKeys.NotificationDuration, 0, null, PropertyEquality.FloatEquality);
             this.icon2dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon2d, (r, u) => r.ToDto());
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
@@ -63,8 +88,10 @@ namespace umi3d.edk
         protected virtual void WriteProperties(NotificationDto dto, UMI3DUser user)
         {
             dto.id = Id();
+            dto.priority = priorityProperty.GetValue(user);
             dto.title = titleProperty.GetValue(user);
             dto.content = contentProperty.GetValue(user);
+            dto.callback = callbackProperty.GetValue(user);
             dto.duration = durationProperty.GetValue(user);
             dto.icon2D = icon2dProperty.GetValue(user)?.ToDto();
             dto.icon3D = icon3dProperty.GetValue(user)?.ToDto();
@@ -80,8 +107,10 @@ namespace umi3d.edk
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(Id())
+                + UMI3DNetworkingHelper.Write(priorityProperty.GetValue(user))
                 + UMI3DNetworkingHelper.Write(titleProperty.GetValue(user))
                 + UMI3DNetworkingHelper.Write(contentProperty.GetValue(user))
+                + UMI3DNetworkingHelper.Write(callbackProperty.GetValue(user))
                 + UMI3DNetworkingHelper.Write(durationProperty.GetValue(user))
                 + icon2dProperty.GetValue(user)?.ToByte()
                 + icon3dProperty.GetValue(user)?.ToByte();
@@ -110,9 +139,20 @@ namespace umi3d.edk
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSet()
             };
             return operation;
+        }
+
+        public void OnCallbackReceived(NotificationCallbackDto notificationCallback)
+        {
+            CallbackTrigger.Invoke(notificationCallback.callback);
+        }
+
+        public void OnCallbackReceived(ByteContainer container)
+        {
+            bool callback = UMI3DNetworkingHelper.Read<bool>(container);
+            CallbackTrigger.Invoke(callback);
         }
 
         #region filter
@@ -140,7 +180,7 @@ namespace umi3d.edk
 
         public UMI3DAsyncProperty<UMI3DNode> objectIdProperty;
 
-        public UMI3DNotificationOnObject(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d, UMI3DNode objectId) : base(title, content, duration, icon2d, icon3d)
+        public UMI3DNotificationOnObject(string title, string content, float duration, UMI3DResource icon2d, UMI3DResource icon3d, UMI3DNode objectId) : base(NotificationPriority.Low, title, content, duration, icon2d, icon3d)
         {
             this.objectIdProperty = new UMI3DAsyncProperty<UMI3DNode>(Id(), UMI3DPropertyKeys.NotificationObjectId, objectId, (n, u) => n.Id());
         }
