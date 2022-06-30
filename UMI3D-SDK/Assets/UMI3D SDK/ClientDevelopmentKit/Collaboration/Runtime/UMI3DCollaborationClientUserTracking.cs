@@ -74,11 +74,6 @@ namespace umi3d.cdk.collaboration
 
             yield return null;
 
-            foreach (var u in UMI3DCollaborationEnvironmentLoader.Instance.UserList)
-            {
-                Debug.Log(u.status);
-            }
-
             //Tracking frame sent twice for Kalman filter
             for (int i = 0; i < 2; i++)
             {
