@@ -38,6 +38,9 @@ namespace umi3d.edk.interaction
                 case ToolProjectedDto toolProjected:
                     UMI3DEnvironment.GetEntity<AbstractTool>(toolProjected.toolId)?.OnToolProjected(user, toolProjected);
                     break;
+                case NotificationCallbackDto notificationCallback:
+                    UMI3DEnvironment.GetEntity<UMI3DNotification>(notificationCallback.id)?.OnCallbackReceived(notificationCallback);
+                    break;
                 case HoverStateChangedDto hoverStateChanged:
                     UMI3DEnvironment.GetEntity<UMI3DInteractable>(hoverStateChanged.toolId)?.HoverStateChanged(user, hoverStateChanged);
                     break;
@@ -70,6 +73,9 @@ namespace umi3d.edk.interaction
                 case UMI3DOperationKeys.ToolProjected:
                     bonetype = UMI3DNetworkingHelper.Read<uint>(container);
                     UMI3DEnvironment.GetEntity<AbstractTool>(toolId)?.OnToolProjected(user, bonetype, container);
+                    break;
+                case UMI3DOperationKeys.NotificationCallback:
+                    UMI3DEnvironment.GetEntity<UMI3DNotification>(toolId)?.OnCallbackReceived(container);
                     break;
                 case UMI3DOperationKeys.HoverStateChanged:
                     interactionId = UMI3DNetworkingHelper.Read<ulong>(container);

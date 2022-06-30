@@ -35,7 +35,7 @@ namespace umi3d.edk.editor
         /// <summary>
         /// Inspector displayer for <see cref="subTools"/>.
         /// </summary>
-        private ListDisplayer<GlobalTool> ListDisplayer = new ListDisplayer<GlobalTool>();
+        private readonly ListDisplayer<GlobalTool> ListDisplayer = new ListDisplayer<GlobalTool>();
 
 
         private static bool showList = true;
@@ -71,7 +71,7 @@ namespace umi3d.edk.editor
         protected override void _OnInspectorGUI()
         {
             base._OnInspectorGUI();
-            if(target is Toolbox toolbox)
+            if (target is Toolbox toolbox)
                 ListDisplayer.Display(ref showList, subTools, toolbox.editorTools,
                     t =>
                     {
@@ -81,7 +81,7 @@ namespace umi3d.edk.editor
                                 //i.Setparent(toolbox);
                                 return new List<GlobalTool>() { i };
                             case GameObject g:
-                                List<GlobalTool> tools = g.GetComponents<GlobalTool>().ToList();
+                                var tools = g.GetComponents<GlobalTool>().ToList();
                                 //tools.ForEach(tool => tool.Setparent(toolbox));
                                 return tools;
                             default:

@@ -387,7 +387,7 @@ namespace umi3d.edk
                 return value;
             }
 
-            ulong lastId = 1;
+            private ulong lastId = 1;
 
             /// <summary>
             /// return a random ulong with a min value;

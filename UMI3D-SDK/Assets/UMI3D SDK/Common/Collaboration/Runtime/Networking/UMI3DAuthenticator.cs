@@ -54,7 +54,7 @@ namespace umi3d.common.collaboration
                 });
             else
                 rejectServerAction.Invoke();
-            
+
         }
 
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
@@ -64,10 +64,10 @@ namespace umi3d.common.collaboration
             MainThreadManager.Run(() =>
             {
 
-                        if (basicString != null)
-                            AcceptPlayer(basicString, player, () => authUserAction(player), () => rejectUserAction(player));
-                        else
-                            rejectUserAction(player);
+                if (basicString != null)
+                    AcceptPlayer(basicString, player, () => authUserAction(player), () => rejectUserAction(player));
+                else
+                    rejectUserAction(player);
 
             });
         }

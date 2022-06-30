@@ -63,8 +63,9 @@ namespace umi3d.edk.collaboration
         {
             if (volumeId == 0 && UMI3DEnvironment.Exists)
             {
-                UMI3DEnvironment.Register(this);
+                volumeId = UMI3DEnvironment.Register(this);
             }
+
             return volumeId;
         }
 
@@ -219,7 +220,12 @@ namespace umi3d.edk.collaboration
                 return false;
 
             RelayDescription relay = DicoRelays[channel];
-            RelayDescription.Strategy strategy = sender.RelayRoom.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
+            RelayDescription.Strategy strategy;
+
+            if (to.Avatar.RelayRoom == null)
+                strategy = relay.OutsideVolume;
+            else
+                strategy = to.Avatar.RelayRoom.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
 
             if (strategy.sendData)
             {
@@ -342,6 +348,16 @@ namespace umi3d.edk.collaboration
         protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
         {
             UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
+        }
+
+        /// <summary>
+        /// Checks if this relay defines a strategy for <paramref name="channelType"/>.
+        /// </summary>
+        /// <param name="channelType"></param>
+        /// <returns></returns>
+        public bool HasStrategyFor(DataChannelTypes channelType)
+        {
+            return DicoRelays.ContainsKey(channelType);
         }
     }
 }

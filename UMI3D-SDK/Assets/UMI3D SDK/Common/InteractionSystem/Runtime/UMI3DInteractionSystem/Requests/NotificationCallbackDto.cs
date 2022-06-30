@@ -14,9 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-public class MasterServerRest
+namespace umi3d.common.interaction
 {
+    public class NotificationCallbackDto : AbstractBrowserRequestDto
+    {
+        public bool callback;
 
+        public ulong id;
 
+        protected override uint GetOperationId() { return UMI3DOperationKeys.NotificationCallback; }
 
+        public override Bytable ToBytableArray(params object[] parameters)
+        {
+            return base.ToBytableArray(parameters)
+                + UMI3DNetworkingHelper.Write(id)
+                + UMI3DNetworkingHelper.Write(callback);
+        }
+    }
 }

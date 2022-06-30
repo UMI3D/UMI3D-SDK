@@ -27,9 +27,9 @@ namespace umi3d.cdk.collaboration
     {
         private UserDto dto;
 
-        public ulong id;
-        public uint networkId;
-        public StatusType status;
+        public ulong id => dto.id;
+        public uint networkId => dto.networkId;
+        public StatusType status => dto.status;
         public ulong audioPlayerId => dto.audioSourceId;
         public int audioFrequency => dto.audioFrequency;
         public UMI3DAudioPlayer audioplayer => UMI3DAudioPlayer.Get(dto.audioSourceId);
@@ -37,17 +37,24 @@ namespace umi3d.cdk.collaboration
         public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
         public UserAvatar avatar => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar;
 
+        public bool microphoneStatus => dto.microphoneStatus;
+        public bool avatarStatus => dto.avatarStatus;
+        public bool attentionRequired => dto.attentionRequired;
+
+        public string login => dto?.login;
+
+        public bool isClient => id == UMI3DCollaborationClientServer.Instance.GetUserId();
+
         public UMI3DUser(UserDto user)
         {
             dto = user;
-            id = user.id;
-            networkId = user.networkId;
-            status = user.status;
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
             OnNewUser.Invoke(this);
         }
 
         public void Destroy()
         {
+            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
             OnRemoveUser.Invoke(this);
         }
 
@@ -62,13 +69,84 @@ namespace umi3d.cdk.collaboration
             bool audioUpdate = dto.audioSourceId != user.audioSourceId;
             bool videoUpdate = dto.videoSourceId != user.videoSourceId;
             bool audioFrequencyUpdate = dto.audioFrequency != user.audioFrequency;
+
+            bool microphoneStatusUpdate = dto.microphoneStatus != user.microphoneStatus;
+            bool avatarStatusUpdate = dto.avatarStatus != user.avatarStatus;
+            bool attentionStatusUpdate = dto.attentionRequired != user.attentionRequired;
+
             dto = user;
-            status = user.status;
+
             if (statusUpdate) OnUserStatusUpdated.Invoke(this);
             if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
             if (audioUpdate) OnUserAudioUpdated.Invoke(this);
             if (videoUpdate) OnUserVideoUpdated.Invoke(this);
             if (audioFrequencyUpdate) OnUserAudioFrequencyUpdated.Invoke(this);
+            if (attentionStatusUpdate) OnUserAttentionStatusUpdated.Invoke(this);
+            if (microphoneStatusUpdate) OnUserMicrophoneStatusUpdated.Invoke(this);
+            if (avatarStatusUpdate) OnUserAvatarStatusUpdated.Invoke(this);
+        }
+
+        public bool UpdateUser(ulong property, object value)
+        {
+            switch (property)
+            {
+                case UMI3DPropertyKeys.UserMicrophoneStatus:
+                    dto.microphoneStatus = (bool)value;
+                    OnUserMicrophoneStatusUpdated.Invoke(this);
+                    return true;
+
+                case UMI3DPropertyKeys.UserAttentionRequired:
+                    dto.attentionRequired = (bool)value;
+                    OnUserAttentionStatusUpdated.Invoke(this);
+                    return true;
+
+                case UMI3DPropertyKeys.UserAvatarStatus:
+                    dto.avatarStatus = (bool)value;
+                    OnUserAvatarStatusUpdated.Invoke(this);
+                    return true;
+
+                case UMI3DPropertyKeys.UserAudioFrequency:
+                    dto.audioFrequency = (int)value;
+                    OnUserAudioFrequencyUpdated.Invoke(this);
+                    return true;
+            }
+            return false;
+        }
+
+
+        public void SetMicrophoneStatus(bool microphoneStatus)
+        {
+            if (dto.microphoneStatus != microphoneStatus)
+            {
+                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus), true);
+            }
+        }
+        public void SetAvatarStatus(bool avatarStatus)
+        {
+            if (dto.avatarStatus != avatarStatus)
+            {
+                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeAvatarStatusRequest(id, avatarStatus), true);
+            }
+        }
+        public void SetAttentionStatus(bool attentionStatus)
+        {
+            if (dto.attentionRequired != attentionStatus)
+            {
+                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeAttentionStatusRequest(id, attentionStatus), true);
+            }
+        }
+
+        public static void MuteAllMicrophone()
+        {
+            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllMicrophoneRequest(), true);
+        }
+        public static void MuteAllAvatar()
+        {
+            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAvatarRequest(), true);
+        }
+        public static void MuteAllAttention()
+        {
+            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
         }
 
         /// <summary>
@@ -79,10 +157,15 @@ namespace umi3d.cdk.collaboration
 
         public static UMI3DUserEvent OnNewUser = new UMI3DUserEvent();
         public static UMI3DUserEvent OnRemoveUser = new UMI3DUserEvent();
+
         public static UMI3DUserEvent OnUserAvatarUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnUserAudioUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnUserVideoUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnUserStatusUpdated = new UMI3DUserEvent();
+
         public static UMI3DUserEvent OnUserAudioFrequencyUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserMicrophoneStatusUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAvatarStatusUpdated = new UMI3DUserEvent();
+        public static UMI3DUserEvent OnUserAttentionStatusUpdated = new UMI3DUserEvent();
     }
 }

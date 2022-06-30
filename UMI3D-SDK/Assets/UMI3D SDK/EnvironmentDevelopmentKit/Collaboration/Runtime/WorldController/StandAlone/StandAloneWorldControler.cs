@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,7 +46,7 @@ namespace umi3d.worldController
         {
             User user = GetUser(connectionDto);
 
-            var dto = (connectionDto is FormConnectionAnswerDto formAnswer && formAnswer?.formAnswerDto != null)
+            UMI3DDto dto = (connectionDto is FormConnectionAnswerDto formAnswer && formAnswer?.formAnswerDto != null)
                 ? await IAM.isFormValid(user, formAnswer.formAnswerDto) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user)
                 : await IAM.IsUserValid(user) ? await GetIdentityDto(user) : (UMI3DDto)await IAM.GenerateForm(user);
             return dto;
@@ -62,7 +61,7 @@ namespace umi3d.worldController
         {
             if (identityDto?.GlobalToken != null && userMap.ContainsKey(identityDto.GlobalToken))
             {
-                var user = userMap[identityDto.GlobalToken];
+                User user = userMap[identityDto.GlobalToken];
                 if (user != null)
                 {
                     await IAM.RenewCredential(user);
@@ -72,10 +71,9 @@ namespace umi3d.worldController
             return await Task.FromResult<PrivateIdentityDto>(null);
         }
 
-
-        User GetUser(ConnectionDto connectionDto)
+        private User GetUser(ConnectionDto connectionDto)
         {
-            var gt = connectionDto.globalToken ?? generateFakeToken();
+            string gt = connectionDto.globalToken ?? generateFakeToken();
 
             if (userMap.ContainsKey(gt))
                 userMap[gt].Update(connectionDto);
@@ -89,18 +87,17 @@ namespace umi3d.worldController
         /// return a token that can be used to identify a user temporaly.
         /// </summary>
         /// <returns></returns>
-        string generateFakeToken()
+        private string generateFakeToken()
         {
             return (new Guid()).ToString();
         }
 
-
-        async Task<PrivateIdentityDto> GetIdentityDto(User user)
+        private async Task<PrivateIdentityDto> GetIdentityDto(User user)
         {
             //General token is valid.
             if (!userMap.ContainsKey(user.Token))
             {
-                var tmp = userMap.FirstOrDefault(uk => uk.Value == user).Key;
+                string tmp = userMap.FirstOrDefault(uk => uk.Value == user).Key;
                 userMap.Remove(tmp);
                 userMap.Add(user.Token, user);
             }
@@ -108,7 +105,7 @@ namespace umi3d.worldController
             if (!user.LoadLibraryOnly)
             {
                 //Select environment
-                var env = await IAM.GetEnvironment(user);
+                IEnvironment env = await IAM.GetEnvironment(user);
 
                 user.Set(await env.ToDto());
                 user.Set(
@@ -119,8 +116,8 @@ namespace umi3d.worldController
 
                 await env.Register(user.RegisterIdentityDto());
             }
-            var l = await IAM.GetLibraries(user);
-            var privateId = user.PrivateIdentityDto();
+            List<LibrariesDto> l = await IAM.GetLibraries(user);
+            PrivateIdentityDto privateId = user.PrivateIdentityDto();
             privateId.libraries = l;
             Debug.Log(privateId);
             return privateId;

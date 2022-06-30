@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.interaction;
@@ -27,8 +26,15 @@ namespace umi3d.cdk.interaction
     {
         protected static Dictionary<ulong, GlobalTool> instances = new Dictionary<ulong, GlobalTool>();
 
-        public static List<GlobalTool> GetGlobalTools() => instances.Values.ToList();
-        public static GlobalTool GetGlobalTool(ulong id) => instances[id];
+        public static List<GlobalTool> GetGlobalTools()
+        {
+            return instances.Values.ToList();
+        }
+
+        public static GlobalTool GetGlobalTool(ulong id)
+        {
+            return instances[id];
+        }
 
         public void Delete() { instances.Remove(id); }
 
@@ -38,7 +44,7 @@ namespace umi3d.cdk.interaction
 
         public bool isInsideToolbox => parent != null;
 
-        public GlobalTool(AbstractToolDto abstractDto,Toolbox parent) : base(abstractDto) 
+        public GlobalTool(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto)
         {
             this.parent = parent;
             instances.Add(id, this);

@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using WebSocketSharp.Net;
 using System.Reflection;
 using WebSocketSharp.Server;
 
@@ -30,13 +29,13 @@ namespace umi3d.edk.collaboration
 
         public List<WebServiceMethod> roots = new List<WebServiceMethod>();
 
-        public HttpRoutingUtil( Type attributeType) : this(null, attributeType) { }
+        public HttpRoutingUtil(Type attributeType) : this(null, attributeType) { }
 
         public HttpRoutingUtil(List<IHttpApi> apis, Type attributeType)
         {
             Clear();
             this.attributeType = attributeType;
-            if(apis != null)
+            if (apis != null)
                 AddRoot(apis);
         }
 

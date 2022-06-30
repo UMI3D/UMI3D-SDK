@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,7 +45,9 @@ namespace umi3d.cdk.menu.view
 
         [ContextMenu("Back")]
         public void Back()
-            => CurrentMenuDisplayContainer()?.backButtonPressed.Invoke();
+        {
+            CurrentMenuDisplayContainer()?.backButtonPressed.Invoke();
+        }
 
         /// <summary>
         /// Generation to replace on Expand. Negative value means no replacement; 0 replace siblings;
@@ -206,10 +207,14 @@ namespace umi3d.cdk.menu.view
     public abstract partial class AbstractMenuDisplayContainer : IEnumerable<AbstractDisplayer>
     {
         public IEnumerator<AbstractDisplayer> GetEnumerator()
-            => GetDisplayers().GetEnumerator();
+        {
+            return GetDisplayers().GetEnumerator();
+        }
 
         IEnumerator IEnumerable.GetEnumerator()
-            => this.GetEnumerator();
+        {
+            return this.GetEnumerator();
+        }
 
         public abstract AbstractDisplayer this[int i]
         {

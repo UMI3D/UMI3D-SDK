@@ -137,18 +137,24 @@ namespace umi3d.cdk.menu
         /// Menu items contained in this menu.
         /// </summary>
         public override IEnumerable<AbstractMenuItem> GetMenuItems()
-            => MenuItems;
+        {
+            return MenuItems;
+        }
 
         /// <summary>
         /// Submenus contained in this menu.
         /// </summary>
         public override IEnumerable<AbstractMenu> GetSubMenu()
-            => SubMenu;
+        {
+            return SubMenu;
+        }
 
-        
+
 
         ///<inheritdoc/>
         public override string ToString()
-            => Name;
+        {
+            return Name;
+        }
     }
 }

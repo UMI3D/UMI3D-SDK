@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -50,7 +48,7 @@ namespace umi3d.worldController
             Join();
         }
 
-        void Join()
+        private void Join()
         {
             forgeClient = UMI3DWorldControllerForgeClient.Create(this);
             forgeClient.ip = host;
@@ -60,11 +58,11 @@ namespace umi3d.worldController
             forgeClient.natServerHost = forgeNatServerHost;
             forgeClient.natServerPort = forgeNatServerPort;
 
-            var Auth = new common.collaboration.UMI3DAuthenticator((a)=>a.Invoke(token));
+            var Auth = new common.collaboration.UMI3DAuthenticator((a) => a.Invoke(token));
             Join(Auth);
         }
 
-        async void Join(BeardedManStudios.Forge.Networking.IUserAuthenticator authenticator)
+        private async void Join(BeardedManStudios.Forge.Networking.IUserAuthenticator authenticator)
         {
             forgeClient.Join(authenticator);
             await Task.Delay(10000);
@@ -75,20 +73,21 @@ namespace umi3d.worldController
             }
         }
 
-        public async void OnMessage(int groupId, byte[] bytes) {
-           var b = new ByteContainer(bytes);
-            var id = UMI3DNetworkingHelper.Read<uint>(b);
+        public async void OnMessage(int groupId, byte[] bytes)
+        {
+            var b = new ByteContainer(bytes);
+            uint id = UMI3DNetworkingHelper.Read<uint>(b);
             switch (id)
             {
                 case UMI3DWorldControllerMessageKeys.RegisterUser:
-                    var identityDto = UMI3DNetworkingHelper.Read<RegisterIdentityDto>(b);
+                    RegisterIdentityDto identityDto = UMI3DNetworkingHelper.Read<RegisterIdentityDto>(b);
                     await UMI3DCollaborationServer.Instance.Register(identityDto);
                     break;
                 default:
                     Debug.LogError($"Missing case {id}");
                     break;
             }
-           
+
         }
 
         public void ConnectionLost()

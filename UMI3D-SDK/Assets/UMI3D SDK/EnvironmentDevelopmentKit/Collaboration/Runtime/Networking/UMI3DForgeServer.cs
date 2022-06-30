@@ -278,26 +278,36 @@ namespace umi3d.edk.collaboration
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
 
-                if (dto is common.userCapture.UserCameraPropertiesDto cam)
+                switch (dto)
                 {
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DEmbodimentManager.Instance.UserCameraReception(cam, user);
-                    });
-                }
-                else if (dto is common.volume.VolumeUserTransitDto vutdto)
-                {
-                    MainThreadManager.Run(() =>
-                    {
-                        VolumeManager.DispatchBrowserRequest(user, vutdto.volumeId, vutdto.direction);
-                    });
-                }
-                else
-                {
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
-                    });
+
+                    case common.userCapture.UserCameraPropertiesDto cam:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DEmbodimentManager.Instance.UserCameraReception(cam, user);
+                        });
+                        break;
+
+                    case common.volume.VolumeUserTransitDto vutdto:
+                        MainThreadManager.Run(() =>
+                        {
+                            VolumeManager.DispatchBrowserRequest(user, vutdto.volumeId, vutdto.direction);
+                        });
+                        break;
+
+                    case common.ConferenceBrowserRequest conferencedto:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationServer.Collaboration.CollaborationRequest(user, conferencedto);
+                        });
+                        break;
+
+                    default:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
+                        });
+                        break;
                 }
             }
             else
@@ -317,6 +327,18 @@ namespace umi3d.edk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             VolumeManager.DispatchBrowserRequest(user, id, container);
+                        });
+                        break;
+
+                    case UMI3DOperationKeys.UserMicrophoneStatus:
+                    case UMI3DOperationKeys.UserAvatarStatus:
+                    case UMI3DOperationKeys.UserAttentionStatus:
+                    case UMI3DOperationKeys.MuteAllMicrophoneStatus:
+                    case UMI3DOperationKeys.MuteAllAvatarStatus:
+                    case UMI3DOperationKeys.MuteAllAttentionStatus:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationServer.Collaboration.CollaborationRequest(user, id, container);
                         });
                         break;
 
@@ -368,7 +390,7 @@ namespace umi3d.edk.collaboration
                     {
                         RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                        if (relayVolume != null)
+                        if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
                         {
                             MainThreadManager.Run(() =>
                             {
@@ -412,7 +434,7 @@ namespace umi3d.edk.collaboration
                     {
                         RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                        if (relayVolume != null)
+                        if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
                         {
                             MainThreadManager.Run(() =>
                             {
@@ -449,9 +471,9 @@ namespace umi3d.edk.collaboration
 
         #region VoIP
 
-        static List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
+        private static readonly List<UMI3DCollaborationUser> VoipInterceptionList = new List<UMI3DCollaborationUser>();
 
-        public delegate void AudioFrame(UMI3DCollaborationUser user,Binary frame);
+        public delegate void AudioFrame(UMI3DCollaborationUser user, Binary frame);
         public static AudioFrame OnAudioFrame;
 
         /// <inheritdoc/>
@@ -464,12 +486,12 @@ namespace umi3d.edk.collaboration
                 OnAudioFrame(user, frame);
                 return;
             }
-            
+
             if (user.Avatar != null && user.Avatar.RelayRoom != null)
             {
                 RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                if (relayVolume != null)
+                if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.VoIP))
                 {
                     MainThreadManager.Run(() =>
                     {

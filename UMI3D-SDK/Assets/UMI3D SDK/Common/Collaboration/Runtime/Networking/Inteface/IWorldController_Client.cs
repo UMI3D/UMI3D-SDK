@@ -14,13 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using umi3d.common.collaboration;
-using System;
-using umi3d.common;
 using System.Threading.Tasks;
+using umi3d.common;
+using umi3d.common.collaboration;
 
 public interface IWorldController_Client
 {

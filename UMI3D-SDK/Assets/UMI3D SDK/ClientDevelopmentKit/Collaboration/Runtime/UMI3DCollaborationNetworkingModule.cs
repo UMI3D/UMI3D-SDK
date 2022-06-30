@@ -43,6 +43,9 @@ namespace umi3d.cdk.collaboration
                         audioFrequency = UMI3DNetworkingHelper.Read<int>(container),
                         videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
                         networkId = UMI3DNetworkingHelper.Read<uint>(container),
+                        microphoneStatus = UMI3DNetworkingHelper.Read<bool>(container),
+                        avatarStatus = UMI3DNetworkingHelper.Read<bool>(container),
+                        attentionRequired = UMI3DNetworkingHelper.Read<bool>(container),
                         login = UMI3DNetworkingHelper.Read<string>(container)
                     };
                     result = (T)(object)user;

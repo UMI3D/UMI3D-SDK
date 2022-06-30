@@ -83,7 +83,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="natServerHost"></param>
         /// <param name="natServerPort"></param>
         /// <returns></returns>
-        public static UMI3DForgeClient Create(UMI3DEnvironmentClient environmentClient,string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
+        public static UMI3DForgeClient Create(UMI3DEnvironmentClient environmentClient, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
         {
             UMI3DForgeClient client = (new GameObject("UMI3DForgeClient")).AddComponent<UMI3DForgeClient>();
             client.environmentClient = environmentClient;
@@ -115,7 +115,7 @@ namespace umi3d.cdk.collaboration
             client.bindFailure += BindFailed;
             client.bindSuccessful += BindSucceded;
             client.forcedDisconnect += (n) => { UMI3DLogger.Log("Force disconnect", scope); };
-            client.playerAccepted += (n,p) => { UMI3DLogger.Log("Player Accepted", scope); };
+            client.playerAccepted += (n, p) => { UMI3DLogger.Log("Player Accepted", scope); };
 
             if (natServerHost.Trim().Length == 0)
                 client.Connect(ip, (ushort)port);
@@ -208,7 +208,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void DisconnectedFromServer(NetWorker sender)
         {
-            if(NetworkManager.Instance?.Networker != null)
+            if (NetworkManager.Instance?.Networker != null)
                 NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
             MainThreadManager.Run(() =>
             {
@@ -459,11 +459,11 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        async void SendGetLocalInfo(string key)
+        private async void SendGetLocalInfo(string key)
         {
             try
             {
-                var bytes = await environmentClient.HttpClient.SendGetLocalInfo(key);
+                byte[] bytes = await environmentClient.HttpClient.SendGetLocalInfo(key);
                 LocalInfoSender.SetLocalInfo(key, bytes);
             }
             catch
@@ -472,7 +472,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        async void SendPostFile(string token, string fileName, byte[] bytesToUpload)
+        private async void SendPostFile(string token, string fileName, byte[] bytesToUpload)
         {
             try
             {

@@ -266,7 +266,7 @@ namespace umi3d.cdk
                 if ((audioSource.clip != null))
                 {
                     audioSource.Stop();
-                    if(atTime != 0)
+                    if (atTime != 0)
                         audioSource.time = atTime;
                     audioSource.Play();
                     OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));

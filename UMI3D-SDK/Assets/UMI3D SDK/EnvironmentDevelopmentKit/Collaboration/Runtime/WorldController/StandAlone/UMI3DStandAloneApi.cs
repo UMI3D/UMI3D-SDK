@@ -15,19 +15,13 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking.Unity;
-using MainThreadDispatcher;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.collaboration;
 using UnityEngine;
-using UnityEngine.Events;
 using WebSocketSharp;
 using WebSocketSharp.Net;
 using WebSocketSharp.Server;
@@ -66,7 +60,7 @@ namespace umi3d.worldController
                 return;
             }
 
-            var text = bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : null;
+            string text = bytes != null ? System.Text.Encoding.UTF8.GetString(bytes) : null;
 
             if (text == null)
             {
@@ -107,13 +101,13 @@ namespace umi3d.worldController
             }
         }
 
-        void Error(HttpListenerResponse res, string errorMessage)
+        private void Error(HttpListenerResponse res, string errorMessage)
         {
             res.StatusCode = 400;
             res.StatusDescription = errorMessage;
         }
 
-        async void ConnectUser(ConnectionDto dto, Action<UMI3DDto> callback)
+        private async void ConnectUser(ConnectionDto dto, Action<UMI3DDto> callback)
         {
             try
             {
@@ -158,7 +152,7 @@ namespace umi3d.worldController
             }
         }
 
-        async void RenewCredential(PrivateIdentityDto dto, Action<UMI3DDto> callback)
+        private async void RenewCredential(PrivateIdentityDto dto, Action<UMI3DDto> callback)
         {
             try
             {

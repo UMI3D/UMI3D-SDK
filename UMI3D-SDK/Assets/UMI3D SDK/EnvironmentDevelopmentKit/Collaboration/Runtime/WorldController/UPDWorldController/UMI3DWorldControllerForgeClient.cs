@@ -17,8 +17,6 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
-using System.Collections;
-using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -42,7 +40,7 @@ namespace umi3d.worldController
 
         protected override void _ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            api?.OnMessage(frame.GroupId,frame?.StreamData?.byteArr);
+            api?.OnMessage(frame.GroupId, frame?.StreamData?.byteArr);
         }
 
         /// <summary>
@@ -55,7 +53,7 @@ namespace umi3d.worldController
         /// <param name="natServerHost"></param>
         /// <param name="natServerPort"></param>
         /// <returns></returns>
-        public static UMI3DWorldControllerForgeClient Create(UPDWorldControllerAPI api,string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
+        public static UMI3DWorldControllerForgeClient Create(UPDWorldControllerAPI api, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
         {
             UMI3DWorldControllerForgeClient client = (new GameObject("UMI3DWorldControllerForgeClient")).AddComponent<UMI3DWorldControllerForgeClient>();
             client.api = api;

@@ -195,7 +195,7 @@ namespace umi3d.edk.collaboration
                 forgeMaxNbPlayer //MAX NB of Players
                 );
 
-            UMI3DAuthenticator auth = new UMI3DAuthenticator();
+            var auth = new UMI3DAuthenticator();
 
             if (auth != null)
                 auth.shouldAccdeptPlayer = ShouldAcceptPlayer;
@@ -357,11 +357,11 @@ namespace umi3d.edk.collaboration
 
         #region security
 
-        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request,bool allowOldToken = false)
+        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request, bool allowOldToken = false)
         {
             if (!Exists)
                 return false;
-            var c = GetUserFor(request);
+            (UMI3DCollaborationUser user, bool oldToken) c = GetUserFor(request);
             if (c.user == null && !(c.oldToken && allowOldToken))
             {
                 return false;
@@ -384,7 +384,7 @@ namespace umi3d.edk.collaboration
             string authorization = request.Headers[UMI3DNetworkingKeys.Authorization];
             if (authorization == null)
             {
-                return (null,false);
+                return (null, false);
             }
             else
             {
@@ -424,8 +424,8 @@ namespace umi3d.edk.collaboration
         ///<inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
-            if(user is UMI3DCollaborationUser _user && _user?.networkPlayer?.NetworkId != null)
-            UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(_user,_user.networkPlayer.NetworkId));
+            if (user is UMI3DCollaborationUser _user && _user?.networkPlayer?.NetworkId != null)
+                UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(_user, _user.networkPlayer.NetworkId));
         }
 
         private IEnumerator _lookForMissing(UMI3DCollaborationUser user, uint networkId)
@@ -493,7 +493,7 @@ namespace umi3d.edk.collaboration
                     {
                         continue;
                     }
-                    
+
                     if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                     {
                         NavigationToBeSend[user] = dispatchableRequest;

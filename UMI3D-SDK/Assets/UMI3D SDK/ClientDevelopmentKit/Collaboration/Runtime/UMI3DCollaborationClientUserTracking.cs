@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using UnityEngine;
 
@@ -24,10 +25,65 @@ namespace umi3d.cdk.collaboration
     {
         public GameObject UnitSkeleton;
 
+        private Coroutine forceSendTrackingCoroutine;
+
+        private int lastNbUsers = 0;
+
         protected override void Start()
         {
             base.Start();
             avatarEvent.AddListener(UMI3DCollaborativeUserAvatar.SkeletonCreation);
+        }
+
+        private void OnEnable()
+        {
+            UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += ForceSendTracking;
+        }
+
+        private void OnDisable()
+        {
+            UMI3DCollaborationEnvironmentLoader.OnUpdateUserList -= ForceSendTracking;
+        }
+
+        /// <summary>
+        /// Force tracking frame sending for new users.
+        /// </summary>
+        private void ForceSendTracking()
+        {
+            int newNbOfUsers = UMI3DCollaborationEnvironmentLoader.Instance.UserList.Count;
+
+            if (newNbOfUsers > lastNbUsers && newNbOfUsers > 1)
+            {
+                if (forceSendTrackingCoroutine != null)
+                    StopCoroutine(forceSendTrackingCoroutine);
+                StartCoroutine(ForceSendTrackingCoroutine());
+            }
+            lastNbUsers = newNbOfUsers;
+        }
+
+        /// <summary>
+        /// Coroutine used by <see cref="ForceSendTracking"/> to only send tracking frames when everyone is active.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator ForceSendTrackingCoroutine()
+        {
+            while (UMI3DCollaborationEnvironmentLoader.Instance.UserList.Any(u => u.status != common.StatusType.ACTIVE))
+            {
+                yield return null;
+            }
+
+            yield return null;
+
+            //Tracking frame sent twice for Kalman filter
+            for (int i = 0; i < 2; i++)
+            {
+                BonesIterator(true);
+                UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
+
+                yield return new WaitForSeconds(.5f);
+            }
+
+            forceSendTrackingCoroutine = null;
         }
 
         ///<inheritdoc/>
@@ -40,7 +96,10 @@ namespace umi3d.cdk.collaboration
                     if (UMI3DCollaborationClientServer.Connected())
                     {
                         BonesIterator();
-                        UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
+                        if (LastFrameDto != null)
+                        {
+                            UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
+                        }
                     }
                     yield return new WaitForSeconds(1f / targetTrackingFPS);
                 }

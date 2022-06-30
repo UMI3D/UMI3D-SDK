@@ -27,6 +27,13 @@ namespace umi3d.common
         public const uint GetLocalInfoRequest = 7;
         public const uint RedirectionRequest = 8;
 
+        public const uint UserMicrophoneStatus = 21;
+        public const uint UserAvatarStatus = 22;
+        public const uint UserAttentionStatus = 23;
+        public const uint MuteAllMicrophoneStatus = 24;
+        public const uint MuteAllAvatarStatus = 25;
+        public const uint MuteAllAttentionStatus = 26;
+
         public const uint SetEntityProperty = 101;
         public const uint SetEntityDictionnaryProperty = 103;
         public const uint SetEntityDictionnaryAddProperty = 104;
@@ -64,7 +71,8 @@ namespace umi3d.common
         public const uint ToolReleased = 10011;
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
-        public const uint BoardedVehicleRequest = 10014;
+        public const uint NotificationCallback = 10014;
+        public const uint BoardedVehicleRequest = 10015;
 
         public const uint VolumeUserTransit = 10100;
 

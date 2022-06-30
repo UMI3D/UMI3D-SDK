@@ -15,10 +15,9 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
-using System.Threading.Tasks;
 
 namespace umi3d.worldController
 {
