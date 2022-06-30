@@ -71,8 +71,11 @@ namespace umi3d.cdk.userCapture
         private float detectionRotationDelta = 5f;
 
         public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
+        public class BodyPoseEvent : UnityEvent<UMI3DBodyPoseDto> { };
 
         public HandPoseEvent handPoseEvent = new HandPoseEvent();
+
+        public BodyPoseEvent bodyPoseEvent = new BodyPoseEvent();
 
         public class AvatarEvent : UnityEvent<ulong> { };
 
@@ -191,8 +194,8 @@ namespace umi3d.cdk.userCapture
                     }
                 }
 
-                Vector3 position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position;
-                Quaternion rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation;
+                Vector3 position = UMI3DNavigation.Instance.transform.localPosition;
+                Quaternion rotation = UMI3DNavigation.Instance.transform.localRotation;
 
                 if (!HasPlayerMoved(position, rotation, bonesList) && !forceNotNullDto)
                 {
@@ -327,6 +330,22 @@ namespace umi3d.cdk.userCapture
         {
             this.sendTracking = activeSending;
             startingSendingTracking.Invoke();
+        }
+
+        public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
+        {
+            if (vehicleDto.BodyAnimationId != 0)
+            {
+                UMI3DNodeAnimation anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
+                if (anim != null)
+                    anim.Start();
+            }
+
+            var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+
+            bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+
+            setStreamedBones(bones);
         }
     }
 }

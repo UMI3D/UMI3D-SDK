@@ -173,6 +173,7 @@ namespace umi3d.common
         public const uint ActiveBindings = 11002;
 
         public const uint ActiveHandPose = 11003;
+        public const uint ActiveBodyPose = 11004;
         #endregion
 
         #region notification

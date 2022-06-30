@@ -43,6 +43,9 @@ namespace umi3d.cdk
             {
                 switch (dto)
                 {
+                    case VehicleDto vehicleDto:
+                        Instance.currentNav.Embark(vehicleDto);
+                        break;
                     case TeleportDto teleportDto:
                         Instance.currentNav.Teleport(teleportDto);
                         break;

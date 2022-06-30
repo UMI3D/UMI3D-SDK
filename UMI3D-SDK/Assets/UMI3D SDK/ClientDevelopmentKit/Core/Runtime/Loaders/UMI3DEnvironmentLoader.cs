@@ -1036,7 +1036,7 @@ namespace umi3d.cdk
             uint frequence = UMI3DNetworkingHelper.Read<uint>(container);
             WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                StartInterpolation(e, entityId, propertyKey, frequence, container);
+                StartInterpolation(e, entityId, propertyKey, container);
             }
             );
             return true;
@@ -1096,7 +1096,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        public static bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, uint frequence, ByteContainer container)
+        public static bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, ByteContainer container)
         {
             if (!Instance.entityFilters.ContainsKey(entityId))
             {

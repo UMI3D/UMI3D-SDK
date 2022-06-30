@@ -32,7 +32,6 @@ namespace umi3d.edk
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StartInterpolationProperty)
                 + UMI3DNetworkingHelper.Write(entityId)
                 + UMI3DNetworkingHelper.Write(property)
-                + UMI3DNetworkingHelper.Write((uint)0)
                 + UMI3DNetworkingHelper.Write(startValue);
 
         }

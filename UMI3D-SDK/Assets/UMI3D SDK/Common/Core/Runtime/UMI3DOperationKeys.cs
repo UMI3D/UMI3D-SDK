@@ -56,6 +56,7 @@ namespace umi3d.common
         public const uint StopInterpolationProperty = 303;
         public const uint SetSendingCameraProperty = 304;
         public const uint SetSendingTracking = 305;
+        public const uint VehicleRequest = 306;
 
         public const uint InteractionRequest = 10001;
         public const uint EventStateChanged = 10002;
@@ -71,6 +72,7 @@ namespace umi3d.common
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
         public const uint NotificationCallback = 10014;
+        public const uint BoardedVehicleRequest = 10015;
 
         public const uint VolumeUserTransit = 10100;
 
