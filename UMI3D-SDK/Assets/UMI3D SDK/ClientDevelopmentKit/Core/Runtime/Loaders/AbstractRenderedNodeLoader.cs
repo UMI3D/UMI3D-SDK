@@ -506,12 +506,9 @@ namespace umi3d.cdk
             }
 
             var newMat = matEntity.Object as Material;
-            Dictionary<string, object> shaderProperties = null;
-            if (newMat == null)
-            {
-                // apply shader properties 
-                shaderProperties = (matEntity.dto as GlTFMaterialDto)?.extensions.umi3d.shaderProperties;
-            }
+            // apply shader properties 
+            Dictionary<string, object> shaderProperties = shaderProperties = (matEntity.dto as GlTFMaterialDto)?.extensions.umi3d.shaderProperties;
+
             if (listToOverride.Contains("ANY_mat"))
             {
                 OverrideMaterial(newMatId, node, newMat, (s) => true, matEntity, shaderProperties);
