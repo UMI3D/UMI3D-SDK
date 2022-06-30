@@ -499,22 +499,22 @@ namespace umi3d.edk.userCapture
             if (user == null)
                 return;
 
-            BoardedVehicleRequest vr;
+            VehicleRequest vr;
             SetEntityProperty op;
 
             if (vehicle != null)
             {
                 if (vehicle != EmbodimentsScene)
-                    vr = new BoardedVehicleRequest(vehicle.Id());
+                    vr = new VehicleRequest(vehicle.Id());
                 else
-                    vr = new BoardedVehicleRequest(0);
+                    vr = new VehicleRequest(0);
 
                 (user as UMI3DTrackedUser).Avatar.transform.SetParent(vehicle.transform, true);
                 op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, vehicle.GetComponent<UMI3DAbstractNode>());
             }
             else
             {
-                vr = new BoardedVehicleRequest(0);
+                vr = new VehicleRequest(0);
 
                 (user as UMI3DTrackedUser).Avatar.transform.SetParent(EmbodimentsScene.transform, true);
                 op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, EmbodimentsScene.GetComponent<UMI3DAbstractNode>());
@@ -536,8 +536,6 @@ namespace umi3d.edk.userCapture
         {
             if (user == null)
                 return;
-
-            Debug.Log(position);
 
             BoardedVehicleRequest vr;
             List<SetEntityProperty> ops = new List<SetEntityProperty>();

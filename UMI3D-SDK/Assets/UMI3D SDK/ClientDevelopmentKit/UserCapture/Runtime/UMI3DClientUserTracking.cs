@@ -194,8 +194,8 @@ namespace umi3d.cdk.userCapture
                     }
                 }
 
-                Vector3 position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position;
-                Quaternion rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation;
+                Vector3 position = UMI3DNavigation.Instance.transform.localPosition;
+                Quaternion rotation = UMI3DNavigation.Instance.transform.localRotation;
 
                 if (!HasPlayerMoved(position, rotation, bonesList) && !forceNotNullDto)
                 {
