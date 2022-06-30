@@ -58,6 +58,18 @@ namespace umi3d.cdk.userCapture
         [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
 
+        [SerializeField]
+        [Tooltip("if true, always send tracking frames (according to \"targetTrackingFPS\"), otherwise, frames will be sent only if user has moved")]
+        private bool alwaysSendTrackingFrame = false;
+
+        [SerializeField]
+        [Tooltip("Position delta to consider user has moved")]
+        private float detectionPositionDelta = .1f;
+
+        [SerializeField]
+        [Tooltip("Rotation delta (degrees) to consider user has moved")]
+        private float detectionRotationDelta = 5f;
+
         public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
 
         public HandPoseEvent handPoseEvent = new HandPoseEvent();
@@ -69,6 +81,25 @@ namespace umi3d.cdk.userCapture
         protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
         protected UserCameraPropertiesDto CameraPropertiesDto = null;
         protected bool sendCameraProperties = false;
+
+        #region User data
+
+        /// <summary>
+        /// Store last user position.
+        /// </summary>
+        private Vector3 lastPosition;
+
+        /// <summary>
+        /// Stores last user rotation
+        /// </summary>
+        Quaternion lastRotation;
+
+        /// <summary>
+        /// Store last rotations for every bone.
+        /// </summary>
+        Dictionary<uint, Quaternion> lastBoneRotations = new Dictionary<uint, Quaternion>();
+
+        #endregion
 
         ///<inheritdoc/>
         protected override void Awake()
@@ -98,7 +129,7 @@ namespace umi3d.cdk.userCapture
                 {
                     BonesIterator();
 
-                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
+                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0 && LastFrameDto != null)
                         UMI3DClientServer.SendTracking(LastFrameDto);
 
                     if (sendCameraProperties)
@@ -139,10 +170,13 @@ namespace umi3d.cdk.userCapture
 
         }
 
+
+
         /// <summary>
         /// Iterate through the bones of the browser's skeleton to create BoneDto
         /// </summary>
-        protected void BonesIterator()
+        /// <param name="forceNotNullDto">If true, <see cref="LastFrameDto"/> won't be null.</param>
+        protected void BonesIterator(bool forceNotNullDto = false)
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
@@ -157,18 +191,80 @@ namespace umi3d.cdk.userCapture
                     }
                 }
 
-                LastFrameDto = new UserTrackingFrameDto()
+                Vector3 position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position;
+                Quaternion rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation;
+
+                if (!HasPlayerMoved(position, rotation, bonesList) && !forceNotNullDto)
                 {
-                    bones = bonesList,
-                    skeletonHighOffset = skeletonContainer.localPosition.y,
-                    position = this.transform.position - UMI3DEnvironmentLoader.Instance.transform.position, //position relative to UMI3DEnvironmentLoader node
-                    rotation = Quaternion.Inverse(UMI3DEnvironmentLoader.Instance.transform.rotation) * this.transform.rotation, //rotation relative to UMI3DEnvironmentLoader node
-                    refreshFrequency = targetTrackingFPS,
-                    userId = UMI3DClientServer.Instance.GetUserId(),
-                };
+                    LastFrameDto = null;
+                }
+                else
+                {
+                    LastFrameDto = new UserTrackingFrameDto()
+                    {
+                        bones = bonesList,
+                        skeletonHighOffset = skeletonContainer.localPosition.y,
+                        position = position, //position relative to UMI3DEnvironmentLoader node
+                        rotation = rotation, //rotation relative to UMI3DEnvironmentLoader node
+                        refreshFrequency = targetTrackingFPS,
+                        userId = UMI3DClientServer.Instance.GetUserId(),
+                    };
+                }
+
+                lastRotation = rotation;
+                lastPosition = position;
+
+                foreach (var bone in bonesList)
+                {
+                    if (lastBoneRotations.ContainsKey(bone.boneType))
+                    {
+                        lastBoneRotations[bone.boneType] = bone.rotation;
+                    }
+                    else
+                    {
+                        lastBoneRotations.Add(bone.boneType, bone.rotation);
+                    }
+                }
 
                 skeletonParsedEvent.Invoke();
             }
+        }
+
+        /// <summary>
+        /// Defines if user has moved since last time.
+        /// </summary>
+        /// <param name="position">User position</param>
+        /// <param name="rotation">User rotation</param>
+        /// <param name="bones">List of all bones</param>
+        /// <returns></returns>
+        protected bool HasPlayerMoved(Vector3 position, Quaternion rotation, List<BoneDto> bones)
+        {
+            if (alwaysSendTrackingFrame)
+                return true;
+
+            bool hasMoved = false;
+
+            if ((Vector3.Distance(position, lastPosition) > detectionPositionDelta) || (Quaternion.Angle(lastRotation, rotation) > detectionRotationDelta))
+            {
+                hasMoved = true;
+            }
+            else
+            {
+                foreach (var bone in bones)
+                {
+                    if (lastBoneRotations.ContainsKey(bone.boneType))
+                    {
+                        if (Quaternion.Angle(bone.rotation, lastBoneRotations[bone.boneType]) > 5)
+                            hasMoved = true;
+                    }
+                    else
+                    {
+                        hasMoved = true;
+                    }
+                }
+            }
+
+            return hasMoved;
         }
 
         /// <summary>
