@@ -500,7 +500,8 @@ namespace umi3d.edk.userCapture
                 return;
 
             VehicleRequest vr;
-            SetEntityProperty op;
+
+            Transaction tr = new Transaction();
 
             if (vehicle != null)
             {
@@ -509,27 +510,20 @@ namespace umi3d.edk.userCapture
                 else
                     vr = new VehicleRequest(0);
 
-                (user as UMI3DTrackedUser).Avatar.transform.SetParent(vehicle.transform, true);
-                op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, vehicle.GetComponent<UMI3DAbstractNode>());
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(vehicle.GetComponent<UMI3DAbstractNode>()));
             }
             else
             {
                 vr = new VehicleRequest(0);
 
-                (user as UMI3DTrackedUser).Avatar.transform.SetParent(EmbodimentsScene.transform, true);
-                op = (user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(user, EmbodimentsScene.GetComponent<UMI3DAbstractNode>());
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(EmbodimentsScene.GetComponent<UMI3DAbstractNode>()));
             }
 
             vr.users = new HashSet<UMI3DUser>() { user };
-            op.users.Remove(user);
 
-            UMI3DServer.Dispatch(vr);
+            vr.Dispatch();
 
-            Transaction tr = new Transaction();
-            tr.AddIfNotNull(op);
-            tr.reliable = true;
-
-            UMI3DServer.Dispatch(tr);
+            tr.Dispatch();
         }
 
         public void VehicleEmbarkment(UMI3DUser user, ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, UMI3DAbstractNode vehicle = null, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion())
@@ -538,7 +532,8 @@ namespace umi3d.edk.userCapture
                 return;
 
             BoardedVehicleRequest vr;
-            List<SetEntityProperty> ops = new List<SetEntityProperty>();
+
+            Transaction tr = new Transaction();
 
             if (vehicle != null)
             {
@@ -547,29 +542,27 @@ namespace umi3d.edk.userCapture
                 else
                     vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, 0, stopNavigation, position, rotation, true);
 
-                ops.Add((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(vehicle.GetComponent<UMI3DAbstractNode>()));
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(vehicle.GetComponent<UMI3DAbstractNode>()));
             }
             else
             {
                 vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, 0, stopNavigation, position, rotation, true);
 
-                ops.Add((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(EmbodimentsScene.GetComponent<UMI3DAbstractNode>()));
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(EmbodimentsScene.GetComponent<UMI3DAbstractNode>()));
             }
 
-            ops.Add((user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(position));
-            ops.Add((user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(rotation));
+            SetEntityProperty setPosition = (user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(position);
+            setPosition?.users.Remove(user);
+            tr.AddIfNotNull(setPosition);
+            SetEntityProperty setRotation = (user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(rotation);
+            setRotation?.users.Remove(user);
+            tr.AddIfNotNull(setRotation);
 
             vr.users = new HashSet<UMI3DUser>() { user };
 
-            ops.All(op => op.users.Remove(user));
+            vr.Dispatch();
 
-            UMI3DServer.Dispatch(vr);
-
-            Transaction tr = new Transaction();
-            tr.AddIfNotNull(ops);
-            tr.reliable = true;
-
-            UMI3DServer.Dispatch(tr);
+            tr.Dispatch();
         }
 
         #endregion
