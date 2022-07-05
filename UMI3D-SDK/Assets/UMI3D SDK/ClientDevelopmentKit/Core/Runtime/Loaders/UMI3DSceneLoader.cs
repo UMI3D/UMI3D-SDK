@@ -233,9 +233,16 @@ namespace umi3d.cdk
                     {
                         if (material.name != null && material.name.Length > 0 && m != null)
                             m.name = material.name;
+
                         //register the material
-                        UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m);
-                        entity.NotifyLoaded();
+                        if (m == null)
+                        {
+                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, new List<Material>()).NotifyLoaded();
+                        }
+                        else
+                        {
+                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m).NotifyLoaded();
+                        }
                     }
                     );
 
