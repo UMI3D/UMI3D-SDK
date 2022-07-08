@@ -59,6 +59,8 @@ namespace umi3d.cdk.collaboration
 
         public bool IsConnected => client != null && client.IsConnected;
 
+        private NetworkManager networkManagerComponent = null;
+
         /// <summary>
         /// 
         /// </summary>
@@ -93,6 +95,8 @@ namespace umi3d.cdk.collaboration
             client.masterServerPort = masterServerPort;
             client.natServerHost = natServerHost;
             client.natServerPort = natServerPort;
+            client.networkManagerComponent = NetworkManager.Instance;
+
             return client;
         }
 
@@ -151,9 +155,11 @@ namespace umi3d.cdk.collaboration
         {
             if (client != null) client.Disconnect(true);
             client = null;
-            if (NetworkManager.Instance?.Networker != null)
-                NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
-            NetworkManager.Instance?.Disconnect();
+            if (networkManagerComponent?.Networker != null)
+                networkManagerComponent.Networker.disconnected -= DisconnectedFromServer;
+
+            networkManagerComponent?.Disconnect();
+            networkManagerComponent = null;
         }
 
         #region signaling
@@ -208,11 +214,14 @@ namespace umi3d.cdk.collaboration
         /// <param name="sender"></param>
         private void DisconnectedFromServer(NetWorker sender)
         {
-            if (NetworkManager.Instance?.Networker != null)
-                NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
+            if (networkManagerComponent?.Networker != null)
+                networkManagerComponent.Networker.disconnected -= DisconnectedFromServer;
+
             MainThreadManager.Run(() =>
             {
-                NetworkManager.Instance?.Disconnect();
+                networkManagerComponent?.Disconnect();
+                networkManagerComponent = null;
+
                 if (client != null)
                     environmentClient?.ConnectionLost();
             });

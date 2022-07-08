@@ -156,7 +156,7 @@ namespace umi3d.cdk.collaboration
         private async void Join(BeardedManStudios.Forge.Networking.IUserAuthenticator authenticator)
         {
             ForgeClient.Join(authenticator);
-            await UMI3DAsyncManager.Delay(10000);
+            await UMI3DAsyncManager.Delay(5000);
             if (!ForgeClient.IsConnected && !disconected)
             {
                 isConnecting = false;
@@ -169,9 +169,9 @@ namespace umi3d.cdk.collaboration
         public async void ConnectionLost()
         {
             UMI3DLogger.Log($"Connection lost with environment [Was Connected: {IsConnected()}]", scope);
-            if (IsConnected())
-                if (UMI3DCollaborationClientServer.Exists)
-                    UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
+
+            if (UMI3DCollaborationClientServer.Exists)
+                UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
             await Task.Yield();
 
             isConnecting = false;
