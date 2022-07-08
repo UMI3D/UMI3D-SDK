@@ -50,6 +50,8 @@ namespace umi3d.cdk.collaboration
 
         public ClientIdentifierApi Identifier;
 
+        public bool IsRedirectionInProgress { get; protected set; } = false;
+
         public StatusType status
         {
             get => environmentClient?.status ?? StatusType.NONE;
@@ -96,6 +98,12 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static async void Connect(RedirectionDto redirection, Action<string> failed = null)
         {
+            if(UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress)
+            {
+                failed?.Invoke("Redirection already in progress");
+                return;
+            }
+            UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = true;
             try
             {
                 if (Exists)
@@ -124,12 +132,15 @@ namespace umi3d.cdk.collaboration
                     }
                 }
                 else
+                {
                     failed?.Invoke("Client Server do not exist");
+                }
             }
             catch (Exception e)
             {
                 failed?.Invoke(e.Message);
             }
+            UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = false;
         }
 
         public static void Connect(MediaDto dto, Action<string> failed = null)
