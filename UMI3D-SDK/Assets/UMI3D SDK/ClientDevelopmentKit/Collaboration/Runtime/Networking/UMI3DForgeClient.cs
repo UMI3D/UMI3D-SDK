@@ -618,7 +618,7 @@ namespace umi3d.cdk.collaboration
         }
 
         #region MonoBehaviour
-
+        static bool HasBeenSet = false;
         /// <summary>
         /// 
         /// </summary>
@@ -627,7 +627,8 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
-            inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            if (!HasBeenSet) inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            HasBeenSet = true;
         }
 
         /// <summary>
@@ -635,8 +636,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void ApplicationQuit()
         {
-            if (!inetum.unityUtils.QuittingManager.ApplicationIsQuitting)
-                return;
+            if (!inetum.unityUtils.QuittingManager.ApplicationIsQuitting) return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();
         }
@@ -645,6 +645,7 @@ namespace umi3d.cdk.collaboration
         {
             Stop();
             destroyed = true;
+            HasBeenSet = false;
         }
 
         private bool destroyed = false;
