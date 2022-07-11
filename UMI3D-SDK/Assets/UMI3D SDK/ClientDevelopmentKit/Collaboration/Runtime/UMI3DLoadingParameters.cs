@@ -104,6 +104,14 @@ namespace umi3d.cdk
                     UMI3DHandPoseLoader.Load(h);
                     finished?.Invoke();
                     break;
+                case UMI3DEmotesConfigDto e:
+                    UMI3DEmotesConfigLoader.Load(e);
+                    finished?.Invoke();
+                    break;
+                case UMI3DEmoteDto e:
+                    UMI3DEmoteLoader.Load(e);
+                    finished?.Invoke();
+                    break;
                 case NotificationDto n:
                     notificationLoader.Load(n);
                     finished?.Invoke();
@@ -153,6 +161,10 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DBodyPoseLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (UMI3DEmotesConfigLoader.SetUMI3DProperty(entity, property))
+                return true;
+            if (UMI3DEmoteLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DProperty(entity, property))
@@ -195,6 +207,10 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DBodyPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (UMI3DEmotesConfigLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (UMI3DEmoteLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
@@ -229,6 +245,10 @@ namespace umi3d.cdk
             if (UMI3DHandPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (UMI3DBodyPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DEmotesConfigLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DEmoteLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;

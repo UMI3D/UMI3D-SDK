@@ -48,6 +48,8 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
+        public UMI3DEmotesConfig emotesConfig;
+
         ///<inheritdoc/>
         protected override void Awake()
         {
@@ -482,13 +484,19 @@ namespace umi3d.edk.userCapture
         {
             handPoseIds.Clear();
 
+            if (emotesConfig!=null)
+                emotesConfig.Id();
+
             handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()));
         }
 
         public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
         {
             if (avatarNodeDto.userId.Equals(user.Id()))
+            {
                 avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
+                avatarNodeDto.emotesConfigDto = (UMI3DEmotesConfigDto)emotesConfig.ToEntityDto(user);
+            }
         }
         #endregion
 

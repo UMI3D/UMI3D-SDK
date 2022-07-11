@@ -77,6 +77,18 @@ namespace umi3d.cdk.userCapture
 
         public BodyPoseEvent bodyPoseEvent = new BodyPoseEvent();
 
+        public class EmotesConfigEvent : UnityEvent<UMI3DEmotesConfigDto> { };
+        public class EmoteEvent : UnityEvent<UMI3DEmoteDto> { };
+
+        /// <summary>
+        /// Triggered when an EmoteConfig file have been loaded
+        /// </summary>
+        public EmotesConfigEvent EmotesLoadedEvent = new EmotesConfigEvent();
+        /// <summary>
+        /// Trigered when an emote changed on availability
+        /// </summary>
+        public EmoteEvent EmoteChangedEvent = new EmoteEvent();
+
         public class AvatarEvent : UnityEvent<ulong> { };
 
         public AvatarEvent avatarEvent = new AvatarEvent();

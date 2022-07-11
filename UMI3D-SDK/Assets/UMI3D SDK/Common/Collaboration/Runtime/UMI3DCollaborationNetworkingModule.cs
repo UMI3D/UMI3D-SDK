@@ -148,6 +148,46 @@ namespace umi3d.common.collaboration
                         readable = false;
                     }
                     return true;
+                case true when typeof(T) == typeof(UMI3DEmotesConfigDto):
+                    var conf = new UMI3DEmotesConfigDto();
+                    result = default(T);
+                    readable = UMI3DNetworkingHelper.TryRead<bool>(container, out conf.allAvailableByDefault);
+
+                    if (readable)
+                    {
+                        readable = UMI3DNetworkingHelper.TryRead<int>(container, out int nbEmotes);
+                        if (readable)
+                        {
+                            for (uint i = 0; i < nbEmotes; i++)
+                            {
+                                var emote = new UMI3DEmoteDto();
+                                readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out emote.id);
+                                readable &= UMI3DNetworkingHelper.TryRead<string>(container, out emote.name);
+                                readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out emote.available);
+                                readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out emote.iconResource);
+                                if (!readable)
+                                    break;
+                                else
+                                    conf.emotes.Add(emote);
+                            }
+                            result = (T)Convert.ChangeType(conf, typeof(T));
+                        }
+                    }
+                    return true;
+
+                case true when typeof(T) == typeof(UMI3DEmoteDto):
+                    var e = new UMI3DEmoteDto();
+                    result = default(T);
+
+                    readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out e.id);
+                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.name);
+                    readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out e.available);
+                    readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out e.iconResource);
+
+                    if (!readable)
+                        return false;
+                    result = (T)Convert.ChangeType(e, typeof(T));
+                    return true;
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
                     readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out mat.newMaterialId);
