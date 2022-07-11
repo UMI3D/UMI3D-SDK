@@ -174,6 +174,9 @@ namespace umi3d.common
 
         public const uint ActiveHandPose = 11003;
         public const uint ActiveBodyPose = 11004;
+
+        public const uint ChangeEmoteConfig = 11005;
+        public const uint ActiveEmote = 11006;
         #endregion
 
         #region notification

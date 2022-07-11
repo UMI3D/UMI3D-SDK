@@ -1,12 +1,9 @@
 ﻿/*
 Copyright 2019 - 2021 Inetum
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,41 +11,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
     /// <summary>
-    /// Abstract class to represent the root node of one user's representation.
+    /// Emote data, including a reference to the icon resource, packaged in a dto
     /// </summary>
-    [Serializable]
-    public class UMI3DAvatarNodeDto : UMI3DNodeDto
+    [System.Serializable]
+    public class UMI3DEmoteDto : AbstractEntityDto, IEntity
     {
         /// <summary>
-        /// The unique identifier of the user.
+        /// Emote name
         /// </summary>
-        public ulong userId;
+        public string name;
 
         /// <summary>
-        /// The user's size
+        /// If  the user can see and play the emote
         /// </summary>
-        public SerializableVector3 userSize;
-
+        public bool available;
         /// <summary>
-        /// A bool to enable or disable bindings
+        /// Icon ressource details
         /// </summary>
-        public bool activeBindings;
-
-        /// <summary>
-        /// A list of bindings between the user's bones and their representations.
-        /// </summary>
-        public List<BoneBindingDto> bindings;
-
-        public List<UMI3DHandPoseDto> handPoses;
-
-        public List<UMI3DBodyPoseDto> bodyPoses;
-
-        public UMI3DEmotesConfigDto emotesConfigDto;
+        [Header("Icon")]
+        public FileDto iconResource;
     }
 }
+
