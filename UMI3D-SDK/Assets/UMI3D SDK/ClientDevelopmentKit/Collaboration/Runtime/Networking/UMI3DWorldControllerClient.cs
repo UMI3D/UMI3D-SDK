@@ -93,7 +93,7 @@ namespace umi3d.cdk.collaboration
 
         private async Task<bool> Connect(ConnectionDto dto)
         {
-            if (UMI3DCollaborationClientServer.Exists)
+            if (UMI3DCollaborationClientServer.Exists && !string.IsNullOrEmpty( media.url))
             {
                 UMI3DDto answerDto = await HttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
