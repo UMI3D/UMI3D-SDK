@@ -131,7 +131,7 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// <param name="latency">time between ping and pong</param>
         /// <param name="sender">the corresponding NetWorker</param>
-        protected void SetRoundTripLatency(double latency, NetWorker sender)
+        protected virtual void SetRoundTripLatency(double latency, NetWorker sender)
         {
             RoundTripLatency = latency;
         }
