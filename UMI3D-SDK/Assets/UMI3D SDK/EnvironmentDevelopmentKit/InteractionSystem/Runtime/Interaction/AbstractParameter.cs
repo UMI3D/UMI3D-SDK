@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
 
@@ -21,6 +22,11 @@ namespace umi3d.edk.interaction
 {
     public abstract class AbstractParameter : AbstractInteraction
     {
+        /// <summary>
+        /// Should this parameter should be display as a password.
+        /// </summary>
+        public bool isPrivate = false;
+
         /// <summary>
         /// Event when an interaction is performed on a parameter.
         /// </summary>
@@ -49,6 +55,19 @@ namespace umi3d.edk.interaction
             {
                 this.value = value;
             }
+        }
+
+        protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
+        {
+            base.WriteProperties(dto, user);
+            if (dto is AbstractParameterDto parameter)
+                parameter.privateParameter = isPrivate;
+        }
+
+        public override Bytable ToByte(UMI3DUser user)
+        {
+            return base.ToByte(user)
+                + UMI3DNetworkingHelper.Write(isPrivate);
         }
     }
 }

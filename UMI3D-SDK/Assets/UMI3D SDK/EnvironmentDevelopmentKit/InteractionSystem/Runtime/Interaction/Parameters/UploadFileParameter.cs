@@ -143,6 +143,7 @@ namespace umi3d.edk.interaction
                     uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (UMI3DParameterKeys.StringUploadFile == parameterId)
                     {
+                        UMI3DNetworkingHelper.Read<bool>(container);
                         value = UMI3DNetworkingHelper.Read<string>(container);
                         List<string> exts = UMI3DNetworkingHelper.ReadList<string>(container);
                         string fileId = UMI3DNetworkingHelper.Read<string>(container);
