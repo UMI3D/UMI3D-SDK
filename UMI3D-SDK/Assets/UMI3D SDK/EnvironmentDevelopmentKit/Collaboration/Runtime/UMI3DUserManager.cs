@@ -34,6 +34,7 @@ namespace umi3d.edk.collaboration
         /// Contain the users connected to the scene.
         /// </summary>
         private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
+        private readonly Dictionary<ulong, UMI3DCollaborationUser> lostUsers = new Dictionary<ulong, UMI3DCollaborationUser>();
         private readonly Dictionary<string, UMI3DCollaborationUser> guidMap = new Dictionary<string, UMI3DCollaborationUser>();
         private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
 
@@ -115,7 +116,7 @@ namespace umi3d.edk.collaboration
             return (null, false);
         }
 
-        public (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
+        (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
         {
             lock (users)
             {
@@ -130,6 +131,20 @@ namespace umi3d.edk.collaboration
                 }
             }
             return (null, false);
+        }
+
+        public (UMI3DCollaborationUser user, bool oldToken, bool oldUser) GetUserByNakedTokenForConnection(string token)
+        {
+            var connected = GetUserByNakedToken(token);
+            if (connected.oldToken || connected.user != null)
+                return (connected.user, connected.oldToken, false);
+            foreach(var user in lostUsers.Values)
+            {
+                if (user.token == token)
+                    return (user, true,true);
+            }
+            return (null,false,false);
+
         }
 
         /// <summary>
@@ -161,10 +176,11 @@ namespace umi3d.edk.collaboration
         /// logout a user
         /// </summary>
         /// <param name="user"></param>
-        public void Logout(UMI3DCollaborationUser user)
+        public async void Logout(UMI3DCollaborationUser user, bool notifiedByUser)
         {
-            UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId}", scope);
+            UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId} {notifiedByUser}", scope);
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
+
             lock (users)
             {
                 users.Remove(user.Id());
@@ -172,8 +188,33 @@ namespace umi3d.edk.collaboration
             }
             guidMap.Remove(user.guid);
             forgeMap.Remove(user.networkPlayer.NetworkId);
+
             user.SetStatus(StatusType.NONE);
+
+            if (!notifiedByUser)
+            {
+                lostUsers.Add(user.Id(), user);
+                await UMI3DAsyncManager.Delay(600000); // wait 10 min for reco
+                if (user.status != StatusType.NONE)
+                {
+                    lostUsers.Remove(user.Id());
+                    return;
+                }
+            }
+
             user.Logout();
+        }
+
+        public void reconnectUser(UMI3DCollaborationUser user)
+        {
+            lock (users)
+            {
+                users.Add(user.Id(),user);
+                SetLastUpdate();
+            }
+            lostUsers.Remove(user.Id());
+            guidMap.Add(user.guid,user);
+            forgeMap.Add(user.networkPlayer.NetworkId,user.Id());
         }
 
         /// <summary>
@@ -189,15 +230,25 @@ namespace umi3d.edk.collaboration
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            UMI3DCollaborationUser user = GetUserByNakedToken(token).user;
+            var res = GetUserByNakedTokenForConnection(token);
+            UMI3DCollaborationUser user = res.user;
+            UMI3DLogger.Log($"Connect User {user != null} {res}",scope);
             if (user != null)
             {
-                bool reconnection = user.networkPlayer != null;
+                if (res.oldUser)
+                {
+                    UMI3DLogger.Log($"Reconnection of lost user ", scope);
+                    reconnectUser(user);
+                }
+
+                bool reconnection = user.networkPlayer != null || res.oldUser;
                 if (reconnection)
                     forgeMap.Remove(user.networkPlayer.NetworkId);
+                UMI3DLogger.Log($"Reconnection {reconnection}", scope);
 
                 user.networkPlayer = player;
                 forgeMap.Add(player.NetworkId, user.Id());
+                
                 acceptUser(true);
                 onUserCreated.Invoke(user, reconnection);
             }

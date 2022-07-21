@@ -401,12 +401,12 @@ namespace umi3d.edk.collaboration
 
         #endregion
 
-        public static void Logout(UMI3DCollaborationUser user)
+        public static void Logout(UMI3DCollaborationUser user, bool notifiedByUser = true)
         {
             if (user == null)
                 return;
             (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
-            Collaboration.Logout(user);
+            Collaboration.Logout(user, notifiedByUser);
             MainThreadManager.Run(() => Instance._Logout(user));
         }
 
@@ -447,7 +447,7 @@ namespace umi3d.edk.collaboration
 
                 yield return new WaitForSecondsRealtime(WaitTimeForPingAnswer);
             }
-            Logout(user);
+            Logout(user,false);
         }
 
         public virtual void Ping(UMI3DCollaborationUser user)
