@@ -227,7 +227,24 @@ namespace umi3d.edk.collaboration.murmur
             return await GetRequest(url + "/servers/" + i + "/user/" + user);
         }
         //POST /servers/:serverid/user Create User, formdata: username&password
+        async public Task<string> AddUser(int server, string userName,string password)
+        {
+            var form = new List<IMultipartFormSection>();
+            form.Add(new MultipartFormDataSection("username", userName));
+            form.Add(new MultipartFormDataSection("password", password));
+            var www = UnityWebRequest.Post(url + "/servers/" + server + "/user", form);
+            await Send(www);
+            return RequestToString(www);
+        }
+
         //DELETE /servers/:serverid/user/:userid Delete User
+        async public Task<string> DeleteUser(int server, int user)
+        {
+            var www = UnityWebRequest.Delete(url + "/servers/" + server + "/user/" + user);
+            await Send(www);
+            return RequestToString(www);
+        }
+
         //POST /servers/:serverid/kickuser? usersession = 1  Kick user with session #1
         //POST /servers/:serverid/user/:userid/mute Mute User
         //POST /servers/:serverid/user/:userid/unmute Unmute User
@@ -473,6 +490,24 @@ namespace umi3d.edk.collaboration.murmur
                     murmur,
                     this,
                     Convert<ChannelData>(await murmur.CreateChannel(data.id, name, data.parent_channel.id)));
+            }
+
+            public async Task Users()
+            {
+                var info = await murmur.GetServerUsers(data.id);
+                Debug.Log(info);
+            }
+
+            public async Task AddUser(string name, string password)
+            {
+                var info = await murmur.AddUser(data.id, name, password);
+                Debug.Log(info);
+            }
+
+            public async Task RemoveUser(int user)
+            {
+                var info = await murmur.DeleteUser(data.id, user);
+                Debug.Log(info);
             }
         }
 
