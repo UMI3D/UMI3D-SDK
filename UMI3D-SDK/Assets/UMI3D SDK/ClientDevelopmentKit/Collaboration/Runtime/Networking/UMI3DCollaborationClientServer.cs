@@ -102,11 +102,7 @@ namespace umi3d.cdk.collaboration
             {
                 environmentClient = worldControllerClient.ConnectToEnvironment();
                 environmentClient.status = StatusType.ACTIVE;
-                UnityEngine.Debug.Log("Good");
-            }
-            else
-            {
-                UnityEngine.Debug.Log("ARF");
+
             }
         }
 
