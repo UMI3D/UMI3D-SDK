@@ -33,6 +33,7 @@ namespace umi3d.cdk.collaboration
         {
             base.Start();
             avatarEvent.AddListener(UMI3DCollaborativeUserAvatar.SkeletonCreation);
+            UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(() => embodimentDict.Clear());
         }
 
         private void OnEnable()
