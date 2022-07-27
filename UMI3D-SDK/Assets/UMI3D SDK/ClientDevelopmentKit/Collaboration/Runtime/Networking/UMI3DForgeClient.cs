@@ -343,7 +343,7 @@ namespace umi3d.cdk.collaboration
             Binary voice = null;
             if (useDto)
             {
-                var dto = new VoiceDto()
+                var dto = new VoiceDataDto()
                 {
                     data = sample.Take(length).ToArray(),
                     senderId = Me
@@ -652,7 +652,7 @@ namespace umi3d.cdk.collaboration
         {
             if (useDto)
             {
-                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDto;
+                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr) as VoiceDataDto;
                 uint id = dto.senderId;
                 UMI3DUser source = GetUserByNetWorkId(id);
                 if (source != null)

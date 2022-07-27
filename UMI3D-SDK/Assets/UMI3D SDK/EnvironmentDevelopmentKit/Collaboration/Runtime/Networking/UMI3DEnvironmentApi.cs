@@ -63,12 +63,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
-            var connectionInformation = new UserConnectionDto(user.ToUserDto())
-            {
-                parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
-                //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
-            };
+            var connectionInformation = user.ToUserConnectionDto();
             e.Response.WriteContent(connectionInformation.ToBson());
         }
 
