@@ -47,6 +47,10 @@ namespace umi3d.cdk.collaboration
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
         public UnityEvent OnRedirection = new UnityEvent();
+        public UnityEvent OnReconnect = new UnityEvent();
+
+        public UnityEvent OnConnectionCheck = new UnityEvent();
+        public UnityEvent OnConnectionRetreived = new UnityEvent();
 
         public ClientIdentifierApi Identifier;
 
@@ -96,13 +100,13 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Reconnect to the last environment
         /// </summary>
-        public static void Reconnect()
+        public static async void Reconnect()
         {
             if (worldControllerClient != null)
             {
-                environmentClient = worldControllerClient.ConnectToEnvironment();
-                environmentClient.status = StatusType.ACTIVE;
-
+                Instance.OnReconnect.Invoke();
+                environmentClient = await worldControllerClient.ConnectToEnvironment();
+                environmentClient.status = StatusType.CREATED;
             }
         }
 
@@ -140,7 +144,7 @@ namespace umi3d.cdk.collaboration
                         await Task.Yield();
 
                         worldControllerClient = wc;
-                        environmentClient = wc.ConnectToEnvironment();
+                        environmentClient = await wc.ConnectToEnvironment();
                         environmentClient.status = StatusType.ACTIVE;
                     }
                 }
@@ -168,7 +172,11 @@ namespace umi3d.cdk.collaboration
         public static async void Logout()
         {
             if (environmentClient != null)
+            {
                 await environmentClient.Logout();
+                environmentClient = null;
+            }
+
             if (worldControllerClient != null)
                 worldControllerClient.Logout();
             if (Exists)
@@ -193,9 +201,25 @@ namespace umi3d.cdk.collaboration
                 success?.Invoke();
             else
                 failled?.Invoke("Failled to Logout");
+            environmentClient = null;
             Instance.OnLeavingEnvironment.Invoke();
         }
 
+        public void ConnectionStatus(UMI3DEnvironmentClient client, bool lost)
+        {
+            if (client == environmentClient)
+                try
+                {
+                    if (lost)
+                        OnConnectionCheck.Invoke();
+                    else
+                        OnConnectionRetreived.Invoke();
+                }
+                catch (Exception e)
+                {
+                    UMI3DLogger.LogError($"Error in ConnectionStatus event : {e.Message} \n {e.StackTrace}", scope);
+                }
+        }
 
         /// <summary>
         /// Notify that the connection with the server was lost.

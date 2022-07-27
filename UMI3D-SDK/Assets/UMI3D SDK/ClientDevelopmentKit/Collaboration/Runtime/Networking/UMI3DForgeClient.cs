@@ -172,6 +172,7 @@ namespace umi3d.cdk.collaboration
             float lastBand = -1;
             while (networkManagerComponent?.Networker != null && IsConnected && lastBand != networkManagerComponent.Networker.BandwidthIn)
             {
+                
                 lastBand = networkManagerComponent.Networker.BandwidthIn;
                 await UMI3DAsyncManager.Delay(1000);
             }
@@ -188,7 +189,7 @@ namespace umi3d.cdk.collaboration
         async void CheckForPing()
         {
 
-            int count = 3;
+            int count = 10;
             float lastBand = -1;
 
             while (count > 0)
@@ -288,7 +289,7 @@ namespace umi3d.cdk.collaboration
                 networkManagerComponent = null;
 
                 if (client != null)
-                    environmentClient?.ConnectionLost();
+                    environmentClient?.ConnectionDisconnected();
             });
         }
 

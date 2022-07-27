@@ -166,7 +166,13 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public async void ConnectionLost()
+        public void ConnectionStatus(bool lost)
+        {
+            if (UMI3DCollaborationClientServer.Exists)
+                UMI3DCollaborationClientServer.Instance.ConnectionStatus(this,lost);
+        }
+
+        public async void ConnectionDisconnected()
         {
             UMI3DLogger.Log($"Connection lost with environment [Was Connected: {IsConnected()}]", scope);
 
@@ -178,7 +184,7 @@ namespace umi3d.cdk.collaboration
             isConnected = false;
         }
 
-        public async Task<bool> Logout()
+        public async Task<bool> Logout(bool notify = true)
         {
             bool ok = false;
             disconected = true;
@@ -187,7 +193,8 @@ namespace umi3d.cdk.collaboration
 
                 try
                 {
-                    await HttpClient.SendPostLogout();
+                    if(notify)
+                        await HttpClient.SendPostLogout();
                 }
                 finally { };
 
@@ -195,6 +202,11 @@ namespace umi3d.cdk.collaboration
                 ok = true;
             }
             isConnected = false;
+            if (ForgeClient != null)
+            {
+                GameObject.Destroy(ForgeClient.gameObject);
+                ForgeClient = null;
+            }
             return ok;
         }
 
