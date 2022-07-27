@@ -87,8 +87,12 @@ namespace umi3d.cdk.collaboration
             if (id != UMI3DClientServer.Instance.GetUserId())
             {
                 var ua = UMI3DClientUserTracking.Instance.embodimentDict[id] as UMI3DCollaborativeUserAvatar;
-                ua.skeleton = Instantiate((UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking).UnitSkeleton, ua.transform);
-                ua.skeleton.transform.localScale = ua.userSize;
+                
+                if (ua.skeleton == null)
+                {
+                    ua.skeleton = Instantiate((UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking).UnitSkeleton, ua.transform);
+                    ua.skeleton.transform.localScale = ua.userSize;
+                }
             }
         }
 
