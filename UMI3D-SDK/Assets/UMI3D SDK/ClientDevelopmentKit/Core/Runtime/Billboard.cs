@@ -40,6 +40,9 @@ namespace umi3d.cdk
 
         private void ComputeOrientation()
         {
+            if (glTFNodeDto == null)
+                return;
+
             Vector3 pos = (Camera.main.transform.position - transform.position);
 
             if (!X) { pos -= Vector3.up * Vector3.Dot(Vector3.up, pos); }
