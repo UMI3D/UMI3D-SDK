@@ -234,6 +234,10 @@ namespace umi3d.edk.collaboration
             {
                 OnUserCreated.Invoke(user);
             }
+            else
+            {
+                OnUserRecreated.Invoke(user);
+            }
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
