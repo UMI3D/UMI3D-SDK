@@ -290,14 +290,15 @@ namespace umi3d.cdk.userCapture
         /// <returns>A bool indicating if the UserAvatar has been registered</returns>
         public virtual bool RegisterEmbd(ulong id, UserAvatar u)
         {
-            avatarEvent.Invoke(id);
-
             if (embodimentDict.ContainsKey(id))
+            {
+                avatarEvent.Invoke(id);
                 return false;
-
+            }
             else
             {
                 embodimentDict.Add(id, u);
+                avatarEvent.Invoke(id);
                 return true;
             }
         }
