@@ -786,6 +786,7 @@ MonoBehaviour:
   forgeMaxNbPlayer: 32
   useRandomHttpPort: 0
   httpPort: 0
+  resourcesUrl: 
   iconServerUrl: 
   sessionId: 
   descriptionComment: 
@@ -1227,7 +1228,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1607390828}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7faf06b321832a44dbe5d2eceef68306, type: 3}
+  m_Script: {fileID: 11500000, guid: 9958806fc2c1a1048b389b7c85dc71a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   useDto: 0
@@ -1629,9 +1630,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce2cbb502d5bc514f9ce040afe8ecead, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ActivateEmbodiments: 1
   EmbodimentsScene: {fileID: 1896275331}
-  SkeletonPrefab: {fileID: 8434539890996593422, guid: 221bc20772f4fb64998a45850f4743d3,
+  SkeletonPrefab: {fileID: 8434539890996593422, guid: 8bd97d759c0df494bb23777b3180a1f1,
     type: 3}
+  emotesConfig: {fileID: 11400000, guid: da2b1c1bd852ea84f86401f50e2d60a9, type: 2}
   handPoseIds: 
   PreloadedHandPoses: []
 --- !u!4 &2023719151

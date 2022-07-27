@@ -38,6 +38,9 @@ namespace umi3d.cdk.collaboration
 
         private bool useDto => environmentClient?.useDto ?? false;
 
+        bool pingReceived = false;
+        bool CheckForBandWidthRunning = false;
+
         private UMI3DUser GetUserByNetWorkId(uint nid)
         {
             if (UMI3DCollaborationEnvironmentLoader.Exists && UMI3DCollaborationEnvironmentLoader.Instance.UserList != null)
@@ -95,7 +98,6 @@ namespace umi3d.cdk.collaboration
             client.masterServerPort = masterServerPort;
             client.natServerHost = natServerHost;
             client.natServerPort = natServerPort;
-            client.networkManagerComponent = NetworkManager.Instance;
 
             return client;
         }
@@ -146,6 +148,69 @@ namespace umi3d.cdk.collaboration
             }
 
             mgr.Initialize(client, masterServerHost, masterServerPort, null);
+
+            networkManagerComponent = NetworkManager.Instance;
+            
+            CheckForBandWidth();
+        }
+
+        protected override void SetRoundTripLatency(double latency, NetWorker sender)
+        {
+            pingReceived = true;
+            base.SetRoundTripLatency(latency, sender);
+        }
+
+        
+        async void CheckForBandWidth()
+        {
+            if (CheckForBandWidthRunning) return;
+            CheckForBandWidthRunning = true;
+
+            while (networkManagerComponent?.Networker != null && networkManagerComponent.Networker.BandwidthIn <= 0 || !IsConnected)
+                await UMI3DAsyncManager.Delay(1000);
+
+            float lastBand = -1;
+            while (networkManagerComponent?.Networker != null && IsConnected && lastBand != networkManagerComponent.Networker.BandwidthIn)
+            {
+                lastBand = networkManagerComponent.Networker.BandwidthIn;
+                await UMI3DAsyncManager.Delay(1000);
+            }
+
+            CheckForBandWidthRunning = false;
+            if (IsConnected && networkManagerComponent?.Networker != null)
+            {
+                CheckForPing();
+            }
+
+        }
+
+        
+        async void CheckForPing()
+        {
+
+            int count = 3;
+            float lastBand = -1;
+
+            while (count > 0)
+            {
+                pingReceived = false;
+                lastBand = networkManagerComponent.Networker.BandwidthIn;
+                client.Ping();
+                UMI3DLogger.Log($"Send Ping", scope);
+                await UMI3DAsyncManager.Delay(10000);
+
+                if (networkManagerComponent?.Networker == null || !IsConnected)
+                    return;
+
+                if (pingReceived || lastBand != networkManagerComponent.Networker.BandwidthIn)
+                {
+                    CheckForBandWidth();
+                    return;
+                }
+                count--;
+            }
+
+            DisconnectedFromServer(networkManagerComponent.Networker);
         }
 
         /// <summary>

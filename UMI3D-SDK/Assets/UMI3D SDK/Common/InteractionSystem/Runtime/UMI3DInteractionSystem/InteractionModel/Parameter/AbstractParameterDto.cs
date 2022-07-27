@@ -35,6 +35,8 @@ namespace umi3d.common.interaction
     [System.Serializable]
     public abstract class AbstractParameterDto : AbstractInteractionDto
     {
+        //State if a parameter is private or not. For password or other.  
+        public bool privateParameter;
         public abstract object GetValue();
 
     }

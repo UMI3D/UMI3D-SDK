@@ -28,7 +28,6 @@ namespace umi3d.common
 
         public const byte BooleanParameter = 20;
         public const byte StringParameter = 21;
-        public const byte PasswordParameter = 22;
 
         public const byte LocalInfoParameter = 23;
         public const byte StringEnumParameter = 24;

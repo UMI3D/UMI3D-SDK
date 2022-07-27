@@ -386,57 +386,66 @@ namespace umi3d.common.collaboration
             switch (value)
             {
                 case LocalInfoRequestParameterValue localInfovalue:
-                    bytable = UMI3DNetworkingHelper.Write(localInfovalue.read);
-                    bytable += UMI3DNetworkingHelper.Write(localInfovalue.write);
+                    bytable = UMI3DNetworkingHelper.Write(localInfovalue.read)
+                        + UMI3DNetworkingHelper.Write(localInfovalue.write);
                     break;
                 case UserCameraPropertiesDto camera:
-                    bytable = UMI3DNetworkingHelper.Write(camera.scale);
-                    bytable += UMI3DNetworkingHelper.Write(camera.projectionMatrix);
-                    bytable += UMI3DNetworkingHelper.Write(camera.boneType);
+                    bytable = UMI3DNetworkingHelper.Write(camera.scale)
+                        + UMI3DNetworkingHelper.Write(camera.projectionMatrix)
+                        + UMI3DNetworkingHelper.Write(camera.boneType);
                     break;
                 case EnumParameterDto<string> param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Enum);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Enum)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value);
                     break;
                 case BooleanParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Bool);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Bool)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value);
                     break;
                 case FloatParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Float);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Float)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value);
                     break;
                 case IntegerParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Int);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Int)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value);
+
                     break;
                 case StringParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.String);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.String)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value);
                     break;
                 case UploadFileParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.StringUploadFile);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
-                    bytable += UMI3DNetworkingHelper.Write(param.authorizedExtensions);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.StringUploadFile)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value)
+                        + UMI3DNetworkingHelper.Write(param.authorizedExtensions);
                     break;
                 case IntegerRangeParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.IntRange);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
-                    bytable += UMI3DNetworkingHelper.Write(param.min);
-                    bytable += UMI3DNetworkingHelper.Write(param.max);
-                    bytable += UMI3DNetworkingHelper.Write(param.increment);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.IntRange)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value)
+                        + UMI3DNetworkingHelper.Write(param.min)
+                        + UMI3DNetworkingHelper.Write(param.max)
+                        + UMI3DNetworkingHelper.Write(param.increment);
                     break;
                 case FloatRangeParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.FloatRange);
-                    bytable += UMI3DNetworkingHelper.Write(param.value);
-                    bytable += UMI3DNetworkingHelper.Write(param.min);
-                    bytable += UMI3DNetworkingHelper.Write(param.max);
-                    bytable += UMI3DNetworkingHelper.Write(param.increment);
+                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.FloatRange)
+                        + UMI3DNetworkingHelper.Write(param.privateParameter)
+                        + UMI3DNetworkingHelper.Write(param.value)
+                        + UMI3DNetworkingHelper.Write(param.min)
+                        + UMI3DNetworkingHelper.Write(param.max)
+                        + UMI3DNetworkingHelper.Write(param.increment);
                     break;
                 case UMI3DRenderedNodeDto.MaterialOverrideDto material:
-                    bytable = UMI3DNetworkingHelper.Write(material.newMaterialId);
-                    bytable += UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists);
-                    bytable += UMI3DNetworkingHelper.WriteCollection(material.overridedMaterialsId);
+                    bytable = UMI3DNetworkingHelper.Write(material.newMaterialId)
+                        + UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists)
+                        + UMI3DNetworkingHelper.WriteCollection(material.overridedMaterialsId);
                     break;
                 case ScalableTextureDto scalableTextureDto:
                     bytable = UMI3DNetworkingHelper.WriteCollection(scalableTextureDto.variants)

@@ -94,6 +94,19 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Reconnect to the last environment
+        /// </summary>
+        public static void Reconnect()
+        {
+            if (worldControllerClient != null)
+            {
+                environmentClient = worldControllerClient.ConnectToEnvironment();
+                environmentClient.status = StatusType.ACTIVE;
+
+            }
+        }
+
+        /// <summary>
         /// Start the connection to a Master Server.
         /// </summary>
         public static async void Connect(RedirectionDto redirection, Action<string> failed = null)

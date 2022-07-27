@@ -219,12 +219,14 @@ namespace umi3d.cdk.interaction
                 case UMI3DInteractionKeys.BooleanParameter:
                     var Bool = new BooleanParameterDto();
                     ReadAbstractInteractionDto(Bool, container);
+                    Bool.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
                     Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
                     interaction = Bool;
                     break;
                 case UMI3DInteractionKeys.UploadParameter:
                     var Upload = new UploadFileParameterDto();
                     ReadAbstractInteractionDto(Upload, container);
+                    Upload.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
                     Upload.value = UMI3DNetworkingHelper.Read<string>(container);
                     Upload.authorizedExtensions = UMI3DNetworkingHelper.Read<List<string>>(container);
                     interaction = Upload;
@@ -232,11 +234,13 @@ namespace umi3d.cdk.interaction
                 case UMI3DInteractionKeys.StringParameter:
                     var String = new StringParameterDto();
                     ReadAbstractInteractionDto(String, container);
+                    String.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
                     String.value = UMI3DNetworkingHelper.Read<string>(container);
                     interaction = String;
                     break;
                 case UMI3DInteractionKeys.LocalInfoParameter:
                     var LocalInfo = new LocalInfoRequestParameterDto();
+                    LocalInfo.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
                     ReadAbstractInteractionDto(LocalInfo, container);
                     LocalInfo.app_id = UMI3DNetworkingHelper.Read<string>(container);
                     LocalInfo.serverName = UMI3DNetworkingHelper.Read<string>(container);
@@ -247,6 +251,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DInteractionKeys.StringEnumParameter:
                     var EString = new EnumParameterDto<string>();
+                    EString.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
                     ReadAbstractInteractionDto(EString, container);
                     EString.possibleValues = UMI3DNetworkingHelper.ReadList<string>(container);
                     EString.value = UMI3DNetworkingHelper.Read<string>(container);
@@ -254,6 +259,7 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DInteractionKeys.FloatRangeParameter:
                     var RFloat = new FloatRangeParameterDto();
+                    RFloat.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
                     ReadAbstractInteractionDto(RFloat, container);
                     RFloat.min = UMI3DNetworkingHelper.Read<float>(container);
                     RFloat.max = UMI3DNetworkingHelper.Read<float>(container);

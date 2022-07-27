@@ -46,9 +46,10 @@ namespace umi3d.worldController
                     value = ""
                 });
             form.fields.Add(
-                new PasswordParameterDto()
+                new StringParameterDto()
                 {
                     id = 2,
+                    privateParameter = true,
                     name = "Password",
                     value = ""
                 });

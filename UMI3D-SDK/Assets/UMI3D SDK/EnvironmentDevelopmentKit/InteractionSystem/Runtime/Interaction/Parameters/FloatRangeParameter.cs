@@ -132,6 +132,7 @@ namespace umi3d.edk.interaction
                     uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (parameterId == UMI3DParameterKeys.FloatRange)
                     {
+                        UMI3DNetworkingHelper.Read<bool>(container);
                         float value = UMI3DNetworkingHelper.Read<float>(container);
                         if (value < min || value > max)
                         {
