@@ -121,7 +121,7 @@ namespace umi3d.cdk.userCapture
 
             if (dto.bodyPoses != null)
                 foreach (UMI3DBodyPoseDto pose in dto.bodyPoses)
-                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null);
+                    UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null).NotifyLoaded();
 
             if (dto.emotesConfigDto != null)
                 UMI3DEmotesConfigLoader.Load(dto.emotesConfigDto);

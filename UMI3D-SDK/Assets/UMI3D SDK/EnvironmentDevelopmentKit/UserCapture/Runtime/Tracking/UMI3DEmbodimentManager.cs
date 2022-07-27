@@ -472,7 +472,7 @@ namespace umi3d.edk.userCapture
 
         #endregion
 
-        #region Hand Animation
+        #region Body & Hand Animation
 
         [HideInInspector]
         public List<ulong> handPoseIds = new List<ulong>();
@@ -480,14 +480,19 @@ namespace umi3d.edk.userCapture
         [EditorReadOnly]
         public List<UMI3DHandPose> PreloadedHandPoses = new List<UMI3DHandPose>();
 
+        [HideInInspector]
+        public List<ulong> bodyPoseIds = new List<ulong>();
+
+        [EditorReadOnly]
+        public List<UMI3DBodyPose> PreloadedBodyPoses = new List<UMI3DBodyPose>();
+
         protected virtual void WriteCollections()
         {
             handPoseIds.Clear();
-
-            if (emotesConfig!=null)
-                emotesConfig.Id();
-
             handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()));
+
+            bodyPoseIds.Clear();
+            bodyPoseIds.AddRange(PreloadedBodyPoses.Select(bp => bp.Id()));
         }
 
         public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
@@ -495,6 +500,8 @@ namespace umi3d.edk.userCapture
             if (avatarNodeDto.userId.Equals(user.Id()))
             {
                 avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
+                avatarNodeDto.bodyPoses = PreloadedBodyPoses.Select(bp => bp.ToDto()).ToList();
+
                 if (emotesConfig != null)
                     avatarNodeDto.emotesConfigDto = (UMI3DEmotesConfigDto)emotesConfig.ToEntityDto(user);
             }
