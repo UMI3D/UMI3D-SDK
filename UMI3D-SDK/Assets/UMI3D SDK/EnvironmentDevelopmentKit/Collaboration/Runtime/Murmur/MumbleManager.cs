@@ -104,6 +104,7 @@ namespace umi3d.edk.collaboration.murmur
             ops.Add(ToPrivate(user, user.audioLogin.SetValue(user.guid)));
             ops.Add(ToPrivate(user, user.audioPassword.SetValue(System.Guid.NewGuid().ToString())));
             ops.Add(user.audioServerUrl.SetValue(ip));
+            ops.Add(user.audioUseMumble.SetValue(true));
             var ch =  serv.Channels.FirstOrDefault(c => c.data.id == room)?.data.name;
             ops.Add(user.audioChannel.SetValue(ch));
 
@@ -121,6 +122,7 @@ namespace umi3d.edk.collaboration.murmur
 
             ops.Add(ToPrivate(user,user.audioLogin.SetValue("")));
             ops.Add(ToPrivate(user, user.audioPassword.SetValue("")));
+            ops.Add(user.audioUseMumble.SetValue(false));
             ops.Add(user.audioServerUrl.SetValue(""));
             ops.Add(user.audioChannel.SetValue(""));
 
@@ -142,6 +144,7 @@ namespace umi3d.edk.collaboration.murmur
                 room = defaultRoom;
             var ops = new List<Operation>();
 
+            ops.Add(user.audioUseMumble.SetValue(true));
             ops.Add(user.audioServerUrl.SetValue(ip));
             var ch = serv.Channels.FirstOrDefault(c => c.data.id == room)?.data.name ;
             ops.Add(user.audioChannel.SetValue(ch));
