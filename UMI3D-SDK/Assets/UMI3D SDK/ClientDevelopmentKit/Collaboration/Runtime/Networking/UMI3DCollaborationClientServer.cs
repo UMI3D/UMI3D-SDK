@@ -105,6 +105,7 @@ namespace umi3d.cdk.collaboration
             if (worldControllerClient != null)
             {
                 Instance.OnReconnect.Invoke();
+                UMI3DEnvironmentLoader.Clear(false);
                 environmentClient = await worldControllerClient.ConnectToEnvironment();
                 environmentClient.status = StatusType.CREATED;
             }

@@ -30,7 +30,6 @@ namespace umi3d.edk
         /// </summary>
         protected virtual ulong userId { get; set; } = 0;
 
-        public bool hasJoined => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING;
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
@@ -49,9 +48,12 @@ namespace umi3d.edk
 
         public StatusType status { get; protected set; } = StatusType.CREATED;
 
+        public bool hasjoined = false;
+
         public virtual void OnJoin(bool hasImmersiveDevice/* TBD camera properties,  TBD First 6D pose*/)
         {
             this.hasImmersiveDevice = hasImmersiveDevice;
+            hasjoined = true;
             SetStatus(StatusType.READY);
         }
 
