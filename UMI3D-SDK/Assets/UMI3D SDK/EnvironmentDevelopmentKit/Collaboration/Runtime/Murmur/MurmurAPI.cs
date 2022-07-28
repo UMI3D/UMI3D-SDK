@@ -113,7 +113,7 @@ namespace umi3d.edk.collaboration.murmur
         string RequestToString(UnityWebRequest www)
         {
             if (www.isHttpError || www.isNetworkError)
-                return "Error" + www.error;
+                throw new System.Exception("Error" + www.error);
             return www?.downloadHandler?.text;
         }
 
@@ -308,7 +308,7 @@ namespace umi3d.edk.collaboration.murmur
         public class ChannelData : MurmurClass
         {
             public string description = "";
-            public int id = 0;
+            public int id = -3;
             // public string[] links;
             public string name = "";
             public int parent = 0;
@@ -318,6 +318,18 @@ namespace umi3d.edk.collaboration.murmur
             public async Task Delete()
             {
                 await murmur.DeleteChannel(1, id);
+            }
+        }
+
+        public class SubChannelData : MurmurClass
+        {
+            public ChannelData c = null;
+            public User[] users = null;
+            
+
+            public async Task Delete()
+            {
+                await c.Delete();
             }
         }
 
@@ -380,14 +392,25 @@ namespace umi3d.edk.collaboration.murmur
             public int port = 64738;
             public Dictionary<string, string> registered_users;
             bool running = true;
-            public ChannelData[] sub_channels;
+            public SubChannelData[] sub_channels;
             public int uptime = 603;
             public int user_count = 1;
             public User[] users;
             public string welcometext = "";
+        }
 
+        public class NewUserData : MurmurClass
+        {
+            public string last_active = "";
+            public int user_id = -1;
+            public string username = "";
+        }
 
-
+        public class UserData : MurmurClass
+        {
+            public string last_active = "";
+            public string user_id = "";
+            public string username = "";
         }
 
         public class Server : MurmurClass
@@ -395,10 +418,14 @@ namespace umi3d.edk.collaboration.murmur
             public ServerData data { get; private set; }
 
             public List<Channel> Channels;
+            public List<User> RegisteredUsers;
+            public List<User> ConnectedUsers;
 
             private Server()
             {
                 Channels = new List<Channel>();
+                RegisteredUsers = new List<User>();
+                ConnectedUsers = new List<User>();
             }
 
             static public async Task<Server> Create(MurmurAPI murmur, int id)
@@ -414,10 +441,24 @@ namespace umi3d.edk.collaboration.murmur
                 var info = await murmur.GetServerInfo(id);
                 data = Convert<ServerData>(info);
 
-                Channels.Where(c => !data.sub_channels.Any(d => d.id == c.data.id)).ForEach(c => Channels.Remove(c));
-                var toAdd = data.sub_channels.Where(d => !Channels.Any(c => d.id == c.data.id));
+                Debug.Log(info);
+
+                Channels.Where(c => !data.sub_channels.Any(d => d.c.id == c.data.id)).ForEach(c =>Channels.Remove(c));
+
+                var toAdd = data.sub_channels.Where(d => !Channels.Any(c => d.c.id == c.data.id));
+
                 if (toAdd.Count() > 0)
-                    Channels.AddRange(toAdd.Select(d => Channel.Create(murmur, this, d)));
+                    Channels.AddRange(toAdd.Select(d => Channel.Create(murmur, this, d.c)));
+
+                RegisteredUsers.Clear();
+                if(data.registered_users != null)
+                    RegisteredUsers.AddRange(data.registered_users.Where(r=>r.Key != "0").Select(r=>new User(r.Key, r.Value)));
+                await Users();
+            }
+
+            public Channel GetChannel(int id)
+            {
+                return Channels.FirstOrDefault(c => c.data.id == id);
             }
 
             public async Task Refresh()
@@ -425,13 +466,38 @@ namespace umi3d.edk.collaboration.murmur
                 await Refresh(data.id);
             }
 
+            public class User
+            {
+                public int id;
+                public string name;
+                public Channel channel;
+
+                public User(string id, string name)
+                {
+                    if(int.TryParse(id,out int intId))
+                        this.id =  intId;
+                    else
+                        this.id = -1;
+                    this.name = name;
+                    channel = null;
+                }
+
+                public User(int id, string name, Channel channel)
+                {
+                    this.id = id;
+                    this.name = name;
+                    this.channel = channel;
+                }
+            }
 
             public class Channel : MurmurClass
             {
                 public ChannelData data { get; private set; }
                 Server server;
 
-                private Channel() { }
+                private Channel()
+                {
+                }
 
                 static public async Task<Channel> Create(MurmurAPI murmur, Server server, int id)
                 {
@@ -468,6 +534,7 @@ namespace umi3d.edk.collaboration.murmur
                 async Task Refresh(int id)
                 {
                     var info = await murmur.GetServerChannelsInfo(server.data.id, id);
+                    Debug.Log(info);
                     data = Convert<ChannelData>(info);
                 }
 
@@ -492,22 +559,55 @@ namespace umi3d.edk.collaboration.murmur
                     Convert<ChannelData>(await murmur.CreateChannel(data.id, name, data.parent_channel.id)));
             }
 
-            public async Task Users()
+            public async Task<List<User>> Users()
             {
                 var info = await murmur.GetServerUsers(data.id);
-                Debug.Log(info);
+                var dt = Convert<Dictionary<string, MurmurAPI.User>>(info);
+                ConnectedUsers.Clear();
+                if (data.users != null)
+                    ConnectedUsers.AddRange(dt.Values.Where(r => r.userid != 0).Select(r => new User(r.userid, r.name, GetChannel(r.channel))));
+                return ConnectedUsers;
             }
 
-            public async Task AddUser(string name, string password)
+            public async Task<User> Users(int id)
+            {
+                try
+                {
+                    var info = await murmur.GetServerUsers(data.id, id);
+                    var dt = Convert<UserData>(info);
+                    var r = new User(dt.user_id.ToString(), dt.username);
+                    return r;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            public async Task<User> AddUser(string name, string password)
             {
                 var info = await murmur.AddUser(data.id, name, password);
-                Debug.Log(info);
+                try
+                {
+                    var dt = Convert<NewUserData>(info);
+                    var r = new User(dt.user_id.ToString(), dt.username);
+                    RegisteredUsers.Add(r);
+                    return r;
+                }
+                catch
+                {
+                    return null;
+                }
             }
 
-            public async Task RemoveUser(int user)
+            public async Task<bool> RemoveUser(int user)
             {
+                if (user == 0) return false;
+                var r = RegisteredUsers.FirstOrDefault(u=>u.id == user);
+                if(r != null)
+                    RegisteredUsers.Remove(r);
                 var info = await murmur.DeleteUser(data.id, user);
-                Debug.Log(info);
+                return info == null;
             }
         }
 
