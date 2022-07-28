@@ -249,7 +249,7 @@ namespace umi3d.edk.collaboration
         /// <param name="user"></param>
         public static void NotifyUserJoin(UMI3DCollaborationUser user)
         {
-            user.hasjoined = true;
+            user.hasJoined = true;
             Collaboration.UserJoin(user);
             MainThreadManager.Run(() =>
             {
@@ -410,7 +410,7 @@ namespace umi3d.edk.collaboration
         {
             if (user == null)
                 return;
-            user.hasjoined = false;
+            user.hasJoined = false;
             (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
             Collaboration.Logout(user, notifiedByUser);
             MainThreadManager.Run(() => Instance._Logout(user));

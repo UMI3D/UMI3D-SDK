@@ -48,12 +48,12 @@ namespace umi3d.edk
 
         public StatusType status { get; protected set; } = StatusType.CREATED;
 
-        public bool hasjoined = false;
+        public bool hasJoined = false;
 
         public virtual void OnJoin(bool hasImmersiveDevice/* TBD camera properties,  TBD First 6D pose*/)
         {
             this.hasImmersiveDevice = hasImmersiveDevice;
-            hasjoined = true;
+            hasJoined = true;
             SetStatus(StatusType.READY);
         }
 
