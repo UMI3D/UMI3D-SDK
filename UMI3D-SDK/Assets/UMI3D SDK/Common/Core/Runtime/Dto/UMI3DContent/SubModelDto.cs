@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     /// <summary>
@@ -28,9 +30,19 @@ namespace umi3d.common
         public ulong modelId;
 
         /// <summary>
-        /// Id of the root object of the model 
+        /// Name of the submodel 
         /// </summary>
         public string subModelName;
+
+        /// <summary>
+        /// List of submodel name in hierachy from root to this subModel
+        /// </summary>
+        public List<string> subModelHierachyNames;
+
+        /// <summary>
+        /// List of submodel index in hierachy from root to this subModel
+        /// </summary>
+        public List<int> subModelHierachyIndexes;
 
         /// <summary>
         /// subModel Loader should apply root model material overrider or ignore it
