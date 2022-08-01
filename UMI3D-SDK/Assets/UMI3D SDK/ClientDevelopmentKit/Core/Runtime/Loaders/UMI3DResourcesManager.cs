@@ -398,11 +398,8 @@ namespace umi3d.cdk
 
                 if (subModelsCache != null && subModelsCache.ContainsKey(ObjectValue.url))
                 {
-                    foreach (KeyValuePair<string, Transform> item in subModelsCache[ObjectValue.url].ToList())
-                    {
-                        Destroy(item.Value.gameObject);
-                        subModelsCache[ObjectValue.url].Remove(item.Key);
-                    }
+                    subModelsCache[ObjectValue.url].Destroy();
+
                     subModelsCache.Remove(ObjectValue.url);
                 }
 
@@ -432,15 +429,14 @@ namespace umi3d.cdk
             }
             if (subModelsCache != null)
             {
-                foreach (Dictionary<string, Transform> item in subModelsCache.Values)
+                foreach (var item in subModelsCache.Values)
                 {
-                    foreach (Transform subModel in item.Values)
-                    {
-                        Destroy(subModel.gameObject);
-                    }
+                    item.Destroy();
                 }
+                subModelsCache.Clear();
             }
-            subModelsCache = new Dictionary<string, Dictionary<string, Transform>>();
+            else
+                subModelsCache = new Dictionary<string, SubmodelDataCollection>();
             CacheCollection = new List<ObjectData>();
             StopAllCoroutines();
             libraries = new Dictionary<string, KeyValuePair<DataFile, HashSet<ulong>>>();
@@ -1042,7 +1038,7 @@ namespace umi3d.cdk
         {
             yield return www.SendWebRequest();
 #if UNITY_2020_1_OR_NEWER
-            if(www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.result == UnityWebRequest.Result.DataProcessingError)
+            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.result == UnityWebRequest.Result.DataProcessingError)
 #else
             if (www.isNetworkError || www.isHttpError)
 #endif
@@ -1067,13 +1063,102 @@ namespace umi3d.cdk
 
         #endregion
         #region sub Models
-        public Dictionary<string, Dictionary<string, Transform>> subModelsCache;
+        Dictionary<string, SubmodelDataCollection> subModelsCache;
 
-        public void GetSubModel(string modelUrlInCache, string subModelName, Action<object> callback)
+        public class SubmodelDataCollection
         {
-            if (subModelsCache.ContainsKey(modelUrlInCache))
+            List<SubmodelData> datas;
+            public Transform root;
+            bool canUseNameRef;
+
+            public SubmodelDataCollection()
             {
-                callback.Invoke(subModelsCache[modelUrlInCache][subModelName].gameObject);
+                this.datas = new List<SubmodelData>();
+                this.root = null;
+                this.canUseNameRef = true;
+            }
+
+            public void SetRoot(Transform transform)
+            {
+                root = transform;
+            }
+
+            public void AddSubModel(string refByName, List<int> refByIndex, List<string> refByNames, Transform transform)
+            {
+                canUseNameRef = canUseNameRef && !datas.Any(d => d.MatchName(refByName));
+                datas.Add(new SubmodelData(refByName, refByIndex, refByNames, transform));
+            }
+
+            public Transform Get(string name, List<int> indexes, List<string> names)
+            {
+                return datas.FirstOrDefault(d =>
+                {
+                    return (canUseNameRef && d.MatchName(name))
+                            || (!canUseNameRef &&
+                                    (indexes != null && (d.MatchIndexes(indexes))
+                                    || (names != null && d.MatchNames(names))));
+                })?.transform;
+            }
+
+            public void Destroy()
+            {
+                foreach (var data in datas)
+                {
+                    GameObject.Destroy(data.transform.gameObject);
+                }
+            }
+
+
+            class SubmodelData
+            {
+                string RefByName;
+                List<int> RefByIndex;
+                List<string> RefByNames;
+                public Transform transform;
+
+                public SubmodelData(string refByName, List<int> refByIndex, List<string> refByNames, Transform transform)
+                {
+                    RefByName = refByName;
+                    RefByIndex = refByIndex ?? new List<int>();
+                    RefByNames = refByNames ?? new List<string>();
+                    this.transform = transform;
+                }
+
+                public bool MatchName(string name)
+                {
+                    return RefByName == name;
+                }
+                public bool MatchNames(List<string> names)
+                {
+                    if (names.Count != RefByNames.Count)
+                        return false;
+                    return !names.Zip(RefByNames, (a, b) => a == b).Any(s => !s);
+                }
+                public bool MatchIndexes(List<int> indexes)
+                {
+                    if (indexes.Count != RefByIndex.Count)
+                        return false;
+                    return !indexes.Zip(RefByIndex, (a, b) => a == b).Any(s => !s);
+                }
+
+            }
+        }
+
+        public bool IsSubModelsSetFor(string modelUrlInCach)
+        {
+            return subModelsCache.ContainsKey(modelUrlInCach);
+        }
+
+        public void AddSubModels(string modelUrlInCache, SubmodelDataCollection nodes)
+        {
+            subModelsCache[modelUrlInCache] = nodes;
+        }
+
+        public void GetSubModel(string modelUrlInCache, string subModelName, List<int> indexes, List<string> names, Action<object> callback)
+        {
+            if (IsSubModelsSetFor(modelUrlInCache))
+            {
+                callback.Invoke(GetSubModelNow(modelUrlInCache, subModelName, indexes, names).gameObject);
             }
             else
             {
@@ -1089,11 +1174,20 @@ namespace umi3d.cdk
                     UMI3DLogger.LogError("not found in cache", scope);
                 objectData.loadCallback.Add((o) =>
                 {
-                    if (subModelsCache[modelUrlInCache].ContainsKey(subModelName))
-                        callback.Invoke(subModelsCache[modelUrlInCache][subModelName].gameObject);
+                    GetSubModel(modelUrlInCache, subModelName, indexes, names, (obj) => { callback.Invoke(obj); });
                 });
             }
-            #endregion
         }
+
+        public Transform GetSubModelNow(string modelUrlInCache, string subModelName, List<int> indexes, List<string> names)
+        {
+            return subModelsCache[modelUrlInCache].Get(subModelName, indexes, names);
+        }
+        public Transform GetSubModelRoot(string modelUrlInCache)
+        {
+            return subModelsCache[modelUrlInCache].root;
+        }
+
+        #endregion
     }
 }
