@@ -95,15 +95,22 @@ namespace umi3d.edk
             }
 
             //UMI3DLogger.Log("add subobjects in hierarchy for " + gameObject.name,scope);
-            foreach (GameObject child in GetSubModelGameObjectOfUMI3DModel(gameObject.transform))
+            foreach (GameObjectInfo child in GetSubModelGameObjectOfUMI3DModel(gameObject.transform))
             {
+                if (child.parent == null) continue;
+
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
                 {
                     if (!areSubobjectsAlreadyMarked)
                         if (child.gameObject.GetComponent<Renderer>() != null)
                         {
                             UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
+
                             subModel.parentModel = this;
+
+                            subModel.subModelHierachyIndexes = child.getIndexes();
+                            subModel.subModelHierachyNames = child.getNames();
+
                             subModel.objectCastShadow.SetValue(this.castShadow);
                             subModel.objectReceiveShadow.SetValue(this.receiveShadow);
                         }
@@ -111,44 +118,109 @@ namespace umi3d.edk
                         {
                             UMI3DSubModel subModel = child.gameObject.AddComponent<UMI3DSubModel>();
                             subModel.parentModel = this;
+                            subModel.subModelHierachyIndexes = child.getIndexes();
+                            subModel.subModelHierachyNames = child.getNames();
                         }
                         else
                         {
-                            UMI3DNode node = child.gameObject.AddComponent<UMI3DNode>();
+                            child.gameObject.AddComponent<UMI3DNode>();
                         }
                 }
                 else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
                 {
                     UMI3DSubModel subModel = child.gameObject.GetComponent<UMI3DSubModel>();
-                    subModel.parentModel = this;
 
+                    subModel.parentModel = this;
+                    subModel.subModelHierachyIndexes = child.getIndexes();
+                    subModel.subModelHierachyNames = child.getNames();
                 }
             }
         }
 
-        public List<GameObject> GetSubModelGameObjectOfUMI3DModel(Transform modelRoot)
+        class GameObjectInfo
         {
-            List<GameObject> res = GetChildrenWhithoutOtherModel(modelRoot);
-            if (modelRoot.GetComponent<Renderer>() != null)
-                res.Add(modelRoot.gameObject);
-            return res;
+            public GameObjectInfo parent;
+            public GameObject gameObject;
+            public int index;
+
+            List<int> indexes;
+            List<string> names;
+
+            public List<string> getNames()
+            {
+                if (names == null)
+                {
+                    names = new List<string>();
+                    if (parent?.names != null)
+                    {
+                        names.AddRange(parent?.getNames());
+                        names?.Add(gameObject.name);
+                    }
+                    else
+                    {
+                        names.Add(gameObject.name);
+                    }
+                }
+                return names;
+            }
+            public List<int> getIndexes()
+            {
+                if (indexes == null)
+                {
+                    indexes = new List<int>();
+                    if (parent?.indexes != null)
+                    {
+                        indexes.AddRange(parent?.getIndexes());
+                        indexes.Add(index);
+                    }
+                    else
+                    {
+                        indexes.Add(index);
+                    }
+                }
+                return indexes;
+            }
+
+            public GameObjectInfo(GameObjectInfo parent, GameObject node, int index)
+            {
+                this.parent = parent;
+                this.index = index;
+                this.gameObject = node;
+            }
+
+            public GameObjectInfo(GameObject root)
+            {
+                this.parent = null;
+                this.index = -1;
+                this.gameObject = root;
+            }
+
         }
 
-        private List<GameObject> GetChildrenWhithoutOtherModel(Transform tr)
+        private List<GameObjectInfo> GetSubModelGameObjectOfUMI3DModel(Transform modelRoot)
         {
-            var res = new List<GameObject>();
-            for (int i = 0; i < tr.childCount; i++)
+            List<GameObjectInfo> result = new List<GameObjectInfo>();
+            var root = new GameObjectInfo(modelRoot.gameObject);
+            if (modelRoot.GetComponent<Renderer>() != null)
+                result.Add(root);
+            GetChildrenWhithoutOtherModel(modelRoot, root, result);
 
+            return result;
+        }
+
+        private void GetChildrenWhithoutOtherModel(Transform tr, GameObjectInfo parent, List<GameObjectInfo> result)
+        {
+            for (int i = 0; i < tr.childCount; i++)
             {
                 Transform child = tr.GetChild(i);
 
                 if (!child.GetComponent<UMI3DModel>())
                 {
-                    res.Add(child.gameObject);
-                    res.AddRange(GetChildrenWhithoutOtherModel(child));
+                    var node = new GameObjectInfo(parent, child.gameObject, i);
+                    result.Add(node);
+                    GetChildrenWhithoutOtherModel(child, node, result);
                 }
             }
-            return res;
         }
 
         /// <summary>

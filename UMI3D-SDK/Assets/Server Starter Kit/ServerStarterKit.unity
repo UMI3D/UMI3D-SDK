@@ -758,6 +758,9 @@ MonoBehaviour:
   OnUserCreated:
     m_PersistentCalls:
       m_Calls: []
+  OnUserRecreated:
+    m_PersistentCalls:
+      m_Calls: []
   OnUserReady:
     m_PersistentCalls:
       m_Calls: []
@@ -1637,6 +1640,8 @@ MonoBehaviour:
   emotesConfig: {fileID: 11400000, guid: da2b1c1bd852ea84f86401f50e2d60a9, type: 2}
   handPoseIds: 
   PreloadedHandPoses: []
+  bodyPoseIds: 
+  PreloadedBodyPoses: []
 --- !u!4 &2023719151
 Transform:
   m_ObjectHideFlags: 0
