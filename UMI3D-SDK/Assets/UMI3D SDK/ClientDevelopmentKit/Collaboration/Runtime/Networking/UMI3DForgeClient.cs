@@ -200,7 +200,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.Log($"Send Ping", scope);
                 await UMI3DAsyncManager.Delay(10000);
 
-                if (networkManagerComponent?.Networker == null || !IsConnected)
+                if (environmentClient == null || !environmentClient.IsConnected() || networkManagerComponent?.Networker == null || !IsConnected)
                     return;
 
                 if (pingReceived || lastBand != networkManagerComponent.Networker.BandwidthIn)
@@ -221,6 +221,7 @@ namespace umi3d.cdk.collaboration
         {
             if (client != null) client.Disconnect(true);
             client = null;
+
             if (networkManagerComponent?.Networker != null)
                 networkManagerComponent.Networker.disconnected -= DisconnectedFromServer;
 
@@ -718,6 +719,7 @@ namespace umi3d.cdk.collaboration
 
         private void OnDestroy()
         {
+            networkManagerComponent?.Disconnect();
             Stop();
             destroyed = true;
             HasBeenSet = false;

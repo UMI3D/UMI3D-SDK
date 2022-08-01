@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
         private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
         public bool IsConnected()
         {
-            return ForgeClient != null ? isConnected && ForgeClient.IsConnected : false;
+            return ForgeClient != null ? isConnected && ForgeClient.IsConnected && !disconected : false;
         }
 
         public readonly double maxMillisecondToWait = 10000;
@@ -187,7 +187,7 @@ namespace umi3d.cdk.collaboration
         public async Task<bool> Logout(bool notify = true)
         {
             bool ok = false;
-            disconected = true;
+            
             if (IsConnected())
             {
 
@@ -201,6 +201,7 @@ namespace umi3d.cdk.collaboration
                 ForgeClient.Stop();
                 ok = true;
             }
+            disconected = true;
             isConnected = false;
             if (ForgeClient != null)
             {
