@@ -150,14 +150,14 @@ namespace umi3d.edk
             {
                 if (names == null)
                 {
+                    names = new List<string>();
                     if (parent?.names != null)
                     {
-                        names = parent?.getNames();
+                        names.AddRange(parent?.getNames());
                         names?.Add(gameObject.name);
                     }
                     else
                     {
-                        names = new List<string>();
                         names.Add(gameObject.name);
                     }
                 }
@@ -165,7 +165,6 @@ namespace umi3d.edk
             }
             public List<int> getIndexes()
             {
-                Debug.Log(indexes);
                 if (indexes == null)
                 {
                     indexes = new List<int>();
@@ -178,7 +177,6 @@ namespace umi3d.edk
                     {
                         indexes.Add(index);
                     }
-
                 }
                 return indexes;
             }
