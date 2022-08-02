@@ -140,7 +140,7 @@ namespace umi3d.cdk
 
         private void SetSubObjectsReferencesAux(Transform root, Transform Parent, Vector3 rotationOffsetByLoader, UMI3DResourcesManager.SubmodelDataCollection collection)
         {
-            List<ChildRef> childs = new List<ChildRef>();
+            List<ChildRef> childs = new List<ChildRef>() { new ChildRef(Parent.name, new List<int>(), new List<string>(), Parent) };
             GetChild(Parent, new List<int>(), new List<string>(), childs);
 
             foreach (var childRef in childs)
