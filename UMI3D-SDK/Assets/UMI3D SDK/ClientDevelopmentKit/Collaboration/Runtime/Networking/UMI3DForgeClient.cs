@@ -719,7 +719,6 @@ namespace umi3d.cdk.collaboration
 
         private void OnDestroy()
         {
-            networkManagerComponent?.Disconnect();
             Stop();
             destroyed = true;
             HasBeenSet = false;
