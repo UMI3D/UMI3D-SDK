@@ -141,7 +141,7 @@ namespace umi3d.cdk
         private void SetSubObjectsReferencesAux(Transform root, Transform Parent, Vector3 rotationOffsetByLoader, UMI3DResourcesManager.SubmodelDataCollection collection)
         {
             List<ChildRef> childs = new List<ChildRef>();
-            getChild(Parent, new List<int>(), new List<string>(), childs);
+            GetChild(Parent, new List<int>(), new List<string>(), childs);
 
             foreach (var childRef in childs)
             {
@@ -157,7 +157,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void getChild(Transform Parent, List<int> indexes, List<string> names, List<ChildRef> collection)
+        private void GetChild(Transform Parent, List<int> indexes, List<string> names, List<ChildRef> collection)
         {
             for (int i = 0; i < Parent.childCount; i++)
             {
@@ -165,7 +165,7 @@ namespace umi3d.cdk
                 var nIndexes = new List<int>(indexes) { i };
                 var nNames = new List<string>(names) { child.name };
                 collection.Add(new ChildRef(child.name, nIndexes, nNames, child));
-                getChild(child, nIndexes, nNames, collection);
+                GetChild(child, nIndexes, nNames, collection);
             }
         }
 
