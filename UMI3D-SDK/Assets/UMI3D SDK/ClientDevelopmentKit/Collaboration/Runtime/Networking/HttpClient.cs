@@ -186,6 +186,8 @@ namespace umi3d.cdk.collaboration
                 if (dto == null)
                     return null;
 
+                if (jo.TryGetValue("privateParameter", out JToken tokenp))
+                    dto.privateParameter = tokenp.ToObject<bool>();
                 if (jo.TryGetValue("description", out JToken tokend))
                     dto.description = tokend.ToObject<string>();
                 if (jo.TryGetValue("id", out JToken tokeni))
