@@ -15,15 +15,14 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using MainThreadDispatcher;
+using Mumble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
-using UnityOpus;
 
 namespace umi3d.cdk.collaboration
 {
@@ -36,722 +35,276 @@ namespace umi3d.cdk.collaboration
     public class MicrophoneListener : SingleBehaviour<MicrophoneListener>, ILoggable
     {
 
-        #region const
+        #region Mumble
+        // Basic mumble audio player
+        public GameObject MyMumbleAudioPlayerPrefab;
+        // Mumble audio player that also receives position commands
+        public GameObject MyMumbleAudioPlayerPositionedPrefab;
 
-        /// <summary>
-        /// Is the length of the AudioClip produced by the recording.
-        /// </summary>
-        private const int lengthSeconds = 1;
+        MumbleMicrophone MyMumbleMic;
+        DebugValues DebuggingVariables;
 
-        /// <summary>
-        ///  RMS value for 0 dB
-        /// </summary>
-        private const float refValue = 1f;
+        public bool UseLocalLoopback
+        {
+            get => DebuggingVariables?.UseLocalLoopback ?? false;
+            set { if (DebuggingVariables != null) DebuggingVariables.UseLocalLoopback = value; }
+        }
 
-        #endregion
+        public MumbleClient mumbleClient;
+        const bool connectAsyncronously = true;
+        const bool sendPosition = true;
 
-        #region static properties 
+        string hostName = "1.2.3.4";
+        int port = 64738;
+        string username = "ExampleUser";
+        string password = "1passwordHere!";
+        string channelToJoin = "";
 
-        public static MicrophoneEvent OnSaturated => Exists ? Instance._OnSaturated : null;
-        public static MicrophoneEvent OnSendingData => Exists ? Instance._OnSending : null;
-        /// <summary>
-        /// Whether the microphone is running
-        /// </summary>
+        bool useMumble;
+
+        bool playing = false;
+
+        static bool muted;
+
+
         public static bool IsMute
         {
-            get => Exists ? Instance.muted : false;
-            set
+            get { return Exists ? !Instance.useMumble || muted : true; }
+
+            set { muted = value; if (Exists) Instance.ShouldStop();  }
+        }
+
+        void ShouldStop()
+        {
+            if (playing && IsMute)
+                StopMicrophone();
+        }
+
+        void SetMumbleUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return;
+            var s = url.Split(':');
+
+            hostName = s[0];
+            if (s.Length > 1 && int.TryParse(s[1], out int port))
+                this.port = port;
+        }
+
+        protected void Start()
+        {
+            MyMumbleMic = gameObject.GetOrAddComponent<MumbleMicrophone>();
+            DebuggingVariables = new DebugValues()
             {
-                if (Exists)
+                EnableEditorIOGraph = false,
+                UseLocalLoopback = false,
+                UseRandomUsername = false,
+                UseSyntheticSource = false
+            };
+            QuittingManager.OnApplicationIsQuitting.AddListener(_OnApplicationQuit);
+
+            UMI3DUser.OnUserMicrophoneIdentityUpdated.AddListener(IdentityUpdate);
+            UMI3DUser.OnUserMicrophoneChannelUpdated.AddListener(ChannelUpdate);
+            UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
+            UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
+        }
+
+        bool IdentityUpdateOnce = false;
+        async void IdentityUpdate(UMI3DUser user) {
+            if (user != null && user.isClient && !IdentityUpdateOnce)
+            {
+                IdentityUpdateOnce = true;
+                await UMI3DAsyncManager.Yield();
+                await UMI3DAsyncManager.Yield();
+
+                username = user.audioLogin;
+                password = user.audioPassword;
+
+                if (playing)
                 {
-                    if (UMI3DCollaborationEnvironmentLoader.Exists)
-                        UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser()?.SetMicrophoneStatus(!value);
-                    if (Instance.muted != value)
-                    {
-                        if (value) Instance.StopRecording();
-                        else Instance.StartRecording();
-                    }
-
-                    Instance.muted = value;
+                    StopMicrophone();
+                    StartMicrophone();
                 }
+                IdentityUpdateOnce = false;
             }
         }
 
-        public static bool LoopBack
-        {
-            get => Exists ? Instance.loopback : false;
-            set
+        async void ChannelUpdate(UMI3DUser user) {
+            channelToJoin = user.audioChannel;
+            if (playing)
             {
-                if (Exists && Instance.loopback != value)
-                {
-                    Instance.loopback = value;
-                    if (Instance.reading)
-                    {
-                        Instance._LoopBack();
-                    }
-                }
+                await JoinChannel();
             }
         }
-
-
-        public static string CurrentMicrophone
-        {
-            get => Exists ? Instance.microphoneLabel : "";
-            set => SetDevices(value);
-        }
-
-        public static float NoiseThreshold
-        {
-            get => Exists ? Instance._MinRMSToSend : -1;
-            set
+        void ServerUpdate(UMI3DUser user) {
+            SetMumbleUrl(user.audioServer);
+            if (playing)
             {
-                if (Exists)
-                    Instance._MinRMSToSend = value;
+                StopMicrophone();
+                StartMicrophone();
             }
         }
-
-        public static float TimeToTurnOff
-        {
-            get => Exists ? Instance.timeToTurnOff : -1;
-            set
-            {
-                if (Exists)
-                    Instance.timeToTurnOff = value > 0 ? value : 0;
-            }
-        }
-
-        public static int Bitrate
-        {
-            get => Exists ? Instance.bitrate : -1;
-            set
-            {
-                if (Exists)
-                    Instance.bitrate = value;
-            }
-        }
-
-        public static float Gain
-        {
-            get => Exists ? Instance._Gain : -1;
-            set
-            {
-                if (Exists)
-                    Instance._Gain = value;
-            }
-        }
-
-        #endregion
-
-        #region static method
-
-        public static void UpdateFrequency(int frequency)
-        {
-            if (Exists) Instance._UpdateFrequency(frequency);
-        }
-
-        public static void ChangeThreshold(bool up)
-        {
-            if (Exists) Instance._ChangeThreshold(up);
-        }
-
-        public static void ChangeBitrate(bool up)
-        {
-            if (Exists) Instance._ChangeBitrate(up);
-        }
-
-        public static void ChangeTimeToTurnOff(bool up)
-        {
-            if (Exists) Instance._ChangeTimeToTurnOff(up);
-        }
-
-        public static string[] getDevices()
-        {
-            return Exists ? Instance._getDevices() : null;
-        }
-
-        public static void NextDevices()
-        {
-            if (Exists) Instance._NextDevices();
-        }
-
-        public static bool SetDevices(string name)
-        {
-            return Exists ? Instance._SetDevices(name) : false;
-        }
-
-        public static bool IsAValidDevices(string name)
-        {
-            return Exists ? Instance._IsAValidDevices(name) : false;
-        }
-
-        #endregion
-
-        public MicrophoneEvent _OnSaturated = new MicrophoneEvent();
-        public MicrophoneEvent _OnSending = new MicrophoneEvent();
-        private AudioSource audioSource;
-
-        private void Start()
-        {
-            IsMute = IsMute;
-            audioSource = GetComponent<AudioSource>();
-            UMI3DUser.OnUserMicrophoneStatusUpdated.AddListener(OnUserMicrophoneStatusUpdated);
-            UMI3DLogger.Register(this);
-        }
-
-        private void OnUserMicrophoneStatusUpdated(UMI3DUser user)
-        {
-            if (user.id == UMI3DCollaborationClientServer.Instance.GetUserId())
-                IsMute = !user.microphoneStatus;
-        }
-
-        private void _UpdateFrequency(int frequency)
-        {
-            samplingFrequency = frequency;
-            if (Reading)
-            {
-                OnDisable();
-                OnEnable();
-                StopRecording();
-                StartRecording();
-            }
+        void UseMumbleUpdate(UMI3DUser user) {
+            useMumble = user.useMumble;
+            if (useMumble)
+                StartMicrophone();
             else
+                StopMicrophone();
+        }
+
+
+        public void StopMicrophone()
+        {
+            if (playing)
             {
-                OnDisable();
-                OnEnable();
+                MyMumbleMic.StopSendingAudio();
+                if (mumbleClient != null)
+                    mumbleClient.Close();
             }
         }
 
-        /// <summary>
-        /// Starts to stream the input of the current Mic device
-        /// </summary>
-        private void StartRecording()
+        public async void StartMicrophone()
         {
-            Reading = true;
+            if(IsMute || playing) return;
 
-            frameSize = samplingFrequency / 100; //at least frequency/100
-            outputBufferSize = frameSize * sizeof(float); // at least frameSize * sizeof(float)
-            pcmQueue = new Queue<float>();
-            frameBuffer = new float[frameSize];
-            outputBuffer = new byte[outputBufferSize];
-            microphoneBuffer = new float[lengthSeconds * samplingFrequency];
-
-            if (!IsAValidDevices(microphoneLabel))
-                microphoneLabel = Microphone.devices[0];
-
-            clip = Microphone.Start(microphoneLabel, true, lengthSeconds, samplingFrequency);
-
-            _LoopBack();
-
-            lock (pcmQueue)
-                pcmQueue.Clear();
-            if (thread == null)
-                thread = new Thread(ThreadUpdate);
-            if (!thread.IsAlive)
-                thread.Start();
-        }
-
-        /// <summary>
-        /// Ends the Mic stream.
-        /// </summary>
-        private void StopRecording()
-        {
-            Reading = false;
-            Destroy(clip);
-            Microphone.End(microphoneLabel);
-        }
-
-        private void _LoopBack()
-        {
-            if (loopback)
+            if (hostName == "1.2.3.4")
             {
-                audioSource.clip = clip;
-                audioSource.loop = true;
-                audioSource.Play();
-            }
-            else
-            {
-                audioSource.Stop();
-                audioSource.clip = null;
-            }
-        }
-
-        #region ReadMicrophone
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [SerializeField, EditorReadOnly]
-        private bool muted = false;
-        private float _gain = 1f;
-        private readonly object gainLocker = new object();
-
-        private float _Gain
-        {
-            get
-            {
-                lock (gainLocker)
-                    return _gain;
-            }
-            set
-            {
-                lock (gainLocker)
-                    _gain = value > 0 ? value : 0;
-            }
-        }
-
-        private readonly object readingLocker = new object();
-        private bool reading = false;
-
-        private bool Reading
-        {
-            get
-            {
-                lock (readingLocker)
-                    return reading;
-            }
-            set
-            {
-                lock (readingLocker)
-                    reading = value;
-            }
-        }
-
-        private string microphoneLabel;
-        private int samplingFrequency = 12000;
-        private AudioClip clip;
-        private int head = 0;
-        private float[] microphoneBuffer;
-
-        private Thread thread;
-        private readonly int sleepTimeMiliseconde = 5;
-        private float db;
-        private readonly object dbLocker = new object();
-        public float DB
-        {
-            get
-            {
-                lock (dbLocker)
-                    return db;
-            }
-            private set
-            {
-                lock (dbLocker)
-                    db = value;
-            }
-        }
-
-        private float rms;
-        private readonly object RMSLocker = new object();
-        public float RMS
-        {
-            get
-            {
-                lock (RMSLocker)
-                    return rms;
-            }
-            private set
-            {
-                lock (RMSLocker)
-                    rms = value;
-                if (IslowerThanThreshold)
-                    UnityMainThreadDispatcher.Instance().Enqueue(TurnMicOff());
-            }
-        }
-
-        private bool currentSaturated;
-        private bool displayedSaturated;
-        private readonly object SaturatedLocker = new object();
-        private readonly object displayedSaturatedLocker = new object();
-
-        public bool DisplayedSaturated
-        {
-            get
-            {
-                lock (displayedSaturatedLocker)
-                    return displayedSaturated;
-            }
-            set
-            {
-                bool v;
-                lock (displayedSaturatedLocker)
-                    v = displayedSaturated;
-                if (v != value)
-                {
-                    lock (displayedSaturatedLocker)
-                        displayedSaturated = value;
-                    UnityMainThreadDispatcher.Instance().Enqueue(() => _OnSaturated.Invoke(value));
-                }
-            }
-        }
-
-        public bool Saturated
-        {
-            get
-            {
-                lock (SaturatedLocker)
-                    return displayedSaturated;
-            }
-            private set
-            {
-                DisplayedSaturated |= value;
-                lock (SaturatedLocker)
-                    currentSaturated = value;
-                if (value)
-                    UnityMainThreadDispatcher.Instance().Enqueue(StaySaturated());
-            }
-        }
-
-        private readonly object minRMSToSendLocker = new object();
-        private float _minRMSToSend = 0f;
-        public float _MinRMSToSend
-        {
-            get
-            {
-                lock (minRMSToSendLocker)
-                    return _minRMSToSend;
-            }
-            set
-            {
-                lock (minRMSToSendLocker)
-                    _minRMSToSend = Mathf.Clamp01(value);
-            }
-        }
-
-        private bool IslowerThanThreshold
-        {
-            get
-            {
-                float rms = RMS;
-                float threshold = NoiseThreshold;
-                return rms < threshold;
-            }
-        }
-
-        private bool shouldSend;
-        private readonly object shouldSendLocker = new object();
-        private bool TurnMicOffRunning;
-        public bool ShouldSend
-        {
-            get
-            {
-                if (loopback) return false;
-
-                bool highRMS = !IslowerThanThreshold;
-                lock (shouldSendLocker)
-                {
-                    shouldSend |= highRMS;
-                    return shouldSend;
-                }
-            }
-            private set
-            {
-                bool ok;
-                lock (shouldSendLocker)
-                    ok = shouldSend;
-                if (ok != value)
-                {
-                    lock (shouldSendLocker)
-                        shouldSend = value;
-                    UnityMainThreadDispatcher.Instance().Enqueue(() => _OnSending.Invoke(value));
-                }
-            }
-        }
-
-        private float timeToTurnOff = 1f;
-
-        private IEnumerator TurnMicOff()
-        {
-            if (TurnMicOffRunning)
-                yield break;
-            TurnMicOffRunning = true;
-            float time = Time.time + TimeToTurnOff;
-
-            while (IslowerThanThreshold)
-            {
-                if (time <= Time.time)
-                {
-                    ShouldSend = false;
-                    TurnMicOffRunning = false;
-                    yield break;
-                }
-                yield return null;
-            }
-            ShouldSend = true;
-            TurnMicOffRunning = false;
-        }
-
-        private bool StaySaturatedRunning;
-        private readonly float timeStayingSaturated = 0.3f;
-
-        private IEnumerator StaySaturated()
-        {
-            if (StaySaturatedRunning)
-                yield break;
-            StaySaturatedRunning = true;
-            DisplayedSaturated = true;
-            float time = 0;
-
-            do
-            {
-                if (currentSaturated)
-                {
-                    time = Time.time + timeStayingSaturated;
-                    currentSaturated = false;
-                }
-                yield return null;
-            }
-            while (time > Time.time);
-
-            DisplayedSaturated = false;
-            StaySaturatedRunning = false;
-        }
-
-        private void _ChangeThreshold(bool up)
-        {
-            if (up)
-                NoiseThreshold += 0.05f;
-            else
-                NoiseThreshold -= 0.05f;
-        }
-
-        private void _ChangeBitrate(bool up)
-        {
-            if (up)
-                Bitrate += 500;
-            else
-                Bitrate -= 500;
-            if (encoder != null)
-                encoder.Bitrate = Bitrate;
-        }
-
-        private void _ChangeTimeToTurnOff(bool up)
-        {
-            if (up)
-                TimeToTurnOff += 0.5f;
-            else
-                TimeToTurnOff -= 0.5f;
-        }
-
-        private string[] _getDevices()
-        {
-            return Microphone.devices;
-        }
-
-        private void _NextDevices()
-        {
-            string[] devices = _getDevices();
-            int i = Array.IndexOf(devices, microphoneLabel) + 1;
-            if (i < 0 || i >= devices.Length)
-                i = 0;
-            _SetDevices(devices[i]);
-        }
-
-        private bool _SetDevices(string name)
-        {
-            if (_IsAValidDevices(name))
-            {
-                if (Reading)
-                {
-                    StopRecording();
-                    microphoneLabel = name;
-                    StartRecording();
-                }
-                else
-                {
-                    microphoneLabel = name;
-                }
-
-                return true;
-            }
-            return false;
-        }
-
-        private bool _IsAValidDevices(string name)
-        {
-            if (name == null) return false;
-            return getDevices().Contains(name);
-        }
-
-        private void Update()
-        {
-            if (!Reading) return;
-
-            int position = Microphone.GetPosition(microphoneLabel);
-            if (position < 0 || head == position)
-            {
+                Debug.LogError("Please set the mumble host name to your mumble server");
                 return;
             }
+            playing = true;
+            Application.runInBackground = true;
+            // If SendPosition, we'll send three floats.
+            // This is roughly the standard for Mumble, however it seems that
+            // Murmur supports more
+            int posLength = sendPosition ? 3 * sizeof(float) : 0;
+            mumbleClient = new MumbleClient(hostName, port, CreateMumbleAudioPlayerFromPrefab,
+                DestroyMumbleAudioPlayer, OnOtherUserStateChange, connectAsyncronously,
+                SpeakerCreationMode.ALL, DebuggingVariables, posLength);
 
-            clip.GetData(microphoneBuffer, 0);
-            if (!muted)
+            if (connectAsyncronously)
+                while (!mumbleClient.ReadyToConnect)
+                    await UMI3DAsyncManager.Yield();
+
+            mumbleClient.Connect(username, password);
+
+            if (connectAsyncronously)
+                await UMI3DAsyncManager.Yield();
+
+            if (MyMumbleMic != null)
             {
-                if (head < position)
-                {
-                    lock (pcmQueue)
-                    {
-                        for (int i = head; i < position; i++)
-                        {
-                            pcmQueue.Enqueue(microphoneBuffer[i]);
-                        }
-                    }
-                }
-                else
-                {
-                    lock (pcmQueue)
-                    {
-                        //head -> length
-                        for (int i = head; i < microphoneBuffer.Length; i++)
-                        {
-                            pcmQueue.Enqueue(microphoneBuffer[i]);
-                        }
-                        //0->position
-                        for (int i = 0; i < position; i++)
-                        {
-                            pcmQueue.Enqueue(microphoneBuffer[i]);
-                        }
-                    }
-                }
+                mumbleClient.AddMumbleMic(MyMumbleMic);
+                if (sendPosition)
+                    MyMumbleMic.SetPositionalDataFunction(WritePositionalData);
+                MyMumbleMic.OnMicDisconnect += OnMicDisconnected;
+                await JoinChannel();
             }
-            head = position;
+            
         }
 
+        async Task JoinChannel(int trycount = 0)
+        {
+            if (trycount < 3)
+            {
+                await UMI3DAsyncManager.Delay(5000);
+                if (!mumbleClient.JoinChannel(channelToJoin))
+                {
+                    await JoinChannel(trycount++);
+                }
+            }
+        }
+
+        /// <summary>
+        /// An example of how to serialize the positional data that you're interested in
+        /// NOTE: this function, in the current implementation, is called regardless
+        /// of if the user is speaking
+        /// </summary>
+        /// <param name="posData"></param>
+        private void WritePositionalData(ref byte[] posData, ref int posDataLength)
+        {
+            // Get the XYZ position of the camera
+            Vector3 pos = Camera.main.transform.position;
+            //Debug.Log("Sending pos: " + pos);
+            // Copy the XYZ floats into our positional array
+            int dstOffset = 0;
+            Buffer.BlockCopy(BitConverter.GetBytes(pos.x), 0, posData, dstOffset, sizeof(float));
+            dstOffset += sizeof(float);
+            Buffer.BlockCopy(BitConverter.GetBytes(pos.y), 0, posData, dstOffset, sizeof(float));
+            dstOffset += sizeof(float);
+            Buffer.BlockCopy(BitConverter.GetBytes(pos.z), 0, posData, dstOffset, sizeof(float));
+
+            posDataLength = 3 * sizeof(float);
+            // The reverse method is in MumbleExamplePositionDisplay
+        }
+
+        private MumbleAudioPlayer CreateMumbleAudioPlayerFromPrefab(string username, uint session)
+        {
+            // Depending on your use case, you might want to add the prefab to an existing object (like someone's head)
+            // If you have users entering and leaving frequently, you might want to implement an object pool
+            GameObject newObj = sendPosition
+                ? GameObject.Instantiate(MyMumbleAudioPlayerPositionedPrefab)
+                : GameObject.Instantiate(MyMumbleAudioPlayerPrefab);
+
+            newObj.name = username + "_MumbleAudioPlayer";
+            MumbleAudioPlayer newPlayer = newObj.GetComponent<MumbleAudioPlayer>();
+            Debug.Log("Adding audio player for: " + username);
+            return newPlayer;
+        }
+        private void OnOtherUserStateChange(uint session, MumbleProto.UserState updatedDeltaState, MumbleProto.UserState fullUserState)
+        {
+            print("User #" + session + " had their user state change");
+            // Here we can do stuff like update a UI with users' current channel/mute etc.
+        }
+        private void DestroyMumbleAudioPlayer(uint session, MumbleAudioPlayer playerToDestroy)
+        {
+            UnityEngine.GameObject.Destroy(playerToDestroy.gameObject);
+        }
+        private void OnMicDisconnected()
+        {
+            Debug.LogError("Connected microphone has disconnected!");
+            string disconnectedMicName = MyMumbleMic.GetCurrentMicName();
+            // This means that the mic that we were previously receiving audio from has disconnected
+            // you may want to present a notification to the user, allowing them to select
+            // a new mic to use
+            // here, we will start a coroutine to wait until the mic we want is connected again
+            StartCoroutine(ExampleMicReconnect(disconnectedMicName));
+        }
+        IEnumerator ExampleMicReconnect(string micToConnect)
+        {
+            while (true)
+            {
+                string[] micNames = Microphone.devices;
+                // try to see if the desired mic is connected
+                for (int i = 0; i < micNames.Length; i++)
+                {
+                    if (micNames[i] == micToConnect)
+                    {
+                        Debug.Log("Desired mic reconnected");
+                        MyMumbleMic.MicNumberToUse = i;
+                        MyMumbleMic.StartSendingAudio(mumbleClient.EncoderSampleRate);
+                        yield break;
+                    }
+                }
+                yield return new WaitForSeconds(2f);
+            }
+        }
+
+        void _OnApplicationQuit()
+        {
+            StopMicrophone();
+        }
+        
         #endregion
 
-        #region Encoder
-        private readonly object loopbackLocker = new object();
-        private bool _loopback;
-        private bool loopback
+        public List<DebugInfo> GetInfos()
         {
-            get
-            {
-                lock (loopbackLocker)
-                    return _loopback;
-            }
-            set
-            {
-                lock (loopbackLocker)
-                    _loopback = value;
-            }
+            return new List<DebugInfo>();
         }
 
-        private int bitrate = 96000;
-        private int frameSize; //at least frequency/100
-        private int outputBufferSize; // at least frameSize * sizeof(float)
-
-        private Encoder encoder;
-        private Queue<float> pcmQueue;
-        private float[] frameBuffer;
-        private byte[] outputBuffer;
-
-        private void OnEnable()
+        public string GetLogName()
         {
-            var samp = (SamplingFrequency)samplingFrequency;
-            encoder = new Encoder(
-                samp,
-                NumChannels.Mono,
-                OpusApplication.Audio)
-            {
-                Bitrate = Bitrate,
-                Complexity = 10,
-                Signal = OpusSignal.Voice
-            };
+            return "Microphone";
         }
 
-        private void OnDisable()
-        {
-            encoder.Dispose();
-            encoder = null;
-            pcmQueue?.Clear();
-            Reading = false;
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            Reading = false;
-        }
-
-        private void ThreadUpdate()
-        {
-            while (Reading)
-            {
-                bool ok = false;
-                lock (pcmQueue)
-                {
-                    ok = pcmQueue.Count >= frameSize;
-                }
-                if (ok)
-                {
-                    float sum = 0;
-                    float gain = Gain;
-                    bool saturated = false;
-                    lock (pcmQueue)
-                    {
-                        for (int i = 0; i < frameSize; i++)
-                        {
-                            float v = pcmQueue.Dequeue() * gain;
-                            if (v > 1)
-                            {
-                                v = 1;
-                                saturated = true;
-                            }
-                            else if (v < -1)
-                            {
-                                v = -1;
-                                saturated = true;
-                            }
-
-                            frameBuffer[i] = v;
-                            sum += v * v;
-                        }
-                    }
-
-                    Saturated = saturated;
-                    RMS = Mathf.Sqrt(sum / frameSize);
-                    DB = 20 * Mathf.Log10(RMS / refValue);
-
-                    if (ShouldSend)
-                    {
-                        int encodedLength = encoder.Encode(frameBuffer, outputBuffer);
-                        UMI3DCollaborationClientServer.SendVOIP(encodedLength, outputBuffer);
-
-                    }
-                }
-                Thread.Sleep(sleepTimeMiliseconde);
-            }
-            thread = null;
-        }
-
-        private const string LogName = "Microphone Listener";
-        string ILoggable.GetLogName()
-        {
-            return LogName;
-        }
-
-        List<DebugInfo> ILoggable.GetInfos()
-        {
-            return new List<DebugInfo>
-            {
-                new DebugInfo<string>("Current Microphone",()=>CurrentMicrophone),
-                new DebugInfo<string[]>("Microphones",getDevices(),(l)=>l.ToString<string>()),
-                new DebugInfo<int>("Sampling Frequency (Hz)",()=>samplingFrequency),
-                new DebugInfo<int>("Bitrate (b/s)",()=>Bitrate),
-                new DebugInfo<int>("Frame Size (float)",()=>frameSize),
-                new DebugInfo<int>("Output Buffer Size (bytes)",()=>outputBufferSize),
-                new DebugInfo<int>("PCM Queue Size",()=>
-                    {
-                        if(pcmQueue != null)
-                            lock (pcmQueue)
-                                return pcmQueue.Count;
-                        return 0;
-                    }
-                ),
-                new DebugInfo<(float,float,bool)>("RMS",()=>(RMS,NoiseThreshold,ShouldSend),(t)=>$"{t.Item1}[>{t.Item2}=>{t.Item3}]"),
-                new DebugInfo<float>(" DB",()=>DB),
-                new DebugInfo<float>(" Gain",()=>Gain),
-                new DebugInfo<float>(" Time to turn off",()=>TimeToTurnOff),
-            };
-        }
-        #endregion
     }
 }
