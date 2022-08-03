@@ -21,5 +21,5 @@ public interface IWorldController_Environment
 {
     Task NotifyUserJoin(UMI3DCollaborationUser user);
 
-    Task NotifyUserLeave(UMI3DCollaborationUser user);
+    Task NotifyUserUnregister(UMI3DCollaborationUser user);
 }

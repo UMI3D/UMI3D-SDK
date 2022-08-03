@@ -123,7 +123,7 @@ namespace umi3d.worldController
             return privateId;
         }
 
-        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
+        public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;
         }

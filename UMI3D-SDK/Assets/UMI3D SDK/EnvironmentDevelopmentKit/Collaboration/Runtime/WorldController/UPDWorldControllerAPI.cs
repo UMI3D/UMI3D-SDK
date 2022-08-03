@@ -111,7 +111,7 @@ namespace umi3d.worldController
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
+        public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
         {
             forgeClient.Send((new WorldControllerUserLeaveMessage(user.login)).ToBytable().ToBytes());
             return Task.CompletedTask;

@@ -421,10 +421,15 @@ namespace umi3d.edk.collaboration
         private void _Logout(UMI3DCollaborationUser user)
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
-            WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
 
+        public void NotifyUnregistered(UMI3DCollaborationUser user)
+        {
+            UMI3DLogger.Log($"Unregistered {user.login} {user.Id()}", scope);
+            WorldController.NotifyUserUnregister(user);
+            OnUserUnregistered.Invoke(user);
+        }
 
         public float WaitTimeForPingAnswer = 3f;
         public int MaxPingingTry = 5;
@@ -461,7 +466,11 @@ namespace umi3d.edk.collaboration
         public virtual void Ping(UMI3DCollaborationUser user)
         {
             UMI3DLogger.Log($"Ping {user.Id()} {user.login}", scope);
-            user.networkPlayer.Ping();
+            try
+            {
+                user.networkPlayer?.Networker?.Ping();
+            }
+            catch { }
             var sr = new StatusRequestDto { CurrentStatus = user.status };
             ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
