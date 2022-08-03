@@ -198,6 +198,7 @@ namespace umi3d.edk.collaboration
                 if (user.status != StatusType.NONE)
                 {
                     lostUsers.Remove(user.Id());
+                    
                     return;
                 }
             }

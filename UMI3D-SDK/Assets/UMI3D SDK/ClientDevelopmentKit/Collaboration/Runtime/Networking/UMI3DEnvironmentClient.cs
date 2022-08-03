@@ -165,7 +165,7 @@ namespace umi3d.cdk.collaboration
         {
             ForgeClient.Join(authenticator);
             await UMI3DAsyncManager.Delay(5000);
-            if (!ForgeClient.IsConnected && !disconected)
+            if (ForgeClient != null && !ForgeClient.IsConnected && !disconected)
             {
                 isConnecting = false;
                 isConnected = false;

@@ -24,7 +24,7 @@ namespace umi3d.worldController
     {
         public abstract Task NotifyUserJoin(UMI3DCollaborationUser user);
 
-        public abstract Task NotifyUserLeave(UMI3DCollaborationUser user);
+        public abstract Task NotifyUserUnregister(UMI3DCollaborationUser user);
 
         public virtual void Setup() { }
 

@@ -193,6 +193,7 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserActive = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserLeave = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserUnregistered = new UMI3DUserEvent();
         #endregion
     }
 }
