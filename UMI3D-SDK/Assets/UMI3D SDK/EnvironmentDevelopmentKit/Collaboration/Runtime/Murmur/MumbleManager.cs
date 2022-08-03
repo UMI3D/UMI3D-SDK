@@ -44,7 +44,8 @@ namespace umi3d.edk.collaboration.murmur
         private MumbleManager(string ip)
         {
             this.ip = ip;
-            m = new MurmurAPI(ip);
+            var s = ip.Split(':');
+            m = new MurmurAPI(s[0]);
         }
 
         public async Task Refresh()

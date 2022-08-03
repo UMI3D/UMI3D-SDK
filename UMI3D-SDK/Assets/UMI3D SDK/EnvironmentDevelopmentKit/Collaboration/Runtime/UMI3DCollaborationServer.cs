@@ -62,7 +62,7 @@ namespace umi3d.edk.collaboration
 
 
         [EditorReadOnly]
-        public string mumbleIp;
+        public string mumbleIp = "20.199.41.101:64738";
 
         [EditorReadOnly]
         public bool useRandomForgePort;
