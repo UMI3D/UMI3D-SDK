@@ -187,6 +187,7 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserJoin = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserRegistered = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserCreated = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserRecreated = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserReady = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserAway = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();

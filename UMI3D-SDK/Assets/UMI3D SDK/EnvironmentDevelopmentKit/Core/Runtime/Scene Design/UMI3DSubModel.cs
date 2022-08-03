@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -27,6 +28,17 @@ namespace umi3d.edk
 
         public UMI3DModel parentModel;
         public string subModelName { get; protected set; }
+
+        /// <summary>
+        /// List of submodel name in hierachy from root to this subModel
+        /// </summary>
+        public List<string> subModelHierachyNames = new List<string>();/*{ get; set; }*/
+
+        /// <summary>
+        /// List of submodel index in hierachy from root to this subModel
+        /// </summary>
+        public List<int> subModelHierachyIndexes = new List<int>();/*{ get; set; }*/
+
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
         [SerializeField, EditorReadOnly]
         protected bool ignoreModelMaterialOverride = false;
@@ -50,7 +62,11 @@ namespace umi3d.edk
             base.InitDefinition(id);
 
             objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.IgnoreModelMaterialOverride, ignoreModelMaterialOverride);
+
         }
+
+
+
 
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
@@ -93,6 +109,8 @@ namespace umi3d.edk
             var subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
             subDto.subModelName = subModelName;
+            subDto.subModelHierachyIndexes = subModelHierachyIndexes;
+            subDto.subModelHierachyNames = subModelHierachyNames;
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
             subDto.isTraversable = isTraversable;
             subDto.isPartOfNavmesh = isPartOfNavmesh;
@@ -103,6 +121,8 @@ namespace umi3d.edk
             return base.ToBytes(user)
                 + UMI3DNetworkingHelper.Write(this.parentModel.Id())
                 + UMI3DNetworkingHelper.Write(this.subModelName)
+                + UMI3DNetworkingHelper.Write(this.subModelHierachyIndexes)
+                + UMI3DNetworkingHelper.Write(this.subModelHierachyNames)
                 + UMI3DNetworkingHelper.Write(this.ignoreModelMaterialOverride)
                 + UMI3DNetworkingHelper.Write(this.isPartOfNavmesh)
                 + UMI3DNetworkingHelper.Write(this.isTraversable);

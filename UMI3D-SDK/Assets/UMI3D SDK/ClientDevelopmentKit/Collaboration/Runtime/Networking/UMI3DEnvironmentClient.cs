@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
         private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
         public bool IsConnected()
         {
-            return ForgeClient != null ? isConnected && ForgeClient.IsConnected : false;
+            return ForgeClient != null ? isConnected && ForgeClient.IsConnected && !disconected : false;
         }
 
         public readonly double maxMillisecondToWait = 10000;
@@ -174,7 +174,13 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public async void ConnectionLost()
+        public void ConnectionStatus(bool lost)
+        {
+            if (UMI3DCollaborationClientServer.Exists)
+                UMI3DCollaborationClientServer.Instance.ConnectionStatus(this,lost);
+        }
+
+        public async void ConnectionDisconnected()
         {
             UMI3DLogger.Log($"Connection lost with environment [Was Connected: {IsConnected()}]", scope);
 
@@ -186,23 +192,30 @@ namespace umi3d.cdk.collaboration
             isConnected = false;
         }
 
-        public async Task<bool> Logout()
+        public async Task<bool> Logout(bool notify = true)
         {
             bool ok = false;
-            disconected = true;
+            
             if (IsConnected())
             {
 
                 try
                 {
-                    await HttpClient.SendPostLogout();
+                    if(notify)
+                        await HttpClient.SendPostLogout();
                 }
                 finally { };
 
                 ForgeClient.Stop();
                 ok = true;
             }
+            disconected = true;
             isConnected = false;
+            if (ForgeClient != null)
+            {
+                GameObject.Destroy(ForgeClient.gameObject);
+                ForgeClient = null;
+            }
             return ok;
         }
 

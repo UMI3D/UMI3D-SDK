@@ -292,6 +292,7 @@ namespace umi3d.cdk.userCapture
         {
             if (embodimentDict.ContainsKey(id))
             {
+                avatarEvent.Invoke(id);
                 return false;
             }
             else

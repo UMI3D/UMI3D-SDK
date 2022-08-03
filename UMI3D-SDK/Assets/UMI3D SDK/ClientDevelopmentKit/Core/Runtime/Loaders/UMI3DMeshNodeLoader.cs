@@ -102,29 +102,70 @@ namespace umi3d.cdk
         private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
             string url = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.mesh.variants).url;
-            if (!UMI3DResourcesManager.Instance.subModelsCache.ContainsKey(url))
+            if (!UMI3DResourcesManager.Instance.IsSubModelsSetFor(url))
             {
                 var copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
                 foreach (LODGroup lodgroup in copy.GetComponentsInChildren<LODGroup>())
                     GameObject.Destroy(lodgroup);
-                var subObjectsReferences = new Dictionary<string, Transform>();
-                foreach (Transform child in copy.GetComponentsInChildren<Transform>())
-                {
-                    if (!ignoredPrimitiveNameForSubObjectsLoading.Contains(child.name)) // ignore game objects created by the gltf importer or other importer 
-                    {
-                        child.SetParent(copy.transform.parent);
-                        subObjectsReferences.Add(child.name, child);
-                        child.transform.localEulerAngles = rotationOffsetByLoader;
-                        child.transform.localPosition = Vector3.zero;
-                        child.transform.localScale = Vector3.one;
-                    }
-                }
-                UMI3DResourcesManager.Instance.subModelsCache.Add(url, subObjectsReferences);
+
+                var subObjectsReferences = new UMI3DResourcesManager.SubmodelDataCollection();
+                subObjectsReferences.SetRoot(copy.transform);
+
+                SetSubObjectsReferencesAux(copy.transform, copy.transform, rotationOffsetByLoader, subObjectsReferences);
+                UMI3DResourcesManager.Instance.AddSubModels(url, subObjectsReferences);
                 return copy;
             }
             else
             {
-                return UMI3DResourcesManager.Instance.subModelsCache[url][goInCache.name + "(Clone)"].gameObject;
+                return UMI3DResourcesManager.Instance.GetSubModelRoot(url).gameObject;
+            }
+        }
+
+
+        class ChildRef
+        {
+            public string refByName;
+            public List<int> refByIndex;
+            public List<string> refByNames;
+            public Transform transform;
+
+            public ChildRef(string refByName, List<int> refByIndex, List<string> refByNames, Transform transform)
+            {
+                this.refByName = refByName;
+                this.refByIndex = refByIndex;
+                this.refByNames = refByNames;
+                this.transform = transform;
+            }
+        }
+
+        private void SetSubObjectsReferencesAux(Transform root, Transform Parent, Vector3 rotationOffsetByLoader, UMI3DResourcesManager.SubmodelDataCollection collection)
+        {
+            List<ChildRef> childs = new List<ChildRef>() { new ChildRef(Parent.name, new List<int>(), new List<string>(), Parent) };
+            GetChild(Parent, new List<int>(), new List<string>(), childs);
+
+            foreach (var childRef in childs)
+            {
+                var child = childRef.transform;
+                if (!ignoredPrimitiveNameForSubObjectsLoading.Contains(child.name)) // ignore game objects created by the gltf importer or other importer 
+                {
+                    child.SetParent(root.transform.parent);
+                    collection.AddSubModel(childRef.refByName, childRef.refByIndex, childRef.refByNames, child);
+                    child.transform.localEulerAngles = rotationOffsetByLoader;
+                    child.transform.localPosition = Vector3.zero;
+                    child.transform.localScale = Vector3.one;
+                }
+            }
+        }
+
+        private void GetChild(Transform Parent, List<int> indexes, List<string> names, List<ChildRef> collection)
+        {
+            for (int i = 0; i < Parent.childCount; i++)
+            {
+                var child = Parent.GetChild(i);
+                var nIndexes = new List<int>(indexes) { i };
+                var nNames = new List<string>(names) { child.name };
+                collection.Add(new ChildRef(child.name, nIndexes, nNames, child));
+                GetChild(child, nIndexes, nNames, collection);
             }
         }
 
@@ -159,8 +200,6 @@ namespace umi3d.cdk
             SetMaterialOverided(dto, nodeInstance);
             finished?.Invoke();
         }
-
-
 
     }
 

@@ -604,7 +604,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Clear an environement and make the client ready to load a new environment.
         /// </summary>
-        public static void Clear()
+        public static void Clear(bool clearCache = true)
         {
             Instance.entityFilters.Clear();
 
@@ -612,7 +612,8 @@ namespace umi3d.cdk
             {
                 DeleteEntity(entity, null);
             }
-            UMI3DResourcesManager.Instance.ClearCache();
+            if(clearCache)
+                UMI3DResourcesManager.Instance.ClearCache();
 
             Instance.entities.Clear();
             Instance.entitywaited.Clear();
