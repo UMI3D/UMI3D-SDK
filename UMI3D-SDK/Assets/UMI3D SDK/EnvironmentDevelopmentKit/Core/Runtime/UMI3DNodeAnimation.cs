@@ -29,6 +29,10 @@ namespace umi3d.edk
         public class OperationChain : IBytable
         {
             public Operation Operation;
+
+            /// <summary>
+            /// Progress of the animation, in seconds.  
+            /// </summary>
             public float progress;
 
             public UMI3DNodeAnimationDto.OperationChainDto Todto(UMI3DUser user)
@@ -61,6 +65,9 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<float> objectDuration;
         private UMI3DAsyncListProperty<OperationChain> objectAnimationChain;
 
+        /// <summary>
+        /// Duration of the animation, in seconds.
+        /// </summary>
         public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return objectDuration; } protected set => objectDuration = value; }
         public UMI3DAsyncListProperty<OperationChain> ObjectAnimationChain { get { Register(); return objectAnimationChain; } protected set => objectAnimationChain = value; }
 

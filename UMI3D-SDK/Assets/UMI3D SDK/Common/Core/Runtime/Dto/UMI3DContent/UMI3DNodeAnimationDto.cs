@@ -20,6 +20,9 @@ namespace umi3d.common
 {
     public class UMI3DNodeAnimationDto : UMI3DAbstractAnimationDto
     {
+        /// <summary>
+        /// Duration of the animation, in seconds.
+        /// </summary>
         public float duration = 10f;
         public List<OperationChainDto> animationChain = null;
 

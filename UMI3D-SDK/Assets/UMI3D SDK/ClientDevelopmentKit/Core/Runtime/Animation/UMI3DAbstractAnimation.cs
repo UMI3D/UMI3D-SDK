@@ -203,6 +203,10 @@ namespace umi3d.cdk
 
         public abstract void Start();
 
+        /// <summary>
+        /// Starts animation at <paramref name="atTime"/>.
+        /// </summary>
+        /// <param name="atTime">Time in ms</param>
         public abstract void Start(float atTime);
 
         public abstract void Stop();
