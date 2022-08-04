@@ -54,7 +54,7 @@ namespace umi3d.cdk.collaboration
                 }
                 return null;
             }
-            private set 
+            private set
             {
                 if (isClient && UMI3DCollaborationClientServer.Exists)
                 {
@@ -122,7 +122,24 @@ namespace umi3d.cdk.collaboration
             bool avatarStatusUpdate = dto.avatarStatus != user.avatarStatus;
             bool attentionStatusUpdate = dto.attentionRequired != user.attentionRequired;
 
+            bool useMumbleUpdate = dto.audioUseMumble != user.audioUseMumble;
+            bool channelUpdate = dto.audioChannel != user.audioChannel;
+            bool serverUpdate = dto.audioServerUrl != user.audioServerUrl;
+
+            bool loginUpdate = false;
+            bool pswUpdate = false;
+
+
             dto = user;
+
+            if (isClient && user is UserConnectionDto connectionDto)
+            {
+                loginUpdate = connectionDto.login != audioLogin;
+                pswUpdate = connectionDto.audioPassword != audioPassword;
+
+                audioLogin = connectionDto.login;
+                audioPassword = connectionDto.audioPassword;
+            }
 
             if (statusUpdate) OnUserStatusUpdated.Invoke(this);
             if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
@@ -132,6 +149,10 @@ namespace umi3d.cdk.collaboration
             if (attentionStatusUpdate) OnUserAttentionStatusUpdated.Invoke(this);
             if (microphoneStatusUpdate) OnUserMicrophoneStatusUpdated.Invoke(this);
             if (avatarStatusUpdate) OnUserAvatarStatusUpdated.Invoke(this);
+            if (useMumbleUpdate) OnUserMicrophoneUseMumbleUpdated.Invoke(this);
+            if (channelUpdate) OnUserMicrophoneChannelUpdated.Invoke(this);
+            if (serverUpdate) OnUserMicrophoneServerUpdated.Invoke(this);
+            if (loginUpdate || pswUpdate) OnUserMicrophoneIdentityUpdated.Invoke(this);
         }
 
         public bool UpdateUser(ulong property, object value)

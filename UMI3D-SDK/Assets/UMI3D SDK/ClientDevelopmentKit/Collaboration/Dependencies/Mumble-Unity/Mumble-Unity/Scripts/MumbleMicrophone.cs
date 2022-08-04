@@ -37,7 +37,7 @@ namespace Mumble
         /// The minimum aplitude to recognize as voice data
         /// Only used if Mic is set to "Amplitude"
         /// </summary>
-        [Range (0.0f, 1.0f)]
+        [Range(0.0f, 1.0f)]
         public float MinAmplitude = 0.007f;
         public float VoiceHoldSeconds = 0.5f;
         public MicType VoiceSendingType = MicType.AlwaysSend;
@@ -54,7 +54,8 @@ namespace Mumble
         /// </summary>
         //const int NumRecordingSeconds = 1;
         const int NumRecordingSeconds = 5;
-        private int NumSamplesInMicBuffer {
+        private int NumSamplesInMicBuffer
+        {
             get
             {
                 return NumRecordingSeconds * _mumbleClient.EncoderSampleRate;
@@ -76,7 +77,7 @@ namespace Mumble
         private WritePositionalData _writePositionalDataFunc = null;
         // How many seconds to wait before we consider the mic being disconnected
         const float MaxSecondsWithoutMicData = 1f;
-        
+
         public void Initialize(MumbleClient mumbleClient)
         {
             _mumbleClient = mumbleClient;
@@ -154,7 +155,7 @@ namespace Mumble
             else
                 _secondsWithoutMicSamples = 0;
 
-            if(_secondsWithoutMicSamples > MaxSecondsWithoutMicData)
+            if (_secondsWithoutMicSamples > MaxSecondsWithoutMicData)
             {
                 // For 5 times in a row, we received no usable data
                 // this normally means that the mic we were using disconnected
@@ -174,19 +175,19 @@ namespace Mumble
                 return;
             }
 
-            while(totalSamples - _totalNumSamplesSent >= NumSamplesPerOutgoingPacket)
+            while (totalSamples - _totalNumSamplesSent >= NumSamplesPerOutgoingPacket)
             {
                 PcmArray newData = _mumbleClient.GetAvailablePcmArray();
 
                 if (!_mumbleClient.UseSyntheticSource)
                     SendAudioClip.GetData(newData.Pcm, _totalNumSamplesSent % NumSamplesInMicBuffer);
-                else 
+                else
                     TestingClipToUse.GetData(newData.Pcm, _totalNumSamplesSent % TestingClipToUse.samples);
                 //Debug.Log(Time.frameCount + " " + currentPosition);
 
                 _totalNumSamplesSent += NumSamplesPerOutgoingPacket;
 
-                if(VoiceSendingType == MicType.Amplitude)
+                if (VoiceSendingType == MicType.Amplitude)
                 {
                     if (AmplitudeHigherThan(MinAmplitude, newData.Pcm))
                     {
@@ -236,7 +237,7 @@ namespace Mumble
             float currentSum = pcm[0];
             int checkInterval = 200;
 
-            for(int i = 1; i < pcm.Length; i++)
+            for (int i = 1; i < pcm.Length; i++)
             {
                 currentSum += Mathf.Abs(pcm[i]);
                 // Allow early returning
