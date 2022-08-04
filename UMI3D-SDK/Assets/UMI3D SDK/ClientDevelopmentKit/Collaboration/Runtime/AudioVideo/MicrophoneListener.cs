@@ -19,7 +19,6 @@ using Mumble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -31,42 +30,31 @@ namespace umi3d.cdk.collaboration
     {
     }
 
+    public enum MicrophoneMode
+    {
+        AlwaysSend,
+        Amplitude,
+        PushToTalk,
+        MethodBased
+    }
+
     [RequireComponent(typeof(AudioSource))]
     public class MicrophoneListener : SingleBehaviour<MicrophoneListener>, ILoggable
     {
-
         #region Mumble
+        #region public field
         // Basic mumble audio player
         public GameObject MyMumbleAudioPlayerPrefab;
         // Mumble audio player that also receives position commands
         public GameObject MyMumbleAudioPlayerPositionedPrefab;
 
-        MumbleMicrophone MyMumbleMic;
-        DebugValues DebuggingVariables;
+        bool micIsOn => MyMumbleMic?.isRecording ?? false;
 
         public bool UseLocalLoopback
         {
             get => DebuggingVariables?.UseLocalLoopback ?? false;
             set { if (DebuggingVariables != null) DebuggingVariables.UseLocalLoopback = value; }
         }
-
-        public MumbleClient mumbleClient;
-        const bool connectAsyncronously = true;
-        const bool sendPosition = false;
-
-        string hostName = "1.2.3.4";
-        int port = 64738;
-        string username = "ExampleUser";
-        string password = "1passwordHere!";
-        string channelToJoin = "";
-
-        bool useMumble;
-
-        bool playing = false;
-        bool playingInit = false;
-
-        static bool muted;
-
 
         public static bool IsMute
         {
@@ -75,36 +63,60 @@ namespace umi3d.cdk.collaboration
             set { muted = value; if (Exists) Instance.handleMute(); }
         }
 
-        async Task<bool> IsPLaying()
+        public float MinAmplitude
         {
-            if (playing)
-                return true;
-            while (playingInit)
-                await UMI3DAsyncManager.Yield();
-            return playing;
+            get => MyMumbleMic?.MinAmplitude ?? 0; set
+            {
+                if (MyMumbleMic != null && value >= 0f && value <= 1f)
+                    MyMumbleMic.MinAmplitude = value;
+            }
+        }
+        public float VoiceHoldSeconds
+        {
+            get => MyMumbleMic?.VoiceHoldSeconds ?? 0; set
+            {
+                if (MyMumbleMic != null && value >= 0f)
+                    MyMumbleMic.VoiceHoldSeconds = value;
+            }
+        }
+        public KeyCode PushToTalkKeycode
+        {
+            get => MyMumbleMic?.PushToTalkKeycode ?? KeyCode.M; set
+            {
+                if (MyMumbleMic != null)
+                    MyMumbleMic.PushToTalkKeycode = value;
+            }
         }
 
-        void handleMute()
-        {
-            if (useMumble && mumbleClient != null)
-                mumbleClient.SetSelfMute(IsMute);
-        }
+        #endregion
+        #region private field
+        MumbleClient mumbleClient;
+        MumbleMicrophone MyMumbleMic;
+        DebugValues DebuggingVariables;
 
-        void SetMumbleUrl(string url)
-        {
-            if (string.IsNullOrEmpty(url))
-                return;
-            var s = url.Split(':');
+        const bool connectAsyncronously = true;
+        const bool sendPosition = false;
 
-            hostName = s[0];
-            if (s.Length > 1 && int.TryParse(s[1], out int port))
-                this.port = port;
-        }
+        static bool muted;
 
+        string hostName = "1.2.3.4";
+        int port = 64738;
+        string username = "ExampleUser";
+        string password = "1passwordHere!";
+        string channelToJoin = "";
+
+        bool useMumble = false;
+        bool playing = false;
+        bool playingInit = false;
+        bool IdentityUpdateOnce = false;
+        #endregion
+
+        #region Init
         protected void Start()
         {
             MyMumbleMic = gameObject.GetOrAddComponent<MumbleMicrophone>();
             gameObject.GetOrAddComponent<EventProcessor>();
+
             DebuggingVariables = new DebugValues()
             {
                 EnableEditorIOGraph = false,
@@ -112,78 +124,22 @@ namespace umi3d.cdk.collaboration
                 UseRandomUsername = false,
                 UseSyntheticSource = false
             };
+
             QuittingManager.OnApplicationIsQuitting.AddListener(_OnApplicationQuit);
 
             UMI3DUser.OnUserMicrophoneIdentityUpdated.AddListener(IdentityUpdate);
             UMI3DUser.OnUserMicrophoneChannelUpdated.AddListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
+
+            PushToTalkKeycode = KeyCode.M;
         }
 
-        bool IdentityUpdateOnce = false;
-        async void IdentityUpdate(UMI3DUser user)
+        void _OnApplicationQuit()
         {
-            if (user != null && user.isClient && !IdentityUpdateOnce)
-            {
-                IdentityUpdateOnce = true;
-                await UMI3DAsyncManager.Yield();
-                await UMI3DAsyncManager.Yield();
-
-                username = user.audioLogin;
-                password = user.audioPassword;
-
-                if (await IsPLaying())
-                {
-                    StopMicrophone();
-                    StartMicrophone();
-                }
-                IdentityUpdateOnce = false;
-            }
+            StopMicrophone();
         }
-
-        async void ChannelUpdate(UMI3DUser user)
-        {
-            channelToJoin = user.audioChannel;
-            if (await IsPLaying())
-            {
-                await JoinChannel();
-            }
-        }
-        async void ServerUpdate(UMI3DUser user)
-        {
-
-            Debug.Log($"server {hostName}:{port} -> {user.audioServer}");
-            SetMumbleUrl(user.audioServer);
-            if (await IsPLaying())
-            {
-                StopMicrophone();
-                StartMicrophone();
-            }
-        }
-        void UseMumbleUpdate(UMI3DUser user)
-        {
-            if (useMumble != user.useMumble)
-            {
-                useMumble = user.useMumble;
-
-                Debug.Log(useMumble);
-                if (useMumble)
-                    StartMicrophone();
-                else
-                    StopMicrophone();
-            }
-        }
-
-
-        public async void StopMicrophone()
-        {
-            if (await IsPLaying() && mumbleClient != null)
-            {
-                MyMumbleMic.StopSendingAudio();
-                mumbleClient.Close();
-            }
-            playing = false;
-        }
+        #endregion
 
         public async void StartMicrophone()
         {
@@ -194,6 +150,43 @@ namespace umi3d.cdk.collaboration
                 playingInit = false;
             }
         }
+
+        public async void StopMicrophone()
+        {
+            if (await IsPLaying() && mumbleClient != null)
+            {
+                MyMumbleMic.OnMicDisconnect -= OnMicDisconnected;
+                MyMumbleMic.StopSendingAudio();
+                mumbleClient.Close();
+            }
+            playing = false;
+        }
+
+        private void OnMicDisconnected()
+        {
+            string disconnectedMicName = MyMumbleMic.GetCurrentMicName();
+            StartCoroutine(ExampleMicReconnect(disconnectedMicName));
+        }
+
+
+        public async void ToggleSendingSound(bool? on = null)
+        {
+            if (on == null)
+                on = !MyMumbleMic.isRecording;
+
+            if (await IsPLaying() && MyMumbleMic != null && GetCurrentMicrophoneMode() == MicrophoneMode.MethodBased)
+            {
+                if (on == MyMumbleMic.isRecording)
+                    return;
+
+                if (MyMumbleMic.isRecording)
+                    MyMumbleMic.StopSendingAudio();
+                else
+                    MyMumbleMic.StartSendingAudio();
+            }
+        }
+
+        #region private method
 
         private async Task _StartMicrophone()
         {
@@ -240,13 +233,21 @@ namespace umi3d.cdk.collaboration
 
                     if (MyMumbleMic != null)
                     {
+                        MyMumbleMic.SendAudioOnStart = false;
                         mumbleClient.AddMumbleMic(MyMumbleMic);
                         mumbleClient.SetSelfMute(IsMute);
                         if (sendPosition)
                             MyMumbleMic.SetPositionalDataFunction(WritePositionalData);
                         MyMumbleMic.OnMicDisconnect += OnMicDisconnected;
+
                         await JoinChannel();
+
+                        if (MyMumbleMic.VoiceSendingType == MumbleMicrophone.MicType.AlwaysSend
+                                || MyMumbleMic.VoiceSendingType == MumbleMicrophone.MicType.Amplitude)
+                            MyMumbleMic.StartSendingAudio();
+
                         playing = true;
+
                         return;
                     }
                 }
@@ -266,6 +267,108 @@ namespace umi3d.cdk.collaboration
                 }
             }
         }
+
+        async Task<bool> IsPLaying()
+        {
+            if (playing)
+                return true;
+            while (playingInit)
+                await UMI3DAsyncManager.Yield();
+            return playing;
+        }
+
+        void handleMute()
+        {
+            if (useMumble && mumbleClient != null)
+                mumbleClient.SetSelfMute(IsMute);
+        }
+
+        void SetMumbleUrl(string url)
+        {
+            if (string.IsNullOrEmpty(url))
+                return;
+            var s = url.Split(':');
+
+            hostName = s[0];
+            if (s.Length > 1 && int.TryParse(s[1], out int port))
+                this.port = port;
+        }
+
+        async void IdentityUpdate(UMI3DUser user)
+        {
+            if (user != null && user.isClient && !IdentityUpdateOnce)
+            {
+                IdentityUpdateOnce = true;
+                await UMI3DAsyncManager.Yield();
+                await UMI3DAsyncManager.Yield();
+
+                username = user.audioLogin;
+                password = user.audioPassword;
+
+                if (await IsPLaying())
+                {
+                    StopMicrophone();
+                    StartMicrophone();
+                }
+                IdentityUpdateOnce = false;
+            }
+        }
+
+        async void ChannelUpdate(UMI3DUser user)
+        {
+            channelToJoin = user.audioChannel;
+            if (await IsPLaying())
+            {
+                await JoinChannel();
+            }
+        }
+
+        async void ServerUpdate(UMI3DUser user)
+        {
+
+            Debug.Log($"server {hostName}:{port} -> {user.audioServer}");
+            SetMumbleUrl(user.audioServer);
+            if (await IsPLaying())
+            {
+                StopMicrophone();
+                StartMicrophone();
+            }
+        }
+
+        void UseMumbleUpdate(UMI3DUser user)
+        {
+            if (useMumble != user.useMumble)
+            {
+                useMumble = user.useMumble;
+
+                Debug.Log(useMumble);
+                if (useMumble)
+                    StartMicrophone();
+                else
+                    StopMicrophone();
+            }
+        }
+
+        IEnumerator ExampleMicReconnect(string micToConnect)
+        {
+            while (playing)
+            {
+                string[] micNames = Microphone.devices;
+                // try to see if the desired mic is connected
+                for (int i = 0; i < micNames.Length; i++)
+                {
+                    if (micNames[i] == micToConnect)
+                    {
+                        Debug.Log("Desired mic reconnected");
+                        MyMumbleMic.MicNumberToUse = i;
+                        MyMumbleMic.StartSendingAudio();
+                        yield break;
+                    }
+                }
+                yield return new WaitForSeconds(2f);
+            }
+        }
+        #endregion
 
         /// <summary>
         /// An example of how to serialize the positional data that you're interested in
@@ -290,6 +393,8 @@ namespace umi3d.cdk.collaboration
             // The reverse method is in MumbleExamplePositionDisplay
         }
 
+        #region UserLife
+
         private MumbleAudioPlayer CreateMumbleAudioPlayerFromPrefab(string username, uint session)
         {
             Debug.LogError("New player");
@@ -307,46 +412,158 @@ namespace umi3d.cdk.collaboration
         private void OnOtherUserStateChange(uint session, MumbleProto.UserState updatedDeltaState, MumbleProto.UserState fullUserState)
         {
             print("User #" + session + " had their user state change");
+
             // Here we can do stuff like update a UI with users' current channel/mute etc.
         }
         private void DestroyMumbleAudioPlayer(uint session, MumbleAudioPlayer playerToDestroy)
         {
             UnityEngine.GameObject.Destroy(playerToDestroy.gameObject);
         }
-        private void OnMicDisconnected()
+        #endregion
+
+        #region Data and settings
+
+
+        private string[] GetMicrophonesNames() { return Microphone.devices; }
+        public string GetCurrentMicrophoneName() => MyMumbleMic?.GetCurrentMicName();
+        public async Task<bool> SetCurrentMicrophoneName(string value)
         {
-            Debug.LogError("Connected microphone has disconnected!");
-            string disconnectedMicName = MyMumbleMic.GetCurrentMicName();
-            // This means that the mic that we were previously receiving audio from has disconnected
-            // you may want to present a notification to the user, allowing them to select
-            // a new mic to use
-            // here, we will start a coroutine to wait until the mic we want is connected again
-            StartCoroutine(ExampleMicReconnect(disconnectedMicName));
-        }
-        IEnumerator ExampleMicReconnect(string micToConnect)
-        {
-            while (true)
-            {
-                string[] micNames = Microphone.devices;
-                // try to see if the desired mic is connected
-                for (int i = 0; i < micNames.Length; i++)
+            if (MyMumbleMic == null || value == GetCurrentMicrophoneName())
+                return false;
+
+            var mics = GetMicrophonesNames();
+            var count = mics.Length;
+            int i = 0;
+
+            for (; i < count; i++)
+                if (mics[i] == value)
                 {
-                    if (micNames[i] == micToConnect)
-                    {
-                        Debug.Log("Desired mic reconnected");
-                        MyMumbleMic.MicNumberToUse = i;
-                        MyMumbleMic.StartSendingAudio(mumbleClient.EncoderSampleRate);
-                        yield break;
-                    }
+                    MyMumbleMic.MicNumberToUse = i;
+                    break;
                 }
-                yield return new WaitForSeconds(2f);
+
+            if (await IsPLaying())
+            {
+                StopMicrophone();
+                StartMicrophone();
+            }
+            return true;
+        }
+        public async void SetCurrentMicrophoneNameAsync(string value) { await SetCurrentMicrophoneName(value); }
+
+        private MicrophoneMode MicTypeToMode(MumbleMicrophone.MicType? type)
+        {
+            switch (type)
+            {
+                case MumbleMicrophone.MicType.AlwaysSend:
+                    return MicrophoneMode.AlwaysSend;
+                case MumbleMicrophone.MicType.Amplitude:
+                    return MicrophoneMode.Amplitude;
+                case MumbleMicrophone.MicType.PushToTalk:
+                    return MicrophoneMode.PushToTalk;
+                case MumbleMicrophone.MicType.MethodBased:
+                    return MicrophoneMode.MethodBased;
+            }
+            return MicrophoneMode.AlwaysSend;
+        }
+        private MumbleMicrophone.MicType MicModeToType(MicrophoneMode? type)
+        {
+            switch (type)
+            {
+                case MicrophoneMode.AlwaysSend:
+                    return MumbleMicrophone.MicType.AlwaysSend;
+                case MicrophoneMode.Amplitude:
+                    return MumbleMicrophone.MicType.Amplitude;
+                case MicrophoneMode.PushToTalk:
+                    return MumbleMicrophone.MicType.PushToTalk;
+                case MicrophoneMode.MethodBased:
+                    return MumbleMicrophone.MicType.MethodBased;
+            }
+            return MumbleMicrophone.MicType.AlwaysSend;
+        }
+
+        public MicrophoneMode GetCurrentMicrophoneMode() => MicTypeToMode(MyMumbleMic?.VoiceSendingType);
+        public bool SetCurrentMicrophoneMode(MicrophoneMode value)
+        {
+            if (MyMumbleMic == null || value == GetCurrentMicrophoneMode())
+                return false;
+            MyMumbleMic.VoiceSendingType = MicModeToType(value);
+            return true;
+        }
+
+        public partial class PacketData
+        {
+            private static bool running = false;
+            private static bool stop = false;
+
+            MicrophoneListener microphone;
+            int timeStepMilliseconds;
+
+            private PacketData(MicrophoneListener microphone) : this(microphone, 1000)
+            { }
+
+            private PacketData(MicrophoneListener microphone, int timeStepMilliseconds)
+            {
+                this.microphone = microphone;
+                this.timeStepMilliseconds = timeStepMilliseconds;
+            }
+
+            partial void PacketsReceived(long count);
+            partial void PacketsLost(long count);
+            partial void PacketsSent(long count);
+
+            public void Start()
+            {
+                Update(timeStepMilliseconds);
+            }
+
+            public void Stop()
+            {
+                stop = true;
+            }
+
+            async void Update(int timeStepMilliseconds)
+            {
+                if (!running)
+                {
+                    running = true;
+                    stop = false;
+
+                    if (await microphone.IsPLaying())
+                    {
+
+                        long numPacketsReceived = microphone.mumbleClient.NumUDPPacketsSent;
+                        long numPacketsSent = microphone.mumbleClient.NumUDPPacketsReceieved;
+                        long numPacketsLost = microphone.mumbleClient.NumUDPPacketsLost;
+
+                        while (true)
+                        {
+                            await UMI3DAsyncManager.Delay(timeStepMilliseconds);
+
+                            if (stop && !await microphone.IsPLaying() && microphone.mumbleClient == null)
+                                break;
+
+                            long numSentThisSample = microphone.mumbleClient.NumUDPPacketsSent - numPacketsSent;
+                            long numRecvThisSample = microphone.mumbleClient.NumUDPPacketsReceieved - numPacketsReceived;
+                            long numLostThisSample = microphone.mumbleClient.NumUDPPacketsLost - numPacketsLost;
+
+                            PacketsSent(-numSentThisSample);
+                            PacketsReceived(-numRecvThisSample);
+                            PacketsLost(-numLostThisSample);
+
+                            numPacketsSent += numSentThisSample;
+                            numPacketsReceived += numRecvThisSample;
+                            numPacketsLost += numLostThisSample;
+                        }
+                    }
+
+                    running = false;
+                }
             }
         }
 
-        void _OnApplicationQuit()
-        {
-            StopMicrophone();
-        }
+
+        #endregion
 
         #endregion
 

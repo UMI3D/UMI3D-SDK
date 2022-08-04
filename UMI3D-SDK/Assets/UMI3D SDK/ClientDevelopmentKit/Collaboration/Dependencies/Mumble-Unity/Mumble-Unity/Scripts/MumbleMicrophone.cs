@@ -65,7 +65,7 @@ namespace Mumble
         public AudioClip SendAudioClip { get; private set; }
 
         private MumbleClient _mumbleClient;
-        private bool isRecording = false;
+        public bool isRecording { get; private set; } = false;
         private string _currentMic;
         private int _previousPosition = 0;
         private int _totalNumSamplesSent = 0;
