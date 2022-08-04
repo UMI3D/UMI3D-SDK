@@ -63,6 +63,7 @@ namespace umi3d.cdk.collaboration
         bool useMumble;
 
         bool playing = false;
+        bool playingInit = false;
 
         static bool muted;
 
@@ -71,10 +72,19 @@ namespace umi3d.cdk.collaboration
         {
             get { return Exists ? !Instance.useMumble || muted : true; }
 
-            set { muted = value; if (Exists) Instance.ShouldStop(); }
+            set { muted = value; if (Exists) Instance.handleMute(); }
         }
 
-        void ShouldStop()
+        async Task<bool> IsPLaying()
+        {
+            if (playing)
+                return true;
+            while (playingInit)
+                await UMI3DAsyncManager.Yield();
+            return playing;
+        }
+
+        void handleMute()
         {
             if (useMumble && mumbleClient != null)
                 mumbleClient.SetSelfMute(IsMute);
@@ -122,7 +132,7 @@ namespace umi3d.cdk.collaboration
                 username = user.audioLogin;
                 password = user.audioPassword;
 
-                if (playing)
+                if (await IsPLaying())
                 {
                     StopMicrophone();
                     StartMicrophone();
@@ -134,15 +144,17 @@ namespace umi3d.cdk.collaboration
         async void ChannelUpdate(UMI3DUser user)
         {
             channelToJoin = user.audioChannel;
-            if (playing)
+            if (await IsPLaying())
             {
                 await JoinChannel();
             }
         }
-        void ServerUpdate(UMI3DUser user)
+        async void ServerUpdate(UMI3DUser user)
         {
+
+            Debug.Log($"server {hostName}:{port} -> {user.audioServer}");
             SetMumbleUrl(user.audioServer);
-            if (playing)
+            if (await IsPLaying())
             {
                 StopMicrophone();
                 StartMicrophone();
@@ -163,9 +175,9 @@ namespace umi3d.cdk.collaboration
         }
 
 
-        public void StopMicrophone()
+        public async void StopMicrophone()
         {
-            if (playing && mumbleClient != null)
+            if (await IsPLaying() && mumbleClient != null)
             {
                 MyMumbleMic.StopSendingAudio();
                 mumbleClient.Close();
@@ -175,15 +187,24 @@ namespace umi3d.cdk.collaboration
 
         public async void StartMicrophone()
         {
-            Debug.LogError($"Start {!useMumble} || { playing}");
-            if (!useMumble || playing) return;
+            if (!playingInit)
+            {
+                playingInit = true;
+                await _StartMicrophone();
+                playingInit = false;
+            }
+        }
+
+        private async Task _StartMicrophone()
+        {
+            Debug.LogError($"Start {!useMumble}");
+            if (!useMumble) return;
 
             if (hostName == "1.2.3.4")
             {
                 Debug.LogError("Please set the mumble host name to your mumble server");
                 return;
             }
-            playing = true;
 
             if (UMI3DCollaborationEnvironmentLoader.Exists)
             {
@@ -225,6 +246,7 @@ namespace umi3d.cdk.collaboration
                             MyMumbleMic.SetPositionalDataFunction(WritePositionalData);
                         MyMumbleMic.OnMicDisconnect += OnMicDisconnected;
                         await JoinChannel();
+                        playing = true;
                         return;
                     }
                 }
