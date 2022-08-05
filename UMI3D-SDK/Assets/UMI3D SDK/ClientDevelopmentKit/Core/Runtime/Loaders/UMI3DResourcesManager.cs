@@ -208,13 +208,13 @@ namespace umi3d.cdk
             /// </summary>
             /// <param name="url">Url to match.</param>
             /// <returns></returns>
-            public bool MatchUrl(Match matchUrl, string libraryId = null)
+            public bool MatchUrl(Match Matchurl, string libraryId = null)
             {
-
-                //Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
-                //Match a = rx.Match(this.url);
-                if (a.Success && matchUrl.Success)
-                    return (a.Groups[1].Captures[0].Value == matchUrl.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == matchUrl.Groups[2].Captures[0].Value || libraryId != null && libraryId != "" && libraryIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == matchUrl.Groups[3].Captures[0].Value;
+                if (a.Success && Matchurl.Success)
+                    return (a.Groups[1].Captures[0].Value == Matchurl.Groups[1].Captures[0].Value &&
+                        ((a.Groups[2].Captures.Count == Matchurl.Groups[2].Captures.Count)
+                        && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == Matchurl.Groups[2].Captures[0].Value))
+                        || libraryId != null && libraryId != "" && libraryIds.Contains(libraryId)) && a.Groups[3].Captures[0].Value == Matchurl.Groups[3].Captures[0].Value;
                 return false;
             }
 
@@ -227,11 +227,9 @@ namespace umi3d.cdk
 
                 if (url == this.url) return true;
 
-                //Regex rx = new Regex(@"^https?://(.+?)(:\d+)*/(.*)$");
-                //Match a = rx.Match(this.url);
                 Match b = rx.Match(url);
                 if (a.Success && b.Success)
-                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
+                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && ((a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value)));
                 return false;
             }
 
