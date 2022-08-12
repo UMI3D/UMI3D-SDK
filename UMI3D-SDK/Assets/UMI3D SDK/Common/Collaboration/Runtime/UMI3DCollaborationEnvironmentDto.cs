@@ -20,5 +20,7 @@ namespace umi3d.common.collaboration
     public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironmentDto
     {
         public List<UserDto> userList;
+
+        public bool isUsingResourceServer = false;
     }
 }

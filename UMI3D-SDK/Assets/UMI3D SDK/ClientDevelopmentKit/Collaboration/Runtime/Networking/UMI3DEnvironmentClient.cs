@@ -350,6 +350,7 @@ namespace umi3d.cdk.collaboration
                 if (!UserDto.answerDto.librariesUpdated)
                 {
                     LibrariesDto LibrariesDto = await HttpClient.SendGetLibraries();
+                    UMI3DResourcesManager.Instance.isUsingResourceServer = LibrariesDto.isUsingResourceServer;
 
                     // UMI3DLogger.Log($"Ask to download Libraries", scope | DebugScope.Connection);
                     bool b = await UMI3DCollaborationClientServer.Instance.Identifier.ShouldDownloadLibraries(
@@ -489,10 +490,10 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public async Task<byte[]> GetFile(string url)
+        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
         {
             //UMI3DLogger.Log($"GetFile {url}", scope);
-            return await HttpClient.SendGetPrivate(url);
+            return await HttpClient.SendGetPrivate(url, useParameterInsteadOfHeader);
         }
 
         ///<inheritdoc/>

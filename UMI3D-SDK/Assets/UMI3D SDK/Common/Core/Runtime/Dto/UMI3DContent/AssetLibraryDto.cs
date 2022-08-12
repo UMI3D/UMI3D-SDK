@@ -26,6 +26,7 @@ namespace umi3d.common
         public string date;
         public string culture;
         public string format;
+        public bool isUsingResourceServer = false;
         public List<UMI3DLocalAssetDirectory> variants;
     }
 }

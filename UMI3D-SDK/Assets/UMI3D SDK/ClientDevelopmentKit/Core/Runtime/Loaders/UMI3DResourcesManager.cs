@@ -41,6 +41,8 @@ namespace umi3d.cdk
         #endregion
         #region data
 
+        public bool isUsingResourceServer;
+
         /// <summary>
         /// Discribe a library and its content.
         /// </summary>
@@ -563,6 +565,31 @@ namespace umi3d.cdk
         #endregion
         #region file Load
 
+        /// <summary>
+        /// Returns true if <paramref name="url"/> has parameters.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static bool HasUrlGotParameters(string url)
+        {
+            return Regex.IsMatch(url, ".*\\?((.*=.*)(&?))+");
+        }
+
+        /// <summary>
+        /// Returns an url with authorization set with parameters
+        /// </summary>
+        /// <param name="fileUrl"></param>
+        /// <returns></returns>
+        public string SetAuthorisationWithParameter(string fileUrl, string authorization)
+        {
+            if (UMI3DResourcesManager.HasUrlGotParameters(fileUrl))
+                fileUrl += "&" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
+            else
+                fileUrl += "?" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
+
+            return fileUrl;
+        }
+
         public static void LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {
             Instance._LoadFile(id, file, urlToObject, objectFromCache, callback, failCallback, deleteAction);
@@ -630,7 +657,7 @@ namespace umi3d.cdk
                     objectData.state = ObjectData.Estate.NotLoaded;
                 };
                 objectData.state = ObjectData.Estate.Loading;
-                GetFilePath(objectData.url, sucess, error);
+                GetFilePath(objectData.url, sucess, error, objectData.libraryIds.FirstOrDefault());
             }
         }
 
@@ -668,15 +695,20 @@ namespace umi3d.cdk
             yield break;
         }
 
-
-
         private void _LoadFile(ulong id, FileDto file, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Action<object, Action<object>, string> objectFromCache, Action<object> callback, Action<Umi3dException> failCallback, Action<object, string> deleteAction)
         {
+            string fileName = System.IO.Path.GetFileName(file.url);
+
             Match matchUrl = ObjectData.rx.Match(file.url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
                 if (file.url == o.url)
                     return true;
+                else if (o.libraryIds.Contains(file.libraryKey) && System.IO.Path.GetFileName(o.url) == fileName)
+                {
+                    Debug.LogError("To improve, use MatchUrl");
+                    return true;
+                }
                 else
                     return o.MatchUrl(matchUrl, file.libraryKey);
             });
@@ -692,6 +724,7 @@ namespace umi3d.cdk
         private void GetFilePath(string url, Action<string> callback, Action<Umi3dException> error, string libraryKey = null)
         {
             Match matchUrl = ObjectData.rx.Match(url);
+
             ObjectData objectData = CacheCollection.Find((o) =>
             {
                 if (url == o.url)
@@ -699,6 +732,7 @@ namespace umi3d.cdk
                 else
                     return o.MatchUrl(matchUrl, libraryKey);
             });
+
             if (objectData != null && objectData.downloadedPath != null)
             {
                 callback.Invoke(objectData.downloadedPath);
@@ -864,7 +898,7 @@ namespace umi3d.cdk
                 finished = true;
             };
             UMI3DLocalAssetDirectory variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
-            UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), action, error);
+            UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), action, error, false);
             yield return new WaitUntil(() => { return finished; });
         }
 
@@ -982,7 +1016,7 @@ namespace umi3d.cdk
                 CacheCollection.Insert(0, new ObjectData(url, null, null, key, filePath));
             }
 
-            UMI3DClientServer.GetFile(url, action, error2);
+            UMI3DClientServer.GetFile(url, action, error2, UMI3DResourcesManager.Instance.isUsingResourceServer);
             yield return new WaitUntil(() => { return finished; });
         }
 
@@ -996,7 +1030,7 @@ namespace umi3d.cdk
             {
                 error.Invoke(s);
             };
-            UMI3DClientServer.GetFile(url, action, error2);
+            UMI3DClientServer.GetFile(url, action, error2, false);
         }
 
         private void UnloadFile(string url, string id, bool delete = false)

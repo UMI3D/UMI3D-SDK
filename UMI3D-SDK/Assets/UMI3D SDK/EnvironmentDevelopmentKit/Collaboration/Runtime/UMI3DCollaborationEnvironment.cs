@@ -34,7 +34,17 @@ namespace umi3d.edk.collaboration
             if (_dto is UMI3DCollaborationEnvironmentDto dto)
             {
                 dto.userList = UMI3DCollaborationServer.Collaboration.ToDto();
+                dto.isUsingResourceServer = UMI3DCollaborationServer.Instance.IsResourceServerSetup;
             }
+        }
+
+        ///<inheritdoc/>
+        public override LibrariesDto ToLibrariesDto(UMI3DUser user)
+        {
+            LibrariesDto dto = base.ToLibrariesDto(user);
+            dto.isUsingResourceServer = UMI3DCollaborationServer.Instance.IsResourceServerSetup;
+
+            return dto;
         }
     }
 }

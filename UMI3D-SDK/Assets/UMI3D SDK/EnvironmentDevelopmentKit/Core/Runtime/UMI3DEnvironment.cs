@@ -112,7 +112,7 @@ namespace umi3d.edk
         }
 
 
-        public LibrariesDto ToLibrariesDto(UMI3DUser user)
+        public virtual LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
             List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
             IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());

@@ -21,5 +21,6 @@ namespace umi3d.common
     public class LibrariesDto : UMI3DDto, IEntity
     {
         public List<AssetLibraryDto> libraries;
+        public bool isUsingResourceServer = false;
     }
 }
