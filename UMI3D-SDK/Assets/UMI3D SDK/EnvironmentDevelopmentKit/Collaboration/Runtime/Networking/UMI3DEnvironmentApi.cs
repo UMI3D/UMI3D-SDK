@@ -280,7 +280,7 @@ namespace umi3d.edk.collaboration
                     var dto = new FileListDto()
                     {
                         files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
-                        baseUrl = System.Uri.EscapeUriString(inetum.unityUtils.Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, rawDirectory))
+                        baseUrl = System.Uri.EscapeUriString(inetum.unityUtils.Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 
                     res.WriteContent(dto.ToBson());

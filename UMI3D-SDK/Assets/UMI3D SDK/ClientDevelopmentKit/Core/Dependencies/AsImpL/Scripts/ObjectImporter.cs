@@ -336,6 +336,11 @@ namespace AsImpL
         private Loader CreateLoader(string absolutePath)
         {
             string ext = Path.GetExtension(absolutePath);
+
+            int index = ext.IndexOf('?');
+            if (index >= 0)
+                ext = ext.Substring(0, index);
+
             if (string.IsNullOrEmpty(ext))
             {
                 Debug.LogError("No extension defined, unable to detect file format");

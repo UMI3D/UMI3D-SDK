@@ -489,10 +489,10 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public async Task<byte[]> GetFile(string url)
+        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
         {
             //UMI3DLogger.Log($"GetFile {url}", scope);
-            return await HttpClient.SendGetPrivate(url);
+            return await HttpClient.SendGetPrivate(url, useParameterInsteadOfHeader);
         }
 
         ///<inheritdoc/>

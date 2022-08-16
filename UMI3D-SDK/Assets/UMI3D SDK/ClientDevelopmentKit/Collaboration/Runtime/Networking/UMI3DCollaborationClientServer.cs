@@ -315,10 +315,10 @@ namespace umi3d.cdk.collaboration
 
 
         ///<inheritdoc/>
-        protected override async Task<byte[]> _GetFile(string url)
+        protected override async Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader)
         {
             UMI3DLogger.Log($"GetFile {url}", scope);
-            return await environmentClient?.GetFile(url);
+            return await environmentClient?.GetFile(url, useParameterInsteadOfHeader);
         }
 
         ///<inheritdoc/>
