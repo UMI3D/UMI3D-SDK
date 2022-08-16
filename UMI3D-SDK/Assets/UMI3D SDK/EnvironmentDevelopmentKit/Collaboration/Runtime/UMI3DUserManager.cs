@@ -370,17 +370,17 @@ namespace umi3d.edk.collaboration
             switch (dto.operation)
             {
                 case UMI3DOperationKeys.UserMicrophoneStatus:
-                    if (users.ContainsKey(dto.id))
+                    if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
                         tr.AddIfNotNull(users[dto.id].microphoneStatus.SetValue(dto.value));
                     break;
 
                 case UMI3DOperationKeys.UserAvatarStatus:
-                    if (users.ContainsKey(dto.id))
+                    if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
                         tr.AddIfNotNull(users[dto.id].avatarStatus.SetValue(dto.value));
                     break;
 
                 case UMI3DOperationKeys.UserAttentionStatus:
-                    if (users.ContainsKey(dto.id))
+                    if (users.ContainsKey(dto.id) && user.Id() == dto.id)
                         tr.AddIfNotNull(users[dto.id].attentionRequired.SetValue(dto.value));
                     break;
 
@@ -415,21 +415,21 @@ namespace umi3d.edk.collaboration
                 case UMI3DOperationKeys.UserMicrophoneStatus:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     value = UMI3DNetworkingHelper.Read<bool>(container);
-                    if (users.ContainsKey(id))
+                    if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
                     break;
 
                 case UMI3DOperationKeys.UserAvatarStatus:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     value = UMI3DNetworkingHelper.Read<bool>(container);
-                    if (users.ContainsKey(id))
+                    if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].avatarStatus.SetValue(value));
                     break;
 
                 case UMI3DOperationKeys.UserAttentionStatus:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     value = UMI3DNetworkingHelper.Read<bool>(container);
-                    if (users.ContainsKey(id))
+                    if (users.ContainsKey(id) && id == user.Id())
                         tr.AddIfNotNull(users[id].attentionRequired.SetValue(value));
                     break;
 
