@@ -54,7 +54,7 @@ namespace umi3d.cdk
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
 
             var fileDto = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants);
-            if (UMI3DResourcesManager.Instance.isUsingResourceServer)
+            if (!UMI3DClientServer.Instance.AuthorizationInHeader)
                 videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
             else
                 videoPlayer.url = fileDto.url;

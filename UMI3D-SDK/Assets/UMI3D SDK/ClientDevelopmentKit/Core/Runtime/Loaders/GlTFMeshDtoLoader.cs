@@ -92,7 +92,7 @@ namespace umi3d.cdk
             {
                 var headers = new HttpHeader[] { };
 
-                if (UMI3DResourcesManager.Instance.isUsingResourceServer && url.StartsWith("http"))
+                if (!UMI3DClientServer.Instance.AuthorizationInHeader && url.StartsWith("http"))
                 {
                     url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(url, authorization);
                 }

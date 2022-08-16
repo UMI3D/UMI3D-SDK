@@ -41,8 +41,6 @@ namespace umi3d.cdk
         #endregion
         #region data
 
-        public bool isUsingResourceServer;
-
         /// <summary>
         /// Discribe a library and its content.
         /// </summary>
@@ -582,7 +580,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public string SetAuthorisationWithParameter(string fileUrl, string authorization)
         {
-            if (UMI3DResourcesManager.HasUrlGotParameters(fileUrl))
+            if (HasUrlGotParameters(fileUrl))
                 fileUrl += "&" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
             else
                 fileUrl += "?" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
@@ -1016,7 +1014,7 @@ namespace umi3d.cdk
                 CacheCollection.Insert(0, new ObjectData(url, null, null, key, filePath));
             }
 
-            UMI3DClientServer.GetFile(url, action, error2, UMI3DResourcesManager.Instance.isUsingResourceServer);
+            UMI3DClientServer.GetFile(url, action, error2, !UMI3DClientServer.Instance.AuthorizationInHeader);
             yield return new WaitUntil(() => { return finished; });
         }
 

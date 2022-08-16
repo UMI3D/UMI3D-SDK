@@ -155,7 +155,7 @@ namespace umi3d.cdk
             if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                if (UMI3DResourcesManager.Instance.isUsingResourceServer && www.url.StartsWith("http"))
+                if (!UMI3DClientServer.Instance.AuthorizationInHeader && www.url.StartsWith("http"))
                 {
                     www.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(www.url, fileAuthorization);
                 }

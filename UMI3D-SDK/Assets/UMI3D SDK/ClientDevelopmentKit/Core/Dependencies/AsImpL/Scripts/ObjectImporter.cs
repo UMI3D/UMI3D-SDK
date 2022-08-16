@@ -339,7 +339,7 @@ namespace AsImpL
 
             int index = ext.IndexOf('?');
             if (index >= 0)
-                ext = ext.Substring(0, index - 1);
+                ext = ext.Substring(0, index);
 
             if (string.IsNullOrEmpty(ext))
             {

@@ -424,7 +424,7 @@ namespace umi3d.cdk.collaboration
                     url += "?" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + HeaderToken;
             }
 
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), useParameterInsteadOfHeader);
+            UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), !useParameterInsteadOfHeader);
             UMI3DLogger.Log($"Received GetPrivate {url}", scope | DebugScope.Connection);
             return uwr?.downloadHandler.data;
         }

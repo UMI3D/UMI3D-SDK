@@ -31,6 +31,12 @@ namespace umi3d.cdk
         /// Environment connected to.
         /// </summary>
         protected virtual ForgeConnectionDto connectionDto { get; }
+
+        /// <summary>
+        /// If true, authorizations must be set in headers.
+        /// </summary>
+        public bool AuthorizationInHeader => connectionDto?.authorizationInHeader ?? false;
+
         /// <summary>
         /// Environment connected to.
         /// </summary>
