@@ -340,6 +340,7 @@ namespace umi3d.cdk
                 this.extension = extension;
                 this.authorization = authorization;
                 a = rx.Match(url);
+                this.fileRelativePath = fileRelativePath;
             }
 
             public ObjectData(string url, string extension, string authorization, ulong entityId, string downloadedPath)
@@ -650,7 +651,7 @@ namespace umi3d.cdk
                         objectData.loadFailCallback.Clear();
                         objectData.state = ObjectData.Estate.NotLoaded;
                     };
-                    StartCoroutine(urlToObjectWithPolicy(sucess2, error2, path, objectData.extension, objectData, null, urlToObject));
+                    StartCoroutine(UrlToObjectWithPolicy(sucess2, error2, path, objectData.extension, objectData, null, urlToObject));
                 };
 
                 Action<Umi3dException> error = (reason) =>
@@ -666,7 +667,7 @@ namespace umi3d.cdk
             }
         }
 
-        private IEnumerator urlToObjectWithPolicy(Action<object> succes, Action<Umi3dException> error, string path, string extension, ObjectData objectData, string bundlePath, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Func<RequestFailedArgument, bool> ShouldTryAgain = null, int tryCount = 0)
+        private IEnumerator UrlToObjectWithPolicy(Action<object> succes, Action<Umi3dException> error, string path, string extension, ObjectData objectData, string bundlePath, Action<string, string, string, Action<object>, Action<Umi3dException>, string> urlToObject, Func<RequestFailedArgument, bool> ShouldTryAgain = null, int tryCount = 0)
         {
             if (ShouldTryAgain == null)
                 ShouldTryAgain = DefaultShouldTryAgain;
@@ -685,7 +686,7 @@ namespace umi3d.cdk
                              ShouldTryAgain
                              )))
                     {
-                        urlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1);
+                        StartCoroutine(UrlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1));
                     }
                     else
                     {
@@ -707,10 +708,7 @@ namespace umi3d.cdk
             Match matchUrl = ObjectData.rx.Match(file.url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                if (file.url == o.url)
-                    return true;
-                else
-                    return o.MatchUrl(matchUrl, file.libraryKey);
+                return o.MatchUrl(matchUrl, file.url, file.libraryKey);
             });
 
             if (objectData == null)
