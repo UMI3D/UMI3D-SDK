@@ -41,10 +41,17 @@ namespace umi3d.cdk
 #if UNITY_ANDROID
             if (!url.Contains("http")) url = "file://" + url;
 #endif
+
+            bool isUsingResourceServer = url.StartsWith("http") && !UMI3DClientServer.Instance.AuthorizationInHeader;
+            if (isUsingResourceServer)
+            {
+                url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(url, authorization);
+            }
+
             var createdObj = new GameObject();
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
-            ImportOptions importOptions = CreateImportOption(authorization);
+            ImportOptions importOptions = CreateImportOption(authorization, isUsingResourceServer);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
                 UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
                     (m) =>
@@ -93,19 +100,20 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="authorization"></param>
         /// <returns></returns>
-        private ImportOptions CreateImportOption(string authorization)
+        private ImportOptions CreateImportOption(string authorization, bool isUsingResourceServer)
         {
-            return new ImportOptions()
+            ImportOptions options = new ImportOptions()
             {
                 localPosition = UMI3DResourcesManager.Instance.transform.position,
                 localEulerAngles = UMI3DResourcesManager.Instance.transform.eulerAngles + rotOffset,
                 localScale = UMI3DResourcesManager.Instance.transform.lossyScale,
-                authorization = authorization,
+                authorization = isUsingResourceServer ? string.Empty : authorization,
                 authorizationName = common.UMI3DNetworkingKeys.Authorization,
                 zUp = false,
                 hideWhileLoading = true,
-
             };
+
+            return options;
         }
 
         private Vector3 rotOffset = new Vector3(0, 180, 0);

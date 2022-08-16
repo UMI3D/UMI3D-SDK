@@ -62,6 +62,7 @@ namespace umi3d.common
         */
         public const string websocketProtocol = "echo-protocol";//"access_token";
         public const string Authorization = "AUTHORIZATION";
+        public const string ResourceServerAuthorization = "umi3dResourceToken";
         public const string bearer = "BEARER";
         public const string contentHeader = "FileName";
 
