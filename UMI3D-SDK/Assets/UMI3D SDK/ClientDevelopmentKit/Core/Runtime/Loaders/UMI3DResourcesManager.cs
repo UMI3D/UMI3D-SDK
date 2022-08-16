@@ -340,6 +340,7 @@ namespace umi3d.cdk
                 this.extension = extension;
                 this.authorization = authorization;
                 a = rx.Match(url);
+                this.fileRelativePath = fileRelativePath;
             }
 
             public ObjectData(string url, string extension, string authorization, ulong entityId, string downloadedPath)

@@ -198,12 +198,13 @@ namespace umi3d.edk.collaboration
                 if (user.status != StatusType.NONE)
                 {
                     lostUsers.Remove(user.Id());
-                    
+                    UMI3DCollaborationServer.Instance.NotifyUnregistered(user);
                     return;
                 }
             }
 
             user.Logout();
+            UMI3DCollaborationServer.Instance.NotifyUnregistered(user);
         }
 
         public void reconnectUser(UMI3DCollaborationUser user)
