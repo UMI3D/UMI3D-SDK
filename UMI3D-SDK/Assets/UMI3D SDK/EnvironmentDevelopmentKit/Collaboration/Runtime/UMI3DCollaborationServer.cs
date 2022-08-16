@@ -227,6 +227,7 @@ namespace umi3d.edk.collaboration
             user.SetStatus(StatusType.REGISTERED);
             if (!reconnection)
             {
+                WorldController.NotifyUserRegister(user);
                 UMI3DLogger.Log($"User Registered", scope);
                 OnUserRegistered.Invoke(user);
             }
@@ -427,6 +428,7 @@ namespace umi3d.edk.collaboration
         private void _Logout(UMI3DCollaborationUser user)
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
+            WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
 

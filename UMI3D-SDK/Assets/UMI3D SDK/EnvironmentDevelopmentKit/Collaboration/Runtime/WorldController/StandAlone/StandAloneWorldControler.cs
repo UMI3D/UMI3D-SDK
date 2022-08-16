@@ -127,5 +127,15 @@ namespace umi3d.worldController
         {
             return Task.CompletedTask;
         }
+
+        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
+        {
+            return Task.CompletedTask;
+        }
+
+        public override Task NotifyUserRegister(UMI3DCollaborationUser user)
+        {
+            return Task.CompletedTask;
+        }
     }
 }
