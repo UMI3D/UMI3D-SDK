@@ -47,7 +47,7 @@ namespace umi3d.cdk.collaboration
         {
             var userId = user.id;
 
-            if (PendingMumbleAudioPlayer.ContainsKey(user.audioLogin))
+            if (!string.IsNullOrEmpty(user.audioLogin) && PendingMumbleAudioPlayer.ContainsKey(user.audioLogin))
             {
                 if (MumbleAudioPlayer.ContainsKey(userId))
                     MumbleAudioPlayer[userId].Reset();
