@@ -18,6 +18,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Direct instanciation of <see cref="AbstractTool"/>. Can belong to a <see cref="Toolbox"/>.
+    /// </summary>
     public class GlobalTool : AbstractTool
     {
         /// <summary>

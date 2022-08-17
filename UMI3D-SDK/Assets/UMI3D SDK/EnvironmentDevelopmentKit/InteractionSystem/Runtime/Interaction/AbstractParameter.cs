@@ -20,6 +20,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Information that are editable from the client side and are returned to the environment.
+    /// </summary>
     public abstract class AbstractParameter : AbstractInteraction
     {
         /// <summary>

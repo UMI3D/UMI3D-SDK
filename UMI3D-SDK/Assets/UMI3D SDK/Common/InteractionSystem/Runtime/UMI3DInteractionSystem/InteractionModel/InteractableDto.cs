@@ -16,7 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-
+    /// <summary>
+    /// DTO describing an Interactable object, a specialized tool for game objects.
+    /// </summary>
     [System.Serializable]
     public class InteractableDto : AbstractToolDto, IEntity
     {

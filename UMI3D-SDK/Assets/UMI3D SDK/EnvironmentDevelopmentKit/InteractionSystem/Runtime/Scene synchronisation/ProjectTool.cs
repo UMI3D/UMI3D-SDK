@@ -19,7 +19,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-
+    /// <summary>
+    /// UMI3D <see cref="Operation"/> forcing the projection of a tool on clients.
+    /// </summary>
     public class ProjectTool : Operation
     {
         public AbstractTool tool;

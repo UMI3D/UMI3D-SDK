@@ -31,6 +31,9 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public AbstractMenu Menu;
 
+        /// <summary>
+        /// Controller the input is related to.
+        /// </summary>
         [SerializeField]
         public AbstractController controller { get; protected set; }
 

@@ -24,6 +24,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Tool attached to an object
+    /// </summary>
     public class UMI3DInteractable : AbstractTool, UMI3DLoadableEntity
     {
         [SerializeField, EditorReadOnly]

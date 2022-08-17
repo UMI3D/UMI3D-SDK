@@ -19,6 +19,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Editable <see cref="string"/> parameter.
+    /// </summary>
     public class StringParameter : AbstractParameter
     {
         /// <summary>

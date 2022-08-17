@@ -20,6 +20,10 @@ using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Interaction focused on Hold/Project/Release event from the UMI3D workflow. <br/>
+    /// See <see cref="ProjectTool"/> and <see cref="ReleaseTool"/>.
+    /// </summary>
     public class UMI3DEvent : AbstractInteraction
     {
         public bool Hold = false;

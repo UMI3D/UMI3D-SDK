@@ -21,6 +21,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Default implementation of <see cref="AbstractInteractionMapper"/>.
+    /// </summary>
     public class InteractionMapper : AbstractInteractionMapper
     {
         public static new InteractionMapper Instance => AbstractInteractionMapper.Instance as InteractionMapper;

@@ -43,6 +43,9 @@ namespace umi3d.cdk.interaction
         /// </summary>
         protected Dictionary<ulong, AbstractUMI3DInput[]> associatedInputs = new Dictionary<ulong, AbstractUMI3DInput[]>();
 
+        /// <summary>
+        /// Controller projection memory.
+        /// </summary>
         public ProjectionMemory projectionMemory;
 
         #endregion
@@ -199,6 +202,10 @@ namespace umi3d.cdk.interaction
             Project(tool, releasable, reason, GetCurrentHoveredId());
         }
 
+        /// <summary>
+        /// Get the ID of the currently pointed object.
+        /// </summary>
+        /// <returns></returns>
         protected abstract ulong GetCurrentHoveredId();
 
 

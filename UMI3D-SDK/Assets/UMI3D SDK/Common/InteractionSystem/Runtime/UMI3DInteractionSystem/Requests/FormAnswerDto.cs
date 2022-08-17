@@ -18,6 +18,9 @@ using System.Collections.Generic;
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing the answer to a form. All answers are available as a list of <see cref="ParameterSettingRequestDto"/>.
+    /// </summary>
     public class FormAnswerDto : InteractionRequestDto
     {
         public List<ParameterSettingRequestDto> answers;

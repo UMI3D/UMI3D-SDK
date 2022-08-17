@@ -18,6 +18,9 @@ using System.Collections.Generic;
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO associated with toolboxes that are lists of tools.
+    /// </summary>
     public class ToolboxDto : GlobalToolDto, IEntity
     {
         public List<GlobalToolDto> tools;

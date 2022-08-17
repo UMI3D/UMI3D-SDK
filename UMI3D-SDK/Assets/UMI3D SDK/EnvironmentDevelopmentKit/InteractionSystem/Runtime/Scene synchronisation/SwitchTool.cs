@@ -20,6 +20,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// UMI3D <see cref="Operation"/> forcing the release of the current projected tool and the projection of another tool on clients.
+    /// </summary>
     public class SwitchTool : ProjectTool
     {
         public AbstractTool toolToReplace;

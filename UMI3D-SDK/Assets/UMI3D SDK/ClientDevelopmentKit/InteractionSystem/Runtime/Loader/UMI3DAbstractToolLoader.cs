@@ -21,9 +21,17 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Helper class that manages the loading of <see cref="AbstractTool"/> entities.
+    /// </summary>
     public static class UMI3DAbstractToolLoader
     {
-
+        /// <summary>
+        /// Set the value of a <see cref="UMI3DEntityInstance"/> based on a received <see cref="SetEntityPropertyDto"/>.
+        /// </summary>
+        /// <param name="entity">Entity to update</param>
+        /// <param name="property">Operation dto</param>
+        /// <returns></returns>
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var dto = (entity.dto as AbstractToolDto);
@@ -54,6 +62,15 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        /// <summary>
+        /// Set the value of a <see cref="UMI3DEntityInstance"/> based on a received <see cref="ByteContainer"/>. 
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="entity">Entity to update</param>
+        /// <param name="operationId"></param>
+        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
+        /// <param name="container">Received byte container</param>
+        /// <returns>True if property setting was successful</returns>
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var dto = (entity.dto as AbstractToolDto);
@@ -84,6 +101,14 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        /// <summary>
+        /// Reads the value of an unknown <see cref="object"/> based on a received <see cref="ByteContainer"/> and updates it.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="value">Unknown object</param>
+        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
+        /// <param name="container">Received byte container</param>
+        /// <returns>True if property setting was successful</returns>
         public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
@@ -111,6 +136,17 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+
+        /// <summary>
+        /// Set the value of an <see cref="AbstractTool"/> based on a received <see cref="ByteContainer"/> and update it.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="dto">Tool dto</param>
+        /// <param name="tool">Tool</param>
+        /// <param name="operationId">Operation id in <see cref="UMI3DOperationKeys"/></param>
+        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
+        /// <param name="container">Received byte container</param>
+        /// <returns>True if property setting was successful</returns>
         private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
@@ -153,6 +189,13 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        /// <summary>
+        /// Set the value of an <see cref="AbstractTool"/> based on a received <see cref="SetEntityPropertyDto"/> and update it.
+        /// </summary>
+        /// <param name="dto">Tool dto</param>
+        /// <param name="tool">Tool</param>
+        /// <param name="property">Received dto</param>
+        /// <returns>True if property setting was successful</returns>
         private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, SetEntityPropertyDto property)
         {
             switch (property)
@@ -178,13 +221,27 @@ namespace umi3d.cdk.interaction
             return true;
         }
 
+        /// <summary>
+        /// Read a received <see cref="ByteContainer"/>
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="value">Object</param>
+        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
+        /// <param name="container">Received container</param>
+        /// <returns>Always true</returns>
         private static bool ReadInteractions(ref object value, uint propertyKey, ByteContainer container)
         {
             value = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(container);
             return true;
         }
 
-
+        /// <summary>
+        /// Read an <see cref="AbstractInteractionDto"/> from a received <see cref="ByteContainer"/>.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="container">Byte container</param>
+        /// <param name="readable">True if the byte container has been correctly read.</param>
+        /// <returns></returns>
         public static AbstractInteractionDto ReadAbstractInteractionDto(ByteContainer container, out bool readable)
         {
             AbstractInteractionDto interaction;
@@ -276,6 +333,13 @@ namespace umi3d.cdk.interaction
             return interaction;
         }
 
+        /// <summary>
+        /// Reads an <see cref="AbstractInteractionDto"/> from a received <see cref="ByteContainer"/> and updates it.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        ///  <param name="interactionDto">interaction dto to update.</param>
+        /// <param name="container">Byte container</param>
+        /// <returns></returns>
         private static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto, ByteContainer container)
         {
             interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);

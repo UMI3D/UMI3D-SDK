@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Describe a event interaction block
+    /// DTO describing an event interaction block
     /// </summary>
     [System.Serializable]
     public class EventDto : AbstractInteractionDto

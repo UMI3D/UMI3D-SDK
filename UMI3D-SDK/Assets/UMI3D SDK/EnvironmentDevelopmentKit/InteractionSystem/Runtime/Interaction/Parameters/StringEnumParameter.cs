@@ -20,6 +20,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Editable <see cref="enum"/> parameter using values as <see cref="string"/>.
+    /// </summary>
     public class StringEnumParameter : AbstractParameter
     {
         /// <summary>

@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.cdk.menu.view
 {
+    /// <summary>
+    /// Abstract base class for <see cref="ButtonInputMenuItem"/> displayers.
+    /// </summary>
     public abstract class AbstractButtonInputDisplayer : AbstractInputMenuItemDisplayer<bool>
     {
         /// <summary>

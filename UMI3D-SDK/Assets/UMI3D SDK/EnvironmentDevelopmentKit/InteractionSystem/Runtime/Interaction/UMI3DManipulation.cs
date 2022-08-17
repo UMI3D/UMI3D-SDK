@@ -22,6 +22,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Interaction related to the displacement of an object using translation and/or rotations.
+    /// </summary>
     public class UMI3DManipulation : AbstractInteraction
     {
         [System.Serializable]

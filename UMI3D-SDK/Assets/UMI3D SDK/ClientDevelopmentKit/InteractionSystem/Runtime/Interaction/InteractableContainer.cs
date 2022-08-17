@@ -19,10 +19,19 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Game object containing UMI3D <see cref="umi3d.cdk.interaction.Interactable"/>.
+    /// </summary>
     public class InteractableContainer : MonoBehaviour
     {
+        /// <summary>
+        /// List of all <see cref="umi3d.cdk.interaction.Interactable"/> containers.
+        /// </summary>
         public static List<InteractableContainer> containers = new List<InteractableContainer>();
 
+        /// <summary>
+        /// Interatable associated with the object.
+        /// </summary>
         public Interactable Interactable;
 
         private void Awake()

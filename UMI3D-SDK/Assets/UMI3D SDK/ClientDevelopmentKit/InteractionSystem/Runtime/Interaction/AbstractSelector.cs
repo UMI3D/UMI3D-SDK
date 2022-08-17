@@ -18,6 +18,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Abstract base class for selectors, classes that manages the selection of objects.
+    /// </summary>
     public abstract class AbstractSelector : MonoBehaviour
     {
         public List<int> deactivationRequesters = new List<int>();

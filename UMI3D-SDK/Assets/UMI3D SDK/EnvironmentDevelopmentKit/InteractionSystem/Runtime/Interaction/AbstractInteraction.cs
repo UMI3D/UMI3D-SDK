@@ -26,7 +26,7 @@ using UnityEngine.Events;
 namespace umi3d.edk.interaction
 {
     /// <summary>
-    /// Abstract UMI3D interaction.
+    /// Abstract UMI3D interaction. Base class for all interactions.
     /// </summary>
     public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IBytable
     {
@@ -38,7 +38,7 @@ namespace umi3d.edk.interaction
         public class InteractionEvent : UnityEvent<InteractionEventContent> { }
 
         /// <summary>
-        /// InteractionEvent Content. 
+        /// <see cref="InteractionEvent"/> content indicating who is interacting with which interaction.
         /// </summary>
         [Serializable]
         public class InteractionEventContent
@@ -115,6 +115,9 @@ namespace umi3d.edk.interaction
             return interactionId;
         }
 
+        /// <summary>
+        /// Register the interaction in the <see cref="UMI3DEnvironment"/> if necessary.
+        /// </summary>
         private void Register()
         {
             if (interactionId == 0 && UMI3DEnvironment.Exists)
@@ -207,8 +210,17 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
         }
 
+        /// <summary>
+        /// Retrieve the key associated to the interaction from <see cref="UMI3DInteractionKeys"/>.
+        /// </summary>
+        /// <returns></returns>
         protected abstract byte GetInteractionKey();
 
+        /// <summary>
+        /// Convert interaction to a <see cref="Bytable"/> container for a given user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public virtual Bytable ToByte(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(GetInteractionKey())

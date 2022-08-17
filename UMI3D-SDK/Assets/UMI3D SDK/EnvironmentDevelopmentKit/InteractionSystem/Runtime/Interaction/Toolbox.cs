@@ -21,6 +21,9 @@ using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// <see cref="GlobalTool"/> that contains a list of <see cref="GlobalTool"/>.
+    /// </summary>
     public class Toolbox : GlobalTool, UMI3DLoadableEntity
     {
         [SerializeField, EditorReadOnly]

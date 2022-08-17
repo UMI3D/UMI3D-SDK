@@ -17,11 +17,10 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Dto for hover stete update request from browser.
+    /// Dto for hover state update request from browser.
     /// </summary>
     public class HoverStateChangedDto : HoveredDto
     {
-
         /// <summary>
         /// Hover state.
         /// </summary>

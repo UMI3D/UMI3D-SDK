@@ -16,12 +16,20 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing a release of a tool on a browser.
+    /// </summary>
     [System.Serializable]
     public class ToolReleasedDto : AbstractBrowserRequestDto
     {
-
+        /// <summary>
+        /// Released tool id
+        /// </summary>
         public ulong toolId;
 
+        /// <summary>
+        /// Bone type the tool is distached from.
+        /// </summary>
         public uint boneType;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.ToolReleased; }

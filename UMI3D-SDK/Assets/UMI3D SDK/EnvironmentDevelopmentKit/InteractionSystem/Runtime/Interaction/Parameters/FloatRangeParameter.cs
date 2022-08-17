@@ -20,6 +20,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Editable <see cref="float"/> range parameter.
+    /// </summary>
     public class FloatRangeParameter : AbstractParameter
     {
         /// <summary>

@@ -19,13 +19,25 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// List of <see cref="GlobalTool"/> as a <see cref="GlobalTool"/>.
+    /// </summary>
     public class Toolbox : GlobalTool
     {
+        /// <summary>
+        /// Get all instanciated toolboxes
+        /// </summary>
+        /// <returns></returns>
         public static List<Toolbox> GetToolboxes()
         {
             return instances.Values.ToList().Where(tool => tool is Toolbox).ToList().ConvertAll(t => t as Toolbox);
         }
 
+        /// <summary>
+        /// Get a toolbox by id.
+        /// </summary>
+        /// <param name="id">Toolbox id</param>
+        /// <returns></returns>
         public static Toolbox GetToolbox(ulong id)
         {
             return instances[id] as Toolbox;
@@ -33,6 +45,9 @@ namespace umi3d.cdk.interaction
 
         public Toolbox(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto, parent) { }
 
+        /// <summary>
+        /// Tools within the toolbox.
+        /// </summary>
         public List<GlobalToolDto> tools { get => (abstractDto as ToolboxDto).tools; set => (abstractDto as ToolboxDto).tools = value; }
 
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolboxDto; }

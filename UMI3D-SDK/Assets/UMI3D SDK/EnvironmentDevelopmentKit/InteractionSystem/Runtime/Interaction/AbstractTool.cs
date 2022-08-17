@@ -25,15 +25,24 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// List of interactions that could be projected on a client controller.
+    /// </summary>
     public abstract class AbstractTool : MonoBehaviour, UMI3DMediaEntity
     {
         #region properties
 
+        /// <summary>
+        /// Serializable object that displays the tool properties.
+        /// </summary>
         public InteractionDisplay Display = new InteractionDisplay()
         {
             name = "new tool"
         };
 
+        /// <summary>
+        /// Interactions related to the tool.
+        /// </summary>
         [SerializeField, EditorReadOnly]
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
         public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }

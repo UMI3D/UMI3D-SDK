@@ -16,9 +16,16 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// Abstract base template for parameters DTO.
+    /// </summary>
+    /// <typeparam name="V"></typeparam>
     [System.Serializable]
     public abstract class AbstractParameterDto<V> : AbstractParameterDto
     {
+        /// <summary>
+        /// Parameter value.
+        /// </summary>
         public V value;
 
         public override object GetValue()
@@ -35,10 +42,16 @@ namespace umi3d.common.interaction
     [System.Serializable]
     public abstract class AbstractParameterDto : AbstractInteractionDto
     {
-        //State if a parameter is private or not. For password or other.  
+        /// <summary>
+        /// State if a parameter is private or not. For password or other.  
+        /// </summary>
         public bool privateParameter;
-        public abstract object GetValue();
 
+        /// <summary>
+        /// Retrieve the parameter value.
+        /// </summary>
+        /// <returns>Parameter value to retrieve</returns>
+        public abstract object GetValue();
     }
 
 }

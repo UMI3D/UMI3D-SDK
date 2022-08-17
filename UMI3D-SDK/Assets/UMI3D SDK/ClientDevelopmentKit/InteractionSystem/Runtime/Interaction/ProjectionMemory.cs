@@ -21,6 +21,10 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Saves and manages the links between projected tools and their associated inputs. 
+    /// This projection is based on a tree constituted of <see cref="ProjectionTreeNode"/>.
+    /// </summary>
     public class ProjectionMemory : MonoBehaviour
     {
         protected string id_ = "";
@@ -757,6 +761,9 @@ namespace umi3d.cdk.interaction
             memoryRoot.LoadFromFile(path);
         }
 
+        /// <summary>
+        /// Exception thrown when not associated input has been found for an interaction.
+        /// </summary>
         public class NoInputFoundException : System.Exception
         {
             public NoInputFoundException() { }
@@ -767,7 +774,9 @@ namespace umi3d.cdk.interaction
 
 
 
-
+    /// <summary>
+    /// Projection tree node for projection memory.
+    /// </summary>
     [System.Serializable]
     public class ProjectionTreeNode
     {
@@ -797,7 +806,9 @@ namespace umi3d.cdk.interaction
             }
         }
 
-
+        /// <summary>
+        /// Node's children IDs.
+        /// </summary>
         [SerializeField]
         protected List<ulong> childrensId = new List<ulong>();
 
@@ -807,6 +818,9 @@ namespace umi3d.cdk.interaction
         [SerializeField]
         public ulong id;
 
+        /// <summary>
+        /// Tree's id the node belongs to.
+        /// </summary>
         public string treeId { get; protected set; }
 
         /// <summary>
@@ -880,6 +894,9 @@ namespace umi3d.cdk.interaction
 
     }
 
+    /// <summary>
+    /// Projection tree node associated to an <see cref="EventDto"/>.
+    /// </summary>
     [System.Serializable]
     public class EventNode : ProjectionTreeNode
     {
@@ -889,6 +906,9 @@ namespace umi3d.cdk.interaction
         public EventNode(string treeId) : base(treeId) { }
     }
 
+    /// <summary>
+    /// Projection tree node associated to a <see cref="ManipulationDto"/>.
+    /// </summary>
     [System.Serializable]
     public class ManipulationNode : ProjectionTreeNode
     {
@@ -901,7 +921,9 @@ namespace umi3d.cdk.interaction
         public ManipulationNode(string treeId) : base(treeId) { }
     }
 
-
+    /// <summary>
+    /// Projection tree node associated to a <see cref="FormDto"/>.
+    /// </summary>
     [System.Serializable]
     public class FormNode : ProjectionTreeNode
     {
@@ -911,6 +933,9 @@ namespace umi3d.cdk.interaction
         public FormNode(string treeId) : base(treeId) { }
     }
 
+    /// <summary>
+    /// Projection tree node associated to a <see cref="LinkDto"/>.
+    /// </summary>
     [System.Serializable]
     public class LinkNode : ProjectionTreeNode
     {
@@ -920,6 +945,9 @@ namespace umi3d.cdk.interaction
         public LinkNode(string treeId) : base(treeId) { }
     }
 
+    /// <summary>
+    /// Projection tree node associated to an <see cref="AbstractParameterDto"/>.
+    /// </summary>
     [System.Serializable]
     public class ParameterNode : ProjectionTreeNode
     {

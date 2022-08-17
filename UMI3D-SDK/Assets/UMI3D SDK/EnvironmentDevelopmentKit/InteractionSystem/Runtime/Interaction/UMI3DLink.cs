@@ -19,9 +19,14 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-
+    /// <summary>
+    /// Interaction related to a web link.
+    /// </summary>
     public class UMI3DLink : AbstractInteraction
     {
+        /// <summary>
+        /// URL of the link.
+        /// </summary>
         public string url;
 
 

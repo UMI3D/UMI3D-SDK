@@ -21,6 +21,9 @@ using UnityEditor;
 
 namespace umi3d.edk.editor
 {
+    /// <summary>
+    /// <see cref="UMI3DInteractable"/> custom editor.
+    /// </summary>
     [CustomEditor(typeof(UMI3DInteractable), true)]
     public class UMI3DInteractableEditor : UMI3DAbstractToolEditor
     {

@@ -23,6 +23,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// File parameter that could be uploaded to the environment server.
+    /// </summary>
     public class UploadFileParameter : AbstractParameter
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;

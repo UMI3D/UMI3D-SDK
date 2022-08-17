@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// 
+    /// DTO describing forms.
     /// </summary>
     [System.Serializable]
     public class FormDto : AbstractInteractionDto

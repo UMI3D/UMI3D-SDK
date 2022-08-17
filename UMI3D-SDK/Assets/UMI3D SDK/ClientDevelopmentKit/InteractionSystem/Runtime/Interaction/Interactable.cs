@@ -21,13 +21,18 @@ using UnityEngine.Events;
 namespace umi3d.cdk.interaction
 {
     /// <summary>
-    /// Client's side interactable object.
+    /// Client's side interactable object, a specific tool related to a game object.
     /// </summary>
     /// <see cref="InteractableDto"/>
     public class Interactable : AbstractTool
     {
         public class Event : UnityEvent<Interactable> { }
 
+        /// <summary>
+        /// Get <see cref="InteractableDto"/> from the DTO id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static InteractableDto IdToDto(ulong id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Interactable).dto; }
 
         /// <summary>
@@ -35,6 +40,9 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public InteractableDto dto;
 
+        /// <summary>
+        /// Should the sub-objects hoverring be notified ?
+        /// </summary>
         public bool NotifySubObject => dto?.notifySubObject ?? false;
 
         /// <summary>

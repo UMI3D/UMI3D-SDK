@@ -17,7 +17,10 @@ using System.Collections.Generic;
 
 namespace umi3d.common.interaction
 {
-
+    /// <summary>
+    /// Base emplate for enum DTO.
+    /// </summary>
+    /// <typeparam name="T">Enum type</typeparam>
     public class EnumParameterDto<T> : AbstractParameterDto<T>
     {
         public List<T> possibleValues = null;

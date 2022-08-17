@@ -16,13 +16,12 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    [System.Serializable]
     /// <summary>
-    /// An abstract class any interaction request have to be derivated from.
+    /// An abstract DTO any interaction request from browsers have to be derivated from.
     /// </summary>
+    [System.Serializable]
     public abstract class InteractionRequestDto : AbstractBrowserRequestDto
     {
-
         /// <summary>
         /// Id of the interactable or tool (in the case of an interaction related to hoverring).
         /// </summary>

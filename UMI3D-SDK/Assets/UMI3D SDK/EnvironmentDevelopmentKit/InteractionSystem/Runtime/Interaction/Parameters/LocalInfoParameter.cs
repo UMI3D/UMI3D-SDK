@@ -21,6 +21,9 @@ using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Parameter related to the access to cookies data on the clients
+    /// </summary>
     public class LocalInfoParameter : AbstractParameter
     {
         public static Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue> userResponses { get; private set; } = new Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue>();

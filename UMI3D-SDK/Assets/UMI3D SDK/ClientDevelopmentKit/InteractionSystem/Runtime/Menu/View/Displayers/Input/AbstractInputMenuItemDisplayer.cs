@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for input menu items display.
+    /// Base class for <see cref="AbstractMediaMenuItemDisplayer"/> display.
     /// </summary>
     public abstract class AbstractInputMenuItemDisplayer<T> : AbstractDisplayer
     {

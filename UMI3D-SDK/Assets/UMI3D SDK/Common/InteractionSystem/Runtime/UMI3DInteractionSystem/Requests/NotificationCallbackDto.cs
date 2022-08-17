@@ -16,10 +16,19 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing the a browser answer to a notification.
+    /// </summary>
     public class NotificationCallbackDto : AbstractBrowserRequestDto
     {
+        /// <summary>
+        /// True if the browser sent a positive answser to the notification request.
+        /// </summary>
         public bool callback;
 
+        /// <summary>
+        /// Notification id.
+        /// </summary>
         public ulong id;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.NotificationCallback; }

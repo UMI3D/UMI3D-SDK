@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing a web link.
+    /// </summary>
     public class LinkDto : AbstractInteractionDto
     {
 

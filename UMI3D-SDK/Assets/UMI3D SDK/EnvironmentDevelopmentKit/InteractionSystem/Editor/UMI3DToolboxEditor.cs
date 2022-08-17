@@ -24,6 +24,9 @@ using UnityEngine;
 
 namespace umi3d.edk.editor
 {
+    /// <summary>
+    /// <see cref="Toolbox"/> custom editor.
+    /// </summary>
     [CustomEditor(typeof(Toolbox), true)]
     public class UMI3DToolboxEditor : UMI3DAbstractToolEditor
     {
