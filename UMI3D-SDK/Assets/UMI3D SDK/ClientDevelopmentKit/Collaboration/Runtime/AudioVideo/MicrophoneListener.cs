@@ -43,61 +43,98 @@ namespace umi3d.cdk.collaboration
     {
         #region Mumble
         #region public field
+
+        static public MicrophoneEvent OnSaturated = new MicrophoneEvent();
+
         // Basic mumble audio player
-        public GameObject MyMumbleAudioPlayerPrefab;
+        public GameObject myMumbleAudioPlayerPrefab;
         // Mumble audio player that also receives position commands
-        public GameObject MyMumbleAudioPlayerPositionedPrefab;
+        public GameObject myMumbleAudioPlayerPositionedPrefab;
 
-        bool micIsOn => MyMumbleMic?.isRecording ?? false;
+        bool micIsOn => mumbleMic?.isRecording ?? false;
 
-        public bool UseLocalLoopback
+        public bool useLocalLoopback
         {
-            get => DebuggingVariables?.UseLocalLoopback ?? false;
-            set { if (DebuggingVariables != null) DebuggingVariables.UseLocalLoopback = value; }
+            get => debuggingVariables?.UseLocalLoopback ?? false;
+            set { if (debuggingVariables != null) debuggingVariables.UseLocalLoopback = value; }
         }
 
-        public static bool IsMute
+        public static bool isMute
         {
             get { return Exists ? !Instance.useMumble || muted : true; }
 
             set { muted = value; if (Exists) Instance.handleMute(); }
         }
 
-        public float MinAmplitude
+        public float minAmplitudeToSend
         {
-            get => MyMumbleMic?.MinAmplitude ?? 0; set
+            get => mumbleMic?.MinAmplitude ?? 0; set
             {
-                if (MyMumbleMic != null && value >= 0f && value <= 1f)
-                    MyMumbleMic.MinAmplitude = value;
+                if (mumbleMic != null && value >= 0f && value <= 1f)
+                    mumbleMic.MinAmplitude = value;
             }
         }
-        public float VoiceHoldSeconds
+        public float voiceStopingDelaySeconds
         {
-            get => MyMumbleMic?.VoiceHoldSeconds ?? 0; set
+            get => mumbleMic?.VoiceHoldSeconds ?? 0; set
             {
-                if (MyMumbleMic != null && value >= 0f)
-                    MyMumbleMic.VoiceHoldSeconds = value;
+                if (mumbleMic != null && value >= 0f)
+                    mumbleMic.VoiceHoldSeconds = value;
             }
         }
-        public KeyCode PushToTalkKeycode
+        public KeyCode pushToTalkKeycode
         {
-            get => MyMumbleMic?.PushToTalkKeycode ?? KeyCode.M; set
+            get => mumbleMic?.PushToTalkKeycode ?? KeyCode.M; set
             {
-                if (MyMumbleMic != null)
-                    MyMumbleMic.PushToTalkKeycode = value;
+                if (mumbleMic != null)
+                    mumbleMic.PushToTalkKeycode = value;
             }
         }
+
+        public bool Debug
+        {
+            get => _debug;
+            set
+            {
+                _debug = value;
+                rms = 0;
+                db = 0;
+                saturated = false;
+            }
+        }
+
+        public bool saturated
+        {
+            get => _saturated;
+            private set
+            {
+                if (_saturated != value)
+                {
+                    _saturated = value;
+                    OnSaturated.Invoke(value);
+                }
+            }
+        }
+        public float rms { get; private set; }
+        public float db { get; private set; }
 
         #endregion
         #region private field
         MumbleClient mumbleClient;
-        MumbleMicrophone MyMumbleMic;
-        DebugValues DebuggingVariables;
+        MumbleMicrophone mumbleMic;
+        DebugValues debuggingVariables;
 
         const bool connectAsyncronously = true;
         const bool sendPosition = false;
 
         static bool muted;
+
+        /// <summary>
+        ///  RMS value for 0 dB
+        /// </summary>
+        private const float refValue = 1f;
+        bool _saturated = false;
+        bool _debug = false;
 
         string hostName = "1.2.3.4";
         int port = 64738;
@@ -114,16 +151,18 @@ namespace umi3d.cdk.collaboration
         #region Init
         protected void Start()
         {
-            MyMumbleMic = gameObject.GetOrAddComponent<MumbleMicrophone>();
+            mumbleMic = gameObject.GetOrAddComponent<MumbleMicrophone>();
             gameObject.GetOrAddComponent<EventProcessor>();
 
-            DebuggingVariables = new DebugValues()
+            debuggingVariables = new DebugValues()
             {
                 EnableEditorIOGraph = false,
                 UseLocalLoopback = false,
                 UseRandomUsername = false,
                 UseSyntheticSource = false
             };
+
+            mumbleMic.OnMicData += DebugSample;
 
             QuittingManager.OnApplicationIsQuitting.AddListener(_OnApplicationQuit);
 
@@ -132,7 +171,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
 
-            PushToTalkKeycode = KeyCode.M;
+            pushToTalkKeycode = KeyCode.M;
         }
 
         void _OnApplicationQuit()
@@ -153,10 +192,11 @@ namespace umi3d.cdk.collaboration
 
         public async void StopMicrophone()
         {
+            UnityEngine.Debug.Log("Stop Microphone");
             if (await IsPLaying() && mumbleClient != null)
             {
-                MyMumbleMic.OnMicDisconnect -= OnMicDisconnected;
-                MyMumbleMic.StopSendingAudio();
+                mumbleMic.OnMicDisconnect -= OnMicDisconnected;
+                mumbleMic.StopSendingAudio();
                 mumbleClient.Close();
             }
             playing = false;
@@ -164,7 +204,7 @@ namespace umi3d.cdk.collaboration
 
         private void OnMicDisconnected()
         {
-            string disconnectedMicName = MyMumbleMic.GetCurrentMicName();
+            string disconnectedMicName = mumbleMic.GetCurrentMicName();
             StartCoroutine(ExampleMicReconnect(disconnectedMicName));
         }
 
@@ -172,17 +212,17 @@ namespace umi3d.cdk.collaboration
         public async void ToggleSendingSound(bool? on = null)
         {
             if (on == null)
-                on = !MyMumbleMic.isRecording;
+                on = !mumbleMic.isRecording;
 
-            if (await IsPLaying() && MyMumbleMic != null && GetCurrentMicrophoneMode() == MicrophoneMode.MethodBased)
+            if (await IsPLaying() && mumbleMic != null && GetCurrentMicrophoneMode() == MicrophoneMode.MethodBased)
             {
-                if (on == MyMumbleMic.isRecording)
+                if (on == mumbleMic.isRecording)
                     return;
 
-                if (MyMumbleMic.isRecording)
-                    MyMumbleMic.StopSendingAudio();
+                if (mumbleMic.isRecording)
+                    mumbleMic.StopSendingAudio();
                 else
-                    MyMumbleMic.StartSendingAudio();
+                    mumbleMic.StartSendingAudio();
             }
         }
 
@@ -190,22 +230,22 @@ namespace umi3d.cdk.collaboration
 
         private async Task _StartMicrophone()
         {
-            Debug.LogError($"Start {!useMumble}");
+            UnityEngine.Debug.LogError($"Start {!useMumble}");
             if (!useMumble) return;
 
             if (hostName == "1.2.3.4")
             {
-                Debug.LogError("Please set the mumble host name to your mumble server");
+                UnityEngine.Debug.LogError("Please set the mumble host name to your mumble server");
                 return;
             }
 
             if (UMI3DCollaborationEnvironmentLoader.Exists)
             {
-                Debug.LogError($"Exist");
+                UnityEngine.Debug.LogError($"Exist");
                 var user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
                 if (user != null)
                 {
-                    Debug.LogError($"user {username} {password} {hostName} {port} {channelToJoin}");
+                    UnityEngine.Debug.LogError($"user {username} {password} {hostName} {port} {channelToJoin}");
                     username = user.audioLogin;
                     password = user.audioPassword;
                     SetMumbleUrl(user.audioServer);
@@ -220,7 +260,7 @@ namespace umi3d.cdk.collaboration
                     int posLength = sendPosition ? 3 * sizeof(float) : 0;
                     mumbleClient = new MumbleClient(hostName, port, CreateMumbleAudioPlayerFromPrefab,
                         DestroyMumbleAudioPlayer, OnOtherUserStateChange, connectAsyncronously,
-                        SpeakerCreationMode.ALL, DebuggingVariables, posLength);
+                        SpeakerCreationMode.ALL, debuggingVariables, posLength);
 
                     if (connectAsyncronously)
                         while (!mumbleClient.ReadyToConnect)
@@ -231,20 +271,20 @@ namespace umi3d.cdk.collaboration
                     if (connectAsyncronously)
                         await UMI3DAsyncManager.Yield();
 
-                    if (MyMumbleMic != null)
+                    if (mumbleMic != null)
                     {
-                        MyMumbleMic.SendAudioOnStart = false;
-                        mumbleClient.AddMumbleMic(MyMumbleMic);
-                        mumbleClient.SetSelfMute(IsMute);
+                        mumbleMic.SendAudioOnStart = false;
+                        mumbleClient.AddMumbleMic(mumbleMic);
+                        mumbleClient.SetSelfMute(isMute);
                         if (sendPosition)
-                            MyMumbleMic.SetPositionalDataFunction(WritePositionalData);
-                        MyMumbleMic.OnMicDisconnect += OnMicDisconnected;
+                            mumbleMic.SetPositionalDataFunction(WritePositionalData);
+                        mumbleMic.OnMicDisconnect += OnMicDisconnected;
 
                         await JoinChannel();
 
-                        if (MyMumbleMic.VoiceSendingType == MumbleMicrophone.MicType.AlwaysSend
-                                || MyMumbleMic.VoiceSendingType == MumbleMicrophone.MicType.Amplitude)
-                            MyMumbleMic.StartSendingAudio();
+                        if (mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.AlwaysSend
+                                || mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.Amplitude)
+                            mumbleMic.StartSendingAudio();
 
                         playing = true;
 
@@ -252,13 +292,13 @@ namespace umi3d.cdk.collaboration
                     }
                 }
             }
-            Debug.LogError($"playing false");
+            UnityEngine.Debug.LogError($"playing false");
             playing = false;
         }
 
         async Task JoinChannel(int trycount = 0)
         {
-            if (trycount < 3)
+            if (trycount < 3 && !string.IsNullOrEmpty(channelToJoin))
             {
                 await UMI3DAsyncManager.Delay(5000);
                 if (!mumbleClient.JoinChannel(channelToJoin))
@@ -280,7 +320,7 @@ namespace umi3d.cdk.collaboration
         void handleMute()
         {
             if (useMumble && mumbleClient != null)
-                mumbleClient.SetSelfMute(IsMute);
+                mumbleClient.SetSelfMute(isMute);
         }
 
         void SetMumbleUrl(string url)
@@ -317,7 +357,7 @@ namespace umi3d.cdk.collaboration
         async void ChannelUpdate(UMI3DUser user)
         {
             channelToJoin = user.audioChannel;
-            if (await IsPLaying())
+            if (!string.IsNullOrEmpty(channelToJoin) && await IsPLaying())
             {
                 await JoinChannel();
             }
@@ -326,7 +366,7 @@ namespace umi3d.cdk.collaboration
         async void ServerUpdate(UMI3DUser user)
         {
 
-            Debug.Log($"server {hostName}:{port} -> {user.audioServer}");
+            UnityEngine.Debug.Log($"server {hostName}:{port} -> {user.audioServer}");
             SetMumbleUrl(user.audioServer);
             if (await IsPLaying())
             {
@@ -335,16 +375,16 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        void UseMumbleUpdate(UMI3DUser user)
+        async void UseMumbleUpdate(UMI3DUser user)
         {
             if (useMumble != user.useMumble)
             {
                 useMumble = user.useMumble;
 
-                Debug.Log(useMumble);
+                UnityEngine.Debug.Log(useMumble);
                 if (useMumble)
                     StartMicrophone();
-                else
+                else if (await IsPLaying())
                     StopMicrophone();
             }
         }
@@ -359,9 +399,9 @@ namespace umi3d.cdk.collaboration
                 {
                     if (micNames[i] == micToConnect)
                     {
-                        Debug.Log("Desired mic reconnected");
-                        MyMumbleMic.MicNumberToUse = i;
-                        MyMumbleMic.StartSendingAudio();
+                        UnityEngine.Debug.Log("Desired mic reconnected");
+                        mumbleMic.MicNumberToUse = i;
+                        mumbleMic.StartSendingAudio();
                         yield break;
                     }
                 }
@@ -397,16 +437,16 @@ namespace umi3d.cdk.collaboration
 
         private MumbleAudioPlayer CreateMumbleAudioPlayerFromPrefab(string username, uint session)
         {
-            Debug.LogError("New player");
+            UnityEngine.Debug.LogError("New player");
             // Depending on your use case, you might want to add the prefab to an existing object (like someone's head)
             // If you have users entering and leaving frequently, you might want to implement an object pool
             GameObject newObj = sendPosition
-                ? GameObject.Instantiate(MyMumbleAudioPlayerPositionedPrefab)
-                : GameObject.Instantiate(MyMumbleAudioPlayerPrefab);
+                ? GameObject.Instantiate(myMumbleAudioPlayerPositionedPrefab)
+                : GameObject.Instantiate(myMumbleAudioPlayerPrefab);
 
             newObj.name = username + "_MumbleAudioPlayer";
             MumbleAudioPlayer newPlayer = newObj.GetComponent<MumbleAudioPlayer>();
-            Debug.Log("Adding audio player for: " + username);
+            UnityEngine.Debug.Log("Adding audio player for: " + username);
             return newPlayer;
         }
         private void OnOtherUserStateChange(uint session, MumbleProto.UserState updatedDeltaState, MumbleProto.UserState fullUserState)
@@ -425,10 +465,10 @@ namespace umi3d.cdk.collaboration
 
 
         private string[] GetMicrophonesNames() { return Microphone.devices; }
-        public string GetCurrentMicrophoneName() => MyMumbleMic?.GetCurrentMicName();
+        public string GetCurrentMicrophoneName() => mumbleMic?.GetCurrentMicName();
         public async Task<bool> SetCurrentMicrophoneName(string value)
         {
-            if (MyMumbleMic == null || value == GetCurrentMicrophoneName())
+            if (mumbleMic == null || value == GetCurrentMicrophoneName())
                 return false;
 
             var mics = GetMicrophonesNames();
@@ -438,7 +478,7 @@ namespace umi3d.cdk.collaboration
             for (; i < count; i++)
                 if (mics[i] == value)
                 {
-                    MyMumbleMic.MicNumberToUse = i;
+                    mumbleMic.MicNumberToUse = i;
                     break;
                 }
 
@@ -482,12 +522,12 @@ namespace umi3d.cdk.collaboration
             return MumbleMicrophone.MicType.AlwaysSend;
         }
 
-        public MicrophoneMode GetCurrentMicrophoneMode() => MicTypeToMode(MyMumbleMic?.VoiceSendingType);
+        public MicrophoneMode GetCurrentMicrophoneMode() => MicTypeToMode(mumbleMic?.VoiceSendingType);
         public bool SetCurrentMicrophoneMode(MicrophoneMode value)
         {
-            if (MyMumbleMic == null || value == GetCurrentMicrophoneMode())
+            if (mumbleMic == null || value == GetCurrentMicrophoneMode())
                 return false;
-            MyMumbleMic.VoiceSendingType = MicModeToType(value);
+            mumbleMic.VoiceSendingType = MicModeToType(value);
             return true;
         }
 
@@ -562,6 +602,31 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        void DebugSample(PcmArray array)
+        {
+            if (Debug)
+            {
+                float sum = 0;
+                bool saturated = false;
+
+                foreach (float v in array.Pcm)
+                {
+                    if (v > 1)
+                    {
+                        saturated = true;
+                    }
+                    else if (v < -1)
+                    {
+                        saturated = true;
+                    }
+                    sum += v * v;
+                }
+
+                this.saturated = saturated;
+                rms = Mathf.Sqrt(sum / array.Pcm.Length);
+                db = 20 * Mathf.Log10(rms / refValue);
+            }
+        }
 
         #endregion
 
@@ -569,7 +634,16 @@ namespace umi3d.cdk.collaboration
 
         public List<DebugInfo> GetInfos()
         {
-            return new List<DebugInfo>();
+            return new List<DebugInfo>()
+            {
+                new DebugInfo<string>("Microphone",()=>{ return GetCurrentMicrophoneName(); }),
+                new DebugInfo<bool>("Is Connected",()=>{ return playing; }),
+                new DebugInfo<string>("Mode",()=>{ return GetCurrentMicrophoneMode().ToString(); }),
+                new DebugInfo<bool>("| Is Sending Audio",()=>{ return mumbleMic?.isRecording ?? false; }),
+                new DebugInfo<string>("| Push To Talk Key",()=>{ return pushToTalkKeycode.ToString(); }),
+                new DebugInfo<float>("| Min Amplitude",()=>{ return minAmplitudeToSend; }),
+                new DebugInfo<float>("| stop delay",()=>{ return voiceStopingDelaySeconds; }),
+            };
         }
 
         public string GetLogName()
