@@ -92,6 +92,11 @@ namespace umi3d.edk.collaboration
         public string resourcesUrl;
 
         /// <summary>
+        /// /Returns true if <see cref="resourcesUrl"/> is set, which means a resource server is used.
+        /// </summary>
+        public bool IsResourceServerSetup => !string.IsNullOrEmpty(this.resourcesUrl);
+
+        /// <summary>
         /// url of an image that could be displayed by browser to show different awailable environments.
         /// </summary>
         public string iconServerUrl;
@@ -115,7 +120,7 @@ namespace umi3d.edk.collaboration
 
         protected override string _GetResourcesUrl()
         {
-            return string.IsNullOrEmpty(this.resourcesUrl) ? _GetHttpUrl() : this.resourcesUrl;
+            return !IsResourceServerSetup ? _GetHttpUrl() : this.resourcesUrl;
         }
 
         /// <summary>
@@ -134,6 +139,7 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost = forgeNatServerHost,
                 forgeNatServerPort = forgeNatServerPort,
                 resourcesUrl = _GetResourcesUrl(),
+                authorizationInHeader = !IsResourceServerSetup
             };
             return dto;
         }
@@ -236,6 +242,7 @@ namespace umi3d.edk.collaboration
             user.SetStatus(StatusType.REGISTERED);
             if (!reconnection)
             {
+                WorldController.NotifyUserRegister(user);
                 UMI3DLogger.Log($"User Registered", scope);
                 OnUserRegistered.Invoke(user);
             }
@@ -448,6 +455,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
             RemoveUserAudio(user);
+            WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
 

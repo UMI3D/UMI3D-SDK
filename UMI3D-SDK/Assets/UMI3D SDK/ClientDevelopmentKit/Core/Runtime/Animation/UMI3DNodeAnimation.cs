@@ -202,7 +202,7 @@ namespace umi3d.cdk
         public override void Start(float atTime)
         {
             if (started) return;
-            progress = atTime;
+            progress = atTime / 1000;
             if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
             foreach (OperationChain chain in operationChains)
             {
