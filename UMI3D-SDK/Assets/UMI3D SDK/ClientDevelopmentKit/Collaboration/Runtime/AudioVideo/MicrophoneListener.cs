@@ -252,7 +252,6 @@ namespace umi3d.cdk.collaboration
                     channelToJoin = user.audioChannel;
                     useMumble = user.useMumble;
 
-
                     Application.runInBackground = true;
                     // If SendPosition, we'll send three floats.
                     // This is roughly the standard for Mumble, however it seems that
@@ -381,7 +380,6 @@ namespace umi3d.cdk.collaboration
             {
                 useMumble = user.useMumble;
 
-                UnityEngine.Debug.Log(useMumble);
                 if (useMumble)
                     StartMicrophone();
                 else if (await IsPLaying())
@@ -464,7 +462,7 @@ namespace umi3d.cdk.collaboration
         #region Data and settings
 
 
-        private string[] GetMicrophonesNames() { return Microphone.devices; }
+        public string[] GetMicrophonesNames() { return Microphone.devices; }
         public string GetCurrentMicrophoneName() => mumbleMic?.GetCurrentMicName();
         public async Task<bool> SetCurrentMicrophoneName(string value)
         {
