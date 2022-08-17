@@ -5,8 +5,8 @@ using MumbleProto;
 
 namespace Mumble
 {
-    [RequireComponent(typeof(AudioSource))]
-    public class MumbleAudioPlayer : MonoBehaviour
+    //[RequireComponent(typeof(AudioSource))]
+    public class MumbleAudioPlayer //: MonoBehaviour
     {
 
         public float Gain = 1;
@@ -25,9 +25,9 @@ namespace Mumble
         private bool _isPlaying = false;
         private float _pendingAudioVolume = -1f;
 
-        void Start()
+        public void Setup(AudioSource audioSource)
         {
-            _audioSource = GetComponent<AudioSource>();
+            _audioSource = audioSource;// GetComponent<AudioSource>();
             // In editor, double check that "auto-play" is turned off
 #if UNITY_EDITOR
             if (_audioSource.playOnAwake)
@@ -38,11 +38,13 @@ namespace Mumble
             // call OnAudioFilterRead when the audioSource hits
             // Awake, even if PlayOnAwake is off
             _audioSource.Stop();
+            _isPlaying = false;
 
             if (_pendingAudioVolume >= 0)
                 _audioSource.volume = _pendingAudioVolume;
             _pendingAudioVolume = -1f;
         }
+
         public string GetUsername()
         {
             if (_mumbleClient == null)

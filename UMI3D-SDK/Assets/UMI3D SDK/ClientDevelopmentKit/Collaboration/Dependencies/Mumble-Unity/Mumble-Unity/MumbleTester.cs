@@ -129,7 +129,7 @@ public class MumbleTester : MonoBehaviour {
     }
     private void DestroyMumbleAudioPlayer(uint session, MumbleAudioPlayer playerToDestroy)
     {
-        UnityEngine.GameObject.Destroy(playerToDestroy.gameObject);
+        //UnityEngine.GameObject.Destroy(playerToDestroy.gameObject);
     }
     private void OnMicDisconnected()
     {
