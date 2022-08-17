@@ -42,28 +42,7 @@ namespace umi3d.cdk.collaboration
         public bool attentionRequired => dto.attentionRequired;
 
         public bool useMumble => dto.audioUseMumble;
-        public string audioLogin
-        {
-            get
-            {
-                if (isClient && UMI3DCollaborationClientServer.Exists)
-                {
-                    var user = UMI3DCollaborationClientServer.Instance.GetUser();
-                    if (user != null)
-                        return user.AudioLogin;
-                }
-                return null;
-            }
-            private set
-            {
-                if (isClient && UMI3DCollaborationClientServer.Exists)
-                {
-                    var user = UMI3DCollaborationClientServer.Instance.GetUser();
-                    if (user != null)
-                        user.AudioLogin = value;
-                }
-            }
-        }
+        public string audioLogin => dto.audioLogin;
         public string audioPassword
         {
             get
@@ -126,7 +105,7 @@ namespace umi3d.cdk.collaboration
             bool channelUpdate = dto.audioChannel != user.audioChannel;
             bool serverUpdate = dto.audioServerUrl != user.audioServerUrl;
 
-            bool loginUpdate = false;
+            bool loginUpdate = dto.audioLogin != user.audioLogin;
             bool pswUpdate = false;
 
 
@@ -134,10 +113,9 @@ namespace umi3d.cdk.collaboration
 
             if (isClient && user is UserConnectionDto connectionDto)
             {
-                loginUpdate = connectionDto.login != audioLogin;
+                
                 pswUpdate = connectionDto.audioPassword != audioPassword;
 
-                audioLogin = connectionDto.login;
                 audioPassword = connectionDto.audioPassword;
             }
 
@@ -191,7 +169,7 @@ namespace umi3d.cdk.collaboration
                     return true;
 
                 case UMI3DPropertyKeys.UserAudioLogin:
-                    audioLogin = (string)value;
+                    dto.audioLogin = (string)value;
                     OnUserMicrophoneIdentityUpdated.Invoke(this);
                     return true;
 

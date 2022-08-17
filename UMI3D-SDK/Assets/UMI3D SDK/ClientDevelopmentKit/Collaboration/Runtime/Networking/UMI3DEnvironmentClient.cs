@@ -87,14 +87,12 @@ namespace umi3d.cdk.collaboration
             public FormDto formdto;
             public UserConnectionAnswerDto answerDto;
 
-            public string AudioLogin;
             public string AudioPassword;
 
             public UserInfo()
             {
                 formdto = new FormDto();
                 answerDto = new UserConnectionAnswerDto();
-                AudioLogin = null;
                 AudioPassword = null;
 
             }
@@ -108,7 +106,6 @@ namespace umi3d.cdk.collaboration
                 };
                 this.formdto = dto.parameters;
                 this.AudioPassword = dto.audioPassword;
-                this.AudioLogin = dto.audioLogin;
             }
         }
 

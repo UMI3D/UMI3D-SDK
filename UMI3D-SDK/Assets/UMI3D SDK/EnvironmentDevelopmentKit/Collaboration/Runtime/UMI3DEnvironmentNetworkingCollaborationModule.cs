@@ -69,6 +69,7 @@ namespace umi3d.edk.collaboration
 
                     + UMI3DNetworkingHelper.Write(user.audioServerUrl)
                     + UMI3DNetworkingHelper.Write(user.audioChannel)
+                    + UMI3DNetworkingHelper.Write(user.audioLogin)
                     + UMI3DNetworkingHelper.Write(user.audioUseMumble)
 
                      + UMI3DNetworkingHelper.Write<string>(user.login);
@@ -88,6 +89,7 @@ namespace umi3d.edk.collaboration
 
                     + UMI3DNetworkingHelper.Write(user.audioServerUrl.GetValue())
                     + UMI3DNetworkingHelper.Write(user.audioChannel.GetValue())
+                    + UMI3DNetworkingHelper.Write(user.audioLogin.GetValue())
                     + UMI3DNetworkingHelper.Write(user.audioUseMumble.GetValue())
 
                     + UMI3DNetworkingHelper.Write<string>(string.IsNullOrEmpty(user.displayName) ? (string.IsNullOrEmpty(user.login) ? user.Id().ToString() : user.login) : user.displayName);

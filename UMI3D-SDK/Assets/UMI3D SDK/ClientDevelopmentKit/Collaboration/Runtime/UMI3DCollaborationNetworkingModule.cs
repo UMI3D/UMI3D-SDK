@@ -50,6 +50,7 @@ namespace umi3d.cdk.collaboration
 
                         audioServerUrl = UMI3DNetworkingHelper.Read<string>(container),
                         audioChannel = UMI3DNetworkingHelper.Read<string>(container),
+                        audioLogin = UMI3DNetworkingHelper.Read<string>(container),
                         audioUseMumble = UMI3DNetworkingHelper.Read<bool>(container),
 
                         login = UMI3DNetworkingHelper.Read<string>(container)
