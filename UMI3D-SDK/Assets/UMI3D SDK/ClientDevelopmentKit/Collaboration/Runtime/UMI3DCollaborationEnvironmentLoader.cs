@@ -87,7 +87,9 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAvatarStatus:
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                     {
-
+                        bool value = UMI3DNetworkingHelper.Read<bool>(container);
+                        return UpdateUser(propertyKey, entity, value);
+                    }
                 case UMI3DPropertyKeys.UserAudioFrequency:
                     {
                         int value = UMI3DNetworkingHelper.Read<int>(container);
