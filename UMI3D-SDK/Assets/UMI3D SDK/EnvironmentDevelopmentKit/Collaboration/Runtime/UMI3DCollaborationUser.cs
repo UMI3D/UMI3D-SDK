@@ -193,7 +193,7 @@ namespace umi3d.edk.collaboration
                 audioServerUrl = audioServerUrl.GetValue(),
                 audioUseMumble = audioUseMumble.GetValue()
 
-            };          
+            };
             return user;
         }
 
