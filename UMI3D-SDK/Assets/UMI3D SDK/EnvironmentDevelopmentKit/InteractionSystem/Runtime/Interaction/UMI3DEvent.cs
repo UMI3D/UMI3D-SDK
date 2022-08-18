@@ -22,7 +22,7 @@ namespace umi3d.edk.interaction
 {
     /// <summary>
     /// Interaction focused on Hold/Project/Release event from the UMI3D workflow. <br/>
-    /// See <see cref="ProjectTool"/> and <see cref="ReleaseTool"/>.
+    /// See <seealso cref="ProjectTool"/> and <seealso cref="ReleaseTool"/>.
     /// </summary>
     public class UMI3DEvent : AbstractInteraction
     {
@@ -106,21 +106,20 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
                     + UMI3DNetworkingHelper.Write(Hold);
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new EventDto();
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.Event;
