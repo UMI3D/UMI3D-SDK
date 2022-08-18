@@ -149,6 +149,15 @@ namespace Mumble
             else
                 _audioSource.volume = volume;
         }
+
+        public float GetVolume()
+        {
+            if (_audioSource == null)
+                return _pendingAudioVolume;
+            else
+                return _audioSource.volume;
+        }
+
         void Update()
         {
             if (_mumbleClient == null)
