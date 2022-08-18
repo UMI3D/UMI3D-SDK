@@ -166,13 +166,13 @@ namespace Mumble
             {
                 _audioSource.Play();
                 _isPlaying = true;
-                Debug.Log("Playing audio for: " + GetUsername());
+                //Debug.Log("Playing audio for: " + GetUsername());
             }
             else if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
             {
                 _audioSource.Stop();
                 _isPlaying = false;
-                Debug.Log("Stopping audio for: " + GetUsername());
+                //Debug.Log("Stopping audio for: " + GetUsername());
             }
         }
     }

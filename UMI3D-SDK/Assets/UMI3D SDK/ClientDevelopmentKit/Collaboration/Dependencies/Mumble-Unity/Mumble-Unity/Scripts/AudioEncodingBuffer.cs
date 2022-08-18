@@ -16,7 +16,7 @@ namespace Mumble
         private readonly Queue<TargettedSpeech> _unencodedBuffer = new Queue<TargettedSpeech>();
 
         //TODO not certain on this
-        public readonly ArraySegment<byte> EmptyByteSegment = new ArraySegment<byte>(new byte[0] {});
+        public readonly ArraySegment<byte> EmptyByteSegment = new ArraySegment<byte>(new byte[0] { });
 
         private readonly object _bufferLock = new System.Object();
         private volatile bool _isWaitingToSendLastPacket = false;
@@ -44,11 +44,11 @@ namespace Mumble
                 _isWaitingToSendLastPacket = true;
                 if (_unencodedBuffer.Count == 0)
                 {
-                    Debug.Log("Adding stop packet");
+                    //Debug.Log("Adding stop packet");
                     _unencodedBuffer.Enqueue(new TargettedSpeech(stop: true));
                 }
-                else
-                    Debug.Log("Marking last packet");
+                //else
+                //    Debug.Log("Marking last packet");
                 Monitor.Pulse(_bufferLock);
             }
         }
@@ -140,7 +140,7 @@ namespace Mumble
 
                 IsStop = false;
             }
-            
+
             public TargettedSpeech(bool stop)
             {
                 IsStop = stop;

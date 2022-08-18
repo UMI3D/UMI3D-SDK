@@ -44,7 +44,7 @@ namespace Mumble
         }
         internal void UpdateOcbServerNonce(byte[] serverNonce)
         {
-            if(serverNonce != null)
+            if (serverNonce != null)
                 _cryptState.CryptSetup.ServerNonce = serverNonce;
         }
 
@@ -78,7 +78,7 @@ namespace Mumble
 
         private void RunPing(object sender, ElapsedEventArgs elapsedEventArgs)
         {
-             SendPing();
+            SendPing();
         }
         private void ReceiveUDP()
         {
@@ -114,10 +114,12 @@ namespace Mumble
                             + " prev pkt size:" + prevPacketSize);
                     }
                     prevPacketSize = readLen;
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     if (ex is ObjectDisposedException) { return; }
                     else if (ex is ThreadAbortException) { return; }
+                    else if (ex is System.Net.Sockets.SocketException) { return; }
                     else
                         Debug.LogError("Unhandled UDP receive error: " + ex);
                 }
@@ -199,7 +201,7 @@ namespace Mumble
                 //Debug.Log(" seq: " + sequence + " size = " + size + " packetLen: " + plainTextMessage.Length);
 
                 byte[] data = (size != 0) ? reader.ReadBytes(size) : new byte[0];
-                
+
                 if (data == null || data.Length != size)
                 {
                     Debug.LogError("empty or wrong sized packet. Recv: " + (data != null ? data.Length.ToString() : "null")
@@ -211,7 +213,7 @@ namespace Mumble
                 // All remaining bytes are assumed to be positional data
                 byte[] posData = null;
                 long remaining = reader.GetRemainingBytes();
-                if(remaining != 0)
+                if (remaining != 0)
                 {
                     //Debug.LogWarning("We have " + remaining + " bytes!");
                     posData = reader.ReadBytes((int)remaining);
@@ -222,7 +224,7 @@ namespace Mumble
         }
         internal void SendPing()
         {
-            ulong unixTimeStamp = (ulong) (DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks);
+            ulong unixTimeStamp = (ulong)(DateTime.UtcNow.Ticks - DateTime.Parse("01/01/1970 00:00:00").Ticks);
             byte[] timeBytes = BitConverter.GetBytes(unixTimeStamp);
             timeBytes.CopyTo(_sendPingBuffer, 1);
             _sendPingBuffer[0] = (1 << 5);
@@ -234,7 +236,7 @@ namespace Mumble
                 return;
             }
 
-            if(!_useTcp && _numPingsOutstanding >= MumbleConstants.MAX_CONSECUTIVE_MISSED_UDP_PINGS)
+            if (!_useTcp && _numPingsOutstanding >= MumbleConstants.MAX_CONSECUTIVE_MISSED_UDP_PINGS)
             {
                 Debug.LogWarning("Error establishing UDP connection, will switch to TCP");
                 _useTcp = true;
@@ -254,7 +256,7 @@ namespace Mumble
             if (_receiveThread != null)
                 _receiveThread.Interrupt();
             _receiveThread = null;
-            if(_udpTimer != null)
+            if (_udpTimer != null)
                 _udpTimer.Close();
             _udpTimer = null;
             _udpClient.Close();
@@ -291,7 +293,8 @@ namespace Mumble
                     }
                 }
                 NumPacketsSent++;
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.LogError("Error sending packet: " + e);
             }

@@ -111,7 +111,7 @@ namespace Mumble
 
             if (micSampleRate != 48000)
                 Debug.LogWarning("Using a possibly unsupported sample rate of " + micSampleRate + " things might get weird");
-            Debug.Log("Device:  " + _currentMic + " has freq: " + minFreq + " to " + maxFreq + " setting to: " + micSampleRate);
+            //Debug.Log("Device:  " + _currentMic + " has freq: " + minFreq + " to " + maxFreq + " setting to: " + micSampleRate);
 
             _voiceHoldSamples = Mathf.RoundToInt(micSampleRate * VoiceHoldSeconds);
 
@@ -267,7 +267,6 @@ namespace Mumble
                 Debug.Log("Not sending audio, no current mic");
                 return;
             }
-            Debug.Log("Starting to send audio");
             SendAudioClip = Microphone.Start(_currentMic, true, NumRecordingSeconds, sampleRate);
             _previousPosition = 0;
             _numTimesLooped = 0;
@@ -279,7 +278,6 @@ namespace Mumble
         }
         public void StopSendingAudio()
         {
-            Debug.Log("Stopping sending audio");
             Microphone.End(_currentMic);
             _mumbleClient.StopSendingVoice();
             isRecording = false;

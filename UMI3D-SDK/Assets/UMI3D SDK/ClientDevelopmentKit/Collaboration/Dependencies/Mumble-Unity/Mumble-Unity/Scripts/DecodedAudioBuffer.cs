@@ -9,7 +9,8 @@ using System.Text;
 using UnityEngine;
 using System.Threading;
 
-namespace Mumble {
+namespace Mumble
+{
     public class DecodedAudioBuffer : IDisposable
     {
         public long NumPacketsLost { get; private set; }
@@ -50,7 +51,7 @@ namespace Mumble {
         }
         public void Init(string name, UInt32 session)
         {
-            Debug.Log("Init decoding buffer for: " + name);
+            //Debug.Log("Init decoding buffer for: " + name);
             _name = name;
             _session = session;
             _audioDecodeThread.AddDecoder(_session);
@@ -67,7 +68,7 @@ namespace Mumble {
 
             //lock (_bufferLock)
             //{
-                //Debug.Log("We now have " + _decodedBuffer.Count + " decoded packets");
+            //Debug.Log("We now have " + _decodedBuffer.Count + " decoded packets");
             //}
             //Debug.LogWarning("Will read");
 
@@ -81,12 +82,13 @@ namespace Mumble {
             {
                 //Debug.Log("Returning silence");
                 Array.Clear(buffer, offset, count);
-            } else if (readCount < count)
+            }
+            else if (readCount < count)
             {
                 //Debug.LogWarning("Buffer underrun: " + (count - readCount) + " samples. Asked: " + count + " provided: " + readCount + " numDec: " + _decodedCount);
                 Array.Clear(buffer, offset + readCount, count - readCount);
             }
-            
+
             return readCount;
         }
 
@@ -112,7 +114,7 @@ namespace Mumble {
         {
             // Get the next DecodedPacket to use
             int numInSample = _currentPacket.PcmLength - _currentPacket.ReadOffset;
-            if(numInSample == 0)
+            if (numInSample == 0)
             {
                 lock (_bufferLock)
                 {
@@ -140,10 +142,10 @@ namespace Mumble {
             int readCount = Math.Min(numInSample, count);
             Array.Copy(_currentPacket.PcmData, _currentPacket.ReadOffset, dst, dstOffset, readCount);
             //Debug.Log("We have: "
-                //+ _decodedCount + " samples decoded "
-                //+ numInSample + " samples in curr packet "
-                //+ _currentPacket.ReadOffset + " read offset "
-                //+ readCount + " numRead");
+            //+ _decodedCount + " samples decoded "
+            //+ numInSample + " samples in curr packet "
+            //+ _currentPacket.ReadOffset + " read offset "
+            //+ readCount + " numRead");
 
             Interlocked.Add(ref _decodedCount, -readCount);
             _currentPacket.ReadOffset += readCount;
@@ -161,13 +163,13 @@ namespace Mumble {
             };
 
             //if (reevaluateInitialBuffer)
-                //Debug.Log("Will refill our initial buffer");
+            //Debug.Log("Will refill our initial buffer");
 
             int count = 0;
             lock (_bufferLock)
             {
                 count = _decodedBuffer.Count;
-                if(count > MumbleConstants.RECEIVED_PACKET_BUFFER_SIZE)
+                if (count > MumbleConstants.RECEIVED_PACKET_BUFFER_SIZE)
                 {
                     // TODO this seems to happen at times
                     Debug.LogWarning("Max recv buffer size reached, dropping for user " + _name);
@@ -202,13 +204,13 @@ namespace Mumble {
             lock (_bufferLock)
             {
                 _name = null;
-                if(_session != 0)
+                if (_session != 0)
                     _audioDecodeThread.RemoveDecoder(_session);
                 NumPacketsLost = 0;
                 HasFilledInitialBuffer = false;
                 _decodedCount = 0;
                 _decodedBuffer.Clear();
-                _currentPacket = new DecodedPacket{ };
+                _currentPacket = new DecodedPacket { };
                 _session = 0;
             }
             lock (_posLock)

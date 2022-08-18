@@ -196,7 +196,6 @@ namespace umi3d.cdk.collaboration
 
         public async void StopMicrophone()
         {
-            UnityEngine.Debug.Log("Stop Microphone");
             if (await IsPLaying() && mumbleClient != null)
             {
                 mumbleMic.OnMicDisconnect -= OnMicDisconnected;
@@ -234,7 +233,6 @@ namespace umi3d.cdk.collaboration
 
         private async Task _StartMicrophone()
         {
-            UnityEngine.Debug.LogError($"Start {!useMumble}");
             if (!useMumble) return;
 
             if (hostName == "1.2.3.4")
@@ -245,11 +243,9 @@ namespace umi3d.cdk.collaboration
 
             if (UMI3DCollaborationEnvironmentLoader.Exists)
             {
-                UnityEngine.Debug.LogError($"Exist");
                 var user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
                 if (user != null)
                 {
-                    UnityEngine.Debug.LogError($"user {username} {password} {hostName} {port} {channelToJoin}");
                     username = user.audioLogin;
                     password = user.audioPassword;
                     SetMumbleUrl(user.audioServer);
@@ -295,7 +291,6 @@ namespace umi3d.cdk.collaboration
                     }
                 }
             }
-            UnityEngine.Debug.LogError($"playing false");
             playing = false;
         }
 
@@ -368,8 +363,6 @@ namespace umi3d.cdk.collaboration
 
         async void ServerUpdate(UMI3DUser user)
         {
-
-            UnityEngine.Debug.Log($"server {hostName}:{port} -> {user.audioServer}");
             SetMumbleUrl(user.audioServer);
             if (await IsPLaying())
             {
