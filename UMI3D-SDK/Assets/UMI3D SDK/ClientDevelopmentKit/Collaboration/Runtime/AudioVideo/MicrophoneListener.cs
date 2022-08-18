@@ -117,6 +117,9 @@ namespace umi3d.cdk.collaboration
 
         #endregion
         #region private field
+
+        string _pendingMic = null;
+
         MumbleClient mumbleClient;
         MumbleMicrophone mumbleMic;
         DebugValues debuggingVariables;
@@ -149,6 +152,10 @@ namespace umi3d.cdk.collaboration
         protected void Start()
         {
             mumbleMic = gameObject.GetOrAddComponent<MumbleMicrophone>();
+
+            if (_pendingMic != null)
+                SetCurrentMicrophoneNameAsync(_pendingMic);
+
             gameObject.GetOrAddComponent<EventProcessor>();
 
             debuggingVariables = new DebugValues()
@@ -450,11 +457,18 @@ namespace umi3d.cdk.collaboration
 
 
         public string[] GetMicrophonesNames() { return Microphone.devices; }
-        public string GetCurrentMicrophoneName() => mumbleMic?.GetCurrentMicName();
+        public string GetCurrentMicrophoneName() => mumbleMic?.GetCurrentMicName() ?? _pendingMic;
         public async Task<bool> SetCurrentMicrophoneName(string value)
         {
-            if (mumbleMic == null || value == GetCurrentMicrophoneName())
+            if (value == GetCurrentMicrophoneName() && value != _pendingMic)
                 return false;
+
+            if (mumbleMic == null)
+            {
+                _pendingMic = value;
+                return true;
+            }
+            _pendingMic = null;
 
             var mics = GetMicrophonesNames();
             var count = mics.Length;
@@ -470,6 +484,7 @@ namespace umi3d.cdk.collaboration
             if (await IsPLaying())
             {
                 StopMicrophone();
+                await UMI3DAsyncManager.Yield();
                 StartMicrophone();
             }
             return true;
