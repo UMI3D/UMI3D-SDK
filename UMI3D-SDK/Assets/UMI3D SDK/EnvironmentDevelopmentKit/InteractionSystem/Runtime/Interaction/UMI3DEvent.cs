@@ -33,15 +33,15 @@ namespace umi3d.edk.interaction
         public bool Hold = false;
 
         /// <summary>
-        /// Called during the first frame when the interaction is available for a user.
+        /// Called during the first frame when the interaction is held by a user.
         /// </summary>
-        [SerializeField, Tooltip("Called during the first frame when the interaction is available for a user.")]
+        [SerializeField, Tooltip("Called during the first frame when the interaction is held by a user.")]
         public InteractionEvent onHold = new InteractionEvent();
 
         /// <summary>
-        /// Called during the first frame after the interaction is no longer available for a user.
+        /// Called during the first frame after the interaction is no longer held by for a user.
         /// </summary>
-        [SerializeField, Tooltip("Called during the first frame after the interaction is no longer available for a user.")]
+        [SerializeField, Tooltip("Called during the first frame after the interaction is no longer held by a user.")]
         public InteractionEvent onRelease = new InteractionEvent();
 
         /// <summary>
