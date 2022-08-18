@@ -573,6 +573,12 @@ namespace umi3d.cdk
             if (Instance.entities.ContainsKey(entityId))
             {
                 UMI3DEntityInstance entity = Instance.entities[entityId];
+
+                if (entity.Object is UMI3DAbstractAnimation animation)
+                {
+                    animation.Stop();
+                }
+
                 if (entity is UMI3DNodeInstance)
                 {
                     var node = entity as UMI3DNodeInstance;
