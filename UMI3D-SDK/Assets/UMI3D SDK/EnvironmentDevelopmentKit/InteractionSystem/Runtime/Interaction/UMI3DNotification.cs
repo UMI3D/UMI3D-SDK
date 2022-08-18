@@ -22,6 +22,9 @@ using static umi3d.common.NotificationDto;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Interaction as a notification that will be displayed on the client browsers.
+    /// </summary>
     public class UMI3DNotification : UMI3DLoadableEntity
     {
         public class NotificationCallbackEvent : UnityEvent<bool> { }
