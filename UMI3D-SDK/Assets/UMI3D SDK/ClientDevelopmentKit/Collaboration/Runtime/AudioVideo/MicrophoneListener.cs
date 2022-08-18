@@ -167,6 +167,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneChannelUpdated.AddListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
+            UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(Reset);
 
             pushToTalkKeycode = KeyCode.M;
         }
@@ -174,6 +175,11 @@ namespace umi3d.cdk.collaboration
         private void _OnApplicationQuit()
         {
             StopMicrophone();
+            UMI3DUser.OnUserMicrophoneIdentityUpdated.RemoveListener(IdentityUpdate);
+            UMI3DUser.OnUserMicrophoneChannelUpdated.RemoveListener(ChannelUpdate);
+            UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
+            UMI3DUser.OnUserMicrophoneUseMumbleUpdated.RemoveListener(UseMumbleUpdate);
+            UMI3DCollaborationClientServer.Instance.OnRedirection.RemoveListener(Reset);
         }
         #endregion
 
@@ -339,6 +345,7 @@ namespace umi3d.cdk.collaboration
                 if (await IsPLaying())
                 {
                     StopMicrophone();
+                    await UMI3DAsyncManager.Yield();
                     StartMicrophone();
                 }
                 IdentityUpdateOnce = false;
@@ -360,8 +367,16 @@ namespace umi3d.cdk.collaboration
             if (await IsPLaying())
             {
                 StopMicrophone();
+                await UMI3DAsyncManager.Yield();
                 StartMicrophone();
             }
+        }
+
+        private async void Reset()
+        {
+            useMumble = false;
+            if (await IsPLaying())
+                StopMicrophone();
         }
 
         private async void UseMumbleUpdate(UMI3DUser user)
