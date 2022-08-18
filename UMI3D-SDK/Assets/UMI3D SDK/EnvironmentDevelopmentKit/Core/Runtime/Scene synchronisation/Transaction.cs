@@ -359,7 +359,6 @@ namespace umi3d.edk
                     (lastOperation as LoadEntity).entities.AddRange((op as LoadEntity).entities);
                     return;
                 }
-
             }
             Operations.Add(op);
 
@@ -374,6 +373,5 @@ namespace umi3d.edk
         {
             if (Count() > 0) UMI3DServer.Dispatch(this);
         }
-
     }
 }

@@ -107,7 +107,6 @@ namespace umi3d.cdk.collaboration
                 client = null;
 
             }
-
         }
 
         public void RequestInfo(Action<string, string> UIcallback)
@@ -159,7 +158,6 @@ namespace umi3d.cdk.collaboration
                     client = null;
                 }
             }
-
         }
 
 
@@ -195,8 +193,5 @@ namespace umi3d.cdk.collaboration
                 client = null;
             }
         }
-
-
-
     }
 }

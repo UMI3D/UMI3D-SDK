@@ -69,7 +69,6 @@ namespace umi3d.edk.interaction
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
-
         }
 
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)

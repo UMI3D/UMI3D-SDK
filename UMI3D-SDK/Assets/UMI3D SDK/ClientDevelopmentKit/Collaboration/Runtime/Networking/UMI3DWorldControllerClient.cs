@@ -93,7 +93,7 @@ namespace umi3d.cdk.collaboration
 
         private async Task<bool> Connect(ConnectionDto dto)
         {
-            if (UMI3DCollaborationClientServer.Exists && !string.IsNullOrEmpty( media.url))
+            if (UMI3DCollaborationClientServer.Exists && !string.IsNullOrEmpty(media.url))
             {
                 UMI3DDto answerDto = await HttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
@@ -138,9 +138,9 @@ namespace umi3d.cdk.collaboration
 
         public async Task<UMI3DEnvironmentClient> ConnectToEnvironment()
         {
-            if(environment != null)
+            if (environment != null)
                 await environment.Logout(false);
-            
+
             environment = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this);
             if (environment.Connect())
                 return environment;
@@ -157,6 +157,5 @@ namespace umi3d.cdk.collaboration
         {
             Logout();
         }
-
     }
 }

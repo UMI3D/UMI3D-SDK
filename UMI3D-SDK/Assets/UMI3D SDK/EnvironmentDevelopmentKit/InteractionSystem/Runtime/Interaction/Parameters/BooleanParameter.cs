@@ -121,7 +121,5 @@ namespace umi3d.edk.interaction
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
         }
-
-
     }
 }

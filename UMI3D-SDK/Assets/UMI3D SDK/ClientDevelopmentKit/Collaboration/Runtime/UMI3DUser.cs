@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (isClient && UMI3DCollaborationClientServer.Exists)
                 {
-                    var user = UMI3DCollaborationClientServer.Instance.GetUser();
+                    UMI3DEnvironmentClient.UserInfo user = UMI3DCollaborationClientServer.Instance.GetUser();
                     if (user != null)
                         return user.AudioPassword;
                 }
@@ -59,7 +59,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (isClient && UMI3DCollaborationClientServer.Exists)
                 {
-                    var user = UMI3DCollaborationClientServer.Instance.GetUser();
+                    UMI3DEnvironmentClient.UserInfo user = UMI3DCollaborationClientServer.Instance.GetUser();
                     if (user != null)
                         user.AudioPassword = value;
                 }
@@ -113,7 +113,7 @@ namespace umi3d.cdk.collaboration
 
             if (isClient && user is UserConnectionDto connectionDto)
             {
-                
+
                 pswUpdate = connectionDto.audioPassword != audioPassword;
 
                 audioPassword = connectionDto.audioPassword;

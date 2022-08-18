@@ -163,7 +163,5 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(endWidth)
                 + UMI3DNetworkingHelper.Write(positions);
         }
-
     }
-
 }

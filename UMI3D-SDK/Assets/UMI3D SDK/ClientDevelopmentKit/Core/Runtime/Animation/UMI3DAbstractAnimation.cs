@@ -147,7 +147,7 @@ namespace umi3d.cdk
                         return true;
                     if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey, container))
                         return true;
-                    return (UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container));
+                    return UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container);
 
             }
             return true;

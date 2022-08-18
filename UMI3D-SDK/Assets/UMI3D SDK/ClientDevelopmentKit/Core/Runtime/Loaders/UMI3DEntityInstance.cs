@@ -47,6 +47,5 @@ namespace umi3d.cdk
                 LoadedCallback = null;
             }
         }
-
     }
 }

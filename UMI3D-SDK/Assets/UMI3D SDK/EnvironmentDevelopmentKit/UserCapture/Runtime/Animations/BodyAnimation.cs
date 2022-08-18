@@ -31,7 +31,7 @@ namespace umi3d.edk.userCapture
         public UMI3DBodyPose BodyPose;
 
         // Start is called before the first frame update
-        void Start()
+        private void Start()
         {
             if (NodeAnimation != null && BodyPose != null)
             {

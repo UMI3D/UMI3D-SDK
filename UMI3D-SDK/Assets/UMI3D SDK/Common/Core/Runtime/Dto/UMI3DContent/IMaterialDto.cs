@@ -22,6 +22,5 @@ namespace umi3d.common
     {
 
         Dictionary<string, object> shaderProperties { get; set; }
-
     }
 }

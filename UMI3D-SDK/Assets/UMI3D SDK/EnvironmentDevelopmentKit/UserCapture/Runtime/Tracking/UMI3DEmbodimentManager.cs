@@ -517,7 +517,7 @@ namespace umi3d.edk.userCapture
 
             VehicleRequest vr;
 
-            Transaction tr = new Transaction();
+            var tr = new Transaction();
 
             if (vehicle != null)
             {
@@ -549,7 +549,7 @@ namespace umi3d.edk.userCapture
 
             BoardedVehicleRequest vr;
 
-            Transaction tr = new Transaction();
+            var tr = new Transaction();
 
             if (vehicle != null)
             {

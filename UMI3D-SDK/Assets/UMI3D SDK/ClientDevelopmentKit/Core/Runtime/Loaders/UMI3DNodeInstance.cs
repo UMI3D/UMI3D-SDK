@@ -81,6 +81,5 @@ namespace umi3d.cdk
             }
             set => _subNodeInstances = value;
         }
-
     }
 }

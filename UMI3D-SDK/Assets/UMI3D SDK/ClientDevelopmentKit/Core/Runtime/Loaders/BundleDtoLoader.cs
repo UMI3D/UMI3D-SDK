@@ -111,7 +111,7 @@ namespace umi3d.cdk
             */
             if (pathIfObjectInBundle != null && pathIfObjectInBundle != "" && o is AssetBundle bundle)
             {
-                if (Array.Exists((bundle).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
+                if (Array.Exists(bundle.GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
 #if UNITY_2020_1_OR_NEWER
                     var load = bundle.LoadAssetAsync(pathIfObjectInBundle);
@@ -128,7 +128,7 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    if (Array.Exists((bundle).GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
+                    if (Array.Exists(bundle.GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
                     {
                         AsyncOperation scene = SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
                         yield return scene;
@@ -171,6 +171,5 @@ namespace umi3d.cdk
         {
             if (objectLoaded != null) ((AssetBundle)objectLoaded).Unload(true);
         }
-
     }
 }

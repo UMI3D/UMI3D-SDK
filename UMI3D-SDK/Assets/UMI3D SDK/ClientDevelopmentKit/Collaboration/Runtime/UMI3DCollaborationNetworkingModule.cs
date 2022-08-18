@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
             switch (true)
             {
                 case true when typeof(T) == typeof(UserDto):
-                    if (container.length < 2 * sizeof(uint) + 4 * sizeof(ulong) + sizeof(int))
+                    if (container.length < (2 * sizeof(uint)) + (4 * sizeof(ulong)) + sizeof(int))
                     {
                         result = default(T);
                         readable = false;

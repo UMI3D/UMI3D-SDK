@@ -42,5 +42,4 @@ namespace umi3d.edk.interaction
         /// </summary>
         public UMI3DResource icon3D = new UMI3DResource();
     }
-
 }

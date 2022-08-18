@@ -137,14 +137,13 @@ namespace umi3d.edk
             }
         }
 
-        class GameObjectInfo
+        private class GameObjectInfo
         {
             public GameObjectInfo parent;
             public GameObject gameObject;
             public int index;
-
-            List<int> indexes;
-            List<string> names;
+            private List<int> indexes;
+            private List<string> names;
 
             public List<string> getNames()
             {
@@ -194,12 +193,11 @@ namespace umi3d.edk
                 this.index = -1;
                 this.gameObject = root;
             }
-
         }
 
         private List<GameObjectInfo> GetSubModelGameObjectOfUMI3DModel(Transform modelRoot)
         {
-            List<GameObjectInfo> result = new List<GameObjectInfo>();
+            var result = new List<GameObjectInfo>();
             var root = new GameObjectInfo(modelRoot.gameObject);
             if (modelRoot.GetComponent<Renderer>() != null)
                 result.Add(root);
@@ -245,7 +243,7 @@ namespace umi3d.edk
             meshDto.mesh = objectModel.GetValue(user).ToDto();
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
-            meshDto.isRightHanded = areSubobjectsTracked ? isRightHanded : true;
+            meshDto.isRightHanded = !areSubobjectsTracked || isRightHanded;
             meshDto.idGenerator = idGenerator;
             meshDto.isPartOfNavmesh = isPartOfNavmesh;
             meshDto.isTraversable = isTraversable;
@@ -255,7 +253,7 @@ namespace umi3d.edk
         {
             return base.ToBytes(user)
                 + UMI3DNetworkingHelper.Write(areSubobjectsTracked)
-                + UMI3DNetworkingHelper.Write(areSubobjectsTracked ? isRightHanded : true)
+                + UMI3DNetworkingHelper.Write(!areSubobjectsTracked || isRightHanded)
                 + UMI3DNetworkingHelper.Write(idGenerator)
                 + UMI3DNetworkingHelper.Write(isPartOfNavmesh)
                 + UMI3DNetworkingHelper.Write(isTraversable)
@@ -270,5 +268,4 @@ namespace umi3d.edk
 
         }
     }
-
 }

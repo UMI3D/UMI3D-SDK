@@ -527,9 +527,9 @@ namespace umi3d.cdk.userCapture
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    double value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
-                    double value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
-                    double value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
+                    double value_x = ((tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond) + tools.previous_prediction[0];
+                    double value_y = ((tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond) + tools.previous_prediction[1];
+                    double value_z = ((tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond) + tools.previous_prediction[2];
 
                     tools.estimations = new double[] { value_x, value_y, value_z };
 
@@ -553,13 +553,13 @@ namespace umi3d.cdk.userCapture
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    double fw_value_x = (tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[0];
-                    double fw_value_y = (tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[1];
-                    double fw_value_z = (tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[2];
+                    double fw_value_x = ((tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[0];
+                    double fw_value_y = ((tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[1];
+                    double fw_value_z = ((tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[2];
 
-                    double up_value_x = (tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[0];
-                    double up_value_y = (tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[1];
-                    double up_value_z = (tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[2];
+                    double up_value_x = ((tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[0];
+                    double up_value_y = ((tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[1];
+                    double up_value_z = ((tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[2];
 
                     tools.estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
 

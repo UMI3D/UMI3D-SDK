@@ -412,7 +412,6 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.logOutputPathParam))
                     SetlogOutputPathParam(conf.logOutputPathParam);
             }
-
         }
 
         /// <summary>
@@ -459,7 +458,6 @@ namespace umi3d.edk.collaboration
                         GenerateConfigFile(args[i]);
                     Application.Quit();
                 }
-
             }
 
             //then aplly other arguments

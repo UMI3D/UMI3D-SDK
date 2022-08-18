@@ -116,7 +116,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static async void Connect(RedirectionDto redirection, Action<string> failed = null)
         {
-            if(UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress)
+            if (UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress)
             {
                 failed?.Invoke("Redirection already in progress");
                 return;
@@ -349,6 +349,5 @@ namespace umi3d.cdk.collaboration
         /// return HTTPClient if the server is a collaboration server.
         /// </summary>
         public override object GetHttpClient() { return environmentClient?.HttpClient; }
-
     }
 }

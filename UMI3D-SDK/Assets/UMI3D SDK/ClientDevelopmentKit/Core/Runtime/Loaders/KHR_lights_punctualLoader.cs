@@ -65,7 +65,7 @@ namespace umi3d.cdk
         public virtual bool SetLightPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             KHR_lights_punctual dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
-            var node = (entity as UMI3DNodeInstance);
+            var node = entity as UMI3DNodeInstance;
             Light light = node?.gameObject?.GetComponent<Light>();
             if (property.property == UMI3DPropertyKeys.Light)
             {
@@ -122,7 +122,7 @@ namespace umi3d.cdk
         public virtual bool SetLightPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             KHR_lights_punctual dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
-            var node = (entity as UMI3DNodeInstance);
+            var node = entity as UMI3DNodeInstance;
             Light light = node?.gameObject?.GetComponent<Light>();
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
@@ -200,7 +200,5 @@ namespace umi3d.cdk
             }
             return true;
         }
-
     }
-
 }

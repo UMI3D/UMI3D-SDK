@@ -38,8 +38,8 @@ namespace umi3d.cdk.collaboration
 
         private bool useDto => environmentClient?.useDto ?? false;
 
-        bool pingReceived = false;
-        bool CheckForBandWidthRunning = false;
+        private bool pingReceived = false;
+        private bool CheckForBandWidthRunning = false;
 
         private UMI3DUser GetUserByNetWorkId(uint nid)
         {
@@ -90,7 +90,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public static UMI3DForgeClient Create(UMI3DEnvironmentClient environmentClient, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
         {
-            UMI3DForgeClient client = (new GameObject("UMI3DForgeClient")).AddComponent<UMI3DForgeClient>();
+            UMI3DForgeClient client = new GameObject("UMI3DForgeClient").AddComponent<UMI3DForgeClient>();
             client.environmentClient = environmentClient;
             client.ip = ip;
             client.port = port;
@@ -124,9 +124,9 @@ namespace umi3d.cdk.collaboration
             client.playerAccepted += (n, p) => { UMI3DLogger.Log("Player Accepted", scope); };
 
             if (natServerHost.Trim().Length == 0)
-                client.Connect(ip, (ushort)port);
+                client.Connect(ip, port);
             else
-                client.Connect(ip, (ushort)port, natServerHost, natServerPort);
+                client.Connect(ip, port, natServerHost, natServerPort);
 
             //When connected
 
@@ -150,7 +150,7 @@ namespace umi3d.cdk.collaboration
             mgr.Initialize(client, masterServerHost, masterServerPort, null);
 
             networkManagerComponent = NetworkManager.Instance;
-            
+
             CheckForBandWidth();
         }
 
@@ -160,19 +160,18 @@ namespace umi3d.cdk.collaboration
             base.SetRoundTripLatency(latency, sender);
         }
 
-        
-        async void CheckForBandWidth()
+        private async void CheckForBandWidth()
         {
             if (CheckForBandWidthRunning) return;
             CheckForBandWidthRunning = true;
 
-            while (networkManagerComponent?.Networker != null && networkManagerComponent.Networker.BandwidthIn <= 0 || !IsConnected)
+            while ((networkManagerComponent?.Networker != null && networkManagerComponent.Networker.BandwidthIn <= 0) || !IsConnected)
                 await UMI3DAsyncManager.Delay(1000);
 
             float lastBand = -1;
             while (networkManagerComponent?.Networker != null && IsConnected && lastBand != networkManagerComponent.Networker.BandwidthIn)
             {
-                
+
                 lastBand = networkManagerComponent.Networker.BandwidthIn;
                 await UMI3DAsyncManager.Delay(1000);
             }
@@ -182,11 +181,9 @@ namespace umi3d.cdk.collaboration
             {
                 CheckForPing();
             }
-
         }
 
-        
-        async void CheckForPing()
+        private async void CheckForPing()
         {
 
             int count = 10;
@@ -677,7 +674,7 @@ namespace umi3d.cdk.collaboration
         }
 
         #region MonoBehaviour
-        static bool HasBeenSet = false;
+        private static bool HasBeenSet = false;
         /// <summary>
         /// 
         /// </summary>

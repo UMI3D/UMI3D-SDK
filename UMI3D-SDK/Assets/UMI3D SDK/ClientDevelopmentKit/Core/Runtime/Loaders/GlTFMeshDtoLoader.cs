@@ -75,7 +75,7 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    failCallback(new Umi3dException($"Importing failed for { url } \nLoad failed"));
+                    failCallback(new Umi3dException($"Importing failed for {url} \nLoad failed"));
                 }
                 GameObject.Destroy(gltfComp.gameObject, 1);
             };
@@ -132,7 +132,6 @@ namespace umi3d.cdk
         {
             return new Vector3(0, 180, 0);
         }
-
     }
 }
 

@@ -164,7 +164,7 @@ namespace umi3d.cdk
 
             if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation || property.property == UMI3DPropertyKeys.Scale))
             {
-                var gltfDto = (node.dto as GlTFNodeDto);
+                var gltfDto = node.dto as GlTFNodeDto;
                 if (gltfDto == null) return false;
                 switch (property.property)
                 {
@@ -185,7 +185,7 @@ namespace umi3d.cdk
 
             if (base.SetUMI3DProperty(entity, property)) return true;
 
-            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
+            UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -260,7 +260,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderRadius = (float)((double)property.value);
+                        dto.colliderDto.colliderRadius = (float)(double)property.value;
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is SphereCollider)
                         {
@@ -270,7 +270,6 @@ namespace umi3d.cdk
                         {
                             (c as CapsuleCollider).radius = (float)(double)property.value;
                         }
-
                     }
                     break;
                 case UMI3DPropertyKeys.ColliderBoxSize:
@@ -305,7 +304,7 @@ namespace umi3d.cdk
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
-                            (c as CapsuleCollider).direction = (int)((DirectionalType)(Int64)property.value);
+                            (c as CapsuleCollider).direction = (int)(DirectionalType)(Int64)property.value;
                         }
                     }
                     break;
@@ -360,7 +359,6 @@ namespace umi3d.cdk
 
                             SetCollider(dto.id, node, dto.colliderDto);
                         }
-
                     }
                     break;
                 case UMI3DPropertyKeys.HasCollider:
@@ -391,7 +389,7 @@ namespace umi3d.cdk
 
             if (!node.updatePose && (propertyKey == UMI3DPropertyKeys.Position || propertyKey == UMI3DPropertyKeys.Rotation || propertyKey == UMI3DPropertyKeys.Scale))
             {
-                var gltfDto = (node.dto as GlTFNodeDto);
+                var gltfDto = node.dto as GlTFNodeDto;
                 if (gltfDto == null) return false;
                 switch (propertyKey)
                 {
@@ -412,7 +410,7 @@ namespace umi3d.cdk
 
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
 
-            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DNodeDto;
+            UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -497,7 +495,6 @@ namespace umi3d.cdk
                         {
                             (c as CapsuleCollider).radius = dto.colliderDto.colliderRadius;
                         }
-
                     }
                     break;
                 case UMI3DPropertyKeys.ColliderBoxSize:
@@ -588,7 +585,6 @@ namespace umi3d.cdk
 
                             SetCollider(dto.id, node, dto.colliderDto);
                         }
-
                     }
                     break;
                 case UMI3DPropertyKeys.HasCollider:
@@ -707,7 +703,6 @@ namespace umi3d.cdk
                         {
                             UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
                         }
-
                     }
                     else
                     {

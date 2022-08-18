@@ -30,8 +30,15 @@ namespace umi3d.cdk.collaboration
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
 
-        public UMI3DUser GetClientUser() => UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
-        private UMI3DUser GetUser(UserDto dto) => UserList.FirstOrDefault(u => u.id == dto.id);
+        public UMI3DUser GetClientUser()
+        {
+            return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
+        }
+
+        private UMI3DUser GetUser(UserDto dto)
+        {
+            return UserList.FirstOrDefault(u => u.id == dto.id);
+        }
 
         ///<inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)

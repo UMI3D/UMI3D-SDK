@@ -133,7 +133,7 @@ namespace umi3d.cdk
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            var dto = (node.dto as GlTFNodeDto);
+            var dto = node.dto as GlTFNodeDto;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -168,7 +168,7 @@ namespace umi3d.cdk
                 return true;
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
-            var dto = (node.dto as GlTFNodeDto);
+            var dto = node.dto as GlTFNodeDto;
             if (dto == null) return false;
             switch (propertyKey)
             {

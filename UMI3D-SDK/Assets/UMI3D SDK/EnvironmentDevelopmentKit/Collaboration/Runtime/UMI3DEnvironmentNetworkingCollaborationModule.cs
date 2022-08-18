@@ -26,7 +26,7 @@ namespace umi3d.edk.collaboration
             switch (true)
             {
                 case true when typeof(T) == typeof(RegisterIdentityDto):
-                    if (container.length < 2 * sizeof(uint) + 4 * sizeof(ulong))
+                    if (container.length < (2 * sizeof(uint)) + (4 * sizeof(ulong)))
                     {
                         result = default(T);
                         readable = false;

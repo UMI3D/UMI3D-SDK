@@ -41,7 +41,7 @@ namespace umi3d.common.collaboration
         public string audioServerUrl;
         public string audioLogin;
         public bool audioUseMumble;
-        
+
 
         public UserDto(UserDto source)
         {
@@ -62,10 +62,8 @@ namespace umi3d.common.collaboration
             this.audioServerUrl = source.audioServerUrl;
             this.audioLogin = source.audioLogin;
             this.audioUseMumble = source.audioUseMumble;
-    }
+        }
 
         public UserDto() { }
     }
-
-
 }

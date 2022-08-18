@@ -49,7 +49,7 @@ namespace umi3d.common.volume
         {
             Vector3 center = Vector3.zero;
             foreach (Vector3 p in points)
-                center += p * 1f / ((float)points.Count);
+                center += p * 1f / points.Count;
 
             return center;
         }
@@ -86,7 +86,7 @@ namespace umi3d.common.volume
             var pointsInPlaneReferential = new List<Vector3>();
             foreach (Vector3 p in points)
             {
-                Vector3 pProjected = plane.ClosestPointOnPlane(p) - plane.normal * plane.distance;
+                Vector3 pProjected = plane.ClosestPointOnPlane(p) - (plane.normal * plane.distance);
                 pointsInPlaneReferential.Add(
                     new Vector2(
                         Vector3.Dot(pProjected, u),
@@ -304,7 +304,7 @@ namespace umi3d.common.volume
                 var ray = new Line3()
                 {
                     from = point,
-                    to = ((points[0] + points[1]) / 2f - point).normalized * raySize + point
+                    to = ((((points[0] + points[1]) / 2f) - point).normalized * raySize) + point
                 };
 
                 int interCount = 0;
@@ -448,8 +448,8 @@ namespace umi3d.common.volume
                 {
                     var randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
                     var randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-                    u = plane.ClosestPointOnPlane(randomPointA) - plane.distance * plane.normal;
-                    v = plane.ClosestPointOnPlane(randomPointB) - plane.distance * plane.normal;
+                    u = plane.ClosestPointOnPlane(randomPointA) - (plane.distance * plane.normal);
+                    v = plane.ClosestPointOnPlane(randomPointB) - (plane.distance * plane.normal);
                 }
 
                 var from_ = new Vector2(Vector3.Dot(u, this.from), Vector3.Dot(v, this.from));
@@ -495,11 +495,11 @@ namespace umi3d.common.volume
                         //2- evalute f(X1) and check if it is on the line "from".
                         float f(float x)
                         {
-                            return (Y4 - Y3) / (X4 - X3) * (x - X3) + Y3;
+                            return ((Y4 - Y3) / (X4 - X3) * (x - X3)) + Y3;
                         }
 
                         float fx1 = f(X1);
-                        return ((Mathf.Min(Y1, Y2) <= fx1) && (fx1 <= Mathf.Max(Y1, Y2)));
+                        return (Mathf.Min(Y1, Y2) <= fx1) && (fx1 <= Mathf.Max(Y1, Y2));
                     }
                 }
                 else if (X3 == X4) //same as above but for other.
@@ -533,19 +533,19 @@ namespace umi3d.common.volume
                         //2- evalute f(X1) and check if it is on the line "from".
                         float f(float x)
                         {
-                            return (Y4 - Y3) / (X4 - X3) * (x - X3) + Y3;
+                            return ((Y4 - Y3) / (X4 - X3) * (x - X3)) + Y3;
                         }
 
                         float fx1 = f(X1);
-                        return ((Mathf.Min(Y1, Y2) <= fx1) && (fx1 <= Mathf.Max(Y1, Y2)));
+                        return (Mathf.Min(Y1, Y2) <= fx1) && (fx1 <= Mathf.Max(Y1, Y2));
                     }
                 }
                 else
                 {
                     float A1 = (Y1 - Y2) / (X1 - X2);
                     float A2 = (Y3 - Y4) / (X3 - X4);
-                    float b1 = Y1 - A1 * X1;
-                    float b2 = Y3 - A2 * X3;
+                    float b1 = Y1 - (A1 * X1);
+                    float b2 = Y3 - (A2 * X3);
 
                     if (A1 == A2) //parallel
                         return false;
@@ -569,7 +569,7 @@ namespace umi3d.common.volume
             var raycast = new Line3()
             {
                 from = target,
-                to = target + (polygon[1] - polygon[0]) * 2 * ComputeBoundingBox(polygon).size.magnitude
+                to = target + ((polygon[1] - polygon[0]) * 2 * ComputeBoundingBox(polygon).size.magnitude)
             };
 
             var edges = new List<Line3>();
@@ -618,8 +618,8 @@ namespace umi3d.common.volume
             {
                 var randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
                 var randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-                randomU = plane.ClosestPointOnPlane(randomPointA) - plane.distance * plane.normal;
-                randomV = plane.ClosestPointOnPlane(randomPointB) - plane.distance * plane.normal;
+                randomU = plane.ClosestPointOnPlane(randomPointA) - (plane.distance * plane.normal);
+                randomV = plane.ClosestPointOnPlane(randomPointB) - (plane.distance * plane.normal);
             }
 
             var target2D = new Vector2(Vector3.Dot(target, randomU), Vector3.Dot(target, randomV));
@@ -632,7 +632,7 @@ namespace umi3d.common.volume
 
             float sign(Vector2 p1, Vector2 p2, Vector2 p3)
             {
-                return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+                return ((p1.x - p3.x) * (p2.y - p3.y)) - ((p2.x - p3.x) * (p1.y - p3.y));
             }
 
             float d1, d2, d3;
@@ -696,8 +696,8 @@ namespace umi3d.common.volume
             {
                 var randomPointA = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
                 var randomPointB = new Vector3(Random.Range(-10f, 10f), Random.Range(-10f, 10f), Random.Range(-10f, 10f));
-                randomU = uvplane.ClosestPointOnPlane(randomPointA) - uvplane.distance * uvplane.normal;
-                randomV = uvplane.ClosestPointOnPlane(randomPointB) - uvplane.distance * uvplane.normal;
+                randomU = uvplane.ClosestPointOnPlane(randomPointA) - (uvplane.distance * uvplane.normal);
+                randomV = uvplane.ClosestPointOnPlane(randomPointB) - (uvplane.distance * uvplane.normal);
             }
 
             var rawUV = new List<Vector2>();
@@ -1102,7 +1102,7 @@ namespace umi3d.common.volume
             }
             for (int i = 0; i < subdiv; i++)
             {
-                vertices.Add(position + Vector3.Scale(scale, rotation * (Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius + height * Vector3.up)));
+                vertices.Add(position + Vector3.Scale(scale, rotation * ((Quaternion.Euler(i * 360f / subdiv * Vector3.up) * Vector3.right * radius) + (height * Vector3.up))));
             }
 
             for (int i = 0; i < subdiv - 1; i++)
@@ -1119,7 +1119,7 @@ namespace umi3d.common.volume
                 faces.Add(i + 1);
                 faces.Add(i);
 
-                faces.Add(2 * subdiv - 1);
+                faces.Add((2 * subdiv) - 1);
                 faces.Add(subdiv + i);
                 faces.Add(subdiv + i + 1);
             }
@@ -1199,7 +1199,7 @@ namespace umi3d.common.volume
         public static bool IsInside(Mesh mesh, Vector3 point)
         {
             int interCount = 0;
-            var ray = new Ray(point, point + mesh.bounds.size * 1.1f);
+            var ray = new Ray(point, point + (mesh.bounds.size * 1.1f));
 
             for (int i = 0; i < mesh.triangles.Length - 2; i += 3)
             {
@@ -1211,7 +1211,7 @@ namespace umi3d.common.volume
                 };
                 if (GetPlane(triangle).Raycast(ray, out float enter))
                 {
-                    if (IsInTriangle(point + ray.direction * enter, triangle[0], triangle[1], triangle[2]))
+                    if (IsInTriangle(point + (ray.direction * enter), triangle[0], triangle[1], triangle[2]))
                     {
                         interCount++;
                     }

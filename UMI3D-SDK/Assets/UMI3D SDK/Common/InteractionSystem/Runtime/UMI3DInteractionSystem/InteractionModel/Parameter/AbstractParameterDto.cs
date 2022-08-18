@@ -40,5 +40,4 @@ namespace umi3d.common.interaction
         public abstract object GetValue();
 
     }
-
 }

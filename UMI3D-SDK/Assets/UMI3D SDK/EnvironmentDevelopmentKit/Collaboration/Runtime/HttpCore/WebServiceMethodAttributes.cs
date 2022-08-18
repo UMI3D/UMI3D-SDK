@@ -76,5 +76,4 @@ namespace umi3d.edk.collaboration
     {
         public HttpPost(string path, Security security, Type type) : base(path, security, type) { }
     }
-
 }

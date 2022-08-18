@@ -45,7 +45,5 @@ namespace umi3d.common
         {
             return x.distance == y.distance ? 0 : x.distance < y.distance ? -1 : 1;
         }
-
-
     }
 }

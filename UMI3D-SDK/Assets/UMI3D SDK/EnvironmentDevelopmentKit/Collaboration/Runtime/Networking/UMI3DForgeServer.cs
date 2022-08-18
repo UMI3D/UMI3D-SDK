@@ -76,7 +76,7 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64)
         {
-            UMI3DForgeServer server = (new GameObject("UMI3DForgeServer")).AddComponent<UMI3DForgeServer>();
+            UMI3DForgeServer server = new GameObject("UMI3DForgeServer").AddComponent<UMI3DForgeServer>();
             server.ip = ip;
             server.port = port;
             server.masterServerHost = masterServerHost;
@@ -349,7 +349,6 @@ namespace umi3d.edk.collaboration
                         });
                         break;
                 }
-
             }
         }
 
@@ -640,7 +639,7 @@ namespace umi3d.edk.collaboration
                 coeff = 1f;
             }
 
-            return (ulong)Mathf.RoundToInt(1000 / Mathf.Floor((1f - coeff) * maxFPSRelay + coeff * minFPSRelay));
+            return (ulong)Mathf.RoundToInt(1000 / Mathf.Floor(((1f - coeff) * maxFPSRelay) + (coeff * minFPSRelay)));
         }
 
         //relayMemory[p1][p2][gi] = a ulong corresponding to the last time player p1 sent a message to p2 in the gi channel
@@ -791,5 +790,4 @@ namespace umi3d.edk.collaboration
 
         #endregion
     }
-
 }

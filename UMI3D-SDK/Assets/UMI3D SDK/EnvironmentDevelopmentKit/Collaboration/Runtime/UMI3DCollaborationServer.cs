@@ -225,8 +225,7 @@ namespace umi3d.edk.collaboration
             OnServerStart.Invoke();
         }
 
-
-        async void InitMumble()
+        private async void InitMumble()
         {
             mumbleManager = await murmur.MumbleManager.Create(mumbleIp);
         }
@@ -265,12 +264,12 @@ namespace umi3d.edk.collaboration
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
 
-        async void AddUserAudio(UMI3DCollaborationUser user)
+        private async void AddUserAudio(UMI3DCollaborationUser user)
         {
             if (mumbleManager == null)
                 return;
-            var op = await mumbleManager.AddUser(user);
-            var t = new Transaction() { reliable = true};
+            List<Operation> op = await mumbleManager.AddUser(user);
+            var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();
         }
@@ -449,8 +448,8 @@ namespace umi3d.edk.collaboration
                 return;
             user.hasJoined = false;
             (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
-            lock(user.networkPlayer.Networker.Players)
-            user.networkPlayer.Networker.Players.Remove(user.networkPlayer);
+            lock (user.networkPlayer.Networker.Players)
+                user.networkPlayer.Networker.Players.Remove(user.networkPlayer);
             Collaboration.Logout(user, notifiedByUser);
             MainThreadManager.Run(() => Instance._Logout(user));
         }
@@ -469,11 +468,12 @@ namespace umi3d.edk.collaboration
             WorldController.NotifyUserUnregister(user);
             OnUserUnregistered.Invoke(user);
         }
-        async void RemoveUserAudio(UMI3DCollaborationUser user)
+
+        private async void RemoveUserAudio(UMI3DCollaborationUser user)
         {
             if (mumbleManager == null)
                 return;
-            var op = await mumbleManager.RemoveUser(user);
+            List<Operation> op = await mumbleManager.RemoveUser(user);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();
@@ -508,7 +508,7 @@ namespace umi3d.edk.collaboration
 
                 yield return new WaitForSecondsRealtime(WaitTimeForPingAnswer);
             }
-            Logout(user,false);
+            Logout(user, false);
         }
 
         public virtual void Ping(UMI3DCollaborationUser user)

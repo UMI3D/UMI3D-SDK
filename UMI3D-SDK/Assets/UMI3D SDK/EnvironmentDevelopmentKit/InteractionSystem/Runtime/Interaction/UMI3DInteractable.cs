@@ -203,7 +203,7 @@ namespace umi3d.edk.interaction
 
         public IEntity ToEntityDto(UMI3DUser user)
         {
-            return (ToDto(user) as InteractableDto);
+            return ToDto(user) as InteractableDto;
         }
     }
 }

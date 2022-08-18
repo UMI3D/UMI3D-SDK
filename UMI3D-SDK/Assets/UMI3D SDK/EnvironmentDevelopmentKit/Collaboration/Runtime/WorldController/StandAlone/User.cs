@@ -132,6 +132,5 @@ namespace umi3d.worldController
         {
             privateIdentity.connectionDto = connectionDto;
         }
-
     }
 }

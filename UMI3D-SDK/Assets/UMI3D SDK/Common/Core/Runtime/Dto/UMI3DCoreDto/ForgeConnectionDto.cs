@@ -30,6 +30,5 @@ namespace umi3d.common
         public ushort forgeNatServerPort;
 
         public ForgeConnectionDto() : base() { }
-
     }
 }

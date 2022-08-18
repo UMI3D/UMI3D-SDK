@@ -253,6 +253,5 @@ namespace umi3d.edk
                 roughnessTexture = roughnessTexture.ToDto(),
             };
         }
-
     }
 }

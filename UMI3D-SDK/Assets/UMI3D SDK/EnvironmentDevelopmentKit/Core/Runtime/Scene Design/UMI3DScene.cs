@@ -165,7 +165,7 @@ namespace umi3d.edk
                 scene.nodes.Add(node.ToGlTFNodeDto(user));
 
                 //Get new materials
-                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !(materialIds).Contains(((AbstractEntityDto)m.extensions.umi3d).id));
+                IEnumerable<GlTFMaterialDto> materials = node.GetGlTFMaterialsFor(user).Where(m => !materialIds.Contains(((AbstractEntityDto)m.extensions.umi3d).id));
 
 
                 //Add them to the glTF scene
@@ -182,7 +182,6 @@ namespace umi3d.edk
                 //remember their ids
                 animationIds.AddRange(animations.Select(a => a.id));
             }
-
         }
 
         ///<inheritdoc/>
@@ -190,8 +189,6 @@ namespace umi3d.edk
         {
             return ToGlTFNodeDto(user);
         }
-
     }
-
 }
 

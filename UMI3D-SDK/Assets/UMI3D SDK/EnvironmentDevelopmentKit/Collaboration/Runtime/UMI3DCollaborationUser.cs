@@ -90,7 +90,7 @@ namespace umi3d.edk.collaboration
 
             audioChannel = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioChannel, null);
             audioServerUrl = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioServer, null);
-            audioUseMumble = new UMI3DAsyncProperty<bool> (userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
+            audioUseMumble = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
             audioPassword = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioPassword, null);
             audioLogin = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioLogin, null);
 
@@ -159,7 +159,8 @@ namespace umi3d.edk.collaboration
         }
 
 
-        public virtual UserConnectionDto ToUserConnectionDto() {
+        public virtual UserConnectionDto ToUserConnectionDto()
+        {
             var connectionInformation = new UserConnectionDto(ToUserDto())
             {
                 audioPassword = audioPassword.GetValue(),

@@ -133,6 +133,5 @@ namespace umi3d.edk.collaboration
             ser.Serialize(writer, conf);
             writer.Close();
         }
-
     }
 }

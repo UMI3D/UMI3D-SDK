@@ -32,7 +32,7 @@ namespace umi3d.common
             }
 
             // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
+            if ((a is null) || (b is null))
             {
                 return false;
             }
@@ -53,7 +53,7 @@ namespace umi3d.common
             }
 
             // If one is null, but not both, return false.
-            if (((object)a == null) || ((object)b == null))
+            if ((a is null) || (b is null))
             {
                 return false;
             }
@@ -77,7 +77,7 @@ namespace umi3d.common
         ///<inheritdoc/>
         public override bool Equals(System.Object obj)
         {
-            return obj == null ? false : Equals(obj.ToString());
+            return obj != null && Equals(obj.ToString());
         }
         public bool Equals(GenericEnumString p)
         {
@@ -109,6 +109,5 @@ namespace umi3d.common
             }
             return instance.Value;
         }
-
     }
 }

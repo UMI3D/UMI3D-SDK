@@ -131,7 +131,7 @@ namespace umi3d.common.collaboration
                 WriteLabel(new Rect(14, 14, 100, 25), "Players: " + (playerCount - 1));
 
             if (!GetNetWorker().IsServer)
-                WriteLabel(new Rect(14, 14, 100, 25), "Connected: " + (GetNetWorker().Me != null ? GetNetWorker().Me.Connected : false));
+                WriteLabel(new Rect(14, 14, 100, 25), "Connected: " + (GetNetWorker().Me != null && GetNetWorker().Me.Connected));
 
             WriteLabel(new Rect(14, 28, 100, 25), "Time: " + NetworkManager.Instance.Networker.Time.Timestep);
             WriteLabel(new Rect(14, 42, 256, 25), "Bandwidth In: " + NetworkManager.Instance.Networker.BandwidthIn);

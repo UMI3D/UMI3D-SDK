@@ -27,7 +27,7 @@ namespace umi3d.common.collaboration
             switch (true)
             {
                 case true when typeof(T) == typeof(UserCameraPropertiesDto):
-                    readable = container.length >= 17 * sizeof(float) + sizeof(uint);
+                    readable = container.length >= (17 * sizeof(float)) + sizeof(uint);
                     if (readable)
                     {
                         var usercam = new UserCameraPropertiesDto
@@ -533,8 +533,5 @@ namespace umi3d.common.collaboration
             }
             return true;
         }
-
-
-
     }
 }

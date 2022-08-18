@@ -87,7 +87,6 @@ namespace umi3d.worldController
                     Debug.LogError($"Missing case {id}");
                     break;
             }
-
         }
 
         public void ConnectionLost()
@@ -107,13 +106,13 @@ namespace umi3d.worldController
 
         public override Task NotifyUserJoin(UMI3DCollaborationUser user)
         {
-            forgeClient.Send((new WorldControllerUserJoinMessage(user.login)).ToBytable().ToBytes());
+            forgeClient.Send(new WorldControllerUserJoinMessage(user.login).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 
         public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
         {
-            forgeClient.Send((new WorldControllerUserLeaveMessage(user.login)).ToBytable().ToBytes());
+            forgeClient.Send(new WorldControllerUserLeaveMessage(user.login).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 

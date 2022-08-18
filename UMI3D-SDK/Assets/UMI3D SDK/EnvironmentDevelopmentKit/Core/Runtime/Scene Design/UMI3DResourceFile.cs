@@ -69,7 +69,7 @@ namespace umi3d.edk
         public string GetUrl()
         {
             path = path.Replace(@"\", "/");
-            if (path != null && path != "" && !(path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
+            if (path != null && path != "" && !path.StartsWith("/") /*|| Path.StartsWith(@"\")*/)
             {
                 path = "/" + path;
             }

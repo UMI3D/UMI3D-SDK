@@ -128,17 +128,17 @@ namespace umi3d.cdk
             alpha = 1e-3f;
             ki = 0;
             beta = 2f;
-            lambda = alpha * alpha * (L + ki) - L;
+            lambda = (alpha * alpha * (L + ki)) - L;
             c = L + lambda;
 
             //weights for means
-            Wm = Matrix.Build.Dense(1, (2 * L + 1), 0.5 / c);
+            Wm = Matrix.Build.Dense(1, (2 * L) + 1, 0.5 / c);
             Wm[0, 0] = lambda / c;
 
             //weights for covariance
-            Wc = Matrix.Build.Dense(1, (2 * L + 1));
+            Wc = Matrix.Build.Dense(1, (2 * L) + 1);
             Wm.CopyTo(Wc);
-            Wc[0, 0] = Wm[0, 0] + 1 - alpha * alpha + beta;
+            Wc[0, 0] = Wm[0, 0] + 1 - (alpha * alpha) + beta;
 
             c = Math.Sqrt(c);
         }
@@ -179,7 +179,7 @@ namespace umi3d.cdk
             Matrix<double> Z2 = ut_h_matrices[3];
 
             //transformed cross-covariance
-            Matrix<double> P12 = (X2.Multiply(Matrix.Build.Diagonal(Wc.Row(0).ToArray()))).Multiply(Z2.Transpose());
+            Matrix<double> P12 = X2.Multiply(Matrix.Build.Diagonal(Wc.Row(0).ToArray())).Multiply(Z2.Transpose());
 
             Matrix<double> K = P12.Multiply(P2.Inverse());
 
@@ -255,7 +255,7 @@ namespace umi3d.cdk
                 Y.SetSubMatrix(0, n, j, 1, x);
             }
 
-            Matrix<double> X = Matrix.Build.Dense(n, (2 * n + 1));
+            Matrix<double> X = Matrix.Build.Dense(n, (2 * n) + 1);
             X.SetSubMatrix(0, n, 0, 1, x);
 
             Matrix<double> Y_plus_A = Y.Add(A);
