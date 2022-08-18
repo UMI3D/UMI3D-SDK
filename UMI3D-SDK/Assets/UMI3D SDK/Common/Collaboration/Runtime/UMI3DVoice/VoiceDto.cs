@@ -16,10 +16,11 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
-    public class VoiceDto : UMI3DDto
+    public class VoiceDto
     {
-        public uint senderId;
-        public int length;
-        public byte[] data;
+        public string url;
+        public string login;
+        public string password;
+        public string channelName;
     }
 }

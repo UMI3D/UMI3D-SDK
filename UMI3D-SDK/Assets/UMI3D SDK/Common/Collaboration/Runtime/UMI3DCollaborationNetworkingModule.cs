@@ -44,6 +44,31 @@ namespace umi3d.common.collaboration
                     }
 
                     return true;
+
+                case true when typeof(T) == typeof(VoiceDto):
+                    if (UMI3DNetworkingHelper.TryRead(container, out string voiceUrl) &&
+                        UMI3DNetworkingHelper.TryRead(container, out string login) &&
+                        UMI3DNetworkingHelper.TryRead(container, out string password) &&
+                        UMI3DNetworkingHelper.TryRead(container, out string channel))
+                    {
+                        readable = true;
+                        var voice = new VoiceDto
+                        {
+                            url = voiceUrl,
+                            login = login,
+                            password = password,
+                            channelName = channel
+                        };
+                        result = (T)Convert.ChangeType(voice, typeof(T));
+                    }
+                    else
+                    {
+                        readable = false;
+                        result = default(T);
+                    }
+
+                    return true;
+
                 case true when typeof(T) == typeof(BoneDto):
                     uint type;
                     SerializableVector4 rot;
@@ -489,6 +514,12 @@ namespace umi3d.common.collaboration
                 case GateDto gate:
                     bytable = UMI3DNetworkingHelper.Write(gate.gateId)
                         + UMI3DNetworkingHelper.WriteCollection(gate.metaData);
+                    break;
+                case VoiceDto voice:
+                    bytable = UMI3DNetworkingHelper.Write(voice.url)
+                        + UMI3DNetworkingHelper.Write(voice.login)
+                        + UMI3DNetworkingHelper.Write(voice.password)
+                        + UMI3DNetworkingHelper.Write(voice.channelName);
                     break;
                 default:
                     if (typeof(T) == typeof(ResourceDto))

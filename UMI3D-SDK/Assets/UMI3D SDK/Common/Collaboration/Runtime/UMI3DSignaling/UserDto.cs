@@ -25,15 +25,23 @@ namespace umi3d.common.collaboration
     public class UserDto : AbstractEntityDto
     {
         public StatusType status;
+
         public ulong avatarId;
         public ulong audioSourceId;
         public int audioFrequency;
         public ulong videoSourceId;
         public uint networkId;
         public string login;
+
         public bool microphoneStatus;
         public bool avatarStatus;
         public bool attentionRequired;
+
+        public string audioChannel;
+        public string audioServerUrl;
+        public string audioLogin;
+        public bool audioUseMumble;
+        
 
         public UserDto(UserDto source)
         {
@@ -45,10 +53,16 @@ namespace umi3d.common.collaboration
             this.networkId = source.networkId;
             this.id = source.id;
             this.login = source.login;
+
             this.microphoneStatus = source.microphoneStatus;
             this.avatarStatus = source.avatarStatus;
             this.attentionRequired = source.attentionRequired;
-        }
+
+            this.audioChannel = source.audioChannel;
+            this.audioServerUrl = source.audioServerUrl;
+            this.audioLogin = source.audioLogin;
+            this.audioUseMumble = source.audioUseMumble;
+    }
 
         public UserDto() { }
     }

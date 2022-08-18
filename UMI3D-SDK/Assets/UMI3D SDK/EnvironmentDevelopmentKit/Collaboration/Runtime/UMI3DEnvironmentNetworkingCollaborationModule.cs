@@ -62,9 +62,16 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<int>(user.audioFrequency)
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoSourceId)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkId)
+
                     + UMI3DNetworkingHelper.Write(user.microphoneStatus)
                     + UMI3DNetworkingHelper.Write(user.avatarStatus)
                     + UMI3DNetworkingHelper.Write(user.attentionRequired)
+
+                    + UMI3DNetworkingHelper.Write(user.audioServerUrl)
+                    + UMI3DNetworkingHelper.Write(user.audioChannel)
+                    + UMI3DNetworkingHelper.Write(user.audioLogin)
+                    + UMI3DNetworkingHelper.Write(user.audioUseMumble)
+
                      + UMI3DNetworkingHelper.Write<string>(user.login);
                     return true;
                 case UMI3DCollaborationUser user:
@@ -75,9 +82,16 @@ namespace umi3d.edk.collaboration
                     + UMI3DNetworkingHelper.Write<int>(user.audioFrequency.GetValue())
                     + UMI3DNetworkingHelper.Write<ulong>(user.videoPlayer?.Id() ?? 0)
                     + UMI3DNetworkingHelper.Write<uint>(user.networkPlayer?.NetworkId ?? 0)
+
                     + UMI3DNetworkingHelper.Write(user.microphoneStatus.GetValue())
                     + UMI3DNetworkingHelper.Write(user.avatarStatus.GetValue())
                     + UMI3DNetworkingHelper.Write(user.attentionRequired.GetValue())
+
+                    + UMI3DNetworkingHelper.Write(user.audioServerUrl.GetValue())
+                    + UMI3DNetworkingHelper.Write(user.audioChannel.GetValue())
+                    + UMI3DNetworkingHelper.Write(user.audioLogin.GetValue())
+                    + UMI3DNetworkingHelper.Write(user.audioUseMumble.GetValue())
+
                     + UMI3DNetworkingHelper.Write<string>(string.IsNullOrEmpty(user.displayName) ? (string.IsNullOrEmpty(user.login) ? user.Id().ToString() : user.login) : user.displayName);
                     return true;
                 case RegisterIdentityDto identity:

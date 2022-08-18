@@ -221,8 +221,9 @@ namespace umi3d.cdk
                                 && (a.Groups[2].Captures.Count == Matchurl.Groups[2].Captures.Count)
                                 && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == Matchurl.Groups[2].Captures[0].Value) 
                                 && a.Groups[3].Captures[0].Value == Matchurl.Groups[3].Captures[0].Value)
-                        || ((!string.IsNullOrEmpty(libraryId) 
-                                && libraryIds.Contains(libraryId) 
+                        || ((!string.IsNullOrEmpty(fileRelativePath)
+                                && !string.IsNullOrEmpty(libraryId)
+                                && libraryIds.Contains(libraryId)
                                 && Matchurl.Groups[3].Captures[0].Value.Contains(fileRelativePath)));
 
                 return false;
