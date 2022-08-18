@@ -125,12 +125,7 @@ namespace umi3d.edk.interaction
             return UMI3DInteractionKeys.Event;
         }
 
-        /// <summary>
-        /// Write the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
-        /// </summary>
-        /// <param name="scene">The UMI3DNodeDto to be completed</param>
-        /// <param name="user">User to convert for</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
