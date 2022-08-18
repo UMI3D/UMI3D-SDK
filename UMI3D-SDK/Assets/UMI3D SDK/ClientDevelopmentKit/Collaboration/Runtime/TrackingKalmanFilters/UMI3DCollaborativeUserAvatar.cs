@@ -31,6 +31,11 @@ namespace umi3d.cdk.collaboration
 
         protected KalmanPosition skeletonHeightFilter = new KalmanPosition(50, 0.5);
 
+        private void Start()
+        {
+            viewpointObject = this.transform.Find("Viewpoint");
+        }
+
         private void Update()
         {
             RegressionPosition(nodePositionFilter);
@@ -49,12 +54,22 @@ namespace umi3d.cdk.collaboration
 
                 Transform boneTransform;
 
-                if (!boneType.Equals(BoneType.CenterFeet))
-                    boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
-                else
-                    boneTransform = skeleton.transform;
+                if (boneType.Equals(BoneType.Viewpoint))
+                {
+                    boneTransform = viewpointObject;
+                    boneTransform.parent.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                }
 
-                boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                else
+                {
+                    if (boneType.Equals(BoneType.CenterFeet))
+                        boneTransform = skeleton.transform;
+                    else
+                        boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
+
+                    boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                }
+
 
                 List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
                 foreach (BoneBindingDto boneBindingDto in bindings)
@@ -65,7 +80,7 @@ namespace umi3d.cdk.collaboration
                         if (boneBindingDto.syncPosition)
                             st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
                         if (boneBindingDto.syncRotation)
-                            st.obj.rotation = boneTransform.rotation * bounds.Find(b => st.obj == b.obj).anchorRelativeRot * (Quaternion)boneBindingDto.offsetRotation;
+                            st.obj.rotation = boneTransform.rotation /** bounds.Find(b => st.obj == b.obj).anchorRelativeRot*/ * (Quaternion)boneBindingDto.offsetRotation;
                         if (boneBindingDto.freezeWorldScale)
                         {
                             Vector3 WscaleMemory = st.savedLossyScale;
