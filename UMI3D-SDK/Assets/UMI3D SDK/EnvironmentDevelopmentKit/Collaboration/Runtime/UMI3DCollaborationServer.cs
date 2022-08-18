@@ -62,7 +62,7 @@ namespace umi3d.edk.collaboration
 
 
         [EditorReadOnly]
-        public string mumbleIp = "20.199.41.101:64738";
+        public string mumbleIp = "";
 
         [EditorReadOnly]
         public bool useRandomForgePort;
@@ -267,6 +267,8 @@ namespace umi3d.edk.collaboration
 
         async void AddUserAudio(UMI3DCollaborationUser user)
         {
+            if (mumbleManager == null)
+                return;
             var op = await mumbleManager.AddUser(user);
             var t = new Transaction() { reliable = true};
             t.AddIfNotNull(op);
@@ -350,7 +352,8 @@ namespace umi3d.edk.collaboration
                 isRunning = false;
                 OnServerStop.Invoke();
             }
-            mumbleManager.Delete();
+            if (mumbleManager != null)
+                mumbleManager.Delete();
         }
 
         private void Clear()
@@ -362,7 +365,8 @@ namespace umi3d.edk.collaboration
                 isRunning = false;
                 OnServerStop.Invoke();
             }
-            mumbleManager.Delete();
+            if (mumbleManager != null)
+                mumbleManager.Delete();
         }
 
         public static void Stop()
@@ -467,6 +471,8 @@ namespace umi3d.edk.collaboration
         }
         async void RemoveUserAudio(UMI3DCollaborationUser user)
         {
+            if (mumbleManager == null)
+                return;
             var op = await mumbleManager.RemoveUser(user);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);

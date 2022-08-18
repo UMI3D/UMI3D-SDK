@@ -20,6 +20,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using umi3d.edk.collaboration;
+using inetum.unityUtils;
 
 namespace umi3d.edk.collaboration.murmur
 {
@@ -31,18 +32,25 @@ namespace umi3d.edk.collaboration.murmur
         int lastRoomguid = 0;
         int defaultRoom;
         List<int> localRoom;
+        List<int> users;
+        readonly string guid;
 
         public static async Task<MumbleManager> Create(string ip)
         {
+            if (ip == null)
+                return null;
             var mm = new MumbleManager(ip);
             mm.serv = await MurmurAPI.Server.Create(mm.m, 1);
             mm.localRoom = new List<int>();
+            mm.users = new List<int>();
             mm.defaultRoom = await mm.CreateRoom();
+            QuittingManager.OnApplicationIsQuitting.AddListener(mm.Delete);
             return mm;
         }
 
         private MumbleManager(string ip)
         {
+            guid = System.Guid.NewGuid().ToString();
             this.ip = ip;
             var s = ip.Split(':');
             m = new MurmurAPI(s[0]);
@@ -55,7 +63,7 @@ namespace umi3d.edk.collaboration.murmur
 
         public async Task<int> CreateRoom()
         {
-            var roomName = "Room" + lastRoomguid++;
+            var roomName = $"Room_{lastRoomguid++}[{guid}]";
             var c = await serv.CreateChannel(roomName);
             localRoom.Add(c.data.id);
             return c.data.id;
@@ -109,7 +117,8 @@ namespace umi3d.edk.collaboration.murmur
             var ch =  serv.Channels.FirstOrDefault(c => c.data.id == room)?.data.name;
             ops.Add(user.audioChannel.SetValue(ch));
 
-            await serv.AddUser(user.audioLogin.GetValue(), user.audioPassword.GetValue());
+            var u = await serv.AddUser(user.audioLogin.GetValue(), user.audioPassword.GetValue());
+            users.Add(u.id);
 
             return ops;
         }
@@ -119,7 +128,10 @@ namespace umi3d.edk.collaboration.murmur
             var ops = new List<Operation>();
             var u = serv.RegisteredUsers.FirstOrDefault(us => us.name == user.audioLogin.GetValue());
             if (u != null)
+            {
+                users.Remove(u.id);
                 await serv.RemoveUser(u.id);
+            }
 
             ops.Add(ToPrivate(user,user.audioLogin.SetValue("")));
             ops.Add(ToPrivate(user, user.audioPassword.SetValue("")));
@@ -156,7 +168,9 @@ namespace umi3d.edk.collaboration.murmur
 
         public async void Delete()
         {
-            await Task.WhenAll(localRoom.Select(async (room) => await DeleteRoom(room, true)));
+            QuittingManager.OnApplicationIsQuitting.RemoveListener(Delete);
+            await Task.WhenAll(localRoom.ToList().Select(async (room) => { try { await DeleteRoom(room, true); } catch { } }));
+            await Task.WhenAll(users.ToList().Select(async (user) => { try { await serv.RemoveUser(user); } catch { } }));
         }
 
     }
