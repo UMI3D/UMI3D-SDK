@@ -24,8 +24,12 @@ namespace umi3d.edk.interaction
     /// </summary>
     public class ReleaseTool : Operation
     {
+        /// <summary>
+        /// Tool to release.
+        /// </summary>
         public AbstractTool tool;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ReleaseTool)

@@ -25,8 +25,12 @@ namespace umi3d.edk.interaction
     /// </summary>
     public class SwitchTool : ProjectTool
     {
+        /// <summary>
+        /// Tool to replace.
+        /// </summary>
         public AbstractTool toolToReplace;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SwitchTool)

@@ -32,6 +32,9 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool notifySubObject = false;
 
+        /// <summary>
+        /// Node id.
+        /// </summary>
         public ulong nodeId;
 
         /// <summary>
@@ -39,8 +42,14 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool hasPriority = false;
 
+        /// <summary>
+        /// Animation id of the animation triggered when the interactable starts being hovered.
+        /// </summary>
         public ulong HoverEnterAnimationId;
 
+        /// <summary>
+        /// Animation id of the animation triggered when the interactable stops being hovered.
+        /// </summary>
         public ulong HoverExitAnimationId;
 
         public InteractableDto() : base() { }

@@ -27,6 +27,9 @@ namespace umi3d.edk.interaction
     /// </summary>
     public class UMI3DForm : AbstractInteraction
     {
+        /// <summary>
+        /// Form fields as a list of <see cref="AbstractParameter"/>.
+        /// </summary>
         public List<AbstractParameter> Fields = new List<AbstractParameter>();
 
         [System.Serializable]
@@ -65,11 +68,13 @@ namespace umi3d.edk.interaction
             dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.Form;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -90,6 +95,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (interactionId)

@@ -22,7 +22,13 @@ namespace umi3d.common.interaction
     [System.Serializable]
     public class LocalInfoRequestParameterValue
     {
+        /// <summary>
+        /// Read authorization
+        /// </summary>
         public bool read;
+        /// <summary>
+        /// Write authorization
+        /// </summary
         public bool write;
 
         public LocalInfoRequestParameterValue(bool read, bool write)

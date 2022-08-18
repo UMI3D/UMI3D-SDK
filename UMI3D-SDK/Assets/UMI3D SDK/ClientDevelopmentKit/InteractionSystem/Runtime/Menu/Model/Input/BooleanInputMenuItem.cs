@@ -19,7 +19,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu
 {
     /// <summary>
-    /// Boolean input menu item.
+    /// <see cref="MenuItem"/> for Boolean input.
     /// </summary>
     public class BooleanInputMenuItem : AbstractInputMenuItem<bool>
     {

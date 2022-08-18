@@ -37,8 +37,10 @@ namespace umi3d.common.interaction
         /// </summary>
         public SerializableVector3 direction;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.Hoverred; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

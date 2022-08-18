@@ -32,6 +32,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Interatable associated with the object.
         /// </summary>
+        [Tooltip("Interatable associated with the object")]
         public Interactable Interactable;
 
         private void Awake()

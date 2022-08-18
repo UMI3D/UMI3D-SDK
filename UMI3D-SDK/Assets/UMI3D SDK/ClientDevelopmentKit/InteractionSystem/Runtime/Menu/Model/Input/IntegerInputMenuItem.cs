@@ -20,7 +20,9 @@ namespace umi3d.cdk.menu
 {
     public class IntegerInputMenuItem : AbstractInputMenuItem<int>
     {
-
+        /// <summary>
+        /// Integer value of the input menu item.
+        /// </summary>
         private int value = 0;
 
         /// <summary>

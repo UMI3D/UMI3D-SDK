@@ -63,8 +63,17 @@ namespace umi3d.cdk.interaction
         // could be removed if unity project version is 2020.1 or newer 
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
 
+        /// <summary>
+        /// Trigerred when the tool is updated.
+        /// </summary>
         public UnityEvent OnUpdated = new UnityEvent();
+        /// <summary>
+        /// Trigerred when the tool is added.
+        /// </summary>
         public UnityEvent<AbstractInteractionDto> OnAdded = new AbstractInteractionDtoEvent();
+        /// <summary>
+        /// Trigerred when the tool is removed.
+        /// </summary>
         public UnityEvent<AbstractInteractionDto> OnRemoved = new AbstractInteractionDtoEvent();
 
         public void Updated() { OnUpdated.Invoke(); }

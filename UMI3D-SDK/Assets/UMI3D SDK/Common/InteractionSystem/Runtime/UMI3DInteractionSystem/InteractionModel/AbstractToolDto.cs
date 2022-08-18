@@ -34,6 +34,9 @@ namespace umi3d.common.interaction
         /// </summary>
         public string description = null;
 
+        /// <summary>
+        /// Is tool active ?
+        /// </summary>
         public bool active = true;
 
         /// <summary>

@@ -900,7 +900,10 @@ namespace umi3d.cdk.interaction
     [System.Serializable]
     public class EventNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Event DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Event DTO")]
         public EventDto evt;
 
         public EventNode(string treeId) : base(treeId) { }
@@ -912,10 +915,16 @@ namespace umi3d.cdk.interaction
     [System.Serializable]
     public class ManipulationNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Manipulation DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Manipulation DTO")]
         public ManipulationDto manipulation;
 
-        [SerializeField]
+        /// <summary>
+        /// Associated Degree of Freedom Group DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Degree of Freedom Group DTO")]
         public DofGroupDto manipulationDofGroupDto;
 
         public ManipulationNode(string treeId) : base(treeId) { }
@@ -927,7 +936,10 @@ namespace umi3d.cdk.interaction
     [System.Serializable]
     public class FormNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Form DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Form DTO")]
         public FormDto form;
 
         public FormNode(string treeId) : base(treeId) { }
@@ -939,7 +951,10 @@ namespace umi3d.cdk.interaction
     [System.Serializable]
     public class LinkNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Link DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Link DTO")]
         public LinkDto link;
 
         public LinkNode(string treeId) : base(treeId) { }
@@ -951,7 +966,10 @@ namespace umi3d.cdk.interaction
     [System.Serializable]
     public class ParameterNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Parameter DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Parameter DTO")]
         public AbstractParameterDto parameter;
 
         public ParameterNode(string treeId) : base(treeId) { }

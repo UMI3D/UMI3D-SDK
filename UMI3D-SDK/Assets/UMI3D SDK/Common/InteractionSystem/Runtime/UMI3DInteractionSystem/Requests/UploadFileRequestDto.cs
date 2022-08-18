@@ -27,6 +27,7 @@ namespace umi3d.common.interaction
         /// </summary>
         public string fileId;
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

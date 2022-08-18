@@ -19,7 +19,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu
 {
     /// <summary>
-    /// Menu item for text input.
+    /// <see cref="MenuItem"/> for text input.
     /// </summary>
     public class TextInputMenuItem : AbstractInputMenuItem<string>
     {

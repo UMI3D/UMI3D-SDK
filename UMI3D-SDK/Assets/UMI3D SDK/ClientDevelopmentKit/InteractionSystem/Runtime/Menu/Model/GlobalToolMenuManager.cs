@@ -24,6 +24,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class GlobalToolMenuManager : inetum.unityUtils.SingleBehaviour<GlobalToolMenuManager>
     {
         public MenuAsset menuAsset;
@@ -42,6 +45,10 @@ namespace umi3d.cdk.interaction
             UMI3DGlobalToolLoader.SubscribeToGlobalToolDelete(OnToolDelete);
         }
 
+        /// <summary>
+        /// Triggered when a tool is created.
+        /// </summary>
+        /// <param name="tool"></param>
         private void OnToolCreation(GlobalTool tool)
         {
             if (tool is Toolbox)
@@ -118,6 +125,10 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        /// <summary>
+        /// Triggered when a tool is updated.
+        /// </summary>
+        /// <param name="tool"></param>
         private void OnToolUpdate(GlobalTool tool)
         {
             if (tool is Toolbox)
@@ -132,6 +143,10 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        /// <summary>
+        /// Triggered when a tool is deleted.
+        /// </summary>
+        /// <param name="tool"></param>
         private void OnToolDelete(GlobalTool tool)
         {
             if (tool is Toolbox)
@@ -146,6 +161,14 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        /// <summary>
+        /// Retrieve the adequate <see cref="MenuItem"/> for a given interaction that belongs to a tool.
+        /// </summary>
+        /// <param name="interactionDto">Interaction to get the menu for.</param>
+        /// <param name="toolId">Id of the tool the interaciton belongs to.</param>
+        /// <returns></returns>
+        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="System.Exception"></exception>
         public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong toolId)
         {
             var icon2DTex = new Texture2D(0, 0);

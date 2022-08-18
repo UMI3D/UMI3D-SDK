@@ -34,7 +34,7 @@ namespace umi3d.cdk.interaction
         /// The Interaction Controllers.
         /// Should be input devices (or groups of input devices) connectors.
         /// </summary>
-        [SerializeField]
+        [SerializeField, Tooltip("The Interaction Controllers.\nShould be input devices (or groups of input devices) connectors")]
         protected List<AbstractController> Controllers = new List<AbstractController>();
 
         /// <summary>
@@ -42,6 +42,9 @@ namespace umi3d.cdk.interaction
         /// ask to selected AbstractController to project this event on a specific input if
         /// it can.
         /// </summary>
+        [Tooltip("If true, when a tool with holdable events is projected, " +
+            "InteractionMapper will ask to selected AbstractController " +
+            "to project this event on a specific input if it can")]
         public bool shouldProjectHoldableEventOnSpecificInput = false;
 
 

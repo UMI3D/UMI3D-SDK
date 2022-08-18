@@ -93,6 +93,9 @@ namespace umi3d.edk.interaction
         [Serializable]
         public class HoverEvent : UnityEvent<HoverEventContent> { }
 
+        /// <summary>
+        /// <see cref="AbstractInteraction.InteractionEventContent"/> specialized for hoverring.
+        /// </summary>
         [Serializable]
         public class HoverEventContent : AbstractInteraction.InteractionEventContent
         {
@@ -133,8 +136,20 @@ namespace umi3d.edk.interaction
         [SerializeField, Tooltip("Triggered when the object stops to be hovered by a user.")]
         public HoverEvent onHoverExit = new HoverEvent();
 
+        /// <summary>
+        /// Should specific animations be played on hover enter / exit ?
+        /// </summary>
+        [Tooltip("Should specific animations be played on hover enter / exit ?")]
         public bool UseAnimations = false;
+        // <summary>
+        /// Triggered when the object is hovered by a user.
+        /// </summary>
+        [Tooltip("Triggered when the object is hovered by a user.")]
         public UMI3DNodeAnimation HoverEnterAnimation;
+        /// <summary>
+        /// Triggered when the object stops to be hovered by a user.
+        /// </summary>
+        [Tooltip("Triggered when the object stops to be hovered by a user.")]
         public UMI3DNodeAnimation HoverExitAnimation;
 
         /// <summary>
@@ -183,7 +198,7 @@ namespace umi3d.edk.interaction
             Idto.HoverExitAnimationId = HoverExitAnimation != null ? HoverExitAnimation.Id() : 0;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -249,6 +264,7 @@ namespace umi3d.edk.interaction
             else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return (ToDto(user) as InteractableDto);

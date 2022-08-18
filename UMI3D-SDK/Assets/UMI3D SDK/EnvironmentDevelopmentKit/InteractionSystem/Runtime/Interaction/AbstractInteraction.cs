@@ -90,14 +90,24 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Indicates if the interaction is part of another.
         /// </summary>
-        [HideInInspector] public bool IsSubInteraction = false;
+        [HideInInspector] 
+        public bool IsSubInteraction = false;
 
+        /// <summary>
+        /// Available display information on the interaction
+        /// </summary>
         public InteractionDisplay Display = new InteractionDisplay()
         {
             name = null
         };
 
+        /// <summary>
+        /// Animation triggered when the interaction is triggered.
+        /// </summary>
         public UMI3DNodeAnimation TriggerAnimation;
+        /// <summary>
+        /// Animation triggered when the interaction is released.
+        /// </summary>
         public UMI3DNodeAnimation ReleaseAnimation;
 
         /// <summary>
@@ -231,6 +241,7 @@ namespace umi3d.edk.interaction
                     + UMI3DNetworkingHelper.Write(Display.description);
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
@@ -238,6 +249,7 @@ namespace umi3d.edk.interaction
             return ToByte(parameters[0] as UMI3DUser);
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;

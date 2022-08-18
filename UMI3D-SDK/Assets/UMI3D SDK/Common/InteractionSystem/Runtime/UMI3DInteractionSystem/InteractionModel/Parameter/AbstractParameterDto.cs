@@ -28,6 +28,7 @@ namespace umi3d.common.interaction
         /// </summary>
         public V value;
 
+        /// <inheritdoc/>
         public override object GetValue()
         {
             return value;

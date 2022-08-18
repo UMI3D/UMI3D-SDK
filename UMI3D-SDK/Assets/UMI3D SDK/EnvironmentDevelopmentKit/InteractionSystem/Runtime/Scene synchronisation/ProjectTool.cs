@@ -24,9 +24,16 @@ namespace umi3d.edk.interaction
     /// </summary>
     public class ProjectTool : Operation
     {
+        /// <summary>
+        /// Tool to project.
+        /// </summary>
         public AbstractTool tool;
+        /// <summary>
+        /// Is tool releasable ?
+        /// </summary>
         public bool releasable = true;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ProjectTool)

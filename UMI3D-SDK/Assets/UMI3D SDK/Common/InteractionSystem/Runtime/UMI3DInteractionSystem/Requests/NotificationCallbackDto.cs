@@ -31,8 +31,10 @@ namespace umi3d.common.interaction
         /// </summary>
         public ulong id;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.NotificationCallback; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

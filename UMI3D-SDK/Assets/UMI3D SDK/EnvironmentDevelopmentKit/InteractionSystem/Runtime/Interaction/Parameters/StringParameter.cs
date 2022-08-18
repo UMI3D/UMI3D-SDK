@@ -59,11 +59,13 @@ namespace umi3d.edk.interaction
             (dto as StringParameterDto).value = value;
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.StringParameter;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -93,6 +95,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)

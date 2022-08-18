@@ -23,10 +23,15 @@ namespace umi3d.common.interaction
     /// </summary>
     public class FormAnswerDto : InteractionRequestDto
     {
+        /// <summary>
+        /// List of answers to the form as a list of <see cref="ParameterSettingRequestDto"/>.
+        /// </summary>
         public List<ParameterSettingRequestDto> answers;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.FormAnswer; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

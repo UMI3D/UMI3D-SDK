@@ -32,11 +32,20 @@ namespace umi3d.cdk.interaction
         /// </summary>
         protected static Dictionary<ulong, GlobalTool> instances = new Dictionary<ulong, GlobalTool>();
 
+        /// <summary>
+        /// Retrieve all the <see cref="GlobalTool"/> instances.
+        /// </summary>
+        /// <returns></returns>
         public static List<GlobalTool> GetGlobalTools()
         {
             return instances.Values.ToList();
         }
 
+        /// <summary>
+        /// Get a global tool by its id in <see cref="instances"/>.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static GlobalTool GetGlobalTool(ulong id)
         {
             return instances[id];
@@ -68,6 +77,7 @@ namespace umi3d.cdk.interaction
             instances.Add(id, this);
         }
 
+        /// <inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as GlobalToolDto; }
     }
 }

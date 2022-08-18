@@ -32,8 +32,10 @@ namespace umi3d.common.interaction
         /// </summary>
         public uint boneType;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.ToolReleased; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

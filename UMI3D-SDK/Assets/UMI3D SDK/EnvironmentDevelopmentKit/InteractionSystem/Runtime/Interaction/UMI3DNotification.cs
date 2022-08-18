@@ -66,8 +66,12 @@ namespace umi3d.edk
             this.icon3dProperty = new UMI3DAsyncProperty<UMI3DResource>(notificationId, UMI3DPropertyKeys.NotificationContent, icon3d, (r, u) => r.ToDto());
         }
 
+        /// <summary>
+        /// Notification id
+        /// </summary>
         private ulong notificationId;
 
+        /// <inheritdoc/>
         public ulong Id()
         {
             if (notificationId == 0 && UMI3DEnvironment.Exists)
@@ -75,6 +79,9 @@ namespace umi3d.edk
             return notificationId;
         }
 
+        /// <summary>
+        /// Register the object in the <see cref="UMI3DEnvironment"/> if necessary
+        /// </summary>
         private void Register()
         {
             if (notificationId == 0 && UMI3DEnvironment.Exists)
@@ -100,6 +107,7 @@ namespace umi3d.edk
             dto.icon3D = icon3dProperty.GetValue(user)?.ToDto();
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             NotificationDto dto = CreateDto();
@@ -107,6 +115,7 @@ namespace umi3d.edk
             return dto;
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(Id())

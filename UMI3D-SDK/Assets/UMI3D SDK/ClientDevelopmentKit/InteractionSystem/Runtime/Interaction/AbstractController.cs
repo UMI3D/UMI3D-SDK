@@ -28,9 +28,12 @@ namespace umi3d.cdk.interaction
     {
         #region properties
         /// <summary>
-        /// Currently projected tool's id.
+        /// Currently projected tool.
         /// </summary>
         protected AbstractTool currentTool = null;
+        /// <summary>
+        /// Currently projected tool.
+        /// </summary>
         public AbstractTool tool => currentTool;
 
         /// <summary>
@@ -46,6 +49,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Controller projection memory.
         /// </summary>
+        [Tooltip("Controller projection memory")]
         public ProjectionMemory projectionMemory;
 
         #endregion

@@ -19,6 +19,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> for events of interactions
+    /// </summary>
     public class EventMenuItem : InteractionMenuItem
     {
         /// <summary>
@@ -26,6 +29,9 @@ namespace umi3d.cdk.menu.interaction
         /// </summary>
         public bool hold = false;
 
+        /// <summary>
+        /// Value of the event menu item
+        /// </summary>
         private bool value = false;
 
         /// <summary>
@@ -61,6 +67,10 @@ namespace umi3d.cdk.menu.interaction
             return Name;
         }
 
+        /// <summary>
+        /// Get the value of the menu item
+        /// </summary>
+        /// <returns></returns>
         public virtual bool GetValue()
         {
             return value;
