@@ -275,7 +275,7 @@ namespace Mumble
             _secondsWithoutMicSamples = 0;
             _sampleNumberOfLastMinAmplitudeVoice = int.MinValue;
             isRecording = true;
-            _mumbleClient.SetSelfMute(false);
+            //_mumbleClient.SetSelfMute(false);
         }
         public void StopSendingAudio()
         {
