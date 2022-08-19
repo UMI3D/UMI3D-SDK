@@ -20,18 +20,5 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    public class UMI3DAvatarViewpointHelper : MonoBehaviour
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-    }
+    public class UMI3DAvatarViewpointHelper : MonoBehaviour {}
 }

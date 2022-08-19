@@ -20,18 +20,5 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    public class UMI3DViewpointHelper : MonoBehaviour
-    {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-    }
+    public class UMI3DViewpointHelper : MonoBehaviour {}
 }
