@@ -369,6 +369,8 @@ namespace umi3d.cdk
 
             IEnumerator Load()
             {
+                RenderProbes();
+
                 onProgressChange.Invoke(1f);
                 yield return new WaitForSeconds(0.3f);
                 onEnvironmentLoaded.Invoke();
@@ -384,6 +386,27 @@ namespace umi3d.cdk
             else
             {
                 onFinish();
+            }
+        }
+
+        /// <summary>
+        /// Renders all <see cref="ReflectionProbe"/> set to <see cref=" ReflectionProbeMode.Realtime"/> 
+        /// and <see cref="ReflectionProbeRefreshMode.OnAwake"/> of the environment.
+        /// </summary>
+        private void RenderProbes()
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.Value.dto is GlTFSceneDto && entity.Value is UMI3DNodeInstance scene)
+                {
+                    foreach (var probe in scene.gameObject.GetComponentsInChildren<ReflectionProbe>())
+                    {
+                        if (probe.mode == ReflectionProbeMode.Realtime && probe.refreshMode == ReflectionProbeRefreshMode.OnAwake)
+                        {
+                            probe.RenderProbe();
+                        }
+                    }
+                }
             }
         }
 
