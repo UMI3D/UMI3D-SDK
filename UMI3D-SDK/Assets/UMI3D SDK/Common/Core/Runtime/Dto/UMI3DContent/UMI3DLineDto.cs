@@ -56,5 +56,4 @@ namespace umi3d.common
         /// </summary>
         public List<SerializableVector3> positions = new List<SerializableVector3>();
     }
-
 }

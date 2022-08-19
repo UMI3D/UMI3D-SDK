@@ -55,7 +55,7 @@ namespace umi3d.worldController
         /// <returns></returns>
         public static UMI3DWorldControllerForgeClient Create(UPDWorldControllerAPI api, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
         {
-            UMI3DWorldControllerForgeClient client = (new GameObject("UMI3DWorldControllerForgeClient")).AddComponent<UMI3DWorldControllerForgeClient>();
+            UMI3DWorldControllerForgeClient client = new GameObject("UMI3DWorldControllerForgeClient").AddComponent<UMI3DWorldControllerForgeClient>();
             client.api = api;
             client.ip = ip;
             client.port = port;
@@ -88,9 +88,9 @@ namespace umi3d.worldController
             client.playerAccepted += (n, p) => { UMI3DLogger.Log("Player Accepted", scope); };
 
             if (natServerHost.Trim().Length == 0)
-                client.Connect(ip, (ushort)port);
+                client.Connect(ip, port);
             else
-                client.Connect(ip, (ushort)port, natServerHost, natServerPort);
+                client.Connect(ip, port, natServerHost, natServerPort);
 
             //When connected
 
@@ -174,6 +174,5 @@ namespace umi3d.worldController
                 NetworkManager.Instance.Networker.disconnected -= DisconnectedFromServer;
             NetworkManager.Instance?.Disconnect();
         }
-
     }
 }

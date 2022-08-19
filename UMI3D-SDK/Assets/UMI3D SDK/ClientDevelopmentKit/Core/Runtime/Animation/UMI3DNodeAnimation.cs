@@ -132,7 +132,7 @@ namespace umi3d.cdk
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
-            var ADto = dto as UMI3DNodeAnimationDto;
+            UMI3DNodeAnimationDto ADto = dto;
             if (ADto == null) return false;
             switch (property.property)
             {
@@ -202,6 +202,7 @@ namespace umi3d.cdk
         public override void Start(float atTime)
         {
             if (started) return;
+            started = true;
             progress = atTime / 1000;
             if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
             foreach (OperationChain chain in operationChains)

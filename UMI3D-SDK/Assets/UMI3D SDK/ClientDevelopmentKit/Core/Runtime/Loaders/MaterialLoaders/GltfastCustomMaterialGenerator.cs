@@ -242,7 +242,6 @@ namespace umi3d.cdk
                 {
                     UMI3DLogger.LogError($"Texture #{bcTextureIndex} not found", scope);
                 }
-
             }
             return null;
 
@@ -264,6 +263,5 @@ namespace umi3d.cdk
                 }
             }
         }
-
     }
 }

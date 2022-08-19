@@ -120,6 +120,5 @@ namespace umi3d.edk
             foreach (RectTransform r in rects)
                 r.gameObject.AddComponent<UIRect>();
         }
-
     }
 }

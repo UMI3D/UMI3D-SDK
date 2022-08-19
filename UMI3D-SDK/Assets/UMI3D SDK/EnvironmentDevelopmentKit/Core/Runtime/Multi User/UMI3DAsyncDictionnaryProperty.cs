@@ -165,7 +165,7 @@ namespace umi3d.edk
         {
             L oldValue = GetValue()[key];
 
-            if ((oldValue == null && value == null || oldValue != null && Equal(oldValue, value)) && !forceOperation)
+            if (((oldValue == null && value == null) || (oldValue != null && Equal(oldValue, value))) && !forceOperation)
                 return null;
             GetValue()[key] = value;
 
@@ -182,7 +182,7 @@ namespace umi3d.edk
             };
             if (UMI3DEnvironment.Exists)
             {
-                if ((isAsync || isDeSync))
+                if (isAsync || isDeSync)
                 {
                     operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
                         user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
@@ -218,7 +218,7 @@ namespace umi3d.edk
 
             if (asyncValues.ContainsKey(user))
             {
-                if ((oldValue == null && value == null || Equal(oldValue, value)) && !forceOperation)
+                if (((oldValue == null && value == null) || Equal(oldValue, value)) && !forceOperation)
                 {
                     return null;
                 }
@@ -261,7 +261,7 @@ namespace umi3d.edk
             };
             if (UMI3DEnvironment.Exists)
             {
-                if ((isAsync || isDeSync))
+                if (isAsync || isDeSync)
                 {
                     operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
                         user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
@@ -327,7 +327,7 @@ namespace umi3d.edk
             };
             if (UMI3DEnvironment.Exists)
             {
-                if ((isAsync || isDeSync))
+                if (isAsync || isDeSync)
                 {
                     operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
                         user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
@@ -379,6 +379,5 @@ namespace umi3d.edk
         }
 
         protected override Dictionary<T, L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
-
     }
 }

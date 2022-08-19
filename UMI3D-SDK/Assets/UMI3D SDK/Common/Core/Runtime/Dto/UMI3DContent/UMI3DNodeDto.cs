@@ -33,5 +33,4 @@ namespace umi3d.common
         public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();
 
     }
-
 }

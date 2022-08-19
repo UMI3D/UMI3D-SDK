@@ -122,7 +122,7 @@ namespace umi3d.cdk.collaboration
 
             public override bool CanConvert(Type objectType)
             {
-                return (objectType == typeof(AbstractParameterDto));
+                return objectType == typeof(AbstractParameterDto);
             }
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -354,7 +354,7 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
             if (uwr?.downloadHandler.data == null) return null;
             string json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-            return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None) as MediaDto;
+            return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
         }
 
         #endregion

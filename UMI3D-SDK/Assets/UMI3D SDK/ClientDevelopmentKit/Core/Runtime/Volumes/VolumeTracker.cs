@@ -68,7 +68,7 @@ namespace umi3d.cdk.volumes
             while (true)
             {
                 AbstractVolumeCell cell = volumesToTrack.Find(v => v.IsInside(this.transform.position, Space.World));
-                bool inside = (cell != null);
+                bool inside = cell != null;
                 if (inside && !wasInsideOneVolumeLastFrame)
                     foreach (UnityAction<ulong> callback in callbacksOnEnter)
                         callback.Invoke(cell.Id());

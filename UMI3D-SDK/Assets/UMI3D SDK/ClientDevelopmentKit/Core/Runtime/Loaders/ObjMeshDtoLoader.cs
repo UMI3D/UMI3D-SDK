@@ -102,7 +102,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         private ImportOptions CreateImportOption(string authorization, bool isUsingResourceServer)
         {
-            ImportOptions options = new ImportOptions()
+            var options = new ImportOptions()
             {
                 localPosition = UMI3DResourcesManager.Instance.transform.position,
                 localEulerAngles = UMI3DResourcesManager.Instance.transform.eulerAngles + rotOffset,

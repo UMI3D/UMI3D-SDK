@@ -41,7 +41,6 @@ namespace umi3d.edk.editor
             {
                 EditorGUI.PropertyField(position, property, label, true);
             }
-
         }
 
         ///<inheritdoc/>
@@ -65,9 +64,8 @@ namespace umi3d.edk.editor
                     lineCount = 3 + overrideMaterials.CountInProperty();
             }
 
-            return EditorGUIUtility.singleLineHeight * lineCount + EditorGUIUtility.standardVerticalSpacing * (lineCount - 1);
+            return (EditorGUIUtility.singleLineHeight * lineCount) + (EditorGUIUtility.standardVerticalSpacing * (lineCount - 1));
         }
     }
-
 }
 #endif

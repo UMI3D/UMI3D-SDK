@@ -25,5 +25,4 @@ namespace umi3d.common
         public ulong pid = 0;
         public bool isStatic = false;
     }
-
 }

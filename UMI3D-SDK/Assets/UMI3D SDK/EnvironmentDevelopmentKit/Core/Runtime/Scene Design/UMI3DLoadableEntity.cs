@@ -42,5 +42,4 @@ namespace umi3d.edk
         /// </returns>
         Bytable ToBytes(UMI3DUser user);
     }
-
 }

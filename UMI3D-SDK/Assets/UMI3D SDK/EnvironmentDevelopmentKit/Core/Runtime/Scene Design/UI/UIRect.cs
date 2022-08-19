@@ -162,6 +162,5 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(SizeDelta.GetValue(user))
                 + UMI3DNetworkingHelper.Write(RectMask.GetValue(user));
         }
-
     }
 }

@@ -47,7 +47,5 @@ namespace umi3d.cdk
                 UMI3DLogger.LogWarning("extension is null", scope);
             }
         }
-
-
     }
 }

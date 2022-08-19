@@ -73,6 +73,5 @@ namespace umi3d.edk.collaboration
                 OutsideVolume.startingProximityDistance = OutsideVolume.stoppingProximityDistance;
             }
         }
-
     }
 }

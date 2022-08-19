@@ -71,11 +71,15 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<bool> avatarStatus;
         public UMI3DAsyncProperty<bool> attentionRequired;
 
+        public UMI3DAsyncProperty<string> audioChannel;
+        public UMI3DAsyncProperty<string> audioServerUrl;
+        public UMI3DAsyncProperty<bool> audioUseMumble;
+        public UMI3DAsyncProperty<string> audioPassword;
+        public UMI3DAsyncProperty<string> audioLogin;
+
 
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
-
-
             this.identityDto = identity ?? new RegisterIdentityDto();
             userId = UMI3DEnvironment.Register(this, lastGivenUserId++);
 
@@ -83,6 +87,12 @@ namespace umi3d.edk.collaboration
             microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);
             avatarStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAvatarStatus, true);
             attentionRequired = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAttentionRequired, false);
+
+            audioChannel = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioChannel, null);
+            audioServerUrl = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioServer, null);
+            audioUseMumble = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
+            audioPassword = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioPassword, null);
+            audioLogin = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioLogin, null);
 
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
@@ -149,6 +159,20 @@ namespace umi3d.edk.collaboration
         }
 
 
+        public virtual UserConnectionDto ToUserConnectionDto()
+        {
+            var connectionInformation = new UserConnectionDto(ToUserDto())
+            {
+                audioPassword = audioPassword.GetValue(),
+                audioLogin = audioLogin.GetValue(),
+
+                parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),
+                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this)
+            };
+
+            return connectionInformation;
+        }
+
         public virtual UserDto ToUserDto()
         {
             var user = new UserDto
@@ -161,9 +185,15 @@ namespace umi3d.edk.collaboration
                 audioFrequency = audioFrequency.GetValue(),
                 videoSourceId = videoPlayer?.Id() ?? 0,
                 login = string.IsNullOrEmpty(displayName) ? (string.IsNullOrEmpty(login) ? Id().ToString() : login) : displayName,
+
                 microphoneStatus = microphoneStatus.GetValue(),
                 avatarStatus = avatarStatus.GetValue(),
                 attentionRequired = attentionRequired.GetValue(),
+
+                audioChannel = audioChannel.GetValue(),
+                audioServerUrl = audioServerUrl.GetValue(),
+                audioUseMumble = audioUseMumble.GetValue()
+
             };
             return user;
         }

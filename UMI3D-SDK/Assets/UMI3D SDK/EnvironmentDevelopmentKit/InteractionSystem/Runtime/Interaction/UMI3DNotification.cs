@@ -199,6 +199,5 @@ namespace umi3d.edk
             if (Odto == null) return;
             Odto.objectId = objectIdProperty.GetValue(user).Id();
         }
-
     }
 }

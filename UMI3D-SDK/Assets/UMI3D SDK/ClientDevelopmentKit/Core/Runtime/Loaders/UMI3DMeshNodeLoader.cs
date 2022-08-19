@@ -121,8 +121,7 @@ namespace umi3d.cdk
             }
         }
 
-
-        class ChildRef
+        private class ChildRef
         {
             public string refByName;
             public List<int> refByIndex;
@@ -140,12 +139,12 @@ namespace umi3d.cdk
 
         private void SetSubObjectsReferencesAux(Transform root, Transform Parent, Vector3 rotationOffsetByLoader, UMI3DResourcesManager.SubmodelDataCollection collection)
         {
-            List<ChildRef> childs = new List<ChildRef>() { new ChildRef(Parent.name, new List<int>(), new List<string>(), Parent) };
+            var childs = new List<ChildRef>() { new ChildRef(Parent.name, new List<int>(), new List<string>(), Parent) };
             GetChild(Parent, new List<int>(), new List<string>(), childs);
 
-            foreach (var childRef in childs)
+            foreach (ChildRef childRef in childs)
             {
-                var child = childRef.transform;
+                Transform child = childRef.transform;
                 if (!ignoredPrimitiveNameForSubObjectsLoading.Contains(child.name)) // ignore game objects created by the gltf importer or other importer 
                 {
                     child.SetParent(root.transform.parent);
@@ -161,7 +160,7 @@ namespace umi3d.cdk
         {
             for (int i = 0; i < Parent.childCount; i++)
             {
-                var child = Parent.GetChild(i);
+                Transform child = Parent.GetChild(i);
                 var nIndexes = new List<int>(indexes) { i };
                 var nNames = new List<string>(names) { child.name };
                 collection.Add(new ChildRef(child.name, nIndexes, nNames, child));
@@ -195,12 +194,10 @@ namespace umi3d.cdk
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
-            ColliderDto colliderDto = (dto).colliderDto;
+            ColliderDto colliderDto = dto.colliderDto;
             SetCollider(dto.id, nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
             finished?.Invoke();
         }
-
     }
-
 }

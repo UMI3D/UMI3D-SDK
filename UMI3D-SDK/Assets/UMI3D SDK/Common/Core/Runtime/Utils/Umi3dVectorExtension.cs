@@ -51,6 +51,5 @@ namespace umi3d.common
         {
             return (SerializableVector4)((Vector4)v4).Scaled(scale);
         }
-
     }
 }

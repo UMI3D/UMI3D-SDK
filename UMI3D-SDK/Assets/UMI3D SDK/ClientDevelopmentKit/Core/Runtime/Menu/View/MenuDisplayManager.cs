@@ -666,7 +666,5 @@ namespace umi3d.cdk.menu.view
             onDestroy.Invoke();
             Clear();
         }
-
-
     }
 }

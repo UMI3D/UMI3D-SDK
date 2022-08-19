@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,7 +90,6 @@ namespace umi3d.cdk
                                         renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                                         renderer.receiveShadows = nodeDto.receiveShadow;
                                     }
-
                                 });
 
                             }
@@ -140,15 +138,14 @@ namespace umi3d.cdk
                     {
                         if (oldMats[i] != null)
                         {
-                            matsToApply[i] = (oldMats[i]);
+                            matsToApply[i] = oldMats[i];
                         }
                     }
                     if (oldMats.Length != matsToApply.Length)
-                        renderer.materials = ((IEnumerable<Material>)matsToApply).Take(oldMats.Length).ToArray();
+                        renderer.materials = matsToApply.Take(oldMats.Length).ToArray();
                     else
                         renderer.materials = matsToApply;
                 }
-
             }
 
             if (parentDto.applyCustomMaterial /*&& !subDto.ignoreModelMaterialOverride */ /* && !subDto.applyCustomMaterial */&& !subDto.ignoreModelMaterialOverride)

@@ -723,7 +723,7 @@ namespace umi3d.common
 
         public static Bytable WriteCollection<T>(IEnumerable<T> value)
         {
-            if (typeof(IBytable).IsAssignableFrom(typeof(T)) || value.Count() > 0 && !value.Any(e => !typeof(IBytable).IsAssignableFrom(e.GetType())))
+            if (typeof(IBytable).IsAssignableFrom(typeof(T)) || (value.Count() > 0 && !value.Any(e => !typeof(IBytable).IsAssignableFrom(e.GetType()))))
             {
                 return WriteIBytableCollection(value.Select((e) => e as IBytable));
             }

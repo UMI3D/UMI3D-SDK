@@ -104,8 +104,5 @@ namespace umi3d.edk.collaboration
                 }
             }
         }
-
-
-
     }
 }

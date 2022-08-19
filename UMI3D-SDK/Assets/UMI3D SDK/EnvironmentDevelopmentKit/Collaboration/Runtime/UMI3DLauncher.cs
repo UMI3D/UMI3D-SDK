@@ -112,7 +112,10 @@ namespace umi3d.edk.collaboration
         /// Set the log file output path.
         /// </summary>
         public const string logOutputPathParam = Separator + "logfilepath";
-
+        /// <summary>
+        /// Set the murmur server.
+        /// </summary>
+        public const string murmurServerParam = Separator + "murmur";
 
 
         public const string generateconfigFileParam = Separator + "createconfig";
@@ -311,6 +314,12 @@ namespace umi3d.edk.collaboration
             }
         }
 
+
+        protected virtual void SetMurmurServer(string arg)
+        {
+            UMI3DCollaborationServer.Instance.mumbleIp = arg;
+        }
+
         /// <summary>
         /// method called when param <see cref="loginfoOutputPathParam"/> is found
         /// </summary>
@@ -403,7 +412,6 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.logOutputPathParam))
                     SetlogOutputPathParam(conf.logOutputPathParam);
             }
-
         }
 
         /// <summary>
@@ -450,7 +458,6 @@ namespace umi3d.edk.collaboration
                         GenerateConfigFile(args[i]);
                     Application.Quit();
                 }
-
             }
 
             //then aplly other arguments
@@ -545,6 +552,11 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetloginfoOutputPathParam(args[i]);
+                }
+                else if (args[i].Equals(murmurServerParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetMurmurServer(args[i]);
                 }
                 else if (args[i].Equals(logOutputPathParam, StringComparison.OrdinalIgnoreCase))
                 {

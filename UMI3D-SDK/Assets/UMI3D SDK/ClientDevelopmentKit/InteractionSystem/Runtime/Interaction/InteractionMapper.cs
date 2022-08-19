@@ -327,13 +327,13 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override bool ToolboxExists(ulong id)
         {
-            return UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox != null;
+            return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox) != null;
         }
 
         /// <inheritdoc/>
         public override bool ToolExists(ulong id)
         {
-            return UMI3DEnvironmentLoader.GetEntity(id)?.Object as AbstractTool != null;
+            return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as AbstractTool) != null;
         }
 
         /// <inheritdoc/>

@@ -123,7 +123,7 @@ namespace umi3d.edk
 
         public static bool UseLibrary()
         {
-            return Exists ? Instance.globalLibraries.Any() || Instance.scenes.Any(s => s.libraries.Any()) : false;
+            return Exists && (Instance.globalLibraries.Any() || Instance.scenes.Any(s => s.libraries.Any()));
         }
         #endregion
 
@@ -436,7 +436,6 @@ namespace umi3d.edk
                 objects.Remove(guid);
                 unRegisteredIds.Add(guid);
             }
-
         }
 
         #endregion

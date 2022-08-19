@@ -117,7 +117,7 @@ namespace umi3d.edk.volume
             //Taken from UMI3DResourceFile.GetUrl()
             string path = fileURL;
             path = path.Replace(@"\", "/");
-            if (path != null && path != "" && !(path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
+            if (path != null && path != "" && !path.StartsWith("/") /*|| Path.StartsWith(@"\")*/)
             {
                 path = "/" + path;
             }

@@ -218,7 +218,7 @@ namespace umi3d.cdk.interaction
                         adequation = node =>
                         {
                             return (node is ParameterNode)
-                                && (node as ParameterNode).parameter.GetType().Equals((parameterDto).GetType());
+                                && (node as ParameterNode).parameter.GetType().Equals(parameterDto.GetType());
                         };
 
                         deepProjectionCreation = () =>
@@ -670,7 +670,6 @@ namespace umi3d.cdk.interaction
                     default:
                         throw new System.Exception("Unknown interaction type : " + interaction);
                 }
-
             }
 
             return selectedInputs.ToArray();
@@ -736,7 +735,6 @@ namespace umi3d.cdk.interaction
                     return rootProjection;
                 }
             }
-
         }
 
         /// <summary>
@@ -877,7 +875,6 @@ namespace umi3d.cdk.interaction
                 JsonUtility.FromJsonOverwrite(object_json, this);
             }
         }
-
     }
 
     [System.Serializable]

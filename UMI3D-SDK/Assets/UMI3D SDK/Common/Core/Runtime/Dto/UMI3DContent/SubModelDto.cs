@@ -60,6 +60,5 @@ namespace umi3d.common
         public bool isTraversable = true;
 
         public SubModelDto() : base() { }
-
     }
 }
