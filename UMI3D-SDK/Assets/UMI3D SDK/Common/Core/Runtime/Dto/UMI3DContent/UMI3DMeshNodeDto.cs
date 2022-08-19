@@ -54,5 +54,4 @@ namespace umi3d.common
         /// </summary>
         public bool isTraversable = true;
     }
-
 }

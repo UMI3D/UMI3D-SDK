@@ -107,12 +107,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Stores last user rotation
         /// </summary>
-        Quaternion lastRotation;
+        private Quaternion lastRotation;
 
         /// <summary>
         /// Store last rotations for every bone.
         /// </summary>
-        Dictionary<uint, Quaternion> lastBoneRotations = new Dictionary<uint, Quaternion>();
+        private Dictionary<uint, Quaternion> lastBoneRotations = new Dictionary<uint, Quaternion>();
 
         #endregion
 
@@ -182,7 +182,6 @@ namespace umi3d.cdk.userCapture
                 UMI3DClientServer.SendData(newCameraProperties, true);
                 CameraPropertiesDto = newCameraProperties;
             }
-
         }
 
 
@@ -229,7 +228,7 @@ namespace umi3d.cdk.userCapture
                 lastRotation = rotation;
                 lastPosition = position;
 
-                foreach (var bone in bonesList)
+                foreach (BoneDto bone in bonesList)
                 {
                     if (lastBoneRotations.ContainsKey(bone.boneType))
                     {
@@ -265,7 +264,7 @@ namespace umi3d.cdk.userCapture
             }
             else
             {
-                foreach (var bone in bones)
+                foreach (BoneDto bone in bones)
                 {
                     if (lastBoneRotations.ContainsKey(bone.boneType))
                     {
@@ -349,7 +348,7 @@ namespace umi3d.cdk.userCapture
         {
             if (vehicleDto.BodyAnimationId != 0)
             {
-                UMI3DNodeAnimation anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
+                var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
                 if (anim != null)
                     anim.Start();
             }

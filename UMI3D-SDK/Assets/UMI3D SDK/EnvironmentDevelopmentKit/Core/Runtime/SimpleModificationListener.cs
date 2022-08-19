@@ -128,8 +128,8 @@ namespace umi3d.edk
                 switch (mat)
                 {
                     case PBRMaterial pbrmat:
-                        setOperation((pbrmat).objectBaseColorFactor.SetValue(pbrmat.baseColorFactor));
-                        setOperation((pbrmat).objectEmissiveFactor.SetValue(pbrmat.emissive));
+                        setOperation(pbrmat.objectBaseColorFactor.SetValue(pbrmat.baseColorFactor));
+                        setOperation(pbrmat.objectEmissiveFactor.SetValue(pbrmat.emissive));
                         setOperation(pbrmat.objectEmissiveTexture.SetValue(pbrmat.textures.emissiveTexture));
                         setOperation(pbrmat.objectHeightTexture.SetValue(pbrmat.textures.heightTexture));
                         setOperation(pbrmat.objectHeightTextureScale.SetValue(pbrmat.textures.heightTexture.scale));
@@ -154,7 +154,6 @@ namespace umi3d.edk
                         UMI3DLogger.LogWarning("unsupported material type", scope);
                         break;
                 }
-
             }
         }
 
@@ -253,7 +252,6 @@ namespace umi3d.edk
                     UMI3DLogger.Log("property = " + operation.property, scope);
 
                 }
-
             }
         }
         public void RemoveNode(UMI3DNode node)
@@ -261,5 +259,4 @@ namespace umi3d.edk
             nodes = nodes.Where(n => !n.Equals(node)).ToArray();
         }
     }
-
 }

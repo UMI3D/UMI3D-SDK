@@ -121,6 +121,5 @@ namespace umi3d.edk.interaction
             (dto as EventDto).TriggerAnimationId = TriggerAnimation != null ? TriggerAnimation.Id() : 0;
             (dto as EventDto).ReleaseAnimationId = ReleaseAnimation != null ? ReleaseAnimation.Id() : 0;
         }
-
     }
 }

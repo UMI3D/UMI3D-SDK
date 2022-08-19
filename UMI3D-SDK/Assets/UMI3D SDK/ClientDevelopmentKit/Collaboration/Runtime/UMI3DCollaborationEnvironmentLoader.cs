@@ -30,8 +30,15 @@ namespace umi3d.cdk.collaboration
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
 
-        public UMI3DUser GetClientUser() => UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
-        private UMI3DUser GetUser(UserDto dto) => UserList.FirstOrDefault(u => u.id == dto.id);
+        public UMI3DUser GetClientUser()
+        {
+            return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
+        }
+
+        private UMI3DUser GetUser(UserDto dto)
+        {
+            return UserList.FirstOrDefault(u => u.id == dto.id);
+        }
 
         ///<inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
@@ -59,6 +66,11 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
                 case UMI3DPropertyKeys.UserAudioFrequency:
+                case UMI3DPropertyKeys.UserAudioLogin:
+                case UMI3DPropertyKeys.UserAudioPassword:
+                case UMI3DPropertyKeys.UserAudioServer:
+                case UMI3DPropertyKeys.UserAudioUseMumble:
+                case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(property.property, entity, property.value);
 
                 default:
@@ -80,11 +92,24 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
-                    return UpdateUser(propertyKey, entity, UMI3DNetworkingHelper.Read<bool>(container));
-
+                case UMI3DPropertyKeys.UserAudioUseMumble:
+                    {
+                        bool value = UMI3DNetworkingHelper.Read<bool>(container);
+                        return UpdateUser(propertyKey, entity, value);
+                    }
                 case UMI3DPropertyKeys.UserAudioFrequency:
-                    return UpdateUser(propertyKey, entity, UMI3DNetworkingHelper.Read<int>(container));
-
+                    {
+                        int value = UMI3DNetworkingHelper.Read<int>(container);
+                        return UpdateUser(propertyKey, entity, value);
+                    }
+                case UMI3DPropertyKeys.UserAudioLogin:
+                case UMI3DPropertyKeys.UserAudioPassword:
+                case UMI3DPropertyKeys.UserAudioServer:
+                case UMI3DPropertyKeys.UserAudioChannel:
+                    {
+                        string value = UMI3DNetworkingHelper.Read<string>(container);
+                        return UpdateUser(propertyKey, entity, value);
+                    }
                 default:
                     return false;
             }

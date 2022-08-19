@@ -80,7 +80,6 @@ namespace umi3d.edk.editor
         {
             EditorGUILayout.PropertyField(isMeshCustom);
         }
-
     }
 }
 #endif

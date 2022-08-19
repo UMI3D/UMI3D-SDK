@@ -56,7 +56,7 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
-            var dto = (dto_ as FormDto);
+            var dto = dto_ as FormDto;
             if (dto == null)
                 return;
             dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();

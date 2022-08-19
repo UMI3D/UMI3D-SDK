@@ -50,9 +50,9 @@ namespace umi3d.edk
         private string privateDataFullPath;
         private string dataFullPath;
 
-        public static string publicRepository => Instance == null ? null : Instance.publicDataFullPath;
-        public static string privateRepository => Instance == null ? null : Instance.privateDataFullPath;
-        public static string dataRepository => Instance == null ? null : Instance.dataFullPath;
+        public static string publicRepository => Instance?.publicDataFullPath;
+        public static string privateRepository => Instance?.privateDataFullPath;
+        public static string dataRepository => Instance?.dataFullPath;
 
         public static bool IsInDataRepository(string path)
         {

@@ -73,7 +73,7 @@ namespace umi3d.cdk
 
         private static void Unload(PreloadedSceneDto scenesdto, GameObject node)
         {
-            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle));
+            SceneManager.UnloadSceneAsync(UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace umi3d.cdk
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null) return false;
-            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
             if (dto == null) return false;
             if (property.property == UMI3DPropertyKeys.PreloadedScenes)
             {
@@ -139,7 +139,7 @@ namespace umi3d.cdk
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
-            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
             if (dto == null) return false;
             if (propertyKey == UMI3DPropertyKeys.PreloadedScenes)
             {
@@ -188,9 +188,6 @@ namespace umi3d.cdk
         {
             return false;
         }
-
     }
-
-
 }
 

@@ -26,7 +26,7 @@ namespace umi3d.cdk.interaction
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            var dto = (entity.dto as AbstractToolDto);
+            var dto = entity.dto as AbstractToolDto;
             if (dto == null) return false;
             var tool = entity.Object as AbstractTool;
             switch (property.property)
@@ -56,7 +56,7 @@ namespace umi3d.cdk.interaction
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            var dto = (entity.dto as AbstractToolDto);
+            var dto = entity.dto as AbstractToolDto;
             if (dto == null) return false;
             var tool = entity.Object as AbstractTool;
             switch (propertyKey)
@@ -284,6 +284,5 @@ namespace umi3d.cdk.interaction
             interactionDto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
             interactionDto.description = UMI3DNetworkingHelper.Read<string>(container);
         }
-
     }
 }

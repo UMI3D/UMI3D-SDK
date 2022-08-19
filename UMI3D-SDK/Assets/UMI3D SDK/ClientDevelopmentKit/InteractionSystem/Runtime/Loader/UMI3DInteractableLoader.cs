@@ -44,7 +44,7 @@ namespace umi3d.cdk.interaction
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            var dto = (entity?.dto as InteractableDto);
+            var dto = entity?.dto as InteractableDto;
             if (dto == null) return false;
             if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property)) return true;
             switch (property.property)
@@ -72,7 +72,7 @@ namespace umi3d.cdk.interaction
 
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            var dto = (entity?.dto as InteractableDto);
+            var dto = entity?.dto as InteractableDto;
             if (dto == null) return false;
             if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             switch (propertyKey)
@@ -136,6 +136,5 @@ namespace umi3d.cdk.interaction
                 interactable = new Interactable(dto);
             node.gameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
         }
-
     }
 }

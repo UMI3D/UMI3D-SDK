@@ -101,7 +101,6 @@ namespace umi3d.cdk.menu.view
 
             return dic.GetEnumerator();
         }
-
     }
 
     [System.Serializable]

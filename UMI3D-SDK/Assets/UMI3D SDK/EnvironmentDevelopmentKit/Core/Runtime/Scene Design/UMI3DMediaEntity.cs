@@ -40,6 +40,5 @@ namespace umi3d.edk
         /// <returns></returns>
         ulong Id();
     }
-
 }
 

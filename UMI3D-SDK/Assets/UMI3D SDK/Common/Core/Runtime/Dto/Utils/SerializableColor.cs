@@ -60,6 +60,5 @@ namespace umi3d.common
             if (c == null) return default;
             return new Color(c.R, c.G, c.B, c.A);
         }
-
     }
 }

@@ -209,7 +209,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
-                    ADto.audioResource = (ResourceDto)UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    ADto.audioResource = UMI3DNetworkingHelper.Read<ResourceDto>(container);
                     if (ADto.audioResource == res) return true;
                     FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
@@ -261,9 +261,9 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
-            if ((audioSource != null))
+            if (audioSource != null)
             {
-                if ((audioSource.clip != null))
+                if (audioSource.clip != null)
                 {
                     audioSource.Stop();
                     if (atTime != 0)
@@ -294,7 +294,7 @@ namespace umi3d.cdk
             if (dto.playing)
             {
                 ulong now = UMI3DClientServer.Instance.GetTime();
-                Start((float)(now - dto.startTime));
+                Start(now - dto.startTime);
             }
         }
     }

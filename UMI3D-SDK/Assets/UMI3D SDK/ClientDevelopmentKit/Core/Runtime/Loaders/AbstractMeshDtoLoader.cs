@@ -128,6 +128,5 @@ namespace umi3d.cdk
         {
             return Vector3.zero;
         }
-
     }
 }

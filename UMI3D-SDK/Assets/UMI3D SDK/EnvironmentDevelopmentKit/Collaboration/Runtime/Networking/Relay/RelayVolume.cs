@@ -287,7 +287,7 @@ namespace umi3d.edk.collaboration
                                     coeff = 1f;
                                 }
 
-                                float StrategyDelay = (1f - coeff) * (1 / strategy.maxProximityFPS) + coeff * (1 / strategy.minProximityFPS);
+                                float StrategyDelay = ((1f - coeff) * (1 / strategy.maxProximityFPS)) + (coeff * (1 / strategy.minProximityFPS));
                                 float CurrentDelay = now - relayMemory[sender.Id()][to.Id()];
 
                                 return StrategyDelay <= CurrentDelay;

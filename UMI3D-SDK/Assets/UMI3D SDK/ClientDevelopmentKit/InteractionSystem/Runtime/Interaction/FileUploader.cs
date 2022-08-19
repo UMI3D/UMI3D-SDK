@@ -117,10 +117,8 @@ namespace umi3d.cdk.interaction
                         };
                         UMI3DClientServer.SendData(req, true);
                     }
-
                 }
             }
         }
-
     }
 }

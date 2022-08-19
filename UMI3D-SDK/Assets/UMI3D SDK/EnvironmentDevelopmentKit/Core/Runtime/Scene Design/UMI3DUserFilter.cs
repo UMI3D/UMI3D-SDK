@@ -23,6 +23,5 @@ namespace umi3d.edk
     {
         bool Accept(UMI3DUser user);
     }
-
 }
 

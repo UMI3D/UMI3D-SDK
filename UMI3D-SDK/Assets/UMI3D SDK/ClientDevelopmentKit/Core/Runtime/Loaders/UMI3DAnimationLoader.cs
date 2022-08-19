@@ -70,6 +70,5 @@ namespace umi3d.cdk
         {
             return UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container);
         }
-
     }
 }

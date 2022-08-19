@@ -68,7 +68,7 @@ namespace umi3d.edk
         {
             return UMI3DNetworkingHelper.Write(newMaterial.Id())
                 + UMI3DNetworkingHelper.Write(addMaterialIfNotExists)
-                + UMI3DNetworkingHelper.WriteCollection((overrideAllMaterial ? ANY_mat : overidedMaterials));
+                + UMI3DNetworkingHelper.WriteCollection(overrideAllMaterial ? ANY_mat : overidedMaterials);
         }
 
         bool IBytable.IsCountable()
@@ -76,6 +76,4 @@ namespace umi3d.edk
             return false;
         }
     }
-
-
 }

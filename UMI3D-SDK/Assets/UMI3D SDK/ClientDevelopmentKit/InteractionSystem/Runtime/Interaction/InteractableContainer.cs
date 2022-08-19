@@ -35,6 +35,5 @@ namespace umi3d.cdk.interaction
         {
             containers.Remove(this);
         }
-
     }
 }

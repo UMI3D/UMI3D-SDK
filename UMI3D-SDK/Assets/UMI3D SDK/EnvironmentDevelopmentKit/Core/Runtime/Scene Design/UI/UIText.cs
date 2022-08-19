@@ -195,7 +195,7 @@ namespace umi3d.edk
             textDto.alignment = Alignment.GetValue(user).Convert();
             textDto.alignByGeometry = AlignByGeometry.GetValue(user);
             textDto.color = TextColor.GetValue(user);
-            textDto.font = ((Font)TextFont.GetValue(user)).name;
+            textDto.font = TextFont.GetValue(user).name;
             textDto.fontSize = FontSize.GetValue(user);
             textDto.fontStyle = FontStyle.GetValue(user).Convert();
             textDto.horizontalOverflow = HorizontalOverflow.GetValue(user).Convert();
@@ -218,7 +218,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write((int)Alignment.GetValue(user).Convert())
                 + UMI3DNetworkingHelper.Write(AlignByGeometry.GetValue(user))
                 + UMI3DNetworkingHelper.Write(TextColor.GetValue(user))
-                + UMI3DNetworkingHelper.Write(((Font)TextFont.GetValue(user)).name)
+                + UMI3DNetworkingHelper.Write(TextFont.GetValue(user).name)
                 + UMI3DNetworkingHelper.Write(FontSize.GetValue(user))
                 + UMI3DNetworkingHelper.Write((int)FontStyle.GetValue(user).Convert())
                 + UMI3DNetworkingHelper.Write((int)HorizontalOverflow.GetValue(user).Convert())
@@ -230,6 +230,5 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(text)
                 + UMI3DNetworkingHelper.Write((int)VerticalOverflow.GetValue(user).Convert());
         }
-
     }
 }

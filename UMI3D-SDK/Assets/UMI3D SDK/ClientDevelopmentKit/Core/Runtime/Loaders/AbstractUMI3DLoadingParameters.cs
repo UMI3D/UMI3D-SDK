@@ -113,5 +113,4 @@ namespace umi3d.cdk
         public abstract void loadSkybox(ResourceDto skybox);
 
     }
-
 }

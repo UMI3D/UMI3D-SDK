@@ -116,7 +116,7 @@ namespace umi3d.edk.collaboration
             return (null, false);
         }
 
-        (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
+        private (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
         {
             lock (users)
             {
@@ -135,15 +135,15 @@ namespace umi3d.edk.collaboration
 
         public (UMI3DCollaborationUser user, bool oldToken, bool oldUser) GetUserByNakedTokenForConnection(string token)
         {
-            var connected = GetUserByNakedToken(token);
+            (UMI3DCollaborationUser user, bool oldToken) connected = GetUserByNakedToken(token);
             if (connected.oldToken || connected.user != null)
                 return (connected.user, connected.oldToken, false);
-            foreach(var user in lostUsers.Values)
+            foreach (UMI3DCollaborationUser user in lostUsers.Values)
             {
                 if (user.token == token)
-                    return (user, true,true);
+                    return (user, true, true);
             }
-            return (null,false,false);
+            return (null, false, false);
 
         }
 
@@ -211,12 +211,12 @@ namespace umi3d.edk.collaboration
         {
             lock (users)
             {
-                users.Add(user.Id(),user);
+                users.Add(user.Id(), user);
                 SetLastUpdate();
             }
             lostUsers.Remove(user.Id());
-            guidMap.Add(user.guid,user);
-            forgeMap.Add(user.networkPlayer.NetworkId,user.Id());
+            guidMap.Add(user.guid, user);
+            forgeMap.Add(user.networkPlayer.NetworkId, user.Id());
         }
 
         /// <summary>
@@ -232,9 +232,9 @@ namespace umi3d.edk.collaboration
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            var res = GetUserByNakedTokenForConnection(token);
+            (UMI3DCollaborationUser user, bool oldToken, bool oldUser) res = GetUserByNakedTokenForConnection(token);
             UMI3DCollaborationUser user = res.user;
-            UMI3DLogger.Log($"Connect User {user != null} {res}",scope);
+            UMI3DLogger.Log($"Connect User {user != null} {res}", scope);
             if (user != null)
             {
                 if (res.oldUser)
@@ -250,7 +250,7 @@ namespace umi3d.edk.collaboration
 
                 user.networkPlayer = player;
                 forgeMap.Add(player.NetworkId, user.Id());
-                
+
                 acceptUser(true);
                 onUserCreated.Invoke(user, reconnection);
             }
@@ -451,7 +451,5 @@ namespace umi3d.edk.collaboration
             }
             tr.Dispatch();
         }
-
-
     }
 }

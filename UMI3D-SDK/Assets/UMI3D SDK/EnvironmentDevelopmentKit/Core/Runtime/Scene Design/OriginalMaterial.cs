@@ -90,7 +90,5 @@ namespace umi3d.edk
             registered = true;
             matId = id;
         }
-
-
     }
 }
