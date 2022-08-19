@@ -74,7 +74,7 @@ namespace umi3d.cdk.userCapture
 
         private void Start()
         {
-            viewpointObject = UMI3DClientUserTracking.Instance.transform.Find("Viewpoint");
+            viewpointObject = UMI3DClientUserTracking.Instance.viewpoint;
         }
 
         private void Update()

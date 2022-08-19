@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
 
         private void Start()
         {
-            viewpointObject = this.transform.Find("Viewpoint");
+            viewpointObject = GetComponentInChildren<UMI3DViewpointHelper>()?.transform;
         }
 
         private void Update()
