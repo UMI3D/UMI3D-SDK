@@ -70,6 +70,13 @@ namespace umi3d.cdk.userCapture
 
         protected readonly List<Bound> bounds = new List<Bound>();
 
+        protected Transform viewpointObject;
+
+        private void Start()
+        {
+            viewpointObject = UMI3DClientUserTracking.Instance.viewpoint;
+        }
+
         private void Update()
         {
             this.transform.position = UMI3DClientUserTracking.Instance.transform.position;
@@ -79,19 +86,26 @@ namespace umi3d.cdk.userCapture
             {
                 if (item.obj != null)
                 {
-                    if (!item.bonetype.Equals(BoneType.CenterFeet))
-                    {
-                        if (item.syncPos)
-                            item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
-                        if (item.syncRot)
-                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.anchorRelativeRot * item.offsetRotation;
-                    }
-                    else
+                    if (item.bonetype.Equals(BoneType.CenterFeet))
                     {
                         if (item.syncPos)
                             item.obj.position = UMI3DClientUserTracking.Instance.skeletonContainer.TransformPoint(item.offsetPosition);
                         if (item.syncRot)
                             item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.anchorRelativeRot * item.offsetRotation;
+                   }
+                    else if (item.bonetype.Equals(BoneType.Viewpoint))
+                    {
+                        if (item.syncPos)
+                            item.obj.position = viewpointObject.TransformPoint(item.offsetPosition);
+                        if (item.syncRot)
+                            item.obj.rotation = viewpointObject.rotation * item.anchorRelativeRot * item.offsetRotation;
+                    }
+                    else
+                    {
+                        if (item.syncPos)
+                            item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
+                        if (item.syncRot)
+                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.anchorRelativeRot * item.offsetRotation;
                     }
 
                     if (item.freezeWorldScale)
