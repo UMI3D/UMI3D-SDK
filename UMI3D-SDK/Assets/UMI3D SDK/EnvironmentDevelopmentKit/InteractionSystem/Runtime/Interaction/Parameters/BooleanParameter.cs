@@ -82,7 +82,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)

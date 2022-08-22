@@ -39,7 +39,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(releasable);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new SwitchToolDto() { toolId = tool.Id(), replacedToolId = toolToReplace.Id(), releasable = releasable };

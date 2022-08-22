@@ -94,7 +94,7 @@ namespace umi3d.edk.interaction
             return operation;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto(user) as ToolboxDto;

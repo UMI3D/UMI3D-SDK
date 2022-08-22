@@ -33,7 +33,7 @@ namespace umi3d.cdk.menu
         /// </summary>
         private readonly List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string GetValue()
         {
             return value;
@@ -74,7 +74,7 @@ namespace umi3d.cdk.menu
             subscribers.Remove(callback);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Name;

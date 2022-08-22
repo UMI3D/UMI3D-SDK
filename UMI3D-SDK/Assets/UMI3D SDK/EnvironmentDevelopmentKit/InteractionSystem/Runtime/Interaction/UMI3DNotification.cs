@@ -197,13 +197,13 @@ namespace umi3d.edk
             this.objectIdProperty = new UMI3DAsyncProperty<UMI3DNode>(Id(), UMI3DPropertyKeys.NotificationObjectId, objectId, (n, u) => n.Id());
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override NotificationDto CreateDto()
         {
             return new NotificationOnObjectDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(NotificationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);

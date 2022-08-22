@@ -56,19 +56,19 @@ namespace umi3d.cdk.menu
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void UnSubscribe(UnityAction<int> callback)
         {
             subscribers.Remove(callback);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Name;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override int GetValue()
         {
             return value;

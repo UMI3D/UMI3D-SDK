@@ -52,13 +52,13 @@ namespace umi3d.edk.interaction
         /// </summary>
         public FormListener onFormCompleted = new FormListener();
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new FormDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
@@ -81,7 +81,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.WriteIBytableCollection(Fields);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)

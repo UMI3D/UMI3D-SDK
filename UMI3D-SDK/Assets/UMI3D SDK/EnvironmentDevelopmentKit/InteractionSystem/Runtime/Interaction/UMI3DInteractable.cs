@@ -50,7 +50,7 @@ namespace umi3d.edk.interaction
         [SerializeField, EditorReadOnly, Tooltip("Should be prioritized over others interactables when pointed at ?")]
         protected bool HasPriority;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Register()
         {
             base.Register();

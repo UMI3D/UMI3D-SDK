@@ -35,13 +35,13 @@ namespace umi3d.edk.interaction
         /// </summary>
         public InteractionEvent onLinkUsed = new InteractionEvent();
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new LinkDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
@@ -51,20 +51,20 @@ namespace umi3d.edk.interaction
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.Link;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
                 + UMI3DNetworkingHelper.Write(url);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -78,7 +78,7 @@ namespace umi3d.edk.interaction
 
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (interactionId)

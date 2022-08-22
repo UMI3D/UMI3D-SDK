@@ -95,7 +95,7 @@ namespace umi3d.cdk.menu
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Name;

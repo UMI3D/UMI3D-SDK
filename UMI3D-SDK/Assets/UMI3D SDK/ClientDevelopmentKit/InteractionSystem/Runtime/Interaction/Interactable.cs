@@ -23,7 +23,6 @@ namespace umi3d.cdk.interaction
     /// <summary>
     /// Client's side interactable object, a specific tool related to a game object.
     /// </summary>
-    /// <see cref="InteractableDto"/>
     public class Interactable : AbstractTool
     {
         public class Event : UnityEvent<Interactable> { }
@@ -51,7 +50,7 @@ namespace umi3d.cdk.interaction
         public bool HasPriority => dto?.hasPriority ?? false;
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
 
         public Interactable(InteractableDto dto) : base(dto)
@@ -116,7 +115,7 @@ namespace umi3d.cdk.interaction
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Destroy()
         {
             foreach (InteractableContainer container in InteractableContainer.containers.Where(c => c.Interactable == this))

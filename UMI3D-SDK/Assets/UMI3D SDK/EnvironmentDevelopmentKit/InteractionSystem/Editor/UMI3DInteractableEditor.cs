@@ -38,7 +38,7 @@ namespace umi3d.edk.editor
         private SerializedProperty HoverEnterAnimation;
         private SerializedProperty HoverExitAnimation;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -56,7 +56,7 @@ namespace umi3d.edk.editor
 
         private static bool displayEvent = false;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void _OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(Node);

@@ -80,7 +80,7 @@ namespace umi3d.edk.editor
 
         private static bool showList = true;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             _target.Update();
