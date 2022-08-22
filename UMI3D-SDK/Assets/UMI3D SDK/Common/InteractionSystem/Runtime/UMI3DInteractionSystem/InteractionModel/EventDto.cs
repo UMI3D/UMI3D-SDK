@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Describe a event interaction block
+    /// DTO describing an event interaction block
     /// </summary>
     [System.Serializable]
     public class EventDto : AbstractInteractionDto
@@ -27,8 +27,14 @@ namespace umi3d.common.interaction
         /// </summary>
         public bool hold = false;
 
+        /// <summary>
+        /// Id of the animation to be triggered when the interaction is triggered.
+        /// </summary>
         public ulong TriggerAnimationId;
 
+        /// <summary>
+        /// Id of the animation to be triggered when the interaciton is released.
+        /// </summary>
         public ulong ReleaseAnimationId;
 
         public EventDto() : base() { }

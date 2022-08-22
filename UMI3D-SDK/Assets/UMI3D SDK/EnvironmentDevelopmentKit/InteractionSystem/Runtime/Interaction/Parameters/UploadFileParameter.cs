@@ -23,6 +23,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// File parameter that could be uploaded to the environment server.
+    /// </summary>
     public class UploadFileParameter : AbstractParameter
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;
@@ -81,12 +84,13 @@ namespace umi3d.edk.interaction
             return new UploadFileParameterDto();
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.UploadParameter;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -133,7 +137,7 @@ namespace umi3d.edk.interaction
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
@@ -198,6 +202,10 @@ namespace umi3d.edk.interaction
             UMI3DServer.Dispatch(request);
         }
 
+        /// <summary>
+        /// Remove a token from the list of valide tokens.
+        /// </summary>
+        /// <param name="token">Token to remove.</param>
         public static void RemoveToken(string token)
         {
             if (uploadTokens.ContainsKey(token))
@@ -206,6 +214,12 @@ namespace umi3d.edk.interaction
                 UMI3DLogger.LogWarning("this token : " + token + " is not a valide token", scope);
         }
 
+        /// <summary>
+        /// Called when a file is received.
+        /// </summary>
+        /// <param name="token">Token for upload.</param>
+        /// <param name="fileName">File name.</param>
+        /// <param name="bytes">File as a byte array.</param>
         public virtual void OnFileReceive(string token, string fileName, byte[] bytes)
         {
             if (!Directory.Exists(pathToSaveFile))

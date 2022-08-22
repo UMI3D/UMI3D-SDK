@@ -21,7 +21,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for boolean input display.
+    /// Base class for <see cref="LocalInfoRequestInputMenuItem"/> display.
     /// </summary>
     public abstract class AbstractLocalInfoRequestInputDisplayer : AbstractInputMenuItemDisplayer<LocalInfoRequestParameterValue>, IObservable<LocalInfoRequestParameterValue>
     {

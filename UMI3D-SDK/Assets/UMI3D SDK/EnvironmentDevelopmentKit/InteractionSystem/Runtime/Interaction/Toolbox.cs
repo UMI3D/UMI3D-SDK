@@ -21,9 +21,15 @@ using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// <see cref="GlobalTool"/> that contains a list of <see cref="GlobalTool"/>.
+    /// </summary>
     public class Toolbox : GlobalTool, UMI3DLoadableEntity
     {
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Tools in the toolbox.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Tools in the toolbox.")]
         private List<GlobalTool> tools = new List<GlobalTool>();
 
 #if UNITY_EDITOR
@@ -37,6 +43,7 @@ namespace umi3d.edk.interaction
 
         private UMI3DAsyncListProperty<GlobalTool> _objectTools;
 
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -44,6 +51,7 @@ namespace umi3d.edk.interaction
             objectTools.OnUserValueChanged += (u, l) => { tools = l; };
         }
 
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractToolDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -51,6 +59,7 @@ namespace umi3d.edk.interaction
             tbDto.tools = objectTools.GetValue(user).ConvertAll(t => t.ToDto(user) as GlobalToolDto);
         }
 
+        /// <inheritdoc/>
         protected override AbstractToolDto CreateDto()
         {
             return new ToolboxDto();
@@ -85,7 +94,7 @@ namespace umi3d.edk.interaction
             return operation;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto(user) as ToolboxDto;

@@ -20,6 +20,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Information that are editable from the client side and are returned to the environment.
+    /// </summary>
     public abstract class AbstractParameter : AbstractInteraction
     {
         /// <summary>
@@ -57,6 +60,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -64,6 +68,7 @@ namespace umi3d.edk.interaction
                 parameter.privateParameter = isPrivate;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)

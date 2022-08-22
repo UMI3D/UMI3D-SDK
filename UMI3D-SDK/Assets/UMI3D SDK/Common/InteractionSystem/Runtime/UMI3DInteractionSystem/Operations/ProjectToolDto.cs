@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Requests a browser to project a tool.
+    /// DTO to request a browser to project a tool.
     /// </summary>
     public class ProjectToolDto : AbstractOperationDto
     {

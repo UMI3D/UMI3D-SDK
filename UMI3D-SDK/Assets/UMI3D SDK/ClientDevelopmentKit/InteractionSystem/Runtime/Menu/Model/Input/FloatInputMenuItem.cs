@@ -18,11 +18,14 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> for <see cref="float"/>
+    /// </summary>
     public class FloatInputMenuItem : AbstractInputMenuItem<float>
     {
 
         /// <summary>
-        /// Range current value.
+        /// Float current value.
         /// </summary>
         protected float value = 0;
 

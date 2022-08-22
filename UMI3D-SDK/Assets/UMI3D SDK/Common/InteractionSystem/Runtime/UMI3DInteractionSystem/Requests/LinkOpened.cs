@@ -16,8 +16,12 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO for link opening from a browser.
+    /// </summary>
     public class LinkOpened : InteractionRequestDto
     {
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.LinkOpened; }
     }
 }

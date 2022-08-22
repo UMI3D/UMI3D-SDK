@@ -19,9 +19,14 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-
+    /// <summary>
+    /// Interaction related to a web link.
+    /// </summary>
     public class UMI3DLink : AbstractInteraction
     {
+        /// <summary>
+        /// URL of the link.
+        /// </summary>
         public string url;
 
 
@@ -30,13 +35,13 @@ namespace umi3d.edk.interaction
         /// </summary>
         public InteractionEvent onLinkUsed = new InteractionEvent();
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new LinkDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
@@ -46,19 +51,20 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.Link;
         }
 
-
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
                 + UMI3DNetworkingHelper.Write(url);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -71,6 +77,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (interactionId)

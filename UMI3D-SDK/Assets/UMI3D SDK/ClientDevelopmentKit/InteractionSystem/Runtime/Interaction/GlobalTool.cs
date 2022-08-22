@@ -22,26 +22,53 @@ namespace umi3d.cdk.interaction
 {
     public class GlobalToolEvent : UnityEvent<GlobalTool> { }
 
+    /// <summary>
+    /// Direct instanciation of <see cref="AbstractTool"/>.
+    /// </summary>
     public class GlobalTool : AbstractTool
     {
+        /// <summary>
+        /// Global tools instances
+        /// </summary>
         protected static Dictionary<ulong, GlobalTool> instances = new Dictionary<ulong, GlobalTool>();
 
+        /// <summary>
+        /// Retrieve all the <see cref="GlobalTool"/> instances.
+        /// </summary>
+        /// <returns></returns>
         public static List<GlobalTool> GetGlobalTools()
         {
             return instances.Values.ToList();
         }
 
+        /// <summary>
+        /// Get a global tool by its id in <see cref="instances"/>.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static GlobalTool GetGlobalTool(ulong id)
         {
             return instances[id];
         }
 
+        /// <summary>
+        /// Delete tool.
+        /// </summary>
         public void Delete() { instances.Remove(id); }
 
+        /// <summary>
+        /// DTO associated to the tool.
+        /// </summary>
         public AbstractToolDto dto { get; protected set; }
 
+        /// <summary>
+        /// Toolbox the global tool belongs to if there is one.
+        /// </summary>
         public Toolbox parent;
 
+        /// <summary>
+        /// Is the global tool in a toolbox ?
+        /// </summary>
         public bool isInsideToolbox => parent != null;
 
         public GlobalTool(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto)
@@ -50,6 +77,7 @@ namespace umi3d.cdk.interaction
             instances.Add(id, this);
         }
 
+        /// <inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as GlobalToolDto; }
     }
 }

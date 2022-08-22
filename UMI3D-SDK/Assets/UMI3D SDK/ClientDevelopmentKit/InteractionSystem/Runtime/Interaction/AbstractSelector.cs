@@ -18,14 +18,25 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Abstract base class for selectors, classes that manages the selection of objects.
+    /// </summary>
     public abstract class AbstractSelector : MonoBehaviour
     {
         public List<int> deactivationRequesters = new List<int>();
 
+        /// <summary>
+        /// Is the selector activated ?
+        /// </summary>
         public bool activated { get; protected set; }
 
-
+        /// <summary>
+        /// Disable the selector
+        /// </summary>
         protected virtual void ActivateInternal() { activated = true; }
+        /// <summary>
+        /// Deactivate the selector
+        /// </summary>
         protected virtual void DeactivateInternal() { activated = false; }
 
         protected virtual void Awake()
@@ -35,7 +46,7 @@ namespace umi3d.cdk.interaction
 
 
         /// <summary>
-        /// Activate the Selector.
+        /// Activate the Selector and manages <see cref="deactivationRequesters"/>
         /// </summary>
         public virtual void Activate(int id)
         {
@@ -47,7 +58,7 @@ namespace umi3d.cdk.interaction
         }
 
         /// <summary>
-        /// Deactivate the Selector.
+        /// Deactivate the Selector and manages <see cref="deactivationRequesters"/>
         /// </summary>
         public virtual void Deactivate(int id)
         {
@@ -61,9 +72,5 @@ namespace umi3d.cdk.interaction
         /// Select the object currently pointed at.
         /// </summary>
         public abstract void Select();
-
-
-
-
     }
 }

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Class to describe a Manipulation using degrees of freedom
+    /// DTO to describe a Manipulation using degrees of freedom
     /// </summary>
     [System.Serializable]
     public class ManipulationDto : AbstractInteractionDto

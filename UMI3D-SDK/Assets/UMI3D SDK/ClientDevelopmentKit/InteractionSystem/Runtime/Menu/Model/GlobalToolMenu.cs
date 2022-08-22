@@ -20,12 +20,25 @@ using UnityEngine;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="Menu"/> for <see cref="GlobalTool"/>.
+    /// </summary>
     public class GlobalToolMenu : Menu
     {
+        /// <summary>
+        /// Parent <see cref="Menu"/>
+        /// </summary>
         public AbstractMenu parent;
 
+        /// <summary>
+        /// <see cref="GlobalTool"/> associated with the menu.
+        /// </summary>
         public GlobalTool tool { get; private set; }
 
+        /// <summary>
+        /// Set up the menu for the global tool.
+        /// </summary>
+        /// <param name="tool"></param>
         public void Setup(GlobalTool tool)
         {
             RemoveAll();

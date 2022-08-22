@@ -20,6 +20,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Editable <see cref="float"/> range parameter.
+    /// </summary>
     public class FloatRangeParameter : AbstractParameter
     {
         /// <summary>
@@ -79,11 +82,13 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.FloatRangeParameter;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -93,7 +98,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -124,6 +129,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)

@@ -16,7 +16,6 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-
     /// <summary>
     /// Boolean parameter dto.
     /// </summary>

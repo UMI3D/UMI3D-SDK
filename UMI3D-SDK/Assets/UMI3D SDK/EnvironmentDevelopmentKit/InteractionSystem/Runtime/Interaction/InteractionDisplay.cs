@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.edk.interaction
 {
     /// <summary>
-    /// Abstract UMI3D interaction.
+    /// Abstract UMI3D interaction that could be displayed in Editor. Used in <see cref="AbstractInteraction"/>.
     /// </summary>
     [System.Serializable]
     public class InteractionDisplay

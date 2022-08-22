@@ -20,11 +20,18 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Dispactcher managing incoming <see cref="AbstractBrowserRequestDto"/> from clients.
+    /// </summary>
     public static class UMI3DBrowserRequestDispatcher
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Interaction | DebugScope.Networking;
 
-
+        /// <summary>
+        /// Triggers the right events according to the received DTO.
+        /// </summary>
+        /// <param name="user">User sending the DTO</param>
+        /// <param name="dto">Received DTO</param>
         public static void DispatchBrowserRequest(UMI3DUser user, UMI3DDto dto)
         {
             switch (dto)
@@ -56,6 +63,12 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <summary>
+        /// Triggers the right events based on the received byte container and its key that is in <see cref="UMI3DOperationKeys"/>.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="operationKey"></param>
+        /// <param name="container">Received byte container</param>
         public static void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
             ulong toolId = UMI3DNetworkingHelper.Read<ulong>(container);

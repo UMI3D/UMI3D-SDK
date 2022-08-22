@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing a global tool. It is a direct instanciation of <see cref="AbstractToolDto"/>. <br/>
+    /// For several tools, see <see cref="ToolboxDto"/>.
+    /// </summary>
     public class GlobalToolDto : AbstractToolDto
     {
         public GlobalToolDto() : base() { }

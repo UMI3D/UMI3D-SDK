@@ -28,9 +28,12 @@ namespace umi3d.cdk.interaction
     {
         #region properties
         /// <summary>
-        /// Currently projected tool's id.
+        /// Currently projected tool.
         /// </summary>
         protected AbstractTool currentTool = null;
+        /// <summary>
+        /// Currently projected tool.
+        /// </summary>
         public AbstractTool tool => currentTool;
 
         /// <summary>
@@ -43,6 +46,10 @@ namespace umi3d.cdk.interaction
         /// </summary>
         protected Dictionary<ulong, AbstractUMI3DInput[]> associatedInputs = new Dictionary<ulong, AbstractUMI3DInput[]>();
 
+        /// <summary>
+        /// Controller projection memory.
+        /// </summary>
+        [Tooltip("Controller projection memory")]
         public ProjectionMemory projectionMemory;
 
         #endregion
@@ -199,6 +206,10 @@ namespace umi3d.cdk.interaction
             Project(tool, releasable, reason, GetCurrentHoveredId());
         }
 
+        /// <summary>
+        /// Get the ID of the currently pointed object.
+        /// </summary>
+        /// <returns></returns>
         protected abstract ulong GetCurrentHoveredId();
 
 
