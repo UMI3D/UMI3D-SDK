@@ -41,6 +41,5 @@ namespace umi3d.common.interaction
                 + UMI3DNetworkingHelper.Write(toolId)
                 + UMI3DNetworkingHelper.Write(boneType);
         }
-
     }
 }

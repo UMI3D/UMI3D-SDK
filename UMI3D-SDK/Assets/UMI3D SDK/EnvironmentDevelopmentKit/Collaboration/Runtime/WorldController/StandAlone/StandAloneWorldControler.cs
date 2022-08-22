@@ -89,7 +89,7 @@ namespace umi3d.worldController
         /// <returns></returns>
         private string generateFakeToken()
         {
-            return (new Guid()).ToString();
+            return new Guid().ToString();
         }
 
         private async Task<PrivateIdentityDto> GetIdentityDto(User user)

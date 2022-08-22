@@ -76,6 +76,4 @@ namespace umi3d.worldController
 
         public override uint messageId => 2;
     }
-
-
 }

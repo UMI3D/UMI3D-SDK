@@ -87,5 +87,4 @@ namespace umi3d.common
             internalValue = newValue;
         }
     }
-
 }

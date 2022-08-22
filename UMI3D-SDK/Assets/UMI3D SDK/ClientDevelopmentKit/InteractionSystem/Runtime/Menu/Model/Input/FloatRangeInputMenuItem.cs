@@ -67,7 +67,7 @@ namespace umi3d.cdk.menu
             {
                 float tmp = Mathf.Max(newValue, min);
                 tmp = Mathf.Min(tmp, max);
-                tmp = min + increment * ((int)((tmp - min) / increment));
+                tmp = min + (increment * ((int)((tmp - min) / increment)));
                 value = tmp;
             }
             else

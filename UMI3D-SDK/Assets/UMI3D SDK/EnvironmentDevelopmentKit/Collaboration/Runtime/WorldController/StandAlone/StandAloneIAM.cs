@@ -106,8 +106,6 @@ namespace umi3d.worldController
                 tokens.Add(token);
                 user.Set(token);
             }
-
         }
-
     }
 }

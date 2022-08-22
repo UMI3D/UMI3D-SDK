@@ -43,7 +43,7 @@ namespace umi3d.cdk
             if (glTFNodeDto == null)
                 return;
 
-            Vector3 pos = (Camera.main.transform.position - transform.position);
+            Vector3 pos = Camera.main.transform.position - transform.position;
 
             if (!X) { pos -= Vector3.up * Vector3.Dot(Vector3.up, pos); }
             if (!Y) { pos -= Vector3.right * Vector3.Dot(Vector3.right, pos); }

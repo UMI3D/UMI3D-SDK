@@ -242,7 +242,6 @@ namespace umi3d.common.graphics
             }
             return 0;
         }
-
     }
 }
 #endif

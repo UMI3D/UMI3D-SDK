@@ -211,19 +211,20 @@ namespace umi3d.cdk
             /// </summary>
             /// <param name="url">Url to match.</param>
             /// <returns></returns>
-            public bool MatchUrl(Match Matchurl,string url, string libraryId = null)
+            public bool MatchUrl(Match Matchurl, string url, string libraryId = null)
             {
                 if (url == this.url)
                     return true;
 
                 if (a.Success && Matchurl.Success)
-                    return (a.Groups[1].Captures[0].Value == Matchurl.Groups[1].Captures[0].Value 
+                    return (a.Groups[1].Captures[0].Value == Matchurl.Groups[1].Captures[0].Value
                                 && (a.Groups[2].Captures.Count == Matchurl.Groups[2].Captures.Count)
-                                && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == Matchurl.Groups[2].Captures[0].Value) 
+                                && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == Matchurl.Groups[2].Captures[0].Value)
                                 && a.Groups[3].Captures[0].Value == Matchurl.Groups[3].Captures[0].Value)
-                        || ((!string.IsNullOrEmpty(libraryId) 
-                                && libraryIds.Contains(libraryId) 
-                                && Matchurl.Groups[3].Captures[0].Value.Contains(fileRelativePath)));
+                        || (!string.IsNullOrEmpty(fileRelativePath)
+                                && !string.IsNullOrEmpty(libraryId)
+                                && libraryIds.Contains(libraryId)
+                                && Matchurl.Groups[3].Captures[0].Value.Contains(fileRelativePath));
 
                 return false;
             }
@@ -239,7 +240,7 @@ namespace umi3d.cdk
 
                 Match b = rx.Match(url);
                 if (a.Success && b.Success)
-                    return (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && ((a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value)));
+                    return a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
                 return false;
             }
 
@@ -357,7 +358,6 @@ namespace umi3d.cdk
                 this.authorization = authorization;
                 a = rx.Match(url);
             }
-
         }
 
         public Dictionary<ulong, string> librariesMap = new Dictionary<ulong, string>();
@@ -388,7 +388,7 @@ namespace umi3d.cdk
         public static bool ClearCache(string VariantUrl, string LibraryId = null)
         {
             Match matchUrl = ObjectData.rx.Match(VariantUrl);
-            return (VariantUrl != null && Exists) ? Instance.ClearCache(ob => ob.MatchUrl(matchUrl, VariantUrl, LibraryId)) : false;
+            return VariantUrl != null && Exists && Instance.ClearCache(ob => ob.MatchUrl(matchUrl, VariantUrl, LibraryId));
         }
 
         private bool ClearCache(Func<ObjectData, bool> predicate)
@@ -438,7 +438,7 @@ namespace umi3d.cdk
             }
             if (subModelsCache != null)
             {
-                foreach (var item in subModelsCache.Values)
+                foreach (SubmodelDataCollection item in subModelsCache.Values)
                 {
                     item.Destroy();
                 }
@@ -475,7 +475,7 @@ namespace umi3d.cdk
                         Match matchUrl = ObjectData.rx.Match(file.url);
                         ObjectData objectData = CacheCollection.Find((o) =>
                         {
-                                return o.MatchUrl(matchUrl, file.url, data.key);
+                            return o.MatchUrl(matchUrl, file.url, data.key);
                         });
                         if (objectData != null)
                             objectData.downloadedPath = file.path;
@@ -726,7 +726,7 @@ namespace umi3d.cdk
             ObjectData objectData = CacheCollection.Find((o) =>
             {
 
-                    return o.MatchUrl(matchUrl, url, libraryKey);
+                return o.MatchUrl(matchUrl, url, libraryKey);
             });
 
             if (objectData != null && objectData.downloadedPath != null)
@@ -745,7 +745,7 @@ namespace umi3d.cdk
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = Instance.CacheCollection.Find((o) =>
             {
-                    return o.MatchUrl(matchUrl, url, libraryKey);
+                return o.MatchUrl(matchUrl, url, libraryKey);
             });
             if (objectData != null && objectData.downloadedPath != null)
             {
@@ -988,7 +988,7 @@ namespace umi3d.cdk
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                    return o.MatchUrl(matchUrl, url, key);
+                return o.MatchUrl(matchUrl, url, key);
             });
             if (objectData != null)
             {
@@ -1028,7 +1028,7 @@ namespace umi3d.cdk
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                    return o.MatchUrl(matchUrl, url, id);
+                return o.MatchUrl(matchUrl, url, id);
             });
             if (objectData != null)
             {
@@ -1082,13 +1082,13 @@ namespace umi3d.cdk
 
         #endregion
         #region sub Models
-        Dictionary<string, SubmodelDataCollection> subModelsCache;
+        private Dictionary<string, SubmodelDataCollection> subModelsCache;
 
         public class SubmodelDataCollection
         {
-            List<SubmodelData> datas;
+            private List<SubmodelData> datas;
             public Transform root;
-            bool canUseNameRef;
+            private bool canUseNameRef;
 
             public SubmodelDataCollection()
             {
@@ -1114,25 +1114,24 @@ namespace umi3d.cdk
                 {
                     return (canUseNameRef && d.MatchName(name))
                             || (!canUseNameRef &&
-                                    (indexes != null && (d.MatchIndexes(indexes))
+                                    ((indexes != null && d.MatchIndexes(indexes))
                                     || (names != null && d.MatchNames(names))));
                 })?.transform;
             }
 
             public void Destroy()
             {
-                foreach (var data in datas)
+                foreach (SubmodelData data in datas)
                 {
                     GameObject.Destroy(data.transform.gameObject);
                 }
             }
 
-
-            class SubmodelData
+            private class SubmodelData
             {
-                string RefByName;
-                List<int> RefByIndex;
-                List<string> RefByNames;
+                private string RefByName;
+                private List<int> RefByIndex;
+                private List<string> RefByNames;
                 public Transform transform;
 
                 public SubmodelData(string refByName, List<int> refByIndex, List<string> refByNames, Transform transform)
@@ -1159,7 +1158,6 @@ namespace umi3d.cdk
                         return false;
                     return !indexes.Zip(RefByIndex, (a, b) => a == b).Any(s => !s);
                 }
-
             }
         }
 
@@ -1184,7 +1182,7 @@ namespace umi3d.cdk
                 Match matchUrl = ObjectData.rx.Match(modelUrlInCache);
                 ObjectData objectData = CacheCollection.Find((o) =>
                 {
-                        return o.MatchUrl(matchUrl, modelUrlInCache);
+                    return o.MatchUrl(matchUrl, modelUrlInCache);
                 });
                 if (objectData == null)
                     UMI3DLogger.LogError("not found in cache", scope);

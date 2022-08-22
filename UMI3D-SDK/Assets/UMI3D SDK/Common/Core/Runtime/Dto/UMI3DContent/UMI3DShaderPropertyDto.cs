@@ -162,6 +162,5 @@ namespace umi3d.common
             }
             return result;
         }
-
     }
 }

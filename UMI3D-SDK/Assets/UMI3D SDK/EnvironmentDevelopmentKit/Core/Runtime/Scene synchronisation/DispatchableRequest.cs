@@ -39,6 +39,5 @@ namespace umi3d.edk
         {
             UMI3DServer.Dispatch(this);
         }
-
     }
 }

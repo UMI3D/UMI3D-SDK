@@ -73,5 +73,4 @@ namespace umi3d.common
             return base.ToBytableArray(parameters);
         }
     }
-
 }

@@ -25,20 +25,20 @@ namespace umi3d.edk
     public class SerializableDateTime : ISerializationCallbackReceiver
     {
         [HideInInspector] private DateTime dateTime;
-        [HideInInspector] [SerializeField] private string _dateTime;
+        [HideInInspector][SerializeField] private string _dateTime;
 
-        [HideInInspector] [SerializeField] private int day;
-        [HideInInspector] [SerializeField] private int month;
-        [HideInInspector] [SerializeField] private int year;
+        [HideInInspector][SerializeField] private int day;
+        [HideInInspector][SerializeField] private int month;
+        [HideInInspector][SerializeField] private int year;
 
-        [HideInInspector] [SerializeField] private int hours;
-        [HideInInspector] [SerializeField] private int minutes;
-        [HideInInspector] [SerializeField] private int seconds;
+        [HideInInspector][SerializeField] private int hours;
+        [HideInInspector][SerializeField] private int minutes;
+        [HideInInspector][SerializeField] private int seconds;
 
-        [HideInInspector] [SerializeField] private bool setNow;
+        [HideInInspector][SerializeField] private bool setNow;
 
-        [HideInInspector] [SerializeField] private string culture = "en-US";
-        [HideInInspector] [SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
+        [HideInInspector][SerializeField] private string culture = "en-US";
+        [HideInInspector][SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
 
         public void OnAfterDeserialize()
         {
@@ -75,12 +75,11 @@ namespace umi3d.edk
         public string Culture() { return culture; }
         public static implicit operator DateTime(SerializableDateTime date)
         {
-            return (date.dateTime);
+            return date.dateTime;
         }
         public static implicit operator SerializableDateTime(DateTime date)
         {
             return new SerializableDateTime() { dateTime = date };
         }
-
     }
 }

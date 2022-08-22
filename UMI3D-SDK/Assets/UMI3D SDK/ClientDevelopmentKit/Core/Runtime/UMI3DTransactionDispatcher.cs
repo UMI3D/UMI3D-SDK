@@ -136,8 +136,6 @@ namespace umi3d.cdk
                     }
                     break;
             }
-
         }
-
     }
 }

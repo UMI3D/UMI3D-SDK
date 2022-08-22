@@ -34,7 +34,5 @@ namespace umi3d.worldController
         public virtual void Stop()
         {
         }
-
-
     }
 }

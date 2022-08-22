@@ -68,7 +68,6 @@ namespace umi3d.edk.editor
 
             serializedObject.ApplyModifiedProperties();
         }
-
     }
 }
 #endif

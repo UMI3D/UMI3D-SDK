@@ -54,5 +54,4 @@ namespace umi3d.common.interaction
         /// <returns>Parameter value to retrieve</returns>
         public abstract object GetValue();
     }
-
 }

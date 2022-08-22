@@ -73,6 +73,5 @@ namespace umi3d.cdk.menu
         {
             return value;
         }
-
     }
 }

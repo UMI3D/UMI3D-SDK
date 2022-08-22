@@ -31,6 +31,11 @@ namespace umi3d.cdk.collaboration
 
         protected KalmanPosition skeletonHeightFilter = new KalmanPosition(50, 0.5);
 
+        private void Start()
+        {
+            viewpointObject = GetComponentInChildren<UMI3DViewpointHelper>()?.transform;
+        }
+
         private void Update()
         {
             RegressionPosition(nodePositionFilter);
@@ -49,12 +54,22 @@ namespace umi3d.cdk.collaboration
 
                 Transform boneTransform;
 
-                if (!boneType.Equals(BoneType.CenterFeet))
-                    boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
-                else
-                    boneTransform = skeleton.transform;
+                if (boneType.Equals(BoneType.Viewpoint))
+                {
+                    boneTransform = viewpointObject;
+                    boneTransform.parent.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                }
 
-                boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                else
+                {
+                    if (boneType.Equals(BoneType.CenterFeet))
+                        boneTransform = skeleton.transform;
+                    else
+                        boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
+
+                    boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                }
+
 
                 List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
                 foreach (BoneBindingDto boneBindingDto in bindings)
@@ -65,7 +80,7 @@ namespace umi3d.cdk.collaboration
                         if (boneBindingDto.syncPosition)
                             st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
                         if (boneBindingDto.syncRotation)
-                            st.obj.rotation = boneTransform.rotation * bounds.Find(b => st.obj == b.obj).anchorRelativeRot * (Quaternion)boneBindingDto.offsetRotation;
+                            st.obj.rotation = boneTransform.rotation /** bounds.Find(b => st.obj == b.obj).anchorRelativeRot*/ * (Quaternion)boneBindingDto.offsetRotation;
                         if (boneBindingDto.freezeWorldScale)
                         {
                             Vector3 WscaleMemory = st.savedLossyScale;
@@ -87,7 +102,7 @@ namespace umi3d.cdk.collaboration
             if (id != UMI3DClientServer.Instance.GetUserId())
             {
                 var ua = UMI3DClientUserTracking.Instance.embodimentDict[id] as UMI3DCollaborativeUserAvatar;
-                
+
                 if (ua.skeleton == null)
                 {
                     ua.skeleton = Instantiate((UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking).UnitSkeleton, ua.transform);
@@ -150,7 +165,7 @@ namespace umi3d.cdk.collaboration
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    double value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
+                    double value_x = ((tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond) + tools.previous_prediction[0];
 
                     tools.estimations = new double[] { value_x };
 
@@ -205,7 +220,7 @@ namespace umi3d.cdk.collaboration
 
                             if (boneBindingDto.rigName != "")
                             {
-                                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = (e as UMI3DNodeInstance));
+                                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = e as UMI3DNodeInstance);
                                 while (boneBindingnode == null)
                                     yield return wait;
                                 while (

@@ -305,5 +305,4 @@ namespace umi3d.common
             return VerticalWrapMode.Truncate;
         }
     }
-
 }

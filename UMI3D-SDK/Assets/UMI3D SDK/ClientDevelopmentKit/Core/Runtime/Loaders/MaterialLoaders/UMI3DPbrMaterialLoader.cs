@@ -41,7 +41,7 @@ namespace umi3d.cdk
             {
                 void SetMaterial(Material newMat)
                 {
-                    newMat.color = (Color)(dto.pbrMetallicRoughness.baseColorFactor);
+                    newMat.color = (Color)dto.pbrMetallicRoughness.baseColorFactor;
                     if (newMat.color.a < 1 || dto.alphaMode == "BLEND")
                     {
                         newMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
@@ -135,9 +135,6 @@ namespace umi3d.cdk
                 UMI3DLogger.LogWarning("extension is null", scope);
             }
         }
-
-
     }
-
 }
 

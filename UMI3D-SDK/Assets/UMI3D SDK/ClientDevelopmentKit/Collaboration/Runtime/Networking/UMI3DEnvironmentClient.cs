@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
         private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
         public bool IsConnected()
         {
-            return ForgeClient != null ? isConnected && ForgeClient.IsConnected && !disconected : false;
+            return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconected;
         }
 
         public readonly double maxMillisecondToWait = 10000;
@@ -87,10 +87,14 @@ namespace umi3d.cdk.collaboration
             public FormDto formdto;
             public UserConnectionAnswerDto answerDto;
 
+            public string AudioPassword;
+
             public UserInfo()
             {
                 formdto = new FormDto();
                 answerDto = new UserConnectionAnswerDto();
+                AudioPassword = null;
+
             }
 
             public void Set(UserConnectionDto dto)
@@ -101,6 +105,7 @@ namespace umi3d.cdk.collaboration
                     parameters = param
                 };
                 this.formdto = dto.parameters;
+                this.AudioPassword = dto.audioPassword;
             }
         }
 
@@ -169,7 +174,7 @@ namespace umi3d.cdk.collaboration
         public void ConnectionStatus(bool lost)
         {
             if (UMI3DCollaborationClientServer.Exists)
-                UMI3DCollaborationClientServer.Instance.ConnectionStatus(this,lost);
+                UMI3DCollaborationClientServer.Instance.ConnectionStatus(this, lost);
         }
 
         public async void ConnectionDisconnected()
@@ -187,13 +192,13 @@ namespace umi3d.cdk.collaboration
         public async Task<bool> Logout(bool notify = true)
         {
             bool ok = false;
-            
+
             if (IsConnected())
             {
 
                 try
                 {
-                    if(notify)
+                    if (notify)
                         await HttpClient.SendPostLogout();
                 }
                 finally { };

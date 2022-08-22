@@ -98,6 +98,5 @@ namespace umi3d.cdk
             }
             return true;
         }
-
     }
 }

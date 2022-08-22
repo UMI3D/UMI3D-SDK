@@ -129,6 +129,5 @@ namespace umi3d.cdk
         public virtual Object GetHttpClient() { return null; }
 
         public virtual double GetRoundTripLAtency() { return 0; }
-
     }
 }

@@ -52,6 +52,5 @@ namespace umi3d.cdk.interaction
 
         /// <inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolboxDto; }
-
     }
 }

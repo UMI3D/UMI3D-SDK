@@ -35,6 +35,5 @@ namespace umi3d.edk
                 scaleOffset = ScaleOffset
             };
         }
-
     }
 }

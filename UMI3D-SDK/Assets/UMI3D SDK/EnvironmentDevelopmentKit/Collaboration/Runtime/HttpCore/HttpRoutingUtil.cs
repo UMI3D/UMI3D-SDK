@@ -81,6 +81,5 @@ namespace umi3d.edk.collaboration
         {
             roots.Clear();
         }
-
     }
 }

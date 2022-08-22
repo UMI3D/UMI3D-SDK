@@ -76,7 +76,6 @@ namespace umi3d.cdk
         }
 
         public int count { get; private set; }
-
     }
 
     public class Umi3dException : Exception
@@ -114,9 +113,7 @@ namespace umi3d.cdk
 
         public override string ToString()
         {
-            return $"code : {errorCode} | {base.ToString()} : [  { exception?.StackTrace ?? base.StackTrace} ]";
+            return $"code : {errorCode} | {base.ToString()} : [  {exception?.StackTrace ?? base.StackTrace} ]";
         }
-
     }
-
 }

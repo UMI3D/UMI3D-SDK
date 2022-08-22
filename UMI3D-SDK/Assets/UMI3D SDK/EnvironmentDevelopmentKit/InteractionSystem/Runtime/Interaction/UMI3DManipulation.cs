@@ -199,7 +199,7 @@ namespace umi3d.edk.interaction
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return UMI3DNetworkingHelper.Write(name)
-                    + UMI3DNetworkingHelper.WriteIBytableCollection((IEnumerable<IBytable>)separations);
+                    + UMI3DNetworkingHelper.WriteIBytableCollection(separations);
             }
 
             /// <summary>

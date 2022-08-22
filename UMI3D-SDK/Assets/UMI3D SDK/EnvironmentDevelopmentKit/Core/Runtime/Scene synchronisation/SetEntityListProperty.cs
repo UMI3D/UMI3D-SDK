@@ -68,6 +68,5 @@ namespace umi3d.edk
             }
             return a;
         }
-
     }
 }

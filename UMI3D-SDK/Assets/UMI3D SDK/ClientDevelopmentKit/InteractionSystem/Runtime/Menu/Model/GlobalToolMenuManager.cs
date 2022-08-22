@@ -62,7 +62,7 @@ namespace umi3d.cdk.interaction
                 {
                     if (toolboxIdToMenu.ContainsKey(tool.parent.id))
                     {
-                        var parentMenu = (toolboxIdToMenu[tool.parent.id] as ToolboxMenu);
+                        var parentMenu = toolboxIdToMenu[tool.parent.id] as ToolboxMenu;
                         parentMenu.Add(tbmenu);
                         tbmenu.parent = parentMenu;
                         toolboxIdToMenu.Add(dto.id, tbmenu);
