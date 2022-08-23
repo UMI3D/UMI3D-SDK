@@ -25,22 +25,35 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// List of interactions that could be projected on a client controller.
+    /// </summary>
     public abstract class AbstractTool : MonoBehaviour, UMI3DMediaEntity
     {
         #region properties
 
+        /// <summary>
+        /// Serializable object that displays the tool properties.
+        /// </summary>
+        [Tooltip("Displayed information related to the tool.")]
         public InteractionDisplay Display = new InteractionDisplay()
         {
             name = "new tool"
         };
 
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Interactions handled by the tool.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Interactions handled by the tool.")]
         public List<AbstractInteraction> Interactions = new List<AbstractInteraction>();
         public UMI3DAsyncListProperty<AbstractInteraction> objectInteractions { get { Register(); return _objectInteractions; } protected set => _objectInteractions = value; }
 
         private UMI3DAsyncListProperty<AbstractInteraction> _objectInteractions;
 
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// True if the tool is active.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Set to true if the tool should be active.")]
         public bool Active = true;
 
         public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
@@ -124,7 +137,7 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Create an empty Dto.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Created Dto.</returns>
         protected abstract AbstractToolDto CreateDto();
 
         /// <summary>
@@ -182,13 +195,13 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Called when this tool is projected.
         /// </summary>
-        [SerializeField]
+        [SerializeField, Tooltip("Called when this tool is projected.")]
         public ProjectionEvent onProjection = new ProjectionEvent();
 
         /// <summary>
         /// Called when this tool is released.
         /// </summary>
-        [SerializeField]
+        [SerializeField, Tooltip("Called when this tool is released.")]
         public ProjectionEvent onRelease = new ProjectionEvent();
 
         /// <summary>
@@ -203,10 +216,22 @@ namespace umi3d.edk.interaction
         [Serializable]
         public class ReleaseEvent : UnityEvent<ProjectionContent> { }
 
+        /// <summary>
+        /// Information on projection
+        /// </summary>
         public class ProjectionContent
         {
+            /// <summary>
+            /// Target user for projection
+            /// </summary>
             public UMI3DUser user;
+            /// <summary>
+            /// Target bonetype for projection
+            /// </summary>
             public uint boneType;
+            /// <summary>
+            /// Tool used in projection
+            /// </summary>
             public AbstractTool tool;
 
             public ProjectionContent(UMI3DUser user, uint boneType, AbstractTool tool)
@@ -237,7 +262,7 @@ namespace umi3d.edk.interaction
             dto.active = objectActive.GetValue(user);
         }
 
-
+        /// <inheritdoc/>
         public virtual Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(Id())

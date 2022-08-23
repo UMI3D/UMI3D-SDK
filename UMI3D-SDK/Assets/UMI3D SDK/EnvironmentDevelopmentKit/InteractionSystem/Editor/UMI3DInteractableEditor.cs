@@ -21,6 +21,9 @@ using UnityEditor;
 
 namespace umi3d.edk.editor
 {
+    /// <summary>
+    /// <see cref="UMI3DInteractable"/> custom editor.
+    /// </summary>
     [CustomEditor(typeof(UMI3DInteractable), true)]
     public class UMI3DInteractableEditor : UMI3DAbstractToolEditor
     {
@@ -35,7 +38,7 @@ namespace umi3d.edk.editor
         private SerializedProperty HoverEnterAnimation;
         private SerializedProperty HoverExitAnimation;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -53,7 +56,7 @@ namespace umi3d.edk.editor
 
         private static bool displayEvent = false;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void _OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(Node);

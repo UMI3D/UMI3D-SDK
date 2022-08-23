@@ -16,13 +16,12 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    [System.Serializable]
     /// <summary>
-    /// An abstract class any interaction request have to be derivated from.
+    /// An abstract DTO any interaction request from browsers have to be derivated from.
     /// </summary>
+    [System.Serializable]
     public abstract class InteractionRequestDto : AbstractBrowserRequestDto
     {
-
         /// <summary>
         /// Id of the interactable or tool (in the case of an interaction related to hoverring).
         /// </summary>
@@ -44,8 +43,11 @@ namespace umi3d.common.interaction
         /// The type of bone associated to the user's controller.
         /// </summary>
         public uint boneType;
+
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

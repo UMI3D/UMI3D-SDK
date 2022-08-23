@@ -29,21 +29,31 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Menu that will contain this input.
         /// </summary>
+        [Tooltip("Menu that will contain this input")]
         public AbstractMenu Menu;
 
+        /// <summary>
+        /// Controller the input is related to.
+        /// </summary>
         [SerializeField]
         public AbstractController controller { get; protected set; }
 
+        /// <summary>
+        /// Available numbers of degrees of freedom.
+        /// </summary>
+        [Tooltip("Available numbers of degrees of freedom")]
         public readonly int DegreesOfFreedom = 0;
 
         /// <summary>
-        /// Event raised when the input is used (first frame only).
+        /// Event raised when the input is pressed down (first frame only).
         /// </summary>
+        [Tooltip("Event raised when the input is pressed down (first frame only)")]
         public UnityEvent onInputDown = new UnityEvent();
 
         /// <summary>
-        /// Event raised when the input is used (first frame only).
+        /// Event raised when the input is released (first frame only).
         /// </summary>
+        [Tooltip("Event raised when the input is released (first frame only)")]
         public UnityEvent onInputUp = new UnityEvent();
 
 
@@ -56,6 +66,11 @@ namespace umi3d.cdk.interaction
             this.controller = controller;
         }
 
+        /// <summary>
+        /// Check if an interaction is compatible with the input.
+        /// </summary>
+        /// <param name="interaction">Interaction to check</param>
+        /// <returns>True is it the interaction is compatible.</returns>
         public abstract bool IsCompatibleWith(AbstractInteractionDto interaction);
 
         /// <summary>

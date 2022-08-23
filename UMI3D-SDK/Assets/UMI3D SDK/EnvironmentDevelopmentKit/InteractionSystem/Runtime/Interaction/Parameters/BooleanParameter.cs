@@ -19,6 +19,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Editable <see cref="bool"/> parameter.
+    /// </summary>
     public class BooleanParameter : AbstractParameter
     {
         /// <summary>
@@ -66,18 +69,20 @@ namespace umi3d.edk.interaction
             (dto as BooleanParameterDto).value = value;
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.BooleanParameter;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
                 + UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -103,6 +108,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
@@ -121,5 +127,6 @@ namespace umi3d.edk.interaction
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
         }
+
     }
 }

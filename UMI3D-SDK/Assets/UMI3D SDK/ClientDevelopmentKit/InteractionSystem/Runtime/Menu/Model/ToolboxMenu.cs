@@ -20,12 +20,25 @@ using UnityEngine;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="Menu"/> for <see cref="Toolbox"/>.
+    /// </summary>
     public class ToolboxMenu : Menu
     {
+        /// <summary>
+        /// Parent <see cref="Menu"/>
+        /// </summary>
         public AbstractMenu parent;
 
+        /// <summary>
+        /// Toolbox that belongs to the menu.
+        /// </summary>
         public Toolbox toolbox { get; private set; }
 
+        /// <summary>
+        /// Set up the menu for the toolbox.
+        /// </summary>
+        /// <param name="tool"></param>
         public void Setup(Toolbox toolbox)
         {
             this.toolbox = toolbox;

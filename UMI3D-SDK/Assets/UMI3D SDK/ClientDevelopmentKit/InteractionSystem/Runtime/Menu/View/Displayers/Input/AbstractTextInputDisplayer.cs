@@ -19,6 +19,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.view
 {
+    /// <summary>
+    /// Base class for <see cref="TextInputMenuItem"/> display.
+    /// </summary>
     public abstract class AbstractTextInputDisplayer : AbstractInputMenuItemDisplayer<string>, IObservable<string>
     {
 

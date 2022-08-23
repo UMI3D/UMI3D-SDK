@@ -18,6 +18,9 @@ using System.Collections.Generic;
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing a tool.
+    /// </summary>
     [System.Serializable]
     public abstract class AbstractToolDto : AbstractEntityDto
     {
@@ -31,6 +34,9 @@ namespace umi3d.common.interaction
         /// </summary>
         public string description = null;
 
+        /// <summary>
+        /// Is tool active ?
+        /// </summary>
         public bool active = true;
 
         /// <summary>

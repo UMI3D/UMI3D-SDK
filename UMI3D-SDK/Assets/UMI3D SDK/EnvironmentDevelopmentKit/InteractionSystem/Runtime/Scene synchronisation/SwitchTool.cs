@@ -20,10 +20,17 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// UMI3D <see cref="Operation"/> forcing the release of the current projected tool and the projection of another tool on clients.
+    /// </summary>
     public class SwitchTool : ProjectTool
     {
+        /// <summary>
+        /// Tool to replace.
+        /// </summary>
         public AbstractTool toolToReplace;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SwitchTool)
@@ -32,7 +39,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(releasable);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new SwitchToolDto() { toolId = tool.Id(), replacedToolId = toolToReplace.Id(), releasable = releasable };

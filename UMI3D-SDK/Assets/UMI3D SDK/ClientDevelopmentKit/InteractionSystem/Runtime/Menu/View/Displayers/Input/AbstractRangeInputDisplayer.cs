@@ -20,7 +20,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for range input display.
+    /// Base class for <see cref="FloatRangeInputMenuItem"/> display.
     /// </summary>
     public abstract class AbstractRangeInputDisplayer : AbstractInputMenuItemDisplayer<float>, IObservable<float>
     {

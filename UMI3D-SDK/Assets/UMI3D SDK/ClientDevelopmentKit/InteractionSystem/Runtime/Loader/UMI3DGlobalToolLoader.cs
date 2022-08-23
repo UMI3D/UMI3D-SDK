@@ -22,6 +22,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Helper class that manages the loading of <see cref="GlobalTool"/> entities.
+    /// </summary>
     public static class UMI3DGlobalToolLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
@@ -58,6 +61,13 @@ namespace umi3d.cdk.interaction
 
         #endregion
 
+        /// <summary>
+        /// Reads the value of an <see cref="GlobalToolDto"/> and updates it.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="dto">Tool dto</param>
+        /// <param name="finished">Callback on finished</param>
+        /// <param name="failed">Callback on failed</param>
         public static void ReadUMI3DExtension(GlobalToolDto dto, Action finished, Action<Umi3dException> failed, Toolbox parent = null)
         {
             if (GlobalTool.GetGlobalTools().Exists(t => t.id == dto.id))
@@ -90,6 +100,10 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        /// <summary>
+        /// Remove a <see cref="GlobalTool"/>.
+        /// </summary>
+        /// <param name="tool">Tool to remove dto</param>
         public static void RemoveTool(GlobalToolDto tool)
         {
             var t = GlobalTool.GetGlobalTool(tool.id);
@@ -97,6 +111,12 @@ namespace umi3d.cdk.interaction
             onGlobalToolDelete?.Invoke(t);
         }
 
+        /// <summary>
+        /// Set the value of a <see cref="UMI3DEntityInstance"/> based on a received <see cref="SetEntityPropertyDto"/>.
+        /// </summary>
+        /// <param name="entity">Entity to update</param>
+        /// <param name="property">Operation dto</param>
+        /// <returns>True if the set operation was ssuccessful.</returns>
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var dto = entity?.dto as GlobalToolDto;
@@ -157,6 +177,15 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        /// <summary>
+        /// Set the value of a <see cref="UMI3DEntityInstance"/> based on a received <see cref="ByteContainer"/>. 
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="entity">Entity to update</param>
+        /// <param name="operationId"></param>
+        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
+        /// <param name="container">Received byte container</param>
+        /// <returns>True if property setting was successful</returns>
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var dto = entity?.dto as GlobalToolDto;
@@ -213,6 +242,14 @@ namespace umi3d.cdk.interaction
             }
         }
 
+        /// <summary>
+        /// Reads the value of an unknown <see cref="object"/> based on a received <see cref="ByteContainer"/> and updates it.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        /// <param name="value">Unknown object</param>
+        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
+        /// <param name="container">Received byte container</param>
+        /// <returns>True if property setting was successful</returns>
         public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;

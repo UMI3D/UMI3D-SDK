@@ -20,6 +20,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> for <see cref="FormDto"/>
+    /// </summary>
     public class FormMenuItem : InteractionMenuItem
     {
         /// <summary>
@@ -27,7 +30,14 @@ namespace umi3d.cdk.menu.interaction
         /// </summary>
         private readonly List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
 
+        /// <summary>
+        /// Answers to the form as a list of <see cref="ParameterSettingRequestDto"/>.
+        /// </summary>
         public List<ParameterSettingRequestDto> answers;
+
+        /// <summary>
+        /// Form the menu item is associated with.
+        /// </summary>
         public FormDto dto;
 
         /// <summary>

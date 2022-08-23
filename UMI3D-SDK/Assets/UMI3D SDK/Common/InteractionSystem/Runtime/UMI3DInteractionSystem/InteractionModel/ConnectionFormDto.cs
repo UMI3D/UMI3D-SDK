@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// 
+    /// DTO describing a connection form.
     /// </summary>
     [System.Serializable]
     public class ConnectionFormDto : FormDto

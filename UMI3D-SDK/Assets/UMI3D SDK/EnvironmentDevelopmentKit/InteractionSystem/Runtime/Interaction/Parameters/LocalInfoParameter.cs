@@ -21,8 +21,14 @@ using UnityEngine;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Parameter related to the access to cookies data on the clients
+    /// </summary>
     public class LocalInfoParameter : AbstractParameter
     {
+        /// <summary>
+        /// Dictionnary of user responses for Local info access for each local info.
+        /// </summary>
         public static Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue> userResponses { get; private set; } = new Dictionary<(UMI3DUser, string), LocalInfoRequestParameterValue>();
 
         /// <summary>
@@ -61,6 +67,7 @@ namespace umi3d.edk.interaction
             return new LocalInfoRequestParameterDto();
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.LocalInfoParameter;
@@ -83,6 +90,7 @@ namespace umi3d.edk.interaction
             LIRPdto.value = new LocalInfoRequestParameterValue(readValue, writeValue);
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -94,7 +102,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(writeValue);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -115,12 +123,18 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             throw new System.NotImplementedException();
             //change user access authorization isn't supported after connexion.
         }
 
+        /// <summary>
+        /// Change local info for a specific user.
+        /// </summary>
+        /// <param name="user">User to change value for.</param>
+        /// <param name="value">New value.</param>
         public void ChageUserLocalInfo(UMI3DUser user, LocalInfoRequestParameterValue value)
         {
             if (userResponses.ContainsKey((user, key)))

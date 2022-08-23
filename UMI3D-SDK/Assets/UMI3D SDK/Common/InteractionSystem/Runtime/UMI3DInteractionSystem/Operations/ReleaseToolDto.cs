@@ -16,10 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    [System.Serializable]
     /// <summary>
-    /// Requests a browser to release a tool.
+    /// DTO to request a browser to release a tool.
     /// </summary>
+    [System.Serializable]
     public class ReleaseToolDto : AbstractOperationDto
     {
         /// <summary>

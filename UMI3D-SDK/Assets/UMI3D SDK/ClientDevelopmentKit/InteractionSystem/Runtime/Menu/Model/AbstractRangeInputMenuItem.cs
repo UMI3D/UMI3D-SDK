@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.cdk.menu
 {
+    /// <summary>
+    /// Base abstract template for range input menus.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class AbstractRangeInputMenuItem<T> : AbstractInputMenuItem<T> where T : System.IComparable
     {
         /// <summary>

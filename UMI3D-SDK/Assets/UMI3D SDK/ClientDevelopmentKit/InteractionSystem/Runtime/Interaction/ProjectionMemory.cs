@@ -21,6 +21,10 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Saves and manages the links between projected tools and their associated inputs. 
+    /// This projection is based on a tree constituted of <see cref="ProjectionTreeNode"/>.
+    /// </summary>
     public class ProjectionMemory : MonoBehaviour
     {
         protected string id_ = "";
@@ -755,6 +759,9 @@ namespace umi3d.cdk.interaction
             memoryRoot.LoadFromFile(path);
         }
 
+        /// <summary>
+        /// Exception thrown when not associated input has been found for an interaction.
+        /// </summary>
         public class NoInputFoundException : System.Exception
         {
             public NoInputFoundException() { }
@@ -765,7 +772,9 @@ namespace umi3d.cdk.interaction
 
 
 
-
+    /// <summary>
+    /// Projection tree node for projection memory.
+    /// </summary>
     [System.Serializable]
     public class ProjectionTreeNode
     {
@@ -795,7 +804,9 @@ namespace umi3d.cdk.interaction
             }
         }
 
-
+        /// <summary>
+        /// Node's children IDs.
+        /// </summary>
         [SerializeField]
         protected List<ulong> childrensId = new List<ulong>();
 
@@ -805,6 +816,9 @@ namespace umi3d.cdk.interaction
         [SerializeField]
         public ulong id;
 
+        /// <summary>
+        /// Tree's id the node belongs to.
+        /// </summary>
         public string treeId { get; protected set; }
 
         /// <summary>
@@ -877,50 +891,82 @@ namespace umi3d.cdk.interaction
         }
     }
 
+    /// <summary>
+    /// Projection tree node associated to an <see cref="EventDto"/>.
+    /// </summary>
     [System.Serializable]
     public class EventNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Event DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Event DTO")]
         public EventDto evt;
 
         public EventNode(string treeId) : base(treeId) { }
     }
 
+    /// <summary>
+    /// Projection tree node associated to a <see cref="ManipulationDto"/>.
+    /// </summary>
     [System.Serializable]
     public class ManipulationNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Manipulation DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Manipulation DTO")]
         public ManipulationDto manipulation;
 
-        [SerializeField]
+        /// <summary>
+        /// Associated Degree of Freedom Group DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Degree of Freedom Group DTO")]
         public DofGroupDto manipulationDofGroupDto;
 
         public ManipulationNode(string treeId) : base(treeId) { }
     }
 
-
+    /// <summary>
+    /// Projection tree node associated to a <see cref="FormDto"/>.
+    /// </summary>
     [System.Serializable]
     public class FormNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Form DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Form DTO")]
         public FormDto form;
 
         public FormNode(string treeId) : base(treeId) { }
     }
 
+    /// <summary>
+    /// Projection tree node associated to a <see cref="LinkDto"/>.
+    /// </summary>
     [System.Serializable]
     public class LinkNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Link DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Link DTO")]
         public LinkDto link;
 
         public LinkNode(string treeId) : base(treeId) { }
     }
 
+    /// <summary>
+    /// Projection tree node associated to an <see cref="AbstractParameterDto"/>.
+    /// </summary>
     [System.Serializable]
     public class ParameterNode : ProjectionTreeNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Associated Parameter DTO
+        /// </summary>
+        [SerializeField, Tooltip("Associated Parameter DTO")]
         public AbstractParameterDto parameter;
 
         public ParameterNode(string treeId) : base(treeId) { }

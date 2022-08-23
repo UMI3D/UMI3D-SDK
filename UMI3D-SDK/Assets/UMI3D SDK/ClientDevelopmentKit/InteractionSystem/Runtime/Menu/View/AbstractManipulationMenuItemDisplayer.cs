@@ -21,7 +21,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for manipulation menu item display.
+    /// Abstract base class for <see cref="ManipulationMenuItem"/> display.
     /// </summary>
     public abstract class AbstractManipulationMenuItemDisplayer : AbstractDisplayer, ITogglable
     {

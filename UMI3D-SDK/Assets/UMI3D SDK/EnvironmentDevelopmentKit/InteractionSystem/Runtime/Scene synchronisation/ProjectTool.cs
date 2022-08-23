@@ -19,12 +19,21 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-
+    /// <summary>
+    /// UMI3D <see cref="Operation"/> forcing the projection of a tool on clients.
+    /// </summary>
     public class ProjectTool : Operation
     {
+        /// <summary>
+        /// Tool to project.
+        /// </summary>
         public AbstractTool tool;
+        /// <summary>
+        /// Is tool releasable ?
+        /// </summary>
         public bool releasable = true;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ProjectTool)
@@ -32,7 +41,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(releasable);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new ProjectToolDto() { toolId = tool.Id(), releasable = releasable };

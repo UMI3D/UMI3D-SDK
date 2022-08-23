@@ -16,14 +16,18 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    [System.Serializable]
     /// <summary>
     /// A class to describe the response from the client to the server when it wants to upload a file.
     /// </summary>
+    [System.Serializable]
     public class UploadFileRequestDto : ParameterSettingRequestDto
     {
+        /// <summary>
+        /// File ID.
+        /// </summary>
         public string fileId;
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

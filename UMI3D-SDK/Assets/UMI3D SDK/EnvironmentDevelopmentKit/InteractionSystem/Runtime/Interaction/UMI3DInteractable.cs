@@ -24,18 +24,33 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// <see cref="AbstractTool"/> attached to an object.
+    /// </summary>
     public class UMI3DInteractable : AbstractTool, UMI3DLoadableEntity
     {
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Should the object notify the environment when being hovered ?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Should the object notify the environment when being hovered ?")]
         protected bool NotifyHoverPosition;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Should sub-objects notify the environment when being hovered ?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Should sub-objects notify the environment when being hovered ?")]
         protected bool NotifySubObject;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// <see cref="UMI3DNode"/> the interactable is attached to.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("UMI3D Node the interactable is attached to.")]
         protected UMI3DNode Node;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Should be prioritized over others interactables when pointed at ?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Should be prioritized over others interactables when pointed at ?")]
         protected bool HasPriority;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Register()
         {
             base.Register();
@@ -78,6 +93,9 @@ namespace umi3d.edk.interaction
         [Serializable]
         public class HoverEvent : UnityEvent<HoverEventContent> { }
 
+        /// <summary>
+        /// <see cref="AbstractInteraction.InteractionEventContent"/> specialized for hoverring.
+        /// </summary>
         [Serializable]
         public class HoverEventContent : AbstractInteraction.InteractionEventContent
         {
@@ -100,17 +118,38 @@ namespace umi3d.edk.interaction
             }
         }
 
-        [SerializeField]
+        /// <summary>
+        /// Triggered when the object starts to be hovered by a user.
+        /// </summary>
+        [SerializeField, Tooltip("Triggered when the object starts to be hovered by a user.")]
         public HoverEvent onHoverEnter = new HoverEvent();
 
-        [SerializeField]
+        /// <summary>
+        /// Triggered when the object is hovered by a user.
+        /// </summary>
+        [SerializeField, Tooltip("Triggered when the object is hovered by a user.")]
         public HoverEvent onHovered = new HoverEvent();
 
-        [SerializeField]
+        /// <summary>
+        /// Triggered when the object stops to be hovered by a user.
+        /// </summary>
+        [SerializeField, Tooltip("Triggered when the object stops to be hovered by a user.")]
         public HoverEvent onHoverExit = new HoverEvent();
 
+        /// <summary>
+        /// Should specific animations be played on hover enter / exit ?
+        /// </summary>
+        [Tooltip("Should specific animations be played on hover enter / exit ?")]
         public bool UseAnimations = false;
+        // <summary>
+        /// Triggered when the object is hovered by a user.
+        /// </summary>
+        [Tooltip("Triggered when the object is hovered by a user.")]
         public UMI3DNodeAnimation HoverEnterAnimation;
+        /// <summary>
+        /// Triggered when the object stops to be hovered by a user.
+        /// </summary>
+        [Tooltip("Triggered when the object stops to be hovered by a user.")]
         public UMI3DNodeAnimation HoverExitAnimation;
 
         /// <summary>
@@ -122,6 +161,9 @@ namespace umi3d.edk.interaction
         private UMI3DAsyncProperty<UMI3DNode> objectNodeId1;
         private UMI3DAsyncProperty<bool> _hasPriority;
 
+        /// <summary>
+        /// True if the object is hovered by at least one bone
+        /// </summary>
         public bool isHovered => hoveringBones.Count > 0;
 
         public UMI3DAsyncProperty<bool> objectNotifyHoverPosition { get { Register(); return objectNotifyHoverPosition1; } protected set => objectNotifyHoverPosition1 = value; }
@@ -156,7 +198,7 @@ namespace umi3d.edk.interaction
             Idto.HoverExitAnimationId = HoverExitAnimation != null ? HoverExitAnimation.Id() : 0;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -170,11 +212,22 @@ namespace umi3d.edk.interaction
             hasPriority = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.InteractableHasPriority, HasPriority);
         }
 
+        /// <summary>
+        /// Called when a user points the interactable and that a <see cref="HoveredDto"/> is received.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="dto"></param>
         public void Hovered(UMI3DUser user, HoveredDto dto)
         {
             onHovered?.Invoke(new HoverEventContent(user, dto));
         }
 
+        /// <summary>
+        /// Called when a user points the interactable and that a <see cref="HoveredDto"/> is received using bytes.
+        /// <br/> Part of the bytes workflow.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="dto"></param>
         public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             Vector3 pos = UMI3DNetworkingHelper.Read<Vector3>(container);
@@ -184,13 +237,23 @@ namespace umi3d.edk.interaction
         }
 
 
-
+        /// <summary>
+        /// Called when a user starts or ends to point an object and that a <see cref="HoverStateChangedDto"/> is received.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="dto"></param>
         public void HoverStateChanged(UMI3DUser user, HoverStateChangedDto dto)
         {
             if (dto.state) onHoverEnter.Invoke(new HoverEventContent(user, dto));
             else onHoverExit.Invoke(new HoverEventContent(user, dto));
         }
 
+        /// <summary>
+        /// Called when a user starts or ends to point an object and that a <see cref="HoverStateChangedDto"/> is received.
+        /// <br/> Part of the bytes workflow.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="dto"></param>
         public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             Vector3 pos = UMI3DNetworkingHelper.Read<Vector3>(container);
@@ -201,6 +264,7 @@ namespace umi3d.edk.interaction
             else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto(user) as InteractableDto;

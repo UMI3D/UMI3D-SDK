@@ -17,12 +17,14 @@ using System.Collections.Generic;
 
 namespace umi3d.cdk.menu
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> to specify details on the upload input
+    /// </summary>
     public class UploadInputMenuItem : TextInputMenuItem
     {
         /// <summary>
         /// Only these extensions could be upload by the client. Enpty list = allow all, the extensions contain a dot (".obj" for exemple)
         /// </summary>
         public List<string> authorizedExtensions = new List<string>();
-
     }
 }
