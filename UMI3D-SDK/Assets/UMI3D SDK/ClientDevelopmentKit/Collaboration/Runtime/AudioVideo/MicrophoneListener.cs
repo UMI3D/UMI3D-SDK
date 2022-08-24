@@ -174,7 +174,7 @@ namespace umi3d.cdk.collaboration
 
         private void _OnApplicationQuit()
         {
-            StopMicrophone();
+            StopMicrophoneAsync();
             UMI3DUser.OnUserMicrophoneIdentityUpdated.RemoveListener(IdentityUpdate);
             UMI3DUser.OnUserMicrophoneChannelUpdated.RemoveListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
@@ -183,7 +183,12 @@ namespace umi3d.cdk.collaboration
         }
         #endregion
 
-        public async void StartMicrophone()
+        public async void StartMicrophoneAsync()
+        {
+            await StartMicrophone();
+        }
+
+        public async Task StartMicrophone()
         {
             if (!playingInit)
             {
@@ -193,7 +198,12 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public async void StopMicrophone()
+        public async void StopMicrophoneAsync()
+        {
+            await StopMicrophone();
+        }
+
+        public async Task StopMicrophone()
         {
             if (await IsPLaying() && mumbleClient != null)
             {
@@ -271,8 +281,11 @@ namespace umi3d.cdk.collaboration
 
                     if (mumbleMic != null)
                     {
+                        if (_pendingMic != null)
+                            SetMicrophone(_pendingMic);
                         mumbleMic.SendAudioOnStart = false;
                         mumbleClient.AddMumbleMic(mumbleMic);
+                        _pendingMic = null;
                         mumbleClient.SetSelfMute(isMute);
                         if (sendPosition)
                             mumbleMic.SetPositionalDataFunction(WritePositionalData);
@@ -344,9 +357,9 @@ namespace umi3d.cdk.collaboration
 
                 if (await IsPLaying())
                 {
-                    StopMicrophone();
+                    await StopMicrophone();
                     await UMI3DAsyncManager.Yield();
-                    StartMicrophone();
+                    await StartMicrophone();
                 }
                 IdentityUpdateOnce = false;
             }
@@ -366,9 +379,9 @@ namespace umi3d.cdk.collaboration
             SetMumbleUrl(user.audioServer);
             if (await IsPLaying())
             {
-                StopMicrophone();
+                await StopMicrophone();
                 await UMI3DAsyncManager.Yield();
-                StartMicrophone();
+                await StartMicrophone();
             }
         }
 
@@ -376,7 +389,7 @@ namespace umi3d.cdk.collaboration
         {
             useMumble = false;
             if (await IsPLaying())
-                StopMicrophone();
+                StopMicrophoneAsync();
         }
 
         private async void UseMumbleUpdate(UMI3DUser user)
@@ -386,9 +399,9 @@ namespace umi3d.cdk.collaboration
                 useMumble = user.useMumble;
 
                 if (useMumble)
-                    StartMicrophone();
+                    StartMicrophoneAsync();
                 else if (await IsPLaying())
-                    StopMicrophone();
+                    StopMicrophoneAsync();
             }
         }
 
@@ -460,7 +473,9 @@ namespace umi3d.cdk.collaboration
         public string[] GetMicrophonesNames() { return Microphone.devices; }
         public string GetCurrentMicrophoneName()
         {
-            return mumbleMic?.GetCurrentMicName() ?? _pendingMic;
+            if (mumbleMic == null || !mumbleMic.HasMic())
+                return _pendingMic;
+            return mumbleMic.GetCurrentMicName();
         }
 
         public async Task<bool> SetCurrentMicrophoneName(string value)
@@ -471,10 +486,28 @@ namespace umi3d.cdk.collaboration
             if (mumbleMic == null)
             {
                 _pendingMic = value;
-                return true;
+                return false;
             }
-            _pendingMic = null;
 
+            SetMicrophone(value);
+
+            if (await IsPLaying())
+            {
+                await StopMicrophone();
+                await UMI3DAsyncManager.Yield();
+                await StartMicrophone();
+                await IsPLaying();
+            }
+            else
+            {
+                _pendingMic = value;
+            }
+
+            return true;
+        }
+
+        void SetMicrophone(string value)
+        {
             string[] mics = GetMicrophonesNames();
             int count = mics.Length;
             int i = 0;
@@ -485,15 +518,8 @@ namespace umi3d.cdk.collaboration
                     mumbleMic.MicNumberToUse = i;
                     break;
                 }
-
-            if (await IsPLaying())
-            {
-                StopMicrophone();
-                await UMI3DAsyncManager.Yield();
-                StartMicrophone();
-            }
-            return true;
         }
+
         public async void SetCurrentMicrophoneNameAsync(string value) { await SetCurrentMicrophoneName(value); }
 
         private MicrophoneMode MicTypeToMode(MumbleMicrophone.MicType? type)
