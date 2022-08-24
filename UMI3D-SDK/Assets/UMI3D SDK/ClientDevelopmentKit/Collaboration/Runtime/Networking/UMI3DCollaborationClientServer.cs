@@ -46,6 +46,8 @@ namespace umi3d.cdk.collaboration
 
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
+        public UnityEvent OnRedirectionStarted = new UnityEvent();
+        public UnityEvent OnRedirectionAborted = new UnityEvent();
         public UnityEvent OnRedirection = new UnityEvent();
         public UnityEvent OnReconnect = new UnityEvent();
 
@@ -121,7 +123,9 @@ namespace umi3d.cdk.collaboration
                 failed?.Invoke("Redirection already in progress");
                 return;
             }
+            bool aborted = false;
             UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = true;
+            Instance.OnRedirectionStarted.Invoke();
             try
             {
                 if (Exists)
@@ -152,13 +156,17 @@ namespace umi3d.cdk.collaboration
                 else
                 {
                     failed?.Invoke("Client Server do not exist");
+                    aborted = true;
                 }
             }
             catch (Exception e)
             {
                 failed?.Invoke(e.Message);
+                aborted = true;
             }
             UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = false;
+            if(aborted)
+                Instance.OnRedirectionAborted.Invoke();
         }
 
         public static void Connect(MediaDto dto, Action<string> failed = null)
