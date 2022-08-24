@@ -80,7 +80,7 @@ namespace umi3d.cdk.collaboration
                         if (boneBindingDto.syncPosition)
                             st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
                         if (boneBindingDto.syncRotation)
-                            st.obj.rotation = boneTransform.rotation /** bounds.Find(b => st.obj == b.obj).anchorRelativeRot*/ * (Quaternion)boneBindingDto.offsetRotation;
+                            st.obj.rotation = boneTransform.rotation * bounds.Find(b => st.obj == b.obj).anchorRelativeRot * (Quaternion)boneBindingDto.offsetRotation;
                         if (boneBindingDto.freezeWorldScale)
                         {
                             Vector3 WscaleMemory = st.savedLossyScale;
