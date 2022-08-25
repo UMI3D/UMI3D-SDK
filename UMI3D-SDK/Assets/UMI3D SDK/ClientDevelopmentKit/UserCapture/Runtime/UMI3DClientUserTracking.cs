@@ -225,21 +225,6 @@ namespace umi3d.cdk.userCapture
                     };
                 }
 
-                lastRotation = rotation;
-                lastPosition = position;
-
-                foreach (BoneDto bone in bonesList)
-                {
-                    if (lastBoneRotations.ContainsKey(bone.boneType))
-                    {
-                        lastBoneRotations[bone.boneType] = bone.rotation;
-                    }
-                    else
-                    {
-                        lastBoneRotations.Add(bone.boneType, bone.rotation);
-                    }
-                }
-
                 skeletonParsedEvent.Invoke();
             }
         }
@@ -261,6 +246,8 @@ namespace umi3d.cdk.userCapture
             if ((Vector3.Distance(position, lastPosition) > detectionPositionDelta) || (Quaternion.Angle(lastRotation, rotation) > detectionRotationDelta))
             {
                 hasMoved = true;
+                lastRotation = rotation;
+                lastPosition = position;
             }
             else
             {
@@ -269,11 +256,15 @@ namespace umi3d.cdk.userCapture
                     if (lastBoneRotations.ContainsKey(bone.boneType))
                     {
                         if (Quaternion.Angle(bone.rotation, lastBoneRotations[bone.boneType]) > 5)
+                        {
                             hasMoved = true;
+                            lastBoneRotations[bone.boneType] = bone.rotation;
+                        }
                     }
                     else
                     {
                         hasMoved = true;
+                        lastBoneRotations[bone.boneType] = bone.rotation;
                     }
                 }
             }
