@@ -24,10 +24,43 @@ namespace umi3d.edk.userCapture
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
-        public UMI3DNodeAnimation NodeAnimation;
-        public bool ActivePose = false;
-        public bool HoverPose = false;
-        public UMI3DHandPose HandPose;
+        private UMI3DNodeAnimation nodeAnimation;
+        private bool activePose = false;
+        private bool hoverPose = false;
+        private UMI3DHandPose handPose;
+
+        public UMI3DNodeAnimation NodeAnimation
+        {
+            get => nodeAnimation; set
+            {
+                nodeAnimation = value;
+                Start();
+            }
+        }
+        public UMI3DHandPose HandPose
+        {
+            get => handPose; set
+            {
+                handPose = value;
+                Start();
+            }
+        }
+        public bool ActivePose
+        {
+            get => activePose; set
+            {
+                activePose = value;
+                Start();
+            }
+        }
+        public bool HoverPose
+        {
+            get => hoverPose; set
+            {
+                hoverPose = value;
+                Start();
+            }
+        }
 
         // Start is called before the first frame update
         private void Start()

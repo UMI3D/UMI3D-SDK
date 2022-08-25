@@ -65,7 +65,7 @@ namespace umi3d.cdk
 
         public UMI3DNodeAnimation(UMI3DNodeAnimationDto dto) : base(dto)
         {
-            operationChains = dto.animationChain.Select(chain => new OperationChain(chain)).ToList();
+            operationChains = dto.animationChain?.Select(chain => new OperationChain(chain)).ToList() ?? new List<OperationChain>();
         }
 
         ///<inheritdoc/>
