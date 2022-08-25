@@ -79,7 +79,9 @@ namespace umi3d.cdk.collaboration
             if (Exists)
             {
                 worldControllerClient?.Clear();
-                await environmentClient?.Clear();
+                if (environmentClient != null) await environmentClient?.Clear();
+                worldControllerClient = null;
+                environmentClient = null;
             }
         }
 
