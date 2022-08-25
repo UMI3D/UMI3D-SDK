@@ -91,7 +91,7 @@ namespace umi3d.edk.collaboration.murmur
             {
                 if (!local && room == defaultRoom) return;
                 localRoom.Remove(room);
-                await serv.Channels.FirstOrDefault(c => c.data.id == room)?.DeleteChannel();
+                await (serv.Channels.FirstOrDefault(c => c.data.id == room)?.DeleteChannel() ?? Task.CompletedTask);
             }
             catch { };
         }
