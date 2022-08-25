@@ -163,11 +163,12 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
+                UnityEngine.Debug.Log($"error \n{e.StackTrace}");
                 failed?.Invoke(e.Message);
                 aborted = true;
             }
             UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = false;
-            if(aborted)
+            if (aborted)
                 Instance.OnRedirectionAborted.Invoke();
         }
 
