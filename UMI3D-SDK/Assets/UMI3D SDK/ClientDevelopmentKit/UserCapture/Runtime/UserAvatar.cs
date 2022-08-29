@@ -26,11 +26,16 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Client form of a user's avatar, the virtual representation of the usr in the environment.
+    /// </summary>
     public class UserAvatar : MonoBehaviour
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
-
+        /// <summary>
+        /// Saved state of an object properties before being bound to a user's bone.
+        /// </summary>
         protected struct SavedTransform
         {
             public Transform obj;
@@ -40,12 +45,19 @@ namespace umi3d.cdk.userCapture
             public Vector3 savedLossyScale;
         }
 
+        /// <summary>
+        /// Object that has been bound through a bone binding.
+        /// </summary>
         protected struct BoundObject
         {
             public ulong objectId;
             public string rigname;
         }
 
+        /// <summary>
+        /// Represents a binding.
+        /// </summary>
+        /// Used mainly for computational purposes.
         protected struct Bound
         {
             public uint bonetype;
@@ -61,11 +73,26 @@ namespace umi3d.cdk.userCapture
         }
 
         public List<Transform> boundRigs = new List<Transform>();
+        /// <summary>
+        /// User's registered id
+        /// </summary>
         public ulong userId { get; protected set; }
+        /// <summary>
+        /// User's size.
+        /// </summary>
         public Vector3 userSize { get; protected set; }
+        /// <summary>
+        /// Has the user currently active bindings?
+        /// </summary>
         public bool activeUserBindings { get; protected set; }
+        /// <summary>
+        /// List of currently applied <see cref="BoneBindingDto"/> to the user's skeleton.
+        /// </summary>
         public List<BoneBindingDto> userBindings { get; protected set; }
 
+        /// <summary>
+        /// Saves of the transform of objects before they had been bound to a user's bone.
+        /// </summary>
         protected Dictionary<BoundObject, SavedTransform> savedTransforms = new Dictionary<BoundObject, SavedTransform>();
 
         protected readonly List<Bound> bounds = new List<Bound>();
@@ -413,6 +440,10 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <summary>
+        /// Replace an object associated with a binding to its saved state.
+        /// </summary>
+        /// <param name="dto"></param>
         protected void ResetObject(BoneBindingDto dto)
         {
             UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
@@ -573,6 +604,8 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="position"></param>
         /// <param name="rotation"></param>
+        /// This method makes it possible to predict/ extrapolate future position 
+        /// and thus to obtain a fluid movement of other's avatar on a user's client. 
         protected void NodeKalmanUpdate(Vector3 position, Quaternion rotation)
         {
             double[] positionMeasurement = new double[] { position.x, position.y, position.z };

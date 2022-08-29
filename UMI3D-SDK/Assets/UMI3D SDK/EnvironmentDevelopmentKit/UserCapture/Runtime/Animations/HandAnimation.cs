@@ -20,16 +20,35 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Hand pose animation component.
+    /// </summary>
     [RequireComponent(typeof(umi3d.edk.UMI3DNodeAnimation))]
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
+        /// <summary>
+        /// Animation associated with the hand pose.
+        /// </summary>
+        [Tooltip("Animation associated with the hand pose.")]
         public UMI3DNodeAnimation NodeAnimation;
+        /// <summary>
+        /// Should the pose be active?
+        /// </summary
+        [Tooltip("Should the animation be active?")]
         public bool ActivePose = false;
+        /// <summary>
+        /// Should the animation be triggered on hover/pointing?
+        /// </summary>
+        [Tooltip("Should the animation be triggered on hover/pointing?")]
         public bool HoverPose = false;
+        /// <summary>
+        /// Hand pose associated with the animation.
+        /// </summary>
+        [Tooltip("Hand pose associated with the animation.")]
         public UMI3DHandPose HandPose;
 
-        // Start is called before the first frame update
+
         private void Start()
         {
             if (NodeAnimation != null && HandPose != null)

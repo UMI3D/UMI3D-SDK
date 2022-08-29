@@ -14,19 +14,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
-using umi3d.common;
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Specialized <see cref="VehicleDto"/> for avatar boarded in vehicles.
+    /// </summary>
+    /// This DTO describes how a skeletoon should react when boarding in a vehicle, 
+    /// typically by being applyied a body pose (see <seealso cref="UMI3DBodyPoseDto"/>)
+    /// or changing the number of streamed bones.
     [System.Serializable]
     public class BoardedVehicleDto : VehicleDto
     {
+        /// <summary>
+        /// Id of the body animation to apply when a user is boarded in.
+        /// </summary>
+        /// See also <seealso cref="UMI3DBodyPoseDto"/>.
         public ulong BodyAnimationId = 0;
 
+        /// <summary>
+        /// Should streamed bones been overidded by the sent list?
+        /// </summary>
         public bool ChangeBonesToStream = false;
 
+        /// <summary>
+        /// Bones NOT to stream list using bones id from <see cref="BoneType"/>.
+        /// </summary>
+        //! Rename to a more explicit name
         public List<uint> BonesToStream = new List<uint>();
 
         public BoardedVehicleDto() : base() { }

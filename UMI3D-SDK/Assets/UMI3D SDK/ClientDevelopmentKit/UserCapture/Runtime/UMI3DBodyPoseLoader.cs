@@ -21,7 +21,7 @@ using umi3d.common.userCapture;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for UMI3DBodyPose
+    /// Loader for <see cref="UMI3DBodyPoseDto"/>.
     /// </summary>
     public class UMI3DBodyPoseLoader
     {
@@ -56,6 +56,13 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <summary>
+        /// Load a body pose
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="propertyKey"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)

@@ -16,6 +16,9 @@ using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Loader for <see cref="UMI3DEmoteDto"/>. Manages the dtos from the client-side.
+    /// </summary>
     public class UMI3DEmoteLoader
     {
         /// <summary>
@@ -51,6 +54,13 @@ namespace umi3d.cdk.userCapture
             return true;
         }
 
+        /// <summary>
+        /// Load an emote
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="propertyKey"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)

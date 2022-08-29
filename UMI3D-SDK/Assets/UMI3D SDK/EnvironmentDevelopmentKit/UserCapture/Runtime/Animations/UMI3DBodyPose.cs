@@ -23,9 +23,18 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// UMI3D body pose.
+    /// </summary>
+    /// A hand pose description is composed of the position and rotation of limbs 
+    /// and the position and rotation of every bone joints of the body. <br/>
+    /// See <see cref="BodyDescription"/> and<see cref="BodyAnimation"/>.
     [CreateAssetMenu(fileName = "UMI3DBodyPose", menuName = "UMI3D/UMI3D Body Pose")]
     public class UMI3DBodyPose : ScriptableObject, UMI3DLoadableEntity
     {
+        /// <summary>
+        /// Entity UMI3D id.
+        /// </summary>
         [HideInInspector]
         public ulong PoseId;
 
@@ -81,6 +90,7 @@ namespace umi3d.edk.userCapture
 
         public List<TargetTransform> TargetTransforms = new List<TargetTransform>();
 
+        /// <inheritdoc/>
         public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -91,6 +101,7 @@ namespace umi3d.edk.userCapture
             return operation;
         }
 
+        /// <inheritdoc/>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
@@ -140,11 +151,13 @@ namespace umi3d.edk.userCapture
             PoseId = id;
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(PoseId)
@@ -158,6 +171,7 @@ namespace umi3d.edk.userCapture
                 + UMI3DNetworkingHelper.Write(TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3, Vector3>(x.relativePosition, x.relativeRotation)));
         }
 
+        /// <inheritdoc/>
         public UMI3DBodyPoseDto ToDto()
         {
             return new UMI3DBodyPoseDto()

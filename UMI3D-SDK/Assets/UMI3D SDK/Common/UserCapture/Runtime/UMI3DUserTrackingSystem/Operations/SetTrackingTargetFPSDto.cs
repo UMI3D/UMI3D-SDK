@@ -16,8 +16,18 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// <see cref="AbstractOperationDto"/> to control the frequency of target tracking updates.
+    /// </summary>
+    /// Using this operation enables to lower the number of tracked frame per second when required, 
+    /// reducing the load on the networking system. 
+    /// A higher FPS will result with a better tracking of the movement, but will have a high impact on the networking load.
     public class SetTrackingTargetFPSDto : AbstractOperationDto
     {
+        /// <summary>
+        /// Number for tracked frames per second (FPS) sent to the environement
+        /// </summary>
+        /// Lower FPS leads to less load on the networking part but worse tracking of the user, while higher FPS will produce the opposite.
         public int targetFPS;
     }
 }

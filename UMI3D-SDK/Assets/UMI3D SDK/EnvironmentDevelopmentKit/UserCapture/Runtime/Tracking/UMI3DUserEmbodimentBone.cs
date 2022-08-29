@@ -18,19 +18,40 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Bone of a user.
+    /// </summary>
     public class UMI3DUserEmbodimentBone
     {
+        /// <summary>
+        /// Structure for bone positionning. Based on rotations.
+        /// </summary>
         public struct SpatialPosition
         {
+            /// <summary>
+            /// Rotation relative to its parent.
+            /// </summary>
             public Quaternion localRotation;
         }
 
+        /// <summary>
+        /// User id in <see cref="UMI3DEmbodimentManager"/>.
+        /// </summary>
         public ulong userId { get; protected set; }
 
+        /// <summary>
+        /// Bone type in UMI3D standards in <see cref="common.userCapture.BoneType"/>
+        /// </summary>
         public uint boneType { get; protected set; }
 
+        /// <summary>
+        /// Current spatial position of the bone relative to its parent.
+        /// </summary>
         public SpatialPosition spatialPosition;
 
+        /// <summary>
+        /// Is the bone tracked?
+        /// </summary>
         public bool isTracked;
 
         public UMI3DUserEmbodimentBone(ulong userId, uint boneType)

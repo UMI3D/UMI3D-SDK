@@ -16,8 +16,15 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// <see cref="AbstractOperationDto"/> to control the tracking of the avatar.
+    /// </summary>
+    /// Use this operation to stop/restart tracking a user.
     public class SetSendingTrackingDto : AbstractOperationDto
     {
+        /// <summary>
+        /// Should the avatar tracking be sent?
+        /// </summary>
         public bool activeSending;
     }
 }

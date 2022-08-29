@@ -24,50 +24,98 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Manager for client user tracking related events
+    /// </summary>
     public class UMI3DClientUserTracking : SingleBehaviour<UMI3DClientUserTracking>
     {
+        /// <summary>
+        /// Transform of the gameobject containing the user's skeleton.
+        /// </summary>
+        [Tooltip("Transform of the gameobject containing the user's skeleton.")]
         public Transform skeletonContainer;
+        /// <summary>
+        /// Transform associated with the viewpoint of the user.
+        /// </summary>
+        [Tooltip("Transform associated with the viewpoint of the user")]
         public Transform viewpoint;
+        /// <summary>
+        /// <see cref="BoneType"/> associated with the viewpoint of the user.
+        [Tooltip("Bone associated with the viewpoint of the user.")]
         [ConstEnum(typeof(BoneType), typeof(uint))]
         public uint viewpointBonetype;
 
+        /// <summary>
+        /// True when the user's tracking has started.
+        /// </summary>
         public bool trackingReception { get; protected set; }
 
         /// <summary>
-        /// If true the avatar tracking are send, else false.
+        /// If true the avatar tracking is sent.
         /// </summary>
         public bool SendTracking => sendTracking;
-        [SerializeField]
+        /// <summary>
+        /// If true the avatar tracking is sent.
+        /// </summary>
+        [SerializeField, Tooltip("If true the avatar tracking is sent.")]
         protected bool sendTracking = true;
 
-        [SerializeField]
+        /// <summary>
+        /// Frequency indicating the number tracked frames send to the server per seconds.
+        /// </summary>
+        [SerializeField, Tooltip(" Frequency indicating the number tracked frames send to the server per seconds.")]
         protected float targetTrackingFPS = 15;
+        /// <summary>
+        /// Collection of tracked bones by their BoneType id.
+        /// </summary>
         private List<uint> streamedBonetypes = new List<uint>();
-
+        /// <summary>
+        /// Collection of instanciated <see cref="UserAvatar"/> by the user's id.
+        /// </summary>
+        /// This also includes avatars form other users in the environment.
+        [ReadOnly, Tooltip("Collection of instanciated avatar  with their user's id.")]
         public Dictionary<ulong, UserAvatar> embodimentDict = new Dictionary<ulong, UserAvatar>();
 
+        /// <summary>
+        /// This event is raised after each analysis of the skeleton.
+        /// </summary>
         [HideInInspector]
         [Tooltip("This event is raised after each analysis of the skeleton.")]
         public UnityEvent skeletonParsedEvent;
 
+        /// <summary>
+        /// This event has to be raised to send a CameraPropertiesDto. By default, it is raised at the beginning of Play Mode.
+        /// </summary>
         [HideInInspector]
         [Tooltip("This event has to be raised to send a CameraPropertiesDto. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent sendingCameraProperties;
 
+        /// <summary>
+        /// This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.
+        /// </summary>
         [HideInInspector]
         [Tooltip("This event has to be raised to start sending tracking data. The sending will stop if the Boolean \"sendTracking\" is false. By default, it is raised at the beginning of Play Mode.")]
         public UnityEvent startingSendingTracking;
 
+        /// <summary>
+        /// If true, always send tracking frames (according to \"targetTrackingFPS\"), otherwise, frames will be sent only if user has moved
+        /// </summary>
         [SerializeField]
-        [Tooltip("if true, always send tracking frames (according to \"targetTrackingFPS\"), otherwise, frames will be sent only if user has moved")]
+        [Tooltip("If true, always send tracking frames (according to \"targetTrackingFPS\"), otherwise, frames will be sent only if user has moved.")]
         private bool alwaysSendTrackingFrame = false;
 
+        /// <summary>
+        /// Position delta to consider user has moved.
+        /// </summary>
         [SerializeField]
-        [Tooltip("Position delta to consider user has moved")]
+        [Tooltip("Position delta to consider user has moved.")]
         private float detectionPositionDelta = .1f;
 
+        /// <summary>
+        /// Rotation delta (degrees) to consider user has moved.
+        /// </summary>
         [SerializeField]
-        [Tooltip("Rotation delta (degrees) to consider user has moved")]
+        [Tooltip("Rotation delta (degrees) to consider user has moved.")]
         private float detectionRotationDelta = 5f;
 
         public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
@@ -95,6 +143,9 @@ namespace umi3d.cdk.userCapture
 
         protected UserTrackingFrameDto LastFrameDto = new UserTrackingFrameDto();
         protected UserCameraPropertiesDto CameraPropertiesDto = null;
+        /// <summary>
+        /// Should the client send <see cref="UserCameraPropertiesDto"/>?
+        /// </summary>
         protected bool sendCameraProperties = false;
 
         #region User data
@@ -116,7 +167,7 @@ namespace umi3d.cdk.userCapture
 
         #endregion
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -324,11 +375,19 @@ namespace umi3d.cdk.userCapture
             return embodimentDict.TryGetValue(id, out embd);
         }
 
+        /// <summary>
+        /// Set the number of tracked frame per second that are sent to the server.
+        /// </summary>
+        /// <param name="newFPSTarget"></param>
         public void setFPSTarget(int newFPSTarget)
         {
             targetTrackingFPS = newFPSTarget;
         }
 
+        /// <summary>
+        /// Set the list of streamed bones.
+        /// </summary>
+        /// <param name="bonesToStream"></param>
         public void setStreamedBones(List<uint> bonesToStream)
         {
             this.streamedBonetypes = bonesToStream;
@@ -345,6 +404,10 @@ namespace umi3d.cdk.userCapture
             startingSendingTracking.Invoke();
         }
 
+        /// <summary>
+        /// Make a user board in in a vehicle that supports boarded users.
+        /// </summary>
+        /// <param name="vehicleDto"></param>
         public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
         {
             if (vehicleDto.BodyAnimationId != 0)

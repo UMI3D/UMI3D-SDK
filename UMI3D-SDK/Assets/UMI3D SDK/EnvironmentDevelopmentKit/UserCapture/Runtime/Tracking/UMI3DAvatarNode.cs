@@ -23,16 +23,33 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Base node for an avatar.
+    /// </summary>
     public class UMI3DAvatarNode : UMI3DNode
     {
-        [SerializeField]
+        /// <summary>
+        /// Avatar's user id.
+        /// </summary>
+        [SerializeField, Tooltip("Avatar's user id.")]
         public ulong userId;
 
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// If true, the avatar could receive bindings.
+        /// </summary>
+        [SerializeField, EditorReadOnly,
+            Tooltip("If true, the avatar could receive bindings.")]
         private bool activeAvatarBindings_ = true;
 
+        /// <summary>
+        /// Dictionnary of every <see cref="UMI3DUserEmbodimentBone"/> indexed by their standard id in <see cref="BoneType"/>.
+        /// </summary>
+         [Tooltip("Dictionnary of every bone indexed by their standard id.")]
         public Dictionary<uint, UMI3DUserEmbodimentBone> dicoBones = new Dictionary<uint, UMI3DUserEmbodimentBone>();
 
+        /// <summary>
+        /// Animator of the skeleton of the avatar.
+        /// </summary>
         public Animator skeletonAnimator;
 
         public UserCameraPropertiesDto userCameraPropertiesDto;
@@ -46,7 +63,7 @@ namespace umi3d.edk.userCapture
         private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
         private UMI3DAsyncProperty<bool> _activeBindings;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -63,7 +80,7 @@ namespace umi3d.edk.userCapture
         #region UserTracking
 
         /// <summary>
-        /// Update an embodiment from the given dto.
+        /// Update an embodiment from the given DTO.
         /// </summary>
         public void UpdateEmbodiment(UserTrackingFrameDto dto)
         {
@@ -114,6 +131,11 @@ namespace umi3d.edk.userCapture
             dicoBones.Remove(embodimentBone.boneType);
         }
 
+        /// <summary>
+        /// Instanciate a new bone from a DTO.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         private UMI3DUserEmbodimentBone InstanciateBone(BoneDto dto)
         {
             if (dto.boneType != BoneType.None)
@@ -124,6 +146,11 @@ namespace umi3d.edk.userCapture
             return null;
         }
 
+        /// <summary>
+        /// Update a bone from a received DTO.
+        /// </summary>
+        /// <param name="embodimentBone"></param>
+        /// <param name="dto"></param>
         private void UpdateBone(UMI3DUserEmbodimentBone embodimentBone, BoneDto dto)
         {
             embodimentBone.spatialPosition = new UMI3DUserEmbodimentBone.SpatialPosition()
@@ -137,13 +164,13 @@ namespace umi3d.edk.userCapture
 
         #endregion
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DAvatarNodeDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -165,6 +192,7 @@ namespace umi3d.edk.userCapture
             UMI3DEmbodimentManager.Instance.WriteNodeCollections(avatarNodeDto, user);
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return

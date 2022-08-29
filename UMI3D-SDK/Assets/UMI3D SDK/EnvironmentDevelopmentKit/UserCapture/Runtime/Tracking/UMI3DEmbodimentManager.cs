@@ -25,14 +25,26 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Manager for al embodiment related events. Handles skeletons, avatars, animations, and poses.
+    /// </summary>
     public class UMI3DEmbodimentManager : PersistentSingleBehaviour<UMI3DEmbodimentManager>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
 
-        [Tooltip("Should not be changed when Play Mode is running.")]
+        /// <summary>
+        /// Should the embodiment system be active?
+        /// </summary>
+        /// Should not be changed at runtime.
+        [Tooltip("Should the embodiment system be active?\n" +
+            "Warning: Should not be changed when Play Mode is running.")]
         public bool ActivateEmbodiments = true;
 
         public UMI3DScene EmbodimentsScene;
+        /// <summary>
+        /// Unity's prefab of the skeleton.
+        /// </summary>
+        [Tooltip("Prefab of the skeleton of the user.")]
         public GameObject SkeletonPrefab;
 
         public Dictionary<ulong, UMI3DAvatarNode> embodimentInstances = new Dictionary<ulong, UMI3DAvatarNode>();
@@ -48,9 +60,13 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
+        /// <summary>
+        /// Emote configuration for the environment.
+        /// </summary>
+        [SerializeField, Tooltip("Emote configuration for the environment.")]
         public UMI3DEmotesConfig emotesConfig;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -60,7 +76,7 @@ namespace umi3d.edk.userCapture
             DeletionEvent = new EmbodimentBoneEvent();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected virtual void Start()
         {
             if (ActivateEmbodiments)
