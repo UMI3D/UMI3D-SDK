@@ -328,6 +328,20 @@ namespace umi3d.cdk.userCapture
                 frozenLossyScale = obj.lossyScale,
                 anchorRelativeRot = dto.rigName == "" ? Quaternion.identity : Quaternion.Inverse(node.transform.rotation) * obj.rotation
             });
+
+            if (!savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
+            {
+                var savedTransform = new SavedTransform
+                {
+                    obj = obj,
+                    savedPosition = obj.localPosition,
+                    savedRotation = obj.localRotation,
+                    savedLocalScale = obj.localScale,
+                    savedLossyScale = obj.lossyScale,
+                };
+
+                savedTransforms.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, savedTransform);
+            }
         }
 
         protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
