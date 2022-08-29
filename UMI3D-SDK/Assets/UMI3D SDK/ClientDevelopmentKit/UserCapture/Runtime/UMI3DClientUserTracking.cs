@@ -158,12 +158,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Stores last user rotation
         /// </summary>
-        Quaternion lastRotation;
+        private Quaternion lastRotation;
 
         /// <summary>
         /// Store last rotations for every bone.
         /// </summary>
-        Dictionary<uint, Quaternion> lastBoneRotations = new Dictionary<uint, Quaternion>();
+        private Dictionary<uint, Quaternion> lastBoneRotations = new Dictionary<uint, Quaternion>();
 
         #endregion
 
@@ -233,7 +233,6 @@ namespace umi3d.cdk.userCapture
                 UMI3DClientServer.SendData(newCameraProperties, true);
                 CameraPropertiesDto = newCameraProperties;
             }
-
         }
 
 
@@ -277,21 +276,6 @@ namespace umi3d.cdk.userCapture
                     };
                 }
 
-                lastRotation = rotation;
-                lastPosition = position;
-
-                foreach (var bone in bonesList)
-                {
-                    if (lastBoneRotations.ContainsKey(bone.boneType))
-                    {
-                        lastBoneRotations[bone.boneType] = bone.rotation;
-                    }
-                    else
-                    {
-                        lastBoneRotations.Add(bone.boneType, bone.rotation);
-                    }
-                }
-
                 skeletonParsedEvent.Invoke();
             }
         }
@@ -313,19 +297,25 @@ namespace umi3d.cdk.userCapture
             if ((Vector3.Distance(position, lastPosition) > detectionPositionDelta) || (Quaternion.Angle(lastRotation, rotation) > detectionRotationDelta))
             {
                 hasMoved = true;
+                lastRotation = rotation;
+                lastPosition = position;
             }
             else
             {
-                foreach (var bone in bones)
+                foreach (BoneDto bone in bones)
                 {
                     if (lastBoneRotations.ContainsKey(bone.boneType))
                     {
                         if (Quaternion.Angle(bone.rotation, lastBoneRotations[bone.boneType]) > 5)
+                        {
                             hasMoved = true;
+                            lastBoneRotations[bone.boneType] = bone.rotation;
+                        }
                     }
                     else
                     {
                         hasMoved = true;
+                        lastBoneRotations[bone.boneType] = bone.rotation;
                     }
                 }
             }
@@ -412,7 +402,7 @@ namespace umi3d.cdk.userCapture
         {
             if (vehicleDto.BodyAnimationId != 0)
             {
-                UMI3DNodeAnimation anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
+                var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
                 if (anim != null)
                     anim.Start();
             }

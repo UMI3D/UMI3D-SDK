@@ -30,13 +30,13 @@ namespace umi3d.edk.userCapture
     [CreateAssetMenu(fileName = "UMI3DEmotesConfig", menuName = "UMI3D/Emotes Config")]
     public class UMI3DEmotesConfig : ScriptableObject, UMI3DLoadableEntity
     {
-        void Awake()
+        private void Awake()
         {
             id = default;
             registered = false;
             if (IncludedEmotes?.Count > 0)
             {
-                foreach (var emote in IncludedEmotes)
+                foreach (UMI3DEmote emote in IncludedEmotes)
                 {
                     emote.id = default;
                     emote.registered = false;
@@ -101,7 +101,7 @@ namespace umi3d.edk.userCapture
             Bytable bytable = UMI3DNetworkingHelper.Write(allAvailableAtStartByDefault);
 
             UMI3DNetworkingHelper.Write(IncludedEmotes.Count);
-            foreach (var emote in IncludedEmotes)
+            foreach (UMI3DEmote emote in IncludedEmotes)
             {
                 bytable += emote.ToBytes(user);
             }

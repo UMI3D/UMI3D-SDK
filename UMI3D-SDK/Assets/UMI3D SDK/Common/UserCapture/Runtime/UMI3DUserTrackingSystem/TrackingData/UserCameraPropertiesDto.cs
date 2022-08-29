@@ -52,6 +52,5 @@ namespace umi3d.common.userCapture
                 + UMI3DNetworkingHelper.Write(boneType);
 
         }
-
     }
 }

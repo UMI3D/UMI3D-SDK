@@ -76,13 +76,13 @@ namespace umi3d.cdk
                             switch (property)
                             {
                                 case SetEntityListAddPropertyDto add:
-                                    embd.AddBinding(add.index, (property.value as BoneBindingDto));
+                                    embd.AddBinding(add.index, property.value as BoneBindingDto);
                                     break;
                                 case SetEntityListRemovePropertyDto rem:
                                     embd.RemoveBinding(rem.index);
                                     break;
                                 case SetEntityListPropertyDto set:
-                                    embd.UpdateBinding(set.index, (property.value as BoneBindingDto));
+                                    embd.UpdateBinding(set.index, property.value as BoneBindingDto);
                                     break;
                                 default:
                                     embd.SetBindings(property.value as List<BoneBindingDto>);

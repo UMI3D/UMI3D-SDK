@@ -53,7 +53,7 @@ namespace umi3d.cdk
             videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
 
-            var fileDto = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants);
+            FileDto fileDto = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants);
             if (!UMI3DClientServer.Instance.AuthorizationInHeader)
                 videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
             else
@@ -132,7 +132,7 @@ namespace umi3d.cdk
             if (dto.playing)
             {
                 ulong now = UMI3DClientServer.Instance.GetTime();
-                Start((float)(now - dto.startTime));
+                Start(now - dto.startTime);
             }
         }
 
@@ -200,7 +200,7 @@ namespace umi3d.cdk
                     videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded((dto as UMI3DVideoPlayerDto).audioId, (e) =>
                     {
-                        UMI3DAnimationManager.StartCoroutine(ReSetAudioSource((dto as UMI3DVideoPlayerDto), e, time));
+                        UMI3DAnimationManager.StartCoroutine(ReSetAudioSource(dto as UMI3DVideoPlayerDto, e, time));
                     });
                 }
                 else
@@ -267,7 +267,7 @@ namespace umi3d.cdk
             {
                 if (videoPlayer.isPrepared)
                 {
-                    videoPlayer.frame = (int)(Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000));
+                    videoPlayer.frame = (int)Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000);
                     videoPlayer.Play();
                 }
                 else

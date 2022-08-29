@@ -15,8 +15,11 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking;
+using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.SimpleJSON;
 using System;
+using System.Runtime.InteropServices;
+using System.Threading;
 using umi3d.common;
 
 namespace umi3d.cdk.collaboration
@@ -32,16 +35,17 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback"></param>
         /// <param name="ip_port"></param>
-        public void ConnectToMasterServer(Action callback, string ip_port)
+        public async void ConnectToMasterServer(Action callback, string ip_port, Action failed)
         {
+            await UMI3DAsyncManager.Yield();
             string[] tab = ip_port.Split(':');
             if (tab.Length == 1)
-                ConnectToMasterServer(callback, tab[0], 15940); // use default port
+                ConnectToMasterServer(callback, tab[0], 15940, failed); // use default port
             else
                 if (ushort.TryParse(tab[1], out ushort port))
-                ConnectToMasterServer(callback, tab[0], port);
+                ConnectToMasterServer(callback, tab[0], port, failed);
             else
-                ConnectToMasterServer(callback, tab[0], 15940); // use default port
+                ConnectToMasterServer(callback, tab[0], 15940, failed); // use default port
         }
 
         /// <summary>
@@ -51,21 +55,35 @@ namespace umi3d.cdk.collaboration
         /// <param name="callback"></param>
         /// <param name="host"></param>
         /// <param name="port"></param>
-        public void ConnectToMasterServer(Action callback, string host, ushort port)
+        public void ConnectToMasterServer(Action callback, string host, ushort port, Action failed)
         {
+            MainThreadManager.Create();
+            Thread thread = new Thread(() => _ConnectToMasterServer(callback, host, port, failed));
+            if (!thread.IsAlive)
+                thread.Start();
+        }
 
+        public void _ConnectToMasterServer(Action callback, string host, ushort port, Action failed)
+        {
             // The Master Server communicates over TCP
             client = new TCPMasterClient();
 
-            // Just call the connect method and you are ready to go
-            client.Connect(host, port);
+            client.connectAttemptFailed += (netWorker) =>
+            {
+                if (failed != null)
+                    MainThreadManager.Run(failed.Invoke);
+            };
 
             client.serverAccepted += (netWorker) =>
             {
-                callback.Invoke();
+                if (callback != null)
+                    MainThreadManager.Run(callback.Invoke);
             };
 
+            // Just call the connect method and you are ready to go
+            client.Connect(host, port);
         }
+
 
         public void SendDataSession(string sessionId, Action<MasterServerResponse.Server> UIcallback)
         {
@@ -107,10 +125,9 @@ namespace umi3d.cdk.collaboration
                 client = null;
 
             }
-
         }
 
-        public void RequestInfo(Action<string, string> UIcallback)
+        public void RequestInfo(Action<string, string> UIcallback, Action failed)
         {
             try
             {
@@ -129,6 +146,7 @@ namespace umi3d.cdk.collaboration
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
+                failed.Invoke();
             }
         }
 
@@ -159,7 +177,6 @@ namespace umi3d.cdk.collaboration
                     client = null;
                 }
             }
-
         }
 
 
@@ -195,8 +212,5 @@ namespace umi3d.cdk.collaboration
                 client = null;
             }
         }
-
-
-
     }
 }

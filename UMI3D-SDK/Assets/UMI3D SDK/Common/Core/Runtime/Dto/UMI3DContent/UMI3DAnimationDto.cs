@@ -35,6 +35,5 @@ namespace umi3d.common
             /// </summary>
             public float startOnProgress = -1f;
         }
-
     }
 }

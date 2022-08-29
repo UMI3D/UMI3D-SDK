@@ -67,7 +67,6 @@ namespace umi3d.cdk
                            {
                                UMI3DLogger.LogError("Fail to load material : " + url, scope);
                            }
-
                        }
                        else
                        {
@@ -82,9 +81,6 @@ namespace umi3d.cdk
                 {
                     UMI3DLogger.LogWarning("Loader is null for external material", scope);
                 }
-
-
-
             }
             else
             {

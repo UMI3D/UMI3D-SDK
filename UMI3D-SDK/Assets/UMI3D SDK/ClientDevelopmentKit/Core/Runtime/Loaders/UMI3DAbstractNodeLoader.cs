@@ -81,7 +81,7 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
-            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -137,7 +137,7 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
-            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -162,6 +162,5 @@ namespace umi3d.cdk
             }
             return true;
         }
-
     }
 }

@@ -28,6 +28,8 @@ namespace umi3d.common.collaboration
 
         public FormDto parameters;
         public bool librariesUpdated = false;
+        public string audioPassword;
+        public string audioLogin;
 
         public UserConnectionDto() : base()
         {
@@ -35,6 +37,13 @@ namespace umi3d.common.collaboration
 
         public UserConnectionDto(UserDto user) : base(user)
         {
+            if (user is UserConnectionDto _user)
+            {
+                this.audioPassword = _user.audioPassword;
+                this.audioLogin = _user.audioLogin;
+                parameters = _user.parameters;
+                librariesUpdated = _user.librariesUpdated;
+            }
         }
     }
 }

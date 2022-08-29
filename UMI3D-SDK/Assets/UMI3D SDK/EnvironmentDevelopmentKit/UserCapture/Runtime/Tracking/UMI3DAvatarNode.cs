@@ -157,9 +157,18 @@ namespace umi3d.edk.userCapture
             {
                 localRotation = dto.rotation,
             };
+
             embodimentBone.isTracked = UMI3DEmbodimentManager.Instance.BoneTrackedInformation(userId, dto.boneType);
-            Transform transform = skeletonAnimator.GetBoneTransform(dto.boneType.ConvertToBoneType().GetValueOrDefault());
-            transform.localRotation = dto.rotation;
+            Transform transform;
+
+            if (dto.boneType != BoneType.Viewpoint)
+                transform = skeletonAnimator.GetBoneTransform(dto.boneType.ConvertToBoneType().GetValueOrDefault());
+
+            else
+                transform = GetComponentInChildren<UMI3DAvatarViewpointHelper>()?.transform;
+
+            if (transform != null)
+                transform.localRotation = dto.rotation;
         }
 
         #endregion

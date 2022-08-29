@@ -78,6 +78,5 @@ namespace umi3d.common
             get { if (i == 0) return X; else if (i == 1) return Y; else if (i == 2) return Z; else if (i == 3) return W; else throw new ArgumentOutOfRangeException(); }
             set { if (i == 0) X = value; else if (i == 1) Y = value; else if (i == 2) Z = value; else if (i == 3) W = value; else throw new ArgumentOutOfRangeException(); }
         }
-
     }
 }

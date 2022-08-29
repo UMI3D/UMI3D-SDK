@@ -99,6 +99,5 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(Color.GetValue(user))
                 + UMI3DNetworkingHelper.Write((int)ImageType.GetValue(user).Convert());
         }
-
     }
 }

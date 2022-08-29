@@ -73,7 +73,7 @@ namespace umi3d.edk.collaboration
         public virtual bool getLibrariesUpdateSatus(UMI3DCollaborationUser user)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<ulong, bool>();
-            return librariesUpdateStatus.ContainsKey(user.Id()) ? librariesUpdateStatus[user.Id()] : false;
+            return librariesUpdateStatus.ContainsKey(user.Id()) && librariesUpdateStatus[user.Id()];
         }
     }
 }

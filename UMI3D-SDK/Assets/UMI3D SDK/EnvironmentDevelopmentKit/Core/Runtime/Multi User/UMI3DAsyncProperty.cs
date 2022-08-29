@@ -192,7 +192,7 @@ namespace umi3d.edk
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
         public SetEntityProperty SetValue(T value, bool forceOperation = false)
         {
-            if ((this.value == null && value == null || this.value != null && Equal(this.value, value)) && !forceOperation)
+            if (((this.value == null && value == null) || (this.value != null && Equal(this.value, value))) && !forceOperation)
                 return null;
 
             this.value = value;
@@ -202,7 +202,7 @@ namespace umi3d.edk
 
             if (UMI3DEnvironment.Exists)
             {
-                if ((isAsync || isDeSync))
+                if (isAsync || isDeSync)
                     return GetSetEntityOperationForUsers(user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
                 else
                     return GetSetEntityOperationForAllUsers();
@@ -224,7 +224,7 @@ namespace umi3d.edk
 
             if (asyncValues.ContainsKey(user))
             {
-                if ((asyncValues[user] == null && value == null || Equal(asyncValues[user], value)) && !forceOperation)
+                if (((asyncValues[user] == null && value == null) || Equal(asyncValues[user], value)) && !forceOperation)
                 {
                     return null;
                 }
@@ -335,7 +335,6 @@ namespace umi3d.edk
         }
 
         protected virtual T CopyOfValue(T value) { return value; }
-
     }
 
 
@@ -429,9 +428,7 @@ namespace umi3d.edk
         /// <returns>return true if <paramref name="d"/> is in ]-epsilon,epsilon[</returns>
         private bool InRange(float d)
         {
-            return (d < epsilon && d > -epsilon);
+            return d < epsilon && d > -epsilon;
         }
     }
-
-
 }

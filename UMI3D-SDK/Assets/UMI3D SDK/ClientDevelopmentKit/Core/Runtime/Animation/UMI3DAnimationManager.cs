@@ -29,6 +29,5 @@ namespace umi3d.cdk
         {
             Get(id)?.Stop();
         }
-
     }
 }

@@ -45,6 +45,5 @@ namespace umi3d.common
         public string url;
 
         public MediaDto() : base() { }
-
     }
 }

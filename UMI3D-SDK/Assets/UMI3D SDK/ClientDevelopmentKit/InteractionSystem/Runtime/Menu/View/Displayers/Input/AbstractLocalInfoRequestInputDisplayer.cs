@@ -97,6 +97,5 @@ namespace umi3d.cdk.menu.view
                 throw new System.Exception("MenuItem must be a LocalRequestInput");
             }
         }
-
     }
 }

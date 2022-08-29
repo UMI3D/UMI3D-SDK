@@ -72,6 +72,5 @@ namespace umi3d.edk.collaboration
                 res.WriteContent(Encoding.UTF8.GetBytes("500 This wasn't handled as expected"));
             }
         }
-
     }
 }

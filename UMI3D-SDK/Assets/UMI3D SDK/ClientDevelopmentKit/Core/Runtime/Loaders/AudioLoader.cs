@@ -123,6 +123,5 @@ namespace umi3d.cdk
         {
             GameObject.Destroy(objectLoaded as UnityEngine.Object);
         }
-
     }
 }

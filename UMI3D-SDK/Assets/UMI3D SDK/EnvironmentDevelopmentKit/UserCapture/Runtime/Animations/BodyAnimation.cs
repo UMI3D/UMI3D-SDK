@@ -49,7 +49,8 @@ namespace umi3d.edk.userCapture
         [Tooltip("Body pose associated with the animation.")]
         public UMI3DBodyPose BodyPose;
 
-        void Start()
+
+        private void Start()
         {
             if (NodeAnimation != null && BodyPose != null)
             {

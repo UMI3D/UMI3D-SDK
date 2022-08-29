@@ -75,7 +75,6 @@ namespace umi3d.edk.interaction
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
-
         }
 
         /// <inheritdoc/>

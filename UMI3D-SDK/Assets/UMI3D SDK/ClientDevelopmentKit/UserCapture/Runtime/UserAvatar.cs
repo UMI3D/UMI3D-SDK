@@ -97,6 +97,13 @@ namespace umi3d.cdk.userCapture
 
         protected readonly List<Bound> bounds = new List<Bound>();
 
+        protected Transform viewpointObject;
+
+        private void Start()
+        {
+            viewpointObject = UMI3DClientUserTracking.Instance.viewpoint;
+        }
+
         private void Update()
         {
             this.transform.position = UMI3DClientUserTracking.Instance.transform.position;
@@ -106,19 +113,26 @@ namespace umi3d.cdk.userCapture
             {
                 if (item.obj != null)
                 {
-                    if (!item.bonetype.Equals(BoneType.CenterFeet))
-                    {
-                        if (item.syncPos)
-                            item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
-                        if (item.syncRot)
-                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.anchorRelativeRot * item.offsetRotation;
-                    }
-                    else
+                    if (item.bonetype.Equals(BoneType.CenterFeet))
                     {
                         if (item.syncPos)
                             item.obj.position = UMI3DClientUserTracking.Instance.skeletonContainer.TransformPoint(item.offsetPosition);
                         if (item.syncRot)
                             item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.anchorRelativeRot * item.offsetRotation;
+                   }
+                    else if (item.bonetype.Equals(BoneType.Viewpoint))
+                    {
+                        if (item.syncPos)
+                            item.obj.position = viewpointObject.TransformPoint(item.offsetPosition);
+                        if (item.syncRot)
+                            item.obj.rotation = viewpointObject.rotation * item.anchorRelativeRot * item.offsetRotation;
+                    }
+                    else
+                    {
+                        if (item.syncPos)
+                            item.obj.position = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).TransformPoint(item.offsetPosition);
+                        if (item.syncRot)
+                            item.obj.rotation = UMI3DClientUserTracking.Instance.GetComponentInChildren<Animator>().GetBoneTransform(item.bonetype.ConvertToBoneType().GetValueOrDefault()).rotation * item.anchorRelativeRot * item.offsetRotation;
                     }
 
                     if (item.freezeWorldScale)
@@ -558,9 +572,9 @@ namespace umi3d.cdk.userCapture
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    double value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
-                    double value_y = (tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond + tools.previous_prediction[1];
-                    double value_z = (tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond + tools.previous_prediction[2];
+                    double value_x = ((tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond) + tools.previous_prediction[0];
+                    double value_y = ((tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond) + tools.previous_prediction[1];
+                    double value_z = ((tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond) + tools.previous_prediction[2];
 
                     tools.estimations = new double[] { value_x, value_y, value_z };
 
@@ -584,13 +598,13 @@ namespace umi3d.cdk.userCapture
 
                 if (delta * MeasuresPerSecond <= 1)
                 {
-                    double fw_value_x = (tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[0];
-                    double fw_value_y = (tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[1];
-                    double fw_value_z = (tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item1[2];
+                    double fw_value_x = ((tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[0];
+                    double fw_value_y = ((tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[1];
+                    double fw_value_z = ((tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[2];
 
-                    double up_value_x = (tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[0];
-                    double up_value_y = (tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[1];
-                    double up_value_z = (tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta + tools.previous_prediction.Item2[2];
+                    double up_value_x = ((tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[0];
+                    double up_value_y = ((tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[1];
+                    double up_value_z = ((tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[2];
 
                     tools.estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
 

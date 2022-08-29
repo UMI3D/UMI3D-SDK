@@ -63,12 +63,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
-            var connectionInformation = new UserConnectionDto(user.ToUserDto())
-            {
-                parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(user),
-                //UMI3DEnvironment.Instance.libraries== null || UMI3DEnvironment.Instance.libraries.Count == 0
-                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(user)
-            };
+            var connectionInformation = user.ToUserConnectionDto();
             e.Response.WriteContent(connectionInformation.ToBson());
         }
 
@@ -225,7 +220,6 @@ namespace umi3d.edk.collaboration
                 res.StatusDescription = "Requested file is located in a forbidden area !";
                 res.WriteContent(null);
             }
-
         }
 
         /// <summary>
@@ -254,7 +248,6 @@ namespace umi3d.edk.collaboration
                 res.StatusDescription = "Requested file is located in a forbidden area !";
                 res.WriteContent(null);
             }
-
         }
 
         /// <summary>
@@ -298,7 +291,6 @@ namespace umi3d.edk.collaboration
                 res.StatusDescription = "Requested directory is located in a forbidden area !";
                 res.WriteContent(null);
             }
-
         }
 
         /// <summary>
@@ -336,7 +328,6 @@ namespace umi3d.edk.collaboration
                 res.StatusDescription = "Requested directory is located in a forbidden area !";
                 res.WriteContent(null);
             }
-
         }
 
         /// <summary>
@@ -448,7 +439,7 @@ namespace umi3d.edk.collaboration
             {
                 var join = dto as JoinDto;
                 UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), join.userSize, join.trackedBonetypes);
-                e.Response.WriteContent((UMI3DEnvironment.ToEnterDto(user)).ToBson());
+                e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
                 UMI3DCollaborationServer.NotifyUserJoin(user);
                 finished = true;
             });
@@ -536,7 +527,6 @@ namespace umi3d.edk.collaboration
                             UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}", scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
-
                     }).ToList(),
                 };
                 callback?.Invoke(load);
@@ -643,7 +633,6 @@ namespace umi3d.edk.collaboration
                 UMI3DLogger.LogWarning("unauthorized extension : " + fileName + " (upload request)", scope);
                 return;
             }
-
         }
         #endregion
 

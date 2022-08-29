@@ -30,23 +30,68 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Animation associated with the hand pose.
         /// </summary>
-        [Tooltip("Animation associated with the hand pose.")]
-        public UMI3DNodeAnimation NodeAnimation;
+        private UMI3DNodeAnimation nodeAnimation;
         /// <summary>
         /// Should the pose be active?
-        /// </summary
-        [Tooltip("Should the animation be active?")]
-        public bool ActivePose = false;
+        /// </summary>
+        private bool activePose = false;
         /// <summary>
         /// Should the animation be triggered on hover/pointing?
         /// </summary>
-        [Tooltip("Should the animation be triggered on hover/pointing?")]
-        public bool HoverPose = false;
+        private bool hoverPose = false;
+        /// <summary>
+        /// Hand pose associated with the animation.
+        /// </summary>
+        private UMI3DHandPose handPose;
+      
+        /// <summary>
+        /// Animation associated with the hand pose.
+        /// </summary>
+        [Tooltip("Animation associated with the hand pose.")]
+        public UMI3DNodeAnimation NodeAnimation
+        {
+            get => nodeAnimation; set
+            {
+                nodeAnimation = value;
+                Start();
+            }
+        }
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
         [Tooltip("Hand pose associated with the animation.")]
-        public UMI3DHandPose HandPose;
+        public UMI3DHandPose HandPose
+        {
+            get => handPose; set
+            {
+                handPose = value;
+                Start();
+            }
+        }
+        /// <summary>
+        /// Should the pose be active?
+        /// </summary
+        [Tooltip("Should the animation be active?")]
+        public bool ActivePose
+        {
+            get => activePose; set
+            {
+                activePose = value;
+                Start();
+            }
+        }
+        /// <summary>
+        /// Should the animation be triggered on hover/pointing?
+        /// </summary>
+        [Tooltip("Should the animation be triggered on hover/pointing?")]
+        public bool HoverPose
+        {
+            get => hoverPose; set
+            {
+                hoverPose = value;
+                Start();
+            }
+        }
 
 
         private void Start()

@@ -45,9 +45,9 @@ namespace umi3d.cdk.volumes
             var tris = new List<int>();
 
             verts.Add(bounds.min);
-            verts.Add(bounds.min + bounds.size.x * Vector3.right);
-            verts.Add(bounds.min + bounds.size.x * Vector3.right + bounds.size.z * Vector3.forward);
-            verts.Add(bounds.min + bounds.size.z * Vector3.forward);
+            verts.Add(bounds.min + (bounds.size.x * Vector3.right));
+            verts.Add(bounds.min + (bounds.size.x * Vector3.right) + (bounds.size.z * Vector3.forward));
+            verts.Add(bounds.min + (bounds.size.z * Vector3.forward));
             verts = verts.ConvertAll(v => localToWorld.MultiplyPoint(v));
 
             tris.Add(0); tris.Add(2); tris.Add(1);

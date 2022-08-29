@@ -59,6 +59,5 @@ namespace umi3d.cdk.menu.view
         {
             return (menu is MediaMenuItem) ? 2 : 0;
         }
-
     }
 }

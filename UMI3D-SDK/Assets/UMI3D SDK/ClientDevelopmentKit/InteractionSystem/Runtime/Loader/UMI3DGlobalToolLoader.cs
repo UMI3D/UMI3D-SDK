@@ -119,7 +119,7 @@ namespace umi3d.cdk.interaction
         /// <returns>True if the set operation was ssuccessful.</returns>
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            var dto = (entity?.dto as GlobalToolDto);
+            var dto = entity?.dto as GlobalToolDto;
 
             if (dto == null)
                 return false;
@@ -188,7 +188,7 @@ namespace umi3d.cdk.interaction
         /// <returns>True if property setting was successful</returns>
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            var dto = (entity?.dto as GlobalToolDto);
+            var dto = entity?.dto as GlobalToolDto;
             if (dto == null)
                 return false;
             if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))

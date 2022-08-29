@@ -67,7 +67,7 @@ namespace umi3d.cdk.collaboration
         /// Coroutine used by <see cref="ForceSendTracking"/> to only send tracking frames when everyone is active.
         /// </summary>
         /// <returns></returns>
-        IEnumerator ForceSendTrackingCoroutine()
+        private IEnumerator ForceSendTrackingCoroutine()
         {
             while (UMI3DCollaborationEnvironmentLoader.Instance.UserList.Any(u => u.status != common.StatusType.ACTIVE))
             {

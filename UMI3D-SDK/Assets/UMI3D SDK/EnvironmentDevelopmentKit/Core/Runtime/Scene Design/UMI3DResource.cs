@@ -39,6 +39,5 @@ namespace umi3d.edk
         {
             return UMI3DNetworkingHelper.WriteIBytableCollection(variants);
         }
-
     }
 }

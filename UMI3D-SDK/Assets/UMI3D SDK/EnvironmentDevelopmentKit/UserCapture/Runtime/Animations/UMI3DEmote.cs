@@ -55,7 +55,7 @@ namespace umi3d.edk.userCapture
                 }
                 return _available;
             }
-            private set { _available = value; }
+            private set => _available = value;
         }
         public UMI3DAsyncProperty<bool> _available;
 

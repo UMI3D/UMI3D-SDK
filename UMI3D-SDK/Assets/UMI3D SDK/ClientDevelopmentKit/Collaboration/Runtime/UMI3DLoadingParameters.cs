@@ -120,7 +120,6 @@ namespace umi3d.cdk
                     nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
             }
-
         }
 
         /// <summary>

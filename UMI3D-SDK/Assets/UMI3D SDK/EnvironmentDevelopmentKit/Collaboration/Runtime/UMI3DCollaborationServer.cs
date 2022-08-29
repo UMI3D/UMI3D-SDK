@@ -49,6 +49,10 @@ namespace umi3d.edk.collaboration
 
         public static UMI3DForgeServer ForgeServer => Exists ? Instance.forgeServer : null;
 
+        private murmur.MumbleManager mumbleManager;
+
+        public static murmur.MumbleManager MumbleManager => Exists ? Instance.mumbleManager : null;
+
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
@@ -56,6 +60,9 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly, Tooltip("World controller for stand alone api.")]
         public worldController.WorldControllerAPI WorldController;
 
+
+        [EditorReadOnly]
+        public string mumbleIp = "";
 
         [EditorReadOnly]
         public bool useRandomForgePort;
@@ -176,6 +183,9 @@ namespace umi3d.edk.collaboration
         {
             UMI3DLogger.Log($"Server Init", scope);
             base.Init();
+
+            InitMumble();
+
             if (collaborativeModule == null)
                 collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
             UMI3DNetworkingHelper.AddModule(collaborativeModule);
@@ -215,6 +225,10 @@ namespace umi3d.edk.collaboration
             OnServerStart.Invoke();
         }
 
+        private async void InitMumble()
+        {
+            mumbleManager = await murmur.MumbleManager.Create(mumbleIp);
+        }
 
         private void ShouldAcceptPlayer(string identity, NetworkingPlayer player, Action<bool> action)
         {
@@ -237,6 +251,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DLogger.Log($"User Created", scope);
             user.SetStatus(StatusType.CREATED);
+            AddUserAudio(user);
             if (!reconnection)
             {
                 OnUserCreated.Invoke(user);
@@ -247,6 +262,16 @@ namespace umi3d.edk.collaboration
             }
             user.InitConnection(forgeServer);
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
+        }
+
+        private async void AddUserAudio(UMI3DCollaborationUser user)
+        {
+            if (mumbleManager == null)
+                return;
+            List<Operation> op = await mumbleManager.AddUser(user);
+            var t = new Transaction() { reliable = true };
+            t.AddIfNotNull(op);
+            t.Dispatch();
         }
 
 
@@ -326,6 +351,8 @@ namespace umi3d.edk.collaboration
                 isRunning = false;
                 OnServerStop.Invoke();
             }
+            if (mumbleManager != null)
+                mumbleManager.Delete();
         }
 
         private void Clear()
@@ -337,6 +364,8 @@ namespace umi3d.edk.collaboration
                 isRunning = false;
                 OnServerStop.Invoke();
             }
+            if (mumbleManager != null)
+                mumbleManager.Delete();
         }
 
         public static void Stop()
@@ -419,8 +448,8 @@ namespace umi3d.edk.collaboration
                 return;
             user.hasJoined = false;
             (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
-            lock(user.networkPlayer.Networker.Players)
-            user.networkPlayer.Networker.Players.Remove(user.networkPlayer);
+            lock (user.networkPlayer.Networker.Players)
+                user.networkPlayer.Networker.Players.Remove(user.networkPlayer);
             Collaboration.Logout(user, notifiedByUser);
             MainThreadManager.Run(() => Instance._Logout(user));
         }
@@ -428,6 +457,7 @@ namespace umi3d.edk.collaboration
         private void _Logout(UMI3DCollaborationUser user)
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
+            RemoveUserAudio(user);
             WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
@@ -437,6 +467,16 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"Unregistered {user.login} {user.Id()}", scope);
             WorldController.NotifyUserUnregister(user);
             OnUserUnregistered.Invoke(user);
+        }
+
+        private async void RemoveUserAudio(UMI3DCollaborationUser user)
+        {
+            if (mumbleManager == null)
+                return;
+            List<Operation> op = await mumbleManager.RemoveUser(user);
+            var t = new Transaction() { reliable = true };
+            t.AddIfNotNull(op);
+            t.Dispatch();
         }
 
         public float WaitTimeForPingAnswer = 3f;
@@ -468,7 +508,7 @@ namespace umi3d.edk.collaboration
 
                 yield return new WaitForSecondsRealtime(WaitTimeForPingAnswer);
             }
-            Logout(user,false);
+            Logout(user, false);
         }
 
         public virtual void Ping(UMI3DCollaborationUser user)

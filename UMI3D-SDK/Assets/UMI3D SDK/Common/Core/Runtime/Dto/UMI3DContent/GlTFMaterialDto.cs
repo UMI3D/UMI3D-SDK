@@ -34,5 +34,4 @@ namespace umi3d.common
 
         public SerializableVector3 emissiveFactor;
     }
-
 }

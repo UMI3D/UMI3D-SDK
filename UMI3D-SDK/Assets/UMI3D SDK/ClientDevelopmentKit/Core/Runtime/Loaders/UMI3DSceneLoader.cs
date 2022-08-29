@@ -116,7 +116,7 @@ namespace umi3d.cdk
             }
             if (base.SetUMI3DProperty(entity, property))
                 return true;
-            var dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
+            UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -165,7 +165,7 @@ namespace umi3d.cdk
             }
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            var dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
+            UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -281,12 +281,12 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    materialToModify.color = ((SerializableColor)property.value);
+                    materialToModify.color = (SerializableColor)property.value;
                     glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = (SerializableColor)property.value;
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ((SerializableColor)property.value));
+                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (SerializableColor)property.value);
                     glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)(Color)(SerializableColor)property.value;
                     break;
 
@@ -590,7 +590,7 @@ namespace umi3d.cdk
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
-                            extension.shaderProperties.Remove((string)key);
+                            extension.shaderProperties.Remove(key);
                             UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied", scope);
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryProperty:
@@ -966,7 +966,5 @@ namespace umi3d.cdk
 
             return true;
         }
-
     }
-
 }

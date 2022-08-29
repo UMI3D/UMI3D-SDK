@@ -40,5 +40,4 @@ namespace umi3d.common
         // Modified properties in the shader 
         public Dictionary<string, object> shaderProperties { get; set; }
     }
-
 }

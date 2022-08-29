@@ -29,7 +29,7 @@ namespace umi3d.cdk.userCapture
         public static void Load(UMI3DEmotesConfigDto dto)
         {
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
-            foreach (var emoteDto in dto.emotes)
+            foreach (UMI3DEmoteDto emoteDto in dto.emotes)
                 UMI3DEnvironmentLoader.RegisterEntityInstance(emoteDto.id, emoteDto, null).NotifyLoaded();
             UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
         }

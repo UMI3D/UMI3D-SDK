@@ -46,8 +46,8 @@ namespace umi3d.common
 
         public float this[int i]
         {
-            get { if (i >= 0 && i < 16) return this[i / 4, i - 4 * (i / 4)]; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
-            set { if (i >= 0 && i < 16) this[i / 4, i - 4 * (i / 4)] = value; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
+            get { if (i >= 0 && i < 16) return this[i / 4, i - (4 * (i / 4))]; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
+            set { if (i >= 0 && i < 16) this[i / 4, i - (4 * (i / 4))] = value; else throw new ArgumentOutOfRangeException("index should be between 0 and 15"); }
         }
 
         public float this[int r, int c]

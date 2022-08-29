@@ -439,11 +439,7 @@ namespace umi3d.edk
                         break;
                 }
             }
-
         }
-
-
     }
-
 }
 

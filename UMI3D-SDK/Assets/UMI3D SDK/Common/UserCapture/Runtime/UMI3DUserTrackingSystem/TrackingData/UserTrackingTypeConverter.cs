@@ -269,6 +269,5 @@ namespace umi3d.common.userCapture
                     return null;
             }
         }
-
     }
 }
