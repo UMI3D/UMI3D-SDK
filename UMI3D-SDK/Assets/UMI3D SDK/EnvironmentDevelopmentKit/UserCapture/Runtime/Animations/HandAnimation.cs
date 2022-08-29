@@ -47,7 +47,6 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Animation associated with the hand pose.
         /// </summary>
-        [Tooltip("Animation associated with the hand pose.")]
         public UMI3DNodeAnimation NodeAnimation
         {
             get => nodeAnimation; set
@@ -59,7 +58,6 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
-        [Tooltip("Hand pose associated with the animation.")]
         public UMI3DHandPose HandPose
         {
             get => handPose; set
@@ -71,7 +69,6 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Should the pose be active?
         /// </summary
-        [Tooltip("Should the animation be active?")]
         public bool ActivePose
         {
             get => activePose; set
@@ -83,7 +80,6 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Should the animation be triggered on hover/pointing?
         /// </summary>
-        [Tooltip("Should the animation be triggered on hover/pointing?")]
         public bool HoverPose
         {
             get => hoverPose; set
