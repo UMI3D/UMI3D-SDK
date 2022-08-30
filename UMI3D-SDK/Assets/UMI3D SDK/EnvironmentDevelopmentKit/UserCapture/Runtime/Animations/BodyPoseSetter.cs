@@ -21,35 +21,93 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Allow the edition of body poses directly in the environment.
+    /// </summary>
+    /// Displays gizmos for all the bones and enables to move them relatively one to another.
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class BodyPoseSetter : MonoBehaviour
     {
+        /// <summary>
+        /// Name of the body pose.
+        /// </summary
+        [Tooltip("Name of the body pose")]
         public string PoseName;
 
+        /// <summary>
+        /// Should the pose have a precise position reatively to the node?
+        /// </summary>
+        [Tooltip("Should the pose have a precise position reatively to the node?")]
         public bool IsRelativeToNode = true;
 
+        /// <summary>
+        /// Display the body pose editor.
+        /// </summary>
+        [Tooltip("Display the body pose editor.")]
         public bool ShowBody = false;
 
+        /// <summary>
+        /// Displays the gizmos to move the body's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the body's bones.")]
         public bool EditBodyPosition = false;
+        /// <summary>
+        /// Displays the gizmos to move the left leg's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the left leg's bones.")]
         public bool EditLeftLeg = false;
+        /// <summary>
+        /// Displays the gizmos to move the right leg's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the right leg's bones.")]
         public bool EditRightLeg = false;
+        /// <summary>
+        /// Displays the gizmos to move the left arm's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the left arm's bones.")]
         public bool EditLeftArm = false;
+        /// <summary>
+        /// Displays the gizmos to move the right arm's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the right arm's bones.")]
         public bool EditRightArm = false;
+        /// <summary>
+        /// Displays the gizmos to move the trunk's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the trunk's bones.")]
         public bool EditTrunk = false;
 
+        /// <summary>
+        /// Displays line gizmos between bones to improve the vizualisation.
+        /// </summary>
+        [Tooltip("Displays line gizmos between bones to improve the vizualisation.")]
         public bool DrawLine = false;
 
+        /// <summary>
+        /// Color of the body in the editor.
+        /// </summary>
         [HideInInspector]
         public Color BodyColor = Color.blue;
+        /// <summary>
+        /// Color of the joint in the editor.
+        /// </summary>
         [HideInInspector]
         public Color JointColor = new Color(1f, 0.5f, 0f);
+        /// <summary>
+        /// Color of the helping line gizmos in the editor.
+        /// </summary>
         [HideInInspector]
         public Color LineColor = Color.green;
 
         [HideInInspector]
         public BodyDescription ScriptableBody;
+        /// <summary>
+        /// The body pose to edit.
+        /// </summary>
+        [Tooltip("The body pose to edit.")]
         public UMI3DBodyPose BodyPose;
 
+        // todo To remove.
         public bool tempValueForTest = true;
 
         private void Reset()
@@ -64,6 +122,9 @@ namespace umi3d.edk.userCapture
             ScriptableObject.Destroy(ScriptableBody);
         }
 
+        /// <summary>
+        /// Set body bones' positions to default values.
+        /// </summary>
         private void SetBodyDictionary()
         {
             //ScriptableBody.Add(nameof(BoneType.Hips), new SpatialDataInfo(Vector3.zero, Vector3.zero));
@@ -114,6 +175,9 @@ namespace umi3d.edk.userCapture
             SceneView.RepaintAll();
         }
 
+        /// <summary>
+        /// Save an edited body pose.
+        /// </summary>
         public void SavePose()
         {
             if (BodyPose != null)
@@ -172,6 +236,9 @@ namespace umi3d.edk.userCapture
             EditorUtility.SetDirty(BodyPose);
         }
 
+        /// <summary>
+        /// Load a body pose in the editor.
+        /// </summary>
         public void LoadPose()
         {
             if (BodyPose != null)

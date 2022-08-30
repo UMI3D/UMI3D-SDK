@@ -23,9 +23,18 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// UMI3D hand pose.
+    /// </summary>
+    /// A hand pose description is composed of the position and rotation of hand 
+    /// and the position and rotation of every phalanx of the hand. <br/>
+    /// See <see cref="HandDescription"/> and <see cref="HandAnimation"/>.
     [CreateAssetMenu(fileName = "UMI3DHandPose", menuName = "UMI3D/UMI3D Hand Pose")]
     public class UMI3DHandPose : ScriptableObject, UMI3DLoadableEntity
     {
+        /// <summary>
+        /// Entity UMI3D id.
+        /// </summary>
         [HideInInspector]
         public ulong PoseId;
 
@@ -64,6 +73,7 @@ namespace umi3d.edk.userCapture
 
         public List<PhalanxRotation> PhalanxRotations = new List<PhalanxRotation>();
 
+        /// <inheritdoc/>
         public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -74,6 +84,7 @@ namespace umi3d.edk.userCapture
             return operation;
         }
 
+        /// <inheritdoc/>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
@@ -105,6 +116,7 @@ namespace umi3d.edk.userCapture
             }
         }
 
+        /// <inheritdoc/>
         public ulong Id()
         {
             return GetId();
@@ -123,11 +135,13 @@ namespace umi3d.edk.userCapture
             PoseId = id;
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(PoseId)
@@ -142,6 +156,7 @@ namespace umi3d.edk.userCapture
                 + UMI3DNetworkingHelper.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation));
         }
 
+        /// <inheritdoc/>
         public UMI3DHandPoseDto ToDto()
         {
             return new UMI3DHandPoseDto()

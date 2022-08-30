@@ -44,6 +44,10 @@ namespace umi3d.cdk.collaboration
 
             this.transform.localPosition = nodePositionFilter.regressed_position;
             this.transform.localRotation = nodeRotationFilter.regressed_rotation;
+
+            if (skeleton == null)
+                return;
+
             skeleton.transform.localPosition = skeletonHeightFilter.regressed_position;
 
             Animator userAnimator = skeleton.GetComponentInChildren<Animator>();

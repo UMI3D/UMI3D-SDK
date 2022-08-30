@@ -25,6 +25,8 @@ namespace umi3d.edk.userCapture
     /// <summary>
     /// Emote config file to send to users
     /// </summary>
+    /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit 
+    /// which ones are allow ed to be used for each user.
     [CreateAssetMenu(fileName = "UMI3DEmotesConfig", menuName = "UMI3D/Emotes Config")]
     public class UMI3DEmotesConfig : ScriptableObject, UMI3DLoadableEntity
     {
@@ -42,19 +44,22 @@ namespace umi3d.edk.userCapture
             }
         }
         /// <summary>
-        /// Should the emotes be available by default to users ?
+        /// Should all the emotes be available by default to users?
         /// </summary>
+        /// Overrides specific availability settings.
+        [Tooltip("Should all the emotes be available by default to users? Overrides specific availability settings.")]
         public bool allAvailableAtStartByDefault = false;
 
         /// <summary>
-        /// Entity id
+        /// Entity UMI3D id.
         /// </summary>
         [HideInInspector]
         private ulong id;
 
         /// <summary>
-        /// List of included emotes
+        /// List of included emotes in the environment.
         /// </summary>
+        [Tooltip("List of included emotes in the environment.")]
         public List<UMI3DEmote> IncludedEmotes;
 
         /// <inheritdoc/>

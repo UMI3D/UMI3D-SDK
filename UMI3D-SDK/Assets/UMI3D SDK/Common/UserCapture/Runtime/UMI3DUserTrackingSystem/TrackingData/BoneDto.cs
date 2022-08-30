@@ -21,6 +21,8 @@ namespace umi3d.common.userCapture
     /// <summary>
     /// Class to describe a bone's 6-D pose in the frame of reference of a user.
     /// </summary>
+    /// A bone is a part of the skeleton associated to a user. It represents a part of the human body. 
+    /// They are defined like a tree with rotations relation from children to parents bone.
     [Serializable]
     public class BoneDto : UMI3DDto, IBytable
     {
@@ -29,13 +31,18 @@ namespace umi3d.common.userCapture
         /// </summary>
         public uint boneType;
 
+        /// <summary>
+        /// Rotation of the bone relative to the parent
+        /// </summary>
         public SerializableVector4 rotation;
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return

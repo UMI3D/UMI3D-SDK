@@ -22,16 +22,19 @@ namespace umi3d.edk.userCapture
     /// <summary>
     /// Emote data, including a reference to the icon resource
     /// </summary>
+    /// An emote is a short animation that is played to convey a specific communication, often an emotion.
+    /// Emotes are used on non-immersive devices to allow the user to communicate non-verbally.
     [System.Serializable]
     public class UMI3DEmote : UMI3DLoadableEntity
     {
         /// <summary>
         /// Emote name
         /// </summary>
+        [Tooltip("Emote's name. Be sure it corresponds to the name of the clip in the Animator.")]
         public string name;
 
         /// <summary>
-        /// Emote entity id
+        /// Emote entity UMI3D id
         /// </summary>
         [HideInInspector]
         public ulong id;
@@ -57,14 +60,16 @@ namespace umi3d.edk.userCapture
         public UMI3DAsyncProperty<bool> _available;
 
         /// <summary>
-        /// If  the user can see and play the emote at the start
+        /// True if the user can see and play the emote at the start.
         /// </summary>
+        [Tooltip("True if the user can see and play the emote at the start.")]
         public bool availableAtStart;
 
         /// <summary>
-        /// Icon ressource details
+        /// Icon ressource details.
         /// </summary>
-        [Header("Icon")]
+        /// It illustrates the emote to be displayed on the client side.
+        [Header("Icon"), Tooltip("Icon illustrating the emote to be displayed on the client side.")]
         public UMI3DResourceFile iconResource;
 
         /// <summary>

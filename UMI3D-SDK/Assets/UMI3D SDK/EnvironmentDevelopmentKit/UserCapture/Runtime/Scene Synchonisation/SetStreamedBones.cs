@@ -18,16 +18,26 @@ using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// <see cref="Operation"/> to control the list of the streamed bones.
+    /// </summary>
+    /// Use this operation to reduce the number of bones to track, if some are not necessary.
+    /// This will lighthen the load on the networking system, but parts of the user's skeletton won't correspond to the user movements anymore.
     public class SetStreamedBones : Operation
     {
+        /// <summary>
+        /// List of bones to stream.
+        /// </summary>
         public List<uint> streamedBones;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
                 + UMI3DNetworkingHelper.WriteCollection(streamedBones);
         }
 
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var streamedBones = new SetStreamedBonesDto()
