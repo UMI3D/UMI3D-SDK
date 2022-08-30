@@ -21,10 +21,23 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Specfic <see cref="VehicleRequest"/> received when a user board in a vehicle.
+    /// </summary>
     public class BoardedVehicleRequest : VehicleRequest
     {
+        /// <summary>
+        /// Id of the body animation to apply when a user is boarded in.
+        /// </summary>
+        /// See also <seealso cref="UMI3DBodyPoseDto"/>.
         public ulong BodyAnimationId = 0;
+        /// <summary>
+        /// Will the boarding change the tracked bones list?
+        /// </summary>
         public bool ChangeBonesToStream = false;
+        /// <summary>
+        /// Bones to stop streaming.
+        /// </summary>
         public List<uint> BonesToStream = new List<uint>();
 
         public BoardedVehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
@@ -41,11 +54,13 @@ namespace umi3d.edk.userCapture
             this.BonesToStream = (bonesToStream == null) ? new List<uint>() : bonesToStream;
         }
 
+        /// <inheritdoc/>
         protected override uint GetOperationKey()
         {
             return UMI3DOperationKeys.BoardedVehicleRequest;
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytable()
         {
             if (rotation == null) rotation = new SerializableVector4();
@@ -55,8 +70,10 @@ namespace umi3d.edk.userCapture
                 + UMI3DNetworkingHelper.WriteCollection(BonesToStream);
         }
 
+        /// <inheritdoc/>
         protected override NavigateDto CreateDto() { return new BoardedVehicleDto(); }
 
+        /// <inheritdoc/>
         protected override void WriteProperties(NavigateDto dto)
         {
             base.WriteProperties(dto);

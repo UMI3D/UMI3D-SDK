@@ -21,36 +21,94 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Allow the edition of hand poses directly in the environment.
+    /// </summary>
+    /// Displays gizmos for all the bones and enables to move them relatively one to another.
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandPoseSetter : MonoBehaviour
     {
+        /// <summary>
+        /// Name of the hand pose.
+        /// </summary
+        [Tooltip("Name of the hand pose")]
         public string PoseName;
 
+        /// <summary>
+        /// Should the pose have a precise position reatively to the node?
+        /// </summary>
+        [Tooltip("Should the pose have a precise position reatively to the node?")]
         public bool IsRelativeToNode = true;
 
+        /// <summary>
+        /// Display the right hand in the editor.
+        /// </summary>
+        [Tooltip("Display the right hand in the editor.")]
         public bool ShowRightHand = false;
+        /// <summary>
+        /// Display the left hand in the editor.
+        /// </summary>
+        [Tooltip("Display the left hand in the editor.")]
         public bool ShowLeftHand = false;
 
         public bool EditHandPosition = false;
+        /// <summary>
+        /// Displays the gizmos to move the thumb finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the thumb finger's bones.")]
         public bool EditThumb = false;
+        /// <summary>
+        /// Displays the gizmos to move the index finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the index finger's bones.")]
         public bool EditIndex = false;
+        /// <summary>
+        /// Displays the gizmos to move the middle finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the middle finger's bones.")]
         public bool EditMiddle = false;
+        /// <summary>
+        /// Displays the gizmos to move the ring finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the ring finger's bones.")]
         public bool EditRing = false;
+        /// <summary>
+        /// Displays the gizmos to move the little finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the little finger's bones.")]
         public bool EditLittle = false;
 
+        /// <summary>
+        /// Displays line gizmos between bones to improve the vizualisation.
+        /// </summary>
+        [Tooltip("Displays line gizmos between bones to improve the vizualisation.")]
         public bool DrawLine = false;
 
+        /// <summary>
+        /// Color of the hand in the editor.
+        /// </summary>
         [HideInInspector]
         public Color HandColor = Color.blue;
+        /// <summary>
+        /// Color of the phalanx joints in the editor.
+        /// </summary>
         [HideInInspector]
         public Color PhalanxColor = new Color(1f, 0.5f, 0f);
+        /// <summary>
+        /// Color of the helping line gizmos in the editor.
+        /// </summary>
         [HideInInspector]
         public Color LineColor = Color.green;
 
         [HideInInspector]
         public HandDescription ScriptableHand;
+        /// <summary>
+        /// The hand pose to edit.
+        /// </summary>
+        [Tooltip("The hand pose to edit.")]
         public UMI3DHandPose HandPose;
 
+        // todo To remove.
         public bool tempValueForTest = true;
 
         private void Reset()
@@ -65,6 +123,9 @@ namespace umi3d.edk.userCapture
             ScriptableObject.Destroy(ScriptableHand);
         }
 
+        /// <summary>
+        /// Set hand bones' positions to default values.
+        /// </summary>
         private void SetHandDictionary()
         {
             ScriptableHand.Add(nameof(BoneType.LeftThumbProximal), new SpatialDataInfo(new Vector3(-0.03788809f, -0.02166997f, 0.03003088f), Vector3.zero));
@@ -129,6 +190,9 @@ namespace umi3d.edk.userCapture
             SceneView.RepaintAll();
         }
 
+        /// <summary>
+        /// Save an edited hand pose.
+        /// </summary>
         public void SavePose()
         {
             if (HandPose != null)
@@ -197,6 +261,9 @@ namespace umi3d.edk.userCapture
             EditorUtility.SetDirty(HandPose);
         }
 
+        /// <summary>
+        /// Load a hand pose.
+        /// </summary>
         public void LoadPose()
         {
             if (HandPose != null)
@@ -235,6 +302,9 @@ namespace umi3d.edk.userCapture
             }
         }
 
+        /// <summary>
+        /// Transfer the settings of the right hand to the left hand by planar symmetry.
+        /// </summary>
         public void CreateLeftSymmetry()
         {
             Vector3 tempData;
@@ -283,6 +353,9 @@ namespace umi3d.edk.userCapture
             SceneView.RepaintAll();
         }
 
+        /// <summary>
+        /// Transfer the settings of the left hand to the right hand by planar symmetry.
+        /// </summary>
         public void CreateRightSymmetry()
         {
             Vector3 tempData;

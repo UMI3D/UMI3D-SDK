@@ -25,7 +25,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for Avatar node
+    /// Loader for <see cref="UMI3DAvatarNodeDto"/>.
     /// </summary>
     public class UMI3DAvatarNodeLoader : UMI3DNodeLoader
     {
@@ -115,6 +115,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;

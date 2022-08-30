@@ -20,15 +20,33 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Hand pose animation component.
+    /// </summary>
     [RequireComponent(typeof(umi3d.edk.UMI3DNodeAnimation))]
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
+        /// <summary>
+        /// Animation associated with the hand pose.
+        /// </summary>
         private UMI3DNodeAnimation nodeAnimation;
+        /// <summary>
+        /// Should the pose be active?
+        /// </summary>
         private bool activePose = false;
+        /// <summary>
+        /// Should the animation be triggered on hover/pointing?
+        /// </summary>
         private bool hoverPose = false;
+        /// <summary>
+        /// Hand pose associated with the animation.
+        /// </summary>
         private UMI3DHandPose handPose;
-
+      
+        /// <summary>
+        /// Animation associated with the hand pose.
+        /// </summary>
         public UMI3DNodeAnimation NodeAnimation
         {
             get => nodeAnimation; set
@@ -37,6 +55,9 @@ namespace umi3d.edk.userCapture
                 Start();
             }
         }
+        /// <summary>
+        /// Hand pose associated with the animation.
+        /// </summary>
         public UMI3DHandPose HandPose
         {
             get => handPose; set
@@ -45,6 +66,9 @@ namespace umi3d.edk.userCapture
                 Start();
             }
         }
+        /// <summary>
+        /// Should the pose be active?
+        /// </summary
         public bool ActivePose
         {
             get => activePose; set
@@ -53,6 +77,9 @@ namespace umi3d.edk.userCapture
                 Start();
             }
         }
+        /// <summary>
+        /// Should the animation be triggered on hover/pointing?
+        /// </summary>
         public bool HoverPose
         {
             get => hoverPose; set
@@ -62,7 +89,7 @@ namespace umi3d.edk.userCapture
             }
         }
 
-        // Start is called before the first frame update
+
         private void Start()
         {
             if (NodeAnimation != null && HandPose != null)

@@ -16,8 +16,14 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// <see cref="AbstractOperationDto"/> to control the tracking of camera properties.
+    /// </summary>
     public class SetSendingCameraPropertiesDto : AbstractOperationDto
     {
+        /// <summary>
+        /// Should the camera be tracked?
+        /// </summary>
         public bool activeSending;
     }
 }

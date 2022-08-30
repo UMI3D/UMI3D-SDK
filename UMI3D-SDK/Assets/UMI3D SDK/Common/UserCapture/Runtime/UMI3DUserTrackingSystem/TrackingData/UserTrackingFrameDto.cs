@@ -25,20 +25,41 @@ namespace umi3d.common.userCapture
     [Serializable]
     public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
+        /// <summary>
+        /// User id of the tracked user 
+        /// </summary>
         public ulong userId;
 
+        /// <summary>
+        /// Bones information of the user
+        /// </summary>
         public List<BoneDto> bones;
 
+        /// <summary>
+        /// Current jump height of the avatar.
+        /// </summary>
+        /// Probably obsolete with the new navigation system.
         public float skeletonHighOffset;
 
+        /// <summary>
+        /// Current position of the user.
+        /// </summary>
         public SerializableVector3 position;
 
+        /// <summary>
+        /// Current rotation of the user as a quaternion.
+        /// </summary>
         public SerializableVector4 rotation;
 
+        /// <summary>
+        /// Frequency in frame per second (FPS) at which the user tracking is sent to the server.
+        /// </summary>
         public float refreshFrequency;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingFrame; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

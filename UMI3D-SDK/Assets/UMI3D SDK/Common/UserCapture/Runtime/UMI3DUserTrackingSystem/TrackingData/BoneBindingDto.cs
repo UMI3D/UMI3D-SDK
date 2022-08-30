@@ -21,6 +21,8 @@ namespace umi3d.common.userCapture
     /// <summary>
     /// Class to associate a bone to a node.
     /// </summary>
+    /// Bone bindings allow to make links between the user skeleton's bones and other objects in the scene.
+    /// For example, a binding is necessary yo enable the user to equip a watch or to hold a hammer.
     [Serializable]
     public class BoneBindingDto : UMI3DDto, IBytable
     {
@@ -50,7 +52,7 @@ namespace umi3d.common.userCapture
         public bool syncRotation;
 
         /// <summary>
-        /// Define if the binding has to synchronize the object position with the bone position.
+        /// If true, rejects all operations on the scale of the object but keep them in the DTO.
         /// </summary>
         public bool freezeWorldScale;
 
@@ -64,17 +66,28 @@ namespace umi3d.common.userCapture
         /// </summary>
         public ulong objectId;
 
+        /// <summary>
+        /// Position offset between the object center of mass and the point used for the bindings
+        /// </summary>
         public SerializableVector3 offsetPosition;
 
+        /// <summary>
+        /// Rotation offset between the object center of mass and the point used for the bindings
+        /// </summary>
         public SerializableVector4 offsetRotation;
 
+        /// <summary>
+        /// Scale offset between the object center of mass and the point used for the bindings
+        /// </summary>
         public SerializableVector3 offsetScale;
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return false;
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytableArray(params object[] parameters)
         {
 

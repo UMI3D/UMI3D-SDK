@@ -20,9 +20,14 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-
+    /// <summary>
+    /// Environment representation of a binding, linking two objects.
+    /// </summary>
     public class UMI3DBinding : IBytable
     {
+        /// <summary>
+        /// UMI3D bone type in <see cref="BoneType"/>
+        /// </summary>
         public uint boneType;
         public bool isBinded = true;
         public bool syncPosition = true;
@@ -50,6 +55,7 @@ namespace umi3d.edk.userCapture
             offsetScale = b.offsetScale;
         }
 
+        /// <inheritdoc/>
         public Bytable ToByte(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(boneType)
@@ -64,6 +70,7 @@ namespace umi3d.edk.userCapture
                     + UMI3DNetworkingHelper.Write(freezeWorldScale);
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
@@ -71,10 +78,12 @@ namespace umi3d.edk.userCapture
             return ToByte(parameters[0] as UMI3DUser);
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
         }
+        /// <inheritdoc/>
         public BoneBindingDto ToDto(UMI3DUser user)
         {
             var dto = new BoneBindingDto()
