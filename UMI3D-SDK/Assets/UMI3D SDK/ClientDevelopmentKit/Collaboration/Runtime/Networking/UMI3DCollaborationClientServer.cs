@@ -163,7 +163,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.Log($"error \n{e.StackTrace}");
+                UnityEngine.Debug.Log($"Error in connection process : {e.Message} \n{e.StackTrace}");
                 failed?.Invoke(e.Message);
                 aborted = true;
             }
