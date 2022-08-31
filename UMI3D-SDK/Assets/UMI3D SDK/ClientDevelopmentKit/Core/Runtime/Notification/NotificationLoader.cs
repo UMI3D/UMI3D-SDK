@@ -20,11 +20,14 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="NotificationDto"/>.
+    /// </summary>
     [CreateAssetMenu(fileName = "DefaultNotificationLoader", menuName = "UMI3D/Default Notification Loader")]
     public class NotificationLoader : ScriptableObject
     {
         /// <summary>
-        /// Load a notification
+        /// Load a notification.
         /// </summary>
         /// <param name="dto"></param>
         public virtual void Load(NotificationDto dto)

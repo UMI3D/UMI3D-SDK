@@ -22,6 +22,9 @@ using UnityEngine.UI;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for UI nodes DTO.
+    /// </summary>
     public class UMI3DUINodeLoader : UMI3DNodeLoader
     {
         private readonly UMI3DUITextNodeLoader textNodeLoader = new UMI3DUITextNodeLoader();

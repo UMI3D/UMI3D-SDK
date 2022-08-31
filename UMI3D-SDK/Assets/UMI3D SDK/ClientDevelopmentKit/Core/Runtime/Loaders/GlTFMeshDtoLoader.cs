@@ -41,7 +41,7 @@ namespace umi3d.cdk
         }
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
@@ -127,7 +127,7 @@ namespace umi3d.cdk
             callback.Invoke();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override Vector3 GetRotationOffset()
         {
             return new Vector3(0, 180, 0);

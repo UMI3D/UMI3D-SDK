@@ -26,6 +26,11 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class UMI3DAbstractAnimation
     {
+        /// <summary>
+        /// Get an animation by id.
+        /// </summary>
+        /// <param name="id">UMI3D id of the animation.</param>
+        /// <returns></returns>
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
         /// <summary>

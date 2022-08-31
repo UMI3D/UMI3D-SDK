@@ -23,8 +23,9 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// This class is reponsible for delaying the load of VideoPlayer on Android devices.
+    /// Loader for <see cref="UMI3DVideoPlayerDto"/>.
     /// </summary>
+    /// This class is reponsible for delaying the load of VideoPlayer on Android devices.
     public class UMI3DVideoPlayerLoader
     {
         /// <summary>

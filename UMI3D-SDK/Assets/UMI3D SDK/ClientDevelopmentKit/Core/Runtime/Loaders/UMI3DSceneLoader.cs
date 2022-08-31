@@ -23,7 +23,9 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-
+    /// <summary>
+    /// Loader for <see cref="UMI3DSceneNodeDto"/>, also supports loading of <see cref="GlTFSceneDto"/>.
+    /// </summary>
     public class UMI3DSceneLoader : UMI3DAbstractNodeLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;

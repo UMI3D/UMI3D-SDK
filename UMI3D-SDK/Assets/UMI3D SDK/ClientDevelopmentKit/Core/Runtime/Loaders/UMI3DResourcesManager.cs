@@ -370,7 +370,7 @@ namespace umi3d.cdk
 
         private ThreadDeserializer deserializer;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();

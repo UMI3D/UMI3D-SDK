@@ -21,7 +21,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// loader for abstract node
+    /// Loader for <see cref="UMI3DAbstractNodeDto"/>.
     /// </summary>
     public class UMI3DAbstractNodeLoader
     {

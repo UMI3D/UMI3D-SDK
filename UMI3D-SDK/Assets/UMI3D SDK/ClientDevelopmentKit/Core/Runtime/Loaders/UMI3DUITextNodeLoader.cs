@@ -24,7 +24,7 @@ using UnityEngine.UI;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// LOader for an UMI3D UI Text
+    /// LOader for <see cref="UITextDto"/>.
     /// </summary>
     public class UMI3DUITextNodeLoader
     {

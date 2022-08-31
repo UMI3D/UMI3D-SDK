@@ -28,12 +28,13 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Menu display containers (sorted by hierarchy height).
         /// </summary>
+        [Tooltip("Menu display containers (sorted by hierarchy height).")]
         public List<AbstractMenuDisplayContainer> containerPrefabs = new List<AbstractMenuDisplayContainer>();
 
         /// <summary>
         /// Specific container choice depending on menu's name.
         /// </summary>
-        [SerializeField]
+        [SerializeField, Tooltip("Specific container choice depending on menu's name.")]
         public ContainerDictionary exceptions;
 
 

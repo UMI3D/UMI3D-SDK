@@ -34,7 +34,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// Move the user acording to a NavigationDto
+        /// Move the user acording to a <see cref="NavigateDto"/>.
         /// </summary>
         /// <param name="dto"></param>
         public static IEnumerator Navigate(NavigateDto dto)

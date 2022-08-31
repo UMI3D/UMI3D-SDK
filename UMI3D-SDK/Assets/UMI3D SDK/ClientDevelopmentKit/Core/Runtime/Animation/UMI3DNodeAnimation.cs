@@ -68,19 +68,19 @@ namespace umi3d.cdk
             operationChains = dto.animationChain?.Select(chain => new OperationChain(chain)).ToList() ?? new List<OperationChain>();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetProgress()
         {
             return progress;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start()
         {
             Start(0);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Stop()
         {
             if (!started) return;
@@ -95,7 +95,7 @@ namespace umi3d.cdk
             Coroutines.Clear();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnEnd()
         {
             PlayingCoroutines = null;
@@ -128,7 +128,7 @@ namespace umi3d.cdk
             action.Invoke();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -198,7 +198,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start(float atTime)
         {
             if (started) return;

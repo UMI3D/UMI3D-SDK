@@ -20,6 +20,7 @@ using System;
 
 namespace umi3d.cdk
 {
+    [Obsolete]
     public class UMI3DUnscentedKalmanFilter
     {
         /// <summary>

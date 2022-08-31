@@ -78,6 +78,9 @@ namespace umi3d.cdk
         public int count { get; private set; }
     }
 
+    /// <summary>
+    /// Exception related to the UMI3D protocol.
+    /// </summary>
     public class Umi3dException : Exception
     {
         private readonly string stack = null;

@@ -24,7 +24,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader fot UMI3D Node
+    /// Loader for <see cref="UMI3DNodeDto"/>.
     /// </summary>
     public class UMI3DNodeLoader : UMI3DAbstractNodeLoader
     {

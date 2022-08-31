@@ -30,6 +30,9 @@ namespace umi3d.cdk.volumes
         /// </summary>
         public Matrix4x4 localToWorld { get; private set; }
 
+        /// <summary>
+        /// Bounds of the axis-aligned bounding box.
+        /// </summary>
         public Bounds bounds { get; private set; }
 
 

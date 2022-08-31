@@ -23,8 +23,9 @@ using UnityEngine.Networking;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Resource Loader for Image.
+    /// Resource Loader for <see cref="AudioDto"/>.
     /// </summary>
+    [System.Obsolete]
     public class AudioLoader : IResourcesLoader
     {
         public List<string> supportedFileExtentions;

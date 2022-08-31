@@ -24,7 +24,7 @@ using UnityEngine.UI;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for UMI3D UI Image.
+    /// Loader for <see cref="UIImageDto"/>.
     /// </summary>
     public class UMI3DUIImageNodeLoader
     {

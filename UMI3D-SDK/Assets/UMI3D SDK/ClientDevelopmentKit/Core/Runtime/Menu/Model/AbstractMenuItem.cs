@@ -33,7 +33,13 @@ namespace umi3d.cdk.menu
         /// </summary>
         public string Name = "menu";
 
+        /// <summary>
+        /// Icon associated with the menu.
+        /// </summary>
         public Texture2D icon2D;
+        /// <summary>
+        /// 3D icon associated with the menu.
+        /// </summary>
         public GameObject icon3D;
 
         /// <summary>
