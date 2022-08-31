@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
@@ -54,17 +55,19 @@ namespace umi3d.cdk.userCapture
         /// If true the avatar tracking is sent.
         /// </summary>
         public bool SendTracking => sendTracking;
+
         /// <summary>
         /// If true the avatar tracking is sent.
         /// </summary>
-        [SerializeField, Tooltip("If true the avatar tracking is sent.")]
+        [Tooltip("If true the avatar tracking is sent.")]
         protected bool sendTracking = true;
 
         /// <summary>
         /// Frequency indicating the number tracked frames send to the server per seconds.
         /// </summary>
-        [SerializeField, Tooltip(" Frequency indicating the number tracked frames send to the server per seconds.")]
-        protected float targetTrackingFPS = 15;
+        [field:SerializeField, Tooltip(" Frequency indicating the number tracked frames send to the server per seconds.")]
+        public float targetTrackingFPS { get; protected set; } = 15;
+
         /// <summary>
         /// Collection of tracked bones by their BoneType id.
         /// </summary>
@@ -100,9 +103,8 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// If true, always send tracking frames (according to \"targetTrackingFPS\"), otherwise, frames will be sent only if user has moved
         /// </summary>
-        [SerializeField]
         [Tooltip("If true, always send tracking frames (according to \"targetTrackingFPS\"), otherwise, frames will be sent only if user has moved.")]
-        private bool alwaysSendTrackingFrame = false;
+        public bool alwaysSendTrackingFrame = false;
 
         /// <summary>
         /// Position delta to consider user has moved.
@@ -369,26 +371,40 @@ namespace umi3d.cdk.userCapture
         /// Set the number of tracked frame per second that are sent to the server.
         /// </summary>
         /// <param name="newFPSTarget"></param>
-        public void setFPSTarget(int newFPSTarget)
+        public void SetFPSTarget(int newFPSTarget)
         {
-            targetTrackingFPS = newFPSTarget;
+            if (newFPSTarget > 0)
+            {
+                targetTrackingFPS = newFPSTarget;
+            } else
+            {
+                UMI3DLogger.LogError("Tracking frame Fps must be greater than 0.", DebugScope.CDK);
+            }
         }
 
         /// <summary>
         /// Set the list of streamed bones.
         /// </summary>
         /// <param name="bonesToStream"></param>
-        public void setStreamedBones(List<uint> bonesToStream)
+        public void SetStreamedBones(List<uint> bonesToStream)
         {
             this.streamedBonetypes = bonesToStream;
         }
 
-        public void setCameraPropertiesSending(bool activeSending)
+        /// <summary>
+        /// Setter for <see cref="sendCameraProperties"/>.
+        /// </summary>
+        /// <param name="activeSending"></param>
+        public void SetCameraPropertiesSending(bool activeSending)
         {
             this.sendCameraProperties = activeSending;
         }
 
-        public void setTrackingSending(bool activeSending)
+        /// <summary>
+        /// Setter for <see cref="sendTracking"/>.
+        /// </summary>
+        /// <param name="activeSending"></param>
+        public void SetTrackingSending(bool activeSending)
         {
             this.sendTracking = activeSending;
             startingSendingTracking.Invoke();
@@ -411,7 +427,7 @@ namespace umi3d.cdk.userCapture
 
             bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
 
-            setStreamedBones(bones);
+            SetStreamedBones(bones);
         }
     }
 }
