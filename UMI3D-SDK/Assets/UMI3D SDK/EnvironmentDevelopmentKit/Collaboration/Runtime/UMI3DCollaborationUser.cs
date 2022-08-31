@@ -148,7 +148,7 @@ namespace umi3d.edk.collaboration
             return token;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void SetStatus(StatusType status)
         {
             bool isSame = status == this.status;

@@ -24,7 +24,11 @@ using UnityEngine.UI;
 
 namespace umi3d.edk
 {
-    [Obsolete("This class isn't mean to be use in production", false)]
+    /// <summary>
+    /// Obsolete simple way to make transaction automatic on UMI3D Entities.
+    /// This class isn't meant to be used in production.
+    /// </summary>
+    [Obsolete("This class isn't meant to be used in production", false)]
     public partial class SimpleModificationListener : MonoBehaviour
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Editor;

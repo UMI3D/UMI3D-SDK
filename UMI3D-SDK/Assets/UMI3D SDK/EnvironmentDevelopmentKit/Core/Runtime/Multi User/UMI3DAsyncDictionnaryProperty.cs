@@ -20,6 +20,11 @@ using System.Linq;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// <see cref="UMI3DAsyncProperty"/> for key-value collections.
+    /// </summary>
+    /// <typeparam name="T">Key type</typeparam>
+    /// <typeparam name="L">Value type</typeparam>
     public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
     {
         /// <summary>
@@ -49,25 +54,30 @@ namespace umi3d.edk
         public Action<T, UMI3DUser> OnUserInnerValueRemoved;
 
         /// <summary>
-        /// the function use to check the Equality between two T objects;
+        /// Check the Equality between two <see cref="T"/> objects.
         /// </summary>
         private readonly Func<L, L, bool> Equal;
 
         /// <summary>
-        /// the function use to serialize a T object;
+        /// The function serializing a <see cref="T"/> object.
         /// </summary>
         private readonly Func<T, UMI3DUser, object> SerializerT;
 
         /// <summary>
-        /// the function use to serialize a T object;
+        /// The function serializing a <see cref="T"/> object.
         /// </summary>
         private readonly Func<L, UMI3DUser, object> SerializerL;
 
         /// <summary>
-        /// the function use to serialize a T object;
+        /// The function serializing a <see cref="T"/> object.
         /// </summary>
         private readonly Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
 
+        /// <summary>
+        /// Convert a serializer for a single value to a dictionnary serializer.
+        /// </summary>
+        /// <param name="serializer">Serializer for a single value.</param>
+        /// <returns>Serializer for lists.</returns>
         private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
         {
             if (serializerT == null && serializerL == null) return null;
@@ -86,6 +96,9 @@ namespace umi3d.edk
             return DictionarySerializer;
         }
 
+        /// <summary>
+        /// Helper class to compare two <see cref="T"/> objects.
+        /// </summary>
         private class Comparer : IEqualityComparer<L>
         {
             private readonly Func<L, L, bool> _equals;
@@ -106,6 +119,11 @@ namespace umi3d.edk
             }
         };
 
+        /// <summary>
+        /// Convert a equal check function for a single value to a list check function.
+        /// </summary>
+        /// <param name="serializer"></param>
+        /// <returns>True if all the objects of the collections are the same</returns>
         private static Func<Dictionary<T, L>, Dictionary<T, L>, bool> EqualToListEqual(Func<L, L, bool> equal)
         {
             if (equal == null) return null;
@@ -140,16 +158,18 @@ namespace umi3d.edk
             Copier = copier;
         }
 
+        //get[] operator definition
         public L this[T key] => GetValue()[key];
 
         public L this[T key, UMI3DUser user] => GetValue(user)[key];
 
         /// <summary>
-        /// Get property value for a given user
+        /// Get property value by key for a given user
         /// </summary>
-        /// <param name="key">the index</param>
-        /// <param name="user">the user</param>
+        /// <param name="key">The key in the dictionnary</param>
+        /// <param name="user">The user to get the key for</param>
         /// <returns></returns>
+        /// A null user will call <see cref="UMI3DAsyncProperty.GetValue"/>
         public L GetValue(T key, UMI3DUser user = null)
         {
             return GetValue(user)[key];
@@ -161,6 +181,7 @@ namespace umi3d.edk
         /// <param name="key">the index</param>
         /// <param name="value">the new property's value</param>
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty SetValue(T key, L value, bool forceOperation = false)
         {
             L oldValue = GetValue()[key];
@@ -202,6 +223,7 @@ namespace umi3d.edk
         /// <param name="key">the index</param>
         /// <param name="value">the new property's value</param>
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty SetValue(UMI3DUser user, T key, L value, bool forceOperation = false)
         {
             L oldValue = GetValue(user)[key];
@@ -246,6 +268,12 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Add a keay-value pair to the dictionnary.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Add(T key, L value)
         {
             GetValue().Add(key, value);
@@ -274,6 +302,12 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <summary>
+        /// Add a keay-value pair to the dictionnary for a given user.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Add(UMI3DUser user, T key, L value)
         {
             var operation = new SetEntityDictionaryAddProperty()
@@ -309,6 +343,11 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Remove a key-value pair from the collection.
+        /// </summary>
+        /// <param name="key">Key of the pair to remove</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Remove(T key)
         {
             if (!GetValue().ContainsKey(key)) return null;
@@ -340,6 +379,11 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <summary>
+        /// Remove a key-value pair from the collection for a given user.
+        /// </summary>
+        /// <param name="key">Key of the pair to remove</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Remove(UMI3DUser user, T key)
         {
             if (!GetValue(user).ContainsKey(key)) return null;
@@ -378,6 +422,7 @@ namespace umi3d.edk
             }
         }
 
+        /// <inheritdoc/>
         protected override Dictionary<T, L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
     }
 }

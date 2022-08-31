@@ -26,7 +26,7 @@ namespace umi3d.edk.editor
         private SerializedProperty overrideAllMaterial;
         private SerializedProperty overrideMaterials;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Create property fields.
@@ -43,7 +43,7 @@ namespace umi3d.edk.editor
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             int lineCount = 1;

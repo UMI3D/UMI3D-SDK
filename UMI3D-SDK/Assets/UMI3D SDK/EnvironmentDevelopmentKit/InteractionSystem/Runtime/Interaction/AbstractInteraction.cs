@@ -258,16 +258,19 @@ namespace umi3d.edk.interaction
         #region filter
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        /// <inheritdoc/>
         public bool LoadOnConnection(UMI3DUser user)
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
 
+        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Remove(filter);

@@ -20,19 +20,39 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Audio animation support. An audio player enables the playing of audio resources.
+    /// </summary>
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
         [SerializeField, EditorReadOnly]
         private UMI3DNode node;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Audio to play as a resource.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip(" Audio to play as a resource.")]
         private UMI3DResource audioResources;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Audio volume level.
+        /// </summary>
+        /// Used to reduce the audio volume. Default is max of value 1.
+        [SerializeField, EditorReadOnly, Tooltip("Audio volume level. Use this to reduce the volume of a specific audio.")]
         [Range(0f, 1f)]
         private float volume = 1;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Audio pitch level.
+        /// </summary>
+        /// Used to reduce the audio pitch. Default is max of value 1.
+        [SerializeField, EditorReadOnly, Tooltip("Audio volume level. Use this to reduce the pitch of a specific audio.")]
         [Range(0f, 1f)]
         private float pitch = 1;
+        /// <summary>
+        /// Control the amplitude of spatialisation effects.
+        /// </summary>
+        /// A 0 value will result in a sound with no spatialisation, while 1 ends up with full 3D effects.
         [SerializeField, EditorReadOnly]
+        [Tooltip("Control the amplitude of spatialisation effects.\n" +
+                 "A 0 value will result in a sound with no spatialisation, while 1 ends up with full 3D effects.")]
         [Range(0f, 1f)]
         private float spatialBlend;
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
@@ -47,7 +67,7 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<float> ObjectPitch { get { Register(); return _objectPitch; } protected set => _objectPitch = value; }
         public UMI3DAsyncProperty<float> ObjectSpacialBlend { get { Register(); return _objectSpacialBlend; } protected set => _objectSpacialBlend = value; }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -66,7 +86,7 @@ namespace umi3d.edk
             ObjectSpacialBlend.OnValueChanged += (f) => spatialBlend = f;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -78,12 +98,13 @@ namespace umi3d.edk
             Adto.spatialBlend = ObjectSpacialBlend.GetValue(user);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAudioPlayerDto();
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(ObjectNode.GetValue(user)?.Id() ?? 0)

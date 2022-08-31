@@ -30,7 +30,7 @@ namespace umi3d.edk.editor
         private const int twoDigitField = 20;
         private const int fourDigitField = 40;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Using BeginProperty / EndProperty on the parent property means that

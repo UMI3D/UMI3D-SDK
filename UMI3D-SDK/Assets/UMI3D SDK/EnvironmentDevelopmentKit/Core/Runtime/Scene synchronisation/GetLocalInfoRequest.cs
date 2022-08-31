@@ -18,8 +18,15 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Request from the server to get a locally stored data on a browser.
+    /// </summary>
+    /// It is similar to get a cokie o a traditional browser.
     public class GetLocalInfoRequest : DispatchableRequest
     {
+        /// <summary>
+        /// Key of the locally stored data to access.
+        /// </summary>
         public string key;
 
         public GetLocalInfoRequest(string key, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
@@ -33,11 +40,13 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(key);
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBytes()
         {
             return ToBytable().ToBytes();
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBson()
         {
             GetLocalInfoRequestDto dto = CreateDto();

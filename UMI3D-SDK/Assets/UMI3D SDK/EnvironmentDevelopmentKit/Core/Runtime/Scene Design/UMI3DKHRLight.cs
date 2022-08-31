@@ -22,8 +22,12 @@ namespace umi3d.edk
 
     public class UMI3DKHRLight
     {
-
-
+        public UMI3DAsyncProperty<Color> objectLightColor;
+        public string LightName;
+        public UMI3DAsyncProperty<float> objectLightIntensity;
+        public UMI3DAsyncProperty<float> objectLightRange;
+        public UMI3DAsyncProperty<string> objectLightType;
+        public UMI3DAsyncProperty<KHR_lights_punctual.KHR_spot> objectLightSpot;
 
         public UMI3DKHRLight(ulong objectId, Light light)
         {
@@ -49,6 +53,7 @@ namespace umi3d.edk
             }
         }
 
+        /// <inheritdoc/>
         public KHR_lights_punctual ToDto(UMI3DUser user)
         {
             var dto = new KHR_lights_punctual
@@ -63,13 +68,6 @@ namespace umi3d.edk
             dto.spot = objectLightSpot.GetValue(user);
             return dto;
         }
-
-        public UMI3DAsyncProperty<Color> objectLightColor;
-        public string LightName;
-        public UMI3DAsyncProperty<float> objectLightIntensity;
-        public UMI3DAsyncProperty<float> objectLightRange;
-        public UMI3DAsyncProperty<string> objectLightType;
-        public UMI3DAsyncProperty<KHR_lights_punctual.KHR_spot> objectLightSpot;
 
 
     }

@@ -16,15 +16,50 @@ limitations under the License.
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Interface for collaborative room, managing the relayed streams.
+    /// </summary>
     public interface ICollaborationRoom : UMI3DEntity
     {
-
+        /// <summary>
+        /// Control the relay for the data channel.
+        /// </summary>
+        /// <param name="sender">Node associated to the request.</param>
+        /// <param name="userSender">User sending data.</param>
+        /// <param name="data">Data that is relayed to other users.</param>
+        /// <param name="target">User receiving data.</param>
+        /// <param name="receiverSetting">Who should receive the data stream.</param>
+        /// <param name="isReliable">Is the transaction reliable?</param>
         void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
-
+        /// <summary>
+        /// Control the relay for the user tracking channel.
+        /// </summary>
+        /// <param name="sender">Node associated to the request.</param>
+        /// <param name="userSender">User sending data.</param>
+        /// <param name="data">Data that is relayed to other users.</param>
+        /// <param name="target">User receiving data.</param>
+        /// <param name="receiverSetting">Who should receive the data stream.</param>
+        /// <param name="isReliable">Is the transaction reliable?</param>
         void RelayTrackingRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
-
+        /// <summary>
+        /// Control the relay for the voice over IP channel.
+        /// </summary>
+        /// <param name="sender">Node associated to the request.</param>
+        /// <param name="userSender">User sending data.</param>
+        /// <param name="data">Data that is relayed to other users.</param>
+        /// <param name="target">User receiving data.</param>
+        /// <param name="receiverSetting">Who should receive the data stream.</param>
+        /// <param name="isReliable">Is the transaction reliable?</param>
         void RelayVoIPRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
-
+        /// <summary>
+        /// Control the relay for the video channel.
+        /// </summary>
+        /// <param name="sender">Node associated to the request.</param>
+        /// <param name="userSender">User sending data.</param>
+        /// <param name="data">Data that is relayed to other users.</param>
+        /// <param name="target">User receiving data.</param>
+        /// <param name="receiverSetting">Who should receive the data stream.</param>
+        /// <param name="isReliable">Is the transaction reliable?</param>
         void RelayVideoRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
     }
 }

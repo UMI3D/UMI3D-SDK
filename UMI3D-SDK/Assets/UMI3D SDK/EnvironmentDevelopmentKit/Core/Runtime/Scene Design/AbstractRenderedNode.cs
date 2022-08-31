@@ -21,20 +21,47 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Abstract base for <see cref="UMI3DNode"/> that should be be rendered.
+    /// </summary>
     public abstract class AbstractRenderedNode : UMI3DNode
     {
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Are the model materials being overridden?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Are the model materials being overridden?")]
         protected bool overrideModelMaterials = false;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// List of the <see cref="MaterialOverrider"/> applied to object.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("List of the MaterialOverriders applied to object")]
         protected List<MaterialOverrider> materialsOverrider = new List<MaterialOverrider>();
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Should the object cast shadows on other objects?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Should the object cast shadows on other objects?")]
         protected bool castShadow = true;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Should the object receive shadows from other objects?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Should the object receive shadows from other objects?")]
         protected bool receiveShadow = true;
 
+        /// <summary>
+        /// See <see cref="overrideModelMaterials"/>
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectMaterialsOverrided { get { Register(); return _objectMaterialsOverrided; } protected set => _objectMaterialsOverrided = value; }
+        /// <summary>
+        /// See <see cref="materialsOverrider"/>
+        /// </summary>
         public UMI3DAsyncListProperty<MaterialOverrider> objectMaterialOverriders { get { Register(); return _objectMaterialOverriders; } protected set => _objectMaterialOverriders = value; }
+        /// <summary>
+        /// See <see cref="castShadow"/>
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectCastShadow { get { Register(); return _objectCastShadow; } protected set => _objectCastShadow = value; }
+        /// <summary>
+        /// See <see cref="receiveShadow"/>
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
 
         protected UMI3DAsyncProperty<bool> _objectMaterialsOverrided;
@@ -42,7 +69,7 @@ namespace umi3d.edk
         protected UMI3DAsyncProperty<bool> _objectCastShadow;
         protected UMI3DAsyncProperty<bool> _objectReceiveShadow;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -62,13 +89,13 @@ namespace umi3d.edk
 
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DRenderedNodeDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -81,6 +108,7 @@ namespace umi3d.edk
             meshDto.overridedMaterials = objectMaterialOverriders.GetValue(user).ConvertAll((mat) => mat.ToDto());
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)

@@ -21,6 +21,10 @@ namespace umi3d.edk.volume
     /// </summary>
     public interface IVolume : IVolumeDescriptor
     {
+        /// <summary>
+        /// Can the volume be traversed?
+        /// </summary>
+        /// <returns></returns>
         bool IsTraversable();
 
         /// <summary>

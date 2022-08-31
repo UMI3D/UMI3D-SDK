@@ -19,6 +19,10 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Request relative to vehicles
+    /// </summary>
+    // todo: complete
     public class VehicleRequest : TeleportRequest
     {
         public ulong VehicleId = 0;
@@ -36,11 +40,13 @@ namespace umi3d.edk
             this.StopNavigation = stopNavigation;
         }
 
+        /// <inheritdoc/>
         protected override uint GetOperationKey()
         {
             return UMI3DOperationKeys.VehicleRequest;
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytable()
         {
             if (rotation == null) rotation = new SerializableVector4();
@@ -49,8 +55,10 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(StopNavigation);
         }
 
+        /// <inheritdoc/>
         protected override NavigateDto CreateDto() { return new VehicleDto(); }
 
+        /// <inheritdoc/>
         protected override void WriteProperties(NavigateDto dto)
         {
             base.WriteProperties(dto);

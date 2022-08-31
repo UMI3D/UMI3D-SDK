@@ -21,13 +21,13 @@ namespace umi3d.edk.collaboration
 {
     public class UMI3DCollaborationEnvironment : UMI3DEnvironment
     {
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DEnvironmentDto CreateDto()
         {
             return new UMI3DCollaborationEnvironmentDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DEnvironmentDto _dto, UMI3DUser user)
         {
             base.WriteProperties(_dto, user);

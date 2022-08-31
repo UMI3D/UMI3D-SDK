@@ -36,14 +36,20 @@ namespace umi3d.edk
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
 
-        // Should not be modified after init 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Should not be modified after init 
         public bool areSubobjectsTracked = false;
         /// <summary>
         /// State if submodel have already been added under this model.
         /// </summary>
         public bool areSubobjectsAlreadyMarked = false;
 
-        // Should not be modified after init 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// Should not be modified after init 
         public bool isRightHanded = true;
 
         /// <summary>
@@ -59,7 +65,7 @@ namespace umi3d.edk
 
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -221,10 +227,7 @@ namespace umi3d.edk
             }
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DMeshNodeDto();
@@ -249,6 +252,7 @@ namespace umi3d.edk
             meshDto.isTraversable = isTraversable;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
@@ -260,7 +264,7 @@ namespace umi3d.edk
                 + objectModel.GetValue(user).ToByte();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         internal override List<GlTFMaterialDto> GetGlTFMaterialsFor(UMI3DUser user)
         {
 

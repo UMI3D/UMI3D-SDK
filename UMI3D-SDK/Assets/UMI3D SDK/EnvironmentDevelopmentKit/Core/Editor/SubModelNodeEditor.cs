@@ -36,13 +36,13 @@ namespace umi3d.edk.editor
         }
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InspectorForMeshCollider()
         {
             EditorGUILayout.PropertyField(isMeshCustom);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();

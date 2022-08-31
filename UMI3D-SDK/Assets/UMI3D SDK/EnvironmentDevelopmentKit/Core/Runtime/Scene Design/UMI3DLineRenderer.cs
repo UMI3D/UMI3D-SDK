@@ -38,37 +38,37 @@ namespace umi3d.edk
         /// <summary>
         /// Color of the line.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Color of the start of the line.")]
         protected SerializableColor startColor = Color.white;
 
         /// <summary>
         /// Color of the line.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Color of the end of the line.")]
         protected SerializableColor endColor = Color.white;
+
+        /// <summary>
+        /// Line width on last point
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Line width on last point.")]
+        protected float endWidth = 0.01f;
 
         /// <summary>
         /// line width on first point
         /// </summary>
-        [SerializeField, EditorReadOnly]
-        protected float endWidth = 0.01f;
-
-        /// <summary>
-        /// line width on last point
-        /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Line width on first point.")]
         protected float startWidth = 0.01f;
 
         /// <summary>
         /// If true, a line will be draw between the first and the last point.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("If true, a line will be draw between the first and the last point.")]
         protected bool loop = false;
 
         /// <summary>
-        /// Draw line in world space
+        /// If true, draw line in world space.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("If true, draw line in world space.")]
         protected bool useWorldSpace = false;
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<float> _objectEndWidth;
         private UMI3DAsyncListProperty<Vector3> _objectPositions;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -123,10 +123,7 @@ namespace umi3d.edk
             positions = tab.ToList();
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DLineDto();
@@ -151,7 +148,7 @@ namespace umi3d.edk
             lineDto.positions = objectPositions.GetValue(user).ConvertAll(vector => ToUMI3DSerializable.ToSerializableVector3(vector, user));
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)

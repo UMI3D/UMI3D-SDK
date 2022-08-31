@@ -18,11 +18,21 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Request to a client for uploading a file.
+    /// </summary>
+    /// This request is used to allow a browser to upload a file to the server.
     public class UploadFileRequest : DispatchableRequest
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Networking;
 
+        /// <summary>
+        /// Token for the upload.
+        /// </summary>
         public string token;
+        /// <summary>
+        /// File to upload id.
+        /// </summary>
         public string fileId;
 
         public UploadFileRequest(bool reliable, string fileId, HashSet<UMI3DUser> users = null) : base(reliable, users)
@@ -38,11 +48,13 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(token) + UMI3DNetworkingHelper.Write(fileId);
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBytes()
         {
             return ToBytable().ToBytes();
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBson()
         {
             RequestHttpUploadDto dto = CreateDto();

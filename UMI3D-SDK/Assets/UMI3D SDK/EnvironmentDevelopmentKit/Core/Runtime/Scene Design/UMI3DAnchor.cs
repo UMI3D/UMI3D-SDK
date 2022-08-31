@@ -20,12 +20,17 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Anchor of a node in the real world, if any, for AR scene design.
+    /// </summary>
+    /// Objects that posses an Anchor are placed according to their anchor in the real world, instaed of its position in the scene.
     public class UMI3DAnchor : MonoBehaviour
     {
         public Vector3 PositionOffset;
         public Quaternion RotationOffset;
         public Vector3 ScaleOffset;
 
+        /// <inheritdoc/>
         public UMI3DAnchorDto ToDto()
         {
             return new UMI3DAnchorDto()

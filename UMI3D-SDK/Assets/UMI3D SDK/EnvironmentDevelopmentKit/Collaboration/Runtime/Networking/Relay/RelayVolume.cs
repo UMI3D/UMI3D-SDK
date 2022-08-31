@@ -76,14 +76,7 @@ namespace umi3d.edk.collaboration
             return DicoRelays[channel];
         }
 
-        /// <summary>
-        /// Handle relay for channel Data
-        /// </summary>
-        /// <param name="sender">Node associated to the request</param>
-        /// <param name="data">Data to send</param>
-        /// <param name="target"></param>
-        /// <param name="receiverSetting"></param>
-        /// <param name="isReliable"></param>
+        /// <inheritdoc/>
         public void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
@@ -103,14 +96,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        /// <summary>
-        /// Handle relay for channel Tracking
-        /// </summary>
-        /// <param name="sender">Node associated to the request</param>
-        /// <param name="data">Data to send</param>
-        /// <param name="target"></param>
-        /// <param name="receiverSetting"></param>
-        /// <param name="isReliable"></param>
+        /// <inheritdoc/>
         public void RelayTrackingRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
@@ -130,14 +116,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        /// <summary>
-        /// Handle relay for channel VoIP
-        /// </summary>
-        /// <param name="sender">Node associated to the request</param>
-        /// <param name="data">Data to send</param>
-        /// <param name="target"></param>
-        /// <param name="receiverSetting"></param>
-        /// <param name="isReliable"></param>
+        /// <inheritdoc/>
         public void RelayVoIPRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
@@ -158,14 +137,7 @@ namespace umi3d.edk.collaboration
         }
 
 
-        /// <summary>
-        /// Handle relay for channel Video
-        /// </summary>
-        /// <param name="sender">Node associated to the request</param>
-        /// <param name="data">Data to send</param>
-        /// <param name="target"></param>
-        /// <param name="receiverSetting"></param>
-        /// <param name="isReliable"></param>
+        /// <inheritdoc/>
         public void RelayVideoRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
             float now = Time.time;
@@ -207,7 +179,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Determine if data have to be relayed
+        /// Determine if data have to be relayed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="to"></param>

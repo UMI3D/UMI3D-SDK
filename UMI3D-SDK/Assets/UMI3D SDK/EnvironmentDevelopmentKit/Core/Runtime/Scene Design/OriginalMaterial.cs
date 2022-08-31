@@ -20,20 +20,28 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// UMI3D material
+    /// </summary>
     [CreateAssetMenu(fileName = "Umi3D_Original_Material", menuName = "UMI3D/Umi3D_Original_Material")]
     public class OriginalMaterial : MaterialSO
     {
-
+        /// <summary>
+        /// Entity UMI3D id.
+        /// </summary>
         public ulong matId;
 
 
         private bool registered = false;
 
+        /// <inheritdoc/>
+        /// Not implemented yet.
         public override Bytable ToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
             var res = new GlTFMaterialDto
@@ -47,13 +55,13 @@ namespace umi3d.edk
             return res;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override ulong GetId()
         {
             if (!registered)
@@ -64,7 +72,7 @@ namespace umi3d.edk
             return matId;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
@@ -77,6 +85,7 @@ namespace umi3d.edk
             objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
         }
 
+        /// <inheritdoc/>
         protected override void OnEnable()
         {
 
@@ -84,7 +93,7 @@ namespace umi3d.edk
             registered = false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void SetId(ulong id)
         {
             registered = true;

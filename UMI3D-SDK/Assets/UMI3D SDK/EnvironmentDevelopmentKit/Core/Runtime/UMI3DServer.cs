@@ -22,9 +22,17 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Manager for the UMI3D server.
+    /// </summary>
+    /// Management of users is performed by the server.
     public class UMI3DServer : SingleBehaviour<UMI3DServer>
     {
-        [SerializeField]
+        /// <summary>
+        /// IP of the UMI3D server.
+        /// </summary>
+        /// Default to "Localhost.
+        [SerializeField, Tooltip("IP of the UMI3D server.")]
         protected string ip = "localhost";
 
         /// <summary>
@@ -75,7 +83,7 @@ namespace umi3d.edk
         #endregion
 
         /// <summary>
-        /// Return the Url of the Http Server.
+        /// Return the URL of the HTTP Server.
         /// </summary>
         /// <returns></returns>
         public static string GetHttpUrl()
@@ -113,6 +121,11 @@ namespace umi3d.edk
             return ip;
         }*/
 
+        /// <summary>
+        /// Return a <see cref="ForgeConnectionDto"/> with essential info for connection. 
+        /// Warning : returns null.
+        /// </summary>
+        /// <returns></returns>
         public virtual ForgeConnectionDto ToDto()
         {
             return null;
@@ -136,10 +149,10 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Call To Notify a user status change.
+        /// Call to notify a user status change.
         /// </summary>
-        /// <param name="user">user that get its staus updated</param>
-        /// <param name="status">new status</param>
+        /// <param name="user">User that get its status updated</param>
+        /// <param name="status">New status</param>
         public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
             switch (status)
@@ -163,6 +176,10 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Looks for a missing user.
+        /// </summary>
+        /// <param name="user">User to check the presence.</param>
         protected virtual void LookForMissing(UMI3DUser user) { }
 
 

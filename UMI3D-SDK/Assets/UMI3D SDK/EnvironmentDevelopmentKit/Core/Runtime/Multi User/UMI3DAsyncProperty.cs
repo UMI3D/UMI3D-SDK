@@ -22,22 +22,22 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// Define an object property that could have a different value depending on the UMI3DUser.
+    /// Define an object property that could have a different value depending on the <see cref="UMI3DUser"/>.
     /// </summary>
     public abstract class UMI3DAsyncProperty
     {
         /// <summary>
-        /// Get a SetEntityOperation for this property for all users, regardless of async information.
+        /// Get a <see cref="SetEntityProperty"/> operation for this property for all users, regardless of async information.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForAllUsers();
 
         /// <summary>
-        /// Get a SetEntityOperation for this property for a given user.
+        /// Get a <see cref="SetEntityProperty"/> operation for this property for a given user.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user);
 
         /// <summary>
-        /// Get a SetEntityOperation for this property for users matching the given condition, regardless of async information.
+        /// Get a <see cref="SetEntityProperty"/> operation for this property for users matching the given condition, regardless of async information.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition);
 
@@ -53,8 +53,13 @@ namespace umi3d.edk
         /// </summary>
         public abstract bool isDeSync { get; }
 
-
+        /// <summary>
+        /// Collection of users that have this property set as asynchronous, i.e. with specific values.
+        /// </summary>
         public abstract IEnumerable<UMI3DUser> AsynchronousUser { get; }
+        /// <summary>
+        /// Collection of users that have this property set as desynchronous, i.e. they don't listen to changes.
+        /// </summary>
         public abstract IEnumerable<UMI3DUser> DesynchronousUser { get; }
 
         /// <summary>
@@ -80,7 +85,7 @@ namespace umi3d.edk
     /// <summary>
     /// Define an object property that could have a different value depending on the UMI3DUser.
     /// </summary>
-    /// <typeparam name="T">the type of the property value.</typeparam>
+    /// <typeparam name="T">The type of the property value.</typeparam>
     public class UMI3DAsyncProperty<T> : UMI3DAsyncProperty
     {
         /// <summary>
@@ -99,9 +104,12 @@ namespace umi3d.edk
         public ulong entityId { private set; get; }
 
         /// <summary>
-        /// The current async i.e. user specific values.
+        /// The current async (user specific) value per user.
         /// </summary>
         protected Dictionary<UMI3DUser, T> asyncValues;
+        /// <summary>
+        /// Collection of current desync users for this property.
+        /// </summary>
         protected HashSet<UMI3DUser> UserDesync;
 
         /// <summary>
@@ -113,27 +121,26 @@ namespace umi3d.edk
         /// </summary>
         public Action<UMI3DUser, T> OnUserValueChanged;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool isAsync => asyncValues != null && asyncValues.Count > 0;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool isDeSync => UserDesync != null && UserDesync.Count > 0;
 
-
         /// <summary>
-        /// the function use to check the Equality between two T objects;
+        /// The function checking the Equality between two <see cref="T"/> objects.
         /// </summary>
         private readonly Func<T, T, bool> Equal;
 
         /// <summary>
-        /// the function use to serialize a T object;
+        /// The function serializing a <see cref="T"/> object.
         /// </summary>
         private readonly Func<T, UMI3DUser, object> Serializer;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEnumerable<UMI3DUser> AsynchronousUser => asyncValues.Keys;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEnumerable<UMI3DUser> DesynchronousUser => UserDesync.ToList();
 
         /// <summary>
@@ -252,13 +259,13 @@ namespace umi3d.edk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForAllUsers()
         {
             return GetSetEntityOperationForUsers(u => true);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user)
         {
             return new SetEntityProperty()
@@ -270,7 +277,7 @@ namespace umi3d.edk
             };
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition)
         {
             return new SetEntityProperty()
@@ -284,7 +291,7 @@ namespace umi3d.edk
 
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override SetEntityProperty Sync()
         {
             SetEntityProperty operation = null;
@@ -297,7 +304,7 @@ namespace umi3d.edk
             return operation;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override SetEntityProperty Sync(UMI3DUser user, bool isSync)
         {
             SetEntityProperty operation = null;
@@ -318,7 +325,7 @@ namespace umi3d.edk
             return operation;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override SetEntityProperty DeSync(UMI3DUser user, bool isnotifying)
         {
             SetEntityProperty operation = null;
@@ -334,19 +341,26 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <summary>
+        /// Get a copy of the value set as parameter.
+        /// </summary>
+        /// <param name="value">Value to copy.</param>
+        /// <returns>Copied value.</returns>
+        /// Override this method to implement a custom copier, for reference types for examples.
         protected virtual T CopyOfValue(T value) { return value; }
     }
 
 
     /// <summary>
-    /// Collection of Equality fonction for float and struct containing float using an epsilon range.
+    /// Collection of Equality functions for floats and structs containing float, using an epsilon threshold.
     /// </summary>
     public class UMI3DAsyncPropertyEquality
     {
         /// <summary>
-        /// Epsilon used for Equality test.
+        /// Epsilon threshold used for Equality test.
         /// A == B is true if A in ]B - epsilon; B + epsilon[.
         /// </summary>
+        /// Default value for epsilon is 10E-6.
         public float epsilon = 0.000001f;
 
         /// <summary>

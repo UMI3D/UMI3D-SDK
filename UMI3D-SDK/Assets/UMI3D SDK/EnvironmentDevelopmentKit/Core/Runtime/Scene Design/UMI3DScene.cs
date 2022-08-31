@@ -23,7 +23,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// UMI3D empty object.
+    /// UMI3D empty object that serves as reference for a scene description.
     /// </summary>
     [DisallowMultipleComponent]
     [SelectionBase]
@@ -31,7 +31,10 @@ namespace umi3d.edk
     {
 
         #region properties
-        [EditorReadOnly]
+        /// <summary>
+        /// Libraries required for the access to the scene.
+        /// </summary>
+        [EditorReadOnly, Tooltip("Libraries required for the access to the scene.")]
         public List<AssetLibrary> libraries;
         #endregion
         private List<UMI3DNode> nodes;
@@ -108,6 +111,7 @@ namespace umi3d.edk
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             Bytable fp = base.ToBytes(user);
@@ -184,7 +188,7 @@ namespace umi3d.edk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);

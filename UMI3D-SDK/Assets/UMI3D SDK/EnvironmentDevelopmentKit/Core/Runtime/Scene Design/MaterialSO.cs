@@ -20,39 +20,50 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-    //[CreateAssetMenu(fileName = "Umi3DMaterial", menuName = "UMI3D/Umi3DMaterial")]
+    /// <summary>
+    /// Material scriptable object to define a material to be loaded on clients.
+    /// </summary>
     public abstract class MaterialSO : ScriptableObject, UMI3DLoadableEntity
     {
-
-
+        //? whut
         public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
         public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
 
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
+        //? whut
         public enum AlphaMode
         {
             OPAQUE, MASK, BLEND
         }
         public AlphaMode alphaMode = AlphaMode.BLEND;
 
+        /// <summary>
+        /// Unity's function called when the object is activated and active.
+        /// </summary>
         protected abstract void OnEnable();
-
+        /// <inheritdoc/>
         protected abstract ulong GetId();
 
         protected abstract void SetId(ulong id);
 
+        /// <inheritdoc/>
         public abstract GlTFMaterialDto ToDto();
 
-
+        /// <inheritdoc/>
         public abstract Bytable ToBytes(UMI3DUser user);
 
+        /// <inheritdoc/>
         public ulong Id()
         {
             return GetId();
         }
         protected abstract void InitDefinition(ulong id);
 
+        /// <summary>
+        /// Register the material in the <see cref="UMI3DEnvironment"/>.
+        /// </summary>
+        /// <param name="mat"></param>
         protected void RegisterMaterial(AbstractEntityDto mat)
         {
             if (mat.id != 0 || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
@@ -63,8 +74,10 @@ namespace umi3d.edk
             }
         }
 
+        /// <inheritdoc/>
         public abstract IEntity ToEntityDto(UMI3DUser user);
 
+        /// <inheritdoc/>
         public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -75,6 +88,7 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <inheritdoc/>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
