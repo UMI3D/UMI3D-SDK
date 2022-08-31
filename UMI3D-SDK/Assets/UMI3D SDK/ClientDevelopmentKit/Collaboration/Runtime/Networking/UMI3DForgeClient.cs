@@ -406,7 +406,12 @@ namespace umi3d.cdk.collaboration
                         {
                             UMI3DCollaborationClientServer.Connect(redirection);
                         });
-
+                        break;
+                    case ForceLogoutDto forceLogout:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
+                        });
                         break;
                     default:
                         UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
@@ -520,6 +525,13 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.Connect(redirection);
+                        });
+                        break;
+                    case UMI3DOperationKeys.ForceLogoutRequest:
+                        ForceLogoutDto forceLogout = UMI3DNetworkingHelper.Read<ForceLogoutDto>(container);
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
                         });
                         break;
                     default:

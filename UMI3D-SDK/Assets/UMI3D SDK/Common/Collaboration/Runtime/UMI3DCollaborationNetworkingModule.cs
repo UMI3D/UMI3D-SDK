@@ -343,6 +343,25 @@ namespace umi3d.common.collaboration
                     result = default(T);
                     readable = false;
                     return false;
+                case true when typeof(T) == typeof(ForceLogoutDto):
+                    string reason;
+                    if (
+                        UMI3DNetworkingHelper.TryRead<string>(container, out reason)
+                        )
+                    {
+
+                        var forceLogoutDto = new ForceLogoutDto
+                        {
+                            reason = reason
+                        };
+                        readable = true;
+                        result = (T)Convert.ChangeType(forceLogoutDto, typeof(T));
+
+                        return true;
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
                 case true when typeof(T) == typeof(GateDto):
                     string gateid;
                     byte[] data;
@@ -500,6 +519,9 @@ namespace umi3d.common.collaboration
                 case RedirectionDto redirection:
                     bytable = UMI3DNetworkingHelper.Write(redirection.media)
                         + UMI3DNetworkingHelper.Write(redirection.gate);
+                    break;
+                case ForceLogoutDto forceLogout:
+                    bytable = UMI3DNetworkingHelper.Write(forceLogout.reason);
                     break;
                 case MediaDto media:
                     bytable = UMI3DNetworkingHelper.Write(media.name)

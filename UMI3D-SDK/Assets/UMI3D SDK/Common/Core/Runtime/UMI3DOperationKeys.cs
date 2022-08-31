@@ -26,6 +26,7 @@ namespace umi3d.common
         public const uint UploadFileRequest = 6;
         public const uint GetLocalInfoRequest = 7;
         public const uint RedirectionRequest = 8;
+        public const uint ForceLogoutRequest = 9;
 
         public const uint UserMicrophoneStatus = 21;
         public const uint UserAvatarStatus = 22;
