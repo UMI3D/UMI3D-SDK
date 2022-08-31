@@ -19,7 +19,7 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of an entity's property changed.
+    /// Operation DTO to inform a browser the value of an entity's property changed.
     /// </summary>
     [Serializable]
     public class SetEntityPropertyDto : AbstractOperationDto

@@ -16,9 +16,15 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO containing the displacement of a user as its new position.
+    /// </summary>
     [System.Serializable]
     public class NavigateDto : UMI3DDto
     {
+        /// <summary>
+        /// New position of the user.
+        /// </summary>
         public SerializableVector3 position;
 
         public NavigateDto() : base() { }

@@ -21,6 +21,7 @@ namespace umi3d.common
     /// <summary>
     /// Data Tranfert Object for UMI3D media
     /// </summary>
+    // todo change doc
     [System.Serializable]
     public class EntityGroupDto : AbstractEntityDto, IEntity
     {

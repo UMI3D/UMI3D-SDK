@@ -19,6 +19,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serializable implementation of a color using RGBA channels with float values.
+    /// </summary>
     [Serializable]
     public class SerializableColor : UMI3DDto
     {
@@ -43,7 +46,7 @@ namespace umi3d.common
             A = a;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return ((Color)this).ToString();

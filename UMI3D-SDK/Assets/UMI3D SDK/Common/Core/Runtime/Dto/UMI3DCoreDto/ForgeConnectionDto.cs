@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Essential data to enable the connection to an environment.
+    /// </summary>
     [System.Serializable]
     public class ForgeConnectionDto : UMI3DDto
     {

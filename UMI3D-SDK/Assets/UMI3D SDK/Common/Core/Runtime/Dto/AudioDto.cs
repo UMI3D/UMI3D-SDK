@@ -16,6 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    [System.Obsolete]
     public class AudioDto : UMI3DDto
     {
         public string userId;

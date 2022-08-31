@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Type of shadow mapping technique to use.
+    /// </summary>
     public enum ShadowType
     {
         None = 0,

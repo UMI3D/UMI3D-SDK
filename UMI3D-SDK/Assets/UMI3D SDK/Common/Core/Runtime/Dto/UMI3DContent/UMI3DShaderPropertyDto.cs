@@ -21,12 +21,28 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Representation of a shader's property.
+    /// </summary>
+    /// Shader property are of unkown types, thus types are identified in <see cref="UMI3DShaderPropertyType"/>.
     [System.Serializable]
     public class UMI3DShaderPropertyDto : UMI3DDto, IBytable
     {
+        /// <summary>
+        /// Shader property collection type in <see cref="UMI3DShaderPropertyType"/> if the property is a collection.
+        /// </summary>
         private readonly byte CollectionType;
+        /// <summary>
+        /// Size of the colleciton if the property is a collection.
+        /// </summary>
         private int size;
+        /// <summary>
+        /// Shader property type in <see cref="UMI3DShaderPropertyType"/>.
+        /// </summary>
         private readonly byte Type;
+        /// <summary>
+        /// Shader property value.
+        /// </summary>
         public object value;
 
         public UMI3DShaderPropertyDto(object value)
@@ -35,11 +51,13 @@ namespace umi3d.common
             (this.CollectionType, this.Type) = GetType(value);
         }
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return true;
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytableArray(params object[] parameters)
         {
             if (CollectionType != 0)
@@ -110,6 +128,11 @@ namespace umi3d.common
             return null;
         }
 
+        /// <summary>
+        /// Get the right (collectionType, valueType) couple in the <see cref="UMI3DShaderPropertyType"/> index.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private (byte, byte) GetType(object value)
         {
             (byte, byte) result = (0, 0);

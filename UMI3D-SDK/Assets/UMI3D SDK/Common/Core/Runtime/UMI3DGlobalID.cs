@@ -17,6 +17,10 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Attributed and fixed UMI3D ids.
+    /// </summary>
+    /// Those id will always be the same on every environment.
     [System.Serializable]
     public static class UMI3DGlobalID
     {

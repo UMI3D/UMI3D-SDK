@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of an entity's list property changed.
+    /// Operation DTO to inform a browser the value of an entity's list property was removed.
     /// </summary>
     public class SetEntityListRemovePropertyDto : SetEntityListPropertyDto
     {

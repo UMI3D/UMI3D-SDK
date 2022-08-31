@@ -19,7 +19,7 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// Abstract class to represent any message sent by a UMI3D Browser.
+    /// Abstract DTO to represent any message sent by a UMI3D Browser.
     /// </summary>
     [Serializable]
     public abstract class AbstractBrowserRequestDto : UMI3DDto, IBytable
@@ -31,11 +31,13 @@ namespace umi3d.common
 
 
         protected abstract uint GetOperationId();
+        /// <inheritdoc/>
         public virtual Bytable ToBytableArray(params object[] parameters)
         {
             return UMI3DNetworkingHelper.Write(GetOperationId());
         }
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return true;

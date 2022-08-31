@@ -16,6 +16,7 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    [System.Obsolete]
     public enum ShaderType
     {
         UNLIT,

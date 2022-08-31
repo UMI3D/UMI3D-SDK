@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d
 {
+    /// <summary>
+    /// Contains the current UMI3D version number.
+    /// </summary>
     public static class UMI3DVersion
     {
         public static string version => major + "." + minor + "." + status + "." + date;

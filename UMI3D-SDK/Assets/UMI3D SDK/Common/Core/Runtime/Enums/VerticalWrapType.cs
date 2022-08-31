@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Wrapping mode for texts when reaching vertical boundary.
+    /// </summary>
     public enum VerticalWrapType
     {
         Truncate = 0,

@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of a entity's matrix property changed.
+    /// Operation DTO to inform a browser the value of a entity's matrix property changed.
     /// </summary>
     public class SetEntityMatrixPropertyDto : SetEntityPropertyDto
     {

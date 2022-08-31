@@ -42,11 +42,13 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return

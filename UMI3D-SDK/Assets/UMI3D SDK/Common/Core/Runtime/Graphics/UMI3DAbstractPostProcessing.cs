@@ -18,6 +18,9 @@ using UnityEngine;
 
 namespace umi3d.common.graphics
 {
+    /// <summary>
+    /// Abstract manager for post-processing efdects.
+    /// </summary>
     public abstract class UMI3DAbstractPostProcessing : inetum.unityUtils.SingleBehaviour<UMI3DAbstractPostProcessing>
     {
         /// <summary>

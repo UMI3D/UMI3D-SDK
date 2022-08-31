@@ -18,6 +18,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Helper class to convert from/to Unity's primitive types.
+    /// </summary>
     public static class PrimitiveTypeConverter
     {
 
@@ -60,6 +63,9 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to convert from/to Unity's shadows mapping types.
+    /// </summary>
     public static class ShadowTypeConverter
     {
 
@@ -92,6 +98,9 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to convert from/to Unity's ambiant lighting mode types.
+    /// </summary>
     public static class AmbientTypeConverter
     {
 
@@ -124,6 +133,9 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to convert from/to Unity's image fill types.
+    /// </summary>
     public static class ImageTypeConverter
     {
 
@@ -159,6 +171,10 @@ namespace umi3d.common
             return UnityEngine.UI.Image.Type.Simple;
         }
     }
+
+    /// <summary>
+    /// Helper class to convert from/to Unity's text anchor types.
+    /// </summary>
     public static class TextAnchortTypeConverter
     {
 
@@ -214,6 +230,10 @@ namespace umi3d.common
             return TextAnchor.MiddleCenter;
         }
     }
+
+    /// <summary>
+    /// Helper class to convert from/to Unity's font style types.
+    /// </summary>
     public static class FontStyleTypeConverter
     {
 
@@ -250,6 +270,10 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to convert from/to Unity's shadows mapping types.
+    /// </summary>
+
     public static class HorizontalWrapTypeConverter
     {
 
@@ -278,6 +302,9 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to convert from/to Unity's text wrapping mode types.
+    /// </summary>
     public static class VerticalWrapTypeConverter
     {
 

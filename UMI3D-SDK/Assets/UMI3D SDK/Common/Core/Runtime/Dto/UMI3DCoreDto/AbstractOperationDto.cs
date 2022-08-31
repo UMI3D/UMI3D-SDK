@@ -19,7 +19,9 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// Abstract DTO to describe an operation.
+    /// An operation is sent to clients for them to apply it. 
+    /// It aims to modify an entity or one of its properties.
     /// </summary>
     [Serializable]
     public abstract class AbstractOperationDto : UMI3DDto

@@ -21,6 +21,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Levels used for debugging purposes.
+    /// </summary>
     [Flags]
     public enum DebugLevel
     {
@@ -30,6 +33,13 @@ namespace umi3d.common
         Warning = 1 << 2,
     }
 
+    /// <summary>
+    /// Contains the available debug scope byte identifiers. They are used to define precisely the debugging scope.
+    /// </summary>
+    /// Debug scopes are objects of 32 bits, with a only one isolated bit per scope. This allows to use bitwise operators like "|" 
+    /// to define multiscope debugging. <br/>
+    /// Example : the common scope is "00000000_00000000_00000000_00000001" and the core scope is "00000000_00000000_00000000_00001000", 
+    /// so the common.core scope is "00000000_00000000_00000000_00001001".
     [Flags]
     public enum DebugScope
     {
@@ -376,6 +386,7 @@ namespace umi3d.common
             return lastValue;
         }
 
+        /// <inheritdoc/>
         public override (bool, string) GetData()
         {
             bool ok = Updated();
@@ -394,11 +405,13 @@ namespace umi3d.common
             return null;
         }
 
+        /// <inheritdoc/>
         public override string GetCurrentData()
         {
             return serializer(GetTData());
         }
 
+        /// <inheritdoc/>
         public override bool Updated()
         {
             if (updated)

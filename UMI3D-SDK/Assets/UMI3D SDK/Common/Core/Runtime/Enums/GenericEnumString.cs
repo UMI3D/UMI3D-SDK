@@ -74,7 +74,7 @@ namespace umi3d.common
             return b != a;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool Equals(System.Object obj)
         {
             return obj != null && Equals(obj.ToString());
@@ -90,12 +90,12 @@ namespace umi3d.common
             return Value.Equals(s);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Value;

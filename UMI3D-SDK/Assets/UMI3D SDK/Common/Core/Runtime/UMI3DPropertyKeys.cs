@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains the keys for the available properties within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning DTOs between the server and clients to identify 
+    /// which property is affected by an operation or a request.
     public static class UMI3DPropertyKeys
     {
         public const uint None = 0;

@@ -22,6 +22,7 @@ namespace umi3d.common
     /// <summary>
     /// The class used to associate a BoneType with an ObjectId.
     /// </summary>
+    [Obsolete]
     [Serializable]
     public class BoneObjectPair : UMI3DDto
     {
@@ -29,6 +30,7 @@ namespace umi3d.common
         public string objectId;
     }
 
+    [Obsolete]
     [Serializable]
     public class BonePairDictionary : UMI3DDto
     {

@@ -16,9 +16,15 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Describes a camera projection.
+    /// </summary>
     [System.Serializable]
     public class CameraDto : UMI3DNodeDto
     {
+        /// <summary>
+        /// Camera projection matrix that describes the mapping of a pinhole camera.
+        /// </summary>
         public SerializableMatrix4x4 projectionMatrix = null;
 
         public CameraDto() : base()

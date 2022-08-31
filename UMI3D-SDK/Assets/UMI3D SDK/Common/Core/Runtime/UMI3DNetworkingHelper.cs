@@ -20,10 +20,16 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Helper class for byte serialization.
+    /// </summary>
     public static class UMI3DNetworkingHelper
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
+        /// <summary>
+        /// Networking helpers from other modules.
+        /// </summary>
         private static readonly List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
 
         /// <summary>
@@ -843,9 +849,22 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Object that could be converted to an array of bytes.
+    /// </summary>
     public interface IBytable
     {
+        /// <summary>
+        /// If true, the number of elements could be deduced from a size parameter.
+        /// </summary>
+        /// <returns></returns>
         bool IsCountable();
+        /// <summary>
+        /// Convert the parameters to an array of <see cref="Bytable"/>.
+        /// </summary>
+        /// This method is used in the bytes networking system.
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         Bytable ToBytableArray(params object[] parameters);
     }
 
@@ -875,11 +894,22 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Intermediary class used for serialization of objects into an array of bytes.
+    /// </summary>
+    /// it is possible to sum 2 bytables to obtain a larger bytable.
     public class Bytable
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
+        /// <summary>
+        /// Size of the array of byte to reserve.
+        /// </summary>
         public int size { get; private set; }
+        /// <summary>
+        /// Function that take an array of byte to fill up, an index of a cell to write, and an already been used size. 
+        /// This function shoudl return a couple ((position+newly reserved size),(current total size + newly reserved size)).
+        /// </summary>
         public Func<byte[], int, int, (int, int)> function { get; private set; }
 
         public Bytable(int size, Func<byte[], int, int, (int, int)> function)
@@ -954,10 +984,29 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to serialize objects.
+    /// </summary>
+    /// Typically used to serialize objects that are not defined in the UMI3D core.
     public abstract class Umi3dNetworkingHelperModule
     {
+        /// <summary>
+        /// Write the object as a <see cref="Bytable"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the object to serialize.</typeparam>
+        /// <param name="value">Object to serialize.</param>
+        /// <param name="bytable">Object as a bytable.</param>
+        /// <returns></returns>
         public abstract bool Write<T>(T value, out Bytable bytable);
 
+        /// <summary>
+        /// Retrieve an object from a <see cref="Bytable"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the object to deserialize.</typeparam>
+        /// <param name="container">Byte container containing the object.</param>
+        /// <param name="readable">has the containr successfully been read?</param>
+        /// <param name="result">Deserialized object.</param>
+        /// <returns></returns>
         public abstract bool Read<T>(ByteContainer container, out bool readable, out T result);
     }
 }

@@ -19,6 +19,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serializable implementation of a 4x4 float matrix.
+    /// </summary>
     [Serializable]
     public class SerializableMatrix4x4 : UMI3DDto
     {

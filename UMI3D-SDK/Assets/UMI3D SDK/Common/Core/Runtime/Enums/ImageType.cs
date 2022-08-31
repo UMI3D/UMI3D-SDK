@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Image display type in UMI3D.
+    /// </summary>
     public enum ImageType
     {
         Simple = 0,
