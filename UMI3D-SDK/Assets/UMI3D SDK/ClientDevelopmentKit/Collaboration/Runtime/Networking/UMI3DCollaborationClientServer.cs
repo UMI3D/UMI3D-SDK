@@ -208,6 +208,7 @@ namespace umi3d.cdk.collaboration
         {
             if (Exists)
                 Instance.OnForceLogoutMessage.Invoke(message);
+            Logout();
         }
 
         /// <summary>
