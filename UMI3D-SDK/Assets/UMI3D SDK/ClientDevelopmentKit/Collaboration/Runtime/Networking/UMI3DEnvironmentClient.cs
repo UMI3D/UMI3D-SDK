@@ -126,11 +126,6 @@ namespace umi3d.cdk.collaboration
             needToGetFirstConnectionInfo = true;
         }
 
-        public void SetStatus(StatusType status)
-        {
-
-        }
-
         public bool Connect()
         {
             if (IsConnected())
@@ -400,15 +395,28 @@ namespace umi3d.cdk.collaboration
                 else
                 {
                     await Logout();
+                    if (UMI3DCollaborationClientServer.Exists)
+                        UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
                 }
             }
             catch (UMI3DAsyncManagerException)
             {
                 //This exeception is thrown only when app is stopping.
             }
+            catch (Umi3dException e)
+            {
+                await Logout();
+                if (e.errorCode == 401)
+                    UMI3DCollaborationClientServer.ReceivedLogoutMessage("You are not authorized to proceed further.");
+                else if (UMI3DCollaborationClientServer.Exists)
+                    UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
+                throw;
+            }
             catch
             {
                 await Logout();
+                if (UMI3DCollaborationClientServer.Exists)
+                    UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
                 throw;
             }
         }
