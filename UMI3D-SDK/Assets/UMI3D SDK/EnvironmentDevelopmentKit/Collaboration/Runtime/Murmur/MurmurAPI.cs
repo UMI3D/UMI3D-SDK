@@ -42,9 +42,15 @@ namespace umi3d.edk.collaboration.murmur
 
         private string RequestToString(UnityWebRequest www)
         {
-            if (www.isHttpError || www.isNetworkError)
+            if (www.isHttpError || www.isNetworkError) {
+                www.Dispose();
                 throw new System.Exception("Error" + www.error);
-            return www?.downloadHandler?.text;
+            }
+
+            string res = www?.downloadHandler?.text;
+            www?.Dispose();
+
+            return res;
         }
 
         public async Task<string> GetRequest(string url)
