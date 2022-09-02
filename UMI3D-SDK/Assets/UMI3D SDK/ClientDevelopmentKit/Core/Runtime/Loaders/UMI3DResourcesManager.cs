@@ -1074,10 +1074,14 @@ namespace umi3d.cdk
                     UMI3DLogger.LogWarning(www.error, scope);
                     UMI3DLogger.LogWarning("Failed to load " + www.url, scope);
                 }
+
+                www.Dispose();
                 //}
                 yield break;
             }
+
             callback.Invoke();
+            www.Dispose();
         }
 
         #endregion
