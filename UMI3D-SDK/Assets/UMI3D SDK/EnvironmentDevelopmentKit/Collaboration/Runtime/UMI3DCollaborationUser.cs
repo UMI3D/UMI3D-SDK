@@ -127,18 +127,6 @@ namespace umi3d.edk.collaboration
         }
 
 
-        //public string RenewToken()
-        //{
-        //    DateTime date = DateTime.UtcNow;
-        //    date = date.AddSeconds(UMI3DCollaborationServer.Instance.tokenLifeTime);
-        //    byte[] time = BitConverter.GetBytes(date.ToBinary());
-        //    byte[] key = Guid.NewGuid().ToByteArray();
-        //    string token = Convert.ToBase64String(time.Concat(key).ToArray());
-        //    this.token = token;
-        //    forgeServer.SendSignalingMessage(networkPlayer, ToTokenDto());
-        //    return token;
-        //}
-
         public virtual TokenDto ToTokenDto()
         {
             var token = new TokenDto
@@ -164,7 +152,6 @@ namespace umi3d.edk.collaboration
             var connectionInformation = new UserConnectionDto(ToUserDto())
             {
                 audioPassword = audioPassword.GetValue(),
-                audioLogin = audioLogin.GetValue(),
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),
                 librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this)
@@ -192,7 +179,8 @@ namespace umi3d.edk.collaboration
 
                 audioChannel = audioChannel.GetValue(),
                 audioServerUrl = audioServerUrl.GetValue(),
-                audioUseMumble = audioUseMumble.GetValue()
+                audioUseMumble = audioUseMumble.GetValue(),
+                audioLogin = audioLogin.GetValue()
 
             };
             return user;

@@ -130,7 +130,7 @@ namespace umi3d.edk.collaboration.murmur
                 await serv.RemoveUser(u.id);
             }
 
-            ops.Add(ToPrivate(user, user.audioLogin.SetValue("")));
+            ops.Add(user.audioLogin.SetValue(""));
             ops.Add(ToPrivate(user, user.audioPassword.SetValue("")));
             ops.Add(user.audioUseMumble.SetValue(false));
             ops.Add(user.audioServerUrl.SetValue(""));
