@@ -75,6 +75,8 @@ namespace umi3d.common
         public const uint NotificationCallback = 10014;
         public const uint BoardedVehicleRequest = 10015;
 
+        public const uint EmoteRequest = 10020;
+
         public const uint VolumeUserTransit = 10100;
 
     }

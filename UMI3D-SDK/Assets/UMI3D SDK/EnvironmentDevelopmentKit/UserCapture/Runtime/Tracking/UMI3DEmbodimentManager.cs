@@ -222,6 +222,27 @@ namespace umi3d.edk.userCapture
         }
 
         /// <summary>
+        /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.
+        /// </summary>
+        /// <param name="emoteId">Emote to trigger UMI3D id.</param>
+        /// <param name="user">Sending emote user.</param>
+        /// <param name="trigger">True for triggering, false to interrupt.</param>
+        public void DispatchChangeEmoteReception(ulong emoteId, UMI3DUser user, bool trigger)
+        {
+            //? avoid the data channel filtering
+            var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
+            targetUsers.Remove(user);
+            var req = new EmoteDispatchRequest(reliable: true, users: targetUsers)
+            {
+                sendingUserId = user.Id(),
+                shouldTrigger = trigger,
+                emoteId = emoteId
+            };
+
+            req.Dispatch();
+        }
+
+        /// <summary>
         /// Delete the User's Embodiment.
         /// </summary>
         /// <param name="user">the concerned user</param>
