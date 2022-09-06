@@ -65,7 +65,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Frequency indicating the number tracked frames send to the server per seconds.
         /// </summary>
-        [field:SerializeField, Tooltip(" Frequency indicating the number tracked frames send to the server per seconds.")]
+        [field: SerializeField, Tooltip(" Frequency indicating the number tracked frames send to the server per seconds.")]
         public float targetTrackingFPS { get; protected set; } = 15;
 
         /// <summary>
@@ -138,6 +138,87 @@ namespace umi3d.cdk.userCapture
         /// Trigered when an emote changed on availability
         /// </summary>
         public EmoteEvent EmoteChangedEvent = new EmoteEvent();
+        /// <summary>
+        /// Trigered when an emote is played by the user
+        /// </summary>
+        public UnityEvent EmotePlayedSelfEvent = new UnityEvent();
+        /// <summary>
+        /// Trigered when an emote is finished to be played by the user
+        /// </summary>
+        public UnityEvent EmoteEndedSelfEvent = new UnityEvent();
+
+        /// <summary>
+        /// True when an emote is currently playing
+        /// </summary>
+        public bool IsEmotePlaying { get; protected set; } = false;
+
+        /// <summary>
+        /// Emote configuration on the server, with al available emotes for the user.
+        /// </summary>
+        private UMI3DEmotesConfigDto emoteConfig;
+
+        /// <summary>
+        /// Starts an emote on another user's avatar in the scene.
+        /// </summary>
+        /// <param name="emoteId">Emote to start UMI3D Id.</param>
+        /// <param name="userId">Id of the user to start the emote for.</param>
+        /// Don't use this for your own avatar's emotes.
+        public void PlayEmoteOnOtherAvatar(ulong emoteId, ulong userId)
+        {
+            var otherUserAvatar = embodimentDict[userId];
+            var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
+            var animator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
+
+            if (animator == null || emoteConfig == null)
+                return;
+            var emoteToPlay = emoteConfig.emotes.Find(x => x.id == emoteId);
+            StartCoroutine(PlayEmote(animator, emoteToPlay));
+        }
+
+        private const string IdleStateName = "Idle";
+        /// <summary>
+        /// Plays an emote on an animator.
+        /// </summary>
+        /// <param name="animator">Animator to play the emote on.</param>
+        /// <param name="emote">Emote to play.</param>
+        /// <returns></returns>
+        protected IEnumerator PlayEmote(Animator animator, UMI3DEmoteDto emote)
+        {
+            animator.enabled = true;
+            animator.Update(0);
+            animator.Play(emote.stateName);
+            yield return new WaitWhile(() =>
+            {
+                if (animator == null) return false;  // heppens when a user leaves the scene when playing an emote
+                return animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1;
+            });
+            if (animator == null) // heppens when a user leaves the scene when playing an emote
+                yield break;
+            animator.Play(IdleStateName);
+            animator.Update(0);
+            animator.enabled = false;
+        }
+
+        /// <summary>
+        /// Stops an emote on another user's avatar in the scene.
+        /// </summary>
+        /// <param name="emoteId">Emote to stop UMI3D Id.</param>
+        /// <param name="userId">Id of the user to stop the emote for.</param>
+        /// Don't use this for your own avatar's emotes.
+        public void StopEmoteOnOtherAvatar(ulong emoteId, ulong userId)
+        {
+            var otherUserAvatar = embodimentDict[userId];
+            var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
+            var animator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
+
+            if (animator == null || emoteConfig == null)
+                return;
+            var emoteToStop = emoteConfig.emotes.Find(x => x.id == emoteId);
+            StopCoroutine(PlayEmote(animator, emoteToStop));
+            animator.Play(IdleStateName);
+            animator.Update(0);
+            animator.enabled = false;
+        }
 
         public class AvatarEvent : UnityEvent<ulong> { };
 
@@ -166,6 +247,11 @@ namespace umi3d.cdk.userCapture
         /// Store last rotations for every bone.
         /// </summary>
         private Dictionary<uint, Quaternion> lastBoneRotations = new Dictionary<uint, Quaternion>();
+        /// <summary>
+        /// If true, disable the sending of bones rotations in frame dtos.
+        /// </summary>
+        /// Frame dtos withouth bones are much lighter.
+        public bool IgnoreBones { get; protected set; } = false;
 
         #endregion
 
@@ -174,6 +260,7 @@ namespace umi3d.cdk.userCapture
         {
             base.Awake();
             skeletonParsedEvent = new UnityEvent();
+
         }
 
         protected virtual void Start()
@@ -184,6 +271,17 @@ namespace umi3d.cdk.userCapture
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
+            EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
+            EmotePlayedSelfEvent.AddListener(delegate
+            {
+                IgnoreBones = true;
+                IsEmotePlaying = true;
+            });
+            EmoteEndedSelfEvent.AddListener(delegate
+            {
+                IgnoreBones = false;
+                IsEmotePlaying = false;
+            });
         }
 
         /// <summary>
@@ -248,15 +346,20 @@ namespace umi3d.cdk.userCapture
             if (UMI3DEnvironmentLoader.Exists)
             {
                 var bonesList = new List<BoneDto>();
-                foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
+                if (!IgnoreBones)
                 {
-                    if (streamedBonetypes.Contains(bone.boneType))
+                    foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
                     {
-                        BoneDto dto = bone.ToDto();
-                        if (dto != null)
-                            bonesList.Add(dto);
+                        if (streamedBonetypes.Contains(bone.boneType))
+                        {
+                            BoneDto dto = bone.ToDto();
+                            if (dto != null)
+                                bonesList.Add(dto);
+                        }
                     }
                 }
+
+
 
                 Vector3 position = UMI3DNavigation.Instance.transform.localPosition;
                 Quaternion rotation = UMI3DNavigation.Instance.transform.localRotation;
@@ -376,7 +479,8 @@ namespace umi3d.cdk.userCapture
             if (newFPSTarget > 0)
             {
                 targetTrackingFPS = newFPSTarget;
-            } else
+            }
+            else
             {
                 UMI3DLogger.LogError("Tracking frame Fps must be greater than 0.", DebugScope.CDK);
             }
