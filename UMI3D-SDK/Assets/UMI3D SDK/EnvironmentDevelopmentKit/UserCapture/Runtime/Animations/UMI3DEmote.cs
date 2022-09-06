@@ -36,7 +36,7 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Emote state name in Animator
         /// </summary>
-        [Tooltip("Emote state name in Animator. Make sure that it is the same name used in AnimationClips.")]
+        [Tooltip("Emote state name in Animator.")]
         public string stateName;
 
         /// <summary>
