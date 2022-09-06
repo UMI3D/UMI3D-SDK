@@ -157,7 +157,7 @@ namespace umi3d.cdk.collaboration
 
                         worldControllerClient = wc;
                         environmentClient = await wc.ConnectToEnvironment();
-                        environmentClient.status = StatusType.ACTIVE;
+                        environmentClient.status = StatusType.CREATED;
                     }
                 }
                 else

@@ -20,7 +20,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 namespace umi3d.cdk.collaboration
 {
 
@@ -136,19 +135,22 @@ namespace umi3d.cdk.collaboration
 
         private MumbleAudioPlayer CreatePrending(string username)
         {
-            var g = new GameObject
-            {
-                name = $"pending_audio_{username}"
-            };
-            PendingMumbleAudioPlayer[username] = g.AddComponent<MumbleAudioPlayer>();
-            AudioSource audio = g.GetComponent<AudioSource>();
-            audio.rolloffMode = AudioRolloffMode.Linear;
-            audio.spatialBlend = 0;
-
+            lock (PendingMumbleAudioPlayer)
+                if (!PendingMumbleAudioPlayer.ContainsKey(username) || PendingMumbleAudioPlayer[username] == null)
+                {
+                    var g = new GameObject
+                    {
+                        name = $"pending_audio_{username}"
+                    };
+                    PendingMumbleAudioPlayer[username] = g.AddComponent<MumbleAudioPlayer>();
+                    AudioSource audio = g.GetComponent<AudioSource>();
+                    audio.rolloffMode = AudioRolloffMode.Linear;
+                    audio.spatialBlend = 0;
+                }
             return PendingMumbleAudioPlayer[username];
         }
 
-        private void CleanPrending(UMI3DUser user)
+        private void CleanPending(UMI3DUser user)
         {
             if (!string.IsNullOrEmpty(user.audioLogin) && PendingMumbleAudioPlayer.ContainsKey(user.audioLogin))
             {
@@ -209,7 +211,7 @@ namespace umi3d.cdk.collaboration
                     Destroy(GlobalReader[user.id].gameObject);
                     GlobalReader.Remove(user.id);
                 }
-                CleanPrending(user);
+                CleanPending(user);
             }
             else
             {
@@ -236,7 +238,7 @@ namespace umi3d.cdk.collaboration
                             GlobalReader[user.id].Setup(oldReader);
                             oldReader.Reset();
                         }
-                        CleanPrending(user);
+                        CleanPending(user);
                     }
                 }
             }

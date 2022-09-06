@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System.Collections;
 using umi3d.common;
@@ -43,7 +44,7 @@ namespace umi3d.cdk
         }
         private IEnumerator _InitPlayer(UMI3DAudioPlayerDto dto, GameObject gameObject)
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource = gameObject.GetOrAddComponent<AudioSource>();
             audioSource.playOnAwake = false;
             audioSource.pitch = dto.pitch;
             audioSource.volume = dto.volume;
