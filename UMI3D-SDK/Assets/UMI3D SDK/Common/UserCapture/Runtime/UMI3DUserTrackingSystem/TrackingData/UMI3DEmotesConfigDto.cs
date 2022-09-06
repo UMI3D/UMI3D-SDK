@@ -32,6 +32,11 @@ namespace umi3d.common.userCapture
         /// Should the emotes be available by default to users ? When set to true, all emotes are available at start, no matter the configuration
         /// </summary>
         public bool allAvailableByDefault = true;
+
+        /// <summary>
+        /// Default animation state name in the normal avatar animator.
+        /// </summary>
+        public string defaultStateName;
     }
 }
 

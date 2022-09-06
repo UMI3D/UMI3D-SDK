@@ -16,7 +16,7 @@ using UnityEngine;
 namespace umi3d.common.userCapture
 {
     /// <summary>
-    /// Emote data, including a reference to the icon resource, packaged in a dto
+    /// Emote data, including a reference to the icon resource, packaged in a DTO.
     /// </summary>
     /// An emote is a short animation that is played to convey a specific communication, often an emotion.
     /// Emotes are used on non-immersive devices to allow the user to communicate non-verbally.
@@ -24,18 +24,23 @@ namespace umi3d.common.userCapture
     public class UMI3DEmoteDto : AbstractEntityDto, IEntity
     {
         /// <summary>
-        /// Emote name
+        /// Emote label that is displayed to users.
         /// </summary>
-        public string name;
+        public string label;
 
         /// <summary>
-        /// Should the user be able to see and play the emote?
+        /// Emote state name on the Animator.
+        /// </summary>
+        public string stateName;
+
+        /// <summary>
+        /// If the user can see and play the emote
         /// </summary>
         public bool available;
+
         /// <summary>
         /// Icon ressource details
         /// </summary>
-        [Header("Icon")]
         public FileDto iconResource;
     }
 }
