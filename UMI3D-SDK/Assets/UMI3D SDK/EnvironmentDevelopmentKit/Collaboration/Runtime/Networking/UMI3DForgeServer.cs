@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using umi3d.cdk.collaboration;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.userCapture;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
 using umi3d.edk.volume;
@@ -339,6 +340,14 @@ namespace umi3d.edk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationServer.Collaboration.CollaborationRequest(user, id, container);
+                        });
+                        break;
+                    case UMI3DOperationKeys.EmoteRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            var emoteToTriggerId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            var trigger = UMI3DNetworkingHelper.Read<bool>(container);
+                            UMI3DEmbodimentManager.Instance.DispatchChangeEmoteReception(emoteToTriggerId, user, trigger);
                         });
                         break;
 

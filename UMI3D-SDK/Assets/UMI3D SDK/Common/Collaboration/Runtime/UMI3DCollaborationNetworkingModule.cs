@@ -187,7 +187,8 @@ namespace umi3d.common.collaboration
                             {
                                 var emote = new UMI3DEmoteDto();
                                 readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out emote.id);
-                                readable &= UMI3DNetworkingHelper.TryRead<string>(container, out emote.name);
+                                readable &= UMI3DNetworkingHelper.TryRead<string>(container, out emote.label);
+                                readable &= UMI3DNetworkingHelper.TryRead<string>(container, out emote.stateName);
                                 readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out emote.available);
                                 readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out emote.iconResource);
                                 if (!readable)
@@ -205,7 +206,8 @@ namespace umi3d.common.collaboration
                     result = default(T);
 
                     readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out e.id);
-                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.name);
+                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.label);
+                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.stateName);
                     readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out e.available);
                     readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out e.iconResource);
 
