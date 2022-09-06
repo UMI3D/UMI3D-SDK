@@ -80,6 +80,12 @@ namespace umi3d.cdk.interaction
                 case UMI3DPropertyKeys.InteractableHasPriority:
                     dto.hasPriority = (bool)property.value;
                     break;
+                case UMI3DPropertyKeys.InteractableHoverEnterAnimation:
+                    dto.HoverEnterAnimationId = (ulong)property.value;
+                    break;
+                case UMI3DPropertyKeys.InteractableHoverExitAnimation:
+                    dto.HoverExitAnimationId = (ulong)property.value;
+                    break;
                 default:
                     return false;
             }
