@@ -37,9 +37,10 @@ namespace umi3d.edk.userCapture
         private ulong id;
 
         /// <summary>
-        /// Default animation state name in the normal avatar animator.
+        /// Name of the default state in the avatar emote animator.
         /// </summary>
-        [Tooltip("Default state name in the avatar animator.")]
+        /// The one that is played when the user is not doing anything special.
+        [Tooltip("Name of the default state in the avatar emote animator. The one that is played when the user is not doing anything special.")]
         public string defaultStateName = "Idle";
 
         /// <summary>
