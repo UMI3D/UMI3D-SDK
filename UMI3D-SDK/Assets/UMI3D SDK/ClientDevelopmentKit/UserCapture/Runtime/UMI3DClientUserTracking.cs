@@ -167,12 +167,12 @@ namespace umi3d.cdk.userCapture
         {
             var otherUserAvatar = embodimentDict[userId];
             var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
-            var animator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
+            var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
 
-            if (animator == null || emoteConfig == null)
+            if (emoteAnimator == null || emoteConfig == null)
                 return;
             var emoteToPlay = emoteConfig.emotes.Find(x => x.id == emoteId);
-            StartCoroutine(PlayEmote(animator, emoteToPlay));
+            StartCoroutine(PlayEmote(emoteAnimator, emoteToPlay));
         }
 
         private const string IdleStateName = "Idle";
@@ -209,15 +209,15 @@ namespace umi3d.cdk.userCapture
         {
             var otherUserAvatar = embodimentDict[userId];
             var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
-            var animator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
+            var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
 
-            if (animator == null || emoteConfig == null)
+            if (emoteAnimator == null || emoteConfig == null)
                 return;
             var emoteToStop = emoteConfig.emotes.Find(x => x.id == emoteId);
-            StopCoroutine(PlayEmote(animator, emoteToStop));
-            animator.Play(IdleStateName);
-            animator.Update(0);
-            animator.enabled = false;
+            StopCoroutine(PlayEmote(emoteAnimator, emoteToStop));
+            emoteAnimator.Play(IdleStateName);
+            emoteAnimator.Update(0);
+            emoteAnimator.enabled = false;
         }
 
         public class AvatarEvent : UnityEvent<ulong> { };
