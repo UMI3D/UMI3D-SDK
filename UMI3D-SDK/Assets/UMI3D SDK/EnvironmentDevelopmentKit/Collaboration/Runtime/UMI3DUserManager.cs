@@ -336,10 +336,13 @@ namespace umi3d.edk.collaboration
         {
             yield return new WaitForFixedUpdate();
             int index = objectUserList.GetValue().IndexOf(user);
-            var operation = objectUserList.GetSetEntityOperationForUsers(index,(u) => u.hasJoined);
-            var tr = new Transaction() { reliable = true };
-            tr.AddIfNotNull(operation);
-            UMI3DServer.Dispatch(tr);
+            if (index > 0)
+            {
+                var operation = objectUserList.GetSetEntityOperationForUsers(index, (u) => u.hasJoined);
+                var tr = new Transaction() { reliable = true };
+                tr.AddIfNotNull(operation);
+                UMI3DServer.Dispatch(tr);
+            }
         }
 
 

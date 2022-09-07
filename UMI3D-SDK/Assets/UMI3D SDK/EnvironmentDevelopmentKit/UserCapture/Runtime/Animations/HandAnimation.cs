@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
@@ -23,27 +24,30 @@ namespace umi3d.edk.userCapture
     /// <summary>
     /// Hand pose animation component.
     /// </summary>
-    [RequireComponent(typeof(umi3d.edk.UMI3DNodeAnimation))]
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
         /// <summary>
         /// Animation associated with the hand pose.
         /// </summary>
-        private UMI3DNodeAnimation nodeAnimation;
+        [SerializeField, EditorReadOnly]
+        protected UMI3DNodeAnimation nodeAnimation;
         /// <summary>
         /// Should the pose be active?
         /// </summary>
-        private bool activePose = false;
+        [SerializeField, EditorReadOnly]
+        protected bool activePose = false;
         /// <summary>
         /// Should the animation be triggered on hover/pointing?
-        /// </summary>
-        private bool hoverPose = false;
+        /// </summary>*
+        [SerializeField, EditorReadOnly]
+        protected bool hoverPose = false;
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
-        private UMI3DHandPose handPose;
-      
+        [SerializeField, EditorReadOnly]
+        protected UMI3DHandPose handPose;
+
         /// <summary>
         /// Animation associated with the hand pose.
         /// </summary>
@@ -92,6 +96,9 @@ namespace umi3d.edk.userCapture
 
         private void Start()
         {
+            if (NodeAnimation == null)
+                NodeAnimation = GetComponent<UMI3DNodeAnimation>();
+
             if (NodeAnimation != null && HandPose != null)
             {
                 HandPose.HoverAnimation = HoverPose;

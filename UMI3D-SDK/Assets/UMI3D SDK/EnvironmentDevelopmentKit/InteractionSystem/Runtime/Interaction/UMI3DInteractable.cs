@@ -199,8 +199,8 @@ namespace umi3d.edk.interaction
             Idto.notifySubObject = objectNotifySubObject.GetValue(user);
             Idto.nodeId = objectNodeId.GetValue(user).Id();
             Idto.hasPriority = hasPriority.GetValue(user);
-            Idto.HoverEnterAnimationId = hoverEnterAnimation != null ? hoverEnterAnimation.GetValue(user).Id() : 0;
-            Idto.HoverExitAnimationId = hoverExitAnimation != null ? hoverExitAnimation.GetValue(user).Id() : 0;
+            Idto.HoverEnterAnimationId = hoverEnterAnimation.GetValue(user)?.Id() ?? 0;
+            Idto.HoverExitAnimationId = hoverExitAnimation.GetValue(user)?.Id() ?? 0;
         }
 
         /// <inheritdoc/>
