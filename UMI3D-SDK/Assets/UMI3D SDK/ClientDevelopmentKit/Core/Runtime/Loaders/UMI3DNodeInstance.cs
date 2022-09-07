@@ -62,6 +62,8 @@ namespace umi3d.cdk
             set => _colliders = value;
         }
 
+        public PrefabLightmapData prefabLightmapData;
+
         /// <summary>
         /// The list of Subnode instance when the model has tracked subMeshs. Empty if sub Models are not tracked.
         /// </summary>

@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 public class PrefabLightmapData : MonoBehaviour
 {
     [System.Serializable]
-    struct RendererInfo
+    public struct RendererInfo
     {
         public Renderer renderer;
         public int lightmapIndex;
@@ -39,7 +39,8 @@ public class PrefabLightmapData : MonoBehaviour
         Init();
     }
 
-    void Init()
+    [ContextMenu("Init Lightmap")]
+    public void Init()
     {
         if (m_RendererInfo == null || m_RendererInfo.Length == 0)
             return;
@@ -70,7 +71,7 @@ public class PrefabLightmapData : MonoBehaviour
                 {
                     lightmapColor = m_Lightmaps[i],
                     lightmapDir = m_LightmapsDir.Length == m_Lightmaps.Length ? m_LightmapsDir[i] : default(Texture2D),
-                    shadowMask = m_ShadowMasks.Length == m_Lightmaps.Length  ? m_ShadowMasks[i] : default(Texture2D),
+                    shadowMask = m_ShadowMasks.Length == m_Lightmaps.Length ? m_ShadowMasks[i] : default(Texture2D),
                 };
 
                 combinedLightmaps.Add(newlightmapdata);
@@ -87,9 +88,9 @@ public class PrefabLightmapData : MonoBehaviour
         lightmaps.CopyTo(combinedLightmaps2, 0);
         combinedLightmaps.ToArray().CopyTo(combinedLightmaps2, lightmaps.Length);
 
-        bool directional=true;
+        bool directional = true;
 
-        foreach(Texture2D t in m_LightmapsDir)
+        foreach (Texture2D t in m_LightmapsDir)
         {
             if (t == null)
             {
@@ -122,7 +123,10 @@ public class PrefabLightmapData : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-
+    public RendererInfo[] GetRenderersInfo()
+    {
+        return m_RendererInfo;
+    }
 
     static void ApplyRendererInfo(RendererInfo[] infos, int[] lightmapOffsetIndex, LightInfo[] lightsInfo)
     {
@@ -151,10 +155,7 @@ public class PrefabLightmapData : MonoBehaviour
             bakingOutput.mixedLightingMode = (MixedLightingMode)lightsInfo[i].mixedLightingMode;
 
             lightsInfo[i].light.bakingOutput = bakingOutput;
-
         }
-
-
     }
 
 #if UNITY_EDITOR
@@ -240,6 +241,9 @@ public class PrefabLightmapData : MonoBehaviour
 
                 if (renderer.lightmapScaleOffset != Vector4.zero)
                 {
+                    //1ibrium's pointed out this issue : https://docs.unity3d.com/ScriptReference/Renderer-lightmapIndex.html
+                    if (renderer.lightmapIndex < 0 || renderer.lightmapIndex == 0xFFFE) continue;
+
                     info.lightmapOffsetScale = renderer.lightmapScaleOffset;
 
                     Texture2D lightmap = LightmapSettings.lightmaps[renderer.lightmapIndex].lightmapColor;
