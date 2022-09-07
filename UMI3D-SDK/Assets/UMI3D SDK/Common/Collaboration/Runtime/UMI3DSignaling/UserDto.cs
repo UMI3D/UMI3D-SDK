@@ -42,6 +42,8 @@ namespace umi3d.common.collaboration
         public string audioLogin;
         public bool audioUseMumble;
 
+        public ulong onStartSpeakingAnimationId;
+        public ulong onStopSpeakingAnimationId;
 
         public UserDto(UserDto source)
         {

@@ -48,7 +48,30 @@ namespace umi3d.cdk.collaboration
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
             OnUpdateUserList?.Invoke();
+
+            AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
+
         }
+
+        void OnUserSpeaking(UMI3DUser user, bool isSpeaking)
+        {
+            if(isSpeaking)
+            {
+                if (user != null && user.onStartSpeakingAnimationId != 0)
+                    StartAnim(user.onStartSpeakingAnimationId);
+            }
+            else
+            {
+                if (user != null && user.onStopSpeakingAnimationId != 0)
+                    StartAnim(user.onStopSpeakingAnimationId);
+            }
+        }
+
+        private void StartAnim(ulong id)
+        {
+            UMI3DAbstractAnimation.Get(id)?.Start();
+        }
+
 
         ///<inheritdoc/>
         protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

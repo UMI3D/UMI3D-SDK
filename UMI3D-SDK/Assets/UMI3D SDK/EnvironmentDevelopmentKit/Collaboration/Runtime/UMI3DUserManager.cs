@@ -51,7 +51,7 @@ namespace umi3d.edk.collaboration
         {
             get
             {
-                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto() : (object)u);
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto(user) : (object)u);
                 return _objectUserList;
             }
         }
@@ -60,9 +60,9 @@ namespace umi3d.edk.collaboration
         /// get all userDto collection
         /// </summary>
         /// <returns></returns>
-        public List<UserDto> ToDto()
+        public List<UserDto> ToDto(UMI3DUser user)
         {
-            return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
+            return objectUserList.GetValue().Select(u => u.ToUserDto(user)).ToList();
         }
 
         public PlayerCountDto GetPlayerCount()
@@ -336,15 +336,7 @@ namespace umi3d.edk.collaboration
         {
             yield return new WaitForFixedUpdate();
             int index = objectUserList.GetValue().IndexOf(user);
-            var operation = new SetEntityListProperty()
-            {
-                users = new HashSet<UMI3DUser>() { },
-                entityId = UMI3DGlobalID.EnvironementId,
-                property = UMI3DPropertyKeys.UserList,
-                index = index,
-                value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
-            };
-            operation += UMI3DCollaborationServer.Collaboration.Users.Where((u) => u.hasJoined);
+            var operation = objectUserList.GetSetEntityOperationForUsers(index,(u) => u.hasJoined);
             var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(operation);
             UMI3DServer.Dispatch(tr);

@@ -54,12 +54,12 @@ namespace umi3d.edk.interaction
         /// Animation triggered when the interaction is triggered.
         /// </summary>
         [SerializeField, Tooltip("Client animation triggered when the interaction is triggerred by a user.")]
-        public UMI3DNodeAnimation TriggerAnimation;
+        public UMI3DAbstractAnimation TriggerAnimation;
         /// <summary>
         /// Animation triggered when the interaction is released.
         /// </summary>
         [SerializeField, Tooltip("Client animation triggered when is released by a user.")]
-        public UMI3DNodeAnimation ReleaseAnimation;
+        public UMI3DAbstractAnimation ReleaseAnimation;
 
         /// <summary>
         /// Called by a user on interaction.

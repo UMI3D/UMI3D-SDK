@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk
@@ -27,7 +28,7 @@ namespace umi3d.edk
     public abstract class UMI3DAsyncProperty
     {
         /// <summary>
-        /// Get a SetEntityOperation for this property for all users, regardless of async information.
+        /// Get a SetEntityOperation for this property for all users matching the async information.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForAllUsers();
 
@@ -37,7 +38,7 @@ namespace umi3d.edk
         public abstract SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user);
 
         /// <summary>
-        /// Get a SetEntityOperation for this property for users matching the given condition, regardless of async information.
+        /// Get a SetEntityOperation for this property for users matching the given condition and the async information.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition);
 
@@ -202,10 +203,7 @@ namespace umi3d.edk
 
             if (UMI3DEnvironment.Exists)
             {
-                if (isAsync || isDeSync)
-                    return GetSetEntityOperationForUsers(user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
-                else
-                    return GetSetEntityOperationForAllUsers();
+                return GetSetEntityOperationForAllUsers();
             }
 
             return null;
@@ -273,14 +271,22 @@ namespace umi3d.edk
         ///<inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition)
         {
+            bool IsUserAsync(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? IsUserAsync : condition;
+
             return new SetEntityProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(condition)),
+                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
                 entityId = entityId,
                 property = propertyId,
                 value = Serializer(value, null)
             };
         }
+
 
 
 
@@ -290,10 +296,10 @@ namespace umi3d.edk
             SetEntityProperty operation = null;
             if (isAsync || isDeSync)
             {
+                asyncValues.Clear();
+                UserDesync.Clear();
                 operation = GetSetEntityOperationForAllUsers();
             }
-            asyncValues.Clear();
-            UserDesync.Clear();
             return operation;
         }
 

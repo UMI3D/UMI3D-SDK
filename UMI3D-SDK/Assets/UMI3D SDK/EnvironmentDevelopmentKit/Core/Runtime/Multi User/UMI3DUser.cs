@@ -44,18 +44,11 @@ namespace umi3d.edk
         #endregion
 
         #region session
-        public bool hasImmersiveDevice;
+        public bool hasImmersiveDevice { get; protected set; } = true;
 
         public StatusType status { get; protected set; } = StatusType.CREATED;
 
         public bool hasJoined = false;
-
-        public virtual void OnJoin(bool hasImmersiveDevice/* TBD camera properties,  TBD First 6D pose*/)
-        {
-            this.hasImmersiveDevice = hasImmersiveDevice;
-            hasJoined = true;
-            SetStatus(StatusType.READY);
-        }
 
         public virtual void SetStatus(StatusType status)
         {

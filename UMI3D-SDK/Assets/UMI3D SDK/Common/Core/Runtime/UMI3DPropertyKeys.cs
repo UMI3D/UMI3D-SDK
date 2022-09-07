@@ -55,7 +55,8 @@ namespace umi3d.common
         public const uint UserAudioUseMumble = 2017;
         public const uint UserAudioPassword = 2018;
         public const uint UserAudioLogin = 2019;
-
+        public const uint UserOnStartSpeakingAnimationId = 2020;
+        public const uint UserOnStopSpeakingAnimationId = 2021;
 
 
         public const uint AmbientType = 2101;

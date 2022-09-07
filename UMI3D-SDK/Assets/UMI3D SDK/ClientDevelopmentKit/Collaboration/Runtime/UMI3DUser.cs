@@ -68,6 +68,9 @@ namespace umi3d.cdk.collaboration
         public string audioChannel => dto.audioChannel;
         public string audioServer => dto.audioServerUrl;
 
+        public ulong onStartSpeakingAnimationId => dto.onStartSpeakingAnimationId;
+        public ulong onStopSpeakingAnimationId => dto.onStopSpeakingAnimationId;
+
         public string login => dto?.login;
 
         public bool isClient => id == UMI3DCollaborationClientServer.Instance.GetUserId();
@@ -107,7 +110,6 @@ namespace umi3d.cdk.collaboration
 
             bool loginUpdate = dto.audioLogin != user.audioLogin;
             bool pswUpdate = false;
-
 
             dto = user;
 
