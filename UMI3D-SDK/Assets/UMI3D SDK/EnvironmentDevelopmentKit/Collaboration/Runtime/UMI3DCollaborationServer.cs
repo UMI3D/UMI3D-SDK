@@ -51,7 +51,28 @@ namespace umi3d.edk.collaboration
 
         private murmur.MumbleManager mumbleManager;
 
+        [Obsolete("Please use GetMumbleManager")]
         public static murmur.MumbleManager MumbleManager => Exists ? Instance.mumbleManager : null;
+
+        public static async Task<murmur.MumbleManager> GetMumbleManager()
+        {
+            if (Exists)
+            {
+                return await Instance._GetMumbleManager();
+            }
+            return null;
+        }
+
+        public async Task<murmur.MumbleManager> _GetMumbleManager()
+        {
+            if (Exists && string.IsNullOrEmpty(mumbleIp))
+            {
+                while (mumbleManager == null)
+                    await UMI3DAsyncManager.Yield();
+                return mumbleManager;
+            }
+            return null;
+        }
 
         public float tokenLifeTime = 10f;
 
@@ -266,6 +287,7 @@ namespace umi3d.edk.collaboration
 
         private async void AddUserAudio(UMI3DCollaborationUser user)
         {
+            var mumbleManager = await GetMumbleManager();
             if (mumbleManager == null)
                 return;
             List<Operation> op = await mumbleManager.AddUser(user);
@@ -355,7 +377,7 @@ namespace umi3d.edk.collaboration
                 mumbleManager.Delete();
         }
 
-        private void Clear()
+        private async void Clear()
         {
             http?.Stop();
             forgeServer?.Stop();
@@ -364,6 +386,7 @@ namespace umi3d.edk.collaboration
                 isRunning = false;
                 OnServerStop.Invoke();
             }
+            var mumbleManager = await GetMumbleManager();
             if (mumbleManager != null)
                 mumbleManager.Delete();
         }
