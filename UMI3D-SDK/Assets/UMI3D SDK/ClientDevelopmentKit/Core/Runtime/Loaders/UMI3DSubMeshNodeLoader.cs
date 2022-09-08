@@ -127,7 +127,12 @@ namespace umi3d.cdk
         protected void UpdateLightmapReferences(ulong rooId, Renderer[] renderers, GameObject o)
         {
             var lightmapData = UMI3DEnvironmentLoader.GetNode(rooId)?.prefabLightmapData;
-            var renderersInfo = lightmapData?.GetRenderersInfo();
+
+            if (lightmapData == null)
+                return;
+
+            var renderersInfo = lightmapData.GetRenderersInfo();
+
             for (int i = 0; i < renderersInfo.Length; i++)
             {
                 if (renderersInfo[i].renderer.gameObject == o)
