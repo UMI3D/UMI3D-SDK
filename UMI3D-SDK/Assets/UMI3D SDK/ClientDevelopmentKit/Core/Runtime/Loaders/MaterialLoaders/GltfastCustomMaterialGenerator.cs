@@ -196,7 +196,7 @@ namespace umi3d.cdk
                 material.SetTextureScale(propertyId, scale);
             }
             else
-                UMI3DLogger.LogWarning("Impossible to applay texture offset and scales because " + material.shader.name + " has no properpy with id : " + propertyId, scope);
+                UMI3DLogger.LogWarning("Impossible to applay texture offset and scale because " + material.shader.name + " has no properpy with id : " + propertyId, scope);
         }
 
         ///<inheritdoc/>
