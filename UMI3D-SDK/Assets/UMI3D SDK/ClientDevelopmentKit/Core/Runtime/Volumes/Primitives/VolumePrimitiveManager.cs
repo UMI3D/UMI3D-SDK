@@ -133,13 +133,13 @@ namespace umi3d.cdk.volumes
             Gizmos.color = Color.red;
             foreach (Box box in GetPrimitives().Where(p => p is Box))
             {
-                Gizmos.matrix = box.rootNode.localToWorldMatrix;
+                Gizmos.matrix = box.rootNode?.localToWorldMatrix ?? Matrix4x4.identity;
                 Gizmos.DrawWireCube(box.bounds.center, box.bounds.size);
             }
 
             foreach (Cylinder cyl in GetPrimitives().Where(c => c is Cylinder))
             {
-                Gizmos.matrix = cyl.rootNode.localToWorldMatrix;
+                Gizmos.matrix = cyl.rootNode?.localToWorldMatrix ?? Matrix4x4.identity;
                 Gizmos.DrawWireMesh(GeometryTools.GetCylinder(Vector3.zero, Quaternion.identity, Vector3.one, cyl.radius, cyl.height));
             }
         }

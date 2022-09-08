@@ -87,7 +87,7 @@ namespace umi3d.cdk.volumes
 
                 UMI3DNodeInstance root = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId);
 
-                if (root != null)
+                if (root == null)
                     UMI3DLogger.LogError("Root node of a Volume must not be null : node with id " + dto.rootNodeId + " not found.", DebugScope.CDK);
                 
                 Matrix4x4 m = root?.transform.localToWorldMatrix ?? Matrix4x4.identity;
