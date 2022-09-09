@@ -522,9 +522,10 @@ namespace umi3d.edk.collaboration.murmur
 
             public async Task<User> AddUser(string name, string password)
             {
-                string info = await murmur.AddUser(data.id, name, password);
                 try
                 {
+                    string info = await murmur.AddUser(data.id, name, password);
+
                     NewUserData dt = Convert<NewUserData>(info);
                     var r = new User(dt.user_id.ToString(), dt.username);
                     RegisteredUsers.Add(r);
@@ -538,12 +539,19 @@ namespace umi3d.edk.collaboration.murmur
 
             public async Task<bool> RemoveUser(int user)
             {
-                if (user == 0) return false;
-                User r = RegisteredUsers.FirstOrDefault(u => u.id == user);
-                if (r != null)
-                    RegisteredUsers.Remove(r);
-                string info = await murmur.DeleteUser(data.id, user);
-                return info == null;
+                try
+                {
+                    if (user == 0) return false;
+                    User r = RegisteredUsers.FirstOrDefault(u => u.id == user);
+                    if (r != null)
+                        RegisteredUsers.Remove(r);
+                    string info = await murmur.DeleteUser(data.id, user);
+                    return info == null;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
     }
