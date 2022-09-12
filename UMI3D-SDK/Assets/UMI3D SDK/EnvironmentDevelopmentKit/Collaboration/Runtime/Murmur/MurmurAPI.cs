@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -26,6 +27,7 @@ namespace umi3d.edk.collaboration.murmur
 {
     public class MurmurAPI
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Mumble;
         private string url = "";
 
         public MurmurAPI(string url)
@@ -377,14 +379,14 @@ namespace umi3d.edk.collaboration.murmur
                 string info = await murmur.GetServerInfo(id);
                 data = Convert<ServerData>(info);
 
-                Debug.Log(info);
+                UMI3DLogger.Log(info, scope);
 
                 Channels.Where(c => !data.sub_channels.Any(d => d.c.id == c.data.id)).ForEach(c => Channels.Remove(c));
 
                 IEnumerable<SubChannelData> toAdd = data.sub_channels.Where(d => !Channels.Any(c => d.c.id == c.data.id));
 
                 if (toAdd.Count() > 0)
-                    Channels.AddRange(toAdd.Select(d => Channel.Create(murmur, this, d.c)));
+                    toAdd.ForEach(d => Channel.Create(murmur, this, d.c));
 
                 RegisteredUsers.Clear();
                 if (data.registered_users != null)

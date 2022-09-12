@@ -130,8 +130,6 @@ namespace Mumble
 
             if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
             {
-                _audioSource.Stop();
-                _isPlaying = false;
                 return;
             }
             //Debug.Log("Filter read for: " + GetUsername());

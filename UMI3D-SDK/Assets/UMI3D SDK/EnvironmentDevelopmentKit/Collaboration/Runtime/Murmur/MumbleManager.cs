@@ -15,55 +15,291 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using umi3d.common;
 
 namespace umi3d.edk.collaboration.murmur
 {
     public class MumbleManager
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Mumble;
+
         public readonly string ip;
         private MurmurAPI m;
         private MurmurAPI.Server serv;
-        private int lastRoomguid = 0;
-        private int defaultRoom;
-        private List<int> localRoom;
-        private List<int> users;
         private readonly string guid;
+        private Regex roomRegex;
+        private Regex userRegex;
 
-        public static async Task<MumbleManager> Create(string ip)
+        int localRoomIndex = 0;
+
+        class Room
+        {
+            public int roomId;
+            public int id;
+            public string name;
+
+            public Room(int roomId, int id, string name) : this(roomId, name)
+            {
+                this.id = id;
+            }
+
+            public Room(int roomId, string name)
+            {
+                this.roomId = roomId;
+                this.name = name;
+            }
+        }
+        class User
+        {
+            public int id;
+            public string userId;
+            public string login;
+            public string password;
+
+            public User(int id, string userId, string login, string password) : this(id, userId, login)
+            {
+                this.password = password;
+            }
+
+            public User(int id, string userId, string login) : this(userId, login)
+            {
+                this.id = id;
+            }
+
+            public User(string userId, string login)
+            {
+
+                this.login = login;
+                this.userId = userId;
+            }
+        }
+
+        List<Room> roomList;
+        Room defaultRoom;
+        List<User> userList;
+
+        bool refreshing = false;
+
+        public static MumbleManager Create(string ip, string guid = null)
         {
             if (string.IsNullOrEmpty(ip))
                 return null;
-            var mm = new MumbleManager(ip);
-            mm.serv = await MurmurAPI.Server.Create(mm.m, 1);
-            mm.localRoom = new List<int>();
-            mm.users = new List<int>();
-            mm.defaultRoom = await mm.CreateRoom();
+            if (string.IsNullOrEmpty(guid))
+                guid = System.Guid.NewGuid().ToString();
+
+            var mm = new MumbleManager(ip, guid);
+            mm._Create();
+
             QuittingManager.OnApplicationIsQuitting.AddListener(mm.Delete);
             return mm;
         }
 
-        private MumbleManager(string ip)
+        async void _Create()
         {
-            guid = System.Guid.NewGuid().ToString();
+            defaultRoom = await _CreateRoom();
+        }
+
+        public async void RefreshAsync()
+        {
+            if (!refreshing)
+                await Refresh();
+        }
+
+        private MumbleManager(string ip, string guid = null)
+        {
+            this.guid = guid;
             this.ip = ip;
             string[] s = ip.Split(':');
             m = new MurmurAPI(s[0]);
+            roomList = new List<Room>();
+            userList = new List<User>();
+            roomRegex = new Regex(@"Room([0 - 9] *)_\[" + guid + @"\]");
+            userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
+        }
+
+        private string GenerateUserName(string userID)
+        {
+            return @"User" + userID + @"_[" + guid + @"]";
+        }
+        private string GenerateRoomName(int i)
+        {
+            return @"Room" + i.ToString() + @"_[" + guid + @"]";
         }
 
         public async Task Refresh()
         {
-            await serv.Refresh();
+            if (refreshing)
+            {
+                while (refreshing)
+                    await UMI3DAsyncManager.Yield();
+                return;
+            }
+
+            refreshing = true;
+            await ForceRefresh();
+            refreshing = false;
+        }
+
+        private async Task ForceRefresh()
+        {
+            try
+            {
+                if (serv == null)
+                    serv = await MurmurAPI.Server.Create(m, 1);
+                else
+                    await serv.Refresh();
+                await CheckRoom();
+                await CheckUser();
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogError($"Error in mumble server refreshing [will try again in 1min] {e.Message} \n {e.StackTrace}", scope);
+                await UMI3DAsyncManager.Delay(60000);
+                await ForceRefresh();
+            }
+        }
+
+        private async Task CheckUser()
+        {
+            List<User> toAdd = new List<User>(this.userList);
+            List<User> toDelete = new List<User>();
+
+            foreach (var user in serv.RegisteredUsers)
+            {
+                var match = userRegex.Match(user.name);
+                if (match.Success)
+                {
+
+                    var lr = toAdd.FirstOrDefault(r => r.login == user.name);
+                    if (lr != null)
+                    {
+                        toAdd.Remove(lr);
+                        lr.id = user.id;
+                    }
+                    else
+                    {
+                        var id = match.Groups[1].Captures[0].Value;
+                        toDelete.Add(new User(user.id, id, user.name));
+                    }
+                }
+            }
+            foreach (var user in toAdd)
+                await CreateUser(user);
+            foreach (var user in toDelete)
+                await DeleteUser(user);
+        }
+
+        private async Task CheckRoom()
+        {
+            List<Room> toAdd = new List<Room>(this.roomList);
+            List<Room> toDelete = new List<Room>();
+
+            foreach (var room in serv.Channels)
+            {
+                UnityEngine.Debug.Log(room.data.name);
+                var match = roomRegex.Match(room.data.name);
+                if (match.Success)
+                {
+
+                    var lr = toAdd.FirstOrDefault(r => r.name == room.data.name);
+                    if (lr != null)
+                    {
+                        toAdd.Remove(lr);
+                        lr.id = room.data.id;
+                    }
+                    else
+                    {
+                        var id = int.Parse(match.Groups[1].Captures[0].Value);
+                        toDelete.Add(new Room(id, room.data.id, room.data.name));
+                    }
+                }
+            }
+
+            foreach (var room in toAdd)
+                await CreateRoom(room);
+            foreach (var room in toDelete)
+                await DeleteRoom(room);
+        }
+
+        private async Task CreateRoom(Room room)
+        {
+            try
+            {
+                MurmurAPI.Server.Channel c = await serv.CreateChannel(room.name);
+                room.id = (c.data.id);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogError($"Error in mumble create room {e.Message} \n {e.StackTrace}", scope);
+                await UMI3DAsyncManager.Delay(500);
+                RefreshAsync();
+            }
+        }
+
+        private async Task DeleteRoom(Room room)
+        {
+            try
+            {
+                await (serv.Channels.FirstOrDefault(c => c.data.id == room.id)?.DeleteChannel() ?? Task.CompletedTask);
+            }
+
+            catch (Exception e)
+            {
+                UMI3DLogger.LogError($"Error in mumble delete room {e.Message} \n {e.StackTrace}", scope);
+                await UMI3DAsyncManager.Delay(500);
+                RefreshAsync();
+            }
+        }
+
+        private async Task CreateUser(User user)
+        {
+            try
+            {
+                MurmurAPI.Server.User c = await serv.AddUser(user.login, user.password);
+                user.id = (c.id);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogError($"Error in mumble create user {e.Message} \n {e.StackTrace}", scope);
+                await UMI3DAsyncManager.Delay(500);
+                RefreshAsync();
+            }
+        }
+
+        private async Task DeleteUser(User user)
+        {
+            try
+            {
+                await serv.RemoveUser(user.id);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogError($"Error in mumble delete user {e.Message} \n {e.StackTrace}", scope);
+                await UMI3DAsyncManager.Delay(500);
+                RefreshAsync();
+            }
+        }
+
+
+        private async Task<Room> _CreateRoom()
+        {
+            var roomId = localRoomIndex++;
+            var name = GenerateRoomName(roomId);
+            var room = new Room(roomId, name);
+            roomList.Add(room);
+            await CreateRoom(room);
+            return room;
         }
 
         public async Task<int> CreateRoom()
         {
-            string roomName = $"Room_{lastRoomguid++}[{guid}]";
-            MurmurAPI.Server.Channel c = await serv.CreateChannel(roomName);
-            localRoom.Add(c.data.id);
-            return c.data.id;
+            var room = await _CreateRoom();
+            return room.roomId;
         }
 
         public async Task<List<int>> CreateRoom(int count)
@@ -78,63 +314,39 @@ namespace umi3d.edk.collaboration.murmur
 
         public List<int> GetRooms()
         {
-            return serv.Channels.Select(c => c.data.id).Where(c => localRoom.Contains(c)).ToList();
+            return roomList.Select(r => r.roomId).ToList();
         }
-        public async Task DeleteRoom(int room)
+        public async Task DeleteRoom(int roomId)
         {
-            await DeleteRoom(room, false);
-        }
-
-        private async Task DeleteRoom(int room, bool local)
-        {
-            try
+            var room = roomList.FirstOrDefault(r => r.roomId == roomId);
+            if (room != null)
             {
-                if (!local && room == defaultRoom) return;
-                localRoom.Remove(room);
-                await (serv.Channels.FirstOrDefault(c => c.data.id == room)?.DeleteChannel() ?? Task.CompletedTask);
+                roomList.Remove(room);
+                await DeleteRoom(room);
             }
-            catch { };
         }
 
         public async Task DeleteRoom(List<int> rooms)
         {
-            await Task.WhenAll(rooms.Select(async roomName => await DeleteRoom(roomName)));
+            foreach (var room in rooms)
+                await DeleteRoom(room);
         }
 
         public async Task<List<Operation>> AddUser(UMI3DCollaborationUser user, int room = -1)
         {
-            if (room == -1)
-                room = defaultRoom;
+            var userId = System.Guid.NewGuid().ToString();
+            var _user = new User(userId, GenerateUserName(userId));
+            _user.password = System.Guid.NewGuid().ToString();
+            userList.Add(_user);
+            await CreateUser(_user);
+
             var ops = new List<Operation>();
 
-            ops.Add(ToPrivate(user, user.audioLogin.SetValue(user.guid)));
-            ops.Add(ToPrivate(user, user.audioPassword.SetValue(System.Guid.NewGuid().ToString())));
+            ops.Add(user.audioLogin.SetValue(_user.login));
+            ops.Add(ToPrivate(user, user.audioPassword.SetValue(_user.password)));
             ops.Add(user.audioServerUrl.SetValue(ip));
             ops.Add(user.audioUseMumble.SetValue(true));
-            string ch = serv.Channels.FirstOrDefault(c => c.data.id == room)?.data.name;
-            ops.Add(user.audioChannel.SetValue(ch));
-
-            MurmurAPI.Server.User u = await serv.AddUser(user.audioLogin.GetValue(), user.audioPassword.GetValue());
-            users.Add(u.id);
-
-            return ops;
-        }
-
-        public async Task<List<Operation>> RemoveUser(UMI3DCollaborationUser user)
-        {
-            var ops = new List<Operation>();
-            MurmurAPI.Server.User u = serv.RegisteredUsers.FirstOrDefault(us => us.name == user.audioLogin.GetValue());
-            if (u != null)
-            {
-                users.Remove(u.id);
-                await serv.RemoveUser(u.id);
-            }
-
-            ops.Add(user.audioLogin.SetValue(""));
-            ops.Add(ToPrivate(user, user.audioPassword.SetValue("")));
-            ops.Add(user.audioUseMumble.SetValue(false));
-            ops.Add(user.audioServerUrl.SetValue(""));
-            ops.Add(user.audioChannel.SetValue(""));
+            ops.AddRange(SwitchUserRoom(user, room));
 
             return ops;
         }
@@ -147,27 +359,53 @@ namespace umi3d.edk.collaboration.murmur
             return op;
         }
 
-
-        public List<Operation> SwitchUserRoom(UMI3DCollaborationUser user, int room = -1)
+        public async Task<List<Operation>> RemoveUser(UMI3DCollaborationUser user)
         {
-            if (room == -1)
-                room = defaultRoom;
             var ops = new List<Operation>();
+            var _user = userList.FirstOrDefault(us => us.login == user.audioLogin.GetValue());
+            if (_user != null)
+            {
+                userList.Remove(_user);
+                await DeleteUser(_user);
+            }
 
-            ops.Add(user.audioUseMumble.SetValue(true));
-            ops.Add(user.audioServerUrl.SetValue(ip));
-            string ch = serv.Channels.FirstOrDefault(c => c.data.id == room)?.data.name;
-            ops.Add(user.audioChannel.SetValue(ch));
+            ops.Add(user.audioLogin.SetValue(""));
+            ops.Add(ToPrivate(user, user.audioPassword.SetValue("")));
+            ops.Add(user.audioUseMumble.SetValue(false));
+            ops.Add(user.audioServerUrl.SetValue(""));
+            ops.Add(user.audioChannel.SetValue(""));
 
             return ops;
         }
 
 
+        public List<Operation> SwitchUserRoom(UMI3DCollaborationUser user, int room = -1)
+        {
+            var ops = new List<Operation>();
+            if (room == -1 || !roomList.Any(r => r.roomId == room))
+                room = defaultRoom.id;
+
+            ops.Add(user.audioUseMumble.SetValue(true));
+            ops.Add(user.audioServerUrl.SetValue(ip));
+            string ch = roomList.FirstOrDefault(c => c.roomId == room)?.name;
+            ops.Add(user.audioChannel.SetValue(ch));
+
+            return ops;
+        }
+
         public async void Delete()
         {
-            QuittingManager.OnApplicationIsQuitting.RemoveListener(Delete);
-            await Task.WhenAll(localRoom.ToList().Select(async (room) => { try { await DeleteRoom(room, true); } catch { } }));
-            await Task.WhenAll(users.ToList().Select(async (user) => { try { await serv.RemoveUser(user); } catch { } }));
+            foreach (var room in roomList)
+            {
+                await DeleteRoom(room);
+            }
+            foreach (var user in userList)
+            {
+                await DeleteUser(user);
+            }
+            roomList.Clear();
+            userList.Clear();
+
         }
     }
 }

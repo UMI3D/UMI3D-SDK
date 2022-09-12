@@ -53,6 +53,7 @@ namespace umi3d.common
         User = 1 << 12,
 
         Connection = 1 << 13,
+        Mumble = 1 << 14,
 
         Editor = 1 << 29,
         Other = 1 << 28
