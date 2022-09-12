@@ -550,6 +550,7 @@ namespace umi3d.cdk.collaboration
         }
         private void DestroyMumbleAudioPlayer(uint session, MumbleAudioPlayer playerToDestroy)
         {
+            playerToDestroy?.Reset();
             //UnityEngine.GameObject.Destroy(playerToDestroy.gameObject);
         }
         #endregion
