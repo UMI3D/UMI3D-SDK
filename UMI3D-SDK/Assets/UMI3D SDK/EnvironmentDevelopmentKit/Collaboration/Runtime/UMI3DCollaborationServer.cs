@@ -465,11 +465,11 @@ namespace umi3d.edk.collaboration
             OnUserUnregistered.Invoke(user);
         }
 
-        private async void RemoveUserAudio(UMI3DCollaborationUser user)
+        private void RemoveUserAudio(UMI3DCollaborationUser user)
         {
             if (mumbleManager == null)
                 return;
-            List<Operation> op = await mumbleManager.RemoveUser(user);
+            List<Operation> op = mumbleManager.RemoveUser(user);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();

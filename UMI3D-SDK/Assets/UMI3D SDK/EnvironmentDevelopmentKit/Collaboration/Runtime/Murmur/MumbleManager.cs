@@ -99,6 +99,7 @@ namespace umi3d.edk.collaboration.murmur
             return mm;
         }
 
+
         async Task WaitWhileRefreshing()
         {
             while (refreshing)
@@ -160,8 +161,8 @@ namespace umi3d.edk.collaboration.murmur
                     serv = await MurmurAPI.Server.Create(m, 1);
                 else
                     await serv.Refresh();
-                await CheckRoom();
-                await CheckUser();
+                CheckRoom();
+                CheckUser();
             }
             catch (Exception e)
             {
@@ -171,7 +172,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async Task CheckUser()
+        private void CheckUser()
         {
             List<User> toAdd = new List<User>(this.userList);
             List<User> toDelete = new List<User>();
@@ -196,12 +197,12 @@ namespace umi3d.edk.collaboration.murmur
                 }
             }
             foreach (var user in toAdd)
-                await CreateUser(user);
+                CreateUser(user);
             foreach (var user in toDelete)
-                await DeleteUser(user);
+                DeleteUser(user);
         }
 
-        private async Task CheckRoom()
+        private void CheckRoom()
         {
             List<Room> toAdd = new List<Room>(this.roomList);
             List<Room> toDelete = new List<Room>();
@@ -227,12 +228,12 @@ namespace umi3d.edk.collaboration.murmur
             }
 
             foreach (var room in toAdd)
-                await CreateRoom(room);
+                CreateRoom(room);
             foreach (var room in toDelete)
-                await DeleteRoom(room);
+                DeleteRoom(room);
         }
 
-        private async Task CreateRoom(Room room)
+        private async void CreateRoom(Room room)
         {
             await WaitWhileRefreshing();
             try
@@ -248,7 +249,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async Task DeleteRoom(Room room)
+        private async void DeleteRoom(Room room)
         {
             await WaitWhileRefreshing();
             try
@@ -264,7 +265,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async Task CreateUser(User user)
+        private async void CreateUser(User user)
         {
             await WaitWhileRefreshing();
             try
@@ -280,7 +281,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async Task DeleteUser(User user)
+        private async void DeleteUser(User user)
         {
             await WaitWhileRefreshing();
             try
@@ -302,7 +303,7 @@ namespace umi3d.edk.collaboration.murmur
             var name = GenerateRoomName(roomId);
             var room = new Room(roomId, name);
             roomList.Add(room);
-            await CreateRoom(room);
+            CreateRoom(room);
             return room;
         }
 
@@ -332,7 +333,7 @@ namespace umi3d.edk.collaboration.murmur
             if (room != null)
             {
                 roomList.Remove(room);
-                await DeleteRoom(room);
+                DeleteRoom(room);
             }
         }
 
@@ -349,7 +350,7 @@ namespace umi3d.edk.collaboration.murmur
             _user.password = System.Guid.NewGuid().ToString();
             userList.Add(_user);
 
-            await CreateUser(_user);
+            CreateUser(_user);
             var ops = new List<Operation>();
 
             ops.Add(user.audioLogin.SetValue(_user.login));
@@ -369,14 +370,14 @@ namespace umi3d.edk.collaboration.murmur
             return op;
         }
 
-        public async Task<List<Operation>> RemoveUser(UMI3DCollaborationUser user)
+        public List<Operation> RemoveUser(UMI3DCollaborationUser user)
         {
             var ops = new List<Operation>();
             var _user = userList.FirstOrDefault(us => us.login == user.audioLogin.GetValue());
             if (_user != null)
             {
                 userList.Remove(_user);
-                await DeleteUser(_user);
+                DeleteUser(_user);
             }
 
             ops.Add(user.audioLogin.SetValue(""));
@@ -401,15 +402,15 @@ namespace umi3d.edk.collaboration.murmur
             return ops;
         }
 
-        public async void Delete()
+        public void Delete()
         {
             foreach (var room in roomList)
             {
-                await DeleteRoom(room);
+                DeleteRoom(room);
             }
             foreach (var user in userList)
             {
-                await DeleteUser(user);
+                DeleteUser(user);
             }
             roomList.Clear();
             userList.Clear();

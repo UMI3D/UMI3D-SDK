@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking.Unity;
 using inetum.unityUtils;
 using Mumble;
 using System;
@@ -205,12 +206,37 @@ namespace umi3d.cdk.collaboration
 
         public async Task StopMicrophone()
         {
-            if (await IsPLaying() && mumbleClient != null)
+            await ForceStopMicrophone(false);
+        }
+
+        private async Task ForceStopMicrophone(bool force = false)
+        {
+            if (force || await IsPLaying())
             {
-                mumbleMic.OnMicDisconnect -= OnMicDisconnected;
-                mumbleMic.StopSendingAudio();
-                mumbleClient.Close();
+                try
+                {
+                    if (mumbleMic != null)
+                    {
+                        mumbleMic.OnMicDisconnect -= OnMicDisconnected;
+                        MainThreadManager.Run(
+                            mumbleMic.StopSendingAudio);
+                    }
+                    if (mumbleClient != null)
+                    {
+                        mumbleClient.ConnectionError.RemoveListener(Failed);
+                        mumbleClient.connectionFailed.RemoveListener(Failed);
+                        mumbleClient.OnDisconnected -= OnDisconected;
+
+                        mumbleClient.Close();
+                    }
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
             }
+            mumbleClient = null;
+            playingInit = false;
             playing = false;
         }
 
@@ -288,12 +314,15 @@ namespace umi3d.cdk.collaboration
                         mumbleClient = new MumbleClient(hostName, port, CreateMumbleAudioPlayerFromPrefab,
                             DestroyMumbleAudioPlayer, OnOtherUserStateChange, connectAsyncronously,
                             SpeakerCreationMode.ALL, debuggingVariables, posLength);
+                        mumbleClient.ConnectionError.AddListener(Failed);
 
                         if (connectAsyncronously)
                             while (!mumbleClient.ReadyToConnect)
                                 await UMI3DAsyncManager.Yield();
 
                         mumbleClient.Connect(username, password);
+                        mumbleClient.connectionFailed.AddListener(Failed);
+                        mumbleClient.OnDisconnected += OnDisconected;
 
                         if (connectAsyncronously)
                             await UMI3DAsyncManager.Yield();
@@ -306,8 +335,8 @@ namespace umi3d.cdk.collaboration
                             mumbleClient.AddMumbleMic(mumbleMic);
                             _pendingMic = null;
                             mumbleClient.SetSelfMute(isMute);
-                            //if (sendPosition)
-                            //    mumbleMic.SetPositionalDataFunction(WritePositionalData);
+                            if (sendPosition)
+                                mumbleMic.SetPositionalDataFunction(WritePositionalData);
                             mumbleMic.OnMicDisconnect += OnMicDisconnected;
 
                             await JoinChannel();
@@ -325,19 +354,34 @@ namespace umi3d.cdk.collaboration
             }
             catch
             {
-                mumbleClient = null;
+                await ForceStopMicrophone(true);
             }
             playing = false;
         }
 
+        async void Failed(Exception e)
+        {
+            await ForceStopMicrophone(true);
+        }
+
+        async void OnDisconected()
+        {
+            await ForceStopMicrophone(true);
+        }
+
+        async void Failed()
+        {
+            await ForceStopMicrophone(true);
+        }
+
         private async Task JoinChannel(int trycount = 0)
         {
-            if (trycount < 3 && !string.IsNullOrEmpty(channelToJoin))
+            if (trycount < 5 && !string.IsNullOrEmpty(channelToJoin))
             {
-                await UMI3DAsyncManager.Delay(5000);
-                if (!mumbleClient.JoinChannel(channelToJoin))
+                await UMI3DAsyncManager.Delay(1000);
+                if (mumbleClient != null && !mumbleClient.JoinChannel(channelToJoin))
                 {
-                    await JoinChannel(trycount++);
+                    await JoinChannel(trycount + 1);
                 }
             }
         }
