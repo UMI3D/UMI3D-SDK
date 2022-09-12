@@ -117,6 +117,9 @@ namespace umi3d.cdk.collaboration
         #endregion
         #region private field
 
+        private bool running = false;
+        private int millisecondsHeartBeat = 3000;
+
         private string _pendingMic = null;
         private MumbleClient mumbleClient;
         private MumbleMicrophone mumbleMic;
@@ -171,6 +174,8 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(Reset);
 
             pushToTalkKeycode = KeyCode.M;
+
+            Heartbeat();
         }
 
         private void _OnApplicationQuit()
@@ -181,6 +186,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.RemoveListener(UseMumbleUpdate);
             UMI3DCollaborationClientServer.Instance.OnRedirection.RemoveListener(Reset);
+            running = false;
         }
         #endregion
 
@@ -279,6 +285,17 @@ namespace umi3d.cdk.collaboration
                     channelToJoin = user.audioChannel;
                     useMumble = user.useMumble;
                 }
+            }
+        }
+
+        private async void Heartbeat()
+        {
+            running = true;
+            while (running)
+            {
+                await UMI3DAsyncManager.Delay(millisecondsHeartBeat);
+                if (mumbleClient == null)
+                    StartMicrophoneAsync();
             }
         }
 

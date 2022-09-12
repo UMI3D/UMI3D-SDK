@@ -84,6 +84,9 @@ namespace umi3d.edk.collaboration.murmur
         List<User> userList;
 
         bool refreshing = false;
+        bool running = false;
+        float RefreshTime = 0;
+        const float MaxRefreshTimeSecond = 30f;
 
         public static MumbleManager Create(string ip, string guid = null)
         {
@@ -94,9 +97,21 @@ namespace umi3d.edk.collaboration.murmur
 
             var mm = new MumbleManager(ip, guid);
             mm._Create();
-
+            mm.HeartBeat();
             QuittingManager.OnApplicationIsQuitting.AddListener(mm.Delete);
             return mm;
+        }
+
+        async void HeartBeat()
+        {
+            running = true;
+            while (running)
+            {
+                await UMI3DAsyncManager.Yield();
+                if (RefreshTime - UnityEngine.Time.time < 0)
+                    continue;
+                await Refresh();
+            }
         }
 
 
@@ -150,6 +165,7 @@ namespace umi3d.edk.collaboration.murmur
 
             refreshing = true;
             await ForceRefresh();
+            RefreshTime = UnityEngine.Time.time + MaxRefreshTimeSecond;
             refreshing = false;
         }
 
@@ -404,6 +420,7 @@ namespace umi3d.edk.collaboration.murmur
 
         public void Delete()
         {
+            running = false;
             foreach (var room in roomList)
             {
                 DeleteRoom(room);
