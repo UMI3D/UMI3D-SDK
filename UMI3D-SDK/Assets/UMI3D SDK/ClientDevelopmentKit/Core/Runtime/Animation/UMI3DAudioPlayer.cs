@@ -301,7 +301,7 @@ namespace umi3d.cdk
             {
                 ulong now = UMI3DClientServer.Instance.GetTime();
                 Start(now - dto.startTime);
-            }
+            } 
         }
     }
 }

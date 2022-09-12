@@ -46,6 +46,8 @@ namespace umi3d.cdk.collaboration
         #region public field
 
         public static MicrophoneEvent OnSaturated = new MicrophoneEvent();
+        public static MicrophoneEvent OnConnectedToMumble = new MicrophoneEvent();
+        public bool ConnectedToMumble { get; private set; } = false;
 
         private bool micIsOn => mumbleMic?.isRecording ?? false;
 
@@ -241,6 +243,7 @@ namespace umi3d.cdk.collaboration
                     UnityEngine.Debug.LogException(e);
                 }
             }
+            SendConnectedToMumble(false);
             mumbleClient = null;
             playingInit = false;
             playing = false;
@@ -271,6 +274,22 @@ namespace umi3d.cdk.collaboration
         }
 
         #region private method
+
+        void SendConnectedToMumble(bool state)
+        {
+            if (state != ConnectedToMumble)
+            {
+                ConnectedToMumble = state;
+                try
+                {
+                    OnConnectedToMumble.Invoke(ConnectedToMumble);
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogError(e);
+                }
+            }
+        }
 
         void UpdateUser()
         {
@@ -363,6 +382,8 @@ namespace umi3d.cdk.collaboration
                                 mumbleMic.StartSendingAudio();
 
                             playing = true;
+
+                            SendConnectedToMumble(true);
 
                             return;
                         }
