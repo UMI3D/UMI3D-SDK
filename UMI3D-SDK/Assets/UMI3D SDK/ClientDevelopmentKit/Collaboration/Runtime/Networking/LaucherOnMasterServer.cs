@@ -119,7 +119,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e, scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
@@ -142,7 +142,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e, scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 // If anything fails, then this client needs to be disconnected
                 client.Disconnect(true);
                 client = null;
@@ -170,7 +170,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e, scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 if (client != null)
                 {
                     client.Disconnect(true);
@@ -191,7 +191,7 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogWarning(e, scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 if (client != null)
                 {
                     client.Disconnect(true);
