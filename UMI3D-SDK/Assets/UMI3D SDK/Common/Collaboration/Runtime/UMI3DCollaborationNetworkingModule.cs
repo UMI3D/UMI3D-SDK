@@ -416,7 +416,50 @@ namespace umi3d.common.collaboration
                     result = default(T);
                     readable = false;
                     return false;
+                case true when typeof(T) == typeof(UserTrackingFrameDto):
+                    uint idKey = 0;
+                    ulong userId;
+                    float skeletonHighOffset, refreshFrequency;
+                    SerializableVector3 position;
+                    SerializableVector4 rotation;
 
+                    if (
+                        UMI3DNetworkingHelper.TryRead(container, out idKey)
+                        && UMI3DNetworkingHelper.TryRead(container, out userId)
+                        && UMI3DNetworkingHelper.TryRead(container, out skeletonHighOffset)
+                        && UMI3DNetworkingHelper.TryRead(container, out position)
+                        && UMI3DNetworkingHelper.TryRead(container, out rotation)
+                        && UMI3DNetworkingHelper.TryRead(container, out refreshFrequency)
+                        )
+                    {
+                        System.Collections.Generic.List<BoneDto> bones = UMI3DNetworkingHelper.ReadList<BoneDto>(container);
+
+                        if (bones != default)
+                        {
+                            var trackingFrame = new UserTrackingFrameDto
+                            {
+                                userId = userId,
+                                skeletonHighOffset = skeletonHighOffset,
+                                position = position,
+                                rotation = rotation,
+                                refreshFrequency = refreshFrequency,
+                                bones = bones
+                            };
+                            readable = true;
+                            result = (T)Convert.ChangeType(trackingFrame, typeof(T));
+
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            readable = false;
+                            return false;
+                        }
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
                 default:
                     result = default(T);
                     readable = false;

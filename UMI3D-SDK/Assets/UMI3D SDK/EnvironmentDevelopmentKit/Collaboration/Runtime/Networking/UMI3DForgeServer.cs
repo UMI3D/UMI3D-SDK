@@ -15,8 +15,12 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using BeardedManStudios.SimpleJSON;
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
 using umi3d.cdk.collaboration;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -36,6 +40,8 @@ namespace umi3d.edk.collaboration
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
+        #region Fields
+
         /// <summary>
         /// 
         /// </summary>
@@ -45,8 +51,6 @@ namespace umi3d.edk.collaboration
         /// 
         /// </summary>
         private UDPServer server;
-
-
 
         /// <summary>
         /// Forge server environmentType
@@ -63,6 +67,8 @@ namespace umi3d.edk.collaboration
         {
             return server;
         }
+
+        #endregion
 
         /// <summary>
         /// 
@@ -86,6 +92,8 @@ namespace umi3d.edk.collaboration
             server.natServerPort = natServerPort;
             server.maxNbPlayer = maxNbPlayer;
             server.connectionPort = connectionPort;
+            server.InitTrackingFrameThread();
+
             return server;
         }
 
@@ -365,11 +373,37 @@ namespace umi3d.edk.collaboration
 
         #region avatar
 
-        protected class AvatarFrameEvent : UnityEvent<common.userCapture.UserTrackingFrameDto, ulong> { };
+        #region Fields
+
+        /// <summary>
+        /// Stores all <see cref="UserTrackingFrameDto"/> received from all <see cref="UnityEngine.NetworkPlayer"/>.
+        /// </summary>
+        Dictionary<NetworkingPlayer, UserTrackingFrameDto> avatarFramesPerPlayer = new Dictionary<NetworkingPlayer, UserTrackingFrameDto>();
+
+        /// <summary>
+        /// Collection used to prevent sending the same <see cref="UserTrackingFrameDto"/> twice to the same <see cref="NetworkPlayer"/>.
+        /// </summary>
+        Dictionary<NetworkingPlayer, Dictionary<NetworkingPlayer, UserTrackingFrameDto>> lastFrameSentToAPlayer = new Dictionary<NetworkingPlayer, Dictionary<NetworkingPlayer, UserTrackingFrameDto>>();
+
+        /// <summary>
+        /// Thread used to send trackingFrames.
+        /// </summary>
+        private Thread sendAvatarFramesThread;
+
+        /// <summary>
+        /// If true, all <see cref="UserTrackingFrameDto"/> of <see cref="avatarFramesPerPlayer"/> must be sent to everyone.
+        /// </summary>
+        private bool forceSendtrackingFrames = false;
+
+        #endregion
+
+        #region Receive
+
+        protected class AvatarFrameEvent : UnityEvent<UserTrackingFrameDto, ulong> { };
 
         protected static AvatarFrameEvent avatarFrameEvent = new AvatarFrameEvent();
 
-        public static void requestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
+        public static void RequestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
         {
             // do something with reason
 
@@ -382,43 +416,21 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null) return;
 
+
+            UserTrackingFrameDto trackingFrame = null;
+
             if (UMI3DEnvironment.Instance.useDto)
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
 
-                if (dto is common.userCapture.UserTrackingFrameDto trackingFrame)
+                if (dto is UserTrackingFrameDto readFrame)
                 {
-                    avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
-                    MainThreadManager.Run(() =>
-                    {
-                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
-                    });
-
-                    if (user.Avatar != null && user.Avatar.RelayRoom != null)
-                    {
-                        RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
-
-                        if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
-                            });
-                        }
-                        else
-                        {
-                            RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
-                        }
-                    }
-                    else
-                    {
-                        RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
-                    }
+                    trackingFrame = readFrame;
                 }
             }
             else
             {
-                var trackingFrame = new common.userCapture.UserTrackingFrameDto();
+                trackingFrame = new UserTrackingFrameDto();
 
                 var container = new ByteContainer(frame.StreamData.byteArr);
                 uint id = UMI3DNetworkingHelper.Read<uint>(container);
@@ -430,15 +442,108 @@ namespace umi3d.edk.collaboration
                     trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
                     trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
                     trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
+                }
+            }
 
-                    avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
+            if (trackingFrame == null)
+                return;
 
-                    MainThreadManager.Run(() =>
+            avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
+            MainThreadManager.Run(() =>
+            {
+                UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
+            });
+
+            lock (avatarFramesPerPlayer)
+            {
+                if (avatarFramesPerPlayer.ContainsKey(player))
+                {
+                    avatarFramesPerPlayer[player] = trackingFrame;
+                }
+                else
+                {
+                    avatarFramesPerPlayer.Add(player, trackingFrame);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Send
+
+        private void InitTrackingFrameThread()
+        {
+            UMI3DCollaborationServer.Instance.OnServerStart.AddListener(() => {
+                sendAvatarFramesThread = new Thread(new ThreadStart(SendTrackingFramesLoop));
+                sendAvatarFramesThread.Start();
+            });
+            UMI3DCollaborationServer.Instance.OnServerStop.AddListener(() => {
+                sendAvatarFramesThread.Abort();
+            });
+
+            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener((user) =>
+            {
+                lock (avatarFramesPerPlayer)
+                {
+                    var player = avatarFramesPerPlayer.Keys.ToList().Find(p => p.NetworkId == user.Id());
+                    Debug.Assert(player != null, "Player null");
+
+                    if (avatarFramesPerPlayer.ContainsKey(player))
+                        avatarFramesPerPlayer.Remove(player);
+                }
+            });
+
+            UMI3DCollaborationServer.Instance.OnUserActive.AddListener((user) => forceSendtrackingFrames = true);
+        }
+
+        /// <summary>
+        /// Sends <see cref="UserTrackingFrameDto"/> every tick.
+        /// </summary>
+        private void SendTrackingFramesLoop()
+        {
+            while (true)
+            {
+                SendTrackingFrames();
+
+                Thread.Sleep(200);
+            }
+        }
+
+        /// <summary>
+        /// Sends <see cref="UserTrackingFrameDto"/> to every player if they should received them.
+        /// </summary>
+        private void SendTrackingFrames()
+        {
+            lock (avatarFramesPerPlayer)
+            {
+                foreach (var avatarFrameEntry in avatarFramesPerPlayer)
+                {
+                    UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(avatarFrameEntry.Key.NetworkId);
+
+                    if (user == null)
+                        continue;
+
+                    List<UserTrackingFrameDto> frames = GetTrackingFrameToSend(avatarFrameEntry.Key, user);
+
+                    if (frames.Count == 0)
+                        continue;
+
+                    Binary message = new Binary(server.Time.Timestep, false, UMI3DNetworkingHelper.WriteCollection(frames).ToBytes(),
+                        BeardedManStudios.Forge.Networking.Receivers.Target, (int)DataChannelTypes.Tracking, false);
+
+
+                    if (UMI3DEnvironment.Instance.useDto)
                     {
-                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
-                    });
+                        Debug.LogError("TODO : implement useDto case");
+                    }
+                    else
+                    {
 
-                    if (user.Avatar != null && user.Avatar.RelayRoom != null)
+                    }
+                    server.Send(avatarFrameEntry.Key, message, forceSendtrackingFrames);
+
+
+                    /*if (user.Avatar != null && user.Avatar.RelayRoom != null)
                     {
                         RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
@@ -451,16 +556,71 @@ namespace umi3d.edk.collaboration
                         }
                         else
                         {
-                            RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                            RelayMessage(avatarFrameEntry.Key, frame, forceSendtrackingFrames, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
                         }
                     }
                     else
                     {
-                        RelayMessage(player, frame, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                        RelayMessage(avatarFrameEntry.Key, frame, forceSendtrackingFrames, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
+                    }*/
+                }
+
+                if (forceSendtrackingFrames)
+                    forceSendtrackingFrames = false;
+            }
+        }
+
+        /// <summary>
+        /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
+        /// </summary>
+        /// <param name="to"></param>
+        private List<UserTrackingFrameDto> GetTrackingFrameToSend(NetworkingPlayer to, UMI3DUser user)
+        {
+            ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
+
+            List<UserTrackingFrameDto> frames = new List<UserTrackingFrameDto>();
+
+            if (to == null || user == null)
+                return frames;
+
+            foreach (var other in avatarFramesPerPlayer)
+            {
+                if (user.Id() == other.Key.NetworkId)
+                    continue;
+
+                Debug.LogError("TODO : check relay");
+
+                if (forceSendtrackingFrames)
+                {
+                    frames.Add(other.Value);
+                }
+                else if (ShouldRelay((int)(int)DataChannelTypes.Tracking, to, other.Key, time, BeardedManStudios.Forge.Networking.Receivers.OthersProximity))
+                {
+                    if (!lastFrameSentToAPlayer.ContainsKey(to))
+                    {
+                        lastFrameSentToAPlayer.Add(to, new Dictionary<NetworkingPlayer, UserTrackingFrameDto>());
+                    }
+
+                    if (!lastFrameSentToAPlayer[to].ContainsKey(other.Key))
+                    {
+                        lastFrameSentToAPlayer[to][other.Key] = other.Value;
+                        frames.Add(other.Value);
+                    }
+                    else
+                    {
+                        if (lastFrameSentToAPlayer[to][other.Key] != other.Value)
+                        {
+                            frames.Add(other.Value);
+                            lastFrameSentToAPlayer[to][other.Key] = other.Value;
+                        }
                     }
                 }
             }
+
+            return frames;
         }
+
+        #endregion
 
         #endregion
 
@@ -508,12 +668,12 @@ namespace umi3d.edk.collaboration
                 }
                 else
                 {
-                    RelayMessage(player, frame);
+                    RelayMessage(player, frame, false);
                 }
             }
             else
             {
-                RelayMessage(player, frame);
+                RelayMessage(player, frame, false);
             }
         }
 
@@ -579,7 +739,7 @@ namespace umi3d.edk.collaboration
         /// <param name="player"></param>
         /// <param name="frame"></param>
         /// <param name="strategy"></param>
-        protected void RelayMessage(NetworkingPlayer player, Binary frame, BeardedManStudios.Forge.Networking.Receivers strategy = BeardedManStudios.Forge.Networking.Receivers.Others)
+        protected void RelayMessage(NetworkingPlayer player, Binary frame, bool forceSending, BeardedManStudios.Forge.Networking.Receivers strategy = BeardedManStudios.Forge.Networking.Receivers.Others)
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
             var message = new Binary(time, false, frame.StreamData, BeardedManStudios.Forge.Networking.Receivers.Target, frame.GroupId, frame.IsReliable);
@@ -590,10 +750,10 @@ namespace umi3d.edk.collaboration
                 {
                     foreach (NetworkingPlayer p in server.Players)
                     {
-                        if (ShouldRelay(frame.GroupId, player, p, time, strategy))
+                        if (forceSending || ShouldRelay(frame.GroupId, player, p, time, strategy))
                         {
                             RememberRelay(player, p, frame.GroupId, time);
-                            server.Send(p, message, frame.IsReliable);
+                            server.Send(p, message, frame.IsReliable || forceSending);
                         }
                     }
                 }
