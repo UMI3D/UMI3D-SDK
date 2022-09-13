@@ -599,26 +599,27 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            Debug.LogError("Implement use dto");
-
             if (useDto)
             {
-                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
+                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
                 {
-                    if (UMI3DClientUserTracking.Instance.trackingReception && UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    foreach (UserTrackingFrameDto trackingFrame in frames.values)
                     {
-                        MainThreadManager.Run(() =>
+                        if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         {
-                            if (client.Time.Timestep - frame.TimeStep < 500)
-                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
-                        });
-                    }
-                    else
-                    {
-                        MainThreadManager.Run(() =>
+                            MainThreadManager.Run(() =>
+                            {
+                                if (client.Time.Timestep - frame.TimeStep < 500)
+                                    StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
+                            });
+                        }
+                        else
                         {
-                            UMI3DLogger.LogWarning("Avatar Frame Dropped", scope);
-                        });
+                            MainThreadManager.Run(() =>
+                            {
+                                UMI3DLogger.LogWarning("User Avatar not found.", scope);
+                            });
+                        }
                     }
                 }
             }

@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace umi3d.common
 {
-    public class AudioDto : UMI3DDto
+    public class UMI3DDtoListDto<T> : UMI3DDto where T : UMI3DDto
     {
-        public string userId;
-        public int frequency;
-        public float[] sample;
-        public int pos;
+        public List<T> values;
     }
 }

@@ -528,41 +528,18 @@ namespace umi3d.edk.collaboration
                     if (frames.Count == 0)
                         continue;
 
-                    Binary message = new Binary(server.Time.Timestep, false, UMI3DNetworkingHelper.WriteCollection(frames).ToBytes(),
-                        BeardedManStudios.Forge.Networking.Receivers.Target, (int)DataChannelTypes.Tracking, false);
-
-
+                    Binary message = null;
                     if (UMI3DEnvironment.Instance.useDto)
                     {
-                        Debug.LogError("TODO : implement useDto case");
+                        message = new Binary(server.Time.Timestep, false, (new UMI3DDtoListDto<UserTrackingFrameDto>() { values = frames}).ToBson(),
+                        BeardedManStudios.Forge.Networking.Receivers.Target, (int)DataChannelTypes.Tracking, false);
                     }
                     else
                     {
-
+                        message = new Binary(server.Time.Timestep, false, UMI3DNetworkingHelper.WriteCollection(frames).ToBytes(),
+                        BeardedManStudios.Forge.Networking.Receivers.Target, (int)DataChannelTypes.Tracking, false);
                     }
                     server.Send(avatarFrameEntry.Key, message, forceSendtrackingFrames);
-
-
-                    /*if (user.Avatar != null && user.Avatar.RelayRoom != null)
-                    {
-                        RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
-
-                        if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                relayVolume.RelayTrackingRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
-                            });
-                        }
-                        else
-                        {
-                            RelayMessage(avatarFrameEntry.Key, frame, forceSendtrackingFrames, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
-                        }
-                    }
-                    else
-                    {
-                        RelayMessage(avatarFrameEntry.Key, frame, forceSendtrackingFrames, BeardedManStudios.Forge.Networking.Receivers.OthersProximity);
-                    }*/
                 }
 
                 if (forceSendtrackingFrames)
