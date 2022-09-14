@@ -44,7 +44,8 @@ namespace umi3d.edk.collaboration.murmur
 
         private string RequestToString(UnityWebRequest www)
         {
-            if (www.isHttpError || www.isNetworkError) {
+            if (www.isHttpError || www.isNetworkError)
+            {
                 www.Dispose();
                 throw new System.Exception("Error" + www.error);
             }
@@ -381,7 +382,7 @@ namespace umi3d.edk.collaboration.murmur
 
                 UMI3DLogger.Log(info, scope);
 
-                Channels.Where(c => !data.sub_channels.Any(d => d.c.id == c.data.id)).ForEach(c => Channels.Remove(c));
+                Channels.Where(c => !data.sub_channels.Any(d => d.c.id == c.data.id)).ToList().ForEach(c => Channels.Remove(c));
 
                 IEnumerable<SubChannelData> toAdd = data.sub_channels.Where(d => !Channels.Any(c => d.c.id == c.data.id));
 
