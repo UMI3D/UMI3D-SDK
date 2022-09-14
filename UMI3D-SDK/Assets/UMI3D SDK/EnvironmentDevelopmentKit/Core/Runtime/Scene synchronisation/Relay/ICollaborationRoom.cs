@@ -14,17 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.edk
 {
     public interface ICollaborationRoom : UMI3DEntity
     {
 
-        void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayDataRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 
-        void RelayTrackingRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayTrackingRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 
-        void RelayVoIPRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayVoIPRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 
-        void RelayVideoRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayVideoRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
     }
 }

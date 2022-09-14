@@ -456,14 +456,7 @@ namespace umi3d.edk.collaboration
 
             lock (avatarFramesPerPlayer)
             {
-                if (avatarFramesPerPlayer.ContainsKey(player))
-                {
-                    avatarFramesPerPlayer[player] = trackingFrame;
-                }
-                else
-                {
-                    avatarFramesPerPlayer.Add(player, trackingFrame);
-                }
+                avatarFramesPerPlayer[player] = trackingFrame;
             }
         }
 
@@ -554,20 +547,33 @@ namespace umi3d.edk.collaboration
         private List<UserTrackingFrameDto> GetTrackingFrameToSend(NetworkingPlayer to, UMI3DUser user)
         {
             ulong time = server.Time.Timestep; //introduce wrong time. TB tested with frame.timestep
+            bool forceRelay = false;
 
             List<UserTrackingFrameDto> frames = new List<UserTrackingFrameDto>();
 
             if (to == null || user == null)
                 return frames;
 
-            foreach (var other in avatarFramesPerPlayer)
+            Dictionary<NetworkingPlayer, UserTrackingFrameDto> userFrameMap = null;
+            RelayVolume relayVolume;
+            if (user is UMI3DCollaborationUser cUser && cUser?.Avatar?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.Avatar.RelayRoom.Id(), out relayVolume))
+            {
+                var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationUser).ToList();
+                userFrameMap = new Dictionary<NetworkingPlayer, UserTrackingFrameDto>();
+                userFrameMap = avatarFramesPerPlayer.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToDictionary();
+                forceRelay = true;
+            }
+            else
+            {
+                userFrameMap = avatarFramesPerPlayer;
+            }
+
+            foreach (var other in userFrameMap)
             {
                 if (user.Id() == other.Key.NetworkId)
                     continue;
 
-                Debug.LogError("TODO : check relay");
-
-                if (forceSendtrackingFrames)
+                if (forceSendtrackingFrames || forceRelay)
                 {
                     frames.Add(other.Value);
                 }
@@ -624,34 +630,34 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnVoIPFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            //UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
 
-            if (VoipInterceptionList.Contains(user))
-            {
-                OnAudioFrame(user, frame);
-                return;
-            }
+            //if (VoipInterceptionList.Contains(user))
+            //{
+            //    OnAudioFrame(user, frame);
+            //    return;
+            //}
 
-            if (user.Avatar != null && user.Avatar.RelayRoom != null)
-            {
-                RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
+            //if (user.Avatar != null && user.Avatar.RelayRoom != null)
+            //{
+            //    RelayVolume relayVolume = RelayVolume.relaysVolumes[user.Avatar.RelayRoom.Id()];
 
-                if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.VoIP))
-                {
-                    MainThreadManager.Run(() =>
-                    {
-                        relayVolume.RelayVoIPRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
-                    });
-                }
-                else
-                {
-                    RelayMessage(player, frame, false);
-                }
-            }
-            else
-            {
-                RelayMessage(player, frame, false);
-            }
+            //    if (relayVolume != null && relayVolume.HasStrategyFor(DataChannelTypes.VoIP))
+            //    {
+            //        MainThreadManager.Run(() =>
+            //        {
+            //            relayVolume.RelayVoIPRequest(user.Avatar, user, frame.StreamData.byteArr, user, Receivers.Others);
+            //        });
+            //    }
+            //    else
+            //    {
+            //        RelayMessage(player, frame, false);
+            //    }
+            //}
+            //else
+            //{
+            //    RelayMessage(player, frame, false);
+            //}
         }
 
         #endregion
