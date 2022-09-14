@@ -311,11 +311,6 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
-        {
-            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
-        }
-
         /// <summary>
         /// Checks if this relay defines a strategy for <paramref name="channelType"/>.
         /// </summary>
