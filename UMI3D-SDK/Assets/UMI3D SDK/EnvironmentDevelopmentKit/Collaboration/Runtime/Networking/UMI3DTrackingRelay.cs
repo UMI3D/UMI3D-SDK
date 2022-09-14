@@ -83,7 +83,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="from">the player</param>
         /// <param name="frame">last frame</param>
-        public void SetFrame(NetworkingPlayer from,T frame)
+        public void SetFrame(NetworkingPlayer from, T frame)
         {
             lock (framesPerPlayer)
             {
@@ -140,6 +140,8 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private void SendTrackingFrames()
         {
+            ulong time = GetTime(); //introduce wrong time. TB tested with frame.timestep
+
             lock (framesPerPlayer)
             {
                 foreach (var avatarFrameEntry in framesPerPlayer)
@@ -149,7 +151,7 @@ namespace umi3d.edk.collaboration
                     if (user == null)
                         continue;
 
-                    List<T> frames = GetTrackingFrameToSend(user);
+                    List<T> frames = GetTrackingFrameToSend(user, time);
 
                     if (frames.Count == 0)
                         continue;
@@ -168,9 +170,8 @@ namespace umi3d.edk.collaboration
         /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
         /// </summary>
         /// <param name="to"></param>
-        private List<T> GetTrackingFrameToSend(UMI3DCollaborationUser user)
+        private List<T> GetTrackingFrameToSend(UMI3DCollaborationUser user, ulong time)
         {
-            ulong time = GetTime(); //introduce wrong time. TB tested with frame.timestep
             bool forceRelay = false;
             NetworkingPlayer to = user?.networkPlayer;
 
@@ -202,9 +203,9 @@ namespace umi3d.edk.collaboration
                 {
                     frames.Add(other.Value);
                 }
-                else if (ShouldRelay((int)(int)DataChannelTypes.Tracking, to, other.Key, time, BeardedManStudios.Forge.Networking.Receivers.OthersProximity))
+                else if (ShouldRelay((int)(int)DataChannelTypes.Tracking, to, other.Key, time, BeardedManStudios.Forge.Networking.Receivers.Target))
                 {
-                    
+
                     if (!lastFrameSentToAPlayer.ContainsKey(to))
                     {
                         lastFrameSentToAPlayer.Add(to, new Dictionary<NetworkingPlayer, T>());
@@ -261,12 +262,13 @@ namespace umi3d.edk.collaboration
         {
             get
             {
-                lock(proximityLock)
-                return maxProximityRelay == 0 ? 0 : 1000 / maxProximityRelay;
+                lock (proximityLock)
+                    return maxProximityRelay == 0 ? 0 : 1000 / maxProximityRelay;
             }
 
-            set { 
-                lock (proximityLock) 
+            set
+            {
+                lock (proximityLock)
                     if (value <= 0) maxProximityRelay = 0;
                     else maxProximityRelay = 1000 / value;
             }
@@ -283,8 +285,8 @@ namespace umi3d.edk.collaboration
                     return minProximityRelay == 0 ? 0 : 1000 / minProximityRelay;
             }
 
-            set 
-            { 
+            set
+            {
                 lock (proximityLock)
                     if (value <= 0) minProximityRelay = 0;
                     else minProximityRelay = 1000 / value;
@@ -361,7 +363,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        private readonly Dictionary<uint, Dictionary<uint,  ulong>> relayMemory = new Dictionary<uint, Dictionary<uint, ulong>>();
+        private readonly Dictionary<uint, Dictionary<uint, ulong>> relayMemory = new Dictionary<uint, Dictionary<uint, ulong>>();
 
         /// <summary>
         /// 
@@ -374,8 +376,8 @@ namespace umi3d.edk.collaboration
         {
             uint p1 = from.NetworkId, p2 = to.NetworkId;
             if (!relayMemory.ContainsKey(p1))
-                relayMemory.Add(p1, new Dictionary<uint,  ulong>());
-            Dictionary<uint,  ulong> dicP1 = relayMemory[p1];
+                relayMemory.Add(p1, new Dictionary<uint, ulong>());
+            Dictionary<uint, ulong> dicP1 = relayMemory[p1];
             dicP1[p2] = time;
         }
 
@@ -392,7 +394,7 @@ namespace umi3d.edk.collaboration
             //no relay from p1
             if (!relayMemory.ContainsKey(p1))
                 return 0;
-            Dictionary<uint,  ulong> dicP1 = relayMemory[p1];
+            Dictionary<uint, ulong> dicP1 = relayMemory[p1];
             //no relay from p1 to P2
             if (!dicP1.ContainsKey(p2))
                 return 0;
