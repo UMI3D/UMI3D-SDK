@@ -260,11 +260,11 @@ namespace umi3d.edk.collaboration
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
 
-        private async void AddUserAudio(UMI3DCollaborationUser user)
+        private void AddUserAudio(UMI3DCollaborationUser user)
         {
             if (mumbleManager == null)
                 return;
-            List<Operation> op = await mumbleManager.AddUser(user);
+            List<Operation> op = mumbleManager.AddUser(user);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();

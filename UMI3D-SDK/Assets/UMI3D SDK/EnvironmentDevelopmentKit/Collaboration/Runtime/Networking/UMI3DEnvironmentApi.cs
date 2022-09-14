@@ -533,7 +533,7 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ex)
             {
-                UMI3DLogger.LogError($"An error occured {ex}", scope);
+                UMI3DLogger.LogExcetion(ex, scope);
                 error?.Invoke();
             }
 

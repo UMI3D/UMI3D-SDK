@@ -121,10 +121,10 @@ namespace umi3d.edk.collaboration.murmur
                 await UMI3DAsyncManager.Yield();
         }
 
-        async void _Create()
+        void _Create()
         {
             RefreshAsync();
-            defaultRoom = await _CreateRoom();
+            defaultRoom = _CreateRoom();
         }
 
         public async void RefreshAsync()
@@ -183,6 +183,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble server refreshing [will try again in 1min] {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(60000);
                 await ForceRefresh();
             }
@@ -260,6 +261,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble create room {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
@@ -276,6 +278,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble delete room {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
@@ -292,6 +295,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble create user {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
@@ -307,13 +311,14 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble delete user {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
         }
 
 
-        private async Task<Room> _CreateRoom()
+        private Room _CreateRoom()
         {
             var roomId = localRoomIndex++;
             var name = GenerateRoomName(roomId);
@@ -323,18 +328,18 @@ namespace umi3d.edk.collaboration.murmur
             return room;
         }
 
-        public async Task<int> CreateRoom()
+        public int CreateRoom()
         {
-            var room = await _CreateRoom();
+            var room = _CreateRoom();
             return room.roomId;
         }
 
-        public async Task<List<int>> CreateRoom(int count)
+        public List<int> CreateRoom(int count)
         {
             var roomIds = new List<int>();
             for (int i = 0; i < count; i++)
             {
-                roomIds.Add(await CreateRoom());
+                roomIds.Add(CreateRoom());
             }
             return roomIds;
         }
@@ -343,7 +348,8 @@ namespace umi3d.edk.collaboration.murmur
         {
             return roomList.Select(r => r.roomId).ToList();
         }
-        public async Task DeleteRoom(int roomId)
+
+        public void DeleteRoom(int roomId)
         {
             var room = roomList.FirstOrDefault(r => r.roomId == roomId);
             if (room != null)
@@ -353,13 +359,13 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        public async Task DeleteRoom(List<int> rooms)
+        public void DeleteRoom(List<int> rooms)
         {
             foreach (var room in rooms)
-                await DeleteRoom(room);
+                DeleteRoom(room);
         }
 
-        public async Task<List<Operation>> AddUser(UMI3DCollaborationUser user, int room = -1)
+        public List<Operation> AddUser(UMI3DCollaborationUser user, int room = -1)
         {
             var userId = System.Guid.NewGuid().ToString();
             var _user = new User(userId, GenerateUserName(userId));

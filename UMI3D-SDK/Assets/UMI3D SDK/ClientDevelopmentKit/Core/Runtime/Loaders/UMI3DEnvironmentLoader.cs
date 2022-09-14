@@ -532,7 +532,7 @@ namespace umi3d.cdk
                         });
                     break;
                 case AbstractEntityDto dto:
-                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.Log(s, scope); performed.Invoke(); });
+                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.LogError(s, scope); performed.Invoke(); });
                     break;
                 case GlTFMaterialDto matDto:
                     Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
@@ -592,7 +592,7 @@ namespace umi3d.cdk
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogError(e.Message, scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 performed2.Invoke();
             }
         }
@@ -723,7 +723,7 @@ namespace umi3d.cdk
                     loader.UrlToObject,
                     loader.ObjectFromCache,
                     (mat) => SetBaseMaterial((Material)mat),
-                    (e) => UMI3DLogger.LogWarning(e.Message, scope),
+                    (e) => UMI3DLogger.LogExcetion(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -945,7 +945,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property, scope);
-                    UMI3DLogger.LogWarning(e, scope);
+                    UMI3DLogger.LogExcetion(e, scope);
                 }
             }
             return true;
@@ -977,7 +977,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning($"SetEntity not apply on this object, id = {id},  operation = {operationId} ,  property = {propertyKey}", scope | DebugScope.Bytes);
-                    UMI3DLogger.LogWarning(e, scope);
+                    UMI3DLogger.LogExcetion(e, scope);
                 }
             }
             return true;
