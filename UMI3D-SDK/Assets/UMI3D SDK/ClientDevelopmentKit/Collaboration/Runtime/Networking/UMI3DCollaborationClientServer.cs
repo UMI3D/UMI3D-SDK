@@ -348,9 +348,26 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
         {
-            UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
-            return await (environmentClient?.GetEntity(ids) ?? Task.FromResult<LoadEntityDto>(null));
+            idsToSend.Clear();
+            foreach (ulong id in ids)
+            {
+                if (loadingEntities.Add(id))
+                {
+                    idsToSend.Add(id);
+                }
+                else
+                {
+                    UMI3DLogger.Log($"Cancel GetEntity {id}", scope);
+                }
+
+            }
+            UMI3DLogger.Log($"GetEntity {idsToSend.ToString<ulong>()}", scope);
+            return await (environmentClient?.GetEntity(idsToSend) ?? Task.FromResult<LoadEntityDto>(null));
         }
+
+        private SortedSet<ulong> loadingEntities = new SortedSet<ulong>();
+        private List<ulong> idsToSend = new List<ulong>();
+
 
         ///<inheritdoc/>
         public override ulong GetUserId() { return worldControllerClient?.GetUserID() ?? 0; }
