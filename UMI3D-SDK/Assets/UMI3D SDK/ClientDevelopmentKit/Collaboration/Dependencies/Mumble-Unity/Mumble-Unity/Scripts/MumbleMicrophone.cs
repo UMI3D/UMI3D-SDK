@@ -279,7 +279,7 @@ namespace Mumble
         public void StopSendingAudio()
         {
             Microphone.End(_currentMic);
-            _mumbleClient.StopSendingVoice();
+            _mumbleClient?.StopSendingVoice();
             isRecording = false;
         }
         void Update()
