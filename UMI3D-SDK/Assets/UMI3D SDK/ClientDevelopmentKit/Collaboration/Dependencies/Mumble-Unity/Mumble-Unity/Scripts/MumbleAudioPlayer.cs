@@ -127,6 +127,11 @@ namespace Mumble
         {
             if (_mumbleClient == null || !_mumbleClient.ConnectionSetupFinished)
                 return;
+
+            if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
+            {
+                return;
+            }
             //Debug.Log("Filter read for: " + GetUsername());
 
             int numRead = _mumbleClient.LoadArrayWithVoiceData(Session, data, 0, data.Length);
@@ -179,7 +184,14 @@ namespace Mumble
         void Update()
         {
             if (_mumbleClient == null)
+            {
+                if (_isPlaying)
+                {
+                    _audioSource.Stop();
+                    _isPlaying = false;
+                }
                 return;
+            }
             if (!_isPlaying && _mumbleClient.HasPlayableAudio(Session))
             {
                 _audioSource.Play();

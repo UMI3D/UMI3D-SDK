@@ -14,6 +14,7 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
+using System;
 using System.Collections;
 using System.Linq;
 using umi3d.cdk.interaction;
@@ -565,9 +566,10 @@ namespace umi3d.cdk.collaboration
                 byte[] bytes = await environmentClient.HttpClient.SendGetLocalInfo(key);
                 LocalInfoSender.SetLocalInfo(key, bytes);
             }
-            catch
+            catch(Exception e)
             {
                 UMI3DLogger.Log("error on get local info : " + key, scope);
+                UMI3DLogger.LogExcetion(e, scope);
             }
         }
 
@@ -577,9 +579,10 @@ namespace umi3d.cdk.collaboration
             {
                 await environmentClient.HttpClient.SendPostFile(token, fileName, bytesToUpload);
             }
-            catch
+            catch(Exception e)
             {
                 UMI3DLogger.Log("error on upload file : " + fileName, scope);
+                UMI3DLogger.LogExcetion(e, scope);
             }
         }
 

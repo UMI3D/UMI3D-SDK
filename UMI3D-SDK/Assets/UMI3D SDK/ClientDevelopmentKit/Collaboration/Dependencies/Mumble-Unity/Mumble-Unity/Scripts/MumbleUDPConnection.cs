@@ -6,6 +6,7 @@ using UnityEngine;
 using System.IO;
 using MumbleProto;
 using System.Threading;
+using UnityEngine.Events;
 
 namespace Mumble
 {
@@ -30,6 +31,9 @@ namespace Mumble
         private Thread _receiveThread;
         private byte[] _recvBuffer;
         private readonly byte[] _sendPingBuffer = new byte[9];
+
+        public class ConnectionErrorEvent : UnityEvent<Exception> { }
+        public ConnectionErrorEvent ConnectionError = new ConnectionErrorEvent();
 
         internal MumbleUdpConnection(IPEndPoint host, AudioDecodeThread audioDecodeThread, MumbleClient mumbleClient)
         {
@@ -297,6 +301,7 @@ namespace Mumble
             catch (Exception e)
             {
                 Debug.LogError("Error sending packet: " + e);
+                ConnectionError.Invoke(e);
             }
         }
         internal byte[] GetLatestClientNonce()

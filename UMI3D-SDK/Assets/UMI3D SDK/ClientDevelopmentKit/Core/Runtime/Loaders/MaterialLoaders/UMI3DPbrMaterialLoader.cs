@@ -55,6 +55,7 @@ namespace umi3d.cdk
                         newMat.SetFloat("_Surface", 1);
 #endif
                     }
+                    //Should have a material with emissive to true and an emissive color not to black in Resource folder to work (Unity requirement).
                     newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)(Vector3)dto.emissiveFactor);
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - dto.pbrMetallicRoughness.roughnessFactor);

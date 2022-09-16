@@ -11,6 +11,7 @@ using System.Timers;
 using System.Threading;
 using System.Text;
 using Version = MumbleProto.Version;
+using UnityEngine.Events;
 
 namespace Mumble
 {
@@ -31,6 +32,8 @@ namespace Mumble
         private Thread _processThread;
         private string _username;
         private string _password;
+
+        public UnityEvent connectionFailed = new UnityEvent();
 
         private ProtoBuf.Meta.TypeModel _model;
 
@@ -67,6 +70,7 @@ namespace Mumble
             if (!_tcpClient.Connected)
             {
                 Debug.LogError("Connection failed! Please confirm that you have internet access, and that the hostname is correct");
+                connectionFailed.Invoke();
                 throw new Exception("Failed to connect");
             }
 

@@ -24,6 +24,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
@@ -35,6 +36,9 @@ namespace umi3d.cdk.collaboration
         {
             return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconected;
         }
+
+        public class ConnectionStateEvent : UnityEvent<string> { };
+        public static ConnectionStateEvent ConnectionState = new ConnectionStateEvent();
 
         public readonly double maxMillisecondToWait = 10000;
 
@@ -128,6 +132,7 @@ namespace umi3d.cdk.collaboration
 
         public bool Connect()
         {
+            ConnectionState.Invoke("Connecting to the Environement");
             if (IsConnected())
                 return false;
 
@@ -156,12 +161,15 @@ namespace umi3d.cdk.collaboration
         private async void Join(BeardedManStudios.Forge.Networking.IUserAuthenticator authenticator)
         {
             ForgeClient.Join(authenticator);
-            await UMI3DAsyncManager.Delay(5000);
+            await UMI3DAsyncManager.Delay(4500);
             if (ForgeClient != null && !ForgeClient.IsConnected && !disconected)
             {
+                ConnectionState.Invoke("Connection Failed");
                 isConnecting = false;
                 isConnected = false;
                 ForgeClient.Stop();
+                GameObject.Destroy(ForgeClient);
+                await UMI3DAsyncManager.Delay(500);
                 Connect();
             }
         }
@@ -287,9 +295,10 @@ namespace umi3d.cdk.collaboration
                         break;
                 }
             }
-            catch
+            catch(Exception e)
             {
                 UMI3DLogger.LogWarning($"Error on OnMessage({message})", scope);
+                UMI3DLogger.LogExcetion(e, scope);
             }
         }
 
@@ -324,9 +333,10 @@ namespace umi3d.cdk.collaboration
                         break;
                 }
             }
-            catch
+            catch(Exception e)
             {
                 UMI3DLogger.LogWarning($"Error on OnStatusChanged({statusDto})", scope);
+                UMI3DLogger.LogExcetion(e, scope);
             }
         }
 

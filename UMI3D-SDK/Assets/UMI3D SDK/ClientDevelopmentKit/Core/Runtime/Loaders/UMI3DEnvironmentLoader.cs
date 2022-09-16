@@ -298,6 +298,9 @@ namespace umi3d.cdk
         public class ProgressListener : UnityEvent<float> { }
         public ProgressListener onProgressChange = new ProgressListener();
 
+        public class ProgressListenerTitle : UnityEvent<string> { }
+        public ProgressListenerTitle onProgressTitleChange = new ProgressListenerTitle();
+
         public UnityEvent onResourcesLoaded = new UnityEvent();
         public UnityEvent onEnvironmentLoaded = new UnityEvent();
 
@@ -325,7 +328,7 @@ namespace umi3d.cdk
             {
                 throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
             }
-
+            onProgressTitleChange.Invoke("Init Loading");
             onProgressChange.Invoke(0.1f);
             isEnvironmentLoaded = false;
 
@@ -337,28 +340,35 @@ namespace umi3d.cdk
             //
             // Load resources
             //
+            onProgressTitleChange.Invoke("Load resources");
             StartCoroutine(LoadResources(dto));
             while (!downloaded)
             {
                 onProgressChange.Invoke(resourcesToLoad == 0 ? 0.2f : 0.1f + (loadedResources / resourcesToLoad * 0.4f));
+                onProgressTitleChange.Invoke($"Load resources {(loadedResources / resourcesToLoad * 100).ToString("N2")} %");
                 yield return null;
             }
+            onProgressTitleChange.Invoke("Resources Loaded");
+
             onProgressChange.Invoke(0.5f);
             onResourcesLoaded.Invoke();
 
             //
             // Instantiate nodes
             //
-
+            onProgressTitleChange.Invoke("Load environment data");
             ReadUMI3DExtension(dto, null);
 
+            onProgressTitleChange.Invoke("Instantiate environment");
             InstantiateNodes();
             while (!loaded)
             {
                 onProgressChange.Invoke(nodesToInstantiate == 0 ? 0.6f : 0.5f + (instantiatedNodes / nodesToInstantiate * 0.4f));
+                onProgressTitleChange.Invoke($"Instantiate environment {(instantiatedNodes / nodesToInstantiate * 100).ToString("N2")} %");
                 yield return null;
             }
 
+            onProgressTitleChange.Invoke("Instantiation is done");
             onProgressChange.Invoke(0.9f);
             yield return new WaitForSeconds(0.3f);
             isEnvironmentLoaded = true;
@@ -369,6 +379,7 @@ namespace umi3d.cdk
 
             IEnumerator Load()
             {
+                onProgressTitleChange.Invoke("Loading over");
                 RenderProbes();
 
                 onProgressChange.Invoke(1f);
@@ -521,7 +532,7 @@ namespace umi3d.cdk
                         });
                     break;
                 case AbstractEntityDto dto:
-                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.Log(s, scope); performed.Invoke(); });
+                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.LogError(s, scope); performed.Invoke(); });
                     break;
                 case GlTFMaterialDto matDto:
                     Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
@@ -581,7 +592,7 @@ namespace umi3d.cdk
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogError(e.Message, scope);
+                UMI3DLogger.LogExcetion(e, scope);
                 performed2.Invoke();
             }
         }
@@ -712,7 +723,7 @@ namespace umi3d.cdk
                     loader.UrlToObject,
                     loader.ObjectFromCache,
                     (mat) => SetBaseMaterial((Material)mat),
-                    (e) => UMI3DLogger.LogWarning(e.Message, scope),
+                    (e) => UMI3DLogger.LogExcetion(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -934,7 +945,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property, scope);
-                    UMI3DLogger.LogWarning(e, scope);
+                    UMI3DLogger.LogExcetion(e, scope);
                 }
             }
             return true;
@@ -966,7 +977,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning($"SetEntity not apply on this object, id = {id},  operation = {operationId} ,  property = {propertyKey}", scope | DebugScope.Bytes);
-                    UMI3DLogger.LogWarning(e, scope);
+                    UMI3DLogger.LogExcetion(e, scope);
                 }
             }
             return true;

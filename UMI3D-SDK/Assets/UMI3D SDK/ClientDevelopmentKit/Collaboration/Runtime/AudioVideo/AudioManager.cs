@@ -235,11 +235,15 @@ namespace umi3d.cdk.collaboration
             }
             if (GlobalReader.ContainsKey(user.id))
             {
+                GlobalReader[user.id].Reset();
                 Destroy(GlobalReader[user.id].gameObject);
                 GlobalReader.Remove(user.id);
             }
             if (SpacialReader.ContainsKey(user.id))
+            {
+                SpacialReader[user.id].Reset();
                 SpacialReader.Remove(user.id);
+            }
         }
 
         /// <summary>

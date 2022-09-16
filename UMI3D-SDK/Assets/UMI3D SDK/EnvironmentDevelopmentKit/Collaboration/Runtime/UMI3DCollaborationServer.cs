@@ -53,6 +53,7 @@ namespace umi3d.edk.collaboration
 
         public static murmur.MumbleManager MumbleManager => Exists ? Instance.mumbleManager : null;
 
+
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
@@ -184,7 +185,7 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"Server Init", scope);
             base.Init();
 
-            InitMumble();
+            mumbleManager = murmur.MumbleManager.Create(mumbleIp);
 
             if (collaborativeModule == null)
                 collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
@@ -225,11 +226,6 @@ namespace umi3d.edk.collaboration
             OnServerStart.Invoke();
         }
 
-        private async void InitMumble()
-        {
-            mumbleManager = await murmur.MumbleManager.Create(mumbleIp);
-        }
-
         private void ShouldAcceptPlayer(string identity, NetworkingPlayer player, Action<bool> action)
         {
             UMI3DLogger.Log($"Should accept player", scope);
@@ -264,11 +260,11 @@ namespace umi3d.edk.collaboration
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
 
-        private async void AddUserAudio(UMI3DCollaborationUser user)
+        private void AddUserAudio(UMI3DCollaborationUser user)
         {
             if (mumbleManager == null)
                 return;
-            List<Operation> op = await mumbleManager.AddUser(user);
+            List<Operation> op = mumbleManager.AddUser(user);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();
@@ -355,7 +351,7 @@ namespace umi3d.edk.collaboration
                 mumbleManager.Delete();
         }
 
-        private void Clear()
+        private async void Clear()
         {
             http?.Stop();
             forgeServer?.Stop();
@@ -469,11 +465,11 @@ namespace umi3d.edk.collaboration
             OnUserUnregistered.Invoke(user);
         }
 
-        private async void RemoveUserAudio(UMI3DCollaborationUser user)
+        private void RemoveUserAudio(UMI3DCollaborationUser user)
         {
             if (mumbleManager == null)
                 return;
-            List<Operation> op = await mumbleManager.RemoveUser(user);
+            List<Operation> op = mumbleManager.RemoveUser(user);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();
