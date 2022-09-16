@@ -644,6 +644,11 @@ namespace umi3d.edk.collaboration
             return new HashSet<UMI3DUser>(Collaboration.Users.Where((u) => u.hasJoined));
         }
 
+        public override float ReturnServerTime()
+        {
+            return NetworkManager.Instance.Networker.Time.Timestep;
+        }
+
         #region session
         public UnityEvent OnServerStart = new UnityEvent();
         public UnityEvent OnServerStop = new UnityEvent();

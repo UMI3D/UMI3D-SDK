@@ -158,11 +158,11 @@ namespace umi3d.edk.userCapture
         /// Update the Embodiment from the received Dto.
         /// </summary>
         /// <param name="dto">a dto containing the tracking data</param>
-        public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId)
+        public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId, float timestep)
         {
             if (ActivateEmbodiments)
             {
-                if (!embodimentInstances.ContainsKey(userId))
+                if (!embodimentInstances.ContainsKey(userId) || (Embarkments.ContainsKey(userId) && Embarkments[userId] >= timestep - 20))
                 {
                     UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
                     return;
@@ -547,10 +547,14 @@ namespace umi3d.edk.userCapture
 
         #region BoardedVehicle
 
+        Dictionary<ulong, float> Embarkments = new Dictionary<ulong, float>();
+
         public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle = null)
         {
             if (user == null)
                 return;
+
+            Embarkments[user.Id()] = UMI3DServer.Instance.ReturnServerTime();
 
             VehicleRequest vr;
 
@@ -583,6 +587,8 @@ namespace umi3d.edk.userCapture
         {
             if (user == null)
                 return;
+
+            Embarkments[user.Id()] = UMI3DServer.Instance.ReturnServerTime();
 
             BoardedVehicleRequest vr;
 

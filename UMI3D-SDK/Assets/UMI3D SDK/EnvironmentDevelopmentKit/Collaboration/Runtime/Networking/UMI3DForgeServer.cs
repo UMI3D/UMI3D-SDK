@@ -391,7 +391,7 @@ namespace umi3d.edk.collaboration
                     avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
                     MainThreadManager.Run(() =>
                     {
-                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
+                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id(), frame.TimeStep);
                     });
 
                     if (user.Avatar != null && user.Avatar.RelayRoom != null)
@@ -435,7 +435,7 @@ namespace umi3d.edk.collaboration
 
                     MainThreadManager.Run(() =>
                     {
-                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id());
+                        UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id(), frame.TimeStep);
                     });
 
                     if (user.Avatar != null && user.Avatar.RelayRoom != null)
