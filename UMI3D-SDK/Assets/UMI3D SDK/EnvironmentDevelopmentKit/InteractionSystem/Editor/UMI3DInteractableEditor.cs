@@ -31,12 +31,15 @@ namespace umi3d.edk.editor
         private SerializedProperty NotifySubObject;
         private SerializedProperty NotifyHoverPosition;
         private SerializedProperty HasPriority;
+        private SerializedProperty InteractionDistance;
         private SerializedProperty onHoverEnter;
         private SerializedProperty onHoverExit;
         private SerializedProperty onHovered;
         private SerializedProperty UseAnimations;
         private SerializedProperty HoverEnterAnimation;
         private SerializedProperty HoverExitAnimation;
+
+        private bool showInteractionDistance;
 
         /// <inheritdoc/>
         protected override void OnEnable()
@@ -46,12 +49,15 @@ namespace umi3d.edk.editor
             NotifyHoverPosition = _target.FindProperty("NotifyHoverPosition");
             NotifySubObject = _target.FindProperty("NotifySubObject");
             HasPriority = _target.FindProperty("HasPriority");
+            InteractionDistance = _target.FindProperty("InteractionDistance");
             onHoverEnter = serializedObject.FindProperty("onHoverEnter");
             onHovered = serializedObject.FindProperty("onHovered");
             onHoverExit = serializedObject.FindProperty("onHoverExit");
             UseAnimations = serializedObject.FindProperty("UseAnimations");
             HoverEnterAnimation = serializedObject.FindProperty("HoverEnterAnimation");
             HoverExitAnimation = serializedObject.FindProperty("HoverExitAnimation");
+
+            showInteractionDistance = InteractionDistance.floatValue >= 0f;
         }
 
         private static bool displayEvent = false;
@@ -63,6 +69,23 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(NotifyHoverPosition);
             EditorGUILayout.PropertyField(NotifySubObject);
             EditorGUILayout.PropertyField(HasPriority);
+
+            showInteractionDistance = EditorGUILayout.Toggle("Has interaction distance", showInteractionDistance);
+
+            if (showInteractionDistance)
+            {
+                if (InteractionDistance.floatValue < 0f)
+                {
+                    InteractionDistance.floatValue = 1;
+                }
+                EditorGUI.indentLevel++;
+                EditorGUILayout.PropertyField(InteractionDistance);
+                EditorGUI.indentLevel--;
+            } else
+            {
+                InteractionDistance.floatValue = -1;
+            }
+
             base._OnInspectorGUI();
             displayEvent = EditorGUILayout.Foldout(displayEvent, "Interaction Events", true);
             if (displayEvent)
