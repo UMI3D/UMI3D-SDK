@@ -120,6 +120,16 @@ namespace umi3d.cdk.userCapture
         [Tooltip("Rotation delta (degrees) to consider user has moved.")]
         private float detectionRotationDelta = 5f;
 
+        /// <summary>
+        /// Maximum time (in seconds) between two tracking frames sent, even if player has no moved.
+        /// </summary>
+        [SerializeField]
+        [Tooltip("Maximum time (in seconds) between two tracking frames sent, even if player has no moved")]
+        private float maximumTimeBetweenFramesSent = 5;
+
+        private float lastTimeFrameSent = 0;
+
+
         public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
         public class BodyPoseEvent : UnityEvent<UMI3DBodyPoseDto> { };
 
@@ -359,17 +369,17 @@ namespace umi3d.cdk.userCapture
                     }
                 }
 
-
-
                 Vector3 position = UMI3DNavigation.Instance.transform.localPosition;
                 Quaternion rotation = UMI3DNavigation.Instance.transform.localRotation;
 
-                if (!HasPlayerMoved(position, rotation, bonesList) && !forceNotNullDto)
+                if (!HasPlayerMoved(position, rotation, bonesList) && !forceNotNullDto && (Time.realtimeSinceStartup < lastTimeFrameSent + maximumTimeBetweenFramesSent))
                 {
                     LastFrameDto = null;
                 }
                 else
                 {
+                    lastTimeFrameSent = Time.realtimeSinceStartup;
+
                     LastFrameDto = new UserTrackingFrameDto()
                     {
                         bones = bonesList,

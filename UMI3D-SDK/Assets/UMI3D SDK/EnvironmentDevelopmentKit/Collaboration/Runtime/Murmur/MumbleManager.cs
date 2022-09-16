@@ -229,7 +229,6 @@ namespace umi3d.edk.collaboration.murmur
                 var match = roomRegex.Match(room.data.name);
                 if (match.Success)
                 {
-
                     var lr = toAdd.FirstOrDefault(r => r.name == room.data.name);
                     if (lr != null)
                     {

@@ -646,7 +646,7 @@ namespace umi3d.edk.collaboration
 
         public override float ReturnServerTime()
         {
-            return NetworkManager.Instance.Networker.Time.Timestep;
+            return NetworkManager.Instance?.Networker?.Time?.Timestep ?? 0;
         }
 
         #region session

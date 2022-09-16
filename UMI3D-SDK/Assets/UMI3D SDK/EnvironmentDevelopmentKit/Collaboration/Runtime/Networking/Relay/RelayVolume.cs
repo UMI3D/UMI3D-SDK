@@ -84,23 +84,9 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayDataRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public List<UMI3DUser> RelayDataRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
-            float now = Time.time;
-
-            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
-
-            if (targetHashSet != null)
-            {
-                foreach (UMI3DCollaborationUser user in targetHashSet)
-                {
-                    if (ShouldRelay(sender, user, DataChannelTypes.Data, now))
-                    {
-                        RememberRelay(sender, user, DataChannelTypes.Data, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Data, isReliable);
-                    }
-                }
-            }
+            return RelayRequest(sender, data, target, receiverSetting, isReliable, DataChannelTypes.Data);
         }
 
         /// <summary>
@@ -111,23 +97,9 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayTrackingRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public List<UMI3DUser> RelayTrackingRequest(UMI3DAbstractNode sender,  object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
-            float now = Time.time;
-
-            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
-
-            if (targetHashSet != null)
-            {
-                foreach (UMI3DCollaborationUser user in targetHashSet)
-                {
-                    if (ShouldRelay(sender, user, DataChannelTypes.Tracking, now))
-                    {
-                        RememberRelay(sender, user, DataChannelTypes.Tracking, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Tracking, isReliable);
-                    }
-                }
-            }
+            return RelayRequest(sender, data, target, receiverSetting, isReliable, DataChannelTypes.Tracking);
         }
 
         /// <summary>
@@ -138,23 +110,9 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayVoIPRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public List<UMI3DUser> RelayVoIPRequest(UMI3DAbstractNode sender,  object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
-            float now = Time.time;
-
-            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
-
-            if (targetHashSet != null)
-            {
-                foreach (UMI3DCollaborationUser user in targetHashSet)
-                {
-                    if (ShouldRelay(sender, user, DataChannelTypes.VoIP, now))
-                    {
-                        RememberRelay(sender, user, DataChannelTypes.VoIP, now);
-                        DispatchTransaction(user, data, DataChannelTypes.VoIP, isReliable);
-                    }
-                }
-            }
+            return RelayRequest(sender, data, target, receiverSetting, isReliable, DataChannelTypes.VoIP);
         }
 
 
@@ -166,23 +124,9 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <param name="isReliable"></param>
-        public void RelayVideoRequest(UMI3DAbstractNode sender, UMI3DUser userSender, byte[] data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
+        public List<UMI3DUser> RelayVideoRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false)
         {
-            float now = Time.time;
-
-            HashSet<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
-
-            if (targetHashSet != null)
-            {
-                foreach (UMI3DCollaborationUser user in targetHashSet)
-                {
-                    if (ShouldRelay(sender, user, DataChannelTypes.Video, now))
-                    {
-                        RememberRelay(sender, user, DataChannelTypes.Video, now);
-                        DispatchTransaction(user, data, DataChannelTypes.Video, isReliable);
-                    }
-                }
-            }
+            return RelayRequest(sender, data, target, receiverSetting, isReliable, DataChannelTypes.Video);
         }
 
         /// <summary>
@@ -191,19 +135,41 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <returns></returns>
-        protected HashSet<UMI3DCollaborationUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
+        protected List<UMI3DCollaborationUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
         {
             switch (receiverSetting)
             {
                 case Receivers.All:
-                    return new HashSet<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users);
+                    return new List<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users);
                 case Receivers.Others:
-                    return new HashSet<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
+                    return new List<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
                 case Receivers.Target:
-                    return new HashSet<UMI3DCollaborationUser>() { target as UMI3DCollaborationUser };
+                    return new List<UMI3DCollaborationUser>() { target as UMI3DCollaborationUser };
                 default:
                     return null;
             }
+        }
+
+        protected List<UMI3DUser> RelayRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable, DataChannelTypes dataChannel)
+        {
+            float now = Time.time;
+
+            List<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
+            List<UMI3DUser> result = targetHashSet?.Select(p=>p as UMI3DUser).ToList();
+
+            if (targetHashSet != null)
+            {
+                foreach (UMI3DCollaborationUser user in targetHashSet)
+                {
+                    if (ShouldRelay(sender, user, dataChannel, now))
+                    {
+                        RememberRelay(sender, user, dataChannel, now);
+                    }
+                    else
+                        result.Remove(user);
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -343,11 +309,6 @@ namespace umi3d.edk.collaboration
                 default:
                     return null;
             }
-        }
-
-        protected void DispatchTransaction(UMI3DCollaborationUser to, byte[] data, DataChannelTypes channel, bool isReliable)
-        {
-            UMI3DCollaborationServer.ForgeServer.RelayBinaryDataTo((int)channel, to.networkPlayer, data, isReliable);
         }
 
         /// <summary>

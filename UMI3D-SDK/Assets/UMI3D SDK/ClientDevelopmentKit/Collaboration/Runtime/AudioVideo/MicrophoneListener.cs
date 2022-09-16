@@ -145,6 +145,7 @@ namespace umi3d.cdk.collaboration
         private bool playing = false;
         private bool playingInit = false;
         private bool IdentityUpdateOnce = false;
+        private bool canJoinChannel = false;
         #endregion
 
         #region Init
@@ -173,7 +174,11 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneChannelUpdated.AddListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
-            UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(Reset);
+
+            UMI3DCollaborationClientServer.Instance.OnRedirectionStarted.AddListener(Reset);
+            UMI3DCollaborationClientServer.Instance.OnRedirectionAborted.AddListener(Heartbeat);
+            UMI3DEnvironmentClient.Connected.AddListener(Heartbeat);
+
 
             pushToTalkKeycode = KeyCode.M;
 
@@ -187,7 +192,9 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneChannelUpdated.RemoveListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.RemoveListener(UseMumbleUpdate);
-            UMI3DCollaborationClientServer.Instance.OnRedirection.RemoveListener(Reset);
+            UMI3DCollaborationClientServer.Instance.OnRedirectionStarted.RemoveListener(Reset);
+            UMI3DCollaborationClientServer.Instance.OnRedirectionAborted.RemoveListener(Heartbeat);
+            UMI3DEnvironmentClient.Connected.RemoveListener(Heartbeat);
             running = false;
         }
         #endregion
@@ -219,6 +226,8 @@ namespace umi3d.cdk.collaboration
 
         private async Task ForceStopMicrophone(bool force = false)
         {
+            canJoinChannel = false;
+            lastChannelJoined = null;
             if (force || await IsPLaying())
             {
                 try
@@ -247,6 +256,9 @@ namespace umi3d.cdk.collaboration
             mumbleClient = null;
             playingInit = false;
             playing = false;
+            canJoinChannel = false;
+            lastChannelJoined = null;
+            joinOnce = false;
         }
 
         private void OnMicDisconnected()
@@ -313,8 +325,10 @@ namespace umi3d.cdk.collaboration
             while (running)
             {
                 await UMI3DAsyncManager.Delay(millisecondsHeartBeat);
-                if (mumbleClient == null)
-                    StartMicrophoneAsync();
+                if ((mumbleClient == null || !playing) && running)
+                    await StartMicrophone();
+                else if (await IsPLaying() && running && channelToJoin != lastChannelJoined)
+                    await JoinChannel();
             }
         }
 
@@ -375,7 +389,12 @@ namespace umi3d.cdk.collaboration
                                 mumbleMic.SetPositionalDataFunction(WritePositionalData);
                             mumbleMic.OnMicDisconnect += OnMicDisconnected;
 
-                            await JoinChannel();
+                            canJoinChannel = true;
+                            lastChannelJoined = null;
+
+                            joinOnce = true;
+                            await _JoinChannel(0, true);
+                            joinOnce = false;
 
                             if (mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.AlwaysSend
                                     || mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.Amplitude)
@@ -412,15 +431,44 @@ namespace umi3d.cdk.collaboration
             await ForceStopMicrophone(true);
         }
 
-        private async Task JoinChannel(int trycount = 0)
+        bool joinOnce = true;
+        string lastChannelJoined = null;
+
+        private async Task JoinChannel()
         {
-            if (trycount < 5 && !string.IsNullOrEmpty(channelToJoin))
+            if (joinOnce)
             {
-                await UMI3DAsyncManager.Delay(1000);
-                if (mumbleClient != null && !mumbleClient.JoinChannel(channelToJoin))
+                while (joinOnce)
+                    await UMI3DAsyncManager.Yield();
+                return;
+            }
+
+            joinOnce = true;
+            await _JoinChannel(0);
+            joinOnce = false;
+        }
+
+        private async Task _JoinChannel(int trycount, bool ignorePlaying = false)
+        {
+            if ((ignorePlaying || await IsPLaying())
+                && canJoinChannel
+                && joinOnce
+                && trycount < 5
+                && !string.IsNullOrEmpty(channelToJoin)
+                && mumbleClient != null
+                && channelToJoin != lastChannelJoined)
+            {
+                if (!mumbleClient.JoinChannel(channelToJoin))
                 {
-                    await JoinChannel(trycount + 1);
+                    float t = Time.time + 1;
+                    while (Time.time < t && canJoinChannel)
+                        await UMI3DAsyncManager.Yield();
+                    if (canJoinChannel)
+                        await _JoinChannel(trycount + 1, ignorePlaying);
+                    return;
                 }
+                lastChannelJoined = channelToJoin;
+                return;
             }
         }
 
@@ -495,9 +543,9 @@ namespace umi3d.cdk.collaboration
 
         private async void Reset()
         {
+            running = false;
             useMumble = false;
-            if (await IsPLaying())
-                StopMicrophoneAsync();
+            await ForceStopMicrophone(true);
         }
 
         private async void UseMumbleUpdate(UMI3DUser user)

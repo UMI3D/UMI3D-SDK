@@ -603,55 +603,57 @@ namespace umi3d.cdk.collaboration
         {
             if (useDto)
             {
-                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UserTrackingFrameDto trackingFrame)
+                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
                 {
-                    if (UMI3DClientUserTracking.Instance.trackingReception && UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    foreach (UserTrackingFrameDto trackingFrame in frames.values)
                     {
-                        MainThreadManager.Run(() =>
+                        if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         {
-                            if (client.Time.Timestep - frame.TimeStep < 500)
-                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
-                        });
-                    }
-                    else
-                    {
-                        MainThreadManager.Run(() =>
+                            MainThreadManager.Run(() =>
+                            {
+                                if (client.Time.Timestep - frame.TimeStep < 500)
+                                    StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
+                            });
+                        }
+                        else
                         {
-                            UMI3DLogger.LogWarning("Avatar Frame Dropped", scope);
-                        });
+                            MainThreadManager.Run(() =>
+                            {
+                                UMI3DLogger.LogWarning("User Avatar not found.", scope);
+                            });
+                        }
                     }
                 }
             }
             else
             {
-                var trackingFrame = new common.userCapture.UserTrackingFrameDto();
-
                 var container = new ByteContainer(frame.StreamData.byteArr);
-                uint id = UMI3DNetworkingHelper.Read<uint>(container);
-                if (id == UMI3DOperationKeys.UserTrackingFrame)
+                try
                 {
-                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    trackingFrame.skeletonHighOffset = UMI3DNetworkingHelper.Read<float>(container);
-                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
-                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
+                    System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DNetworkingHelper.ReadList<UserTrackingFrameDto>(container);
 
-                    if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
+                    foreach (UserTrackingFrameDto trackingFrame in frames)
                     {
-                        MainThreadManager.Run(() =>
+                        if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
                         {
-                            if (client.Time.Timestep - frame.TimeStep < 500)
-                                StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
-                        });
-                    }
-                    else
-                    {
-                        MainThreadManager.Run(() =>
+                            MainThreadManager.Run(() =>
+                            {
+                                if (client.Time.Timestep - frame.TimeStep < 500)
+                                    StartCoroutine((userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep));
+                            });
+                        }
+                        else
                         {
-                            UMI3DLogger.LogWarning("User Avatar not found.", scope);
-                        });
+                            MainThreadManager.Run(() =>
+                            {
+                                UMI3DLogger.LogWarning("User Avatar not found.", scope);
+                            });
+                        }
                     }
+                }
+                catch (Exception e)
+                {
+                    UMI3DLogger.LogError("Impossible to read tracking frames from server " + e.Message, scope);
                 }
             }
         }

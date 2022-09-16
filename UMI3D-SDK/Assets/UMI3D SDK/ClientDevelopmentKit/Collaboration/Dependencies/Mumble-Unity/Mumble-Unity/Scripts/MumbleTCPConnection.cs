@@ -175,8 +175,6 @@ namespace Mumble
                 try
                 {
                     var messageType = (MessageType)IPAddress.NetworkToHostOrder(_reader.ReadInt16());
-                    //Debug.Log("Processing data of type: " + messageType);
-
                     switch (messageType)
                     {
                         case MessageType.Version:
@@ -315,19 +313,22 @@ namespace Mumble
                     if (ex is EndOfStreamException)
                     {
                         Debug.LogError("EOS Exception: " + ex);//This happens when we connect again with the same username
-                        _mumbleClient.OnConnectionDisconnect();
+                        _mumbleClient?.OnConnectionDisconnect();
                     }
                     else if (ex is IOException)
                     {
                         Debug.LogError("IO Exception: " + ex);
-                        _mumbleClient.OnConnectionDisconnect();
+                        _mumbleClient?.OnConnectionDisconnect();
                     }
                     //These just means the app stopped, it's ok
                     else if (ex is ObjectDisposedException) { }
                     else if (ex is ThreadAbortException) { }
                     else if (ex is System.Threading.ThreadInterruptedException) { }
                     else
+                    {
                         Debug.LogError($"Unhandled error: {ex}");
+                        Debug.LogException(ex);
+                    }
                     return;
                 }
             }
