@@ -373,7 +373,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key,user),
-                value = GetValue(user)[key]
+                value = SerializerL(GetValue(user)[key], user)
             };
         }
 
@@ -395,7 +395,7 @@ namespace umi3d.edk
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
-                value = GetValue()[key]
+                value = SerializerL(GetValue()[key], null)
             };
         }
     }
