@@ -49,6 +49,10 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public bool HasPriority => dto?.hasPriority ?? false;
 
+        /// <summary>
+        /// Distance for a user to interact with this tool. If value < 0, no distance check.
+        /// </summary>
+        public float InteractionDistance => dto?.interactionDistance ?? -1;
 
         /// <inheritdoc/>
         protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }

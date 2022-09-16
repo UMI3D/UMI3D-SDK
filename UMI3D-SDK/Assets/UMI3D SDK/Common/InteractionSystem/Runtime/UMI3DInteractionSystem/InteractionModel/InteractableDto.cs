@@ -43,6 +43,11 @@ namespace umi3d.common.interaction
         public bool hasPriority = false;
 
         /// <summary>
+        /// Distance for a user to interact with this tool. If value < 0, no distance check
+        /// </summary>
+        public float interactionDistance = -1;
+
+        /// <summary>
         /// Animation id of the animation triggered when the interactable starts being hovered.
         /// </summary>
         public ulong HoverEnterAnimationId;
