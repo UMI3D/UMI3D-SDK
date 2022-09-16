@@ -111,6 +111,7 @@ namespace umi3d.common
         public const uint InteractableNotifyHoverPosition = 5202;
         public const uint InteractableNotifySubObject = 5203;
         public const uint InteractableHasPriority = 5204;
+        public const uint InteractableInteractionDistance = 5205;
 
         public const uint InteractableHoverEnterAnimation = 5301;
         public const uint InteractableHoverExitAnimation = 5302;

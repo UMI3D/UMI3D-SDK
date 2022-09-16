@@ -29,6 +29,8 @@ namespace umi3d.edk.interaction
     /// </summary>
     public class UMI3DInteractable : AbstractTool, UMI3DLoadableEntity
     {
+        #region Fields
+
         /// <summary>
         /// Should the object notify the environment when being hovered ?
         /// </summary>
@@ -49,6 +51,16 @@ namespace umi3d.edk.interaction
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Should be prioritized over others interactables when pointed at ?")]
         protected bool HasPriority;
+
+        /// <summary>
+        /// Distance for a user to interact with this tool. If value < 0, no distance check.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Distance for a user to interact with this tool. If value < 0, no distance check")]
+        protected float InteractionDistance = -1;
+
+        #endregion
+
+        #region UMI3DLoadableEntity
 
         /// <inheritdoc/>
         public override void Register()
@@ -83,6 +95,8 @@ namespace umi3d.edk.interaction
             };
             return operation;
         }
+
+        #endregion
 
         /// <summary>
         /// Class for event rising on hover when <see cref="NotifyHoverPosition"/> is enabled. 
@@ -153,6 +167,8 @@ namespace umi3d.edk.interaction
         [SerializeField, EditorReadOnly, Tooltip("Triggered when the object stops to be hovered by a user.")]
         protected UMI3DAbstractAnimation HoverExitAnimation;
 
+        #region Async Property 
+
         /// <summary>
         /// List of bones hovering this object (if any).
         /// </summary>
@@ -161,6 +177,11 @@ namespace umi3d.edk.interaction
         private UMI3DAsyncProperty<bool> objectNotifySubObject1;
         private UMI3DAsyncProperty<UMI3DNode> objectNodeId1;
         private UMI3DAsyncProperty<bool> _hasPriority;
+
+        /// <summary>
+        /// Private field associated to property <see cref="interactionDistance"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<float> _interactionDistance;
         private UMI3DAsyncProperty<UMI3DAbstractAnimation> _hoverEnterAnimation;
         private UMI3DAsyncProperty<UMI3DAbstractAnimation> _hoverExitAnimation;
 
@@ -173,8 +194,14 @@ namespace umi3d.edk.interaction
         public UMI3DAsyncProperty<bool> objectNotifySubObject { get { Register(); return objectNotifySubObject1; } protected set => objectNotifySubObject1 = value; }
         public UMI3DAsyncProperty<UMI3DNode> objectNodeId { get { Register(); return objectNodeId1; } protected set => objectNodeId1 = value; }
         public UMI3DAsyncProperty<bool> hasPriority { get { Register(); return _hasPriority; } protected set => _hasPriority = value; }
+        /// <summary>
+        /// Property associated to <see cref="InteractionDistance"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<float> interactionDistance { get { Register(); return _interactionDistance; } protected set => _interactionDistance = value; }
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> hoverEnterAnimation { get { Register(); return _hoverEnterAnimation; } set => _hoverEnterAnimation = value; }
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> hoverExitAnimation { get { Register(); return _hoverExitAnimation; } set => _hoverExitAnimation = value; }
+
+        #endregion
 
         /// <summary>
         /// Create an empty Dto.
@@ -199,6 +226,7 @@ namespace umi3d.edk.interaction
             Idto.notifySubObject = objectNotifySubObject.GetValue(user);
             Idto.nodeId = objectNodeId.GetValue(user).Id();
             Idto.hasPriority = hasPriority.GetValue(user);
+            Idto.interactionDistance = interactionDistance.GetValue(user);
             Idto.HoverEnterAnimationId = hoverEnterAnimation.GetValue(user)?.Id() ?? 0;
             Idto.HoverExitAnimationId = hoverExitAnimation.GetValue(user)?.Id() ?? 0;
         }
@@ -215,10 +243,12 @@ namespace umi3d.edk.interaction
             objectNotifySubObject.OnValueChanged += (b) => NotifySubObject = b;
             objectNodeId.OnValueChanged += (n) => Node = n;
             hasPriority = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.InteractableHasPriority, HasPriority);
+            hasPriority.OnValueChanged += (b) => HasPriority = b;
+            interactionDistance = new UMI3DAsyncProperty<float>(toolId, UMI3DPropertyKeys.InteractableInteractionDistance, InteractionDistance);
+            interactionDistance.OnValueChanged += (f) => InteractionDistance = f;
 
             hoverEnterAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.InteractableHoverEnterAnimation, HoverEnterAnimation, (v, u) => v?.Id());
             hoverExitAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.InteractableHoverExitAnimation, HoverExitAnimation, (v, u) => v?.Id());
-
         }
 
         /// <summary>
