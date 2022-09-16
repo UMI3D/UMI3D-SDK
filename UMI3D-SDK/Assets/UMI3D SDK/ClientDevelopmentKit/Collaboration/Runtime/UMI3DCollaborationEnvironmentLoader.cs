@@ -30,6 +30,9 @@ namespace umi3d.cdk.collaboration
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
 
+        public List<UMI3DUser> JoinnedUserList => UserList.Where(u => u.status >= StatusType.AWAY || (UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId())).ToList();
+        public static event Action OnUpdateJoinnedUserList;
+
         public UMI3DUser GetClientUser()
         {
             return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
@@ -48,14 +51,13 @@ namespace umi3d.cdk.collaboration
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
             OnUpdateUserList?.Invoke();
-
+            OnUpdateJoinnedUserList?.Invoke();
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
-
         }
 
         void OnUserSpeaking(UMI3DUser user, bool isSpeaking)
         {
-            if(isSpeaking)
+            if (isSpeaking)
             {
                 if (user != null && user.onStartSpeakingAnimationId != 0)
                     StartAnim(user.onStartSpeakingAnimationId);
@@ -206,6 +208,7 @@ namespace umi3d.cdk.collaboration
             UserList.Insert(index, new UMI3DUser(userDto));
             dto.userList.Insert(index, userDto);
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
         }
 
         private void RemoveUserAt(UMI3DCollaborationEnvironmentDto dto, int index)
@@ -216,6 +219,7 @@ namespace umi3d.cdk.collaboration
             dto.userList.RemoveAt(index);
             Olduser.Destroy();
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
         }
 
         private void ReplaceUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userNew)
@@ -224,8 +228,16 @@ namespace umi3d.cdk.collaboration
 
             if (index < UserList.Count)
             {
+
+                bool userWasReady = UserList[index].status < StatusType.AWAY;
+                bool userIsReady = userNew.status < StatusType.AWAY;
+                bool userReadyListUpdated = userWasReady != userIsReady;
+
                 UserList[index].Update(userNew);
                 dto.userList[index] = userNew;
+
+                if (userReadyListUpdated)
+                    OnUpdateJoinnedUserList?.Invoke();
             }
             else if (index == UserList.Count) InsertUser(dto, index, userNew);
         }
@@ -236,6 +248,7 @@ namespace umi3d.cdk.collaboration
             dto.userList = usersNew;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
         }
     }
 }
