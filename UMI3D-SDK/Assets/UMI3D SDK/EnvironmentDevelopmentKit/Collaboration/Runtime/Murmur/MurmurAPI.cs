@@ -511,51 +511,30 @@ namespace umi3d.edk.collaboration.murmur
 
             public async Task<User> Users(int id)
             {
-                try
-                {
-                    string info = await murmur.GetServerUsers(data.id, id);
-                    UserData dt = Convert<UserData>(info);
-                    var r = new User(dt.user_id.ToString(), dt.username);
-                    return r;
-                }
-                catch
-                {
-                    return null;
-                }
+                string info = await murmur.GetServerUsers(data.id, id);
+                UserData dt = Convert<UserData>(info);
+                var r = new User(dt.user_id.ToString(), dt.username);
+                return r;
             }
 
             public async Task<User> AddUser(string name, string password)
             {
-                try
-                {
-                    string info = await murmur.AddUser(data.id, name, password);
+                string info = await murmur.AddUser(data.id, name, password);
 
-                    NewUserData dt = Convert<NewUserData>(info);
-                    var r = new User(dt.user_id.ToString(), dt.username);
-                    RegisteredUsers.Add(r);
-                    return r;
-                }
-                catch
-                {
-                    return null;
-                }
+                NewUserData dt = Convert<NewUserData>(info);
+                var r = new User(dt.user_id.ToString(), dt.username);
+                RegisteredUsers.Add(r);
+                return r;
             }
 
             public async Task<bool> RemoveUser(int user)
             {
-                try
-                {
-                    if (user == 0) return false;
-                    User r = RegisteredUsers.FirstOrDefault(u => u.id == user);
-                    if (r != null)
-                        RegisteredUsers.Remove(r);
-                    string info = await murmur.DeleteUser(data.id, user);
-                    return info == null;
-                }
-                catch
-                {
-                    return false;
-                }
+                if (user == 0) return false;
+                User r = RegisteredUsers.FirstOrDefault(u => u.id == user);
+                if (r != null)
+                    RegisteredUsers.Remove(r);
+                string info = await murmur.DeleteUser(data.id, user);
+                return info == null;
             }
         }
     }
