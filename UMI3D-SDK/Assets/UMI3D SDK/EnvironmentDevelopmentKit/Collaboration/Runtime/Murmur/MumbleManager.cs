@@ -108,7 +108,7 @@ namespace umi3d.edk.collaboration.murmur
             while (running)
             {
                 await UMI3DAsyncManager.Yield();
-                if (RefreshTime - UnityEngine.Time.time < 0)
+                if (RefreshTime - UnityEngine.Time.time > 0)
                     continue;
                 await Refresh();
             }
