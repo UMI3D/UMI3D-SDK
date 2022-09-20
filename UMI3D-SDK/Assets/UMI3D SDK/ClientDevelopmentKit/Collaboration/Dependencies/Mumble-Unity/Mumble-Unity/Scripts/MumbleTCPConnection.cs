@@ -12,6 +12,7 @@ using System.Threading;
 using System.Text;
 using Version = MumbleProto.Version;
 using UnityEngine.Events;
+using System.Threading.Tasks;
 
 namespace Mumble
 {
@@ -40,7 +41,6 @@ namespace Mumble
         internal MumbleTcpConnection(IPEndPoint host, string hostname, UpdateOcbServerNonce updateOcbServerNonce,
             MumbleUdpConnection udpConnection, MumbleClient mumbleClient)
         {
-
             _model = (ProtoBuf.Meta.TypeModel)Activator.CreateInstance(Type.GetType("MyProtoModel, MyProtoModel"));
 
             _host = host;
@@ -67,27 +67,35 @@ namespace Mumble
         }
         private void OnTcpConnected(IAsyncResult connectionResult)
         {
-            if (!_tcpClient.Connected)
+            try
             {
+                if (_tcpClient == null || !_tcpClient.Connected)
+                {
+                    throw new Exception("Failed to connect");
+                }
+
+                NetworkStream networkStream = _tcpClient.GetStream();
+                _ssl = new SslStream(networkStream, false, ValidateCertificate);
+
+                _ssl.AuthenticateAsClient(_hostname);
+
+                _reader = new BinaryReader(_ssl);
+                _writer = new BinaryWriter(_ssl);
+                DateTime startWait = DateTime.Now;
+                while (!_ssl.IsAuthenticated)
+                {
+                    if (DateTime.Now - startWait > TimeSpan.FromSeconds(2))
+                        throw new TimeoutException("Time out waiting for SSL authentication");
+                }
+                SendVersion();
+                StartPingTimer();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
                 Debug.LogError("Connection failed! Please confirm that you have internet access, and that the hostname is correct");
                 connectionFailed.Invoke();
-                throw new Exception("Failed to connect");
             }
-
-            NetworkStream networkStream = _tcpClient.GetStream();
-            _ssl = new SslStream(networkStream, false, ValidateCertificate);
-            _ssl.AuthenticateAsClient(_hostname);
-            _reader = new BinaryReader(_ssl);
-            _writer = new BinaryWriter(_ssl);
-
-            DateTime startWait = DateTime.Now;
-            while (!_ssl.IsAuthenticated)
-            {
-                if (DateTime.Now - startWait > TimeSpan.FromSeconds(2))
-                    throw new TimeoutException("Time out waiting for SSL authentication");
-            }
-            SendVersion();
-            StartPingTimer();
         }
         private void SendVersion()
         {
@@ -276,6 +284,9 @@ namespace Mumble
                             /*Serializer.*/
                             DeserializeWithLengthPrefix<MumbleProto.Ping>(_ssl,
                  PrefixStyle.Fixed32BigEndian);
+
+                            _mumbleClient?.OnNotifyPingReceived();
+
                             break;
                         case MessageType.Reject:
                             // This is called, for example, when the max number of users has been hit

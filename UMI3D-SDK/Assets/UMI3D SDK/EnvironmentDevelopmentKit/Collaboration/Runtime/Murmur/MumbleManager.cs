@@ -259,7 +259,7 @@ namespace umi3d.edk.collaboration.murmur
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogError($"Error in mumble create room {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogError($"Error in mumble create room", scope);
                 UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
@@ -276,7 +276,7 @@ namespace umi3d.edk.collaboration.murmur
 
             catch (Exception e)
             {
-                UMI3DLogger.LogError($"Error in mumble delete room {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogError($"Error in mumble delete room", scope);
                 UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
@@ -293,7 +293,7 @@ namespace umi3d.edk.collaboration.murmur
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogError($"Error in mumble create user {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogError($"Error in mumble create user", scope);
                 UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
@@ -309,7 +309,7 @@ namespace umi3d.edk.collaboration.murmur
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogError($"Error in mumble delete user {e.Message} \n {e.StackTrace}", scope);
+                UMI3DLogger.LogError($"Error in mumble delete user", scope);
                 UMI3DLogger.LogExcetion(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
