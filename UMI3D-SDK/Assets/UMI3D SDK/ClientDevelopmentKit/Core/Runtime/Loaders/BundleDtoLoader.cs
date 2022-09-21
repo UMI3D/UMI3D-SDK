@@ -120,11 +120,18 @@ namespace umi3d.cdk
 #else
                     UnityEngine.Object objectInBundle = bundle.LoadAsset(pathIfObjectInBundle);
 #endif
-                    if (objectInBundle is GameObject)
+                    if (objectInBundle is Material)
                     {
-                        AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                        callback.Invoke(new Material(objectInBundle as Material));
                     }
-                    callback.Invoke(objectInBundle);
+                    else
+                    {
+                        if (objectInBundle is GameObject)
+                        {
+                            AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                        }
+                        callback.Invoke(objectInBundle);
+                    }
                 }
                 else
                 {
