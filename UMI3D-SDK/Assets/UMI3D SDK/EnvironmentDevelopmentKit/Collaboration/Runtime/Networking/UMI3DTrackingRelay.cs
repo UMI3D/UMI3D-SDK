@@ -182,7 +182,7 @@ namespace umi3d.edk.collaboration
 
             Dictionary<NetworkingPlayer, T> userFrameMap = null;
             RelayVolume relayVolume;
-            if (user is UMI3DCollaborationUser cUser && cUser?.Avatar?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.Avatar.RelayRoom.Id(), out relayVolume))
+            if (user is UMI3DCollaborationUser cUser && cUser?.Avatar?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.Avatar.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Data))
             {
                 var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationUser).ToList();
                 userFrameMap = new Dictionary<NetworkingPlayer, T>();
