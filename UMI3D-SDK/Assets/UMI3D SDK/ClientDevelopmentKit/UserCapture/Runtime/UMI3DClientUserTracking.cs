@@ -217,12 +217,21 @@ namespace umi3d.cdk.userCapture
         /// Don't use this for your own avatar's emotes.
         public void StopEmoteOnOtherAvatar(ulong emoteId, ulong userId)
         {
-            var otherUserAvatar = embodimentDict[userId];
-            var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
-            var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
-
-            if (emoteAnimator == null || emoteConfig == null)
+            if (emoteConfig == null) //no emote support in the scene
                 return;
+
+            var otherUserAvatar = embodimentDict[userId];
+            if (otherUserAvatar == null) //the embodiment system lost the avatar
+                return;
+
+            var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
+            if (animators == null) //no animator to desactive found
+                return;
+
+            var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
+            if (emoteAnimator == null) //no animator to desactive found
+                return;
+
             var emoteToStop = emoteConfig.emotes.Find(x => x.id == emoteId);
             StopCoroutine(PlayEmote(emoteAnimator, emoteToStop));
             emoteAnimator.Play(IdleStateName);
