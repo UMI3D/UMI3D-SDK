@@ -361,8 +361,17 @@ namespace umi3d.cdk.collaboration
                 }
 
             }
+
             UMI3DLogger.Log($"GetEntity {idsToSend.ToString<ulong>()}", scope);
-            return await (environmentClient?.GetEntity(idsToSend) ?? Task.FromResult<LoadEntityDto>(null));
+            var result = idsToSend.Count > 0 ? 
+                await (environmentClient?.GetEntity(idsToSend) ?? Task.FromResult<LoadEntityDto>(null)) 
+                : new LoadEntityDto() { entities = new List<IEntity>()};
+
+            foreach(var id in idsToSend)
+                loadingEntities.Remove(id);
+
+
+            return result;
         }
 
         private SortedSet<ulong> loadingEntities = new SortedSet<ulong>();

@@ -569,11 +569,13 @@ namespace umi3d.cdk
         {
             List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
             ids.ForEach(id => NotifyEntityToBeLoaded(id));
-            int count = ids.Count;
+            
             int performedCount = 0;
-            Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
+            
             Action<LoadEntityDto> callback = (load) =>
             {
+                int count = load.entities.Count;
+                Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
                 foreach (IEntity item in load.entities)
                 {
                     if (item is MissingEntityDto missing)
@@ -593,7 +595,7 @@ namespace umi3d.cdk
             catch (Exception e)
             {
                 UMI3DLogger.LogExcetion(e, scope);
-                performed2.Invoke();
+                performed?.Invoke();
             }
         }
 
