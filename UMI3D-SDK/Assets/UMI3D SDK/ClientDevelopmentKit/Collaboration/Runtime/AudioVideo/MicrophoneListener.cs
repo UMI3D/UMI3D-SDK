@@ -317,6 +317,15 @@ namespace umi3d.cdk.collaboration
                     useMumble = user.useMumble;
                 }
             }
+            else
+            {
+                username = null;
+                password = null;
+                hostName = null;
+                port = 0;
+                channelToJoin = null;
+                useMumble = false;
+            }
         }
 
         void ResetUser()
@@ -373,6 +382,7 @@ namespace umi3d.cdk.collaboration
                 {
                     UnityEngine.Debug.LogError("client should be null");
                     mumbleClient.Close();
+                    mumbleClient = null;
                 }
 
                 mumbleClient = new MumbleClient(hostName, port, CreateMumbleAudioPlayerFromPrefab,
