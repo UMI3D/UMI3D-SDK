@@ -162,7 +162,7 @@ namespace umi3d.edk.userCapture
         {
             if (ActivateEmbodiments)
             {
-                if (!embodimentInstances.ContainsKey(userId) || (Embarkments.ContainsKey(userId) && Embarkments[userId] >= timestep - 20))
+                if (!embodimentInstances.ContainsKey(userId) || (Embarkments.ContainsKey(userId) && !Embarkments[userId]))
                 {
                     UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
                     return;
@@ -547,18 +547,39 @@ namespace umi3d.edk.userCapture
 
         #region BoardedVehicle
 
-        Dictionary<ulong, float> Embarkments = new Dictionary<ulong, float>();
+        Dictionary<ulong, bool> Embarkments = new Dictionary<ulong, bool>();
+
+        public void ConfirmEmbarkment(VehicleConfirmation dto, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
+
+        public void ConfirmEmbarkment(uint operationKey, ByteContainer container, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
+
+        private IEnumerator _ConfirmeEmbarkment(UMI3DUser user)
+        {
+            while (!embodimentInstances.ContainsKey(user.Id()))
+            {
+                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered", scope);
+                yield return new WaitForFixedUpdate();
+            }
+
+            Embarkments[user.Id()] = true;
+        }
 
         public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle = null)
         {
             if (user == null)
                 return;
 
-            Embarkments[user.Id()] = UMI3DServer.Instance.ReturnServerTime();
+            Embarkments[user.Id()] = false;
 
             VehicleRequest vr;
 
-            var tr = new Transaction();
+            Transaction tr = new Transaction();
 
             if (vehicle != null)
             {
@@ -588,11 +609,11 @@ namespace umi3d.edk.userCapture
             if (user == null)
                 return;
 
-            Embarkments[user.Id()] = UMI3DServer.Instance.ReturnServerTime();
+            Embarkments[user.Id()] = false;
 
             BoardedVehicleRequest vr;
 
-            var tr = new Transaction();
+            Transaction tr = new Transaction();
 
             if (vehicle != null)
             {

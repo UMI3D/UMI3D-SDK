@@ -45,6 +45,14 @@ namespace umi3d.cdk
                 {
                     case VehicleDto vehicleDto:
                         Instance.currentNav.Embark(vehicleDto);
+
+                        var vConfirmation = new VehicleConfirmation()
+                        {
+                            embarkedUserId = UMI3DClientServer.Instance.GetUserId()
+                        };
+
+                        UMI3DClientServer.SendData(vConfirmation, true);
+
                         break;
                     case TeleportDto teleportDto:
                         Instance.currentNav.Teleport(teleportDto);

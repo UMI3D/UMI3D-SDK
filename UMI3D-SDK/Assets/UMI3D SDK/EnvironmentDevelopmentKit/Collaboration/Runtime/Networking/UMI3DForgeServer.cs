@@ -304,6 +304,13 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
+                    case common.VehicleConfirmation vConfirmation:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DEmbodimentManager.Instance.ConfirmEmbarkment(vConfirmation, user);
+                        });
+                        break;
+
                     case common.volume.VolumeUserTransitDto vutdto:
                         MainThreadManager.Run(() =>
                         {
@@ -336,6 +343,13 @@ namespace umi3d.edk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             UMI3DEmbodimentManager.Instance.UserCameraReception(id, container, user);
+                        });
+                        break;
+
+                    case UMI3DOperationKeys.VehicleConfirmation:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DEmbodimentManager.Instance.ConfirmEmbarkment(id, container, user);
                         });
                         break;
 
