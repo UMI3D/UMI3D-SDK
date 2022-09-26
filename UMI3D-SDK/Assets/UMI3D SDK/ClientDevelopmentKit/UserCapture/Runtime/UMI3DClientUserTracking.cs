@@ -233,29 +233,32 @@ namespace umi3d.cdk.userCapture
             if (emoteConfig == null) //no emote support in the scene
                 return;
 
-            if (emoteCoroutineDict.ContainsKey(userId) && emoteCoroutineDict[userId] != null)
+            if (emoteCoroutineDict.ContainsKey(userId) 
+                && emoteCoroutineDict[userId] != null)
             {
                 StopCoroutine(emoteCoroutineDict[userId]);
                 emoteCoroutineDict[userId] = null;
 
-                var otherUserAvatar = embodimentDict[userId];
-                if (otherUserAvatar == null) //the embodiment system lost the avatar
-                    return;
+                if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(userId, out UserAvatar otherUserAvatar))
+                {
+                    if (otherUserAvatar == null) //the embodiment system lost the avatar
+                        return;
 
-                var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
-                if (animators == null) //no animator to desactive found on the avatar
-                    return;
+                    var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
+                    if (animators == null) //no animator to desactive found on the avatar
+                        return;
 
-                var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
-                if (emoteAnimator == null) //no animator to desactive found on the avatar
-                    return;
+                    var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).FirstOrDefault();
+                    if (emoteAnimator == null) //no animator to desactive found on the avatar
+                        return;
 
-                var emoteToStop = emoteConfig.emotes.Find(x => x.id == emoteId);
-                if (emoteAnimator == null) //the emote to stop doesn't exist
-                    throw new Umi3dException("The emote to stop does not exist in emote configuration file.");
+                    var emoteToStop = emoteConfig.emotes.Find(x => x.id == emoteId);
+                    if (emoteAnimator == null) //the emote to stop doesn't exist
+                        throw new Umi3dException("The emote to stop does not exist in emote configuration file.");
 
-                emoteAnimator.Update(0);
-                emoteAnimator.enabled = false;
+                    emoteAnimator.Update(0);
+                    emoteAnimator.enabled = false;
+                }
             }
         }
 
