@@ -584,21 +584,27 @@ namespace umi3d.cdk.collaboration
 
         private async void ChannelUpdate(UMI3DUser user)
         {
-            channelToJoin = user.audioChannel;
-            if (!string.IsNullOrEmpty(channelToJoin) && await IsPLaying())
+            if (user != null && user.isClient)
             {
-                await JoinChannel();
+                channelToJoin = user.audioChannel;
+                if (!string.IsNullOrEmpty(channelToJoin) && await IsPLaying())
+                {
+                    await JoinChannel();
+                }
             }
         }
 
         private async void ServerUpdate(UMI3DUser user)
         {
-            SetMumbleUrl(user.audioServer);
-            if (await IsPLaying())
+            if (user != null && user.isClient)
             {
-                await StopMicrophone();
-                await UMI3DAsyncManager.Yield();
-                await StartMicrophone();
+                SetMumbleUrl(user.audioServer);
+                if (await IsPLaying())
+                {
+                    await StopMicrophone();
+                    await UMI3DAsyncManager.Yield();
+                    await StartMicrophone();
+                }
             }
         }
 
@@ -611,14 +617,17 @@ namespace umi3d.cdk.collaboration
 
         private async void UseMumbleUpdate(UMI3DUser user)
         {
-            if (useMumble != user.useMumble)
+            if (user != null && user.isClient)
             {
-                useMumble = user.useMumble;
+                if (useMumble != user.useMumble)
+                {
+                    useMumble = user.useMumble;
 
-                if (useMumble)
-                    StartMicrophoneAsync();
-                else if (await IsPLaying())
-                    StopMicrophoneAsync();
+                    if (useMumble)
+                        StartMicrophoneAsync();
+                    else if (await IsPLaying())
+                        StopMicrophoneAsync();
+                }
             }
         }
 
