@@ -141,7 +141,7 @@ namespace umi3d.edk.collaboration.murmur
             m = new MurmurAPI(s[0]);
             roomList = new List<Room>();
             userList = new List<User>();
-            roomRegex = new Regex(@"Room([0 - 9] *)_\[" + guid + @"\]");
+            roomRegex = new Regex(@"Room([0-9]*)_\[" + guid + @"\]");
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
         }
 
