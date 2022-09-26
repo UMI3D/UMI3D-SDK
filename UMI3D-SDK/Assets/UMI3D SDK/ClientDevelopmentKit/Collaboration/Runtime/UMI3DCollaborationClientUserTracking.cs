@@ -46,7 +46,7 @@ namespace umi3d.cdk.collaboration
                 {
                     if (UMI3DCollaborationClientServer.Connected())
                     {
-                        BonesIterator(forceNotNullDto: IsEmotePlaying);
+                        BonesIterator();
                         if (LastFrameDto != null)
                         {
                             UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
