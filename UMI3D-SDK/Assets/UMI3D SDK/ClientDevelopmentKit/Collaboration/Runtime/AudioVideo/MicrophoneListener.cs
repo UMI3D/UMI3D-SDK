@@ -192,12 +192,6 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneChannelUpdated.RemoveListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.RemoveListener(UseMumbleUpdate);
-
-            UMI3DCollaborationClientServer.Instance.OnConnectionLost.RemoveListener(Reset);
-            UMI3DCollaborationClientServer.Instance.OnRedirectionStarted.RemoveListener(Reset);
-
-            UMI3DCollaborationClientServer.Instance.OnRedirectionAborted.RemoveListener(Heartbeat);
-            UMI3DCollaborationClientServer.Instance.OnConnectionRetreived.RemoveListener(Heartbeat);
             UMI3DEnvironmentClient.Connected.RemoveListener(Heartbeat);
 
             running = false;
