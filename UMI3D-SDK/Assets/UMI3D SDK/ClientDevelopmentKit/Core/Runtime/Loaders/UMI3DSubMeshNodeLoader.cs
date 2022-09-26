@@ -98,7 +98,7 @@ namespace umi3d.cdk
                             catch (Exception e)
                             {
                                 UMI3DLogger.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found", scope);
-                                UMI3DLogger.LogExcetion(e, scope);
+                                UMI3DLogger.LogException(e, scope);
                             }
                             finished?.Invoke();
                         }

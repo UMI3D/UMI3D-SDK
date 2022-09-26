@@ -594,7 +594,7 @@ namespace umi3d.cdk
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
                 performed?.Invoke();
             }
         }
@@ -692,7 +692,7 @@ namespace umi3d.cdk
                     LoadDefaultMaterial(extension.defaultMaterial);
                 }
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
-                    Parameters.ReadUMI3DExtension(scene, node, null, null);
+                    Parameters.ReadUMI3DExtension(scene, node, null, (e) => UMI3DLogger.LogException(e, scope));
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor;
                 RenderSettings.ambientEquatorColor = extension.horizontalColor;
@@ -725,7 +725,7 @@ namespace umi3d.cdk
                     loader.UrlToObject,
                     loader.ObjectFromCache,
                     (mat) => SetBaseMaterial((Material)mat),
-                    (e) => UMI3DLogger.LogExcetion(e, scope),
+                    (e) => UMI3DLogger.LogException(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -947,7 +947,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property, scope);
-                    UMI3DLogger.LogExcetion(e, scope);
+                    UMI3DLogger.LogException(e, scope);
                 }
             }
             return true;
@@ -979,7 +979,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning($"SetEntity not apply on this object, id = {id},  operation = {operationId} ,  property = {propertyKey}", scope | DebugScope.Bytes);
-                    UMI3DLogger.LogExcetion(e, scope);
+                    UMI3DLogger.LogException(e, scope);
                 }
             }
             return true;

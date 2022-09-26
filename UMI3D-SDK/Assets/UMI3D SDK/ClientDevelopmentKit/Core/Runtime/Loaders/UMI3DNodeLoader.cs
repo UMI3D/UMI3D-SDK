@@ -631,7 +631,7 @@ namespace umi3d.cdk
                     {
                         CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
                     },
-                    e => UMI3DLogger.LogExcetion(e, scope),
+                    e => UMI3DLogger.LogException(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -702,7 +702,7 @@ namespace umi3d.cdk
                         catch (Exception e)
                         {
                             UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
-                            UMI3DLogger.LogExcetion(e, scope);
+                            UMI3DLogger.LogException(e, scope);
                         }
                     }
                     else
@@ -724,7 +724,7 @@ namespace umi3d.cdk
                             catch (Exception e)
                             {
                                 UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
-                                UMI3DLogger.LogExcetion(e, scope);
+                                UMI3DLogger.LogException(e, scope);
                             }
                         }
 
@@ -745,7 +745,7 @@ namespace umi3d.cdk
                             catch (Exception e)
                             {
                                 UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
-                                UMI3DLogger.LogExcetion(e, scope);
+                                UMI3DLogger.LogException(e, scope);
                             }
                         }
                     }

@@ -145,7 +145,7 @@ namespace umi3d.common
                     Debug.LogError(o);
         }
 
-        public static void LogExcetion(Exception o, DebugScope scope)
+        public static void LogException(Exception o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
                 if (Exists)
