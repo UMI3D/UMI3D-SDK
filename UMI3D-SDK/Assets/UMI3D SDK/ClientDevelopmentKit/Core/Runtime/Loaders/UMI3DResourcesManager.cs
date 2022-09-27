@@ -683,7 +683,8 @@ namespace umi3d.cdk
                              reason.errorCode,
                              tryCount,
                              date,
-                             ShouldTryAgain
+                             ShouldTryAgain,
+                             $"{path}\n{reason.Message}\n{reason.StackTrace}"
                              )))
                     {
                         StartCoroutine(UrlToObjectWithPolicy(succes, error, path, extension, objectData, bundlePath, urlToObject, ShouldTryAgain, tryCount + 1));
