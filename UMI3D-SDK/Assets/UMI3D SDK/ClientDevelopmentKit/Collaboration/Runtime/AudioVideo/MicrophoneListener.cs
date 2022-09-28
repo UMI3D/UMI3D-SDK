@@ -180,7 +180,7 @@ namespace umi3d.cdk.collaboration
 
             UMI3DCollaborationClientServer.Instance.OnRedirectionStarted.AddListener(Reset);
             UMI3DCollaborationClientServer.Instance.OnRedirectionAborted.AddListener(Heartbeat);
-            UMI3DEnvironmentClient.Connected.AddListener(Heartbeat);
+            UMI3DEnvironmentClient.EnvironementLoaded.AddListener(Heartbeat);
 
 
             pushToTalkKeycode = KeyCode.M;
@@ -193,7 +193,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneChannelUpdated.RemoveListener(ChannelUpdate);
             UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.RemoveListener(UseMumbleUpdate);
-            UMI3DEnvironmentClient.Connected.RemoveListener(Heartbeat);
+            UMI3DEnvironmentClient.EnvironementLoaded.RemoveListener(Heartbeat);
 
             running = false;
         }
@@ -262,10 +262,9 @@ namespace umi3d.cdk.collaboration
             joinOnce = false;
         }
 
-        private void OnMicDisconnected()
+        private async void OnMicDisconnected()
         {
-            string disconnectedMicName = mumbleMic.GetCurrentMicName();
-            StartCoroutine(ExampleMicReconnect(disconnectedMicName));
+            await ForceStopMicrophone(true);
         }
 
 
@@ -416,6 +415,7 @@ namespace umi3d.cdk.collaboration
 
                 if (await AbortConnection())
                     return;
+
 
                 if (mumbleMic == null)
                     throw new Exception("No Mumble Microphone");
@@ -653,6 +653,7 @@ namespace umi3d.cdk.collaboration
 
         private IEnumerator ExampleMicReconnect(string micToConnect)
         {
+
             while (playing)
             {
                 string[] micNames = Microphone.devices;
