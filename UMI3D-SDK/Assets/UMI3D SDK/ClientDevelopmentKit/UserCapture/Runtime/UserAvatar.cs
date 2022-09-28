@@ -99,6 +99,48 @@ namespace umi3d.cdk.userCapture
 
         protected Transform viewpointObject;
 
+        protected bool shouldUpdate = true;
+
+        private void OnTransformParentChanged()
+        {
+            StartCoroutine(Reset());
+        }
+
+        private IEnumerator Reset()
+        {
+            shouldUpdate = false;
+
+            yield return null;
+
+            nodePositionFilter = new KalmanPosition(50, 0.5);
+            nodeRotationFilter = new KalmanRotation(10, 0.5);
+
+            var newLocalPos = this.transform.parent.InverseTransformPoint(this.transform.position);
+            var newLocalRot = Quaternion.Inverse(this.transform.parent.rotation) * this.transform.rotation;
+
+            nodePositionFilter.estimations = new double[] { newLocalPos.x, newLocalPos.y, newLocalPos.z };
+            nodePositionFilter.previous_prediction = new double[] { newLocalPos.x, newLocalPos.y, newLocalPos.z };
+            nodePositionFilter.prediction = new double[] { newLocalPos.x, newLocalPos.y, newLocalPos.z };
+
+            nodePositionFilter.regressed_position = newLocalPos;
+
+            var vect1 = newLocalRot * Vector3.forward;
+            var vect2 = newLocalRot * Vector3.up;
+            nodeRotationFilter.estimations = new Tuple<double[], double[]>(new double[] { vect1.x, vect1.y, vect1.z }, new double[] { vect2.x, vect2.y, vect2.z });
+            nodeRotationFilter.previous_prediction = new Tuple<double[], double[]>(new double[] { vect1.x, vect1.y, vect1.z }, new double[] { vect2.x, vect2.y, vect2.z });
+            nodeRotationFilter.prediction = new Tuple<double[], double[]>(new double[] { vect1.x, vect1.y, vect1.z }, new double[] { vect2.x, vect2.y, vect2.z });
+
+            nodeRotationFilter.regressed_rotation = newLocalRot;
+
+            NodeKalmanUpdate(newLocalPos, newLocalRot);
+
+            this.transform.localPosition = nodePositionFilter.regressed_position;
+
+            yield return new WaitForSeconds(0.5f);
+
+            shouldUpdate = true;
+        }
+
         private void Start()
         {
             viewpointObject = UMI3DClientUserTracking.Instance.viewpoint;
@@ -119,7 +161,7 @@ namespace umi3d.cdk.userCapture
                             item.obj.position = UMI3DClientUserTracking.Instance.skeletonContainer.TransformPoint(item.offsetPosition);
                         if (item.syncRot)
                             item.obj.rotation = UMI3DClientUserTracking.Instance.skeletonContainer.rotation * item.anchorRelativeRot * item.offsetRotation;
-                   }
+                    }
                     else if (item.bonetype.Equals(BoneType.Viewpoint))
                     {
                         if (item.syncPos)
@@ -374,12 +416,12 @@ namespace umi3d.cdk.userCapture
         protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, (e) =>
+            {
+                if (e is UMI3DNodeInstance node)
                 {
-                    if (e is UMI3DNodeInstance node)
-                    {
-                        StartCoroutine(WaitForRig(node, dto, bone));
-                    }
+                    StartCoroutine(WaitForRig(node, dto, bone));
                 }
+            }
             );
         }
 
