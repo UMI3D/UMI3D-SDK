@@ -38,15 +38,19 @@ namespace umi3d.cdk.collaboration
 
         private void Update()
         {
-            RegressionPosition(nodePositionFilter);
-            RegressionRotation(nodeRotationFilter);
-            RegressionSkeletonPosition(skeletonHeightFilter);
+            if (shouldUpdate)
+            {
+                RegressionPosition(nodePositionFilter);
+                RegressionRotation(nodeRotationFilter);
 
-            this.transform.localPosition = nodePositionFilter.regressed_position;
-            this.transform.localRotation = nodeRotationFilter.regressed_rotation;
+                this.transform.localPosition = nodePositionFilter.regressed_position;
+                this.transform.localRotation = nodeRotationFilter.regressed_rotation;
+            }
 
             if (skeleton == null)
                 return;
+
+            RegressionSkeletonPosition(skeletonHeightFilter);
 
             skeleton.transform.localPosition = skeletonHeightFilter.regressed_position;
 
@@ -183,7 +187,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="timeFrame">sending time in ms</param>
         public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            if (!isProcessing)
+            if (!isProcessing && shouldUpdate)
             {
                 isProcessing = true;
 
