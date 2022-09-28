@@ -20,8 +20,7 @@ using Mumble;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Security.Policy;
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -44,6 +43,8 @@ namespace umi3d.cdk.collaboration
     [RequireComponent(typeof(AudioSource))]
     public class MicrophoneListener : SingleBehaviour<MicrophoneListener>, ILoggable
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Mumble;
+
         #region Mumble
         #region public field
 
@@ -352,6 +353,11 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        bool microphoneIsValid()
+        {
+            return mumbleMic != null && mumbleMic.MicNumberToUse < GetMicrophonesNames().Length;
+        }
+
         private async Task _StartMicrophone()
         {
             await UMI3DAsyncManager.Yield();
@@ -370,7 +376,6 @@ namespace umi3d.cdk.collaboration
 
                 if (await AbortConnection())
                     return;
-
 
                 Application.runInBackground = true;
                 // If SendPosition, we'll send three floats.
@@ -412,46 +417,51 @@ namespace umi3d.cdk.collaboration
                 if (await AbortConnection())
                     return;
 
-                if (mumbleMic != null)
+                if (mumbleMic == null)
+                    throw new Exception("No Mumble Microphone");
+
+                if (_pendingMic != null)
+                    SetMicrophone(_pendingMic);
+
+                if (!microphoneIsValid())
+                    throw new Exception("Microphone is not valid");
+                UnityEngine.Debug.Log($"AddMicrophone {GetCurrentMicrophoneName()} in {GetMicrophonesNames().ToString<string>()}");
+                mumbleMic.SendAudioOnStart = false;
+                mumbleClient.AddMumbleMic(mumbleMic);
+                _pendingMic = null;
+                mumbleClient.SetSelfMute(isMute);
+                if (sendPosition)
+                    mumbleMic.SetPositionalDataFunction(WritePositionalData);
+                mumbleMic.OnMicDisconnect += OnMicDisconnected;
+
+                while (lastPing < 0)
                 {
-                    if (_pendingMic != null)
-                        SetMicrophone(_pendingMic);
-                    mumbleMic.SendAudioOnStart = false;
-                    mumbleClient.AddMumbleMic(mumbleMic);
-                    _pendingMic = null;
-                    mumbleClient.SetSelfMute(isMute);
-                    if (sendPosition)
-                        mumbleMic.SetPositionalDataFunction(WritePositionalData);
-                    mumbleMic.OnMicDisconnect += OnMicDisconnected;
-
-                    while (lastPing < 0)
+                    if (!await WaitForFirstPing())
                     {
-                        if (!await WaitForFirstPing())
-                        {
-                            throw new Exception("No ping received for to long");
-                        }
+                        throw new Exception("No ping received for to long");
                     }
-
-                    canJoinChannel = true;
-                    lastChannelJoined = null;
-
-                    joinOnce = true;
-                    await _JoinChannel(0, true);
-                    joinOnce = false;
-
-                    if (await AbortConnection())
-                        return;
-
-                    if (mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.AlwaysSend
-                            || mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.Amplitude)
-                        mumbleMic.StartSendingAudio();
-
-                    playing = true;
-
-                    SendConnectedToMumble(true);
-
-                    return;
                 }
+
+                canJoinChannel = true;
+                lastChannelJoined = null;
+
+                joinOnce = true;
+                await _JoinChannel(0, true);
+                joinOnce = false;
+
+                if (await AbortConnection())
+                    return;
+
+                if (mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.AlwaysSend
+                        || mumbleMic.VoiceSendingType == MumbleMicrophone.MicType.Amplitude)
+                    mumbleMic.StartSendingAudio();
+
+                playing = true;
+
+                SendConnectedToMumble(true);
+
+                return;
+
 
             }
             catch
@@ -753,8 +763,10 @@ namespace umi3d.cdk.collaboration
                 if (mics[i] == value)
                 {
                     mumbleMic.MicNumberToUse = i;
-                    break;
+                    return;
                 }
+            UMI3DLogger.LogError($"Microphone [{value}] not found, set to first mic if any [{mics.FirstOrDefault()}]", scope);
+            mumbleMic.MicNumberToUse = 0;
         }
 
         public async void SetCurrentMicrophoneNameAsync(string value) { await SetCurrentMicrophoneName(value); }
