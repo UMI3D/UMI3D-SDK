@@ -380,7 +380,7 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
-                        ConnectionState.Invoke("Donwloading Libraries");
+                        ConnectionState.Invoke("Downloading Libraries");
                         UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
                             worldControllerClient.name,
                             () =>
