@@ -244,23 +244,6 @@ namespace umi3d.cdk.collaboration
                                 obj = node.transform;
                             }
 
-                            if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
-                            {
-                                var savedTransform = new SavedTransform
-                                {
-                                    obj = obj,
-                                    savedPosition = obj.localPosition,
-                                    savedRotation = obj.localRotation,
-                                    savedLocalScale = obj.localScale,
-                                    savedLossyScale = obj.lossyScale
-                                };
-
-                                savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
-
-                                if (boneBindingDto.rigName == "")
-                                    node.updatePose = false;
-                            }
-
                             if (boneBindingDto.rigName == "")
                             {
                                 node.updatePose = false;
