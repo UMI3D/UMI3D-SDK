@@ -535,6 +535,7 @@ namespace umi3d.edk.collaboration
                     {
                         TransactionToBeSend[user] = new Transaction();
                     }
+                    
                     TransactionToBeSend[user] += transaction;
                     continue;
                 }
@@ -557,7 +558,13 @@ namespace umi3d.edk.collaboration
 
                     if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                     {
-                        NavigationToBeSend[user] = dispatchableRequest;
+
+                        if (!NavigationToBeSend.ContainsKey(user))
+                        {
+                            NavigationToBeSend[user] = new List<DispatchableRequest>();
+                        }
+
+                        NavigationToBeSend[user].Add(dispatchableRequest);
                         continue;
                     }
 
@@ -580,7 +587,7 @@ namespace umi3d.edk.collaboration
         }
 
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        private readonly Dictionary<UMI3DCollaborationUser, DispatchableRequest> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, DispatchableRequest>();
+        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
         private void Update()
         {
             foreach (KeyValuePair<UMI3DCollaborationUser, Transaction> kp in TransactionToBeSend.ToList())
@@ -592,22 +599,23 @@ namespace umi3d.edk.collaboration
                     TransactionToBeSend.Remove(user);
                     continue;
                 }
-                if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY) continue;
+                if (user.status < StatusType.ACTIVE) continue;
                 transaction.Simplify();
                 SendTransaction(user, transaction);
                 TransactionToBeSend.Remove(user);
             }
-            foreach (KeyValuePair<UMI3DCollaborationUser, DispatchableRequest> kp in NavigationToBeSend.ToList())
+            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in NavigationToBeSend.ToList())
             {
                 UMI3DCollaborationUser user = kp.Key;
-                DispatchableRequest navigation = kp.Value;
+                List<DispatchableRequest> navigations = kp.Value;
                 if (user.status == StatusType.NONE)
                 {
                     NavigationToBeSend.Remove(user);
                     continue;
                 }
-                if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY) continue;
-                SendNavigationRequest(user, navigation);
+                if (user.status < StatusType.ACTIVE) continue;
+                foreach (var navigation in navigations)
+                    SendNavigationRequest(user, navigation);
                 TransactionToBeSend.Remove(user);
             }
         }

@@ -45,7 +45,8 @@ namespace umi3d.cdk.collaboration
         public readonly ForgeConnectionDto connectionDto;
         private readonly UMI3DWorldControllerClient worldControllerClient;
 
-        static public UnityEvent Connected = new UnityEvent();
+        static public UnityEvent EnvironementJoinned = new UnityEvent();
+        static public UnityEvent EnvironementLoaded = new UnityEvent();
 
         public ulong GetUserID() { return UserDto.answerDto.id; }
 
@@ -176,7 +177,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                Connected.Invoke();
+                EnvironementJoinned.Invoke();
             }
         }
 
@@ -304,7 +305,7 @@ namespace umi3d.cdk.collaboration
             catch (Exception e)
             {
                 UMI3DLogger.LogWarning($"Error on OnMessage({message})", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
             }
         }
 
@@ -342,7 +343,7 @@ namespace umi3d.cdk.collaboration
             catch (Exception e)
             {
                 UMI3DLogger.LogWarning($"Error on OnStatusChanged({statusDto})", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
             }
         }
 
@@ -379,6 +380,7 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
+                        ConnectionState.Invoke("Downloading Libraries");
                         UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
                             worldControllerClient.name,
                             () =>
@@ -481,6 +483,7 @@ namespace umi3d.cdk.collaboration
                     {
                         //UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
                         UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
+                        EnvironementLoaded.Invoke();
                         UserDto.answerDto.status = statusToBeSet;
 
                         await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);

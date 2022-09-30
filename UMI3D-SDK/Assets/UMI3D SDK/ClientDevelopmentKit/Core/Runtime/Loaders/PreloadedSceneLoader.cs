@@ -64,7 +64,7 @@ namespace umi3d.cdk
                         {
                             UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
                         },
-                        e => UMI3DLogger.LogExcetion(e, scope),
+                        e => UMI3DLogger.LogException(e, scope),
                         loader.DeleteObject
                         );
                 }

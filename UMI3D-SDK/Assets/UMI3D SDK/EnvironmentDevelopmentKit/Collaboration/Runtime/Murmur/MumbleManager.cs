@@ -141,7 +141,7 @@ namespace umi3d.edk.collaboration.murmur
             m = new MurmurAPI(s[0]);
             roomList = new List<Room>();
             userList = new List<User>();
-            roomRegex = new Regex(@"Room([0 - 9] *)_\[" + guid + @"\]");
+            roomRegex = new Regex(@"Room([0-9]*)_\[" + guid + @"\]");
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
         }
 
@@ -183,7 +183,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble server refreshing [will try again in 1min] {e.Message} \n {e.StackTrace}", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
                 await UMI3DAsyncManager.Delay(60000);
                 await ForceRefresh();
             }
@@ -260,7 +260,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble create room", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
@@ -277,7 +277,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble delete room", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
@@ -294,7 +294,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble create user", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }
@@ -310,7 +310,7 @@ namespace umi3d.edk.collaboration.murmur
             catch (Exception e)
             {
                 UMI3DLogger.LogError($"Error in mumble delete user", scope);
-                UMI3DLogger.LogExcetion(e, scope);
+                UMI3DLogger.LogException(e, scope);
                 await UMI3DAsyncManager.Delay(500);
                 RefreshAsync();
             }

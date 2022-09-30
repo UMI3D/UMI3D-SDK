@@ -160,7 +160,7 @@ namespace umi3d.cdk
                             catch(Exception e)
                             {
                                 UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
-                                UMI3DLogger.LogExcetion(e, scope);
+                                UMI3DLogger.LogException(e, scope);
                             }
                         }
                         else
@@ -168,7 +168,7 @@ namespace umi3d.cdk
                             UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                         }
                     },
-                    e => UMI3DLogger.LogExcetion(e, scope),
+                    e => UMI3DLogger.LogException(e, scope),
                     loader.DeleteObject
                     );
             }
