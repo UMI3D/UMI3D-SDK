@@ -81,11 +81,15 @@ namespace umi3d.cdk
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            if (entity?.dto is UMI3DLineDto)
+            if (entity?.dto is UMI3DLineDto && entity is UMI3DNodeInstance node)
             {
                 if (base.SetUMI3DProperty(entity, property)) return true;
                 var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DLineDto;
                 if (extension == null) return false;
+
+                line = node.gameObject?.GetComponent<LineRenderer>();
+                if (line == null) return false;
+
                 switch (property.property)
                 {
                     case UMI3DPropertyKeys.LineEndColor:
@@ -140,6 +144,7 @@ namespace umi3d.cdk
                     default:
                         return false;
                 }
+                UpdateModelCollider(node, line);
                 return true;
             }
             else
@@ -156,6 +161,10 @@ namespace umi3d.cdk
             if (extension == null) return false;
 
             var node = entity as UMI3DNodeInstance;
+
+            line = node.gameObject?.GetComponent<LineRenderer>();
+            if (line == null) return false;
+
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LineEndColor:
@@ -213,7 +222,32 @@ namespace umi3d.cdk
                 default:
                     return false;
             }
+            UpdateModelCollider(node, line);
             return true;
+        }
+
+        protected override void SetModelCollider(ulong id, UMI3DNodeInstance nodeInstance, ColliderDto dto)
+        {
+            if (nodeInstance == null) return ;
+
+            line = nodeInstance.gameObject?.GetComponent<LineRenderer>();
+            if (line == null) return;
+
+            MeshCollider meshCollider = nodeInstance.gameObject?.AddComponent<MeshCollider>();
+
+            UpdateModelCollider(nodeInstance, line, meshCollider);
+        }
+
+        private void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
+        {
+            if (nodeInstance == null || line == null || nodeInstance.gameObject == null) return;
+            if (meshCollider == null)
+                meshCollider = nodeInstance.gameObject.GetComponent<MeshCollider>();
+            if (meshCollider == null) return;
+
+            Mesh mesh = new Mesh();
+            line.BakeMesh(mesh, true);
+            meshCollider.sharedMesh = mesh;
         }
     }
 }
