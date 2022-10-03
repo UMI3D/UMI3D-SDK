@@ -273,16 +273,23 @@ namespace umi3d.cdk
             {
                 if (audioSource.clip != null)
                 {
-                    atTime = atTime % audioSource.clip.length;
+                    if(dto.looping)
+                        atTime = atTime % audioSource.clip.length;
+
                     audioSource.Stop();
-                    if (atTime != 0)
-                        audioSource.time = atTime;
-                    audioSource.Play();
+
+                    if (atTime <= audioSource.clip.length)
+                    {
+                        if (atTime != 0)
+                            audioSource.time = atTime;
+                        audioSource.Play();
+                    }
+
                     OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length - atTime));
                 }
                 else
                 {
-                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
+                    UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
                 }
             }
         }
