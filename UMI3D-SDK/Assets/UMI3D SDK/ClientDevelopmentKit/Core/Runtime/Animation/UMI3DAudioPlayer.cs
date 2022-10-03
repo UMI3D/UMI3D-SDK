@@ -267,15 +267,18 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
+            atTime = atTime / 1000f; //Convert to seconds
+
             if (audioSource != null)
             {
                 if (audioSource.clip != null)
                 {
+                    atTime = atTime % audioSource.clip.length;
                     audioSource.Stop();
                     if (atTime != 0)
                         audioSource.time = atTime;
                     audioSource.Play();
-                    OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+                    OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length - atTime));
                 }
                 else
                 {
@@ -301,7 +304,7 @@ namespace umi3d.cdk
             {
                 ulong now = UMI3DClientServer.Instance.GetTime();
                 Start(now - dto.startTime);
-            } 
+            }
         }
     }
 }
