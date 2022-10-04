@@ -32,6 +32,25 @@ namespace umi3d.cdk
 
         protected LineRenderer line;
 
+        LineRenderer GetOrCreateLine(GameObject node)
+        {
+            if(node == null)
+                return null;
+            var line = node.GetComponent<LineRenderer>();
+            if (line == null)
+            {
+                line = node.AddComponent<LineRenderer>();
+                Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
+
+                if (UMI3DMat == null)
+                {
+                    UMI3DMat = new Material(Shader.Find("Sprites/Default"));
+                }
+                line.material = UMI3DMat;
+            }
+            return line;
+        }
+
         /// <summary>
         /// Load a mesh node.
         /// </summary>
@@ -50,18 +69,7 @@ namespace umi3d.cdk
 
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                line = node.GetComponent<LineRenderer>();
-                if (line == null)
-                {
-                    line = node.AddComponent<LineRenderer>();
-                    Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
-
-                    if (UMI3DMat == null)
-                    {
-                        UMI3DMat = new Material(Shader.Find("Sprites/Default"));
-                    }
-                    line.material = UMI3DMat;
-                }
+                line = GetOrCreateLine(node);
                 line.startColor = lineDto.startColor;
                 line.endColor = lineDto.endColor;
                 line.loop = lineDto.loop;
@@ -87,7 +95,7 @@ namespace umi3d.cdk
                 var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DLineDto;
                 if (extension == null) return false;
 
-                line = node.gameObject?.GetComponent<LineRenderer>();
+                line = GetOrCreateLine(node.gameObject);
                 if (line == null) return false;
 
                 switch (property.property)
@@ -162,7 +170,7 @@ namespace umi3d.cdk
 
             var node = entity as UMI3DNodeInstance;
 
-            line = node.gameObject?.GetComponent<LineRenderer>();
+            line = GetOrCreateLine(node.gameObject);
             if (line == null) return false;
 
             switch (propertyKey)
@@ -226,16 +234,16 @@ namespace umi3d.cdk
             return true;
         }
 
-        protected override void SetModelCollider(ulong id, UMI3DNodeInstance nodeInstance, ColliderDto dto)
+        protected override void SetModelCollider(ulong id, UMI3DNodeInstance node, ColliderDto dto)
         {
-            if (nodeInstance == null) return ;
+            if (node == null) return;
 
-            line = nodeInstance.gameObject?.GetComponent<LineRenderer>();
+            line = GetOrCreateLine(node.gameObject);
             if (line == null) return;
 
-            MeshCollider meshCollider = nodeInstance.gameObject?.AddComponent<MeshCollider>();
-
-            UpdateModelCollider(nodeInstance, line, meshCollider);
+            MeshCollider meshCollider = node.gameObject?.AddComponent<MeshCollider>();
+            node.colliders.Add(meshCollider);
+            UpdateModelCollider(node, line, meshCollider);
         }
 
         private void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
@@ -247,7 +255,35 @@ namespace umi3d.cdk
 
             Mesh mesh = new Mesh();
             line.BakeMesh(mesh, true);
-            meshCollider.sharedMesh = mesh;
+            if (AtLeast3DistinctVertice(mesh))
+                meshCollider.sharedMesh = mesh;
         }
+
+        bool AtLeast3DistinctVertice(Mesh mesh)
+        {
+            if (mesh != null && mesh.vertices != null && mesh.vertices.Count() < 3)
+                return false;
+
+            Vector3? a = null, b = null;
+
+            foreach (var v in mesh.vertices)
+            {
+                if (a == null)
+                    a = v;
+                else if (b == null)
+                {
+                    if (Vector3.Distance(a ?? Vector3.zero, v) > 0.01)
+
+                        b = v;
+                }
+                else if (Vector3.Distance(a ?? Vector3.zero, v) > 0.01 && Vector3.Distance(b ?? Vector3.zero, v) > 0.01)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

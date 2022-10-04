@@ -41,44 +41,44 @@ namespace umi3d.cdk
         {
 
             base.ReadUMI3DExtension(dto, node, () =>
-             {
-                 var nodeDto = dto as UMI3DNodeDto;
-                 if (nodeDto != null)
-                 {
-                     if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
-                     {
-                         SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
-                     }
+            {
+                var nodeDto = dto as UMI3DNodeDto;
+                if (nodeDto != null)
+                {
+                    if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
+                    {
+                        SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+                    }
 
-                     if (nodeDto.xBillboard || nodeDto.yBillboard)
-                     {
-                         Billboard b = node.AddComponent<Billboard>();
-                         b.X = nodeDto.xBillboard;
-                         b.Y = nodeDto.yBillboard;
-                         node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
-                     }
+                    if (nodeDto.xBillboard || nodeDto.yBillboard)
+                    {
+                        Billboard b = node.AddComponent<Billboard>();
+                        b.X = nodeDto.xBillboard;
+                        b.Y = nodeDto.yBillboard;
+                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
+                    }
 
-                     if (nodeDto.lodDto != null)
-                     {
-                         MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
-                     }
+                    if (nodeDto.lodDto != null)
+                    {
+                        MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
+                    }
 
-                     if (nodeDto.skinnedRendererLinks != null)
-                     {
-                         foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
-                         {
-                             BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
-                         }
-                     }
+                    if (nodeDto.skinnedRendererLinks != null)
+                    {
+                        foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
+                        {
+                            BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
+                        }
+                    }
 
 
-                     finished?.Invoke();
-                 }
-                 else
-                 {
-                     failed?.Invoke(new Umi3dException("nodeDto should not be null"));
-                 }
-             }, failed);
+                    finished?.Invoke();
+                }
+                else
+                {
+                    failed?.Invoke(new Umi3dException("nodeDto should not be null"));
+                }
+            }, failed);
         }
 
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
