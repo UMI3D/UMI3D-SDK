@@ -115,25 +115,12 @@ namespace umi3d.cdk
 
             while (i < l.Count && l[i].startOnProgress < p) { i++; }
 
-            while (i < l.Count && l[i].startOnProgress == p)
-            {
-                if (l[i].IsByte)
-                    UMI3DTransactionDispatcher.PerformOperation(l[i].byteOperation, null);
-                else
-                    UMI3DTransactionDispatcher.PerformOperation(l[i].operation, null);
-                i++;
-            }
-
             var fixUpdate = new WaitForFixedUpdate();
-            while (GetProgress() < dto.duration)
+            while ((p = GetProgress()) < dto.duration)
             {
-                p = GetProgress();
                 while (i < l.Count && l[i].startOnProgress <= p)
                 {
-                    if (l[i].IsByte)
-                        UMI3DTransactionDispatcher.PerformOperation(l[i].byteOperation, null);
-                    else
-                        UMI3DTransactionDispatcher.PerformOperation(l[i].operation, null);
+                    PerformChain(l[i]);
                     i++;
                 }
 
@@ -143,14 +130,18 @@ namespace umi3d.cdk
             if(dto.playing)
                 while (i < l.Count && l[i].startOnProgress <= dto.duration)
                 {
-                    if (l[i].IsByte)
-                        UMI3DTransactionDispatcher.PerformOperation(l[i].byteOperation, null);
-                    else
-                        UMI3DTransactionDispatcher.PerformOperation(l[i].operation, null);
+                    PerformChain(l[i]);
                     i++;
                 }
-            Debug.Log($"End {dto.playing}");
             action.Invoke();
+        }
+
+        void PerformChain(OperationChain chain)
+        {
+            if (chain.IsByte)
+                UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation), null);
+            else
+                UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
         }
 
         ///<inheritdoc/>
