@@ -41,44 +41,44 @@ namespace umi3d.cdk
         {
 
             base.ReadUMI3DExtension(dto, node, () =>
-             {
-                 var nodeDto = dto as UMI3DNodeDto;
-                 if (nodeDto != null)
-                 {
-                     if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
-                     {
-                         SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
-                     }
+            {
+                var nodeDto = dto as UMI3DNodeDto;
+                if (nodeDto != null)
+                {
+                    if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
+                    {
+                        SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+                    }
 
-                     if (nodeDto.xBillboard || nodeDto.yBillboard)
-                     {
-                         Billboard b = node.AddComponent<Billboard>();
-                         b.X = nodeDto.xBillboard;
-                         b.Y = nodeDto.yBillboard;
-                         node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
-                     }
+                    if (nodeDto.xBillboard || nodeDto.yBillboard)
+                    {
+                        Billboard b = node.AddComponent<Billboard>();
+                        b.X = nodeDto.xBillboard;
+                        b.Y = nodeDto.yBillboard;
+                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
+                    }
 
-                     if (nodeDto.lodDto != null)
-                     {
-                         MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
-                     }
+                    if (nodeDto.lodDto != null)
+                    {
+                        MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
+                    }
 
-                     if (nodeDto.skinnedRendererLinks != null)
-                     {
-                         foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
-                         {
-                             BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
-                         }
-                     }
+                    if (nodeDto.skinnedRendererLinks != null)
+                    {
+                        foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
+                        {
+                            BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
+                        }
+                    }
 
 
-                     finished?.Invoke();
-                 }
-                 else
-                 {
-                     failed?.Invoke(new Umi3dException("nodeDto should not be null"));
-                 }
-             }, failed);
+                    finished?.Invoke();
+                }
+                else
+                {
+                    failed?.Invoke(new Umi3dException("nodeDto should not be null"));
+                }
+            }, failed);
         }
 
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
@@ -707,47 +707,7 @@ namespace umi3d.cdk
                     }
                     else
                     {
-                        foreach (MeshFilter mesh in go.GetComponentsInChildren<MeshFilter>())
-                        {
-                            try
-                            {
-
-
-                                MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
-                                mc.sharedMesh = mesh.sharedMesh;
-                                mc.convex = dto.convex;
-                                if (nodeInstance != null)
-                                    nodeInstance.colliders.Add(mc);
-                                else
-                                    UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
-                            }
-                            catch (Exception e)
-                            {
-                                UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
-                                UMI3DLogger.LogException(e, scope);
-                            }
-                        }
-
-                        foreach (SkinnedMeshRenderer mesh in go.GetComponentsInChildren<SkinnedMeshRenderer>())
-                        {
-                            try
-                            {
-
-
-                                MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
-                                mc.sharedMesh = mesh.sharedMesh;
-                                mc.convex = dto.convex;
-                                if (nodeInstance != null)
-                                    nodeInstance.colliders.Add(mc);
-                                else
-                                    UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
-                            }
-                            catch (Exception e)
-                            {
-                                UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
-                                UMI3DLogger.LogException(e, scope);
-                            }
-                        }
+                        SetModelCollider(id, nodeInstance, dto);
                     }
                     break;
                 case ColliderType.Box:
@@ -781,6 +741,49 @@ namespace umi3d.cdk
                     break;
                 default:
                     break;
+            }
+        }
+
+        protected virtual void SetModelCollider(ulong id, UMI3DNodeInstance nodeInstance, ColliderDto dto)
+        {
+            GameObject go = nodeInstance.gameObject;
+
+            foreach (MeshFilter mesh in go.GetComponentsInChildren<MeshFilter>())
+            {
+                try
+                {
+                    MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
+                    mc.sharedMesh = mesh.sharedMesh;
+                    mc.convex = dto.convex;
+                    if (nodeInstance != null)
+                        nodeInstance.colliders.Add(mc);
+                    else
+                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
+                }
+                catch (Exception e)
+                {
+                    UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
+                    UMI3DLogger.LogException(e, scope);
+                }
+            }
+
+            foreach (SkinnedMeshRenderer mesh in go.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                try
+                {
+                    MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
+                    mc.sharedMesh = mesh.sharedMesh;
+                    mc.convex = dto.convex;
+                    if (nodeInstance != null)
+                        nodeInstance.colliders.Add(mc);
+                    else
+                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
+                }
+                catch (Exception e)
+                {
+                    UMI3DLogger.LogWarning($"the mesh failed to be added, collider is not registered. Collider is not accessible [{e}]", scope);
+                    UMI3DLogger.LogException(e, scope);
+                }
             }
         }
         #endregion
