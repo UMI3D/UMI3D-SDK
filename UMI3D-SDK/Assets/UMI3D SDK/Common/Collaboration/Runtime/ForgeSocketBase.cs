@@ -14,6 +14,7 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
+using System;
 using UnityEngine;
 
 namespace umi3d.common.collaboration
@@ -145,14 +146,19 @@ namespace umi3d.common.collaboration
         /// <param name="sender">the corresponding NetWorker</param>
         protected void ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            //Checks if the message is comming from the server or from an accepted player
-            if (!player.Accepted && !player.IsHost)
-                return;
+            try
+            {
+                //Checks if the message is comming from the server or from an accepted player
+                if (!player.Accepted && !player.IsHost)
+                    return;
 
-            _ReadBinary(player, frame, sender);
+                _ReadBinary(player, frame, sender);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, DebugScope.Networking | DebugScope.Common | DebugScope.Collaboration);
+            }
         }
-
-
 
         /// <summary>
         /// Called when a BinaryFrame is received from the NetWorker
