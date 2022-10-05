@@ -33,6 +33,8 @@ namespace umi3d.cdk.userCapture
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        #region Struct definition
+
         /// <summary>
         /// Saved state of an object properties before being bound to a user's bone.
         /// </summary>
@@ -72,6 +74,10 @@ namespace umi3d.cdk.userCapture
             public Quaternion anchorRelativeRot;
         }
 
+        #endregion
+
+        #region Fields
+
         public List<Transform> boundRigs = new List<Transform>();
         /// <summary>
         /// User's registered id
@@ -101,6 +107,17 @@ namespace umi3d.cdk.userCapture
 
         protected bool shouldUpdate = true;
 
+        protected UMI3DKalmanVector3Lerp nodePositionLerp;
+        protected UMI3DKalmanQuaternionLerp nodeRotationLerp;
+
+        protected float MeasuresPerSecond = 0;
+        protected float lastFrameTime = 0;
+        protected float lastMessageTime = 0;
+
+        #endregion
+
+        #region Methods
+
         private void OnTransformParentChanged()
         {
             StartCoroutine(Reset());
@@ -112,29 +129,8 @@ namespace umi3d.cdk.userCapture
 
             yield return null;
 
-            nodePositionFilter = new KalmanPosition(50, 0.5);
-            nodeRotationFilter = new KalmanRotation(10, 0.5);
-
-            var newLocalPos = this.transform.parent.InverseTransformPoint(this.transform.position);
-            var newLocalRot = Quaternion.Inverse(this.transform.parent.rotation) * this.transform.rotation;
-
-            nodePositionFilter.estimations = new double[] { newLocalPos.x, newLocalPos.y, newLocalPos.z };
-            nodePositionFilter.previous_prediction = new double[] { newLocalPos.x, newLocalPos.y, newLocalPos.z };
-            nodePositionFilter.prediction = new double[] { newLocalPos.x, newLocalPos.y, newLocalPos.z };
-
-            nodePositionFilter.regressed_position = newLocalPos;
-
-            var vect1 = newLocalRot * Vector3.forward;
-            var vect2 = newLocalRot * Vector3.up;
-            nodeRotationFilter.estimations = new Tuple<double[], double[]>(new double[] { vect1.x, vect1.y, vect1.z }, new double[] { vect2.x, vect2.y, vect2.z });
-            nodeRotationFilter.previous_prediction = new Tuple<double[], double[]>(new double[] { vect1.x, vect1.y, vect1.z }, new double[] { vect2.x, vect2.y, vect2.z });
-            nodeRotationFilter.prediction = new Tuple<double[], double[]>(new double[] { vect1.x, vect1.y, vect1.z }, new double[] { vect2.x, vect2.y, vect2.z });
-
-            nodeRotationFilter.regressed_rotation = newLocalRot;
-
-            NodeKalmanUpdate(newLocalPos, newLocalRot);
-
-            this.transform.localPosition = nodePositionFilter.regressed_position;
+            nodePositionLerp = null;
+            nodeRotationLerp = null;
 
             yield return new WaitForSeconds(0.5f);
 
@@ -571,142 +567,6 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        protected class KalmanPosition
-        {
-            public UMI3DUnscentedKalmanFilter KalmanFilter;
-            public double[] estimations;
-            public double[] previous_prediction;
-            public double[] prediction;
-            public Vector3 regressed_position;
-
-            public KalmanPosition(double q, double r)
-            {
-                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
-                estimations = new double[] { };
-                previous_prediction = new double[] { };
-                prediction = new double[] { };
-            }
-        }
-
-        protected class KalmanRotation
-        {
-            // forward, up
-            public Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter> KalmanFilters;
-            public Tuple<double[], double[]> estimations;
-            public Tuple<double[], double[]> previous_prediction;
-            public Tuple<double[], double[]> prediction;
-            public Quaternion regressed_rotation;
-
-            public KalmanRotation(double q, double r)
-            {
-                KalmanFilters = new Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter>(new UMI3DUnscentedKalmanFilter(q, r), new UMI3DUnscentedKalmanFilter(q, r));
-                estimations = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                previous_prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-            }
-        }
-
-        protected KalmanPosition nodePositionFilter = new KalmanPosition(50, 0.5);
-        protected KalmanRotation nodeRotationFilter = new KalmanRotation(10, 0.5);
-
-        protected float MeasuresPerSecond = 0;
-        protected float lastFrameTime = 0;
-        protected float lastMessageTime = 0;
-
-        /// <summary>
-        /// Applies linear regression to the filtered position of an object
-        /// </summary>
-        /// <param name="tools"></param>
-        protected void RegressionPosition(KalmanPosition tools)
-        {
-            if (tools.previous_prediction.Length > 0)
-            {
-                double check = lastMessageTime;
-                double now = Time.time;
-
-                double delta = now - check;
-
-                if (delta * MeasuresPerSecond <= 1)
-                {
-                    double value_x = ((tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond) + tools.previous_prediction[0];
-                    double value_y = ((tools.prediction[1] - tools.previous_prediction[1]) * delta * MeasuresPerSecond) + tools.previous_prediction[1];
-                    double value_z = ((tools.prediction[2] - tools.previous_prediction[2]) * delta * MeasuresPerSecond) + tools.previous_prediction[2];
-
-                    tools.estimations = new double[] { value_x, value_y, value_z };
-
-                    tools.regressed_position = new Vector3((float)value_x, (float)value_y, (float)value_z);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Applies linear regression to the filtered rotation of an object
-        /// </summary>
-        /// <param name="tools"></param>
-        protected void RegressionRotation(KalmanRotation tools)
-        {
-            if (tools.previous_prediction.Item1.Length > 0)
-            {
-                double check = lastMessageTime;
-                double now = Time.time;
-
-                double delta = now - check;
-
-                if (delta * MeasuresPerSecond <= 1)
-                {
-                    double fw_value_x = ((tools.prediction.Item1[0] - tools.previous_prediction.Item1[0]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[0];
-                    double fw_value_y = ((tools.prediction.Item1[1] - tools.previous_prediction.Item1[1]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[1];
-                    double fw_value_z = ((tools.prediction.Item1[2] - tools.previous_prediction.Item1[2]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item1[2];
-
-                    double up_value_x = ((tools.prediction.Item2[0] - tools.previous_prediction.Item2[0]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[0];
-                    double up_value_y = ((tools.prediction.Item2[1] - tools.previous_prediction.Item2[1]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[1];
-                    double up_value_z = ((tools.prediction.Item2[2] - tools.previous_prediction.Item2[2]) * MeasuresPerSecond * delta) + tools.previous_prediction.Item2[2];
-
-                    tools.estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
-
-                    tools.regressed_rotation = Quaternion.LookRotation(new Vector3((float)fw_value_x, (float)fw_value_y, (float)fw_value_z), new Vector3((float)up_value_x, (float)up_value_y, (float)up_value_z));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Filtering a user AvatarNode position
-        /// </summary>
-        /// <param name="position"></param>
-        /// <param name="rotation"></param>
-        /// This method makes it possible to predict/ extrapolate future position 
-        /// and thus to obtain a fluid movement of other's avatar on a user's client. 
-        protected void NodeKalmanUpdate(Vector3 position, Quaternion rotation)
-        {
-            double[] positionMeasurement = new double[] { position.x, position.y, position.z };
-
-            nodePositionFilter.KalmanFilter.Update(positionMeasurement);
-
-            double[] newPositionState = nodePositionFilter.KalmanFilter.getState();
-            nodePositionFilter.prediction = new double[] { newPositionState[0], newPositionState[1], newPositionState[2] };
-
-            if (nodePositionFilter.estimations.Length > 0)
-                nodePositionFilter.previous_prediction = nodePositionFilter.estimations;
-            else
-                nodePositionFilter.previous_prediction = positionMeasurement;
-
-            var quaternionMeasurment = new Quaternion(rotation.x, rotation.y, rotation.z, rotation.w);
-
-            Vector3 targetForward = quaternionMeasurment * Vector3.forward;
-            Vector3 targetUp = quaternionMeasurment * Vector3.up;
-
-            double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
-            double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
-
-            nodeRotationFilter.KalmanFilters.Item1.Update(targetForwardMeasurement); // forward
-            nodeRotationFilter.KalmanFilters.Item2.Update(targetUpMeasurement); // up
-
-            nodeRotationFilter.prediction = new System.Tuple<double[], double[]>(nodeRotationFilter.KalmanFilters.Item1.getState(), nodeRotationFilter.KalmanFilters.Item2.getState());
-
-            if (nodeRotationFilter.estimations.Item1.Length > 0)
-                nodeRotationFilter.previous_prediction = nodeRotationFilter.estimations;
-            else
-                nodeRotationFilter.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
-        }
+        #endregion
     }
 }

@@ -25,11 +25,24 @@ namespace umi3d.cdk.collaboration
 {
     public class UMI3DCollaborativeUserAvatar : UserAvatar
     {
-        private readonly Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
-        private GameObject skeleton;
-        private bool isProcessing = false;
+        #region Fields
 
-        protected KalmanPosition skeletonHeightFilter = new KalmanPosition(50, 0.5);
+        /// <summary>
+        /// Tools to perfom interpolation for every avatar bones.
+        /// </summary>
+        private readonly Dictionary<uint, UMI3DKalmanQuaternionLerp> boneRotationFilters = new Dictionary<uint, UMI3DKalmanQuaternionLerp>();
+        private GameObject skeleton;
+
+        protected UMI3DKalmanVector3Lerp skeletonHeightLerp;
+
+        /// <summary>
+        /// Coroutine used to update avatar position.
+        /// </summary>
+        Coroutine updateCoroutine = null;
+
+        #endregion
+
+        #region Methods
 
         private void Start()
         {
@@ -40,34 +53,31 @@ namespace umi3d.cdk.collaboration
         {
             if (shouldUpdate)
             {
-                RegressionPosition(nodePositionFilter);
-                RegressionRotation(nodeRotationFilter);
+                if (nodePositionLerp != null)
+                    this.transform.localPosition = nodePositionLerp.GetValue(Time.deltaTime);
 
-                this.transform.localPosition = nodePositionFilter.regressed_position;
-                this.transform.localRotation = nodeRotationFilter.regressed_rotation;
+                if (nodeRotationLerp != null)
+                    this.transform.localRotation = nodeRotationLerp.GetValue(Time.deltaTime);
             }
 
             if (skeleton == null)
                 return;
 
-            RegressionSkeletonPosition(skeletonHeightFilter);
-
-            skeleton.transform.localPosition = skeletonHeightFilter.regressed_position;
+            if (skeletonHeightLerp != null)
+                skeleton.transform.localPosition = skeletonHeightLerp.GetValue(Time.deltaTime);
 
             Animator userAnimator = skeleton.GetComponentInChildren<Animator>();
 
             foreach (uint boneType in boneRotationFilters.Keys)
             {
-                RegressionRotation(boneRotationFilters[boneType]);
-
                 Transform boneTransform;
 
                 if (boneType.Equals(BoneType.Viewpoint))
                 {
                     boneTransform = viewpointObject;
-                    boneTransform.parent.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                    if (boneRotationFilters[boneType] != null)
+                        boneTransform.parent.localRotation = boneRotationFilters[boneType].GetValue(Time.deltaTime);
                 }
-
                 else
                 {
                     if (boneType.Equals(BoneType.CenterFeet))
@@ -75,7 +85,8 @@ namespace umi3d.cdk.collaboration
                     else
                         boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
 
-                    boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                    if (boneRotationFilters[boneType] != null)
+                        boneTransform.localRotation = boneRotationFilters[boneType].GetValue(Time.deltaTime);
                 }
 
 
@@ -118,97 +129,65 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Filtering a boneDto position
+        /// Updates avatar (position, rotation and bones rotations).
         /// </summary>
-        /// <param name="dto"></param>
-        private void BoneKalmanUpdate(BoneDto dto)
+        /// <param name="trackingFrameDto"></param>
+        /// <param name="timeFrame"></param>
+        public void UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            KalmanRotation boneRotationKalman = boneRotationFilters[dto.boneType];
+            if (timeFrame < lastFrameTime)
+                return;
 
-            var quaternionMeasurment = new Quaternion(dto.rotation.X, dto.rotation.Y, dto.rotation.Z, dto.rotation.W);
+            if (updateCoroutine != null)
+                StopCoroutine(updateCoroutine);
 
-            Vector3 targetForward = quaternionMeasurment * Vector3.forward;
-            Vector3 targetUp = quaternionMeasurment * Vector3.up;
-
-            double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
-            double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
-
-
-            boneRotationKalman.KalmanFilters.Item1.Update(targetForwardMeasurement); // forward
-            boneRotationKalman.KalmanFilters.Item2.Update(targetUpMeasurement); // up
-
-            boneRotationKalman.prediction = new System.Tuple<double[], double[]>(boneRotationKalman.KalmanFilters.Item1.getState(), boneRotationKalman.KalmanFilters.Item2.getState());
-
-            if (boneRotationKalman.estimations.Item1.Length > 0)
-                boneRotationKalman.previous_prediction = boneRotationKalman.estimations;
-            else
-                boneRotationKalman.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
+            updateCoroutine = StartCoroutine(UpdateAvatarPositionCoroutine(trackingFrameDto, timeFrame));
         }
 
-        private void SkeletonKalmanUpdate(float skeletonNodePosY)
-        {
-            double[] heightMeasurement = new double[] { skeletonNodePosY };
-
-            skeletonHeightFilter.KalmanFilter.Update(heightMeasurement);
-
-            double[] newHeightMeasurement = skeletonHeightFilter.KalmanFilter.getState();
-            skeletonHeightFilter.prediction = newHeightMeasurement;
-
-            if (skeletonHeightFilter.estimations.Length > 0)
-                skeletonHeightFilter.previous_prediction = skeletonHeightFilter.estimations;
-            else
-                skeletonHeightFilter.previous_prediction = heightMeasurement;
-        }
-
-        private void RegressionSkeletonPosition(KalmanPosition tools)
-        {
-            if (tools.previous_prediction.Length > 0)
-            {
-                double check = lastMessageTime;
-                double now = Time.time;
-
-                double delta = now - check;
-
-                if (delta * MeasuresPerSecond <= 1)
-                {
-                    double value_x = ((tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond) + tools.previous_prediction[0];
-
-                    tools.estimations = new double[] { value_x };
-
-                    tools.regressed_position = new Vector3(0, (float)value_x, 0);
-                }
-            }
-        }
 
         /// <summary>
         /// Update the a UserAvatar directly sent by another client.
         /// </summary>
         /// <param name="trackingFrameDto">a dto containing the tracking data</param>
         /// <param name="timeFrame">sending time in ms</param>
-        public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
+        public IEnumerator UpdateAvatarPositionCoroutine(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            if (!isProcessing && shouldUpdate)
+            if (shouldUpdate)
             {
-                isProcessing = true;
-
                 MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
                 lastFrameTime = timeFrame;
                 lastMessageTime = Time.time;
 
-                NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
-                SkeletonKalmanUpdate(trackingFrameDto.skeletonHighOffset);
+                if (nodePositionLerp == null)
+                    nodePositionLerp = new UMI3DKalmanVector3Lerp(trackingFrameDto.position);
+                else
+                    nodePositionLerp.UpdateValue(trackingFrameDto.position);
+
+                if (nodeRotationLerp == null)
+                    nodeRotationLerp = new UMI3DKalmanQuaternionLerp(trackingFrameDto.rotation);
+                else
+                    nodeRotationLerp.UpdateValue(trackingFrameDto.rotation);
+
+
+                if (skeletonHeightLerp == null)
+                    skeletonHeightLerp = new UMI3DKalmanVector3Lerp(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
+                else
+                    skeletonHeightLerp.UpdateValue(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
 
                 foreach (BoneDto boneDto in trackingFrameDto.bones)
                 {
-                    if (!boneRotationFilters.ContainsKey(boneDto.boneType))
-                        boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
-
-                    BoneKalmanUpdate(boneDto);
+                    if (boneRotationFilters.ContainsKey(boneDto.boneType))
+                    {
+                        boneRotationFilters[boneDto.boneType].UpdateValue(boneDto.rotation);
+                    }
+                    else
+                    {
+                        boneRotationFilters.Add(boneDto.boneType, new UMI3DKalmanQuaternionLerp(boneDto.rotation));
+                    }
 
                     List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
                     foreach (BoneBindingDto boneBindingDto in bindings)
                     {
-
                         if (boneBindingDto.active)
                         {
                             UMI3DNodeInstance node = null;
@@ -251,9 +230,10 @@ namespace umi3d.cdk.collaboration
                         }
                     }
                 }
-
-                isProcessing = false;
+                updateCoroutine = null;
             }
         }
+
+        #endregion
     }
 }

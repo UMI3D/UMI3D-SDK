@@ -23,6 +23,7 @@ using System.Threading;
 using BeardedManStudios.Forge.Networking;
 using System.Linq;
 using inetum.unityUtils;
+using System;
 
 namespace umi3d.edk.collaboration
 {
@@ -70,6 +71,7 @@ namespace umi3d.edk.collaboration
         private bool forceSendtrackingFrames = false;
 
         bool running = false;
+
         #endregion
 
         public UMI3DRelay(UMI3DForgeServer server)
@@ -129,7 +131,14 @@ namespace umi3d.edk.collaboration
             running = true;
             while (running)
             {
-                SendTrackingFrames();
+                try
+                {
+                    SendTrackingFrames();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
 
                 Thread.Sleep(200);
             }
@@ -146,7 +155,7 @@ namespace umi3d.edk.collaboration
             lock (framesPerPlayer)
             {
                 var r = new System.Random();
-                _framesPerPlayer = framesPerPlayer.OrderBy(s=>r.Next()).ToArray();
+                _framesPerPlayer = framesPerPlayer.OrderBy(s => r.Next()).ToArray();
             }
             foreach (var avatarFrameEntry in _framesPerPlayer)
             {
@@ -155,7 +164,7 @@ namespace umi3d.edk.collaboration
                 if (user == null)
                     continue;
 
-                (List<T> frames, bool force) = GetTrackingFrameToSend(user, time);
+                (List<T> frames, bool force) = GetTrackingFrameToSend(user, time, _framesPerPlayer);
 
                 if (frames.Count == 0)
                     continue;
@@ -174,7 +183,7 @@ namespace umi3d.edk.collaboration
         /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
         /// </summary>
         /// <param name="to"></param>
-        private (List<T>,bool) GetTrackingFrameToSend(UMI3DCollaborationUser user, ulong time)
+        private (List<T>, bool) GetTrackingFrameToSend(UMI3DCollaborationUser user, ulong time, KeyValuePair<NetworkingPlayer, T>[] framesPerPlayer)
         {
             bool forceRelay = false;
             NetworkingPlayer to = user?.networkPlayer;
@@ -182,15 +191,14 @@ namespace umi3d.edk.collaboration
             List<T> frames = new List<T>();
 
             if (to == null || user == null)
-                return (frames,false);
+                return (frames, false);
 
-            Dictionary<NetworkingPlayer, T> userFrameMap = null;
+            KeyValuePair<NetworkingPlayer, T>[] userFrameMap = null;
             RelayVolume relayVolume;
             if (user is UMI3DCollaborationUser cUser && cUser?.Avatar?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.Avatar.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
             {
                 var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationUser).ToList();
-                userFrameMap = new Dictionary<NetworkingPlayer, T>();
-                userFrameMap = framesPerPlayer.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToDictionary();
+                userFrameMap = framesPerPlayer.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
                 forceRelay = true;
             }
             else
@@ -233,7 +241,7 @@ namespace umi3d.edk.collaboration
                 }
             }
 
-            return (frames, forceSendtrackingFrames || true);
+            return (frames, forceSendtrackingFrames);
         }
 
 
