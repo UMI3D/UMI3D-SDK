@@ -93,6 +93,7 @@ namespace umi3d.cdk
             foreach (Coroutine c in Coroutines)
                 UMI3DAnimationManager.StopCoroutine(c);
             Coroutines.Clear();
+            started = false;
         }
 
         ///<inheritdoc/>
@@ -106,26 +107,41 @@ namespace umi3d.cdk
             base.OnEnd();
         }
 
-        private bool LaunchAnimation(float waitFor)
-        {
-            return dto.playing && GetProgress() >= waitFor;
-        }
-
-        private IEnumerator WaitForProgress(float waitFor, Action action)
-        {
-            yield return new WaitUntil(() => LaunchAnimation(waitFor));
-            action.Invoke();
-        }
-
         private IEnumerator Playing(Action action)
         {
+            var l = operationChains.OrderBy(c => c.startOnProgress).ToList();
+            int i = 0;
+            var p = GetProgress();
+
+            while (i < l.Count && l[i].startOnProgress < p) { i++; }
+
             var fixUpdate = new WaitForFixedUpdate();
-            while (GetProgress() < dto.duration)
+            while ((p = GetProgress()) < dto.duration)
             {
+                while (i < l.Count && l[i].startOnProgress <= p)
+                {
+                    PerformChain(l[i]);
+                    i++;
+                }
+
                 yield return fixUpdate;
                 if (dto.playing) progress += Time.fixedDeltaTime;
             }
+            if(dto.playing)
+                while (i < l.Count && l[i].startOnProgress <= dto.duration)
+                {
+                    PerformChain(l[i]);
+                    i++;
+                }
             action.Invoke();
+        }
+
+        void PerformChain(OperationChain chain)
+        {
+            if (chain.IsByte)
+                UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation), null);
+            else
+                UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
         }
 
         ///<inheritdoc/>
@@ -201,34 +217,15 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
+            Debug.Log($"Start {started}");
             if (started) return;
             started = true;
             progress = atTime / 1000;
-            if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
-            foreach (OperationChain chain in operationChains)
-            {
-                float p = GetProgress();
-                if (p < chain.startOnProgress)
-                {
-                    Coroutines.Add(UMI3DAnimationManager.StartCoroutine(WaitForProgress(chain.startOnProgress, () =>
-                    {
-                        if (chain.IsByte)
-                            UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
-                        else
-                            UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
-                    })));
-                }
-
-                if (p == chain.startOnProgress)
-                {
-                    if (chain.IsByte)
-                        UMI3DTransactionDispatcher.PerformOperation(chain.byteOperation, null);
-                    else
-                        UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
-                }
-            }
+            if (PlayingCoroutines != null)
+                UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
         }
+
 
         public override void SetProgress(long frame)
         {
