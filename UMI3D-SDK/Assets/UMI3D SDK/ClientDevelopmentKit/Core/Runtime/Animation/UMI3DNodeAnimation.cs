@@ -217,7 +217,6 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
-            Debug.Log($"Start {started}");
             if (started) return;
             started = true;
             progress = atTime / 1000;

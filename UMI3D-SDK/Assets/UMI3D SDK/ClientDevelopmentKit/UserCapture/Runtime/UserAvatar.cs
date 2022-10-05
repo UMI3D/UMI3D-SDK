@@ -105,8 +105,6 @@ namespace umi3d.cdk.userCapture
 
         protected Transform viewpointObject;
 
-        protected bool shouldUpdate = true;
-
         protected UMI3DKalmanVector3Lerp nodePositionLerp;
         protected UMI3DKalmanQuaternionLerp nodeRotationLerp;
 
@@ -120,21 +118,8 @@ namespace umi3d.cdk.userCapture
 
         private void OnTransformParentChanged()
         {
-            StartCoroutine(Reset());
-        }
-
-        private IEnumerator Reset()
-        {
-            shouldUpdate = false;
-
-            yield return null;
-
             nodePositionLerp = null;
             nodeRotationLerp = null;
-
-            yield return new WaitForSeconds(0.5f);
-
-            shouldUpdate = true;
         }
 
         private void Start()

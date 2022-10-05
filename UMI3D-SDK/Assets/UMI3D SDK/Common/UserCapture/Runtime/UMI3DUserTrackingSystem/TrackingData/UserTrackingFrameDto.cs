@@ -31,6 +31,11 @@ namespace umi3d.common.userCapture
         public ulong userId;
 
         /// <summary>
+        /// Id of the parent.
+        /// </summary>
+        public ulong parentId;
+
+        /// <summary>
         /// Bones information of the user
         /// </summary>
         public List<BoneDto> bones;
@@ -64,6 +69,7 @@ namespace umi3d.common.userCapture
         {
             return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(userId)
+                + UMI3DNetworkingHelper.Write(parentId)
                 + UMI3DNetworkingHelper.Write(skeletonHighOffset)
                 + UMI3DNetworkingHelper.Write(position)
                 + UMI3DNetworkingHelper.Write(rotation)
