@@ -51,14 +51,11 @@ namespace umi3d.cdk.collaboration
 
         private void Update()
         {
-            if (shouldUpdate)
-            {
-                if (nodePositionLerp != null)
-                    this.transform.localPosition = nodePositionLerp.GetValue(Time.deltaTime);
+            if (nodePositionLerp != null)
+                this.transform.localPosition = nodePositionLerp.GetValue(Time.deltaTime);
 
-                if (nodeRotationLerp != null)
-                    this.transform.localRotation = nodeRotationLerp.GetValue(Time.deltaTime);
-            }
+            if (nodeRotationLerp != null)
+                this.transform.localRotation = nodeRotationLerp.GetValue(Time.deltaTime);
 
             if (skeleton == null)
                 return;
@@ -138,6 +135,9 @@ namespace umi3d.cdk.collaboration
             if (timeFrame < lastFrameTime)
                 return;
 
+            if (UMI3DEnvironmentLoader.GetNode(trackingFrameDto.parentId)?.transform != transform.parent)
+                return;
+
             if (updateCoroutine != null)
                 StopCoroutine(updateCoroutine);
 
@@ -152,86 +152,83 @@ namespace umi3d.cdk.collaboration
         /// <param name="timeFrame">sending time in ms</param>
         public IEnumerator UpdateAvatarPositionCoroutine(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            if (shouldUpdate)
+            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+            lastFrameTime = timeFrame;
+            lastMessageTime = Time.time;
+
+            if (nodePositionLerp == null)
+                nodePositionLerp = new UMI3DKalmanVector3Lerp(trackingFrameDto.position);
+            else
+                nodePositionLerp.UpdateValue(trackingFrameDto.position);
+
+            if (nodeRotationLerp == null)
+                nodeRotationLerp = new UMI3DKalmanQuaternionLerp(trackingFrameDto.rotation);
+            else
+                nodeRotationLerp.UpdateValue(trackingFrameDto.rotation);
+
+
+            if (skeletonHeightLerp == null)
+                skeletonHeightLerp = new UMI3DKalmanVector3Lerp(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
+            else
+                skeletonHeightLerp.UpdateValue(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
+
+            foreach (BoneDto boneDto in trackingFrameDto.bones)
             {
-                MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
-                lastFrameTime = timeFrame;
-                lastMessageTime = Time.time;
-
-                if (nodePositionLerp == null)
-                    nodePositionLerp = new UMI3DKalmanVector3Lerp(trackingFrameDto.position);
-                else
-                    nodePositionLerp.UpdateValue(trackingFrameDto.position);
-
-                if (nodeRotationLerp == null)
-                    nodeRotationLerp = new UMI3DKalmanQuaternionLerp(trackingFrameDto.rotation);
-                else
-                    nodeRotationLerp.UpdateValue(trackingFrameDto.rotation);
-
-
-                if (skeletonHeightLerp == null)
-                    skeletonHeightLerp = new UMI3DKalmanVector3Lerp(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
-                else
-                    skeletonHeightLerp.UpdateValue(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
-
-                foreach (BoneDto boneDto in trackingFrameDto.bones)
+                if (boneRotationFilters.ContainsKey(boneDto.boneType))
                 {
-                    if (boneRotationFilters.ContainsKey(boneDto.boneType))
-                    {
-                        boneRotationFilters[boneDto.boneType].UpdateValue(boneDto.rotation);
-                    }
-                    else
-                    {
-                        boneRotationFilters.Add(boneDto.boneType, new UMI3DKalmanQuaternionLerp(boneDto.rotation));
-                    }
+                    boneRotationFilters[boneDto.boneType].UpdateValue(boneDto.rotation);
+                }
+                else
+                {
+                    boneRotationFilters.Add(boneDto.boneType, new UMI3DKalmanQuaternionLerp(boneDto.rotation));
+                }
 
-                    List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
-                    foreach (BoneBindingDto boneBindingDto in bindings)
+                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
+                foreach (BoneBindingDto boneBindingDto in bindings)
+                {
+                    if (boneBindingDto.active)
                     {
-                        if (boneBindingDto.active)
+                        UMI3DNodeInstance node = null;
+                        UMI3DNodeInstance boneBindingnode = null;
+                        Transform obj = null;
+
+                        var wait = new WaitForFixedUpdate();
+
+
+                        UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => node = e as UMI3DNodeInstance);
+
+                        while (node == null)
+                            yield return wait;
+
+
+                        if (boneBindingDto.rigName != "")
                         {
-                            UMI3DNodeInstance node = null;
-                            UMI3DNodeInstance boneBindingnode = null;
-                            Transform obj = null;
-
-                            var wait = new WaitForFixedUpdate();
-
-
-                            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => node = e as UMI3DNodeInstance);
-
-                            while (node == null)
+                            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = e as UMI3DNodeInstance);
+                            while (boneBindingnode == null)
                                 yield return wait;
-
-
-                            if (boneBindingDto.rigName != "")
+                            while (
+                                (obj = boneBindingnode.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null
+                                && (obj = InspectBoundRigs(boneBindingDto)) == null)
                             {
-                                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = e as UMI3DNodeInstance);
-                                while (boneBindingnode == null)
-                                    yield return wait;
-                                while (
-                                    (obj = boneBindingnode.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null
-                                    && (obj = InspectBoundRigs(boneBindingDto)) == null)
-                                {
-                                    yield return wait;
-                                }
-
-                                if (!boundRigs.Contains(obj))
-                                    boundRigs.Add(obj);
-                            }
-                            else
-                            {
-                                obj = node.transform;
+                                yield return wait;
                             }
 
-                            if (boneBindingDto.rigName == "")
-                            {
-                                node.updatePose = false;
-                            }
+                            if (!boundRigs.Contains(obj))
+                                boundRigs.Add(obj);
+                        }
+                        else
+                        {
+                            obj = node.transform;
+                        }
+
+                        if (boneBindingDto.rigName == "")
+                        {
+                            node.updatePose = false;
                         }
                     }
                 }
-                updateCoroutine = null;
             }
+            updateCoroutine = null;
         }
 
         #endregion

@@ -145,6 +145,13 @@ namespace umi3d.cdk
         public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : 0; }
 
         /// <summary>
+        /// Get node id associated to <paramref name="t"/>.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static ulong GetNodeID(Transform t) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).transform == t).Key : 0; }
+
+        /// <summary>
         /// Register a node instance.
         /// </summary>
         /// <param name="id">unique id of the node.</param>

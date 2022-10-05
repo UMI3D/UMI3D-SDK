@@ -213,7 +213,6 @@ namespace umi3d.cdk
 
         public virtual void OnEnd()
         {
-            Debug.Log($"looping {dto.looping}");
             if (dto.looping)
             {
                 Start();
