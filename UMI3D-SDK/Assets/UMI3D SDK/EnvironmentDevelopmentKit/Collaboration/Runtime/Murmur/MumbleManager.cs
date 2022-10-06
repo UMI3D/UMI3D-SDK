@@ -29,6 +29,7 @@ namespace umi3d.edk.collaboration.murmur
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Mumble;
 
         public readonly string ip;
+        public readonly string httpIp;
         private MurmurAPI m;
         private MurmurAPI.Server serv;
         private readonly string guid;
@@ -88,14 +89,14 @@ namespace umi3d.edk.collaboration.murmur
         float RefreshTime = 0;
         const float MaxRefreshTimeSecond = 30f;
 
-        public static MumbleManager Create(string ip, string guid = null)
+        public static MumbleManager Create(string ip,string http = null, string guid = null)
         {
             if (string.IsNullOrEmpty(ip))
                 return null;
             if (string.IsNullOrEmpty(guid))
                 guid = System.Guid.NewGuid().ToString();
 
-            var mm = new MumbleManager(ip, guid);
+            var mm = new MumbleManager(ip, http, guid);
             mm._Create();
             mm.HeartBeat();
             QuittingManager.OnApplicationIsQuitting.AddListener(mm.Delete);
@@ -133,12 +134,12 @@ namespace umi3d.edk.collaboration.murmur
                 await Refresh();
         }
 
-        private MumbleManager(string ip, string guid = null)
+        private MumbleManager(string ip,string http, string guid = null)
         {
             this.guid = guid;
             this.ip = ip;
-            string[] s = ip.Split(':');
-            m = new MurmurAPI(s[0]);
+            this.httpIp = http ?? ip.Split(':')[0];
+            m = new MurmurAPI(httpIp);
             roomList = new List<Room>();
             userList = new List<User>();
             roomRegex = new Regex(@"Room([0-9]*)_\[" + guid + @"\]");

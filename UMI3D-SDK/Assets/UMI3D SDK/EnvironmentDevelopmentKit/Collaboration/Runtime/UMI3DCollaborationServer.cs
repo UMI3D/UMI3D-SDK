@@ -67,6 +67,9 @@ namespace umi3d.edk.collaboration
         public string mumbleIp = "";
 
         [EditorReadOnly]
+        public string mumbleHttpIp = "";
+
+        [EditorReadOnly]
         public string guid = "";
 
         [EditorReadOnly]
@@ -192,7 +195,7 @@ namespace umi3d.edk.collaboration
             if (string.IsNullOrEmpty(guid))
                 guid = System.Guid.NewGuid().ToString();
 
-            mumbleManager = murmur.MumbleManager.Create(mumbleIp, guid);
+            mumbleManager = murmur.MumbleManager.Create(mumbleIp, mumbleHttpIp, guid);
 
             if (collaborativeModule == null)
                 collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };

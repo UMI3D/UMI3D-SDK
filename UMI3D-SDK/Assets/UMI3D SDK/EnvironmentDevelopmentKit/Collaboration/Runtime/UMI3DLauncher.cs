@@ -117,6 +117,11 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public const string murmurServerParam = Separator + "murmur";
 
+        /// <summary>
+        /// Set the murmur server.
+        /// </summary>
+        public const string httpMurmurServerParam = Separator + "murmurHttp";
+
 
         public const string generateconfigFileParam = Separator + "createconfig";
         /// <summary>
@@ -318,6 +323,11 @@ namespace umi3d.edk.collaboration
         protected virtual void SetMurmurServer(string arg)
         {
             UMI3DCollaborationServer.Instance.mumbleIp = arg;
+        }
+
+        protected virtual void SetHttpMurmurServer(string arg)
+        {
+            UMI3DCollaborationServer.Instance.mumbleHttpIp = arg;
         }
 
         /// <summary>
@@ -557,6 +567,11 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetMurmurServer(args[i]);
+                }
+                else if (args[i].Equals(httpMurmurServerParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetHttpMurmurServer(args[i]);
                 }
                 else if (args[i].Equals(logOutputPathParam, StringComparison.OrdinalIgnoreCase))
                 {
