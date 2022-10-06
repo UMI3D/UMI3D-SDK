@@ -145,9 +145,9 @@ namespace umi3d.edk.collaboration.murmur
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
         }
 
-        private string GenerateUserName(string userID)
+        private string GenerateUserName(UMI3DCollaborationUser user, string userID)
         {
-            return @"User" + userID + @"_[" + guid + @"]";
+            return @"User_"+user.displayName+"_"+ userID + @"_[" + guid + @"]";
         }
         private string GenerateRoomName(int i)
         {
@@ -368,7 +368,7 @@ namespace umi3d.edk.collaboration.murmur
         public List<Operation> AddUser(UMI3DCollaborationUser user, int room = -1)
         {
             var userId = System.Guid.NewGuid().ToString();
-            var _user = new User(userId, GenerateUserName(userId));
+            var _user = new User(userId, GenerateUserName(user,userId));
             _user.password = System.Guid.NewGuid().ToString();
             userList.Add(_user);
 

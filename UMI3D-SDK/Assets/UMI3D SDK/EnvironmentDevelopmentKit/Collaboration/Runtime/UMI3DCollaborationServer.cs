@@ -66,6 +66,9 @@ namespace umi3d.edk.collaboration
         public string mumbleIp = "";
 
         [EditorReadOnly]
+        public string guid = "";
+
+        [EditorReadOnly]
         public bool useRandomForgePort;
         [EditorReadOnly]
         public ushort forgePort;
@@ -185,7 +188,10 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"Server Init", scope);
             base.Init();
 
-            mumbleManager = murmur.MumbleManager.Create(mumbleIp);
+            if (string.IsNullOrEmpty(guid))
+                guid = System.Guid.NewGuid().ToString();
+
+            mumbleManager = murmur.MumbleManager.Create(mumbleIp, guid);
 
             if (collaborativeModule == null)
                 collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
