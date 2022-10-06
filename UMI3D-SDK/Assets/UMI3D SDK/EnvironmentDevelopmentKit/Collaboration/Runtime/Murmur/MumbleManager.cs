@@ -164,6 +164,7 @@ namespace umi3d.edk.collaboration.murmur
             }
 
             refreshing = true;
+            RefreshTime = UnityEngine.Time.time + MaxRefreshTimeSecond;
             await ForceRefresh();
             RefreshTime = UnityEngine.Time.time + MaxRefreshTimeSecond;
             refreshing = false;
