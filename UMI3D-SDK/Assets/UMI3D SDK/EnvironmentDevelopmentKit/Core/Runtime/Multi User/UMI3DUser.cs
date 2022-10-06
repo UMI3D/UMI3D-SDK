@@ -48,6 +48,8 @@ namespace umi3d.edk
 
         public StatusType status { get; protected set; } = StatusType.CREATED;
 
+        public bool IsReadyToGetResources = true;
+
         public bool hasJoined = false;
 
         public virtual void SetStatus(StatusType status)

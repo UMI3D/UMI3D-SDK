@@ -402,6 +402,8 @@ namespace umi3d.edk.collaboration
             }
             else
             {
+                while(!user.IsReadyToGetResources)
+                    System.Threading.Thread.Sleep(1);
                 GlTFEnvironmentDto result = null;
                 bool finished = false;
                 UnityMainThreadDispatcher.Instance().Enqueue(
