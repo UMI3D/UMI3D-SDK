@@ -435,12 +435,12 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Join environment {user?.Id()}", scope);
             bool finished = false;
-            ReadDto(e.Request, (dto) =>
+            ReadDto(e.Request, async (dto) =>
             {
                 var join = dto as JoinDto;
                 UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), join.userSize, join.trackedBonetypes);
                 e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
-                UMI3DCollaborationServer.NotifyUserJoin(user);
+                await UMI3DCollaborationServer.NotifyUserJoin(user);
                 finished = true;
             });
             while (!finished) System.Threading.Thread.Sleep(1);

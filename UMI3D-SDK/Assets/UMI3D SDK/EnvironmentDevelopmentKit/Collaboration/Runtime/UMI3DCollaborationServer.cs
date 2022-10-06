@@ -53,6 +53,7 @@ namespace umi3d.edk.collaboration
 
         public static murmur.MumbleManager MumbleManager => Exists ? Instance.mumbleManager : null;
 
+        public static bool NeedToWaitForCallBackAtUserJoin = false;
 
         public float tokenLifeTime = 10f;
 
@@ -281,25 +282,30 @@ namespace umi3d.edk.collaboration
         /// Create new peers connection for a new user
         /// </summary>
         /// <param name="user"></param>
-        public static void NotifyUserJoin(UMI3DCollaborationUser user)
+        public static async Task NotifyUserJoin(UMI3DCollaborationUser user)
         {
             user.hasJoined = true;
             Collaboration.UserJoin(user);
-            MainThreadManager.Run(() =>
+            bool finished = !NeedToWaitForCallBackAtUserJoin;
+            MainThreadManager.Run(async () =>
             {
                 UMI3DLogger.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>", scope);
-                Instance.NotifyUserJoin(user);
+                await Instance.NotifyUserJoin(user);
+                finished = true;
             });
+
+            while (!finished)
+                await UMI3DAsyncManager.Yield();
         }
 
         /// <summary>
         /// Call To Notify a user join.
         /// </summary>
         /// <param name="user">user that join</param>
-        public void NotifyUserJoin(UMI3DUser user)
+        public async Task NotifyUserJoin(UMI3DUser user)
         {
             if (user is UMI3DCollaborationUser _user)
-                WorldController.NotifyUserJoin(_user);
+                await WorldController.NotifyUserJoin(_user);
             OnUserJoin.Invoke(user);
         }
 
