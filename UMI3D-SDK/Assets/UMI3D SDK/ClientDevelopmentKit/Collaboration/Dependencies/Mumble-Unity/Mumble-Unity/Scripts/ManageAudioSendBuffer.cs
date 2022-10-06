@@ -52,6 +52,8 @@ namespace Mumble
                 _encoder.Dispose();
                 _encoder = null;
             }
+            _pcmArrays.Clear();
+
             _encoder = new OpusEncoder(sampleRate, 1) { EnableForwardErrorCorrection = false };
 
             if(_pendingBitrate > 0)
@@ -231,7 +233,7 @@ namespace Mumble
                     }
                     else
                     {
-                        Debug.LogError("Error: " + e);
+                        Debug.LogException( e);
                     }
                 }
             }

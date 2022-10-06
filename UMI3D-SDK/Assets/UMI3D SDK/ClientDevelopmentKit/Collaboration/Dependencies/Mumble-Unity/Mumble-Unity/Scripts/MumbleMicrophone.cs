@@ -74,9 +74,11 @@ namespace Mumble
         private int _voiceHoldSamples;
         private int _sampleNumberOfLastMinAmplitudeVoice;
         private float _secondsWithoutMicSamples = 0;
+        private float _secondsWithMicDataNotUpdated = 0;
         private WritePositionalData _writePositionalDataFunc = null;
         // How many seconds to wait before we consider the mic being disconnected
         const float MaxSecondsWithoutMicData = 1f;
+        const float MaxSecondsWithMicDataNotUpdated = 5f;
 
         public void Initialize(MumbleClient mumbleClient)
         {
@@ -138,7 +140,7 @@ namespace Mumble
         void SendVoiceIfReady()
         {
             int currentPosition = Microphone.GetPosition(_currentMic);
-            //Debug.Log(currentPosition + " " + Microphone.IsRecording(_currentMic));
+           // Debug.Log($"Is recording mic {_currentMic} {currentPosition} " + Microphone.IsRecording(_currentMic));
 
             //Debug.Log(currentPosition);
             if (currentPosition < _previousPosition)
@@ -148,6 +150,7 @@ namespace Mumble
 
             int totalSamples = currentPosition + _numTimesLooped * NumSamplesInMicBuffer;
             bool isEmpty = currentPosition == 0 && _previousPosition == 0;
+            bool isNotUpdated = currentPosition == _previousPosition;
             bool isFirstSample = _numTimesLooped == 0 && _previousPosition == 0;
             _previousPosition = currentPosition;
             if (isEmpty)
@@ -155,7 +158,12 @@ namespace Mumble
             else
                 _secondsWithoutMicSamples = 0;
 
-            if (_secondsWithoutMicSamples > MaxSecondsWithoutMicData)
+            if (isNotUpdated)
+                _secondsWithMicDataNotUpdated += Time.deltaTime;
+            else
+                _secondsWithMicDataNotUpdated = 0;
+
+            if (_secondsWithoutMicSamples > MaxSecondsWithoutMicData || _secondsWithMicDataNotUpdated > MaxSecondsWithMicDataNotUpdated)
             {
                 // For 5 times in a row, we received no usable data
                 // this normally means that the mic we were using disconnected
@@ -272,6 +280,7 @@ namespace Mumble
             _numTimesLooped = 0;
             _totalNumSamplesSent = 0;
             _secondsWithoutMicSamples = 0;
+            _secondsWithMicDataNotUpdated = 0;
             _sampleNumberOfLastMinAmplitudeVoice = int.MinValue;
             isRecording = true;
             //_mumbleClient.SetSelfMute(false);

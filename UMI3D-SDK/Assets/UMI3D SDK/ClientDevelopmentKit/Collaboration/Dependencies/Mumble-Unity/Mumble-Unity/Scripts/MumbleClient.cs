@@ -756,14 +756,14 @@ namespace Mumble
 
             if (_pendingMute.HasValue)
             {
-                Debug.Log("Pending mute: " + _pendingMute.HasValue);
+                //Debug.Log("Pending mute: " + _pendingMute.HasValue);
                 return _pendingMute.Value;
             }
 
             if (!OurUserState.ShouldSerializeSelfMute())
                 return false;
 
-            Debug.Log("Our Self Mute is " + OurUserState.SelfMute);
+            //Debug.Log("Our Self Mute is " + OurUserState.SelfMute);
             return OurUserState.SelfMute;
         }
         public bool SetOurComment(string newComment)

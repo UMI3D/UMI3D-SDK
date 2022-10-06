@@ -370,6 +370,7 @@ namespace Mumble
 
         internal void Close()
         {
+            UnityEngine.Debug.Log("Close Thread");
             // Signal thread that it's time to shut down
             _running = false;
 
