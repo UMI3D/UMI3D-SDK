@@ -138,7 +138,7 @@ namespace umi3d.edk.collaboration.murmur
         {
             this.guid = guid;
             this.ip = ip;
-            this.httpIp = http ?? ip.Split(':')[0];
+            this.httpIp = (string.IsNullOrEmpty(http)) ? ip.Split(':')[0] : http;
             m = new MurmurAPI(httpIp);
             roomList = new List<Room>();
             userList = new List<User>();

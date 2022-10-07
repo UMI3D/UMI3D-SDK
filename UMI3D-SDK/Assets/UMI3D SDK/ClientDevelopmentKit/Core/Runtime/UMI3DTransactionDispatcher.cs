@@ -25,6 +25,8 @@ namespace umi3d.cdk
     public static class UMI3DTransactionDispatcher
     {
 
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+
         // About transactions
         // A transaction is composed of a set of operations to be performed on entities (e.g Scenes, Nodes, Materials).
         // Operations should be applied in the same order as stored in the transaction.
@@ -41,15 +43,28 @@ namespace umi3d.cdk
             }
         }
 
+        static int count = 0;
+        const int secondBeforeError = 300;
+
         public static IEnumerator PerformTransaction(ByteContainer container)
         {
-            yield return new WaitForEndOfFrame();
+            int transaction = count++;
+            int opCount = 0;
+            var wait = new WaitForEndOfFrame();
+            yield return wait;
+
             foreach (ByteContainer c in UMI3DNetworkingHelper.ReadIndexesList(container))
             {
+                int op = opCount++;
+                var ErrorTime = Time.time + secondBeforeError;
                 bool performed = false;
                 PerformOperation(c, () => performed = true);
-                if (performed != true)
-                    yield return new WaitUntil(() => performed);
+                while (!performed)
+                {
+                    if (Time.time > ErrorTime)
+                        UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec it might have failed.\n Transaction count {transaction}.\n Operation count {op}.\n Container : {container} ", scope);
+                    yield return wait;
+                }
             }
         }
 

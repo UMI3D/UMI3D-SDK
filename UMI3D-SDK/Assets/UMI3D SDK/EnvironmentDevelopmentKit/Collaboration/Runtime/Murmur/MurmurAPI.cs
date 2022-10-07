@@ -47,8 +47,9 @@ namespace umi3d.edk.collaboration.murmur
             if (www.isHttpError || www.isNetworkError)
             {
                 var error = www.error;
+                var url = www.url;
                 www.Dispose();
-                throw new System.Exception("Error " + error);
+                throw new System.Exception($"Error [{url}]" + error);
             }
 
             string res = www?.downloadHandler?.text;

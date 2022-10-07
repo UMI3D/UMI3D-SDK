@@ -236,7 +236,7 @@ namespace umi3d.cdk.userCapture
             if (emoteConfig == null) //no emote support in the scene
                 return;
 
-            if (emoteCoroutineDict.ContainsKey(userId) 
+            if (emoteCoroutineDict.ContainsKey(userId)
                 && emoteCoroutineDict[userId] != null)
             {
                 StopCoroutine(emoteCoroutineDict[userId]);
@@ -331,8 +331,13 @@ namespace umi3d.cdk.userCapture
             });
         }
 
-        private void InitParentId()
+        private async void InitParentId()
         {
+            while (!embodimentDict.ContainsKey(UMI3DClientServer.Instance.GetUserId()))
+            {
+                await UMI3DAsyncManager.Yield();
+            }
+
             var avatarScene = embodimentDict[UMI3DClientServer.Instance.GetUserId()].transform.parent;
 
             parentId = UMI3DEnvironmentLoader.GetNodeID(avatarScene);
