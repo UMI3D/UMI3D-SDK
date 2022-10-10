@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -27,7 +28,7 @@ using UnityEngine;
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Client form of a user's avatar, the virtual representation of the usr in the environment.
+    /// Client description of a user's avatar, the virtual representation of the user in the environment.
     /// </summary>
     public class UserAvatar : MonoBehaviour
     {
@@ -105,11 +106,29 @@ namespace umi3d.cdk.userCapture
 
         protected Transform viewpointObject;
 
-        protected UMI3DKalmanVector3Lerp nodePositionLerp;
-        protected UMI3DKalmanQuaternionLerp nodeRotationLerp;
+        /// <summary>
+        /// Extrapolator for the avatar position.
+        /// </summary>
+        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
 
+        /// <summary>
+        /// Extrapolator for the avatar rotation.
+        /// </summary>
+        protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
+
+        /// <summary>
+        /// Tracking frames update frequency.
+        /// </summary>
         protected float MeasuresPerSecond = 0;
+
+        /// <summary>
+        /// Last tracking frame time in sending client's clock.
+        /// </summary>
         protected float lastFrameTime = 0;
+
+        /// <summary>
+        /// Last tracking frame time in receiving client's clock.
+        /// </summary>
         protected float lastMessageTime = 0;
 
         #endregion
@@ -118,8 +137,7 @@ namespace umi3d.cdk.userCapture
 
         private void OnTransformParentChanged()
         {
-            nodePositionLerp = null;
-            nodeRotationLerp = null;
+            ResetExtrapolators();
         }
 
         private void Start()
@@ -550,6 +568,16 @@ namespace umi3d.cdk.userCapture
             {
                 savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
             }
+        }
+
+        /// <summary>
+        /// Called to reset the extrapolators. 
+        /// </summary>
+        /// E.g. when entering in a vehicle.
+        public void ResetExtrapolators()
+        {
+            nodePositionExtrapolator = null;
+            nodeRotationExtrapolator = null;
         }
 
         #endregion

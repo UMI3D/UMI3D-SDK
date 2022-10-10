@@ -19,9 +19,10 @@ using UnityEngine;
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Class to peform values regression.
+    /// Perform form values regression based on linear regresion.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [System.Obsolete]
     public abstract class UMI3DKalmanLerp<T>
     {
         #region Fields
@@ -97,6 +98,7 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Lerp Helper for <see cref="Quaternion"/>.
     /// </summary>
+    [System.Obsolete]
     public class UMI3DKalmanQuaternionLerp : UMI3DKalmanLerp<Quaternion>
     {
         public UMI3DKalmanQuaternionLerp(Quaternion initValue) : base(initValue)
@@ -119,6 +121,7 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Lerp Helper <see cref="Vector3"/>.
     /// </summary>
+    [System.Obsolete]
     public class UMI3DKalmanVector3Lerp : UMI3DKalmanLerp<Vector3>
     {
         public UMI3DKalmanVector3Lerp(Vector3 initValue) : base(initValue)

@@ -88,9 +88,9 @@ namespace umi3d.cdk.collaboration
 
 
         ///<inheritdoc/>
-        protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            if (base._SetUMI3DPorperty(entity, property)) return true;
+            if (base._SetUMI3DProperty(entity, property)) return true;
             if (entity == null) return false;
 
             switch (property.property)
@@ -115,9 +115,9 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base._SetUMI3DPorperty(entity, operationId, propertyKey, container)) return true;
+            if (base._SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             if (entity == null) return false;
 
             switch (propertyKey)
