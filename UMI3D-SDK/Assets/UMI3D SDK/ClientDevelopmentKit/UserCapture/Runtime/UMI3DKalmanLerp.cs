@@ -19,9 +19,10 @@ using UnityEngine;
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Class to peform values regression.
+    /// Perform form values regression based on linear regresion.
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [System.Obsolete]
     public abstract class UMI3DKalmanLerp<T>
     {
         #region Fields
