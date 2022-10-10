@@ -217,6 +217,7 @@ namespace umi3d.cdk
         ///<inheritdoc/>
         public override void Start(float atTime)
         {
+            if (started) OnEnd();
             if (started) return;
             started = true;
             progress = atTime / 1000;

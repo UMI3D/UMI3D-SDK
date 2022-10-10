@@ -71,7 +71,19 @@ namespace umi3d.cdk.collaboration
 
         private void StartAnim(ulong id)
         {
-            UMI3DAbstractAnimation.Get(id)?.Start();
+            var anim = UMI3DAbstractAnimation.Get(id);
+
+            if (anim != null)
+            {
+                anim.SetUMI3DProperty(UMI3DEnvironmentLoader.GetEntity(id), new SetEntityPropertyDto()
+                {
+                    entityId = id,
+                    property = UMI3DPropertyKeys.AnimationPlaying,
+                    value = true
+                });
+
+                anim.Start();
+            }
         }
 
 
