@@ -337,17 +337,22 @@ namespace umi3d.cdk.collaboration
                 switch (mumbleStatus)
                 {
                     case MumbleStatus.NotConnected:
-                        await Connect();
+                        if (await Connect())
+                            await UpdateChanel();
+                        else
+                            await Delay(6000);
                         break;
                     case MumbleStatus.Connected:
                         {
                             if (pendingChannel != null)
-                                await UpdateChanel();
-                            else if (microphoneStatus == MicrophoneStatus.NoMicrophone)
+                            {
+                                if (!await UpdateChanel())
+                                    await Delay(3000);
+                            }
+                            if (microphoneStatus == MicrophoneStatus.NoMicrophone)
                                 StartMicrophone();
                         }
                         break;
-
                 }
                 await Delay(millisecondsHeartBeat);
             }
