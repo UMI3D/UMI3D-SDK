@@ -133,6 +133,7 @@ namespace umi3d.cdk.collaboration
             bool aborted = false;
             UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = true;
             Instance.OnRedirectionStarted.Invoke();
+
             try
             {
                 if (Exists)
@@ -169,7 +170,8 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.Log($"Error in connection process : {e.Message} \n{e.StackTrace}");
+                UMI3DLogger.Log($"Error in connection process", scope);
+                UMI3DLogger.LogException(e, scope);
                 failed?.Invoke(e.Message);
                 aborted = true;
             }

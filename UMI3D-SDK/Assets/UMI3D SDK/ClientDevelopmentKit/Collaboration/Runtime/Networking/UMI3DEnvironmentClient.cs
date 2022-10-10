@@ -306,6 +306,7 @@ namespace umi3d.cdk.collaboration
             {
                 UMI3DLogger.LogWarning($"Error on OnMessage({message})", scope);
                 UMI3DLogger.LogException(e, scope);
+                ConnectionDisconnected();
             }
         }
 
@@ -344,6 +345,7 @@ namespace umi3d.cdk.collaboration
             {
                 UMI3DLogger.LogWarning($"Error on OnStatusChanged({statusDto})", scope);
                 UMI3DLogger.LogException(e, scope);
+                ConnectionDisconnected();
             }
         }
 

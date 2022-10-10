@@ -43,6 +43,7 @@ namespace umi3d.cdk.collaboration
 
             UMI3DCollaborationClientServer.Instance.OnRedirectionStarted.AddListener(Reset);
             UMI3DCollaborationClientServer.Instance.OnLeavingEnvironment.AddListener(Reset);
+            UMI3DCollaborationClientServer.Instance.OnLeaving.AddListener(Reset);
 
             UMI3DCollaborationClientServer.Instance.OnRedirectionAborted.AddListener(Heartbeat);
             UMI3DEnvironmentClient.EnvironementLoaded.AddListener(Heartbeat);

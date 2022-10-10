@@ -533,8 +533,14 @@ namespace umi3d.cdk
                 case AssetLibraryDto library:
                     UMI3DResourcesManager.DownloadLibrary(library,
                         UMI3DClientServer.Media.name,
-                        () =>
+                        (i, s) =>
                         {
+                            if (i > 0)
+                            {
+                                UMI3DLogger.LogError($"Download Library failed for {library.libraryId}", scope);
+                                performed.Invoke();
+                                return;
+                            }
                             UMI3DResourcesManager.LoadLibrary(library.libraryId, performed);
                         });
                     break;
@@ -576,9 +582,9 @@ namespace umi3d.cdk
         {
             List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
             ids.ForEach(id => NotifyEntityToBeLoaded(id));
-            
+
             int performedCount = 0;
-            
+
             Action<LoadEntityDto> callback = (load) =>
             {
                 int count = load.entities.Count;
