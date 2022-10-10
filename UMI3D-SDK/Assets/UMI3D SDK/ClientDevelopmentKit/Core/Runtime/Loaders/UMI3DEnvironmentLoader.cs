@@ -576,9 +576,9 @@ namespace umi3d.cdk
         {
             List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
             ids.ForEach(id => NotifyEntityToBeLoaded(id));
-            
+
             int performedCount = 0;
-            
+
             Action<LoadEntityDto> callback = (load) =>
             {
                 int count = load.entities.Count;
@@ -744,33 +744,18 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (Exists)
-                return Instance._SetUMI3DPorperty(entity, property);
+                return Instance._SetUMI3DProperty(entity, property);
             else
                 return false;
         }
 
-        public static bool ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (Exists)
-                return Instance._ReadUMI3DPorperty(ref value, propertyKey, container);
-            else
-                return false;
-        }
-
-
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">Entity to update.</param>
-        /// <param name="property">Property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            if (Exists)
-                return Instance._SetUMI3DPorperty(entity, operationId, propertyKey, container);
+                return Instance._ReadUMI3DProperty(ref value, propertyKey, container);
             else
                 return false;
         }
@@ -782,7 +767,22 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        {
+            if (Exists)
+                return Instance._SetUMI3DProperty(entity, operationId, propertyKey, container);
+            else
+                return false;
+        }
+
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the new value.</param>
+        /// <returns></returns>
+        protected virtual bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null) return false;
             UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
@@ -803,7 +803,7 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        protected virtual bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
             UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
@@ -818,7 +818,7 @@ namespace umi3d.cdk
             }
         }
 
-        protected virtual bool _ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
+        protected virtual bool _ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -856,7 +856,7 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
                 if (!SetEntity(e, operationId, entityId, propertyKey, container))
-                    UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  opération : " + operationId + "   propKey : " + propertyKey, scope);
+                    UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
             }
             );
         }
@@ -913,7 +913,7 @@ namespace umi3d.cdk
 
         public static bool ReadValueEntity(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (ReadUMI3DPorperty(ref value, propertyKey, container)) return true;
+            if (ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             return Parameters.ReadUMI3DProperty(ref value, propertyKey, container);
         }
@@ -921,7 +921,7 @@ namespace umi3d.cdk
 
         private static bool SimulatedSetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
         {
-            if (SetUMI3DPorperty(node, dto)) return true;
+            if (SetUMI3DProperty(node, dto)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
             return Parameters.SetUMI3DProperty(node, dto);
         }
