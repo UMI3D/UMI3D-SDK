@@ -63,6 +63,9 @@ namespace umi3d.cdk.utils.extrapolation
         /// <param name="time"></param>
         public void AddMeasure(T measure, float time)
         {
+            if (time <= lastMessageTime)
+                return;
+
             if (!isInited) //requires two measures to be inited
             {
                 prediction = measure;
@@ -70,7 +73,7 @@ namespace umi3d.cdk.utils.extrapolation
             }
 
             lastEstimation = ExtrapolateState();
-            updateFrequency = 1 / (time - lastMessageTime);
+            updateFrequency = 1f / (time - lastMessageTime);
 
             Predict(measure, time);
             lastMeasure = measure;
@@ -107,7 +110,7 @@ namespace umi3d.cdk.utils.extrapolation
         public override void Predict(float measure, float time)
         {
             previous_prediction = prediction;
-            var t = (time + 1 / updateFrequency) / updateFrequency;
+            var t = 1f + (time - lastMessageTime) * updateFrequency;
             t = t > 0 ? t : 0;
             prediction = measure + (measure - lastMeasure) * t;
         }
@@ -133,7 +136,7 @@ namespace umi3d.cdk.utils.extrapolation
         public override void Predict(Vector3 measure, float time)
         {
             previous_prediction = prediction;
-            var t = (time + 1 / updateFrequency) / updateFrequency;
+            var t = 1f + (time - lastMessageTime) * updateFrequency;
             t = t > 0 ? t : 0;
             prediction = Vector3.LerpUnclamped(measure, measure + (measure - lastMeasure), t);
         }
@@ -159,7 +162,7 @@ namespace umi3d.cdk.utils.extrapolation
         public override void Predict(Quaternion measure, float time)
         {
             previous_prediction = prediction;
-            var t = (time + 1 / updateFrequency) / updateFrequency;
+            var t = 1f + (time - lastMessageTime) * updateFrequency;
             t = t > 0 ? t : 0;
             prediction = Quaternion.LerpUnclamped(measure, measure * (measure * Quaternion.Inverse(lastMeasure)), t);
         }
