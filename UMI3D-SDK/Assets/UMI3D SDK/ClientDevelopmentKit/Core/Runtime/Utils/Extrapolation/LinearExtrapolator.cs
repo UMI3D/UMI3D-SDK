@@ -61,7 +61,7 @@ namespace umi3d.cdk.utils.extrapolation
         /// </summary>
         /// <param name="measure"></param>
         /// <param name="time"></param>
-        public void AddMeasure(T measure, float time)
+        public virtual void AddMeasure(T measure, float time)
         {
             if (time <= lastMessageTime)
                 return;
