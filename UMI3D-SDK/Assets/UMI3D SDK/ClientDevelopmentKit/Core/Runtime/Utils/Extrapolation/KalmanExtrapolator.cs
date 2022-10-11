@@ -14,11 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.cdk.utils.extrapolation;
-using umi3d.cdk.utils.extrapolation.kalman;
 using UnityEngine;
 
-namespace umi3d.cdk.utils.extrapolator.kalman
+namespace umi3d.cdk.utils.extrapolation.kalman
 {
     /// <summary>
     /// Interface for Kalman filter based objects.
@@ -64,7 +62,12 @@ namespace umi3d.cdk.utils.extrapolator.kalman
         public override void Predict(float measure, float time)
         {
             previous_prediction = prediction;
-            prediction = (float)filter.getState()[0];
+
+            if (!isInited)
+                prediction = (float)filter.getState()[0];
+            else
+                prediction = measure;
+
         }
 
         /// <inheritdoc/>
@@ -95,11 +98,25 @@ namespace umi3d.cdk.utils.extrapolator.kalman
         }
 
         /// <inheritdoc/>
+        public override void AddMeasure(Vector3 measure, float time)
+        {
+            base.AddMeasure(measure, time);
+            filter.Update(new double[] { measure.x, measure.y, measure.z });
+            Predict(measure, time);
+        }
+
+        /// <inheritdoc/>
         public override void Predict(Vector3 measure, float time)
         {
             previous_prediction = prediction;
-            var vec = filter.getState();
-            prediction = new Vector3((float)vec[0], (float)vec[1], (float)vec[2]);
+            if (!isInited)
+            {
+                var vec = filter.getState();
+                prediction = new Vector3((float)vec[0], (float)vec[1], (float)vec[2]);
+            }
+            else
+                prediction = measure;
+
         }
 
         /// <inheritdoc/>
@@ -143,10 +160,16 @@ namespace umi3d.cdk.utils.extrapolator.kalman
         public override void Predict(Quaternion measure, float time)
         {
             previous_prediction = prediction;
-            var stateForward = filterForward.getState();
-            var stateUp = filterUp.getState();
-            prediction = Quaternion.LookRotation(new Vector3((float)stateForward[0], (float)stateForward[1], (float)stateForward[2]),
-                                            new Vector3((float)stateUp[0], (float)stateUp[1], (float)stateUp[2]));
+
+            if (!isInited)
+            {
+                var stateForward = filterForward.getState();
+                var stateUp = filterUp.getState();
+                prediction = Quaternion.LookRotation(new Vector3((float)stateForward[0], (float)stateForward[1], (float)stateForward[2]),
+                                                new Vector3((float)stateUp[0], (float)stateUp[1], (float)stateUp[2]));
+            }
+            else
+                prediction = measure;
         }
 
         /// <inheritdoc/>
