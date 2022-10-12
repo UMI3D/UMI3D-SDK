@@ -104,7 +104,13 @@ namespace umi3d.edk.collaboration
                 sendAvatarFramesThread = new Thread(new ThreadStart(SendTrackingFramesLoop));
                 sendAvatarFramesThread.Start();
             });
+
             UMI3DCollaborationServer.Instance.OnServerStop.AddListener(() => {
+                running = false;
+                sendAvatarFramesThread = null;
+            });
+
+            QuittingManager.OnApplicationIsQuitting.AddListener(() => {
                 running = false;
                 sendAvatarFramesThread = null;
             });
