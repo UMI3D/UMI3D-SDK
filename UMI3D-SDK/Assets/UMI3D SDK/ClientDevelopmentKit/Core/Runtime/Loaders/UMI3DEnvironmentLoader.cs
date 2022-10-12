@@ -18,7 +18,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
+using umi3d.common.utils.serialization;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
@@ -750,33 +752,18 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (Exists)
-                return Instance._SetUMI3DPorperty(entity, property);
+                return Instance._SetUMI3DProperty(entity, property);
             else
                 return false;
         }
 
-        public static bool ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (Exists)
-                return Instance._ReadUMI3DPorperty(ref value, propertyKey, container);
-            else
-                return false;
-        }
-
-
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">Entity to update.</param>
-        /// <param name="property">Property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            if (Exists)
-                return Instance._SetUMI3DPorperty(entity, operationId, propertyKey, container);
+                return Instance._ReadUMI3DProperty(ref value, propertyKey, container);
             else
                 return false;
         }
@@ -788,7 +775,22 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        {
+            if (Exists)
+                return Instance._SetUMI3DProperty(entity, operationId, propertyKey, container);
+            else
+                return false;
+        }
+
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the new value.</param>
+        /// <returns></returns>
+        protected virtual bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null) return false;
             UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
@@ -809,7 +811,7 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        protected virtual bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
             UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
@@ -824,7 +826,7 @@ namespace umi3d.cdk
             }
         }
 
-        protected virtual bool _ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
+        protected virtual bool _ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -862,7 +864,7 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
                 if (!SetEntity(e, operationId, entityId, propertyKey, container))
-                    UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  opération : " + operationId + "   propKey : " + propertyKey, scope);
+                    UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
             }
             );
         }
@@ -877,15 +879,12 @@ namespace umi3d.cdk
         {
             if (Instance.entityFilters.ContainsKey(dto.entityId) && Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
             {
-                float now = Time.time;
-                Instance.entityFilters[dto.entityId][dto.property].measuresPerSecond = 1 / (now - Instance.entityFilters[dto.entityId][dto.property].lastMessageTime);
-                Instance.entityFilters[dto.entityId][dto.property].lastMessageTime = now;
-                Instance.PropertyKalmanUpdate(Instance.entityFilters[dto.entityId][dto.property], dto.value);
+                Instance.entityFilters[dto.entityId][dto.property].AddMeasure(dto.value.Deserialize());
                 return true;
             }
             else
             {
-                if (SetUMI3DPorperty(node, dto)) return true;
+                if (SetUMI3DProperty(node, dto)) return true;
                 if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
                 return Parameters.SetUMI3DProperty(node, dto);
             }
@@ -901,25 +900,22 @@ namespace umi3d.cdk
         {
             if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(propertyKey))
             {
-                float now = Time.time;
-                Instance.entityFilters[entityId][propertyKey].measuresPerSecond = 1 / (now - Instance.entityFilters[entityId][propertyKey].lastMessageTime);
-                Instance.entityFilters[entityId][propertyKey].lastMessageTime = now;
                 object value = null;
                 ReadValueEntity(ref value, propertyKey, container);
-                Instance.PropertyKalmanUpdate(Instance.entityFilters[entityId][propertyKey], value);
+                Instance.entityFilters[entityId][propertyKey].AddMeasure(value.Deserialize());
                 return true;
             }
             else
             {
-                if (SetUMI3DPorperty(node, operationId, propertyKey, container)) return true;
+                if (SetUMI3DProperty(node, operationId, propertyKey, container)) return true;
                 if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey, container)) return true;
                 return Parameters.SetUMI3DProperty(node, operationId, propertyKey, container);
             }
         }
 
-        public static bool ReadValueEntity(ref object value, uint propertyKey, ByteContainer container)
+        private static bool ReadValueEntity(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (ReadUMI3DPorperty(ref value, propertyKey, container)) return true;
+            if (ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             return Parameters.ReadUMI3DProperty(ref value, propertyKey, container);
         }
@@ -927,7 +923,7 @@ namespace umi3d.cdk
 
         private static bool SimulatedSetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
         {
-            if (SetUMI3DPorperty(node, dto)) return true;
+            if (SetUMI3DProperty(node, dto)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
             return Parameters.SetUMI3DProperty(node, dto);
         }
@@ -1000,53 +996,9 @@ namespace umi3d.cdk
 
         #region interpolation
 
-        private abstract class AbstractKalmanEntity
-        {
-            public float measuresPerSecond;
-            public float lastMessageTime;
-            public ulong entityId;
-            public ulong property;
-            public object regressed_value;
 
-            public AbstractKalmanEntity(double q, double r) { }
-        }
 
-        private class KalmanEntity : AbstractKalmanEntity
-        {
-            public UMI3DUnscentedKalmanFilter KalmanFilter;
-            public double[] estimations;
-            public double[] previous_prediction;
-            public double[] prediction;
-
-            public KalmanEntity(double q, double r) : base(q, r)
-            {
-                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
-                estimations = new double[] { };
-                previous_prediction = new double[] { };
-                prediction = new double[] { };
-                lastMessageTime = 0;
-            }
-        }
-
-        private class KalmanRotationEntity : AbstractKalmanEntity
-        {
-            // forward, up
-            public Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter> KalmanFilters;
-            public Tuple<double[], double[]> estimations;
-            public Tuple<double[], double[]> previous_prediction;
-            public Tuple<double[], double[]> prediction;
-
-            public KalmanRotationEntity(double q, double r) : base(q, r)
-            {
-                KalmanFilters = new Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter>(new UMI3DUnscentedKalmanFilter(q, r), new UMI3DUnscentedKalmanFilter(q, r));
-                estimations = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                previous_prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                lastMessageTime = 0;
-            }
-        }
-
-        private readonly Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>>();
+        private readonly Dictionary<ulong, Dictionary<ulong, AbstractExtrapolator>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractExtrapolator>>();
 
         private void Update()
         {
@@ -1055,15 +1007,15 @@ namespace umi3d.cdk
                 foreach (ulong property in Instance.entityFilters[entityId].Keys)
                 {
                     UMI3DEntityInstance node = UMI3DEnvironmentLoader.GetEntity(entityId);
-                    AbstractKalmanEntity kalmanEntity = Instance.entityFilters[entityId][property];
+                    AbstractExtrapolator extrapolator = Instance.entityFilters[entityId][property];
 
-                    Instance.PropertyRegression(kalmanEntity);
+                    extrapolator.UpdateRegressedValue();
 
                     var entityPropertyDto = new SetEntityPropertyDto()
                     {
-                        entityId = kalmanEntity.entityId,
-                        property = kalmanEntity.property,
-                        value = kalmanEntity.regressed_value
+                        entityId = extrapolator.entityId,
+                        property = extrapolator.property,
+                        value = extrapolator.GetRegressedValue().ToSerializable()
                     };
 
                     SimulatedSetEntity(node, entityPropertyDto);
@@ -1081,7 +1033,7 @@ namespace umi3d.cdk
             if (!Exists) return false;
             WaitForAnEntityToBeLoaded(dto.entityId, (e) =>
             {
-                StartInterpolation(e, dto);
+                Instance.StartInterpolation(e, dto.entityId, dto.property, dto.startValue);
             }
             );
             return true;
@@ -1099,108 +1051,50 @@ namespace umi3d.cdk
             uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
             WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                StartInterpolation(e, entityId, propertyKey, container);
+                object value = null;
+                ReadValueEntity(ref value, propertyKey, container);
+                Instance.StartInterpolation(e, entityId, propertyKey, value.Deserialize());
             }
             );
             return true;
         }
 
-        /// <summary>
-        /// Handle StartInterpolationPropertyDto operation.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public static bool StartInterpolation(UMI3DEntityInstance node, StartInterpolationPropertyDto dto)
+        protected bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, ulong propertyKey, object startValue)
         {
-            if (!Instance.entityFilters.ContainsKey(dto.entityId))
+            if (!entityFilters.ContainsKey(entityId))
             {
-                Instance.entityFilters.Add(dto.entityId, new Dictionary<ulong, AbstractKalmanEntity>());
+                entityFilters.Add(entityId, new Dictionary<ulong, AbstractExtrapolator>());
             }
 
-            if (!Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
+            if (!entityFilters[entityId].ContainsKey(propertyKey))
             {
-
-                AbstractKalmanEntity newKalmanEntity;
-
-                if (dto.property.Equals(UMI3DPropertyKeys.Rotation))
+                AbstractExtrapolator newExtrapolator;
+                if (propertyKey == UMI3DPropertyKeys.Rotation)
                 {
-                    newKalmanEntity = new KalmanRotationEntity(50, 0.5)
+                    newExtrapolator = new QuaternionLinearDelayedExtrapolator()
                     {
-                        lastMessageTime = Time.time,
-                        entityId = dto.entityId,
-                        property = dto.property
+                        entityId = entityId,
+                        property = propertyKey
                     };
                 }
                 else
                 {
-                    newKalmanEntity = new KalmanEntity(50, 0.5)
+                    newExtrapolator = new Vector3LinearDelayedExtrapolator()
                     {
-                        lastMessageTime = Time.time,
-                        entityId = dto.entityId,
-                        property = dto.property
-                    };
-                }
-
-                Instance.entityFilters[dto.entityId].Add(dto.property, newKalmanEntity);
-
-                Instance.PropertyKalmanUpdate(newKalmanEntity, dto.startValue);
-
-                var entityPropertyDto = new SetEntityPropertyDto()
-                {
-                    entityId = dto.entityId,
-                    property = dto.property,
-                    value = dto.startValue
-                };
-
-                SetEntity(node, entityPropertyDto);
-                return true;
-            }
-            return false;
-        }
-
-        public static bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, ByteContainer container)
-        {
-            if (!Instance.entityFilters.ContainsKey(entityId))
-            {
-                Instance.entityFilters.Add(entityId, new Dictionary<ulong, AbstractKalmanEntity>());
-            }
-
-            if (!Instance.entityFilters[entityId].ContainsKey(property))
-            {
-                AbstractKalmanEntity newKalmanEntity;
-
-                if (property.Equals(UMI3DPropertyKeys.Rotation))
-                {
-                    newKalmanEntity = new KalmanRotationEntity(50, 0.5)
-                    {
-                        lastMessageTime = Time.time,
                         entityId = entityId,
-                        property = property
-                    };
-                }
-                else
-                {
-                    newKalmanEntity = new KalmanEntity(50, 0.5)
-                    {
-                        lastMessageTime = Time.time,
-                        entityId = entityId,
-                        property = property
+                        property = propertyKey
                     };
                 }
 
-                Instance.entityFilters[entityId].Add(property, newKalmanEntity);
+                entityFilters[entityId].Add(propertyKey, newExtrapolator);
 
-                object value = null;
-                ReadValueEntity(ref value, property, container);
-
-                Instance.PropertyKalmanUpdate(newKalmanEntity, value);
+                newExtrapolator.AddMeasure(startValue);
 
                 var entityPropertyDto = new SetEntityPropertyDto()
                 {
                     entityId = entityId,
-                    property = property,
-                    value = value
+                    property = propertyKey,
+                    value = startValue.ToSerializable()
                 };
 
                 SetEntity(node, entityPropertyDto);
@@ -1219,7 +1113,7 @@ namespace umi3d.cdk
             if (!Exists) return false;
             WaitForAnEntityToBeLoaded(dto.entityId, e =>
             {
-                StopInterpolation(e, dto);
+                Instance.StopInterpolation(e, dto.entityId, dto.property, dto.stopValue);
             }
              );
             return true;
@@ -1232,53 +1126,25 @@ namespace umi3d.cdk
             uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
             WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                StopInterpolation(e, entityId, propertyKey, container);
+                object value = null;
+                ReadValueEntity(ref value, propertyKey, container);
+                Instance.StopInterpolation(e, entityId, propertyKey, value.Deserialize());
             });
 
             return true;
         }
 
-        /// <summary>
-        /// Handle StopInterpolationPropertyDto operation.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public static bool StopInterpolation(UMI3DEntityInstance node, StopInterpolationPropertyDto dto)
+
+        protected bool StopInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, object stopValue)
         {
-            if (Instance.entityFilters.ContainsKey(dto.entityId) && Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
+            if (entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(property))
             {
-                Instance.entityFilters[dto.entityId].Remove(dto.property);
-                var entityPropertyDto = new SetEntityPropertyDto()
-                {
-                    entityId = dto.entityId,
-                    property = dto.property,
-                    value = dto.stopValue
-                };
-
-                SetEntity(node, entityPropertyDto);
-
-                return true;
-            }
-
-            UMI3DLogger.LogWarning("Need to determine what happens when not in interpolation", scope);
-
-            return false;
-        }
-
-        public static bool StopInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, ByteContainer container)
-        {
-            if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(property))
-            {
-                object value = null;
-                ReadValueEntity(ref value, property, container);
-
                 Instance.entityFilters[entityId].Remove(property);
                 var entityPropertyDto = new SetEntityPropertyDto()
                 {
                     entityId = entityId,
                     property = property,
-                    value = value
+                    value = stopValue.ToSerializable()
                 };
 
                 SetEntity(node, entityPropertyDto);
@@ -1286,208 +1152,6 @@ namespace umi3d.cdk
                 return true;
             }
             return false;
-        }
-
-        private void PropertyRegression(AbstractKalmanEntity kalmanEntity)
-        {
-            if (kalmanEntity.property.Equals(UMI3DPropertyKeys.Rotation))
-            {
-                if ((kalmanEntity as KalmanRotationEntity).previous_prediction.Item1.Length > 0)
-                {
-                    double check = kalmanEntity.lastMessageTime;
-                    double now = Time.time;
-
-                    double delta = now - check;
-
-                    if (delta * kalmanEntity.measuresPerSecond <= 1)
-                    {
-                        double fw_value_x = (((kalmanEntity as KalmanRotationEntity).prediction.Item1[0] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[0]) * kalmanEntity.measuresPerSecond * delta) + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[0];
-                        double fw_value_y = (((kalmanEntity as KalmanRotationEntity).prediction.Item1[1] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[1]) * kalmanEntity.measuresPerSecond * delta) + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[1];
-                        double fw_value_z = (((kalmanEntity as KalmanRotationEntity).prediction.Item1[2] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[2]) * kalmanEntity.measuresPerSecond * delta) + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[2];
-
-                        double up_value_x = (((kalmanEntity as KalmanRotationEntity).prediction.Item2[0] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[0]) * kalmanEntity.measuresPerSecond * delta) + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[0];
-                        double up_value_y = (((kalmanEntity as KalmanRotationEntity).prediction.Item2[1] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[1]) * kalmanEntity.measuresPerSecond * delta) + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[1];
-                        double up_value_z = (((kalmanEntity as KalmanRotationEntity).prediction.Item2[2] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[2]) * kalmanEntity.measuresPerSecond * delta) + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[2];
-
-                        (kalmanEntity as KalmanRotationEntity).estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
-
-                        var res = Quaternion.LookRotation(new Vector3((float)fw_value_x, (float)fw_value_y, (float)fw_value_z), new Vector3((float)up_value_x, (float)up_value_y, (float)up_value_z));
-
-                        kalmanEntity.regressed_value = new SerializableVector4(res.x, res.y, res.z, res.w);
-                    }
-                }
-            }
-
-            else
-            {
-                if ((kalmanEntity as KalmanEntity).previous_prediction.Length > 0)
-                {
-                    double check = kalmanEntity.lastMessageTime;
-                    double now = Time.time;
-
-                    double delta = now - check;
-
-                    double new_value_1;
-                    double new_value_2;
-                    double new_value_3;
-                    double new_value_4;
-
-                    if (delta * kalmanEntity.measuresPerSecond <= 1)
-                    {
-                        switch (kalmanEntity.regressed_value)
-                        {
-                            case int n:
-                                new_value_1 = (((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[0];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1 };
-                                kalmanEntity.regressed_value = (int)new_value_1;
-
-                                break;
-                            case float f:
-                                new_value_1 = (((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[0];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1 };
-                                kalmanEntity.regressed_value = (float)new_value_1;
-
-                                break;
-                            case SerializableVector2 v:
-                                new_value_1 = (((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = (((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[1];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1, new_value_2 };
-                                kalmanEntity.regressed_value = new SerializableVector2((float)new_value_1, (float)new_value_2);
-
-                                break;
-                            case SerializableVector3 v:
-                                new_value_1 = (((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = (((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[1];
-                                new_value_3 = (((kalmanEntity as KalmanEntity).prediction[2] - (kalmanEntity as KalmanEntity).previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[2];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1, new_value_2, new_value_3 };
-                                kalmanEntity.regressed_value = new SerializableVector3((float)new_value_1, (float)new_value_2, (float)new_value_3);
-
-                                break;
-                            case SerializableVector4 v:
-                                double[] estimations;
-                                object regressed_value;
-
-                                new_value_1 = (((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = (((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[1];
-                                new_value_3 = (((kalmanEntity as KalmanEntity).prediction[2] - (kalmanEntity as KalmanEntity).previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[2];
-                                new_value_4 = (((kalmanEntity as KalmanEntity).prediction[3] - (kalmanEntity as KalmanEntity).previous_prediction[3]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[3];
-
-                                estimations = new double[] { new_value_1, new_value_2, new_value_3, new_value_4 };
-                                regressed_value = new SerializableVector4((float)new_value_1, (float)new_value_2, (float)new_value_3, (float)new_value_4);
-
-                                (kalmanEntity as KalmanEntity).estimations = estimations;
-                                kalmanEntity.regressed_value = regressed_value;
-
-                                break;
-                            case SerializableColor v:
-                                new_value_1 = (((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = (((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[1];
-                                new_value_3 = (((kalmanEntity as KalmanEntity).prediction[2] - (kalmanEntity as KalmanEntity).previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[2];
-                                new_value_4 = (((kalmanEntity as KalmanEntity).prediction[3] - (kalmanEntity as KalmanEntity).previous_prediction[3]) * delta * kalmanEntity.measuresPerSecond) + (kalmanEntity as KalmanEntity).previous_prediction[3];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1, new_value_2, new_value_3, new_value_4 };
-                                kalmanEntity.regressed_value = new SerializableVector4((float)new_value_1, (float)new_value_2, (float)new_value_3, (float)new_value_4);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void PropertyKalmanUpdate(AbstractKalmanEntity abstractKalman, object value)
-        {
-            object measurement;
-
-            switch (value)
-            {
-                case int n:
-                    measurement = new double[] { n };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = n;
-                    break;
-                case float f:
-                    measurement = new double[] { f };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = f;
-                    break;
-                case SerializableVector2 v:
-                    measurement = new double[] { v.X, v.Y };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-                    break;
-                case SerializableVector3 v:
-                    measurement = new double[] { v.X, v.Y, v.Z };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-                    break;
-                case SerializableVector4 v:
-                    if (abstractKalman.property.Equals(UMI3DPropertyKeys.Rotation))
-                    {
-                        var quaternionMeasurment = new Quaternion(v.X, v.Y, v.Z, v.W);
-
-                        Vector3 targetForward = quaternionMeasurment * Vector3.forward;
-                        Vector3 targetUp = quaternionMeasurment * Vector3.up;
-
-                        double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
-                        double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
-
-                        measurement = new Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
-                    }
-                    else
-                    {
-                        measurement = new double[] { v.X, v.Y, v.Z, v.W };
-                    }
-
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-
-                    break;
-                case SerializableColor v:
-                    measurement = new double[] { v.R, v.G, v.B, v.A };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-                    break;
-                default:
-                    measurement = new double[0];
-                    break;
-            }
-
-            if (abstractKalman.property.Equals(UMI3DPropertyKeys.Rotation))
-            {
-                (abstractKalman as KalmanRotationEntity).KalmanFilters.Item1.Update((measurement as Tuple<double[], double[]>).Item1); // forward
-                (abstractKalman as KalmanRotationEntity).KalmanFilters.Item2.Update((measurement as Tuple<double[], double[]>).Item2);
-
-                (abstractKalman as KalmanRotationEntity).prediction = new Tuple<double[], double[]>((abstractKalman as KalmanRotationEntity).KalmanFilters.Item1.getState(), (abstractKalman as KalmanRotationEntity).KalmanFilters.Item2.getState());
-
-                if ((abstractKalman as KalmanRotationEntity).estimations.Item1.Length > 0)
-                    (abstractKalman as KalmanRotationEntity).previous_prediction = (abstractKalman as KalmanRotationEntity).estimations;
-                else
-                    (abstractKalman as KalmanRotationEntity).previous_prediction = new System.Tuple<double[], double[]>((measurement as Tuple<double[], double[]>).Item1, (measurement as Tuple<double[], double[]>).Item2);
-            }
-
-            else if ((measurement as double[]).Length > 0)
-            {
-                (abstractKalman as KalmanEntity).KalmanFilter.Update(measurement as double[]);
-
-                double[] newValueState = (abstractKalman as KalmanEntity).KalmanFilter.getState();
-
-                (abstractKalman as KalmanEntity).prediction = newValueState;
-
-                if ((abstractKalman as KalmanEntity).estimations.Length > 0)
-                    (abstractKalman as KalmanEntity).previous_prediction = (abstractKalman as KalmanEntity).estimations;
-                else
-                    (abstractKalman as KalmanEntity).previous_prediction = measurement as double[];
-            }
-            else
-            {
-                throw new Exception("Datatype not filterable");
-            }
         }
 
         #endregion

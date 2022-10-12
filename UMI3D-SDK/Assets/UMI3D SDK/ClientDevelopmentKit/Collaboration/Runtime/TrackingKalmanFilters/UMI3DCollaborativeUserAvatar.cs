@@ -18,11 +18,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.utils.extrapolation;
 using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Client description of a user's avatar, like <see cref="UserAvatar"/>, but in a collaborative context.
+    /// </summary>
     public class UMI3DCollaborativeUserAvatar : UserAvatar
     {
         #region Fields
@@ -30,10 +34,17 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Tools to perfom interpolation for every avatar bones.
         /// </summary>
-        private readonly Dictionary<uint, UMI3DKalmanQuaternionLerp> boneRotationFilters = new Dictionary<uint, UMI3DKalmanQuaternionLerp>();
+        private readonly Dictionary<uint, QuaternionLinearDelayedExtrapolator> boneRotationFilters = new Dictionary<uint, QuaternionLinearDelayedExtrapolator>();
+        
+        /// <summary>
+        /// Reference to the skeleton object of the avatar.
+        /// </summary>
         private GameObject skeleton;
 
-        protected UMI3DKalmanVector3Lerp skeletonHeightLerp;
+        /// <summary>
+        /// Extrapolator for the avatar jump height.
+        /// </summary>
+        protected FloatLinearDelayedExtrapolator skeletonHeightExtrapolator;
 
         /// <summary>
         /// Coroutine used to update avatar position.
@@ -51,17 +62,21 @@ namespace umi3d.cdk.collaboration
 
         private void Update()
         {
-            if (nodePositionLerp != null)
-                this.transform.localPosition = nodePositionLerp.GetValue(Time.deltaTime);
+            if (nodePositionExtrapolator != null)
+                this.transform.localPosition = nodePositionExtrapolator.ExtrapolateState();
 
-            if (nodeRotationLerp != null)
-                this.transform.localRotation = nodeRotationLerp.GetValue(Time.deltaTime);
+            if (nodeRotationExtrapolator != null)
+                this.transform.localRotation = nodeRotationExtrapolator.ExtrapolateState();
 
             if (skeleton == null)
                 return;
 
-            if (skeletonHeightLerp != null)
-                skeleton.transform.localPosition = skeletonHeightLerp.GetValue(Time.deltaTime);
+            if (skeletonHeightExtrapolator != null)
+            {
+                var e = skeletonHeightExtrapolator.ExtrapolateState();
+                skeleton.transform.localPosition = new Vector3(0, skeletonHeightExtrapolator.ExtrapolateState(), 0);
+            }
+
 
             Animator userAnimator = skeleton.GetComponentInChildren<Animator>();
 
@@ -73,7 +88,7 @@ namespace umi3d.cdk.collaboration
                 {
                     boneTransform = viewpointObject;
                     if (boneRotationFilters[boneType] != null)
-                        boneTransform.parent.localRotation = boneRotationFilters[boneType].GetValue(Time.deltaTime);
+                        boneTransform.parent.localRotation = boneRotationFilters[boneType].ExtrapolateState();
                 }
                 else
                 {
@@ -83,7 +98,7 @@ namespace umi3d.cdk.collaboration
                         boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
 
                     if (boneRotationFilters[boneType] != null)
-                        boneTransform.localRotation = boneRotationFilters[boneType].GetValue(Time.deltaTime);
+                        boneTransform.localRotation = boneRotationFilters[boneType].ExtrapolateState();
                 }
 
 
@@ -152,36 +167,39 @@ namespace umi3d.cdk.collaboration
         /// <param name="timeFrame">sending time in ms</param>
         public IEnumerator UpdateAvatarPositionCoroutine(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
+            MeasuresPerSecond = 1f / (timeFrame - lastFrameTime);
             lastFrameTime = timeFrame;
             lastMessageTime = Time.time;
 
-            if (nodePositionLerp == null)
-                nodePositionLerp = new UMI3DKalmanVector3Lerp(trackingFrameDto.position);
-            else
-                nodePositionLerp.UpdateValue(trackingFrameDto.position);
+            if (nodePositionExtrapolator == null)
+            {
+                nodePositionExtrapolator = new Vector3LinearDelayedExtrapolator();
+                nodePositionExtrapolator.AddMeasure(transform.localPosition, lastMessageTime);
+            }
+            nodePositionExtrapolator.AddMeasure(trackingFrameDto.position, lastMessageTime);
 
-            if (nodeRotationLerp == null)
-                nodeRotationLerp = new UMI3DKalmanQuaternionLerp(trackingFrameDto.rotation);
-            else
-                nodeRotationLerp.UpdateValue(trackingFrameDto.rotation);
+            if (nodeRotationExtrapolator == null)
+            {
+                nodeRotationExtrapolator = new QuaternionLinearDelayedExtrapolator();
+                nodeRotationExtrapolator.AddMeasure(transform.localRotation, lastMessageTime);
+            }
 
+            nodeRotationExtrapolator.AddMeasure(trackingFrameDto.rotation, lastMessageTime);
 
-            if (skeletonHeightLerp == null)
-                skeletonHeightLerp = new UMI3DKalmanVector3Lerp(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
-            else
-                skeletonHeightLerp.UpdateValue(new Vector3(0, trackingFrameDto.skeletonHighOffset, 0));
+            if (skeletonHeightExtrapolator == null)
+            {
+                skeletonHeightExtrapolator = new FloatLinearDelayedExtrapolator();
+                skeletonHeightExtrapolator.AddMeasure(skeleton.transform.localPosition.y, lastMessageTime);
+            }
+
+            skeletonHeightExtrapolator.AddMeasure(trackingFrameDto.skeletonHighOffset, lastMessageTime);
+
 
             foreach (BoneDto boneDto in trackingFrameDto.bones)
             {
-                if (boneRotationFilters.ContainsKey(boneDto.boneType))
-                {
-                    boneRotationFilters[boneDto.boneType].UpdateValue(boneDto.rotation);
-                }
-                else
-                {
-                    boneRotationFilters.Add(boneDto.boneType, new UMI3DKalmanQuaternionLerp(boneDto.rotation));
-                }
+                if (!boneRotationFilters.ContainsKey(boneDto.boneType))
+                    boneRotationFilters.Add(boneDto.boneType, new QuaternionLinearDelayedExtrapolator());
+                boneRotationFilters[boneDto.boneType].AddMeasure(boneDto.rotation, lastMessageTime);
 
                 List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
                 foreach (BoneBindingDto boneBindingDto in bindings)
