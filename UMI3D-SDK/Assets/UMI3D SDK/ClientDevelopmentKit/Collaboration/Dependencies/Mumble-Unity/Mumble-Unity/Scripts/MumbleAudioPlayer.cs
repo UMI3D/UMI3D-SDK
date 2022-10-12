@@ -2,15 +2,31 @@
 using System.Collections;
 using System;
 using MumbleProto;
+using UnityEngine.Events;
 
 namespace Mumble
 {
+    public class MumbleAudioPlayerPlayingEvent : UnityEvent<bool> { }
+
     [RequireComponent(typeof(AudioSource))]
     public class MumbleAudioPlayer : MonoBehaviour
     {
 
         public float Gain = 1;
         public UInt32 Session { get; private set; }
+        private bool _isPlaying
+        {
+            get => __isPlaying;
+            set
+            {
+                if (__isPlaying != value)
+                {
+                    __isPlaying = value;
+                    OnPlaying.Invoke(__isPlaying);
+                }
+            }
+        }
+
         /// <summary>
         /// Notification that a new audio sample is available for processing
         /// It will be called on the audio thread
@@ -22,8 +38,10 @@ namespace Mumble
 
         private MumbleClient _mumbleClient;
         private AudioSource _audioSource;
-        private bool _isPlaying = false;
+        private bool __isPlaying = false;
         private float _pendingAudioVolume = -1f;
+
+        public MumbleAudioPlayerPlayingEvent OnPlaying = new MumbleAudioPlayerPlayingEvent();
 
         void Start()
         {
@@ -109,6 +127,11 @@ namespace Mumble
         {
             if (_mumbleClient == null || !_mumbleClient.ConnectionSetupFinished)
                 return;
+
+            if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
+            {
+                return;
+            }
             //Debug.Log("Filter read for: " + GetUsername());
 
             int numRead = _mumbleClient.LoadArrayWithVoiceData(Session, data, 0, data.Length);
@@ -161,7 +184,14 @@ namespace Mumble
         void Update()
         {
             if (_mumbleClient == null)
+            {
+                if (_isPlaying)
+                {
+                    _audioSource.Stop();
+                    _isPlaying = false;
+                }
                 return;
+            }
             if (!_isPlaying && _mumbleClient.HasPlayableAudio(Session))
             {
                 _audioSource.Play();

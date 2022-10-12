@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System.Collections;
 using umi3d.common;
@@ -43,7 +44,7 @@ namespace umi3d.cdk
         }
         private IEnumerator _InitPlayer(UMI3DAudioPlayerDto dto, GameObject gameObject)
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource = gameObject.GetOrAddComponent<AudioSource>();
             audioSource.playOnAwake = false;
             audioSource.pitch = dto.pitch;
             audioSource.volume = dto.volume;
@@ -88,7 +89,7 @@ namespace umi3d.cdk
                             UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}", scope);
                         }
                     },
-                     e => UMI3DLogger.LogWarning(e, scope),
+                     e => UMI3DLogger.LogException(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -176,7 +177,7 @@ namespace umi3d.cdk
                                 else
                                     UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(AudioClip)}", scope);
                             },
-                            e => UMI3DLogger.LogWarning(e, scope),
+                            e => UMI3DLogger.LogException(e, scope),
                             loader.DeleteObject
                             );
                     }
@@ -241,7 +242,7 @@ namespace umi3d.cdk
                                 else
                                     UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                             },
-                            e => UMI3DLogger.LogWarning(e, scope),
+                            e => UMI3DLogger.LogException(e, scope),
                             loader.DeleteObject
                             );
                     }
@@ -266,19 +267,29 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public override void Start(float atTime)
         {
+            atTime = atTime / 1000f; //Convert to seconds
+
             if (audioSource != null)
             {
                 if (audioSource.clip != null)
                 {
+                    if(dto.looping)
+                        atTime = atTime % audioSource.clip.length;
+
                     audioSource.Stop();
-                    if (atTime != 0)
-                        audioSource.time = atTime;
-                    audioSource.Play();
-                    OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length));
+
+                    if (atTime <= audioSource.clip.length)
+                    {
+                        if (atTime != 0)
+                            audioSource.time = atTime;
+                        audioSource.Play();
+                    }
+
+                    OnEndCoroutine = UMI3DAnimationManager.StartCoroutine(WaitUntilTheEnd(audioSource.clip.length - atTime));
                 }
                 else
                 {
-                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
+                    UnityMainThreadDispatcher.Instance().StartCoroutine(StartAfterLoading());
                 }
             }
         }

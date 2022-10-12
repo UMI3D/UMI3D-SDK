@@ -200,6 +200,11 @@ namespace umi3d.edk
         {
         }
 
+        public virtual float ReturnServerTime()
+        {
+            return Time.time;
+        }
+
         #region session
         public UMI3DUserEvent OnUserJoin = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserRegistered = new UMI3DUserEvent();

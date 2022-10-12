@@ -31,6 +31,7 @@ namespace umi3d.common
         Default = 1 << 0,
         Error = 1 << 1,
         Warning = 1 << 2,
+        Exception = 1 << 3
     }
 
     /// <summary>
@@ -63,6 +64,7 @@ namespace umi3d.common
         User = 1 << 12,
 
         Connection = 1 << 13,
+        Mumble = 1 << 14,
 
         Editor = 1 << 29,
         Other = 1 << 28
@@ -153,6 +155,15 @@ namespace umi3d.common
                     Debug.LogError(o);
         }
 
+        public static void LogException(Exception o, DebugScope scope)
+        {
+            if (validLevel(DebugLevel.Error) && validScope(scope))
+                if (Exists)
+                    Instance._LogError(o, scope);
+                else
+                    Debug.LogException(o);
+        }
+
         private static bool validLevel(DebugLevel level)
         {
             return Exists ? Instance._validLevel(level) : (level & LogLevel) != 0;
@@ -181,6 +192,13 @@ namespace umi3d.common
         {
             if (ShouldLog)
                 logWritter?.Write("Error: " + o.ToString());
+            Debug.LogError(o);
+        }
+
+        protected virtual void _LogException(Exception o, DebugScope scope)
+        {
+            if (ShouldLog)
+                logWritter?.Write("Exception: " + o.Message + "\n" + o.StackTrace);
             Debug.LogError(o);
         }
 

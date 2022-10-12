@@ -29,6 +29,7 @@ namespace umi3d.cdk
 
         private readonly UnityWebRequest request;
         private readonly long responseCode = 0;
+        private readonly string computedString;
 
         public long GetRespondCode()
         {
@@ -45,34 +46,41 @@ namespace umi3d.cdk
             return request?.GetResponseHeaders();
         }
 
-        public override string ToString()
+        public string ComputeString(string info)
         {
             if (request != null)
             {
-                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{request.responseCode}, url:{request.url}], header:{request?.GetResponseHeaders()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ";
+                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{request.responseCode}, url:{request.url}, info:{info}], header:{request?.GetResponseHeaders()?.ToString(e => $"{{{e.Key}:{e.Value}}}")} ";
             }
             else
             {
-                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{responseCode}]";
+                return $"Request failed [count:{count}, date:{date.ToString("G")}, code:{responseCode}, info:{info}]";
             }
         }
 
+        public override string ToString()
+        {
+            return computedString;
+        }
+
         public Func<RequestFailedArgument, bool> ShouldTryAgain { get; private set; }
-        public RequestFailedArgument(UnityWebRequest request, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
+        public RequestFailedArgument(UnityWebRequest request, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain, string info = null)
         {
             this.request = request;
             this.count = count;
             this.date = date;
             this.ShouldTryAgain = ShouldTryAgain;
+            this.computedString = ComputeString(info);
         }
 
-        public RequestFailedArgument(long responseCode, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain)
+        public RequestFailedArgument(long responseCode, int count, DateTime date, Func<RequestFailedArgument, bool> ShouldTryAgain, string info = null)
         {
             this.request = null;
             this.responseCode = responseCode;
             this.count = count;
             this.date = date;
             this.ShouldTryAgain = ShouldTryAgain;
+            this.computedString = ComputeString(info);
         }
 
         public int count { get; private set; }

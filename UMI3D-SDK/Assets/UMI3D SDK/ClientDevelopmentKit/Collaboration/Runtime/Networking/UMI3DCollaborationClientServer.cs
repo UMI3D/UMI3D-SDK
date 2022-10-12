@@ -24,6 +24,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
+
+    public class OnForceLogoutEvent : UnityEvent<string> { }
+
     /// <summary>
     /// Collaboration Extension of the UMI3DClientServer
     /// </summary>
@@ -53,6 +56,8 @@ namespace umi3d.cdk.collaboration
 
         public UnityEvent OnConnectionCheck = new UnityEvent();
         public UnityEvent OnConnectionRetreived = new UnityEvent();
+
+        public OnForceLogoutEvent OnForceLogoutMessage = new OnForceLogoutEvent();
 
         public ClientIdentifierApi Identifier;
 
@@ -128,6 +133,7 @@ namespace umi3d.cdk.collaboration
             bool aborted = false;
             UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = true;
             Instance.OnRedirectionStarted.Invoke();
+
             try
             {
                 if (Exists)
@@ -137,6 +143,7 @@ namespace umi3d.cdk.collaboration
                     if (await wc.Connect())
                     {
                         Instance.OnRedirection.Invoke();
+                        loadingEntities.Clear();
 
                         UMI3DEnvironmentClient env = environmentClient;
                         environmentClient = null;
@@ -152,7 +159,7 @@ namespace umi3d.cdk.collaboration
 
                         worldControllerClient = wc;
                         environmentClient = await wc.ConnectToEnvironment();
-                        environmentClient.status = StatusType.ACTIVE;
+                        environmentClient.status = StatusType.CREATED;
                     }
                 }
                 else
@@ -163,7 +170,8 @@ namespace umi3d.cdk.collaboration
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.Log($"error \n{e.StackTrace}");
+                UMI3DLogger.Log($"Error in connection process", scope);
+                UMI3DLogger.LogException(e, scope);
                 failed?.Invoke(e.Message);
                 aborted = true;
             }
@@ -196,6 +204,14 @@ namespace umi3d.cdk.collaboration
                 Instance.OnLeavingEnvironment.Invoke();
                 Instance.OnLeaving.Invoke();
             }
+        }
+
+
+        public static void ReceivedLogoutMessage(string message)
+        {
+            if (Exists)
+                Instance.OnForceLogoutMessage.Invoke(message);
+            Logout();
         }
 
         /// <summary>
@@ -335,9 +351,44 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
         {
-            UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
-            return await (environmentClient?.GetEntity(ids) ?? Task.FromResult<LoadEntityDto>(null));
+            List<ulong> idsToSend = new List<ulong>();
+            foreach (ulong id in ids)
+            {
+                if (loadingEntities.Add(id))
+                {
+                    idsToSend.Add(id);
+                }
+                else
+                {
+                    UMI3DLogger.Log($"Cancel GetEntity {id}", scope);
+                }
+
+            }
+
+            UMI3DLogger.Log($"GetEntity {idsToSend.ToString<ulong>()}", scope);
+            LoadEntityDto result = null;
+            try
+            {
+                result = idsToSend.Count > 0 ?
+                    await (environmentClient?.GetEntity(idsToSend) ?? Task.FromResult<LoadEntityDto>(null))
+                    : new LoadEntityDto() { entities = new List<IEntity>() };
+            }
+            finally
+            {
+
+                foreach (var id in idsToSend)
+                {
+                    loadingEntities.Remove(id);
+                }
+                UMI3DLogger.Log($"Remove GetEntity {idsToSend.ToString<ulong>()} {loadingEntities.ToString<ulong>()}", scope);
+            }
+
+
+            return result;
         }
+
+        private static SortedSet<ulong> loadingEntities = new SortedSet<ulong>();
+
 
         /// <inheritdoc/>
         public override ulong GetUserId() { return worldControllerClient?.GetUserID() ?? 0; }

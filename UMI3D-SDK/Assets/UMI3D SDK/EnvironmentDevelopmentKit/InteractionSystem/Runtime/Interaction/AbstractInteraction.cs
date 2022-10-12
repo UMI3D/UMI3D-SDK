@@ -101,14 +101,6 @@ namespace umi3d.edk.interaction
             name = null
         };
 
-        /// <summary>
-        /// Animation triggered when the interaction is triggered.
-        /// </summary>
-        public UMI3DNodeAnimation TriggerAnimation;
-        /// <summary>
-        /// Animation triggered when the interaction is released.
-        /// </summary>
-        public UMI3DNodeAnimation ReleaseAnimation;
 
         /// <summary>
         /// The interaction's unique id. 
@@ -128,7 +120,7 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Register the interaction in the <see cref="UMI3DEnvironment"/> if necessary.
         /// </summary>
-        private void Register()
+        protected virtual void Register()
         {
             if (interactionId == 0 && UMI3DEnvironment.Exists)
             {

@@ -50,7 +50,7 @@ namespace umi3d.edk
         /// <summary>
         /// Does the user have an immersive device?
         /// </summary>
-        public bool hasImmersiveDevice;
+        public bool hasImmersiveDevice { get; protected set; } = true;
 
         /// <summary>
         /// UMI3D status of the object. 
@@ -58,21 +58,12 @@ namespace umi3d.edk
         /// See <see cref="StatusType"/>.
         public StatusType status { get; protected set; } = StatusType.CREATED;
 
+        public bool IsReadyToGetResources = true;
+
         /// <summary>
         /// Has the user joined the environment?
         /// </summary>
         public bool hasJoined = false;
-
-        /// <summary>
-        /// Called when the user join the environment.
-        /// </summary>
-        /// <param name="hasImmersiveDevice"></param>
-        public virtual void OnJoin(bool hasImmersiveDevice/* TBD camera properties,  TBD First 6D pose*/)
-        {
-            this.hasImmersiveDevice = hasImmersiveDevice;
-            hasJoined = true;
-            SetStatus(StatusType.READY);
-        }
 
         /// <summary>
         /// Setter for the <see cref="status"/>

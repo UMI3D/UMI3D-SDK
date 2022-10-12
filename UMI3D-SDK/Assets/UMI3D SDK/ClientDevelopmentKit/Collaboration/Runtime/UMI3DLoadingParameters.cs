@@ -24,6 +24,7 @@ using umi3d.cdk.volumes;
 using umi3d.common;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
+using umi3d.common.volume;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -94,6 +95,9 @@ namespace umi3d.cdk
                 case SubModelDto s:
                     SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
                     break;
+                case AbstractVolumeDescriptorDto v:
+                    UMI3DVolumeLoader.ReadUMI3DExtension(v, callback, failed);
+                    break;
                 case UIRectDto r:
                     UILoader.ReadUMI3DExtension(dto, node, callback, failed);
                     break;
@@ -150,6 +154,8 @@ namespace umi3d.cdk
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (lineLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (UILoader.SetUMI3DProperty(entity, property))
@@ -195,6 +201,8 @@ namespace umi3d.cdk
             if (SubMeshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (lineLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
@@ -419,7 +427,7 @@ namespace umi3d.cdk
                             UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
                         }
                     },
-                    e => UMI3DLogger.LogWarning(e, scope),
+                    e => UMI3DLogger.LogException(e, scope),
                     loader.DeleteObject
                     );
             }
@@ -443,19 +451,19 @@ namespace umi3d.cdk
                     performed.Invoke();
                     break;
                 case SetTrackingTargetFPSDto setTargetFPS:
-                    UMI3DClientUserTracking.Instance.setFPSTarget(setTargetFPS.targetFPS);
+                    UMI3DClientUserTracking.Instance.SetFPSTarget(setTargetFPS.targetFPS);
                     performed.Invoke();
                     break;
                 case SetStreamedBonesDto streamedBones:
-                    UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones.streamedBones);
+                    UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones.streamedBones);
                     performed.Invoke();
                     break;
                 case SetSendingCameraPropertiesDto sendingCamera:
-                    UMI3DClientUserTracking.Instance.setCameraPropertiesSending(sendingCamera.activeSending);
+                    UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
                     performed.Invoke();
                     break;
                 case SetSendingTrackingDto sendingTracking:
-                    UMI3DClientUserTracking.Instance.setTrackingSending(sendingTracking.activeSending);
+                    UMI3DClientUserTracking.Instance.SetTrackingSending(sendingTracking.activeSending);
                     performed.Invoke();
                     break;
             }
@@ -488,22 +496,22 @@ namespace umi3d.cdk
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
                     int target = UMI3DNetworkingHelper.Read<int>(container);
-                    UMI3DClientUserTracking.Instance.setFPSTarget(target);
+                    UMI3DClientUserTracking.Instance.SetFPSTarget(target);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
                     List<uint> streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
-                    UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones);
+                    UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
                     bool sendCamera = UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.setCameraPropertiesSending(sendCamera);
+                    UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendCamera);
                     performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
                     bool sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.setTrackingSending(sendTracking);
+                    UMI3DClientUserTracking.Instance.SetTrackingSending(sendTracking);
                     performed.Invoke();
                     break;
             }

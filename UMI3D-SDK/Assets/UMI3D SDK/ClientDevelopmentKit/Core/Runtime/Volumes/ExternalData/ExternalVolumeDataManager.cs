@@ -85,7 +85,13 @@ namespace umi3d.cdk.volumes
                     parts = new List<GameObject>() { obj as GameObject }
                 };
 
-                Matrix4x4 m = dto.rootNodeToLocalMatrix;
+                UMI3DNodeInstance root = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId);
+
+                if (root == null)
+                    UMI3DLogger.LogError("Root node of a Volume must not be null : node with id " + dto.rootNodeId + " not found.", DebugScope.CDK);
+                
+                Matrix4x4 m = root?.transform.localToWorldMatrix ?? Matrix4x4.identity;
+                
                 foreach (Mesh mesh in cell.meshes)
                 {
                     mesh.vertices = mesh.vertices.ToList().ConvertAll(v => Vector3.Scale(v, new Vector3(-1, 1, -1))).ToArray(); //asimpl right handed coordinate system dirty fix
@@ -101,6 +107,7 @@ namespace umi3d.cdk.volumes
             Action<Umi3dException> failed = e =>
             {
                 UMI3DLogger.LogError("Failed to load obj file : " + e.Message, DebugScope.Other);
+                UMI3DLogger.LogException(e, DebugScope.Other);
             };
 
             loader.UrlToObject(dto.objFile, ".obj", UMI3DClientServer.getAuthorization(), success, failed);

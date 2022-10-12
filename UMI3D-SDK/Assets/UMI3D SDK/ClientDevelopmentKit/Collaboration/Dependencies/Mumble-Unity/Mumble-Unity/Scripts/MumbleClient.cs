@@ -4,6 +4,7 @@ using MumbleProto;
 using Version = MumbleProto.Version;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace Mumble
 {
@@ -77,6 +78,8 @@ namespace Mumble
         /// </summary>
         public delegate void OnDisconnectedMethod();
 
+        public delegate void OnPingReceivedMethod();
+
         // Actions for non-main threaded events
         public Action<uint> OnNewDecodeBufferThreaded;
         public Action<uint> OnRemovedDecodeBufferThreaded;
@@ -84,8 +87,14 @@ namespace Mumble
         public Action<Channel> OnChannelAddedThreaded;
         public Action<Channel> OnChannelRemovedThreaded;
 
+        public UnityEvent connectionFailed = new UnityEvent();
+
+        public class ConnectionErrorEvent : UnityEvent<Exception> { }
+        public ConnectionErrorEvent ConnectionError = new ConnectionErrorEvent();
+
         public OnChannelChangedMethod OnChannelChanged;
         public OnDisconnectedMethod OnDisconnected;
+        public OnPingReceivedMethod OnPingReceived;
         private MumbleTcpConnection _tcpConnection;
         private MumbleUdpConnection _udpConnection;
         private DecodingBufferPool _decodingBufferPool;
@@ -216,6 +225,7 @@ namespace Mumble
             _audioDecodeThread = new AudioDecodeThread(_outputSampleRate, _outputChannelCount, this);
             _decodingBufferPool = new DecodingBufferPool(_audioDecodeThread);
             _udpConnection = new MumbleUdpConnection(endpoint, _audioDecodeThread, this);
+            _udpConnection.ConnectionError.AddListener(SendError);
             _tcpConnection = new MumbleTcpConnection(endpoint, _hostName,
                 _udpConnection.UpdateOcbServerNonce, _udpConnection, this);
 
@@ -223,6 +233,12 @@ namespace Mumble
             _manageSendBuffer = new ManageAudioSendBuffer(_udpConnection, this, _maxPositionalDataLength);
             ReadyToConnect = true;
         }
+
+        void SendError(Exception e)
+        {
+            ConnectionError.Invoke(e);
+        }
+
         private void OnHostRecv(IAsyncResult result)
         {
             IPAddress[] addresses = Dns.EndGetHostAddresses(result);
@@ -460,8 +476,17 @@ namespace Mumble
                 Debug.LogError("We're not ready to connect yet!");
                 return;
             }
+            _tcpConnection.connectionFailed.AddListener(sendFailed);
+
             _tcpConnection.StartClient(username, password);
         }
+
+        void sendFailed()
+        {
+            _tcpConnection.connectionFailed.RemoveListener(sendFailed);
+            connectionFailed.Invoke();
+        }
+
         internal void ConnectUdp()
         {
             _udpConnection.Connect();
@@ -476,7 +501,10 @@ namespace Mumble
                 _tcpConnection.Close();
             _tcpConnection = null;
             if (_udpConnection != null)
+            {
                 _udpConnection.Close();
+                _udpConnection.ConnectionError.RemoveAllListeners();
+            }
             _udpConnection = null;
             if (_audioDecodeThread != null)
                 _audioDecodeThread.Dispose();
@@ -728,14 +756,14 @@ namespace Mumble
 
             if (_pendingMute.HasValue)
             {
-                Debug.Log("Pending mute: " + _pendingMute.HasValue);
+                //Debug.Log("Pending mute: " + _pendingMute.HasValue);
                 return _pendingMute.Value;
             }
 
             if (!OurUserState.ShouldSerializeSelfMute())
                 return false;
 
-            Debug.Log("Our Self Mute is " + OurUserState.SelfMute);
+            //Debug.Log("Our Self Mute is " + OurUserState.SelfMute);
             return OurUserState.SelfMute;
         }
         public bool SetOurComment(string newComment)
@@ -852,6 +880,14 @@ namespace Mumble
             if (_udpConnection != null)
                 return _udpConnection.GetLatestClientNonce();
             return null;
+        }
+        internal void OnNotifyPingReceived()
+        {
+            EventProcessor.Instance.QueueEvent(() =>
+            {
+                if (OnPingReceived != null)
+                    OnPingReceived();
+            });
         }
         internal void OnConnectionDisconnect()
         {

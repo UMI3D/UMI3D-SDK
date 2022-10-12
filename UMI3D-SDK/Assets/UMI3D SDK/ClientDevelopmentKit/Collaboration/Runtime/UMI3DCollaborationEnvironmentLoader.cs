@@ -30,6 +30,9 @@ namespace umi3d.cdk.collaboration
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
 
+        public List<UMI3DUser> JoinnedUserList => UserList.Where(u => u.status >= StatusType.AWAY || (UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId())).ToList();
+        public static event Action OnUpdateJoinnedUserList;
+
         public UMI3DUser GetClientUser()
         {
             return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
@@ -48,12 +51,46 @@ namespace umi3d.cdk.collaboration
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
+            AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
         }
 
-        ///<inheritdoc/>
-        protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        void OnUserSpeaking(UMI3DUser user, bool isSpeaking)
         {
-            if (base._SetUMI3DPorperty(entity, property)) return true;
+            if (isSpeaking)
+            {
+                if (user != null && user.onStartSpeakingAnimationId != 0)
+                    StartAnim(user.onStartSpeakingAnimationId);
+            }
+            else
+            {
+                if (user != null && user.onStopSpeakingAnimationId != 0)
+                    StartAnim(user.onStopSpeakingAnimationId);
+            }
+        }
+
+        private void StartAnim(ulong id)
+        {
+            var anim = UMI3DAbstractAnimation.Get(id);
+
+            if (anim != null)
+            {
+                anim.SetUMI3DProperty(UMI3DEnvironmentLoader.GetEntity(id), new SetEntityPropertyDto()
+                {
+                    entityId = id,
+                    property = UMI3DPropertyKeys.AnimationPlaying,
+                    value = true
+                });
+
+                anim.Start();
+            }
+        }
+
+
+        ///<inheritdoc/>
+        protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
+            if (base._SetUMI3DProperty(entity, property)) return true;
             if (entity == null) return false;
 
             switch (property.property)
@@ -78,9 +115,9 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        protected override bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
-            if (base._SetUMI3DPorperty(entity, operationId, propertyKey, container)) return true;
+            if (base._SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
             if (entity == null) return false;
 
             switch (propertyKey)
@@ -183,6 +220,7 @@ namespace umi3d.cdk.collaboration
             UserList.Insert(index, new UMI3DUser(userDto));
             dto.userList.Insert(index, userDto);
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
         }
 
         private void RemoveUserAt(UMI3DCollaborationEnvironmentDto dto, int index)
@@ -193,6 +231,7 @@ namespace umi3d.cdk.collaboration
             dto.userList.RemoveAt(index);
             Olduser.Destroy();
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
         }
 
         private void ReplaceUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userNew)
@@ -201,8 +240,16 @@ namespace umi3d.cdk.collaboration
 
             if (index < UserList.Count)
             {
+
+                bool userWasReady = UserList[index].status < StatusType.AWAY;
+                bool userIsReady = userNew.status < StatusType.AWAY;
+                bool userReadyListUpdated = userWasReady != userIsReady;
+
                 UserList[index].Update(userNew);
                 dto.userList[index] = userNew;
+
+                if (userReadyListUpdated)
+                    OnUpdateJoinnedUserList?.Invoke();
             }
             else if (index == UserList.Count) InsertUser(dto, index, userNew);
         }
@@ -213,6 +260,7 @@ namespace umi3d.cdk.collaboration
             dto.userList = usersNew;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
             OnUpdateUserList?.Invoke();
+            OnUpdateJoinnedUserList?.Invoke();
         }
     }
 }

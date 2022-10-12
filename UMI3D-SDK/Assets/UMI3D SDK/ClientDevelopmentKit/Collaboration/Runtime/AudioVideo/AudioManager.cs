@@ -20,9 +20,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
+
+    public class AudioUserIsSpeaking : UnityEvent<UMI3DUser, bool> { }
 
     /// <summary>
     /// Singleton use to read AudioDto.
@@ -35,11 +38,35 @@ namespace umi3d.cdk.collaboration
         private readonly Dictionary<ulong, MumbleAudioPlayer> SpacialReader = new Dictionary<ulong, MumbleAudioPlayer>();
         private readonly Dictionary<ulong, Coroutine> WaitCoroutine = new Dictionary<ulong, Coroutine>();
 
+        public readonly Dictionary<string, float> volumeMemory = new Dictionary<string, float>();
+        public readonly Dictionary<string, float> gainMemory = new Dictionary<string, float>();
+
+        public AudioUserIsSpeaking OnUserSpeaking = new AudioUserIsSpeaking();
+
+
+        public void Setup(Dictionary<string, float> volumeMemory, Dictionary<string, float> gainMemory)
+        {
+            this.volumeMemory.Clear();
+            foreach (var k in volumeMemory)
+            {
+                this.volumeMemory[k.Key] = k.Value;
+            }
+
+            this.gainMemory.Clear();
+            foreach (var k in gainMemory)
+            {
+                this.gainMemory[k.Key] = k.Value;
+            }
+        }
+
         public bool SetGainForUser(UMI3DUser user, float gain)
         {
             if (user == null || gain <= 0)
                 return false;
-            MumbleAudioPlayer player = MumbleAudioPlayerContain(user.id);
+
+            gainMemory[user.login] = gain;
+            MumbleAudioPlayer player = MumbleAudioPlayerContain(user);
+
             if (player == null)
                 return false;
 
@@ -52,9 +79,13 @@ namespace umi3d.cdk.collaboration
         {
             if (user == null)
                 return null;
-            MumbleAudioPlayer player = MumbleAudioPlayerContain(user.id);
+            MumbleAudioPlayer player = MumbleAudioPlayerContain(user);
             if (player == null)
+            {
+                if (gainMemory.ContainsKey(user.login))
+                    return gainMemory[user.login];
                 return null;
+            }
 
             return player.Gain;
         }
@@ -63,7 +94,8 @@ namespace umi3d.cdk.collaboration
         {
             if (user == null || volume < 0 || volume > 1)
                 return false;
-            MumbleAudioPlayer player = MumbleAudioPlayerContain(user.id);
+            volumeMemory[user.login] = volume;
+            MumbleAudioPlayer player = MumbleAudioPlayerContain(user);
             if (player == null)
                 return false;
 
@@ -76,11 +108,30 @@ namespace umi3d.cdk.collaboration
         {
             if (user == null)
                 return null;
-            MumbleAudioPlayer player = MumbleAudioPlayerContain(user.id);
+            MumbleAudioPlayer player = MumbleAudioPlayerContain(user);
             if (player == null)
+            {
+                if (volumeMemory.ContainsKey(user.login))
+                    return volumeMemory[user.login];
                 return null;
+            }
 
             return player.GetVolume();
+        }
+
+        private void SetGainAndVolumeForUser(UMI3DUser user)
+        {
+            if (user == null)
+                return;
+            MumbleAudioPlayer player = MumbleAudioPlayerContain(user);
+            if (player == null)
+                return;
+
+            if (gainMemory.ContainsKey(user.login))
+                player.Gain = gainMemory[user.login];
+            if (volumeMemory.ContainsKey(user.login))
+                player.SetVolume(volumeMemory[user.login]);
+            player.OnPlaying.AddListener(s => OnUserSpeaking.Invoke(user, s));
         }
 
         private void Start()
@@ -88,6 +139,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.AddListener(OnUserDisconected);
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
+            UMI3DUser.OnUserMicrophoneIdentityUpdated.AddListener(OnAudioChanged);
         }
 
         protected override void OnDestroy()
@@ -96,7 +148,17 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnNewUser.RemoveListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.RemoveListener(OnUserDisconected);
             UMI3DUser.OnUserAudioUpdated.RemoveListener(OnAudioChanged);
+            UMI3DUser.OnUserMicrophoneIdentityUpdated.RemoveListener(OnAudioChanged);
         }
+
+        private MumbleAudioPlayer MumbleAudioPlayerContain(UMI3DUser user)
+        {
+            if (user == null)
+                return null;
+            var player = MumbleAudioPlayerContain(user.id);
+            return player;
+        }
+
 
         private MumbleAudioPlayer MumbleAudioPlayerContain(ulong id)
         {
@@ -112,14 +174,12 @@ namespace umi3d.cdk.collaboration
         {
             if (user == null) return null;
 
-            ulong userId = user.id;
-
             if (!string.IsNullOrEmpty(user.audioLogin) && PendingMumbleAudioPlayer.ContainsKey(user.audioLogin))
             {
                 return PendingMumbleAudioPlayer[user.audioLogin];
             }
 
-            return MumbleAudioPlayerContain(userId);
+            return MumbleAudioPlayerContain(user);
         }
 
         public MumbleAudioPlayer GetMumbleAudioPlayer(string username, uint session)
@@ -136,19 +196,22 @@ namespace umi3d.cdk.collaboration
 
         private MumbleAudioPlayer CreatePrending(string username)
         {
-            var g = new GameObject
-            {
-                name = $"pending_audio_{username}"
-            };
-            PendingMumbleAudioPlayer[username] = g.AddComponent<MumbleAudioPlayer>();
-            AudioSource audio = g.GetComponent<AudioSource>();
-            audio.rolloffMode = AudioRolloffMode.Linear;
-            audio.spatialBlend = 0;
-
+            lock (PendingMumbleAudioPlayer)
+                if (!PendingMumbleAudioPlayer.ContainsKey(username) || PendingMumbleAudioPlayer[username] == null)
+                {
+                    var g = new GameObject
+                    {
+                        name = $"pending_audio_{username}"
+                    };
+                    PendingMumbleAudioPlayer[username] = g.AddComponent<MumbleAudioPlayer>();
+                    AudioSource audio = g.GetComponent<AudioSource>();
+                    audio.rolloffMode = AudioRolloffMode.Linear;
+                    audio.spatialBlend = 0;
+                }
             return PendingMumbleAudioPlayer[username];
         }
 
-        private void CleanPrending(UMI3DUser user)
+        private void CleanPending(UMI3DUser user)
         {
             if (!string.IsNullOrEmpty(user.audioLogin) && PendingMumbleAudioPlayer.ContainsKey(user.audioLogin))
             {
@@ -172,11 +235,15 @@ namespace umi3d.cdk.collaboration
             }
             if (GlobalReader.ContainsKey(user.id))
             {
+                GlobalReader[user.id].Reset();
                 Destroy(GlobalReader[user.id].gameObject);
                 GlobalReader.Remove(user.id);
             }
             if (SpacialReader.ContainsKey(user.id))
+            {
+                SpacialReader[user.id].Reset();
                 SpacialReader.Remove(user.id);
+            }
         }
 
         /// <summary>
@@ -209,7 +276,7 @@ namespace umi3d.cdk.collaboration
                     Destroy(GlobalReader[user.id].gameObject);
                     GlobalReader.Remove(user.id);
                 }
-                CleanPrending(user);
+                CleanPending(user);
             }
             else
             {
@@ -236,10 +303,11 @@ namespace umi3d.cdk.collaboration
                             GlobalReader[user.id].Setup(oldReader);
                             oldReader.Reset();
                         }
-                        CleanPrending(user);
+                        CleanPending(user);
                     }
                 }
             }
+            SetGainAndVolumeForUser(user);
         }
 
         private IEnumerator WaitForAudioCreation(UMI3DUser user)

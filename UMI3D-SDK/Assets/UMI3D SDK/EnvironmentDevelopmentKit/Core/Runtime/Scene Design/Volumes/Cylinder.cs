@@ -58,7 +58,6 @@ namespace umi3d.edk.volume
                 height = height.GetValue(),
                 radius = radius.GetValue(),
                 rootNodeId = GetRootNode().Id(),
-                rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
                 isTraversable = IsTraversable()
             };
         }

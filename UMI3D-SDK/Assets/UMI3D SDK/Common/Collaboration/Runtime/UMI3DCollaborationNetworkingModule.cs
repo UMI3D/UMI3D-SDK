@@ -177,6 +177,7 @@ namespace umi3d.common.collaboration
                     var conf = new UMI3DEmotesConfigDto();
                     result = default(T);
                     readable = UMI3DNetworkingHelper.TryRead<bool>(container, out conf.allAvailableByDefault);
+                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out conf.defaultStateName);
 
                     if (readable)
                     {
@@ -185,11 +186,8 @@ namespace umi3d.common.collaboration
                         {
                             for (uint i = 0; i < nbEmotes; i++)
                             {
-                                var emote = new UMI3DEmoteDto();
-                                readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out emote.id);
-                                readable &= UMI3DNetworkingHelper.TryRead<string>(container, out emote.name);
-                                readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out emote.available);
-                                readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out emote.iconResource);
+                                UMI3DEmoteDto emote;
+                                Read<UMI3DEmoteDto>(container, out readable, out emote);
                                 if (!readable)
                                     break;
                                 else
@@ -205,7 +203,8 @@ namespace umi3d.common.collaboration
                     result = default(T);
 
                     readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out e.id);
-                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.name);
+                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.label);
+                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.stateName);
                     readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out e.available);
                     readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out e.iconResource);
 
@@ -343,6 +342,25 @@ namespace umi3d.common.collaboration
                     result = default(T);
                     readable = false;
                     return false;
+                case true when typeof(T) == typeof(ForceLogoutDto):
+                    string reason;
+                    if (
+                        UMI3DNetworkingHelper.TryRead<string>(container, out reason)
+                        )
+                    {
+
+                        var forceLogoutDto = new ForceLogoutDto
+                        {
+                            reason = reason
+                        };
+                        readable = true;
+                        result = (T)Convert.ChangeType(forceLogoutDto, typeof(T));
+
+                        return true;
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
                 case true when typeof(T) == typeof(GateDto):
                     string gateid;
                     byte[] data;
@@ -398,7 +416,52 @@ namespace umi3d.common.collaboration
                     result = default(T);
                     readable = false;
                     return false;
+                case true when typeof(T) == typeof(UserTrackingFrameDto):
+                    uint idKey = 0;
+                    ulong userId, parentId;
+                    float skeletonHighOffset, refreshFrequency;
+                    SerializableVector3 position;
+                    SerializableVector4 rotation;
 
+                    if (
+                        UMI3DNetworkingHelper.TryRead(container, out idKey)
+                        && UMI3DNetworkingHelper.TryRead(container, out userId)
+                        && UMI3DNetworkingHelper.TryRead(container, out parentId)
+                        && UMI3DNetworkingHelper.TryRead(container, out skeletonHighOffset)
+                        && UMI3DNetworkingHelper.TryRead(container, out position)
+                        && UMI3DNetworkingHelper.TryRead(container, out rotation)
+                        && UMI3DNetworkingHelper.TryRead(container, out refreshFrequency)
+                        )
+                    {
+                        System.Collections.Generic.List<BoneDto> bones = UMI3DNetworkingHelper.ReadList<BoneDto>(container);
+
+                        if (bones != default)
+                        {
+                            var trackingFrame = new UserTrackingFrameDto
+                            {
+                                userId = userId,
+                                parentId = parentId,
+                                skeletonHighOffset = skeletonHighOffset,
+                                position = position,
+                                rotation = rotation,
+                                refreshFrequency = refreshFrequency,
+                                bones = bones
+                            };
+                            readable = true;
+                            result = (T)Convert.ChangeType(trackingFrame, typeof(T));
+
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            readable = false;
+                            return false;
+                        }
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
                 default:
                     result = default(T);
                     readable = false;
@@ -500,6 +563,9 @@ namespace umi3d.common.collaboration
                 case RedirectionDto redirection:
                     bytable = UMI3DNetworkingHelper.Write(redirection.media)
                         + UMI3DNetworkingHelper.Write(redirection.gate);
+                    break;
+                case ForceLogoutDto forceLogout:
+                    bytable = UMI3DNetworkingHelper.Write(forceLogout.reason);
                     break;
                 case MediaDto media:
                     bytable = UMI3DNetworkingHelper.Write(media.name)

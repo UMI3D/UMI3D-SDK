@@ -51,6 +51,17 @@ namespace umi3d.edk.interaction
         public InteractionEvent onTrigger = new InteractionEvent();
 
         /// <summary>
+        /// Animation triggered when the interaction is triggered.
+        /// </summary>
+        [SerializeField, Tooltip("Client animation triggered when the interaction is triggerred by a user.")]
+        public UMI3DAbstractAnimation TriggerAnimation;
+        /// <summary>
+        /// Animation triggered when the interaction is released.
+        /// </summary>
+        [SerializeField, Tooltip("Client animation triggered when is released by a user.")]
+        public UMI3DAbstractAnimation ReleaseAnimation;
+
+        /// <summary>
         /// Called by a user on interaction.
         /// </summary>
         /// <param name="user">Interacting User</param>
@@ -129,9 +140,12 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            (dto as EventDto).hold = Hold;
-            (dto as EventDto).TriggerAnimationId = TriggerAnimation != null ? TriggerAnimation.Id() : 0;
-            (dto as EventDto).ReleaseAnimationId = ReleaseAnimation != null ? ReleaseAnimation.Id() : 0;
+            if (dto is EventDto _dto)
+            {
+                _dto.hold = Hold;
+                _dto.TriggerAnimationId = TriggerAnimation != null ? TriggerAnimation.Id() : 0;
+                _dto.ReleaseAnimationId = ReleaseAnimation != null ? ReleaseAnimation.Id() : 0;
+            }
         }
     }
 }

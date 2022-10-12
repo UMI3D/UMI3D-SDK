@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -56,7 +57,6 @@ namespace umi3d.cdk
 
                 //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
                 FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
-
                 string url = fileToLoad.url;
                 string ext = fileToLoad.extension;
                 string authorization = fileToLoad.authorization;
@@ -179,6 +179,7 @@ namespace umi3d.cdk
             {
                 root = go;
             }
+
             var instance = GameObject.Instantiate(root, parent, true);
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
@@ -197,7 +198,38 @@ namespace umi3d.cdk
             ColliderDto colliderDto = dto.colliderDto;
             SetCollider(dto.id, nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
+            SetLightMap(instance, nodeInstance);
+
             finished?.Invoke();
+        }
+
+        /// <summary>
+        /// If the node has a <see cref="PrefabLightmapData"/>, makes sure to refresh once its references are updated.
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="nodeInstance"></param>
+        private void SetLightMap(GameObject instance, UMI3DNodeInstance nodeInstance)
+        {
+            PrefabLightmapData data = instance.GetComponentInChildren<PrefabLightmapData>();
+            if (data != null)
+            {
+                nodeInstance.prefabLightmapData = data;
+
+                UMI3DEnvironmentLoader.StartCoroutine(RefreshLightmapData(data));
+            }
+        }
+
+        /// <summary>
+        /// Coroutine for <see cref="SetLightMap"/>.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        IEnumerator RefreshLightmapData(PrefabLightmapData data)
+        {
+            while (!UMI3DEnvironmentLoader.Instance.loaded)
+                yield return null;
+
+            data.Init();
         }
     }
 }

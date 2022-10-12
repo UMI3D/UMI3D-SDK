@@ -158,7 +158,7 @@ namespace umi3d.edk.userCapture
         /// Update the Embodiment from the received Dto.
         /// </summary>
         /// <param name="dto">a dto containing the tracking data</param>
-        public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId)
+        public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId, float timestep)
         {
             if (ActivateEmbodiments)
             {
@@ -219,6 +219,27 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
             userEmbd.userCameraPropertiesDto = UMI3DNetworkingHelper.Read<UserCameraPropertiesDto>(container);
+        }
+
+        /// <summary>
+        /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.
+        /// </summary>
+        /// <param name="emoteId">Emote to trigger UMI3D id.</param>
+        /// <param name="user">Sending emote user.</param>
+        /// <param name="trigger">True for triggering, false to interrupt.</param>
+        public void DispatchChangeEmoteReception(ulong emoteId, UMI3DUser user, bool trigger)
+        {
+            //? avoid the data channel filtering
+            var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
+            targetUsers.Remove(user);
+            var req = new EmoteDispatchRequest(reliable: true, users: targetUsers)
+            {
+                sendingUserId = user.Id(),
+                shouldTrigger = trigger,
+                emoteId = emoteId
+            };
+
+            req.Dispatch();
         }
 
         /// <summary>
@@ -526,36 +547,73 @@ namespace umi3d.edk.userCapture
 
         #region BoardedVehicle
 
+        /// <summary>
+        /// <UserId, (embarkment confirmation received, vehicle)>.
+        /// </summary>
+        Dictionary<ulong, (bool, UMI3DAbstractNode)> Embarkments = new Dictionary<ulong, (bool, UMI3DAbstractNode)>();
+
+        private bool setTransform = false;
+        private Vector3 localPosition;
+        private Quaternion localRotation;
+
+        public void ConfirmEmbarkment(VehicleConfirmation dto, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
+
+        public void ConfirmEmbarkment(uint operationKey, ByteContainer container, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
+
+        private IEnumerator _ConfirmeEmbarkment(UMI3DUser user)
+        {
+            while (!embodimentInstances.ContainsKey(user.Id()))
+            {
+                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered", scope);
+                yield return new WaitForFixedUpdate();
+            }
+
+            Embarkments[user.Id()] = (true, Embarkments[user.Id()].Item2);
+
+            Transaction tr = new Transaction();
+            tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(Embarkments[user.Id()].Item2.GetComponent<UMI3DAbstractNode>()));
+            if (setTransform)
+            {
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(localPosition));
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(localRotation));
+            }
+            tr.Dispatch();
+        }
+
         public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle = null)
         {
             if (user == null)
                 return;
 
-            VehicleRequest vr;
+            setTransform = false;
 
-            var tr = new Transaction();
+            VehicleRequest vr;
 
             if (vehicle != null)
             {
+                Embarkments[user.Id()] = (false, vehicle);
+
                 if (vehicle != EmbodimentsScene)
                     vr = new VehicleRequest(vehicle.Id());
                 else
-                    vr = new VehicleRequest(0);
-
-                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(vehicle.GetComponent<UMI3DAbstractNode>()));
+                    vr = new VehicleRequest(EmbodimentsScene.Id());
             }
             else
             {
-                vr = new VehicleRequest(0);
+                Embarkments[user.Id()] = (false, EmbodimentsScene);
 
-                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(EmbodimentsScene.GetComponent<UMI3DAbstractNode>()));
+                vr = new VehicleRequest(EmbodimentsScene.Id());
             }
 
             vr.users = new HashSet<UMI3DUser>() { user };
 
             vr.Dispatch();
-
-            tr.Dispatch();
         }
 
         public void VehicleEmbarkment(UMI3DUser user, ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, UMI3DAbstractNode vehicle = null, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion())
@@ -565,36 +623,29 @@ namespace umi3d.edk.userCapture
 
             BoardedVehicleRequest vr;
 
-            var tr = new Transaction();
-
             if (vehicle != null)
             {
+                Embarkments[user.Id()] = (false, vehicle);
+
                 if (vehicle != EmbodimentsScene)
                     vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, vehicle.Id(), stopNavigation, position, rotation, true);
                 else
-                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, 0, stopNavigation, position, rotation, true);
-
-                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(vehicle.GetComponent<UMI3DAbstractNode>()));
+                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation, true);
             }
             else
             {
-                vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, 0, stopNavigation, position, rotation, true);
+                Embarkments[user.Id()] = (false, EmbodimentsScene);
 
-                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(EmbodimentsScene.GetComponent<UMI3DAbstractNode>()));
+                vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation, true);
             }
 
-            SetEntityProperty setPosition = (user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(position);
-            setPosition?.users.Remove(user);
-            tr.AddIfNotNull(setPosition);
-            SetEntityProperty setRotation = (user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(rotation);
-            setRotation?.users.Remove(user);
-            tr.AddIfNotNull(setRotation);
+            localPosition = position;
+            localRotation = rotation;
+            setTransform = true;
 
             vr.users = new HashSet<UMI3DUser>() { user };
 
             vr.Dispatch();
-
-            tr.Dispatch();
         }
 
         #endregion

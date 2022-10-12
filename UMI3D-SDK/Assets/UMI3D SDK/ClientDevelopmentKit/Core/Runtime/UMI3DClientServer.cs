@@ -23,6 +23,7 @@ namespace umi3d.cdk
 {
     public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Networking;
         /// <summary>
         /// Environment connected to.
         /// </summary>
@@ -83,14 +84,29 @@ namespace umi3d.cdk
 
         public static async void GetFile(string url, Action<byte[]> callback, Action<string> onError, bool useParameterInsteadOfHeader)
         {
-            if (Exists)
+            try
             {
-                byte[] bytes = await Instance._GetFile(url, useParameterInsteadOfHeader);
-                if (bytes != null)
-                    callback.Invoke(bytes);
+                if (Exists)
+                {
+                    byte[] bytes = await Instance._GetFile(url, useParameterInsteadOfHeader);
+                    if (bytes != null)
+                        callback.Invoke(bytes);
+                    else if (onError == null)
+                        UMI3DLogger.LogError("No Data in response", scope);
+                    else
+                        onError?.Invoke($"No Data in response for {url}");
+                }
+                else if (onError == null)
+                    UMI3DLogger.LogError("Instance of UMI3DClientServer is null", scope);
+                else
+                    onError?.Invoke("Instance of UMI3DClientServer is null");//throw new Exception($"Instance of UMI3DClientServer is null");
             }
-            else
-                throw new Exception($"Instance of UMI3DClientServer is null");
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
+                onError?.Invoke(e.Message);
+            }
+
         }
 
         protected virtual Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader)

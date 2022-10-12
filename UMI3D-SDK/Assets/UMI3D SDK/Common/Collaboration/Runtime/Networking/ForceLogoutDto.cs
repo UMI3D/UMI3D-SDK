@@ -14,14 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+using System.Collections;
+using System.Collections.Generic;
+using umi3d.common;
+using UnityEngine;
+
+namespace umi3d.common.collaboration
 {
-    [System.Obsolete]
-    public class AudioDto : UMI3DDto
+    public class ForceLogoutDto : UMI3DDto
     {
-        public string userId;
-        public int frequency;
-        public float[] sample;
-        public int pos;
+        /// <summary>
+        /// reason for force logout
+        /// </summary>
+        public string reason;
     }
 }

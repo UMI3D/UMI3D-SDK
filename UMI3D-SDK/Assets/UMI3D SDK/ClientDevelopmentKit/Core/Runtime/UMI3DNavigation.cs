@@ -18,6 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -25,6 +26,10 @@ namespace umi3d.cdk
     {
         public AbstractNavigation currentNav { get; protected set; } = null;
         public List<AbstractNavigation> navigations;
+
+        public delegate void OnEmbarkVehicleDelegate(ulong vehicleId);
+
+        public static event OnEmbarkVehicleDelegate onEmbarkVehicleDelegate;
 
         // Start is called before the first frame update
         private void Start()
@@ -44,7 +49,17 @@ namespace umi3d.cdk
                 switch (dto)
                 {
                     case VehicleDto vehicleDto:
+                        onEmbarkVehicleDelegate?.Invoke(vehicleDto.VehicleId);
+
                         Instance.currentNav.Embark(vehicleDto);
+
+                        var vConfirmation = new VehicleConfirmation()
+                        {
+                            embarkedUserId = UMI3DClientServer.Instance.GetUserId()
+                        };
+
+                        UMI3DClientServer.SendData(vConfirmation, true);
+
                         break;
                     case TeleportDto teleportDto:
                         Instance.currentNav.Teleport(teleportDto);

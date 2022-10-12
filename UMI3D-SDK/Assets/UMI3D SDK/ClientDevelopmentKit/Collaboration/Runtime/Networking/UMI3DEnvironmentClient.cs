@@ -24,6 +24,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
@@ -36,10 +37,16 @@ namespace umi3d.cdk.collaboration
             return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconected;
         }
 
+        public class ConnectionStateEvent : UnityEvent<string> { };
+        public static ConnectionStateEvent ConnectionState = new ConnectionStateEvent();
+
         public readonly double maxMillisecondToWait = 10000;
 
         public readonly ForgeConnectionDto connectionDto;
         private readonly UMI3DWorldControllerClient worldControllerClient;
+
+        static public UnityEvent EnvironementJoinned = new UnityEvent();
+        static public UnityEvent EnvironementLoaded = new UnityEvent();
 
         public ulong GetUserID() { return UserDto.answerDto.id; }
 
@@ -126,13 +133,9 @@ namespace umi3d.cdk.collaboration
             needToGetFirstConnectionInfo = true;
         }
 
-        public void SetStatus(StatusType status)
-        {
-
-        }
-
         public bool Connect()
         {
+            ConnectionState.Invoke("Connecting to the Environement");
             if (IsConnected())
                 return false;
 
@@ -161,13 +164,20 @@ namespace umi3d.cdk.collaboration
         private async void Join(BeardedManStudios.Forge.Networking.IUserAuthenticator authenticator)
         {
             ForgeClient.Join(authenticator);
-            await UMI3DAsyncManager.Delay(5000);
+            await UMI3DAsyncManager.Delay(4500);
             if (ForgeClient != null && !ForgeClient.IsConnected && !disconected)
             {
+                ConnectionState.Invoke("Connection Failed");
                 isConnecting = false;
                 isConnected = false;
                 ForgeClient.Stop();
+                GameObject.Destroy(ForgeClient);
+                await UMI3DAsyncManager.Delay(500);
                 Connect();
+            }
+            else
+            {
+                EnvironementJoinned.Invoke();
             }
         }
 
@@ -292,9 +302,11 @@ namespace umi3d.cdk.collaboration
                         break;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 UMI3DLogger.LogWarning($"Error on OnMessage({message})", scope);
+                UMI3DLogger.LogException(e, scope);
+                ConnectionDisconnected();
             }
         }
 
@@ -329,9 +341,11 @@ namespace umi3d.cdk.collaboration
                         break;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 UMI3DLogger.LogWarning($"Error on OnStatusChanged({statusDto})", scope);
+                UMI3DLogger.LogException(e, scope);
+                ConnectionDisconnected();
             }
         }
 
@@ -368,6 +382,7 @@ namespace umi3d.cdk.collaboration
                     }
                     else
                     {
+                        ConnectionState.Invoke("Downloading Libraries");
                         UMI3DResourcesManager.DownloadLibraries(LibrariesDto,
                             worldControllerClient.name,
                             () =>
@@ -400,15 +415,28 @@ namespace umi3d.cdk.collaboration
                 else
                 {
                     await Logout();
+                    if (UMI3DCollaborationClientServer.Exists)
+                        UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
                 }
             }
             catch (UMI3DAsyncManagerException)
             {
                 //This exeception is thrown only when app is stopping.
             }
+            catch (Umi3dException e)
+            {
+                await Logout();
+                if (e.errorCode == 401)
+                    UMI3DCollaborationClientServer.ReceivedLogoutMessage("You are not authorized to proceed further.");
+                else if (UMI3DCollaborationClientServer.Exists)
+                    UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
+                throw;
+            }
             catch
             {
                 await Logout();
+                if (UMI3DCollaborationClientServer.Exists)
+                    UMI3DCollaborationClientServer.Instance.ConnectionLost(this);
                 throw;
             }
         }
@@ -457,6 +485,7 @@ namespace umi3d.cdk.collaboration
                     {
                         //UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
                         UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
+                        EnvironementLoaded.Invoke();
                         UserDto.answerDto.status = statusToBeSet;
 
                         await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);

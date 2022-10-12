@@ -90,13 +90,15 @@ namespace umi3d.cdk
                                         renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                                         renderer.receiveShadows = nodeDto.receiveShadow;
                                     }
+
+                                    UpdateLightmapReferences(rootDto.id, renderers, o as GameObject);
                                 });
 
                             }
                             catch (Exception e)
                             {
-                                UMI3DLogger.LogError(e, scope);
                                 UMI3DLogger.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found", scope);
+                                UMI3DLogger.LogException(e, scope);
                             }
                             finished?.Invoke();
                         }
@@ -115,6 +117,30 @@ namespace umi3d.cdk
                     failed?.Invoke(new Umi3dException("nodeDto should not be null"));
                 }
             }, failed);
+        }
+
+        /// <summary>
+        /// If root node has a <see cref="PrefabLightmapData"/>, updates its references
+        /// </summary>
+        /// <param name="rooId"></param>
+        /// <param name="renderers"></param>
+        protected void UpdateLightmapReferences(ulong rooId, Renderer[] renderers, GameObject o)
+        {
+            var lightmapData = UMI3DEnvironmentLoader.GetNode(rooId)?.prefabLightmapData;
+
+            if (lightmapData == null)
+                return;
+
+            var renderersInfo = lightmapData.GetRenderersInfo();
+
+            for (int i = 0; i < renderersInfo.Length; i++)
+            {
+                if (renderersInfo[i].renderer.gameObject == o)
+                {
+                    renderersInfo[i].renderer = renderers.FirstOrDefault();
+                    break;
+                }
+            }
         }
 
         protected override void RevertToOriginalMaterial(UMI3DNodeInstance entity)

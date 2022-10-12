@@ -18,7 +18,7 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
 using System;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.utils.extrapolation.kalman
 {
     [Obsolete]
     public class UMI3DUnscentedKalmanFilter
@@ -44,7 +44,7 @@ namespace umi3d.cdk
         private double ki;
 
         /// <summary>
-        /// The beta coefficient, characterize type of distribution (2 for normal one) 
+        /// The beta coefficient, characterize type of distribution (2 for normal one)
         /// </summary>
         private double beta;
 
@@ -79,12 +79,12 @@ namespace umi3d.cdk
         private Matrix<double> P;
 
         /// <summary>
-		/// Std of process 
+		/// Std of process
 		/// </summary>
         private readonly double q;
 
         /// <summary>
-		/// Std of measurement 
+		/// Std of measurement
 		/// </summary>
         private readonly double r;
 
@@ -94,7 +94,7 @@ namespace umi3d.cdk
         private Matrix<double> Q;
 
         /// <summary>
-		/// Covariance of measurement 
+		/// Covariance of measurement
 		/// </summary>
         private Matrix<double> R;
 
@@ -124,7 +124,7 @@ namespace umi3d.cdk
             P = Matrix.Build.Diagonal(L, L, 1); //initial state covraiance
 
             Q = Matrix.Build.Diagonal(L, L, q * q); //covariance of process
-            R = Matrix.Build.Dense(m, m, r * r); //covariance of measurement  
+            R = Matrix.Build.Dense(m, m, r * r); //covariance of measurement
 
             alpha = 1e-3f;
             ki = 0;
@@ -187,7 +187,7 @@ namespace umi3d.cdk
             //state update
             x = x1.Add(K.Multiply(z.Subtract(z1)));
 
-            //covariance update 
+            //covariance update
             P = P1.Subtract(K.Multiply(P12.Transpose()));
         }
 
@@ -269,4 +269,3 @@ namespace umi3d.cdk
         }
     }
 }
-

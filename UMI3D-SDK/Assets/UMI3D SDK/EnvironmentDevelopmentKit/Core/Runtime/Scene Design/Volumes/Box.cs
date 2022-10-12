@@ -72,7 +72,6 @@ namespace umi3d.edk.volume
                 center = center.GetValue() + (extendFromBottom ? bounds.extents.y * Vector3.up : Vector3.zero),
                 size = size.GetValue(),
                 rootNodeId = GetRootNode().Id(),
-                rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
                 isTraversable = IsTraversable()
             };
         }

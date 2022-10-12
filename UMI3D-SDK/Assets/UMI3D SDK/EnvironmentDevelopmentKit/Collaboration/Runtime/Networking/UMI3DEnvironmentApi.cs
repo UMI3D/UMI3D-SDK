@@ -402,6 +402,8 @@ namespace umi3d.edk.collaboration
             }
             else
             {
+                while(!user.IsReadyToGetResources)
+                    System.Threading.Thread.Sleep(1);
                 GlTFEnvironmentDto result = null;
                 bool finished = false;
                 UnityMainThreadDispatcher.Instance().Enqueue(
@@ -435,12 +437,12 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Join environment {user?.Id()}", scope);
             bool finished = false;
-            ReadDto(e.Request, (dto) =>
+            ReadDto(e.Request, async (dto) =>
             {
                 var join = dto as JoinDto;
                 UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), join.userSize, join.trackedBonetypes);
                 e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
-                UMI3DCollaborationServer.NotifyUserJoin(user);
+                await UMI3DCollaborationServer.NotifyUserJoin(user);
                 finished = true;
             });
             while (!finished) System.Threading.Thread.Sleep(1);
@@ -533,7 +535,7 @@ namespace umi3d.edk.collaboration
             }
             catch (Exception ex)
             {
-                UMI3DLogger.LogError($"An error occured {ex}", scope);
+                UMI3DLogger.LogException(ex, scope);
                 error?.Invoke();
             }
 

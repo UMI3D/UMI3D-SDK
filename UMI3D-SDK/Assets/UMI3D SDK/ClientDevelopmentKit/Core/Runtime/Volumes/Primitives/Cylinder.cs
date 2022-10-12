@@ -112,7 +112,7 @@ namespace umi3d.cdk.volumes
                             1f / scale.x,
                             1f / scale.y,
                             1f / scale.z),
-                        Quaternion.Inverse(rotation) * (point - position));
+                        Quaternion.Inverse(rootNode?.transform.rotation ?? Quaternion.identity) * (point - (rootNode?.transform.position ?? Vector3.zero)));
 
 
             if (Vector3.ProjectOnPlane(localCoordinate, Vector3.up).magnitude > radius)

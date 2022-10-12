@@ -252,6 +252,8 @@ namespace umi3d.cdk.interaction
                     var Event = new EventDto();
                     ReadAbstractInteractionDto(Event, container);
                     Event.hold = UMI3DNetworkingHelper.Read<bool>(container);
+                    Event.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    Event.ReleaseAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
                     interaction = Event;
                     break;
                 case UMI3DInteractionKeys.Manipulation:

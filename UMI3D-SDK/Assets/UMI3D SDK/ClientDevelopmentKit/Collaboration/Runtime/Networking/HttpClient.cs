@@ -81,12 +81,14 @@ namespace umi3d.cdk.collaboration
         public static async Task<UMI3DDto> Connect(ConnectionDto connectionDto, string MasterUrl, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(connectionDto.ToJson(Newtonsoft.Json.TypeNameHandling.None));
-            UnityWebRequest uwr = await _PostRequest(null, MasterUrl + UMI3DNetworkingKeys.connect, "application/json", bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
-            UMI3DLogger.Log($"Received answer to Connect : \n " + uwr?.downloadHandler?.text, scope | DebugScope.Connection);
 
-            UMI3DDto dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data)) : null;
+            using (UnityWebRequest uwr = await _PostRequest(null, MasterUrl + UMI3DNetworkingKeys.connect, "application/json", bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false))
+            {
+                UMI3DLogger.Log($"Received answer to Connect : \n " + uwr?.downloadHandler?.text, scope | DebugScope.Connection);
 
-            return dto;
+                UMI3DDto dto = uwr?.downloadHandler.data != null ? ReadConnectAnswer(System.Text.Encoding.UTF8.GetString(uwr?.downloadHandler.data)) : null;
+                return dto;
+            }
         }
 
         private static UMI3DDto ReadConnectAnswer(string text)
@@ -240,10 +242,13 @@ namespace umi3d.cdk.collaboration
         public async Task<UserConnectionDto> SendGetIdentity(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send Get Identity", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connectionInfo, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            UMI3DLogger.Log($"Received Get Identity", scope | DebugScope.Connection);
-            UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
-            return dto as UserConnectionDto;
+
+            using (UnityWebRequest uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connectionInfo, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                UMI3DLogger.Log($"Received Get Identity", scope | DebugScope.Connection);
+                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                return dto as UserConnectionDto;
+            }
         }
 
 
@@ -350,11 +355,14 @@ namespace umi3d.cdk.collaboration
         public static async Task<MediaDto> SendGetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetMedia", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _GetRequest(null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
-            UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
-            if (uwr?.downloadHandler.data == null) return null;
-            string json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-            return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
+
+            using (UnityWebRequest uwr = await _GetRequest(null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)))
+            {
+                UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
+                if (uwr?.downloadHandler.data == null) return null;
+                string json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
+                return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
+            }
         }
 
         #endregion
@@ -370,10 +378,12 @@ namespace umi3d.cdk.collaboration
         public async Task<LibrariesDto> SendGetLibraries(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetLibraries", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.libraries, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            UMI3DLogger.Log($"Received GetLibraries", scope | DebugScope.Connection);
-            UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
-            return dto as LibrariesDto;
+            using (UnityWebRequest uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.libraries, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                UMI3DLogger.Log($"Received GetLibraries", scope | DebugScope.Connection);
+                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                return dto as LibrariesDto;
+            }
         }
 
         /// <summary>
@@ -385,10 +395,12 @@ namespace umi3d.cdk.collaboration
         public async Task<LoadEntityDto> SendPostEntity(EntityRequestDto id, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostEntity", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.entity, null, id.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            UMI3DLogger.Log($"Received PostEntity", scope | DebugScope.Connection);
-            UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
-            return dto as LoadEntityDto;
+            using (UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.entity, null, id.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                UMI3DLogger.Log($"Received PostEntity", scope | DebugScope.Connection);
+                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                return dto as LoadEntityDto;
+            }
         }
 
         /// <summary>
@@ -400,9 +412,11 @@ namespace umi3d.cdk.collaboration
         public async Task<byte[]> SendGetPublic(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetPublic {url}", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false);
-            UMI3DLogger.Log($"received getPublic {url}", scope | DebugScope.Connection);
-            return uwr?.downloadHandler.data;
+            using (UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false))
+            {
+                UMI3DLogger.Log($"received getPublic {url}", scope | DebugScope.Connection);
+                return uwr?.downloadHandler.data;
+            }
         }
 
         /// <summary>
@@ -423,10 +437,20 @@ namespace umi3d.cdk.collaboration
                 else
                     url += "?" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + HeaderToken;
             }
-
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), !useParameterInsteadOfHeader);
-            UMI3DLogger.Log($"Received GetPrivate {url}", scope | DebugScope.Connection);
-            return uwr?.downloadHandler.data;
+            int i = 0;
+            while (i < 10)
+            {
+                i++;
+                using (UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), !useParameterInsteadOfHeader))
+                {
+                    UMI3DLogger.Log($"Received GetPrivate {url}\n{uwr?.responseCode}\n{uwr?.url}", scope | DebugScope.Connection);
+                    if (uwr?.responseCode != 204)
+                        return uwr?.downloadHandler.data;
+                    UMI3DLogger.Log($"Resend GetPrivate Because responce code was 204 {url}", scope | DebugScope.Connection);
+                    await UMI3DAsyncManager.Delay(1000);
+                }
+            }
+            return null;
         }
         #endregion
 
@@ -439,10 +463,12 @@ namespace umi3d.cdk.collaboration
         public async Task<GlTFEnvironmentDto> SendGetEnvironment(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send GetEnvironment", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.environment, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            UMI3DLogger.Log($"Received GetEnvironment", scope | DebugScope.Connection);
-            UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
-            return dto as GlTFEnvironmentDto;
+            using (UnityWebRequest uwr = await _GetRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.environment, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                UMI3DLogger.Log($"Received GetEnvironment", scope | DebugScope.Connection);
+                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                return dto as GlTFEnvironmentDto;
+            }
         }
 
         /// <summary>
@@ -453,10 +479,13 @@ namespace umi3d.cdk.collaboration
         public async Task<EnterDto> SendPostJoin(JoinDto join, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostJoin", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.join, null, join.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            UMI3DLogger.Log($"Received PostJoin", scope | DebugScope.Connection);
-            UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
-            return dto as EnterDto;
+
+            using (UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.join, null, join.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                UMI3DLogger.Log($"Received PostJoin", scope | DebugScope.Connection);
+                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                return dto as EnterDto;
+            }
         }
 
         /// <summary>
@@ -467,7 +496,8 @@ namespace umi3d.cdk.collaboration
         public async Task SendPostSceneRequest(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostSceneRequest", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.scene, null, null, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.scene, null, null, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            uwr.Dispose();
             UMI3DLogger.Log($"Received PostSceneRequest", scope | DebugScope.Connection);
         }
 
@@ -498,9 +528,12 @@ namespace umi3d.cdk.collaboration
         {
             UMI3DLogger.Log($"Send GetLocalInfo {key}", scope | DebugScope.Connection);
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
-            UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            UMI3DLogger.Log($"Received GetLocalInfo {key}", scope | DebugScope.Connection);
-            return uwr?.downloadHandler.data;
+
+            using (UnityWebRequest uwr = await _GetRequest(HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                UMI3DLogger.Log($"Received GetLocalInfo {key}", scope | DebugScope.Connection);
+                return uwr?.downloadHandler.data;
+            }
         }
 
         #endregion

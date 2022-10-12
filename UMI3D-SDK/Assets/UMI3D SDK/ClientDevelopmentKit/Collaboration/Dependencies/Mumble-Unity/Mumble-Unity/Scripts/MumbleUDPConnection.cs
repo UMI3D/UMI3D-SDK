@@ -6,6 +6,7 @@ using UnityEngine;
 using System.IO;
 using MumbleProto;
 using System.Threading;
+using UnityEngine.Events;
 
 namespace Mumble
 {
@@ -30,6 +31,9 @@ namespace Mumble
         private Thread _receiveThread;
         private byte[] _recvBuffer;
         private readonly byte[] _sendPingBuffer = new byte[9];
+
+        public class ConnectionErrorEvent : UnityEvent<Exception> { }
+        public ConnectionErrorEvent ConnectionError = new ConnectionErrorEvent();
 
         internal MumbleUdpConnection(IPEndPoint host, AudioDecodeThread audioDecodeThread, MumbleClient mumbleClient)
         {
@@ -80,6 +84,7 @@ namespace Mumble
         {
             SendPing();
         }
+
         private void ReceiveUDP()
         {
             int prevPacketSize = 0;
@@ -114,12 +119,13 @@ namespace Mumble
                             + " prev pkt size:" + prevPacketSize);
                     }
                     prevPacketSize = readLen;
+
                 }
                 catch (Exception ex)
                 {
                     if (ex is ObjectDisposedException) { return; }
-                    else if (ex is ThreadAbortException) { return; }
-                    else if (ex is System.Net.Sockets.SocketException) { return; }
+                    else if (ex is ThreadAbortException) { Debug.LogException(ex); return; }
+                    else if (ex is System.Net.Sockets.SocketException) { Debug.LogException(ex); return; }
                     else
                         Debug.LogError("Unhandled UDP receive error: " + ex);
                 }
@@ -161,6 +167,7 @@ namespace Mumble
         }
         internal void OnPing(byte[] message)
         {
+            _mumbleClient?.OnNotifyPingReceived();
             //Debug.Log("Would process ping");
             _numPingsOutstanding = 0;
             // If we received a ping, that means that UDP is working
@@ -297,6 +304,7 @@ namespace Mumble
             catch (Exception e)
             {
                 Debug.LogError("Error sending packet: " + e);
+                ConnectionError.Invoke(e);
             }
         }
         internal byte[] GetLatestClientNonce()

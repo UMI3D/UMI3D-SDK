@@ -24,6 +24,7 @@ namespace umi3d.edk.volume
     /// <summary>
     /// Base class for volume primitive.
     /// </summary>
+    [RequireComponent(typeof(UMI3DAbstractNode))]
     public abstract class AbstractPrimitive : MonoBehaviour, IVolume
     {
         /// <summary>
@@ -55,16 +56,7 @@ namespace umi3d.edk.volume
         /// <returns></returns>
         public UMI3DAbstractNode GetRootNode()
         {
-            return this.gameObject.GetComponentInParent<UMI3DAbstractNode>();
-        }
-
-        /// <summary>
-        /// Return the root node to local position matrix
-        /// </summary>
-        /// <returns></returns>
-        public Matrix4x4 GetRootNodeToLocalMatrix()
-        {
-            return GetRootNode().transform.localToWorldMatrix * this.transform.worldToLocalMatrix;
+            return this.gameObject.GetComponent<UMI3DAbstractNode>();
         }
 
         /// <summary>

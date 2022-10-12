@@ -32,6 +32,25 @@ namespace umi3d.cdk
 
         protected LineRenderer line;
 
+        LineRenderer GetOrCreateLine(GameObject node)
+        {
+            if(node == null)
+                return null;
+            var line = node.GetComponent<LineRenderer>();
+            if (line == null)
+            {
+                line = node.AddComponent<LineRenderer>();
+                Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
+
+                if (UMI3DMat == null)
+                {
+                    UMI3DMat = new Material(Shader.Find("Sprites/Default"));
+                }
+                line.material = UMI3DMat;
+            }
+            return line;
+        }
+
         /// <summary>
         /// Load a mesh node.
         /// </summary>
@@ -50,18 +69,7 @@ namespace umi3d.cdk
 
             base.ReadUMI3DExtension(dto, node, () =>
             {
-                line = node.GetComponent<LineRenderer>();
-                if (line == null)
-                {
-                    line = node.AddComponent<LineRenderer>();
-                    Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
-
-                    if (UMI3DMat == null)
-                    {
-                        UMI3DMat = new Material(Shader.Find("Sprites/Default"));
-                    }
-                    line.material = UMI3DMat;
-                }
+                line = GetOrCreateLine(node);
                 line.startColor = lineDto.startColor;
                 line.endColor = lineDto.endColor;
                 line.loop = lineDto.loop;
@@ -81,11 +89,15 @@ namespace umi3d.cdk
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            if (entity?.dto is UMI3DLineDto)
+            if (entity?.dto is UMI3DLineDto && entity is UMI3DNodeInstance node)
             {
                 if (base.SetUMI3DProperty(entity, property)) return true;
                 var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DLineDto;
                 if (extension == null) return false;
+
+                line = GetOrCreateLine(node.gameObject);
+                if (line == null) return false;
+
                 switch (property.property)
                 {
                     case UMI3DPropertyKeys.LineEndColor:
@@ -140,6 +152,7 @@ namespace umi3d.cdk
                     default:
                         return false;
                 }
+                UpdateModelCollider(node, line);
                 return true;
             }
             else
@@ -156,6 +169,10 @@ namespace umi3d.cdk
             if (extension == null) return false;
 
             var node = entity as UMI3DNodeInstance;
+
+            line = GetOrCreateLine(node.gameObject);
+            if (line == null) return false;
+
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LineEndColor:
@@ -213,7 +230,60 @@ namespace umi3d.cdk
                 default:
                     return false;
             }
+            UpdateModelCollider(node, line);
             return true;
         }
+
+        protected override void SetModelCollider(ulong id, UMI3DNodeInstance node, ColliderDto dto)
+        {
+            if (node == null) return;
+
+            line = GetOrCreateLine(node.gameObject);
+            if (line == null) return;
+
+            MeshCollider meshCollider = node.gameObject?.AddComponent<MeshCollider>();
+            node.colliders.Add(meshCollider);
+            UpdateModelCollider(node, line, meshCollider);
+        }
+
+        private void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
+        {
+            if (nodeInstance == null || line == null || nodeInstance.gameObject == null) return;
+            if (meshCollider == null)
+                meshCollider = nodeInstance.gameObject.GetComponent<MeshCollider>();
+            if (meshCollider == null) return;
+
+            Mesh mesh = new Mesh();
+            line.BakeMesh(mesh, true);
+            if (AtLeast3DistinctVertice(mesh))
+                meshCollider.sharedMesh = mesh;
+        }
+
+        bool AtLeast3DistinctVertice(Mesh mesh)
+        {
+            if (mesh != null && mesh.vertices != null && mesh.vertices.Count() < 3)
+                return false;
+
+            Vector3? a = null, b = null;
+
+            foreach (var v in mesh.vertices)
+            {
+                if (a == null)
+                    a = v;
+                else if (b == null)
+                {
+                    if (Vector3.Distance(a ?? Vector3.zero, v) > 0.01)
+
+                        b = v;
+                }
+                else if (Vector3.Distance(a ?? Vector3.zero, v) > 0.01 && Vector3.Distance(b ?? Vector3.zero, v) > 0.01)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

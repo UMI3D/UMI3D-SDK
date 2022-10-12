@@ -26,6 +26,7 @@ namespace umi3d.edk.volume
     /// <summary>
     /// Volume cell represented by an .obj
     /// </summary>
+    [RequireComponent(typeof(UMI3DAbstractNode))]
     public class OBJVolume : MonoBehaviour, IVolume
     {
         /// <summary>
@@ -141,7 +142,6 @@ namespace umi3d.edk.volume
                 id = Id(),
                 objFile = path,
                 rootNodeId = scene.Id(),
-                rootNodeToLocalMatrix = scene.transform.localToWorldMatrix * this.transform.worldToLocalMatrix,
                 isTraversable = IsTraversable()
             };
             return dto;

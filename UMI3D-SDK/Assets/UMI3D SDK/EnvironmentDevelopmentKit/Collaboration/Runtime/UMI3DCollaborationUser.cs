@@ -77,6 +77,8 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<string> audioPassword;
         public UMI3DAsyncProperty<string> audioLogin;
 
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
 
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
@@ -94,6 +96,9 @@ namespace umi3d.edk.collaboration
             audioPassword = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioPassword, null);
             audioLogin = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioLogin, null);
 
+            onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
+            onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
+
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
@@ -108,7 +113,7 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            var ucDto = new UserConnectionAnswerDto(ToUserDto())
+            var ucDto = new UserConnectionAnswerDto(ToUserDto(this))
             {
                 librariesUpdated = !UMI3DEnvironment.UseLibrary()
             };
@@ -126,28 +131,6 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Collaboration.NotifyUserStatusChanged(this);
         }
 
-
-        //public string RenewToken()
-        //{
-        //    DateTime date = DateTime.UtcNow;
-        //    date = date.AddSeconds(UMI3DCollaborationServer.Instance.tokenLifeTime);
-        //    byte[] time = BitConverter.GetBytes(date.ToBinary());
-        //    byte[] key = Guid.NewGuid().ToByteArray();
-        //    string token = Convert.ToBase64String(time.Concat(key).ToArray());
-        //    this.token = token;
-        //    forgeServer.SendSignalingMessage(networkPlayer, ToTokenDto());
-        //    return token;
-        //}
-
-        public virtual TokenDto ToTokenDto()
-        {
-            var token = new TokenDto
-            {
-                token = this.token
-            };
-            return token;
-        }
-
         /// <inheritdoc/>
         public override void SetStatus(StatusType status)
         {
@@ -161,10 +144,9 @@ namespace umi3d.edk.collaboration
 
         public virtual UserConnectionDto ToUserConnectionDto()
         {
-            var connectionInformation = new UserConnectionDto(ToUserDto())
+            var connectionInformation = new UserConnectionDto(ToUserDto(this))
             {
                 audioPassword = audioPassword.GetValue(),
-                audioLogin = audioLogin.GetValue(),
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),
                 librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this)
@@ -173,9 +155,9 @@ namespace umi3d.edk.collaboration
             return connectionInformation;
         }
 
-        public virtual UserDto ToUserDto()
+        public virtual UserDto ToUserDto(UMI3DUser user)
         {
-            var user = new UserDto
+            var _user = new UserDto
             {
                 id = Id(),
                 status = status,
@@ -186,16 +168,19 @@ namespace umi3d.edk.collaboration
                 videoSourceId = videoPlayer?.Id() ?? 0,
                 login = string.IsNullOrEmpty(displayName) ? (string.IsNullOrEmpty(login) ? Id().ToString() : login) : displayName,
 
-                microphoneStatus = microphoneStatus.GetValue(),
-                avatarStatus = avatarStatus.GetValue(),
-                attentionRequired = attentionRequired.GetValue(),
+                microphoneStatus = microphoneStatus.GetValue(user),
+                avatarStatus = avatarStatus.GetValue(user),
+                attentionRequired = attentionRequired.GetValue(user),
 
-                audioChannel = audioChannel.GetValue(),
-                audioServerUrl = audioServerUrl.GetValue(),
-                audioUseMumble = audioUseMumble.GetValue()
+                audioChannel = audioChannel.GetValue(user),
+                audioServerUrl = audioServerUrl.GetValue(user),
+                audioUseMumble = audioUseMumble.GetValue(user),
+                audioLogin = audioLogin.GetValue(user),
 
+                onStartSpeakingAnimationId = onStartSpeakingAnimationId.GetValue(user)?.Id() ?? 0,
+                onStopSpeakingAnimationId = onStopSpeakingAnimationId.GetValue(user)?.Id() ?? 0,
             };
-            return user;
+            return _user;
         }
 
         public virtual StatusDto ToStatusDto()

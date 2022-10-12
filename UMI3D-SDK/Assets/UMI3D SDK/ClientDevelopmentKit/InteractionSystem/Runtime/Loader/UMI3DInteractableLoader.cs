@@ -80,6 +80,15 @@ namespace umi3d.cdk.interaction
                 case UMI3DPropertyKeys.InteractableHasPriority:
                     dto.hasPriority = (bool)property.value;
                     break;
+                case UMI3DPropertyKeys.InteractableInteractionDistance:
+                    dto.interactionDistance = (float)(double)property.value;
+                    break;
+                case UMI3DPropertyKeys.InteractableHoverEnterAnimation:
+                    dto.HoverEnterAnimationId = (ulong)property.value;
+                    break;
+                case UMI3DPropertyKeys.InteractableHoverExitAnimation:
+                    dto.HoverExitAnimationId = (ulong)property.value;
+                    break;
                 default:
                     return false;
             }
@@ -116,6 +125,9 @@ namespace umi3d.cdk.interaction
                 case UMI3DPropertyKeys.InteractableHasPriority:
                     dto.hasPriority = UMI3DNetworkingHelper.Read<bool>(container);
                     break;
+                case UMI3DPropertyKeys.InteractableInteractionDistance:
+                    dto.interactionDistance = UMI3DNetworkingHelper.Read<float>(container);
+                    break;
                 default:
                     return false;
             }
@@ -146,6 +158,9 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:
                     value = UMI3DNetworkingHelper.Read<bool>(container);
+                    break;
+                case UMI3DPropertyKeys.InteractableInteractionDistance:
+                    value = UMI3DNetworkingHelper.Read<float>(container);
                     break;
                 default:
                     return false;

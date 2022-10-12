@@ -193,27 +193,11 @@ namespace umi3d.edk
             if (OnInnerValueChanged != null)
                 OnInnerValueChanged.Invoke(key, value);
 
-            var operation = new SetEntityDictionaryProperty()
-            {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                key = SerializerT(key, null),
-                value = SerializerL(value, null)
-            };
             if (UMI3DEnvironment.Exists)
             {
-                if (isAsync || isDeSync)
-                {
-                    operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
-                        user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
-                }
-                else
-                {
-                    operation += UMI3DServer.Instance.Users();
-                }
+                return GetSetEntityOperationForAllUsers();
             }
-            return operation;
+            return null;
         }
 
         /// <summary>
@@ -228,16 +212,6 @@ namespace umi3d.edk
         {
             L oldValue = GetValue(user)[key];
 
-            var operation = new SetEntityDictionaryProperty()
-            {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                key = SerializerT(key, user),
-                value = SerializerL(value, user)
-            };
-            operation.users.Add(user);
-
             if (asyncValues.ContainsKey(user))
             {
                 if (((oldValue == null && value == null) || Equal(oldValue, value)) && !forceOperation)
@@ -250,7 +224,7 @@ namespace umi3d.edk
                     if (OnUserInnerValueChanged != null)
                         OnUserInnerValueChanged.Invoke(key, user, value);
                     if (!UserDesync.Contains(user) || forceOperation)
-                        return operation;
+                        return GetSetEntityOperationForUser(user);
                     else
                         return null;
                 }
@@ -262,7 +236,7 @@ namespace umi3d.edk
                 if (OnUserInnerValueChanged != null)
                     OnUserInnerValueChanged.Invoke(key, user, value);
                 if (!UserDesync.Contains(user) || forceOperation)
-                    return operation;
+                    return GetSetEntityOperationForUser(user);
                 else
                     return null;
             }
@@ -424,5 +398,50 @@ namespace umi3d.edk
 
         /// <inheritdoc/>
         protected override Dictionary<T, L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
+
+        /// <summary>
+        /// Get a SetEntityListProperty for this property for all users matching the async information.
+        /// </summary>
+        public virtual SetEntityDictionaryProperty GetSetEntityOperationForAllUsers(T key)
+        {
+            return GetSetEntityOperationForUsers(key, u => true);
+        }
+
+        /// <summary>
+        /// Get a SetEntityListProperty for this property for a given users.
+        /// </summary>
+        public virtual SetEntityDictionaryProperty GetSetEntityOperationForUser(T key, UMI3DUser user)
+        {
+            return new SetEntityDictionaryProperty()
+            {
+                users = new HashSet<UMI3DUser>() { user },
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key,user),
+                value = SerializerL(GetValue(user)[key], user)
+            };
+        }
+
+        /// <summary>
+        /// Get a SetEntityListProperty for this property for users matching the given condition and the async information.
+        /// </summary>
+        public virtual SetEntityDictionaryProperty GetSetEntityOperationForUsers(T key, Func<UMI3DUser, bool> condition)
+        {
+            bool IsUserAsync(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? IsUserAsync : condition;
+
+            return new SetEntityDictionaryProperty()
+            {
+                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, null),
+                value = SerializerL(GetValue()[key], null)
+            };
+        }
     }
 }

@@ -58,6 +58,28 @@ namespace umi3d.cdk
         /// <see cref="IResourcesLoader.UrlToObject"/>
         public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
+
+            _UrlToObject1(url, extension, authorization, callback, failCallback, pathIfObjectInBundle);
+        }
+
+        protected virtual void _UrlToObject1(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle, int count = 0)
+        {
+            Action<Umi3dException> failCallback2 = async (e) =>
+            {
+                if (count == 2 || e.errorCode == 404)
+                {
+                    failCallback?.Invoke(e);
+                    return;
+                }
+                await UMI3DAsyncManager.Delay(10000);
+                _UrlToObject1(url, extension, authorization, callback, failCallback, pathIfObjectInBundle, count + 1);
+            };
+            _UrlToObject2(url, extension, authorization, callback, failCallback2, pathIfObjectInBundle);
+        }
+
+
+        protected virtual void _UrlToObject2(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+        {
             // add bundle in the cache
 #if UNITY_ANDROID
             UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
@@ -76,7 +98,7 @@ namespace umi3d.cdk
                             if (bundle != null)
                                 callback.Invoke(bundle);
 
-#if UNITY_2020
+#if UNITY_2020_OR_NEWER
                             else if (downloadHandlerAssetBundle?.error != null)
                                 throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
 #endif
@@ -120,11 +142,18 @@ namespace umi3d.cdk
 #else
                     UnityEngine.Object objectInBundle = bundle.LoadAsset(pathIfObjectInBundle);
 #endif
-                    if (objectInBundle is GameObject)
+                    if (objectInBundle is Material)
                     {
-                        AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                        callback.Invoke(new Material(objectInBundle as Material));
                     }
-                    callback.Invoke(objectInBundle);
+                    else
+                    {
+                        if (objectInBundle is GameObject)
+                        {
+                            AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                        }
+                        callback.Invoke(objectInBundle);
+                    }
                 }
                 else
                 {

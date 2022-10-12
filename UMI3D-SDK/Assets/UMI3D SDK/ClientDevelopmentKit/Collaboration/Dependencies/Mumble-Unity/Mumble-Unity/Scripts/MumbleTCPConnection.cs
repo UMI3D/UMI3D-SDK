@@ -11,6 +11,8 @@ using System.Timers;
 using System.Threading;
 using System.Text;
 using Version = MumbleProto.Version;
+using UnityEngine.Events;
+using System.Threading.Tasks;
 
 namespace Mumble
 {
@@ -32,12 +34,13 @@ namespace Mumble
         private string _username;
         private string _password;
 
+        public UnityEvent connectionFailed = new UnityEvent();
+
         private ProtoBuf.Meta.TypeModel _model;
 
         internal MumbleTcpConnection(IPEndPoint host, string hostname, UpdateOcbServerNonce updateOcbServerNonce,
             MumbleUdpConnection udpConnection, MumbleClient mumbleClient)
         {
-
             _model = (ProtoBuf.Meta.TypeModel)Activator.CreateInstance(Type.GetType("MyProtoModel, MyProtoModel"));
 
             _host = host;
@@ -64,26 +67,35 @@ namespace Mumble
         }
         private void OnTcpConnected(IAsyncResult connectionResult)
         {
-            if (!_tcpClient.Connected)
+            try
             {
+                if (_tcpClient == null || !_tcpClient.Connected)
+                {
+                    throw new Exception("Failed to connect");
+                }
+
+                NetworkStream networkStream = _tcpClient.GetStream();
+                _ssl = new SslStream(networkStream, false, ValidateCertificate);
+
+                _ssl.AuthenticateAsClient(_hostname);
+
+                _reader = new BinaryReader(_ssl);
+                _writer = new BinaryWriter(_ssl);
+                DateTime startWait = DateTime.Now;
+                while (!_ssl.IsAuthenticated)
+                {
+                    if (DateTime.Now - startWait > TimeSpan.FromSeconds(2))
+                        throw new TimeoutException("Time out waiting for SSL authentication");
+                }
+                SendVersion();
+                StartPingTimer();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
                 Debug.LogError("Connection failed! Please confirm that you have internet access, and that the hostname is correct");
-                throw new Exception("Failed to connect");
+                connectionFailed.Invoke();
             }
-
-            NetworkStream networkStream = _tcpClient.GetStream();
-            _ssl = new SslStream(networkStream, false, ValidateCertificate);
-            _ssl.AuthenticateAsClient(_hostname);
-            _reader = new BinaryReader(_ssl);
-            _writer = new BinaryWriter(_ssl);
-
-            DateTime startWait = DateTime.Now;
-            while (!_ssl.IsAuthenticated)
-            {
-                if (DateTime.Now - startWait > TimeSpan.FromSeconds(2))
-                    throw new TimeoutException("Time out waiting for SSL authentication");
-            }
-            SendVersion();
-            StartPingTimer();
         }
         private void SendVersion()
         {
@@ -171,8 +183,6 @@ namespace Mumble
                 try
                 {
                     var messageType = (MessageType)IPAddress.NetworkToHostOrder(_reader.ReadInt16());
-                    //Debug.Log("Processing data of type: " + messageType);
-
                     switch (messageType)
                     {
                         case MessageType.Version:
@@ -274,6 +284,9 @@ namespace Mumble
                             /*Serializer.*/
                             DeserializeWithLengthPrefix<MumbleProto.Ping>(_ssl,
                  PrefixStyle.Fixed32BigEndian);
+
+                            _mumbleClient?.OnNotifyPingReceived();
+
                             break;
                         case MessageType.Reject:
                             // This is called, for example, when the max number of users has been hit
@@ -311,19 +324,22 @@ namespace Mumble
                     if (ex is EndOfStreamException)
                     {
                         Debug.LogError("EOS Exception: " + ex);//This happens when we connect again with the same username
-                        _mumbleClient.OnConnectionDisconnect();
+                        _mumbleClient?.OnConnectionDisconnect();
                     }
                     else if (ex is IOException)
                     {
                         Debug.LogError("IO Exception: " + ex);
-                        _mumbleClient.OnConnectionDisconnect();
+                        _mumbleClient?.OnConnectionDisconnect();
                     }
                     //These just means the app stopped, it's ok
                     else if (ex is ObjectDisposedException) { }
                     else if (ex is ThreadAbortException) { }
                     else if (ex is System.Threading.ThreadInterruptedException) { }
                     else
+                    {
                         Debug.LogError($"Unhandled error: {ex}");
+                        Debug.LogException(ex);
+                    }
                     return;
                 }
             }
@@ -354,6 +370,7 @@ namespace Mumble
 
         internal void Close()
         {
+            UnityEngine.Debug.Log("Close Thread");
             // Signal thread that it's time to shut down
             _running = false;
 

@@ -28,22 +28,24 @@ namespace AsImpL
         public IEnumerator DownloadUri(string uri, bool notifyErrors)
         {
 #if UNITY_2018_3_OR_NEWER
-            UnityWebRequest uwr = UnityWebRequest.Get(uri);
-            yield return uwr.SendWebRequest();
-
-            if (uwr.isNetworkError || uwr.isHttpError)
+            using (UnityWebRequest uwr = UnityWebRequest.Get(uri))
             {
-                if (notifyErrors)
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
                 {
-                    Debug.LogError(uwr.error);
-                }
+                    if (notifyErrors)
+                    {
+                        Debug.LogError(uwr.error);
+                    }
 
-                yield return null;
-            }
-            else
-            {
-                // Get downloaded asset bundle
-                yield return uwr.downloadHandler.text;
+                    yield return null;
+                }
+                else
+                {
+                    // Get downloaded asset bundle
+                    yield return uwr.downloadHandler.text;
+                }
             }
 #else
             WWW www = new WWW(uri);
