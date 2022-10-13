@@ -278,10 +278,9 @@ namespace umi3d.cdk
 
                     audioSource.Stop();
 
-                    if (atTime <= audioSource.clip.length)
+                    if (atTime <= audioSource.clip.length && atTime >= 0)
                     {
-                        if (atTime != 0)
-                            audioSource.time = atTime;
+                        audioSource.time = atTime;
                         audioSource.Play();
                     }
 
