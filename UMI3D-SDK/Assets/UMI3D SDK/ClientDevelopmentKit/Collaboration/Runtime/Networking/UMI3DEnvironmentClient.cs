@@ -134,7 +134,7 @@ namespace umi3d.cdk.collaboration
 
             this.progress = progress;
             this.libraryProgress = new MultiProgress("Download libraries");
-            this.joinProgress = new MultiProgress("Joinning Environement");
+            this.joinProgress = new MultiProgress("Joinning Environment");
             progress.Add(libraryProgress);
             progress.Add(joinProgress);
 
@@ -145,7 +145,7 @@ namespace umi3d.cdk.collaboration
 
         public bool Connect()
         {
-            ConnectionState.Invoke("Connecting to the Environement");
+            ConnectionState.Invoke("Connecting to the Environment");
             if (IsConnected())
                 return false;
 
@@ -453,7 +453,7 @@ namespace umi3d.cdk.collaboration
             //UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             libraryProgress.SetAsCompleted();
             Progress PostJoinProgress = new Progress(2, "Joinning Environment");
-            MultiProgress EnterProgress = new MultiProgress("Enterring Environment");
+            MultiProgress EnterProgress = new MultiProgress("Entering Environment");
             progress.Add(PostJoinProgress);
             progress.Add(EnterProgress);
 

@@ -122,7 +122,7 @@ namespace umi3d.cdk.collaboration
                 Instance.OnReconnect.Invoke();
                 UMI3DEnvironmentLoader.Clear(false);
 
-                DebugProgress progress = new DebugProgress("Reconnect");
+                MultiProgress progress = new MultiProgress("Reconnect");
                 onProgress.Invoke(progress);
 
                 environmentClient = await worldControllerClient.ConnectToEnvironment(progress);
@@ -167,7 +167,7 @@ namespace umi3d.cdk.collaboration
                         //Connection will not restart without this...
                         await Task.Yield();
 
-                        MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joinning Environement");
+                        MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joinning Environment");
                         onProgress.Invoke(progress);
 
                         worldControllerClient = wc;
