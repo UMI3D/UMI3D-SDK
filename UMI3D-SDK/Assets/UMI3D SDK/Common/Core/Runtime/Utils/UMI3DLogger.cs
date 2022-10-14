@@ -149,7 +149,7 @@ namespace umi3d.common
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
                 if (Exists)
-                    Instance._LogError(o, scope);
+                    Instance._LogException(o, scope);
                 else
                     Debug.LogException(o);
         }
@@ -189,7 +189,7 @@ namespace umi3d.common
         {
             if (ShouldLog)
                 logWritter?.Write("Exception: " + o.Message + "\n" + o.StackTrace);
-            Debug.LogError(o);
+            Debug.LogException(o);
         }
 
         protected virtual bool _validFlag(DebugScope scope) { return (scope & LogScope) != 0; }

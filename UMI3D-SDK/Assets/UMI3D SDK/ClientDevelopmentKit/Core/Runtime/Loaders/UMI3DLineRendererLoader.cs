@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -58,33 +59,29 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
             var lineDto = dto as UMI3DLineDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
-                return;
+                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
             }
 
-            base.ReadUMI3DExtension(dto, node, () =>
-            {
-                line = GetOrCreateLine(node);
-                line.startColor = lineDto.startColor;
-                line.endColor = lineDto.endColor;
-                line.loop = lineDto.loop;
-                line.useWorldSpace = lineDto.useWorldSpace;
-                line.endWidth = lineDto.endWidth;
-                line.startWidth = lineDto.startWidth;
-                line.positionCount = lineDto.positions.Count();
-                line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v).ToArray());
-                UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(lineDto.id);
-                if (nodeInstance != null)
-                    nodeInstance.renderers = new List<Renderer>() { line };
-                SetMaterialOverided(lineDto, nodeInstance);
+            await base.ReadUMI3DExtension(dto, node);
 
-                finished?.Invoke();
-            }, failed);
+            line = GetOrCreateLine(node);
+            line.startColor = lineDto.startColor;
+            line.endColor = lineDto.endColor;
+            line.loop = lineDto.loop;
+            line.useWorldSpace = lineDto.useWorldSpace;
+            line.endWidth = lineDto.endWidth;
+            line.startWidth = lineDto.startWidth;
+            line.positionCount = lineDto.positions.Count();
+            line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v).ToArray());
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(lineDto.id);
+            if (nodeInstance != null)
+                nodeInstance.renderers = new List<Renderer>() { line };
+            SetMaterialOverided(lineDto, nodeInstance);
         }
 
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

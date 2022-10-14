@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -37,48 +38,39 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
+            await base.ReadUMI3DExtension(dto, node);
+            var nodeDto = dto as UMI3DNodeDto;
+            if (nodeDto == null)
+                throw (new Umi3dException("nodeDto should not be null"));
 
-            base.ReadUMI3DExtension(dto, node, () =>
+            if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
             {
-                var nodeDto = dto as UMI3DNodeDto;
-                if (nodeDto != null)
+                SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+            }
+
+            if (nodeDto.xBillboard || nodeDto.yBillboard)
+            {
+                Billboard b = node.AddComponent<Billboard>();
+                b.X = nodeDto.xBillboard;
+                b.Y = nodeDto.yBillboard;
+                node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
+            }
+
+            if (nodeDto.lodDto != null)
+            {
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
+            }
+
+            if (nodeDto.skinnedRendererLinks != null)
+            {
+                foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
                 {
-                    if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
-                    {
-                        SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
-                    }
-
-                    if (nodeDto.xBillboard || nodeDto.yBillboard)
-                    {
-                        Billboard b = node.AddComponent<Billboard>();
-                        b.X = nodeDto.xBillboard;
-                        b.Y = nodeDto.yBillboard;
-                        node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
-                    }
-
-                    if (nodeDto.lodDto != null)
-                    {
-                        MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
-                    }
-
-                    if (nodeDto.skinnedRendererLinks != null)
-                    {
-                        foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
-                        {
-                            BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
-                        }
-                    }
-
-
-                    finished?.Invoke();
+                    BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
                 }
-                else
-                {
-                    failed?.Invoke(new Umi3dException("nodeDto should not be null"));
-                }
-            }, failed);
+            }
+
         }
 
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
@@ -610,7 +602,7 @@ namespace umi3d.cdk
 
 
         #region Collider
-        protected void SetCustomCollider(ulong id, GameObject node, ResourceDto resourceDto)
+        protected async void SetCustomCollider(ulong id, GameObject node, ResourceDto resourceDto)
         {
             if (resourceDto == null) return;
 
@@ -622,18 +614,8 @@ namespace umi3d.cdk
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
             {
-                UMI3DResourcesManager.LoadFile(
-                    id,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (o) =>
-                    {
-                        CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
-                    },
-                    e => UMI3DLogger.LogException(e, scope),
-                    loader.DeleteObject
-                    );
+               var o = await UMI3DResourcesManager.LoadFile( id,fileToLoad,loader);
+               CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
             }
         }
 

@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -56,10 +57,10 @@ namespace umi3d.cdk
         /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
         /// <param name="onFinish"></param>
         /// </summary>
-        public static void LoadVideoPlayers(Action onFinish)
+        public static async Task LoadVideoPlayers()
         {
             if (HasVideoToLoad)
-                UMI3DAnimationManager.StartCoroutine(LoadVideoPlayersCoroutine(onFinish));
+                await LoadVideoPlayersCoroutine();
         }
 
         /// <summary>
@@ -67,11 +68,11 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="onFinish"></param>
         /// <returns></returns>
-        private static IEnumerator LoadVideoPlayersCoroutine(Action onFinish)
+        private static async Task LoadVideoPlayersCoroutine()
         {
             var wait = new WaitForSeconds(.1f);
 
-            yield return wait;
+            await UMI3DAsyncManager.Delay(100);
 
             while (videoPlayersToLoad.Count > 0)
             {
@@ -80,12 +81,11 @@ namespace umi3d.cdk
                 var player = new UMI3DVideoPlayer(videoPlayer);
 
                 while (!player.isPrepared)
-                    yield return null;
+                    await UMI3DAsyncManager.Yield();
 
-                yield return wait;
+                await UMI3DAsyncManager.Delay(100);
             }
 
-            onFinish?.Invoke();
         }
     }
 }

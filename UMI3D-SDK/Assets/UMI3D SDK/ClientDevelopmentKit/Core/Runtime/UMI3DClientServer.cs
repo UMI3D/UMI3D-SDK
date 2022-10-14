@@ -82,7 +82,7 @@ namespace umi3d.cdk
         protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
 
-        public static async void GetFile(string url, Action<byte[]> callback, Action<string> onError, bool useParameterInsteadOfHeader)
+        public static async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
         {
             try
             {
@@ -90,21 +90,15 @@ namespace umi3d.cdk
                 {
                     byte[] bytes = await Instance._GetFile(url, useParameterInsteadOfHeader);
                     if (bytes != null)
-                        callback.Invoke(bytes);
-                    else if (onError == null)
-                        UMI3DLogger.LogError("No Data in response", scope);
-                    else
-                        onError?.Invoke($"No Data in response for {url}");
+                        return (bytes);
+                    throw new Umi3dLoadingException($"No Data in response for {url}");
                 }
-                else if (onError == null)
-                    UMI3DLogger.LogError("Instance of UMI3DClientServer is null", scope);
-                else
-                    onError?.Invoke("Instance of UMI3DClientServer is null");//throw new Exception($"Instance of UMI3DClientServer is null");
+                throw new Exception($"Instance of UMI3DClientServer is null");
             }
             catch (Exception e)
             {
                 UMI3DLogger.LogException(e, scope);
-                onError?.Invoke(e.Message);
+                throw;
             }
 
         }

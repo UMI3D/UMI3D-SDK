@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -44,9 +45,9 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
+        public override async Task ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
         {
-            base.ReadUMI3DExtension(_dto, node);
+            await base.ReadUMI3DExtension(_dto, node);
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();

@@ -27,6 +27,8 @@ namespace umi3d.cdk.collaboration
 
     public class OnForceLogoutEvent : UnityEvent<string> { }
 
+    public class OnProgressEvent : UnityEvent<Progress> { }
+
     /// <summary>
     /// Collaboration Extension of the UMI3DClientServer
     /// </summary>
@@ -44,6 +46,8 @@ namespace umi3d.cdk.collaboration
 
         protected override ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
 
+        public static Func<MultiProgress> EnvironmentProgress = null;
+
         public UnityEvent OnLeaving = new UnityEvent();
         public UnityEvent OnLeavingEnvironment = new UnityEvent();
 
@@ -56,6 +60,8 @@ namespace umi3d.cdk.collaboration
 
         public UnityEvent OnConnectionCheck = new UnityEvent();
         public UnityEvent OnConnectionRetreived = new UnityEvent();
+
+        static public OnProgressEvent onProgress = new OnProgressEvent();
 
         public OnForceLogoutEvent OnForceLogoutMessage = new OnForceLogoutEvent();
 
@@ -115,7 +121,11 @@ namespace umi3d.cdk.collaboration
             {
                 Instance.OnReconnect.Invoke();
                 UMI3DEnvironmentLoader.Clear(false);
-                environmentClient = await worldControllerClient.ConnectToEnvironment();
+
+                DebugProgress progress = new DebugProgress("Reconnect");
+                onProgress.Invoke(progress);
+
+                environmentClient = await worldControllerClient.ConnectToEnvironment(progress);
                 environmentClient.status = StatusType.CREATED;
             }
         }
@@ -157,8 +167,11 @@ namespace umi3d.cdk.collaboration
                         //Connection will not restart without this...
                         await Task.Yield();
 
+                        MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joinning Environement");
+                        onProgress.Invoke(progress);
+
                         worldControllerClient = wc;
-                        environmentClient = await wc.ConnectToEnvironment();
+                        environmentClient = await wc.ConnectToEnvironment(progress);
                         environmentClient.status = StatusType.CREATED;
                     }
                 }

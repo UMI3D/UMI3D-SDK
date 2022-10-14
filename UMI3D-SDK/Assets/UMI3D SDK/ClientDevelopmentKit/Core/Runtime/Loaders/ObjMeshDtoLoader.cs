@@ -17,6 +17,7 @@ limitations under the License.
 using AsImpL;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -36,25 +37,22 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+        public override async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
+            bool finished = false;
+            object result = null;
+            Exception e = null;
+            Action<object> callback = (o) => { result = o; finished = true; };
+            Action<Exception> failCallback = (o) => { e = o; finished = true; };
 
-            _UrlToObject1(url, extension, authorization, callback, failCallback, pathIfObjectInBundle);
-        }
+            _UrlToObject2(url, extension, authorization, callback, failCallback, pathIfObjectInBundle);
 
-        protected virtual void _UrlToObject1(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle, int count = 0)
-        {
-            Action<Umi3dException> failCallback2 = async (e) =>
-            {
-                if (count == 2 || e.errorCode == 404)
-                {
-                    failCallback?.Invoke(e);
-                    return;
-                }
-                await UMI3DAsyncManager.Delay(10000);
-                _UrlToObject1(url, extension, authorization, callback, failCallback, pathIfObjectInBundle, count + 1);
-            };
-            _UrlToObject2(url, extension, authorization, callback, failCallback2, pathIfObjectInBundle);
+            while (!finished)
+                await UMI3DAsyncManager.Yield();
+            if (e != null)
+                throw e;
+
+            return result;
         }
 
 
@@ -85,7 +83,7 @@ namespace umi3d.cdk
                         objImporter.ImportError += (s) =>
                         {
                             failed = true;
-                            failCallback(new Umi3dException(401, $"Importing failed for : {url}"));
+                            failCallback(new Umi3dNetworkingException(401, s, url, $"Importing failed for"));
                         };
 
                         objImporter.ImportingComplete += () =>
@@ -102,7 +100,7 @@ namespace umi3d.cdk
                                 }
                                 catch (Exception e)
                                 {
-                                    failCallback(new Umi3dException(e, $"Importing completed but callback failed for : {url}"));
+                                    failCallback(new Umi3dLoadingException($"Importing completed but callback failed for : {url} {e.Message}"));
                                 }
                                 GameObject.Destroy(objImporter.gameObject, 1);
                             }

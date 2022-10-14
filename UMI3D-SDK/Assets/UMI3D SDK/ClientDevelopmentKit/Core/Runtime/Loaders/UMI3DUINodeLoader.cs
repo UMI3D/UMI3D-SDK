@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,36 +36,33 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the UMI3D UI will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
-            base.ReadUMI3DExtension(dto, node, () =>
-             {
+            await base.ReadUMI3DExtension(dto, node);
 
-                 switch (dto)
-                 {
-                     case UICanvasDto c:
-                         canvasNodeLoader.ReadUMI3DExtension(c, node);
-                         break;
-                     case UIImageDto i:
-                         imageNodeLoader.ReadUMI3DExtension(i, node);
-                         break;
-                     case UITextDto t:
-                         textNodeLoader.ReadUMI3DExtension(t, node);
-                         break;
-                 }
-                 RectTransform transform = node.GetOrAddComponent<RectTransform>();
-                 var rect = dto as UIRectDto;
-                 transform.anchoredPosition = rect.anchoredPosition;
-                 transform.anchoredPosition3D = rect.anchoredPosition3D;
-                 transform.anchorMax = rect.anchorMax;
-                 transform.anchorMin = rect.anchorMin;
-                 transform.offsetMax = rect.offsetMax;
-                 transform.offsetMin = rect.offsetMin;
-                 transform.pivot = rect.pivot;
-                 transform.sizeDelta = rect.sizeDelta;
-                 if (rect.rectMask) node.GetOrAddComponent<RectMask2D>();
-                 finished.Invoke();
-             }, failed);
+            switch (dto)
+            {
+                case UICanvasDto c:
+                    canvasNodeLoader.ReadUMI3DExtension(c, node);
+                    break;
+                case UIImageDto i:
+                    imageNodeLoader.ReadUMI3DExtension(i, node);
+                    break;
+                case UITextDto t:
+                    textNodeLoader.ReadUMI3DExtension(t, node);
+                    break;
+            }
+            RectTransform transform = node.GetOrAddComponent<RectTransform>();
+            var rect = dto as UIRectDto;
+            transform.anchoredPosition = rect.anchoredPosition;
+            transform.anchoredPosition3D = rect.anchoredPosition3D;
+            transform.anchorMax = rect.anchorMax;
+            transform.anchorMin = rect.anchorMin;
+            transform.offsetMax = rect.offsetMax;
+            transform.offsetMin = rect.offsetMin;
+            transform.pivot = rect.pivot;
+            transform.sizeDelta = rect.sizeDelta;
+            if (rect.rectMask) node.GetOrAddComponent<RectMask2D>();
         }
 
         /// <summary>

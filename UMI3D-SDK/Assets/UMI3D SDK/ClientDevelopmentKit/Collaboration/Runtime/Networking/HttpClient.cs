@@ -593,7 +593,7 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
                     return await _GetRequest(HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                    throw new Umi3dException(www.responseCode, www.error + " Failed to get " + www.url);
+                    throw new Umi3dNetworkingException(www , "Failed to get ");
             }
             return www;
         }
@@ -635,7 +635,7 @@ namespace umi3d.cdk.collaboration
                 else
                 {
                     UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(bytes));
-                    throw new Umi3dException(www.responseCode, www.error + " Failed to post " + www.url + "\n " + www.downloadHandler.text);
+                    throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
                 }
             }
             return www;

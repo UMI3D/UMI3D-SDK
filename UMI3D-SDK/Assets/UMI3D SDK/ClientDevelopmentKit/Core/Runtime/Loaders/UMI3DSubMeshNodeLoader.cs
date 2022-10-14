@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -27,96 +28,89 @@ namespace umi3d.cdk
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         ///<inheritdoc/>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
 
-            base.ReadUMI3DExtension(dto, node, () =>
+            await base.ReadUMI3DExtension(dto, node);
+
+            var nodeDto = dto as SubModelDto;
+            if (nodeDto == null)
             {
-                var nodeDto = dto as SubModelDto;
-                if (nodeDto != null)
+                throw (new Umi3dException("nodeDto should not be null"));
+            }
+
+            void LoadSubModel(UMI3DEntityInstance entity)
+            {
+                if (entity is UMI3DNodeInstance modelNodeInstance)
                 {
-                    void LoadSubModel(UMI3DEntityInstance entity)
+                    var modelDto = (GlTFNodeDto)modelNodeInstance.dto;
+                    UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
+
+                    string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
+
+                    var rootDto = (UMI3DMeshNodeDto)modelDto.extensions.umi3d;
+                    GameObject instance = null;
+
+                    try
                     {
-                        if (entity is UMI3DNodeInstance modelNodeInstance)
+                        string sub = nodeDto.subModelName;
+
+                        UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, nodeDto.subModelHierachyIndexes, nodeDto.subModelHierachyNames, (o) =>
                         {
-                            var modelDto = (GlTFNodeDto)modelNodeInstance.dto;
-                            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
 
-                            string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
+                            instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
 
-                            var rootDto = (UMI3DMeshNodeDto)modelDto.extensions.umi3d;
-                            GameObject instance = null;
-
-                            try
+                            AbstractMeshDtoLoader.ShowModelRecursively(instance);
+                            if (!rootDto.isRightHanded)
                             {
-                                string sub = nodeDto.subModelName;
-
-                                UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, nodeDto.subModelHierachyIndexes, nodeDto.subModelHierachyNames, (o) =>
-                                {
-
-                                    instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
-
-                                    AbstractMeshDtoLoader.ShowModelRecursively(instance);
-                                    if (!rootDto.isRightHanded)
-                                    {
-                                        instance.transform.localEulerAngles += new Vector3(0, 180, 0);
-                                    }
-
-                                    SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
-
-                                    UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
-                                    Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
-
-                                    if (renderers != null)
-                                    {
-                                        UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);
-                                        UMI3DEnvironmentLoader.GetNode(nodeDto.id).renderers.AddRange(renderers);
-                                    }
-
-                                    if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
-                                    {
-                                        // apply root model override
-                                        SetMaterialOverided(rootDto, nodeInstance);
-                                    }
-
-                                    if (nodeDto.applyCustomMaterial)
-                                    {
-                                        SetMaterialOverided(nodeDto, nodeInstance);
-                                        // apply sub model overrider
-                                    }
-
-                                    foreach (Renderer renderer in renderers)
-                                    {
-                                        renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
-                                        renderer.receiveShadows = nodeDto.receiveShadow;
-                                    }
-
-                                    UpdateLightmapReferences(rootDto.id, renderers, o as GameObject);
-                                });
-
+                                instance.transform.localEulerAngles += new Vector3(0, 180, 0);
                             }
-                            catch (Exception e)
+
+                            SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
+
+                            UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
+                            Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
+
+                            if (renderers != null)
                             {
-                                UMI3DLogger.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found", scope);
-                                UMI3DLogger.LogException(e, scope);
+                                UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).renderers.AddRange(renderers);
+                                UMI3DEnvironmentLoader.GetNode(nodeDto.id).renderers.AddRange(renderers);
                             }
-                            finished?.Invoke();
-                        }
-                        else
-                            failed?.Invoke(new Umi3dException($"Model Entity [{nodeDto.modelId}] should be a nodeInstance"));
+
+                            if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
+                            {
+                                // apply root model override
+                                SetMaterialOverided(rootDto, nodeInstance);
+                            }
+
+                            if (nodeDto.applyCustomMaterial)
+                            {
+                                SetMaterialOverided(nodeDto, nodeInstance);
+                                // apply sub model overrider
+                            }
+
+                            foreach (Renderer renderer in renderers)
+                            {
+                                renderer.shadowCastingMode = nodeDto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
+                                renderer.receiveShadows = nodeDto.receiveShadow;
+                            }
+
+                            UpdateLightmapReferences(rootDto.id, renderers, o as GameObject);
+                        });
+
                     }
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(
-                        nodeDto.modelId,
-                        LoadSubModel,
-                        () => failed?.Invoke(new Umi3dException($"Model [{nodeDto.modelId}] of this sub model [{nodeDto.id}] failed to load"))
-                    );
-
+                    catch (Exception ex)
+                    {
+                        UMI3DLogger.LogError("SubModels names of " + rootDto.id + " are different from environment names. " + nodeDto.id + " not found", scope);
+                        UMI3DLogger.LogException(ex, scope);
+                    }
+                    return;
                 }
                 else
-                {
-                    failed?.Invoke(new Umi3dException("nodeDto should not be null"));
-                }
-            }, failed);
+                    throw (new Umi3dException($"Model Entity [{nodeDto.modelId}] should be a nodeInstance"));
+            }
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId);
+            LoadSubModel(e);
         }
 
         /// <summary>

@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.volumes;
@@ -64,66 +65,68 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
-            Action callback = () => { if (AnchorLoader != null) AnchorLoader.ReadUMI3DExtension(dto, node, finished, failed); else finished.Invoke(); };
+            bool loadAnchor = false;
             switch (dto)
             {
                 case EntityGroupDto e:
                     EntityGroupLoader.ReadUMI3DExtension(e);
-                    finished?.Invoke();
                     break;
                 case UMI3DAbstractAnimationDto a:
-                    UMI3DAnimationLoader.ReadUMI3DExtension(a, node, finished, failed);
+                    UMI3DAnimationLoader.ReadUMI3DExtension(a, node);
                     break;
                 case PreloadedSceneDto ps:
-                    PreloadedSceneLoader.ReadUMI3DExtension(ps, node, finished, failed);
+                    await PreloadedSceneLoader.ReadUMI3DExtension(ps, node);
                     break;
                 case InteractableDto i:
-                    UMI3DInteractableLoader.ReadUMI3DExtension(i, node, finished, failed);
+                    await UMI3DInteractableLoader.ReadUMI3DExtension(i, node);
                     break;
                 case GlobalToolDto t:
-                    UMI3DGlobalToolLoader.ReadUMI3DExtension(t, finished, failed);
-                    finished?.Invoke();
+                    await UMI3DGlobalToolLoader.ReadUMI3DExtension(t);
                     break;
                 case UMI3DMeshNodeDto m:
-                    meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await meshLoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case UMI3DLineDto m:
-                    lineLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await lineLoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case SubModelDto s:
-                    SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
+                    await SubMeshLoader.ReadUMI3DExtension(s, node);
+                    loadAnchor = true;
                     break;
                 case AbstractVolumeDescriptorDto v:
-                    UMI3DVolumeLoader.ReadUMI3DExtension(v, callback, failed);
+                    await UMI3DVolumeLoader.ReadUMI3DExtension(v);
+                    loadAnchor = true;
                     break;
                 case UIRectDto r:
-                    UILoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await UILoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case UMI3DAvatarNodeDto a:
-                    avatarLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await avatarLoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case UMI3DHandPoseDto h:
                     UMI3DHandPoseLoader.Load(h);
-                    finished?.Invoke();
                     break;
                 case UMI3DEmotesConfigDto e:
                     UMI3DEmotesConfigLoader.Load(e);
-                    finished?.Invoke();
                     break;
                 case UMI3DEmoteDto e:
                     UMI3DEmoteLoader.Load(e);
-                    finished?.Invoke();
                     break;
                 case NotificationDto n:
                     notificationLoader.Load(n);
-                    finished?.Invoke();
                     break;
                 default:
-                    nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await nodeLoader.ReadUMI3DExtension(dto, node);
                     break;
             }
+            if (loadAnchor && AnchorLoader != null)
+                await AnchorLoader.ReadUMI3DExtension(dto, node);
         }
 
         /// <summary>
@@ -339,8 +342,7 @@ namespace umi3d.cdk
                 if (loader.IsToBeIgnored(extension))
                     return null;
             }
-            UMI3DLogger.LogError("there is no compatible loader for this extention : " + extension, scope);
-            return null;
+            throw new Umi3dException("there is no compatible loader for this extention : " + extension);
         }
 
         ///<inheritdoc/>
@@ -356,80 +358,74 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void loadSkybox(ResourceDto skybox)
+        public override async void loadSkybox(ResourceDto skybox)
         {
-            FileDto fileToLoad = ChooseVariant(skybox.variants);
-            if (fileToLoad == null) return;
-            string url = fileToLoad.url;
-            string ext = fileToLoad.extension;
-            string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = SelectLoader(ext);
-            if (loader != null)
+            try
             {
-                UMI3DResourcesManager.LoadFile(
-                    UMI3DGlobalID.EnvironementId,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (o) =>
+                FileDto fileToLoad = ChooseVariant(skybox.variants);
+                if (fileToLoad == null) return;
+                string ext = fileToLoad.extension;
+                IResourcesLoader loader = SelectLoader(ext);
+                if (loader != null)
+                {
+                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                    var tex = (Texture2D)o;
+                    if (tex != null)
                     {
 
-                        var tex = (Texture2D)o;
-                        if (tex != null)
+                        Cubemap cube;
+                        Color[] imageColors;
+
+                        //prerequises: 
+                        // 1) image is in format
+                        //     +y
+                        //  -x +z +x -z
+                        //     -Y
+                        // 2) faces are cubes
+
+                        int size = tex.width / 4;
+                        cube = new Cubemap(size, TextureFormat.RGB24, false);
+
+                        //Need to invert y ? Oo
+                        var buffer = new Texture2D(tex.width, tex.height);
+                        buffer.SetPixels(tex.GetPixels());
+                        for (int x = 0; x < tex.width; x++)
                         {
-
-                            Cubemap cube;
-                            Color[] imageColors;
-
-                            //prerequises: 
-                            // 1) image is in format
-                            //     +y
-                            //  -x +z +x -z
-                            //     -Y
-                            // 2) faces are cubes
-
-                            int size = tex.width / 4;
-                            cube = new Cubemap(size, TextureFormat.RGB24, false);
-
-                            //Need to invert y ? Oo
-                            var buffer = new Texture2D(tex.width, tex.height);
-                            buffer.SetPixels(tex.GetPixels());
-                            for (int x = 0; x < tex.width; x++)
-                            {
-                                for (int y = 0; y < tex.height; y++)
-                                    tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
-                            }
-
-                            imageColors = tex.GetPixels(size, 0, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.PositiveY);
-
-                            imageColors = tex.GetPixels(0, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.NegativeX);
-
-                            imageColors = tex.GetPixels(size, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.PositiveZ);
-
-                            imageColors = tex.GetPixels(size * 2, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.PositiveX);
-
-                            imageColors = tex.GetPixels(size * 3, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.NegativeZ);
-
-                            imageColors = tex.GetPixels(size, size * 2, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.NegativeY);
-
-                            cube.Apply();
-                            skyboxMaterial.SetTexture("_Tex", cube);
-                            RenderSettings.skybox = skyboxMaterial;
+                            for (int y = 0; y < tex.height; y++)
+                                tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
                         }
-                        else
-                        {
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                        }
-                    },
-                    e => UMI3DLogger.LogException(e, scope),
-                    loader.DeleteObject
-                    );
+
+                        imageColors = tex.GetPixels(size, 0, size, size);
+                        cube.SetPixels(imageColors, CubemapFace.PositiveY);
+
+                        imageColors = tex.GetPixels(0, size, size, size);
+                        cube.SetPixels(imageColors, CubemapFace.NegativeX);
+
+                        imageColors = tex.GetPixels(size, size, size, size);
+                        cube.SetPixels(imageColors, CubemapFace.PositiveZ);
+
+                        imageColors = tex.GetPixels(size * 2, size, size, size);
+                        cube.SetPixels(imageColors, CubemapFace.PositiveX);
+
+                        imageColors = tex.GetPixels(size * 3, size, size, size);
+                        cube.SetPixels(imageColors, CubemapFace.NegativeZ);
+
+                        imageColors = tex.GetPixels(size, size * 2, size, size);
+                        cube.SetPixels(imageColors, CubemapFace.NegativeY);
+
+                        cube.Apply();
+                        skyboxMaterial.SetTexture("_Tex", cube);
+                        RenderSettings.skybox = skyboxMaterial;
+                    }
+                    else
+                    {
+                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                UMI3DLogger.LogException(e,scope);
             }
         }
 

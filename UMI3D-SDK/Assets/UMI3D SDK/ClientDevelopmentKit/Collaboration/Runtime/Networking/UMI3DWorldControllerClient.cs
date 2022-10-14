@@ -136,12 +136,12 @@ namespace umi3d.cdk.collaboration
                 return new UMI3DWorldControllerClient(redirection);
         }
 
-        public async Task<UMI3DEnvironmentClient> ConnectToEnvironment()
+        public async Task<UMI3DEnvironmentClient> ConnectToEnvironment(MultiProgress progress)
         {
             if (environment != null)
                 await environment.Logout(false);
 
-            environment = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this);
+            environment = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this, progress);
             if (environment.Connect())
                 return environment;
             else

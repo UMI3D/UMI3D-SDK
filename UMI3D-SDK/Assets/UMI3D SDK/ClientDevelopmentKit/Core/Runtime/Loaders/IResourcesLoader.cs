@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using System.Threading.Tasks;
 
 namespace umi3d.cdk
 {
@@ -42,7 +42,7 @@ namespace umi3d.cdk
         /// <param name="authorization">authorization string use when file isn't local.</param>
         /// <param name="callback">Function to call when loading is done.</param>
         /// <param name="failCallback">Funtion to call when loading fail.</param>
-        void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectIsInBundle = "");
+        Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectIsInBundle = "");
 
         /// <summary>
         /// convert functio. Should test if the loaded object is an object or a bundle of objects, then return the object at pathIfObjectInBundle  
@@ -50,7 +50,7 @@ namespace umi3d.cdk
         /// <param name="objectLoaded">Object loaded by UrlToObject(), it could be a simple object or a bundle of objects.</param>
         /// <param name="callback">Function to call when loading is done.</param>
         /// <param name="pathIfObjectInBundle">Path or identifier of the object to load in the bundle, equal "" if objectLoaded is not a bundle</param>
-        void ObjectFromCache(object objectLoaded, Action<object> callback, string pathIfObjectInBundle);
+        Task<object> ObjectFromCache(object objectLoaded, string pathIfObjectInBundle);
 
         /// <summary>
         /// Function to delete un object loaded by this loader

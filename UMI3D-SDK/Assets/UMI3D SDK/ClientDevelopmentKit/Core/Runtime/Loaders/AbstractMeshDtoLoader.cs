@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -47,7 +48,7 @@ namespace umi3d.cdk
         }
 
         /// <see cref="IResourcesLoader.UrlToObject"/>
-        public abstract void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "");
+        public abstract Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectIsInBundle = "");
 
         /// <summary>
         /// Return the object itself because its not in a bundle.
@@ -56,9 +57,9 @@ namespace umi3d.cdk
         /// <param name="callback"></param>
         /// <param name="pathIfObjectInBundle"></param>
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
+        public virtual async Task<object> ObjectFromCache(object objectLoaded, string pathIfObjectInBundle)
         {
-            callback.Invoke(o);
+            return objectLoaded;
         }
 
         /// <summary>

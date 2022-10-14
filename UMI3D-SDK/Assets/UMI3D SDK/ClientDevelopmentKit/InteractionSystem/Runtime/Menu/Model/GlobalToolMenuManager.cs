@@ -161,6 +161,17 @@ namespace umi3d.cdk.interaction
             }
         }
 
+
+        static async void LoadTExture(Texture2D icon2DTex, AbstractInteractionDto interactionDto)
+        {
+            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(interactionDto.icon2D.variants);
+            if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
+            {
+                var rawData = await UMI3DResourcesManager.GetFile(icon2DFile.url);
+                icon2DTex.LoadRawTextureData(rawData);
+            }
+        }
+
         /// <summary>
         /// Retrieve the adequate <see cref="MenuItem"/> for a given interaction that belongs to a tool.
         /// </summary>
@@ -172,15 +183,7 @@ namespace umi3d.cdk.interaction
         public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong toolId)
         {
             var icon2DTex = new Texture2D(0, 0);
-            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(interactionDto.icon2D.variants);
-            if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
-            {
-                UMI3DResourcesManager.GetFile(
-                    icon2DFile.url,
-                    rawData => icon2DTex.LoadRawTextureData(rawData),
-                    e => UMI3DLogger.LogError(e, DebugScope.Interaction));
-            }
-
+            LoadTExture(icon2DTex, interactionDto);
 
             if (interactionDto is EventDto evt)
             {

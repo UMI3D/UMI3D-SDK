@@ -88,40 +88,52 @@ namespace umi3d.cdk
 
     public class Umi3dException : Exception
     {
-        private readonly string stack = null;
-
-        public override string StackTrace => stack ?? base.StackTrace;
-
-        public Umi3dException(long errorCode, string message) : base(message)
-        {
-            this.errorCode = errorCode;
-        }
 
         public Umi3dException(string message) : base(message)
         {
-            this.errorCode = 0;
+
+        }
+    }
+
+    public class Umi3dNetworkingException : Umi3dException
+    {
+        public Umi3dNetworkingException(UnityWebRequest webRequest, string message) : base(message)
+        {
+            this.errorCode = webRequest?.responseCode ?? 0;
+            this.errorMessage = webRequest?.error ?? "Web request is null";
+            this.url = webRequest?.url ?? "";
         }
 
-        public Umi3dException(Exception exception, string message) : base(message + "\n" + exception.Message)
+        public Umi3dNetworkingException(long errorCode, string errorMessage, string url, string message) : base(message)
         {
-            this.exception = exception;
-            this.errorCode = 0;
-            this.stack = exception.StackTrace;
-        }
-
-        public Umi3dException(Exception exception) : base(exception.Message)
-        {
-            this.exception = exception;
-            this.errorCode = 0;
-            this.stack = exception.StackTrace;
+            this.errorCode = errorCode;
+            this.errorMessage = errorMessage;
+            this.url = url;
         }
 
         public long errorCode { get; protected set; }
-        public readonly Exception exception;
+        public string errorMessage { get; protected set; }
+        public string url { get; protected set; }
 
         public override string ToString()
         {
-            return $"code : {errorCode} | {base.ToString()} : [  {exception?.StackTrace ?? base.StackTrace} ]";
+            return $"Networking Error : Error code : {errorCode} | Error Message : {errorMessage} | Error Message : {url} | [ {base.ToString()} ]";
         }
+
     }
+    public class Umi3dLoadingException : Umi3dException
+    {
+
+        public Umi3dLoadingException(string message) : base(message)
+        {
+        }
+
+
+        public override string ToString()
+        {
+            return $" Loading Error [ {base.ToString()} ]";
+        }
+
+    }
+
 }

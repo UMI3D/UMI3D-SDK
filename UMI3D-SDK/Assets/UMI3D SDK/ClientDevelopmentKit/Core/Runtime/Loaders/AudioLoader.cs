@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -52,21 +53,16 @@ namespace umi3d.cdk
         }
 
         /// <see cref="IResourcesLoader.UrlToObject"/>
-        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+        public virtual async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
             if (!url.Contains("http")) url = "file://" + url;
 #endif
             UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, GetType(extension));
             SetCertificate(www, authorization);
-            UMI3DResourcesManager.DownloadObject(www,
-                () =>
-                {
-                    AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
-                    callback.Invoke(audioClip);
-                },
-                s => failCallback.Invoke(s)
-            );
+            await UMI3DResourcesManager.DownloadObject(www);
+            AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+            return (audioClip);
         }
 
         private static AudioType GetType(string extension)
@@ -91,9 +87,9 @@ namespace umi3d.cdk
 
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
+        public virtual async Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
         {
-            callback.Invoke(o);
+            return o;
         }
 
         /// <summary>

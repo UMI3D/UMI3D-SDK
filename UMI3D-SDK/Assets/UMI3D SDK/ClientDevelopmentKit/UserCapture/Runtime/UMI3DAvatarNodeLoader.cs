@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -36,25 +37,23 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException("dto should be an UMI3DAbstractNodeDto"));
-                return;
+                throw (new Umi3dException("dto should be an UMI3DAbstractNodeDto"));
             }
-            base.ReadUMI3DExtension(dto, node, () =>
-            {
-                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetUserId()))
-                {
-                    UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
-                    ua.Set(dto as UMI3DAvatarNodeDto);
-                    UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
-                }
 
-                finished.Invoke();
-            }, (s) => failed.Invoke(s));
+            await base.ReadUMI3DExtension(dto, node);
+
+            if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetUserId()))
+            {
+                UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
+                ua.Set(dto as UMI3DAvatarNodeDto);
+                UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+            }
+
         }
 
         /// <summary>
