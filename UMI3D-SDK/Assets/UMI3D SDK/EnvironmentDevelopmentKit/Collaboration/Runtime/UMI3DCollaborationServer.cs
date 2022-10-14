@@ -53,8 +53,6 @@ namespace umi3d.edk.collaboration
 
         public static murmur.MumbleManager MumbleManager => Exists ? Instance.mumbleManager : null;
 
-        public static bool NeedToWaitForCallBackAtUserJoin = false;
-
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
@@ -289,16 +287,11 @@ namespace umi3d.edk.collaboration
         {
             user.hasJoined = true;
             Collaboration.UserJoin(user);
-            bool finished = !NeedToWaitForCallBackAtUserJoin;
             MainThreadManager.Run(async () =>
             {
                 UMI3DLogger.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>", scope);
                 await Instance.NotifyUserJoin(user);
-                finished = true;
             });
-
-            while (!finished)
-                await UMI3DAsyncManager.Yield();
         }
 
         /// <summary>
