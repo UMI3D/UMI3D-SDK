@@ -241,9 +241,14 @@ namespace umi3d.cdk
             MeshCollider meshCollider = node.gameObject?.AddComponent<MeshCollider>();
             node.colliders.Add(meshCollider);
             UpdateModelCollider(node, line, meshCollider);
+
+            if (line.useWorldSpace)
+            {
+                UMI3DLogger.LogWarning("Collider is not supported for now with LineRendere.useWorldSpace", DebugScope.CDK);
+            }
         }
 
-        private void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
+        private async void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
         {
             if (nodeInstance == null || line == null || nodeInstance.gameObject == null) return;
             if (meshCollider == null)
@@ -251,7 +256,14 @@ namespace umi3d.cdk
             if (meshCollider == null) return;
 
             Mesh mesh = new Mesh();
+            mesh.name = "line-renderer-mesh";
+
+            await UMI3DAsyncManager.Yield();
+
             line.BakeMesh(mesh, true);
+
+            await UMI3DAsyncManager.Yield();
+
             if (AtLeast3DistinctVertice(mesh))
                 meshCollider.sharedMesh = mesh;
         }
