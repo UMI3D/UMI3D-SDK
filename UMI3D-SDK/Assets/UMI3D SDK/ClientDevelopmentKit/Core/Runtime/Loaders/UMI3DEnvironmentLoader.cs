@@ -352,7 +352,6 @@ namespace umi3d.cdk
 
             endProgress.AddComplete();
             await UMI3DAsyncManager.Delay(200);
-            isEnvironmentLoaded = true;
 
             endProgress.AddComplete();
             if (UMI3DVideoPlayerLoader.HasVideoToLoad)
@@ -362,7 +361,10 @@ namespace umi3d.cdk
 
             await UMI3DAsyncManager.Delay(100);
             endProgress.AddComplete();
+
+            isEnvironmentLoaded = true;
             onEnvironmentLoaded.Invoke();
+
             await UMI3DAsyncManager.Yield();
             endProgress.AddComplete();
         }
