@@ -210,7 +210,7 @@ namespace umi3d.edk
             objectIsStatic.OnValueChanged += (bool s) => isStatic = s;
             objectActive.OnValueChanged += (bool a) => active = a;
 
-            objectParentId = new UMI3DAsyncProperty<UMI3DAbstractNode>(objectId, UMI3DPropertyKeys.ParentId, Parent, (UMI3DAbstractNode node, UMI3DUser user) => node.Id());
+            objectParentId = new UMI3DAsyncProperty<UMI3DAbstractNode>(objectId, UMI3DPropertyKeys.ParentId, Parent, (UMI3DAbstractNode node, UMI3DUser user) => node?.Id());
             objectParentId.OnValueChanged += (UMI3DAbstractNode node) => { if (transform.parent != node?.transform) transform.SetParent(node?.transform); };
 
             var PropertyEquality = new UMI3DAsyncPropertyEquality
@@ -232,7 +232,7 @@ namespace umi3d.edk
             objectImmersiveOnly.OnValueChanged += (bool b) => immersiveOnly = b;
 
             objectAnchor = new UMI3DAsyncProperty<UMI3DAnchorDto>(objectId, UMI3DPropertyKeys.Anchor, UMI3DAnchor?.ToDto());
-            objectAnchor.OnValueChanged += (UMI3DAnchorDto a) => { UMI3DAnchor.PositionOffset = a.positionOffset; UMI3DAnchor.RotationOffset = a.rotationOffset; UMI3DAnchor.ScaleOffset = a.scaleOffset; };
+            objectAnchor.OnValueChanged += (UMI3DAnchorDto a) => { UMI3DAnchor.PositionOffset = a?.positionOffset; UMI3DAnchor.RotationOffset = a?.rotationOffset; UMI3DAnchor.ScaleOffset = a?.scaleOffset; };
 
             inited = true;
         }

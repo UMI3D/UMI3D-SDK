@@ -58,7 +58,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The user token
         /// </summary>
-        public string token => identityDto?.localToken;
+        public string token => identityDto.localToken;
 
         public UMI3DForgeServer forgeServer;
 

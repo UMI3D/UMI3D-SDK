@@ -186,8 +186,14 @@ namespace umi3d.edk.userCapture
             var avatarNodeDto = dto as UMI3DAvatarNodeDto;
 
             avatarNodeDto.userId = userId;
-            avatarNodeDto.userSize = UMI3DEmbodimentManager.Instance.embodimentSize[userId];
             avatarNodeDto.activeBindings = activeBindings.GetValue(user);
+
+            if (UMI3DEmbodimentManager.Instance.embodimentSize.ContainsKey(userId))
+                avatarNodeDto.userSize = UMI3DEmbodimentManager.Instance.embodimentSize[userId];
+            else
+            {
+                UMI3DLogger.LogError("EmbodimentSize does not contain key " + user.Id(), DebugScope.EDK);
+            }
 
             var bindingDtoList = new List<BoneBindingDto>();
 
