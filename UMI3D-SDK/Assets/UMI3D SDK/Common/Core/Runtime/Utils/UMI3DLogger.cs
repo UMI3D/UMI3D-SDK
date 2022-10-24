@@ -70,6 +70,9 @@ namespace umi3d.common
         Other = 1 << 28
     }
 
+    /// <summary>
+    /// Helper class to use to log error related to UMI3D.
+    /// </summary>
     public class UMI3DLogger : inetum.unityUtils.PersistentSingleBehaviour<UMI3DLogger>
     {
         #region logging
@@ -78,6 +81,9 @@ namespace umi3d.common
         [SerializeField]
         private DebugLevel _logLevel = DebugLevel.Default | DebugLevel.Warning | DebugLevel.Error;
 
+        /// <summary>
+        /// Path where the logs are written.
+        /// </summary>
         public static string LogPath
         {
             get => Exists ? Instance.logPath : null;
@@ -92,8 +98,16 @@ namespace umi3d.common
                 }
             }
         }
+
+        /// <summary>
+        /// Path where the logs are written.
+        /// </summary>
         [SerializeField]
         private string logPath;
+
+        /// <summary>
+        /// If true, logging is allowed.
+        /// </summary>
         public static bool ShouldLog
         {
             get => Exists && Instance.log;
@@ -137,6 +151,11 @@ namespace umi3d.common
                     Debug.Log(o);
         }
 
+        /// <summary>
+        /// Debug log raising a Warning.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="scope"></param>
         public static void LogWarning(object o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Warning) && validScope(scope))
@@ -146,6 +165,11 @@ namespace umi3d.common
                     Debug.LogWarning(o);
         }
 
+        /// <summary>
+        /// Debug log raising an Error.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="scope"></param>
         public static void LogError(object o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
@@ -155,6 +179,11 @@ namespace umi3d.common
                     Debug.LogError(o);
         }
 
+        /// <summary>
+        /// Debug log related to an Exception.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="scope"></param>
         public static void LogException(Exception o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
