@@ -270,10 +270,11 @@ namespace umi3d.edk.userCapture
 
                 Destroy(embd.transform.gameObject);
 
-                if (embodimentInstances.ContainsKey(user.Id()))
+                if (user?.Id() != null)
+                {
                     embodimentInstances.Remove(user.Id());
-                if (embodimentSize.ContainsKey(user.Id()))
                     embodimentSize.Remove(user.Id());
+                }
             }
         }
 
