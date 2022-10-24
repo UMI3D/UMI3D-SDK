@@ -39,7 +39,7 @@ namespace umi3d.common
         /// </summary>
         public string content;
         /// <summary>
-        /// Answer to the notification as a string array.
+        /// Answers to the notification as a string array.
         /// </summary>
         public string[] callback;
         /// <summary>

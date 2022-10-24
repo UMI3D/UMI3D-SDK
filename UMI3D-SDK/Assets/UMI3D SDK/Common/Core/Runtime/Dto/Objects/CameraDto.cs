@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Describes a camera projection.
+    /// DTO that describes a camera projection.
     /// </summary>
     [System.Serializable]
     public class CameraDto : UMI3DNodeDto

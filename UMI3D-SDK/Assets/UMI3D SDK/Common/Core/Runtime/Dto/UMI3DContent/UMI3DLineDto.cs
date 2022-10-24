@@ -18,6 +18,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe a rendered line.
+    /// </summary>
     [System.Serializable]
     public class UMI3DLineDto : UMI3DRenderedNodeDto
     {
@@ -52,7 +55,7 @@ namespace umi3d.common
         public float endWidth = 0.01f;
 
         /// <summary>
-        /// The positions of points
+        /// The positions of points on the line
         /// </summary>
         public List<SerializableVector3> positions = new List<SerializableVector3>();
     }

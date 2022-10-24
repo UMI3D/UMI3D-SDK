@@ -18,9 +18,15 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe a scene as the scene root in the glTF 2.0 standard.
+    /// </summary>
     [System.Serializable]
     public class GlTFSceneDto : UMI3DDto, IEntity
     {
+        /// <summary>
+        /// Name describing the scene.
+        /// </summary>
         public string name;
         public List<GlTFNodeDto> nodes = new List<GlTFNodeDto>();
         public List<GlTFMaterialDto> materials = new List<GlTFMaterialDto>();

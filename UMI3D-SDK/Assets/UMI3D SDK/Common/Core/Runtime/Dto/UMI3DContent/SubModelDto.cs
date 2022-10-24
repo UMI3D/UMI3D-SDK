@@ -19,8 +19,9 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     /// <summary>
-    /// Model Dto.
+    /// DTO describing a sub-model, a model that is dependend from another model. 
     /// </summary>
+    /// E.g. a submodel could be a plank on a shelf.
     [System.Serializable]
     public class SubModelDto : UMI3DRenderedNodeDto
     {

@@ -18,6 +18,12 @@ using System;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Abstract base template for glTF extensions. 
+    /// </summary>
+    /// <typeparam name="UMI3D_EXT"></typeparam>
+    /// For further insight on glTF extensions, 
+    /// see <a href="https://github.com/KhronosGroup/glTF/blob/main/extensions/README.md#about-gltf-extensions"/>.
     [Serializable]
     public abstract class AbstractGlTFExtensions<UMI3D_EXT>
     {

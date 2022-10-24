@@ -16,10 +16,20 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an nimation using an animator to animate objects.
+    /// </summary>
     [System.Serializable]
     public class UMI3DAnimatorAnimationDto : UMI3DAbstractAnimationDto
     {
+        /// <summary>
+        /// Node where the animator can be found on.
+        /// </summary>
         public ulong nodeId = 0;
+
+        /// <summary>
+        /// Animation state's name in the animator controller.
+        /// </summary>
         public string stateName = "";
     }
 }

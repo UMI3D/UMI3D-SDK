@@ -16,22 +16,85 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a textual component for UI.
+    /// </summary>
+    /// For Unity, see <see cref="UnityEngine.UI.Text"/>.
     [System.Serializable]
     public class UITextDto : UIRectDto
     {
+        /// <summary>
+        /// Text anchor alignment relatively to the boxing rectangle.
+        /// </summary>
         public TextAnchorType alignment;
+
+        /// <summary>
+        /// Should the horizontal aligment be computed using glyph geometery instead of glyph metrics? 
+        /// </summary>
         public bool alignByGeometry;
+
+        /// <summary>
+        /// Text main color.
+        /// </summary>
         public SerializableColor color;
+
+        /// <summary>
+        /// Name of the font used.
+        /// </summary>
         public string font;
+
+        /// <summary>
+        /// Size of the font.
+        /// </summary>
+        /// Beware to have a size that fits in the boxing rectangle.
         public int fontSize;
+
+        /// <summary>
+        /// Font style (bold, italic, ...).
+        /// </summary>
         public FontStyleType fontStyle;
+
+        /// <summary>
+        /// The way to handle the overflow when the text is horizontally too long.
+        /// </summary>
         public HorizontalWrapType horizontalOverflow;
+
+        /// <summary>
+        /// Space between two lines, expressed as a factor of the font size.
+        /// </summary>
+        /// When set to 1, it is normal line spacing.
         public float lineSpacing;
+
+        /// <summary>
+        /// Should the text be resized to fit better when required?
+        /// </summary>
         public bool resizeTextForBestFit;
+
+        /// <summary>
+        /// Maximal size when resizing the text.
+        /// </summary>
+        /// A value of 1 indicates that the text could be infinitly large.
         public int resizeTextMaxSize;
+
+        /// <summary>
+        ///  Minimum size when resizing the text
+        /// </summary>
         public int resizeTextMinSize;
+
+        /// <summary>
+        /// Does the text supports Rich Text?
+        /// </summary>
+        /// Rich text handles several markups (bold, italic, color...).
         public bool supportRichText;
+
+        /// <summary>
+        /// Textual content to display.
+        /// </summary>
         public string text;
+
+        /// <summary>
+        /// The way to handle the overflow when the text is vertically too long.
+        /// </summary>
         public VerticalWrapType verticalOverflow;
 
 

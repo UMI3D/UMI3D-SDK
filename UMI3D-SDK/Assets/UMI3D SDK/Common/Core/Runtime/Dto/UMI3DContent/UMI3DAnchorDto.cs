@@ -16,11 +16,25 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to transfer anchors. Anchors are the link between an object and a position in the real world used in AR.
+    /// </summary>
     [System.Serializable]
     public class UMI3DAnchorDto : UMI3DDto
     {
+        /// <summary>
+        /// Anchor's offset relatively to the parent position.
+        /// </summary>
         public SerializableVector3 positionOffset = null;
+
+        /// <summary>
+        /// Anchor's offset relatively to the parent rotation.
+        /// </summary>
         public SerializableVector4 rotationOffset = null;
+
+        /// <summary>
+        /// Anchor's offset relatively to the parent scale.
+        /// </summary>
         public SerializableVector3 scaleOffset = null;
 
         public UMI3DAnchorDto() : base() { }

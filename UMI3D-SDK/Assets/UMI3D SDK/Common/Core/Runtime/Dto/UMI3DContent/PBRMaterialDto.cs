@@ -16,11 +16,28 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO for Physics-Based Rendering (PBR) material 
+    /// </summary>
     [System.Serializable]
     public class PBRMaterialDto
     {
+        /// <summary>
+        /// Base color of the material, define the diffuse albedo for non-metals, and the specular color for metals.
+        /// </summary>
+        /// Default is white.
         public SerializableColor baseColorFactor;
+
+        /// <summary>
+        /// Metallic behaviour of the surface. 
+        /// </summary>
+        /// Usually either 0 for non-metallic surfaces or 1 for totally metallic ones. A value between 0 and 1 will result in an interpolated behaviour.
         public float metallicFactor;
+
+        /// <summary>
+        /// Roughness of the surface.
+        /// </summary>
+        /// Rougher surfaces tends to have more blurried reflections.
         public float roughnessFactor;
 
     }

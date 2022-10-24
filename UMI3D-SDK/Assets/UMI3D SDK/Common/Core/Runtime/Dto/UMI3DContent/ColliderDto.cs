@@ -18,11 +18,12 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a collider.
+    /// </summary>
     [System.Serializable]
     public class ColliderDto : UMI3DDto
     {
-
-
         /// <summary>
         /// Type of the collider generated in front end.
         /// </summary>
