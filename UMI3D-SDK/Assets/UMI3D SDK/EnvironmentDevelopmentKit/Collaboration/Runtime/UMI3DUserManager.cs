@@ -193,9 +193,13 @@ namespace umi3d.edk.collaboration
 
             if (!notifiedByUser)
             {
-                lostUsers.Add(user.Id(), user);
+                if (!lostUsers.ContainsKey(user.Id()))
+                    lostUsers.Add(user.Id(), user);
+                else
+                    UMI3DLogger.LogError($"Lost users already contains a key with {user.Id()}", scope);
+
                 await UMI3DAsyncManager.Delay(600000); // wait 10 min for reco
-                if (user.status != StatusType.NONE)
+                if (user.status == StatusType.NONE)
                 {
                     lostUsers.Remove(user.Id());
                     UMI3DCollaborationServer.Instance.NotifyUnregistered(user);

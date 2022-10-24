@@ -382,8 +382,6 @@ namespace umi3d.edk.collaboration.murmur
                 string info = await murmur.GetServerInfo(id);
                 data = Convert<ServerData>(info);
 
-                UMI3DLogger.Log(info, scope);
-
                 Channels.Where(c => !data.sub_channels.Any(d => d.c.id == c.data.id)).ToList().ForEach(c => Channels.Remove(c));
 
                 IEnumerable<SubChannelData> toAdd = data.sub_channels.Where(d => !Channels.Any(c => d.c.id == c.data.id));

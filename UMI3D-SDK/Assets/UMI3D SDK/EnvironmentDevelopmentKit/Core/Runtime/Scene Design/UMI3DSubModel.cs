@@ -62,11 +62,7 @@ namespace umi3d.edk
             base.InitDefinition(id);
 
             objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.IgnoreModelMaterialOverride, ignoreModelMaterialOverride);
-
         }
-
-
-
 
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not

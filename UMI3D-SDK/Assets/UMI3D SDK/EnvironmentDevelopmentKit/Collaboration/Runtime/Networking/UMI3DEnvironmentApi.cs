@@ -74,7 +74,7 @@ namespace umi3d.edk.collaboration
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
         [HttpPost(UMI3DNetworkingKeys.register, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
-        public void Register(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        public async void Register(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DLogger.Log($"Register", scope);
             HttpListenerResponse res = e.Response;
@@ -92,7 +92,7 @@ namespace umi3d.edk.collaboration
                 dto = UMI3DDto.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
             }
 
-            Task.WaitAll(UMI3DCollaborationServer.Instance.Register(dto));
+            await UMI3DCollaborationServer.Instance.Register(dto);
         }
 
         /// <summary>
@@ -107,12 +107,21 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Update Status {user?.Id()}", scope);
             bool finished = false;
+
             ReadDto(e.Request,
                 (dto) =>
                 {
-                    var status = dto as StatusDto;
-                    UMI3DLogger.Log($"Update Status {user?.Id()} {status}", scope);
-                    UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, status));
+                    try
+                    {
+                        var status = dto as StatusDto;
+                        UMI3DLogger.Log($"Update Status {user?.Id()} {status}", scope);
+                        UnityMainThreadDispatcher.Instance().Enqueue(_updateStatus(user, status));
+                    }
+                    catch (Exception ex)
+                    {
+                        UMI3DLogger.LogException(ex, scope);
+                    }
+
                     finished = true;
                 });
             while (!finished) System.Threading.Thread.Sleep(1);
@@ -138,8 +147,16 @@ namespace umi3d.edk.collaboration
             bool finished = false;
             ReadDto(e.Request, (dto) =>
             {
-                var anw = dto as UserConnectionAnswerDto;
-                UnityMainThreadDispatcher.Instance().Enqueue(_updateConnectionInformation(user, anw));
+                try
+                {
+                    var anw = dto as UserConnectionAnswerDto;
+                    UnityMainThreadDispatcher.Instance().Enqueue(_updateConnectionInformation(user, anw));
+                }
+                catch (Exception ex)
+                {
+                    UMI3DLogger.LogException(ex, scope);
+                }
+
                 finished = true;
             });
             while (!finished) System.Threading.Thread.Sleep(1);
@@ -402,7 +419,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                while(!user.IsReadyToGetResources)
+                while (!user.IsReadyToGetResources)
                     System.Threading.Thread.Sleep(1);
                 GlTFEnvironmentDto result = null;
                 bool finished = false;
@@ -415,6 +432,7 @@ namespace umi3d.edk.collaboration
                 while (!finished) System.Threading.Thread.Sleep(1);
                 e.Response.WriteContent(result.ToBson());
             }
+            UMI3DLogger.Log($"End Get Environment {user?.Id()}", scope);
         }
 
         private IEnumerator _GetEnvironment(UMI3DEnvironment environment, UMI3DUser user, Action<GlTFEnvironmentDto> callback, Action error)
@@ -422,7 +440,6 @@ namespace umi3d.edk.collaboration
             callback.Invoke(environment.ToDto(user));
             yield return null;
         }
-
 
         /// <summary>
         /// POST "/environment/join"
@@ -437,15 +454,30 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Join environment {user?.Id()}", scope);
             bool finished = false;
-            ReadDto(e.Request, async (dto) =>
+
+            ReadDto(e.Request, (dto) =>
             {
-                var join = dto as JoinDto;
-                UMI3DEmbodimentManager.Instance.JoinDtoReception(user.Id(), join.userSize, join.trackedBonetypes);
-                e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
-                await UMI3DCollaborationServer.NotifyUserJoin(user);
-                finished = true;
+                UnityMainThreadDispatcher.Instance().Enqueue(async () =>
+                {
+                    try
+                    {
+                        var join = dto as JoinDto;
+
+                        await UMI3DEmbodimentManager.Instance.JoinDtoReception(user, join.userSize, join.trackedBonetypes);
+                        e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
+                        await UMI3DCollaborationServer.NotifyUserJoin(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        UMI3DLogger.LogException(ex, scope);
+                    }
+
+                    finished = true;
+                });
             });
             while (!finished) System.Threading.Thread.Sleep(1);
+
+            UMI3DLogger.Log($"End Join environment {user?.Id()}", scope);
         }
 
         /// <summary>
@@ -521,12 +553,11 @@ namespace umi3d.edk.collaboration
                     {
                         try
                         {
-                            IEntity dto = e.Item2?.ToEntityDto(user);
                             return e.Item2?.ToEntityDto(user) ?? new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
                         catch (Exception ex)
                         {
-                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] {ex}", scope);
+                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] Type : {e.Item2?.GetType()} {ex}", scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
                     }).ToList(),
