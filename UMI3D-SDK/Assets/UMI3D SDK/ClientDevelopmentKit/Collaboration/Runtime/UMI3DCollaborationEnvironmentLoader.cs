@@ -43,7 +43,7 @@ namespace umi3d.cdk.collaboration
             return UserList.FirstOrDefault(u => u.id == dto.id);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
         {
             base.ReadUMI3DExtension(_dto, node);
@@ -87,7 +87,7 @@ namespace umi3d.cdk.collaboration
         }
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base._SetUMI3DProperty(entity, property)) return true;

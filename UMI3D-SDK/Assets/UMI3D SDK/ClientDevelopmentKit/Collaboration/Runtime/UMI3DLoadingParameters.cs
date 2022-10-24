@@ -264,7 +264,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {
             UMI3DLocalAssetDirectory res = null;
@@ -302,7 +302,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override FileDto ChooseVariant(List<FileDto> files)
         {
             FileDto res = null;
@@ -329,7 +329,7 @@ namespace umi3d.cdk
             return res;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IResourcesLoader SelectLoader(string extension)
         {
             foreach (IResourcesLoader loader in ResourcesLoaders)
@@ -343,7 +343,7 @@ namespace umi3d.cdk
             return null;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
         {
             foreach (AbstractUMI3DMaterialLoader loader in MaterialLoaders)
@@ -355,7 +355,7 @@ namespace umi3d.cdk
             return null;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void loadSkybox(ResourceDto skybox)
         {
             FileDto fileToLoad = ChooseVariant(skybox.variants);
@@ -433,7 +433,7 @@ namespace umi3d.cdk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void UnknownOperationHandler(AbstractOperationDto operation, Action performed)
         {
             switch (operation)

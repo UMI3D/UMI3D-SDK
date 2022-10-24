@@ -37,7 +37,7 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnReconnect.AddListener(() => embodimentDict.Clear());
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override IEnumerator DispatchTracking()
         {
             while (sendTracking)
@@ -61,7 +61,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override IEnumerator DispatchCamera()
         {
             yield return new WaitUntil(() => UMI3DCollaborationClientServer.Connected());

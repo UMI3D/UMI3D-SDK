@@ -522,14 +522,14 @@ namespace umi3d.cdk.collaboration
             ForgeClient?.SendVOIP(length, sample);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
         {
             //UMI3DLogger.Log($"GetFile {url}", scope);
             return await HttpClient.SendGetPrivate(url, useParameterInsteadOfHeader);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public async Task<LoadEntityDto> GetEntity(List<ulong> ids)
         {
             //UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);

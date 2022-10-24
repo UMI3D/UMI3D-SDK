@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Abstract class for animation class.
+    /// Abstract class for all components that could be played.
     /// </summary>
     public abstract class UMI3DAbstractAnimation
     {
@@ -158,6 +158,9 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <summary>
+        /// DTO of the animation object.
+        /// </summary>
         protected UMI3DAbstractAnimationDto dto { get; set; }
 
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
@@ -197,25 +200,45 @@ namespace umi3d.cdk
             Start(time);
         }
 
+        /// <summary>
+        /// Remove the animation from the environment.
+        /// </summary>
         public void Destroy()
         {
             UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
         }
 
+        /// <summary>
+        /// Get the current progress of the animation between 0 (start) and 1 (end).
+        /// </summary>
+        /// <returns></returns>
         public abstract float GetProgress();
 
+        /// <summary>
+        /// Set the current progress of the animation between 0 (start) and 1 (end).
+        /// </summary>
+        /// <returns></returns>
         public abstract void SetProgress(long frame);
 
+        /// <summary>
+        /// Play the animation.
+        /// </summary>
         public abstract void Start();
 
         /// <summary>
-        /// Starts animation at <paramref name="atTime"/>.
+        /// Play animation starting from <paramref name="atTime"/>, a value between 0 and 1.
         /// </summary>
         /// <param name="atTime">Time in ms</param>
         public abstract void Start(float atTime);
 
+        /// <summary>
+        /// Interrupt the animation.
+        /// </summary>
         public abstract void Stop();
 
+        /// <summary>
+        /// Performed at the end of the animation.
+        /// </summary>
         public virtual void OnEnd()
         {
             if (dto.looping)
