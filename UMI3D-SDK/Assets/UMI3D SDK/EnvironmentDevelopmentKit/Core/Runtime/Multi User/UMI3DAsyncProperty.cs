@@ -84,9 +84,10 @@ namespace umi3d.edk
     }
 
     /// <summary>
-    /// Define an object property that could have a different value depending on the UMI3DUser.
+    /// Define an object property that could be edited and have a different value depending on the <see cref="UMI3DUser"/>.
     /// </summary>
     /// <typeparam name="T">The type of the property value.</typeparam>
+    /// AsyncProperties require to be manually updated when their value change.
     public class UMI3DAsyncProperty<T> : UMI3DAsyncProperty
     {
         /// <summary>

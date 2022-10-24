@@ -25,10 +25,13 @@ namespace umi3d.edk
     /// </summary>
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Node where the animator can be found on.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Node where the animator can be found on.")]
         private UMI3DNode node = null;
         /// <summary>
-        /// Current state's name in the animator controller.
+        /// Aniumation state's name in the animator controller.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller.")]
         private string stateName = "";

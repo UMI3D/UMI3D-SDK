@@ -21,7 +21,7 @@ namespace umi3d.edk
     /// <summary>
     /// Request from the server to get a locally stored data on a browser.
     /// </summary>
-    /// It is similar to get a cokie o a traditional browser.
+    /// It is similar to get a cookie on a traditional browser.
     public class GetLocalInfoRequest : DispatchableRequest
     {
         /// <summary>

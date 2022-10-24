@@ -46,7 +46,7 @@ namespace umi3d.edk
                  "Press the 'Now' button designed to that purpose.")]
         public SerializableDateTime date;
         /// <summary>
-        /// Variants of the library.
+        /// Directories where a stored all the variants of the library.
         /// </summary>
         /// A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.
         [SerializeField]
