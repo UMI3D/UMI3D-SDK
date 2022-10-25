@@ -209,9 +209,9 @@ namespace umi3d.common
 
         protected virtual bool _validFlag(DebugScope scope) { return (scope & LogScope) != 0; }
         protected virtual bool _validLevel(DebugLevel level) { return (level & LogLevel) != 0; }
-#endregion
+        #endregion
 
-#region DebugInfo
+        #region DebugInfo
 
         private readonly Dictionary<ILoggable, List<DebugInfo>> Loggables = new Dictionary<ILoggable, List<DebugInfo>>();
 
@@ -343,7 +343,7 @@ namespace umi3d.common
             infoWritter?.Stop();
             logWritter?.Stop();
         }
-#endregion
+        #endregion
     }
 
 

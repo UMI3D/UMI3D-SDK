@@ -317,7 +317,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public async Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress)
         {
-            Progress downloadingProgress = new Progress(0,"Downloading");
+            Progress downloadingProgress = new Progress(0, "Downloading");
             Progress ReadingDataProgress = new Progress(2, "Reading Data");
             MultiProgress loadingProgress = new MultiProgress("Loading");
             Progress endProgress = new Progress(5, "Cleaning the room");
@@ -355,12 +355,18 @@ namespace umi3d.cdk
 
             endProgress.AddComplete();
             if (UMI3DVideoPlayerLoader.HasVideoToLoad)
+            {
+                endProgress.SetStatus("Loading videos");
+                Debug.Log("wait for video");
                 await UMI3DVideoPlayerLoader.LoadVideoPlayers();
+                Debug.Log("wait for video end");
+            }
             endProgress.AddComplete();
-            RenderProbes();
 
-            await UMI3DAsyncManager.Delay(100);
+            endProgress.SetStatus("Rendering Probes");
+            await RenderProbes();
             endProgress.AddComplete();
+            await UMI3DAsyncManager.Yield();
 
             isEnvironmentLoaded = true;
             onEnvironmentLoaded.Invoke();
@@ -373,8 +379,10 @@ namespace umi3d.cdk
         /// Renders all <see cref="ReflectionProbe"/> set to <see cref=" ReflectionProbeMode.Realtime"/> 
         /// and <see cref="ReflectionProbeRefreshMode.OnAwake"/> of the environment.
         /// </summary>
-        private void RenderProbes()
+        private async Task RenderProbes()
         {
+            List<(ReflectionProbe probe, int id)> probeList = new List<(ReflectionProbe, int)>();
+
             foreach (var entity in entities)
             {
                 if (entity.Value.dto is GlTFSceneDto && entity.Value is UMI3DNodeInstance scene)
@@ -383,11 +391,18 @@ namespace umi3d.cdk
                     {
                         if (probe.mode == ReflectionProbeMode.Realtime && probe.refreshMode == ReflectionProbeRefreshMode.OnAwake)
                         {
-                            probe.RenderProbe();
+                            var id = probe.RenderProbe();
+                            probeList.Add((probe, id));
                         }
                     }
                 }
             }
+            await Task.WhenAll(probeList.Select(
+                async p =>
+                {
+                    while (!p.probe.IsFinishedRendering(p.id))
+                        await UMI3DAsyncManager.Yield();
+                }));
         }
 
         #endregion
@@ -485,7 +500,7 @@ namespace umi3d.cdk
                 switch (entity)
                 {
                     case GlTFSceneDto scene:
-                        await _InstantiateNodes(new List<GlTFSceneDto>() { scene },new MultiProgress("Load Entity"));
+                        await _InstantiateNodes(new List<GlTFSceneDto>() { scene }, new MultiProgress("Load Entity"));
                         performed?.Invoke();
                         break;
                     case GlTFNodeDto node:
@@ -526,7 +541,7 @@ namespace umi3d.cdk
 
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 UMI3DLogger.LogException(e, scope);
                 performed.Invoke();
@@ -635,6 +650,8 @@ namespace umi3d.cdk
 
         protected virtual void InternalClear()
         {
+            UMI3DVideoPlayerLoader.Clear();
+
             entities.Clear();
             entitywaited.Clear();
             entityToBeLoaded.Clear();

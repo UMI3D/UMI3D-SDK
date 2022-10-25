@@ -490,7 +490,7 @@ namespace umi3d.cdk.collaboration
         private async Task EnterScene(EnterDto enter, MultiProgress progress)
         {
             Progress PostJoinProgress = new Progress(1, "Joinning Environment");
-            MultiProgress LoadProgress = new MultiProgress( "Loading Environment");
+            MultiProgress LoadProgress = new MultiProgress("Loading Environment");
             Progress UpdateProgress = new Progress(2, "Instanciating Environment");
             progress.Add(PostJoinProgress);
             progress.Add(LoadProgress);

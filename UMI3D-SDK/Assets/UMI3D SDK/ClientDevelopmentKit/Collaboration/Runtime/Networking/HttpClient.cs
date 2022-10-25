@@ -285,8 +285,15 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Send PostUpdateIdentity", scope | DebugScope.Connection);
             using (UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, null, answer.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
             {
-                var b = uwr?.downloadHandler.data;
-                result = b[0] == 1;
+                try
+                {
+                    var b = uwr?.downloadHandler.data;
+                    result = b[0] == 1;
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
             }
             UMI3DLogger.Log($"Received PostUpdateIdentity", scope | DebugScope.Connection);
             return result;
@@ -599,7 +606,7 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
                     return await _GetRequest(HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                    throw new Umi3dNetworkingException(www , "Failed to get ");
+                    throw new Umi3dNetworkingException(www, "Failed to get ");
             }
             return www;
         }

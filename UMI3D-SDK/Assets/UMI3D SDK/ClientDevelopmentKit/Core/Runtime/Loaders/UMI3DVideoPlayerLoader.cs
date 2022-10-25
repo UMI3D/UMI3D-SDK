@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -34,7 +35,12 @@ namespace umi3d.cdk
         /// </summary>
         public static Queue<UMI3DVideoPlayerDto> videoPlayersToLoad = new Queue<UMI3DVideoPlayerDto>();
 
-        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0 || UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).Any(v => (!v?.isPrepared) ?? false);
+        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0 || UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).Any(v => (v != null && !(v.isPrepared || v.preparationFailed)));
+
+        public static void Clear()
+        {
+            UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v.Clean());
+        }
 
         /// <summary>
         /// Asks to load a <see cref="UMI3DVideoPlayer"/> from a <see cref="UMI3DVideoPlayerDto"/>. 
@@ -86,7 +92,7 @@ namespace umi3d.cdk
 
                 var player = new UMI3DVideoPlayer(videoPlayer);
 
-                while (!player.isPrepared)
+                while (!player.isPrepared && !player.preparationFailed)
                     await UMI3DAsyncManager.Yield();
             }
         }

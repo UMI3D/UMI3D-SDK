@@ -35,7 +35,7 @@ namespace umi3d.cdk
 
         LineRenderer GetOrCreateLine(GameObject node)
         {
-            if(node == null)
+            if (node == null)
                 return null;
             var line = node.GetComponent<LineRenderer>();
             if (line == null)
