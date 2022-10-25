@@ -172,9 +172,9 @@ namespace umi3d.common
             var now = DateTime.Now;
 
 #if UNITY_EDITOR
-        return string.Empty;
+            return string.Empty;
 #else
-        return "[" + now.ToString("mm : ss : fffff") + "] ";
+            return "[" + now.ToString("hh:mm:ss:fffff") + "] ";
 #endif
         }
 
