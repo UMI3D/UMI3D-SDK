@@ -335,7 +335,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame.StreamData.byteArr);
+                var container = new ByteContainer(frame);
                 uint id = UMI3DNetworkingHelper.Read<uint>(container);
                 switch (id)
                 {
@@ -427,7 +427,7 @@ namespace umi3d.edk.collaboration
             {
                 trackingFrame = new UserTrackingFrameDto();
 
-                var container = new ByteContainer(frame.StreamData.byteArr);
+                var container = new ByteContainer(frame);
                 uint id = UMI3DNetworkingHelper.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {

@@ -191,15 +191,17 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
         {
+
+            if (dto == null) return false;
+
             if (lastTimeUserMessageListReceived < container.timeStep)
             {
                 lastTimeUserMessageListReceived = container.timeStep;
-            } else
-            {
-                return;
             }
-
-            if (dto == null) return false;
+            else
+            {
+                return true;
+            }
 
             switch (operationId)
             {
