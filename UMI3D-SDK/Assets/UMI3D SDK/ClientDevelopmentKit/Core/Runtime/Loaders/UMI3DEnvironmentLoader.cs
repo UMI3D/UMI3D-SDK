@@ -630,16 +630,20 @@ namespace umi3d.cdk
             if (clearCache)
                 UMI3DResourcesManager.Instance.ClearCache();
 
-            Instance.entities.Clear();
-            Instance.entitywaited.Clear();
-            Instance.entityToBeLoaded.Clear();
+            Instance.InternalClear();
+        }
+
+        protected virtual void InternalClear()
+        {
+            entities.Clear();
+            entitywaited.Clear();
+            entityToBeLoaded.Clear();
             Instance.entityFailedToBeLoaded.Clear();
 
-            Instance.isEnvironmentLoaded = false;
+            isEnvironmentLoaded = false;
 
-            Instance.environment = null;
-            Instance.loaded = false;
-
+            environment = null;
+            loaded = false;
         }
 
         /// <summary>

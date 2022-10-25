@@ -279,5 +279,12 @@ namespace umi3d.cdk.collaboration
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
         }
+
+        protected override void InternalClear()
+        {
+            base.InternalClear();
+
+            lastTimeUserMessageListReceived = 0;
+        }
     }
 }
