@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios.Forge.Networking.Frame;
 using inetum.unityUtils;
 using System;
 using System.Collections;
@@ -443,13 +444,13 @@ namespace umi3d.common
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 if (!TryRead(SubContainer, out T v)) break;
                 result.Add(v);
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 if (TryRead(SubContainer, out T v))
                     result.Add(v);
             }
@@ -497,12 +498,12 @@ namespace umi3d.common
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 yield return SubContainer;
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 yield return SubContainer;
             }
             yield break;
@@ -851,12 +852,18 @@ namespace umi3d.common
 
     public class ByteContainer
     {
+        public ulong timeStep { get; private set; }
         public byte[] bytes { get; private set; }
         public int position;
         public int length;
 
-        public ByteContainer(byte[] bytes)
+        public ByteContainer(Binary frame) : this(frame.TimeStep, frame.StreamData.byteArr)
         {
+        }
+
+        public ByteContainer(ulong timeStep, byte[] bytes)
+        {
+            this.timeStep = timeStep;
             this.bytes = bytes;
             position = 0;
             length = bytes.Length;
@@ -864,9 +871,11 @@ namespace umi3d.common
 
         public ByteContainer(ByteContainer container)
         {
+
             this.bytes = container.bytes;
             position = container.position;
             length = container.length;
+            timeStep = container.timeStep;
         }
 
         public override string ToString()
