@@ -192,9 +192,9 @@ namespace umi3d.cdk
             Start(time);
         }
 
-        public void Destroy()
+        public async void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
+            await UMI3DEnvironmentLoader.DeleteEntity(dto.id);
         }
 
         public abstract float GetProgress();

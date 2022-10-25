@@ -39,6 +39,8 @@ namespace umi3d.cdk.collaboration
         public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
         public static bool useDto => environmentClient?.useDto ?? false;
 
+        public static bool transactionPending = false;
+
         private static UMI3DWorldControllerClient worldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 

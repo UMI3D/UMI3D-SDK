@@ -98,14 +98,14 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
-        public abstract void UnknownOperationHandler(AbstractOperationDto operation, Action performed);
+        public abstract Task UnknownOperationHandler(AbstractOperationDto operation);
 
         /// <summary>
         /// Handle Operation not handle by default.
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
-        public abstract void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed);
+        public abstract Task UnknownOperationHandler(uint operationId, ByteContainer container);
 
         /// <summary>
         /// Load a ResourceDto as a Skybox.

@@ -78,20 +78,16 @@ namespace umi3d.cdk
             node.transform.localRotation = sceneDto.rotation;
             node.transform.localScale = sceneDto.scale;
             await Task.WhenAll(sceneDto.LibrariesId.Select(async libraryId => await UMI3DResourcesManager.LoadLibrary(libraryId, sceneDto.id)));
-            int count = 0;
+
             if (sceneDto.otherEntities != null)
             {
-                foreach (IEntity entity in sceneDto.otherEntities)
-                {
-                    count++;
-                    UMI3DEnvironmentLoader.LoadEntity(entity, () => { count--; });
-                }
+                await Task.WhenAll(sceneDto.otherEntities.Select(
+                    async entity =>
+                    {
+                       await  UMI3DEnvironmentLoader.LoadEntity(entity);
+                    }));
             }
 
-            while (count > 0)
-            {
-                await UMI3DAsyncManager.Yield();
-            }
         }
 
         /// <summary>

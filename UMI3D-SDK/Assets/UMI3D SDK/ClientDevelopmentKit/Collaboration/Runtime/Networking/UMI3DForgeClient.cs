@@ -368,9 +368,10 @@ namespace umi3d.cdk.collaboration
                 switch (dto)
                 {
                     case TransactionDto transaction:
-                        MainThreadManager.Run(() =>
+                        MainThreadManager.Run(async () =>
                         {
-                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
+                            await UMI3DTransactionDispatcher.PerformTransaction(transaction);
+                            UMI3DCollaborationClientServer.transactionPending = false;
                         });
 
                         break;
@@ -378,6 +379,7 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                            UMI3DCollaborationClientServer.transactionPending = false;
                         });
 
                         break;
@@ -426,9 +428,10 @@ namespace umi3d.cdk.collaboration
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
-                        MainThreadManager.Run(() =>
+                        MainThreadManager.Run(async () =>
                         {
-                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(container));
+                            await UMI3DTransactionDispatcher.PerformTransaction(container);
+                            UMI3DCollaborationClientServer.transactionPending = false;
                         });
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
@@ -438,6 +441,7 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 StartCoroutine(UMI3DNavigation.Navigate(nav));
+                                UMI3DCollaborationClientServer.transactionPending = false;
                             });
                         }
                         break;

@@ -139,9 +139,9 @@ namespace umi3d.cdk
         void PerformChain(OperationChain chain)
         {
             if (chain.IsByte)
-                UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation), null);
+                UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
             else
-                UMI3DTransactionDispatcher.PerformOperation(chain.operation, null);
+                UMI3DTransactionDispatcher.PerformOperation(chain.operation);
         }
 
         ///<inheritdoc/>

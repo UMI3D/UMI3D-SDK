@@ -430,42 +430,36 @@ namespace umi3d.cdk
         }
 
         ///<inheritdoc/>
-        public override void UnknownOperationHandler(AbstractOperationDto operation, Action performed)
+        public override Task UnknownOperationHandler(AbstractOperationDto operation)
         {
             switch (operation)
             {
                 case SwitchToolDto switchTool:
                     AbstractInteractionMapper.Instance.SwitchTools(switchTool.toolId, switchTool.replacedToolId, switchTool.releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case ProjectToolDto projection:
                     AbstractInteractionMapper.Instance.SelectTool(projection.toolId, projection.releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case ReleaseToolDto release:
                     AbstractInteractionMapper.Instance.ReleaseTool(release.toolId, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case SetTrackingTargetFPSDto setTargetFPS:
                     UMI3DClientUserTracking.Instance.SetFPSTarget(setTargetFPS.targetFPS);
-                    performed.Invoke();
                     break;
                 case SetStreamedBonesDto streamedBones:
                     UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones.streamedBones);
-                    performed.Invoke();
                     break;
                 case SetSendingCameraPropertiesDto sendingCamera:
                     UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
-                    performed.Invoke();
                     break;
                 case SetSendingTrackingDto sendingTracking:
                     UMI3DClientUserTracking.Instance.SetTrackingSending(sendingTracking.activeSending);
-                    performed.Invoke();
                     break;
             }
+            return Task.CompletedTask;
         }
 
-        public override void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed)
+        public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
             ulong id;
             bool releasable;
@@ -477,40 +471,34 @@ namespace umi3d.cdk
                     ulong oldid = UMI3DNetworkingHelper.Read<ulong>(container);
                     releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.ProjectTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SelectTool(id, releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.ReleaseTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     AbstractInteractionMapper.Instance.ReleaseTool(id, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
                     int target = UMI3DNetworkingHelper.Read<int>(container);
                     UMI3DClientUserTracking.Instance.SetFPSTarget(target);
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
                     List<uint> streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
                     UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones);
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
                     bool sendCamera = UMI3DNetworkingHelper.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendCamera);
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
                     bool sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.SetTrackingSending(sendTracking);
-                    performed.Invoke();
                     break;
             }
+            return Task.CompletedTask;
         }
     }
 }

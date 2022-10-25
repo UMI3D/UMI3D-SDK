@@ -108,13 +108,12 @@ namespace umi3d.cdk
             throw new NotImplementedException();
         }
 
-        public static async void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback)
+        public static async Task<LoadEntityDto> GetEntity(List<ulong> ids)
         {
             if (Exists)
             {
                 LoadEntityDto dto = await Instance._GetEntity(ids);
-                if (dto != null)
-                    callback.Invoke(dto);
+                return (dto);
             }
             else
                 throw new Exception($"Instance of UMI3DClientServer is null");
