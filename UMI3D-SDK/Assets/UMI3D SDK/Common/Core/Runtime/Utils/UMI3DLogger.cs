@@ -124,7 +124,7 @@ namespace umi3d.common
                 if (Exists)
                     Instance._Log(o, scope);
                 else
-                    Debug.Log(o);
+                    Debug.Log(GetTime() + o);
         }
 
         public static void LogWarning(object o, DebugScope scope)
@@ -133,7 +133,7 @@ namespace umi3d.common
                 if (Exists)
                     Instance._LogWarning(o, scope);
                 else
-                    Debug.LogWarning(o);
+                    Debug.LogWarning(GetTime() + o);
         }
 
         public static void LogError(object o, DebugScope scope)
@@ -142,16 +142,19 @@ namespace umi3d.common
                 if (Exists)
                     Instance._LogError(o, scope);
                 else
-                    Debug.LogError(o);
+                    Debug.LogError(GetTime() + o);
         }
 
         public static void LogException(Exception o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
                 if (Exists)
-                    Instance._LogException(o, scope);
+                    Instance._LogError(o, scope);
                 else
+                {
+                    Debug.LogError("Exception " + GetTime());
                     Debug.LogException(o);
+                }
         }
 
         private static bool validLevel(DebugLevel level)
@@ -164,39 +167,51 @@ namespace umi3d.common
             return Exists ? Instance._validFlag(scope) : (scope & LogScope) != 0;
         }
 
+        private static string GetTime()
+        {
+            var now = DateTime.Now;
+
+#if UNITY_EDITOR
+            return string.Empty;
+#else
+            return "[" + now.ToString("hh:mm:ss:fffff") + "] ";
+#endif
+        }
+
         protected virtual void _Log(object o, DebugScope scope)
         {
             if (ShouldLog)
                 logWritter?.Write(o.ToString());
-            Debug.Log(o);
+            Debug.Log(GetTime() + o);
         }
 
         protected virtual void _LogWarning(object o, DebugScope scope)
         {
             if (ShouldLog)
                 logWritter?.Write("Warning: " + o.ToString());
-            Debug.LogWarning(o);
+            Debug.LogWarning(GetTime() + o);
         }
 
         protected virtual void _LogError(object o, DebugScope scope)
         {
             if (ShouldLog)
                 logWritter?.Write("Error: " + o.ToString());
-            Debug.LogError(o);
+            Debug.LogError(GetTime() + o);
         }
 
         protected virtual void _LogException(Exception o, DebugScope scope)
         {
             if (ShouldLog)
                 logWritter?.Write("Exception: " + o.Message + "\n" + o.StackTrace);
-            Debug.LogException(o);
+            Debug.LogError(GetTime() + "Exception");
+            Debug.LogError(o);
         }
 
         protected virtual bool _validFlag(DebugScope scope) { return (scope & LogScope) != 0; }
         protected virtual bool _validLevel(DebugLevel level) { return (level & LogLevel) != 0; }
-        #endregion
+#endregion
 
-        #region DebugInfo
+#region DebugInfo
 
         private readonly Dictionary<ILoggable, List<DebugInfo>> Loggables = new Dictionary<ILoggable, List<DebugInfo>>();
 
@@ -328,7 +343,7 @@ namespace umi3d.common
             infoWritter?.Stop();
             logWritter?.Stop();
         }
-        #endregion
+#endregion
     }
 
 

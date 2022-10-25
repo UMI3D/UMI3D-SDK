@@ -73,9 +73,9 @@ namespace umi3d.worldController
             }
         }
 
-        public async void OnMessage(int groupId, byte[] bytes)
+        public async void OnMessage(ulong timeStep, int groupId, byte[] bytes)
         {
-            var b = new ByteContainer(bytes);
+            var b = new ByteContainer(timeStep, bytes);
             uint id = UMI3DNetworkingHelper.Read<uint>(b);
             switch (id)
             {

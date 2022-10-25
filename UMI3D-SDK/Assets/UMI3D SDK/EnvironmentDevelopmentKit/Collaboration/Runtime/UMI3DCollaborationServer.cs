@@ -533,18 +533,26 @@ namespace umi3d.edk.collaboration
             base._Dispatch(transaction);
             foreach (UMI3DCollaborationUser user in UMI3DCollaborationServer.Collaboration.Users)
             {
-                if (user.status == StatusType.NONE)
+                switch (user.status)
                 {
-                    continue;
-                }
-                if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
-                {
-                    if (!TransactionToBeSend.ContainsKey(user))
-                    {
-                        TransactionToBeSend[user] = new Transaction();
-                    }
+                    case StatusType.NONE:
+                    case StatusType.REGISTERED:
+                        continue;
+                    case StatusType.MISSING:
+                    case StatusType.CREATED:
+                    case StatusType.READY:
+                        if (!TransactionToBeSend.ContainsKey(user))
+                        {
+                            TransactionToBeSend[user] = new Transaction();
+                        }
 
-                    TransactionToBeSend[user] += transaction;
+                        TransactionToBeSend[user] += transaction;
+                        continue;
+                }
+
+                if (user.networkPlayer == null)
+                {
+                    UMI3DLogger.LogWarning($"Network player null, user : id {user.Id()}, display name {user.displayName}", scope);
                     continue;
                 }
 

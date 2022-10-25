@@ -50,7 +50,7 @@ namespace umi3d.edk
             objectMaterialsOverrided = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ApplyCustomMaterial, this.overrideModelMaterials);
             objectMaterialsOverrided.OnValueChanged += (bool value) => overrideModelMaterials = value;
 
-            objectMaterialOverriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverrider, (x, u) => x.ToDto(), (a, b) => { return a.GetHashCode().Equals(b.GetHashCode()); });
+            objectMaterialOverriders = new UMI3DAsyncListProperty<MaterialOverrider>(objectId, UMI3DPropertyKeys.OverideMaterialId, this.materialsOverrider, (x, u) => x?.ToDto(), (a, b) => { return a.GetHashCode().Equals(b.GetHashCode()); });
 
             objectMaterialOverriders.OnValueChanged += (List<MaterialOverrider> value) => materialsOverrider = value;
 
