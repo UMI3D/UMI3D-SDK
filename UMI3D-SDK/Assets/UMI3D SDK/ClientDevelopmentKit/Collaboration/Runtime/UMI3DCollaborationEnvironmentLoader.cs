@@ -34,6 +34,8 @@ namespace umi3d.cdk.collaboration
         public List<UMI3DUser> JoinnedUserList => UserList.Where(u => u.status >= StatusType.AWAY || (UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId())).ToList();
         public static event Action OnUpdateJoinnedUserList;
 
+        private ulong lastTimeUserMessageListReceived = 0;
+
         public UMI3DUser GetClientUser()
         {
             return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
@@ -162,6 +164,7 @@ namespace umi3d.cdk.collaboration
         private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
         {
             if (dto == null) return false;
+
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
@@ -188,7 +191,16 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
         {
+            if (lastTimeUserMessageListReceived < container.timeStep)
+            {
+                lastTimeUserMessageListReceived = container.timeStep;
+            } else
+            {
+                return;
+            }
+
             if (dto == null) return false;
+
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
@@ -218,6 +230,7 @@ namespace umi3d.cdk.collaboration
         private void InsertUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
         {
             if (UserList.Exists((user) => user.id == userDto.id)) return;
+
             UserList.Insert(index, new UMI3DUser(userDto));
             dto.userList.Insert(index, userDto);
             OnUpdateUserList?.Invoke();
@@ -227,6 +240,7 @@ namespace umi3d.cdk.collaboration
         private void RemoveUserAt(UMI3DCollaborationEnvironmentDto dto, int index)
         {
             if (UserList.Count <= index) return;
+
             UMI3DUser Olduser = UserList[index];
             UserList.RemoveAt(index);
             dto.userList.RemoveAt(index);

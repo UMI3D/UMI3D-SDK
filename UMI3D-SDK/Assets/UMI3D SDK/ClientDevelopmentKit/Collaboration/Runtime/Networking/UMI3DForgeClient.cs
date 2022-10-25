@@ -421,7 +421,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame.StreamData.byteArr);
+                var container = new ByteContainer(frame);
                 uint TransactionId = UMI3DNetworkingHelper.Read<uint>(container);
                 switch (TransactionId)
                 {
@@ -626,11 +626,10 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame.StreamData.byteArr);
+                var container = new ByteContainer(frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DNetworkingHelper.ReadList<UserTrackingFrameDto>(container);
-
                     foreach (UserTrackingFrameDto trackingFrame in frames)
                     {
                         if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar) && userAvatar is UMI3DCollaborativeUserAvatar user)
