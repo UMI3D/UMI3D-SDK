@@ -543,7 +543,7 @@ namespace umi3d.edk.collaboration
                     {
                         TransactionToBeSend[user] = new Transaction();
                     }
-                    
+
                     TransactionToBeSend[user] += transaction;
                     continue;
                 }
@@ -596,6 +596,11 @@ namespace umi3d.edk.collaboration
 
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
         private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
+
+        public bool IsThereTransactionPending(UMI3DCollaborationUser user) =>
+                (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user)) 
+             || (NavigationToBeSend.ContainsKey(user) && NavigationToBeSend[user].Any(o => o.users.Contains(user))));
+
         private void Update()
         {
             foreach (KeyValuePair<UMI3DCollaborationUser, Transaction> kp in TransactionToBeSend.ToList())
@@ -624,7 +629,7 @@ namespace umi3d.edk.collaboration
                 if (user.status < StatusType.ACTIVE) continue;
                 foreach (var navigation in navigations)
                     SendNavigationRequest(user, navigation);
-                TransactionToBeSend.Remove(user);
+                NavigationToBeSend.Remove(user);
             }
         }
 

@@ -507,7 +507,8 @@ namespace umi3d.cdk.collaboration
             UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
             EnvironementLoaded.Invoke();
             UserDto.answerDto.status = statusToBeSet;
-            await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
+            var shouldWait = await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
+            UnityEngine.Debug.Log(shouldWait);
             UpdateProgress.AddComplete();
         }
 

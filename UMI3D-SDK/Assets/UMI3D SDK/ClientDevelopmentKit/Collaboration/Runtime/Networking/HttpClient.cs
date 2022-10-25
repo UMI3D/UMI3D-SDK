@@ -279,11 +279,17 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostUpdateIdentity(UserConnectionAnswerDto answer, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<bool> SendPostUpdateIdentity(UserConnectionAnswerDto answer, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
+            bool result = false;
             UMI3DLogger.Log($"Send PostUpdateIdentity", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, null, answer.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            using (UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, null, answer.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                var b = uwr?.downloadHandler.data;
+                result = b[0] == 1;
+            }
             UMI3DLogger.Log($"Received PostUpdateIdentity", scope | DebugScope.Connection);
+            return result;
         }
 
 

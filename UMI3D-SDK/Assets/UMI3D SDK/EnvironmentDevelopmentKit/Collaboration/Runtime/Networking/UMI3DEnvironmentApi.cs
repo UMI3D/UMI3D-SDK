@@ -140,6 +140,11 @@ namespace umi3d.edk.collaboration
             {
                 var anw = dto as UserConnectionAnswerDto;
                 UnityMainThreadDispatcher.Instance().Enqueue(_updateConnectionInformation(user, anw));
+
+                var b = new byte[1];
+                b[0] = UMI3DCollaborationServer.Instance.IsThereTransactionPending(user) ? (byte)1 : (byte)0;
+
+                e.Response.WriteContent(b);
                 finished = true;
             });
             while (!finished) System.Threading.Thread.Sleep(1);
