@@ -165,9 +165,6 @@ namespace umi3d.edk
         /// </summary>
         protected override void InitDefinition(ulong id)
         {
-            //PropertiesHandler = new AsyncPropertiesHandler();
-            //PropertiesHandler.DelegateBroadcastUpdate += BroadcastUpdates;
-            //PropertiesHandler.DelegatebroadcastUpdateForUser += BroadcastUpdates;
             base.InitDefinition(id);
 
             nodeName = gameObject.name;
@@ -434,8 +431,6 @@ namespace umi3d.edk
 
                     default:
                         //hasCollider = false;
-
-
                         break;
                 }
             }
