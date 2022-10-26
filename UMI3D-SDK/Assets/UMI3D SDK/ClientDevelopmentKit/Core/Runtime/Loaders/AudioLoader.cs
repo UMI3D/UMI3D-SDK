@@ -62,6 +62,7 @@ namespace umi3d.cdk
             SetCertificate(www, authorization);
             await UMI3DResourcesManager.DownloadObject(www);
             AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
+            www.Dispose();
             return (audioClip);
         }
 
