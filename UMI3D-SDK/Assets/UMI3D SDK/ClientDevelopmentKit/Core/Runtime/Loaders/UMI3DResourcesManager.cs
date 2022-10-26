@@ -1039,7 +1039,7 @@ namespace umi3d.cdk
 
 
                 //}
-                throw new Umi3dNetworkingException(www, $"failed to load");
+                throw new Umi3dNetworkingException(www, $"Failed to load : " + www.url);
             }
         }
 
