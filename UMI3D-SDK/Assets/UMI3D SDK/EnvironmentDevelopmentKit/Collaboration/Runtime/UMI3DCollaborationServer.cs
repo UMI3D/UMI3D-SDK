@@ -575,12 +575,12 @@ namespace umi3d.edk.collaboration
                     if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                     {
 
-                        if (!NavigationToBeSend.ContainsKey(user))
+                        if (!DispatchableToBeSend.ContainsKey(user))
                         {
-                            NavigationToBeSend[user] = new List<DispatchableRequest>();
+                            DispatchableToBeSend[user] = new List<DispatchableRequest>();
                         }
 
-                        NavigationToBeSend[user].Add(dispatchableRequest);
+                        DispatchableToBeSend[user].Add(dispatchableRequest);
                         continue;
                     }
 
@@ -603,12 +603,12 @@ namespace umi3d.edk.collaboration
         }
 
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
+        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> DispatchableToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
 
         public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
         {
             areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user))),
-            areDispatchableRequestPending = (NavigationToBeSend.ContainsKey(user) && NavigationToBeSend[user].Any(o => o.users.Contains(user)))
+            areDispatchableRequestPending = (DispatchableToBeSend.ContainsKey(user) && DispatchableToBeSend[user].Any(o => o.users.Contains(user)))
         };
 
         private void Update()
@@ -627,19 +627,19 @@ namespace umi3d.edk.collaboration
                 SendTransaction(user, transaction);
                 TransactionToBeSend.Remove(user);
             }
-            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in NavigationToBeSend.ToList())
+            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in DispatchableToBeSend.ToList())
             {
                 UMI3DCollaborationUser user = kp.Key;
                 List<DispatchableRequest> navigations = kp.Value;
                 if (user.status == StatusType.NONE)
                 {
-                    NavigationToBeSend.Remove(user);
+                    DispatchableToBeSend.Remove(user);
                     continue;
                 }
                 if (user.status < StatusType.ACTIVE) continue;
                 foreach (var navigation in navigations)
                     SendNavigationRequest(user, navigation);
-                NavigationToBeSend.Remove(user);
+                DispatchableToBeSend.Remove(user);
             }
         }
 
