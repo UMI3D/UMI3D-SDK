@@ -605,9 +605,11 @@ namespace umi3d.edk.collaboration
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
         private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
 
-        public bool IsThereTransactionPending(UMI3DCollaborationUser user) =>
-                (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user)) 
-             || (NavigationToBeSend.ContainsKey(user) && NavigationToBeSend[user].Any(o => o.users.Contains(user))));
+        public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
+        {
+            areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user))),
+            areDispatchableRequestPending = (NavigationToBeSend.ContainsKey(user) && NavigationToBeSend[user].Any(o => o.users.Contains(user)))
+        };
 
         private void Update()
         {

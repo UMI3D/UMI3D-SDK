@@ -373,7 +373,6 @@ namespace umi3d.cdk
             endProgress.AddComplete();
             await UMI3DAsyncManager.Yield();
 
-
             isEnvironmentLoaded = true;
             onEnvironmentLoaded.Invoke();
 

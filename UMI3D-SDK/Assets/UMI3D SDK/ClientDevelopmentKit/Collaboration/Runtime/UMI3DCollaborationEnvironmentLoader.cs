@@ -48,7 +48,9 @@ namespace umi3d.cdk.collaboration
 
         protected override async Task WaitForFirstTransaction()
         {
-            while (UMI3DCollaborationClientServer.transactionPending)
+            while (UMI3DCollaborationClientServer.transactionPending != null
+                && (UMI3DCollaborationClientServer.transactionPending.areTransactionPending 
+                    || UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending))
                 await UMI3DAsyncManager.Yield();
         }
 
