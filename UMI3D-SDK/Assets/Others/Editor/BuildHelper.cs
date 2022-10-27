@@ -78,8 +78,15 @@ public class BuildHelper : EditorWindow
     VersionRegex patternDate ;
 
     string CommitMessage => $"SDK {newVersion}";
+    const string CommitMessageEdkTitle = "## EDK";
+    const string CommitMessageCdkTitle = "## CDK";
+    const string CommitMessageCommonTitle = "## Common";
+    string Edkmessage;
+    string Cdkmessage;
+    string Commonmessage;
 
-    string message;
+
+    string message => CommitMessageCommonTitle+"\n"+Commonmessage+ "\n\n" + CommitMessageEdkTitle + "\n" + Edkmessage + "\n\n" + CommitMessageCdkTitle + "\n" + Cdkmessage+"\n\n";
 
     string info = "";
     Vector2 ScrollPos;
@@ -154,7 +161,16 @@ public class BuildHelper : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Separator();
-        EditorGUILayout.LabelField(CommitMessage);
+        EditorGUILayout.LabelField(CommitMessageCommonTitle);
+        Commonmessage = EditorGUILayout.TextArea(Commonmessage);
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField(CommitMessageEdkTitle);
+        Edkmessage = EditorGUILayout.TextArea(Edkmessage);
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField(CommitMessageCdkTitle);
+        Cdkmessage = EditorGUILayout.TextArea(Cdkmessage);
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Full Changelog: <...>");
         EditorGUILayout.Separator();
 
         EditorGUILayout.Space();
@@ -191,11 +207,21 @@ public class BuildHelper : EditorWindow
 
             cleanBuildFolder( _data.PackageFolderPath);
 
+            await Task.Delay(100);
             // Build player.
             var assets = Build(_data.PackageFolderPath);
+            foreach(var asset in assets)
+            {
+                info += $"Build {asset.Item2} : {asset.Item1}";
+            }
+            await Task.Delay(100);
 
-            if(comit)
-            await CommitAll();
+            info += $"Commit";
+
+            if (comit)
+                await CommitAll();
+
+            info += $"Release";
 
             ReleaseSdk._ReleaseSdk(_data.Token, newVersion, _data.Branch, assets, message);
 
