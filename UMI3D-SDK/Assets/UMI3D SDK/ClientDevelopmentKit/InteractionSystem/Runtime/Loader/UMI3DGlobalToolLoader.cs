@@ -246,7 +246,7 @@ namespace umi3d.cdk.interaction
         /// Reads the value of an unknown <see cref="object"/> based on a received <see cref="ByteContainer"/> and updates it.
         /// <br/> Part of the bytes networking workflow.
         /// </summary>
-        /// <param name="value">Unknown object</param>
+        /// <param name="value">Boxing object to retrieve read value.</param>
         /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
         /// <param name="container">Received byte container</param>
         /// <returns>True if property setting was successful</returns>
