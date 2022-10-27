@@ -5,6 +5,9 @@ using umi3d.common.volume;
 
 namespace umi3d.cdk.volumes
 {
+    /// <summary>
+    /// Detect volume entrance and exit in any volume.
+    /// </summary>
     public class BasicAllVolumesTracker : MonoBehaviour
     {
         public float frameRate = 30;

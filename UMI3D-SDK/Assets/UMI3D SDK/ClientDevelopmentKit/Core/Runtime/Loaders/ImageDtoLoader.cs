@@ -39,19 +39,19 @@ namespace umi3d.cdk
             this.ignoredFileExtentions = new List<string>();
         }
 
-        /// <see cref="IResourcesLoader.IsSuitableFor"/>
+        /// <inheritdoc/>
         public bool IsSuitableFor(string extension)
         {
             return supportedFileExtentions.Contains(extension);
         }
 
-        /// <see cref="IResourcesLoader.IsToBeIgnored"/>
+        /// <inheritdoc/>
         public bool IsToBeIgnored(string extension)
         {
             return ignoredFileExtentions.Contains(extension);
         }
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
+        /// <inheritdoc/>
         public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
@@ -99,7 +99,7 @@ namespace umi3d.cdk
             }
         }
 
-        /// <see cref="IResourcesLoader.DeleteObject"/>
+        /// <inheritdoc/>
         public void DeleteObject(object objectLoaded, string reason)
         {
             GameObject.Destroy(objectLoaded as UnityEngine.Object);

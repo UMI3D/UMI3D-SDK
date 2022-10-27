@@ -114,6 +114,7 @@ namespace umi3d.cdk
         {
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
         }

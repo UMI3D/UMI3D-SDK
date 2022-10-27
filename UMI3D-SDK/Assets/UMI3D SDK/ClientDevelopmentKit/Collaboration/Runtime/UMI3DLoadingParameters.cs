@@ -29,10 +29,13 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-
+    /// <summary>
+    /// Loading helper.
+    /// </summary>
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
 
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
@@ -177,7 +180,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
 
-
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null)
@@ -225,6 +228,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container);
         }
 
+        /// <inheritdoc/>
         public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container))
@@ -469,6 +473,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed)
         {
             ulong id;

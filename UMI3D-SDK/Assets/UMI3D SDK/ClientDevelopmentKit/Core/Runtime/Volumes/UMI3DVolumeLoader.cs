@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.cdk.volumes
 {
     /// <summary>
-    /// Loader for volume parts.
+    /// Loader for <see cref="AbstractVolumeCellDto"/>.
     /// </summary>
 	public static class UMI3DVolumeLoader
     {

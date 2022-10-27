@@ -198,6 +198,7 @@ namespace umi3d.cdk
 
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
@@ -262,6 +263,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
 
         /// <inheritdoc/>
@@ -294,6 +296,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
             audioSource.time = frame / 1000f;

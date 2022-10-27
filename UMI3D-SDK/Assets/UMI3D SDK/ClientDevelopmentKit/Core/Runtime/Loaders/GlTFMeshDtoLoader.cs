@@ -24,7 +24,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// MeshDto loader for gltf
+    /// MeshDto loader for gltf meshes
     /// </summary>
     public class GlTFMeshDtoLoader : AbstractMeshDtoLoader
     {

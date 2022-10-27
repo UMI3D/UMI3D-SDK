@@ -201,6 +201,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (ReadUMI3DMaterialProperty(ref value, propertyKey, container))

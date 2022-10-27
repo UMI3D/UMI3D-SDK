@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.cdk.menu
 {
+    /// <summary>
+    /// Menu model for tools that require one.
+    /// </summary>>
     [System.Serializable]
     public class MenuItem : AbstractMenuItem
     {

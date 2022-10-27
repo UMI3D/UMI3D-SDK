@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Animation composed of several a,oatop,
+    /// </summary>
     public class UMI3DAnimation : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
@@ -123,6 +126,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
@@ -140,6 +144,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
@@ -208,6 +213,7 @@ namespace umi3d.cdk
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
             progress = frame;

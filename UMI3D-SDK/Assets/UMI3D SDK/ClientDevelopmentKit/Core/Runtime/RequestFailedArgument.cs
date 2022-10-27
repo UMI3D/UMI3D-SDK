@@ -21,7 +21,7 @@ using UnityEngine.Networking;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Class to be send to try to send a request again.
+    /// Class to be sent to try to send a request again.
     /// </summary>
     public class RequestFailedArgument
     {

@@ -23,7 +23,7 @@ using UnityEngine.UI;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for UI nodes DTO.
+    /// Loader for <see cref="UMI3DNodeDto"/> related to UI.
     /// </summary>
     public class UMI3DUINodeLoader : UMI3DNodeLoader
     {
@@ -70,12 +70,7 @@ namespace umi3d.cdk
              }, failed);
         }
 
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             var node = entity as UMI3DNodeInstance;
@@ -161,6 +156,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var node = entity as UMI3DNodeInstance;

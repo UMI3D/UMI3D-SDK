@@ -60,9 +60,9 @@ namespace umi3d.cdk
         public abstract FileDto ChooseVariant(List<FileDto> files);
 
         /// <summary>
-        /// Setup an Umi3d object acording to a UMI3DDto.
+        /// Setup an UMI3D object based on a <see cref="UMI3DDto"/>.
         /// </summary>
-        /// <param name="dto">Dto to read.</param>
+        /// <param name="dto">DTO to read.</param>
         /// <param name="node">Gameobject on which to setup the object.</param>
         /// <param name="finished">Finished callback.</param>
         /// <param name="failed">Error callback.</param>
@@ -71,43 +71,47 @@ namespace umi3d.cdk
         /// <summary>
         /// Update a property.
         /// </summary>
-        /// <param name="entity">entity to update.</param>
-        /// <param name="property">property containing the updated value</param>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the updated value.</param>
         /// <returns></returns>
         public abstract bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property);
 
         /// <summary>
-        /// Update a property.
+        /// Update a property from a value in a <paramref name="container"/>.
         /// </summary>
-        /// <param name="entity">entity to update.</param>
-        /// <param name="property">property containing the updated value</param>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="operationId">UMI3D operation key in <see cref="UMI3DOperationKeys"/>.</param>
+        /// <param name="propertyKey">UMI3D property key in <see cref="UMI3DPropertyKeys"/>.</param>
+        /// <param name="container">Container of the updated value to read.</param>
         /// <returns></returns>
         public abstract bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container);
 
         /// <summary>
-        /// Update a property.
+        /// Read a property in a <paramref name="container"/> and stores its value.
         /// </summary>
-        /// <param name="entity">entity to update.</param>
-        /// <param name="property">property containing the updated value</param>
+        /// <param name="value">Boxing object to store the read value.</param>
+        /// <param name="propertyKey">UMI3D key of the property to read.</param>
+        /// <param name="container">Container of the value to read.</param>
         /// <returns></returns>
         public abstract bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container);
 
         /// <summary>
-        /// Handle Operation not handle by default.
+        /// Handle Operation not handled by default.
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
         public abstract void UnknownOperationHandler(AbstractOperationDto operation, Action performed);
 
         /// <summary>
-        /// Handle Operation not handle by default.
+        /// Handle Operation not handled by default.
         /// </summary>
-        /// <param name="operation">Operation to handle.</param>
+        /// <param name="operationId">UMI3D operation key in <see cref="UMI3DOperationKeys"/>.</param>
+        /// <param name="container">Value container.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
         public abstract void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed);
 
         /// <summary>
-        /// Load a ResourceDto as a Skybox.
+        /// Load a <see cref="ResourceDto"/> as a Skybox.
         /// </summary>
         /// <param name="skybox"></param>
         public abstract void loadSkybox(ResourceDto skybox);

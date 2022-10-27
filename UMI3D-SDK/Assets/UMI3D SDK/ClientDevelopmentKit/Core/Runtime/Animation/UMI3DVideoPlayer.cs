@@ -21,16 +21,23 @@ using UnityEngine.Video;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Video player, enriched playable video resource.
+    /// </summary>
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
+        ///
         private readonly VideoPlayer videoPlayer;
         private readonly Material mat;
         private readonly RenderTexture renderTexture;
 
         public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
+        /// <summary>
+        /// Has the VideoPlayer successfully prepared the content to be played ?
+        /// </summary>
         public bool isPrepared => videoPlayer?.isPrepared ?? false;
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
@@ -255,6 +262,10 @@ namespace umi3d.cdk
             }
         }
 
+        /// <summary>
+        /// When set to true, makes the video loop.
+        /// </summary>
+        /// <param name="b"></param>
         public void SetLoopValue(bool b)
         {
             videoPlayer.isLooping = b;
@@ -279,6 +290,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
             UMI3DAnimationManager.StartCoroutine(SetTime());

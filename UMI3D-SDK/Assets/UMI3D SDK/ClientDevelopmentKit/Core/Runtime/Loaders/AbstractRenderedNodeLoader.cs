@@ -25,6 +25,9 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Abstract base for renderded node.
+    /// </summary>
     public class AbstractRenderedNodeLoader : UMI3DNodeLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;

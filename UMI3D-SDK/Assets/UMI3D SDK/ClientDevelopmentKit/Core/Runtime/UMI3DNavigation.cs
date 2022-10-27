@@ -18,13 +18,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
-using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Navigation manager for user displacement in the environment. 
+    /// </summary>
     public class UMI3DNavigation : inetum.unityUtils.SingleBehaviour<UMI3DNavigation>
     {
+        /// <summary>
+        /// Current navigation system.
+        /// </summary>
         public AbstractNavigation currentNav { get; protected set; } = null;
+        /// <summary>
+        /// Different available navigation system.
+        /// </summary>
         public List<AbstractNavigation> navigations;
 
         public delegate void OnEmbarkVehicleDelegate(ulong vehicleId);
