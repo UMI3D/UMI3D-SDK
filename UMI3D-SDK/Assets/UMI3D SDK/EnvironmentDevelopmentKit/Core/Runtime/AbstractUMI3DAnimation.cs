@@ -42,17 +42,17 @@ namespace umi3d.edk
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Should the animation loop?")]
         private bool looping;
+
         /// <summary>
-        /// Animation start time 
+        /// Animation start time in milliseconds.
         /// </summary>
-        //? whut
-        [SerializeField, EditorReadOnly, Tooltip("")]
+        [SerializeField, EditorReadOnly, Tooltip("Animation start time in milliseconds.")]
         private ulong startTime;
+
         /// <summary>
-        /// Animation start time 
+        /// Animation last pause time in milliseconds.
         /// </summary>
-        //? whut
-        [SerializeField, EditorReadOnly, Tooltip("")]
+        [SerializeField, EditorReadOnly, Tooltip("Animation last pause time in milliseconds.")]
         private long pauseFrame;
 
         /// <summary>

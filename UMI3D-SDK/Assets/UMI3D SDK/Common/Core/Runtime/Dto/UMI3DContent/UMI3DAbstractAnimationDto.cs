@@ -33,12 +33,12 @@ namespace umi3d.common
         public bool looping = false;
 
         /// <summary>
-        /// Time since server start in miliseconde.
+        /// Time since start in miliseconds, represented in server time since its start.
         /// </summary>
         public ulong startTime;
 
         /// <summary>
-        /// Tince since video start in miliseconde
+        /// Time of last pause in miliseconds, represented in server time since its start.
         /// </summary>
         public long pauseTime;
 
