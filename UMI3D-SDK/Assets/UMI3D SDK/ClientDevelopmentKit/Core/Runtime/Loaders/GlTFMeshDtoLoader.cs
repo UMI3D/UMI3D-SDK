@@ -25,7 +25,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// MeshDto loader for gltf
+    /// MeshDto loader for gltf meshes
     /// </summary>
     public class GlTFMeshDtoLoader : AbstractMeshDtoLoader
     {
@@ -42,7 +42,7 @@ namespace umi3d.cdk
         }
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
             bool finished = false;
@@ -147,7 +147,7 @@ namespace umi3d.cdk
             callback.Invoke();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override Vector3 GetRotationOffset()
         {
             return new Vector3(0, 180, 0);

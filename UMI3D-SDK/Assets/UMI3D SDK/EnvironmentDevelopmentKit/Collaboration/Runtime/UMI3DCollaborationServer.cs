@@ -118,7 +118,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string descriptionComment = "";
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override string _GetHttpUrl()
         {
             return "http://" + ip + ":" + httpPort;
@@ -486,7 +486,7 @@ namespace umi3d.edk.collaboration
         public float WaitTimeForPingAnswer = 3f;
         public int MaxPingingTry = 5;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
             if (user is UMI3DCollaborationUser _user && _user?.networkPlayer?.NetworkId != null)
@@ -527,7 +527,7 @@ namespace umi3d.edk.collaboration
             ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
@@ -656,7 +656,7 @@ namespace umi3d.edk.collaboration
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void NotifyUserChanged(UMI3DUser user)
         {
             Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);

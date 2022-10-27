@@ -16,17 +16,29 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing animations, components that can be played.
+    /// </summary>
     [System.Serializable]
     public class UMI3DAbstractAnimationDto : AbstractEntityDto, IEntity
     {
-        public bool playing = false;
-        public bool looping = false;
         /// <summary>
-        /// Time since server start in miliseconde.
+        /// Is the animation running?
+        /// </summary>
+        public bool playing = false;
+
+        /// <summary>
+        /// Should the animation restart from its beginning at its end?
+        /// </summary>
+        public bool looping = false;
+
+        /// <summary>
+        /// Time since start in miliseconds, represented in server time since its start.
         /// </summary>
         public ulong startTime;
+
         /// <summary>
-        /// Tince since video start in miliseconde
+        /// Time of last pause in miliseconds, represented in server time since its start.
         /// </summary>
         public long pauseTime;
 

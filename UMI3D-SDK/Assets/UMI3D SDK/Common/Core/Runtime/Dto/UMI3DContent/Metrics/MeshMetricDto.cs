@@ -16,17 +16,19 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing the meta-data measuring a mesh asset.
+    /// </summary>
     [System.Serializable]
     public class MeshMetricDto : AssetMetricDto
     {
-
         /// <summary>
-        /// average number of polygons in one cubic meter.
+        /// Average number of polygons in one cubic meter.
         /// </summary>
         public float density;
 
         /// <summary>
-        /// total number of polygons.
+        /// Total number of polygons of the mesh.
         /// </summary>
         public int polygons;
 

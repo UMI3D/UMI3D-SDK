@@ -17,17 +17,17 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Abstract class to describe an interpolation operation
+    /// Abstract DTO to describe an interpolation operation.
     /// </summary>
     public class AbstractInterpolationPropertyDto : AbstractOperationDto
     {
         /// <summary>
-        /// The unique identifier of the entity
+        /// The unique identifier of the entity.
         /// </summary>
         public ulong entityId;
 
         /// <summary>
-        /// The name of the interpolated property
+        /// The name of the interpolated property.
         /// </summary>
         public uint property;
     }

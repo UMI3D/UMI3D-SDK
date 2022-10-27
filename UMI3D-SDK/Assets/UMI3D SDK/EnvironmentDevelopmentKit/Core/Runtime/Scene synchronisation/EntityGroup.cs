@@ -22,17 +22,29 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// Group of entities concerned by same operation.
+    /// </summary>
+    /// Entity groups are useful when applying the same operation on a lot of entities, for example moving every birds in the same direction on a client.
     public class EntityGroup : UMI3DLoadableEntity
     {
+        /// <summary>
+        /// Individual id of entity group.
+        /// </summary>
         private ulong entityId;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// See <see cref="entities"/>.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Entities included in the entity group.")]
         private List<UMI3DMediaEntity> _entities = new List<UMI3DMediaEntity>();
+        /// <summary>
+        /// Entities included in the entity group.
+        /// </summary>
         public UMI3DAsyncListProperty<UMI3DMediaEntity> entities { get { Id(); return _entitiesObject; } private set => _entitiesObject = value; }
 
         private UMI3DAsyncListProperty<UMI3DMediaEntity> _entitiesObject;
 
-
+        /// <inheritdoc/>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
@@ -43,6 +55,7 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <inheritdoc/>
         public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -53,7 +66,7 @@ namespace umi3d.edk
             return operation;
         }
 
-
+        /// <inheritdoc/>
         public ulong Id()
         {
             if (entityId == 0)
@@ -70,12 +83,13 @@ namespace umi3d.edk
             entities = new UMI3DAsyncListProperty<UMI3DMediaEntity>(entityId, UMI3DPropertyKeys.EntityGroupIds, _entities, (e, u) => e.Id());
         }
 
-
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return new EntityGroupDto() { id = Id(), entitiesId = entities.GetValue(user).Select(e => e.Id()).ToList() };
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
@@ -93,16 +107,19 @@ namespace umi3d.edk
         #region filter
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        /// <inheritdoc/>
         public bool LoadOnConnection(UMI3DUser user)
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
 
+        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Remove(filter);

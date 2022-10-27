@@ -16,7 +16,10 @@ limitations under the License.
 
 namespace umi3d.common
 {
-
+    /// <summary>
+    /// Available indexed types for shader properties.
+    /// </summary>
+    /// Used to know how to serialize/deserialize a property.
     public static class UMI3DShaderPropertyType
     {
         public const byte None = 0;

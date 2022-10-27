@@ -16,11 +16,26 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a Canvas for UI.
+    /// </summary>
     [System.Serializable]
     public class UICanvasDto : UIRectDto
     {
+        /// <summary>
+        /// Number of pixels par unit in the UI to use for dynamically created elements.
+        /// </summary>
+        /// Such dynamically created elements typically includes bitmaps, such as UI texts.
         public float dynamicPixelsPerUnit;
+
+        /// <summary>
+        /// Number of pixels that should correspond to one unit in the UI.
+        /// </summary>
         public float referencePixelsPerUnit;
+
+        /// <summary>
+        /// Order of the canvas in the rendering of the layer.
+        /// </summary>
         public int orderInLayer;
 
         public UICanvasDto() : base() { }

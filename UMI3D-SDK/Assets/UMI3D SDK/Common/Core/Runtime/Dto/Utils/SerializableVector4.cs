@@ -19,6 +19,10 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serializable implementation of a vector with 4 float coordinates.
+    /// </summary>
+    /// The 4th component has a default value of 1, like in homogeneous coordinates systems.
     [Serializable]
     public class SerializableVector4 : UMI3DDto
     {
@@ -43,7 +47,7 @@ namespace umi3d.common
             W = w;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return ((Vector4)this).ToString();

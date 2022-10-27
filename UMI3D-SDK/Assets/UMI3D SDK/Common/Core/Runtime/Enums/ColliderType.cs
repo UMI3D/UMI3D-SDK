@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Colliders availables.
+    /// Colliders types available in UMI3D.
     /// </summary>
     public enum ColliderType { Box, Sphere, Capsule, Mesh }
 }

@@ -21,29 +21,68 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// UMI3D object that allows to change the material of an object.
+    /// </summary>
     [Serializable]
     public class MaterialOverrider : IBytable
     {
+        /// <summary>
+        /// New material to apply to the object.
+        /// </summary>
+        [Tooltip("New material to apply to the object.")]
         public MaterialSO newMaterial;
+        /// <summary>
+        /// Materials
+        /// </summary>
         [SerializeField]
         private OverridedMaterialList materialListToOverride = new OverridedMaterialList();
 
+        #region properties
+        /// <summary>
+        /// See <see cref="materialListToOverride.overrideAllMaterial"/>.
+        /// </summary>
         public bool overrideAllMaterial { get => materialListToOverride.overrideAllMaterial; set => materialListToOverride.overrideAllMaterial = value; }
-
+        /// <summary>
+        /// See <see cref="materialListToOverride.addMaterialIfNotExists"/>.
+        /// </summary>
         public bool addMaterialIfNotExists { get => materialListToOverride.addMaterialIfNotExists; set => materialListToOverride.addMaterialIfNotExists = value; }
-
+        /// <summary>
+        /// See <see cref="materialListToOverride.overidedMaterials"/>.
+        /// </summary>
         public List<string> overidedMaterials { get => materialListToOverride.overidedMaterials; set => materialListToOverride.overidedMaterials = value; }
+        #endregion properties
 
+        /// <summary>
+        /// Structure to store info about overrided materials.
+        /// </summary>
         [Serializable]
         public class OverridedMaterialList
         {
+            /// <summary>
+            /// Should all the material of the object be overridden?
+            /// </summary>
+            [Tooltip("Should all the material of the object be overridden?")]
             public bool overrideAllMaterial = false;
+            /// <summary>
+            /// If there is no material, add the overrider as a new one?
+            /// </summary>
+            [Tooltip("If there is no material, add the overrider as a new one?")]
             public bool addMaterialIfNotExists = false;
+            /// <summary>
+            /// List of overriden materials.
+            /// </summary>
+            [Tooltip("List of overriden materials.")]
             public List<string> overidedMaterials = new List<string>();
         }
 
+        /// <summary>
+        /// Use this field to replace all the materials.
+        /// </summary>
+        /// Used not to have to specify all the materials to replace.
         private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
 
+        /// <inheritdoc/>
         public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
         {
             if (overrideAllMaterial)
@@ -64,6 +103,7 @@ namespace umi3d.edk
             };
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return UMI3DNetworkingHelper.Write(newMaterial.Id())
@@ -71,6 +111,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.WriteCollection(overrideAllMaterial ? ANY_mat : overidedMaterials);
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return false;

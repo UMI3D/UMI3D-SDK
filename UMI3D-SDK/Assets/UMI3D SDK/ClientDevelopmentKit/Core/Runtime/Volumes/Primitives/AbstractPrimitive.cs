@@ -32,10 +32,13 @@ namespace umi3d.cdk.volumes
         }
 
         /// <summary>
-        /// Node instance which has the primitive. 
+        /// Node trasnform where is the primitive. 
         /// </summary>
         public Transform rootNode;
 
+        /// <summary>
+        /// UMI3D id of the node instance which has the primitive. 
+        /// </summary>
         private ulong rootNodeId;
 
         /// <summary>

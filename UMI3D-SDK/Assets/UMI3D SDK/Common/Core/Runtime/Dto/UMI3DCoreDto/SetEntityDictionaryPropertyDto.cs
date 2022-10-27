@@ -17,12 +17,12 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of an entity's dictionary property changed.
+    /// Operation DTO to inform a browser the value of an entity's dictionary property has changed.
     /// </summary>
     public class SetEntityDictionaryPropertyDto : SetEntityPropertyDto
     {
         /// <summary>
-        /// Key of the property
+        /// Key of the property in the dictionnary.
         /// </summary>
         public object key;
     }

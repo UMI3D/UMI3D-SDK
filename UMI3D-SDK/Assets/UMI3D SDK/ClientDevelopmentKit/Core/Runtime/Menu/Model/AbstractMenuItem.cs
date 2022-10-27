@@ -23,7 +23,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu
 {
     /// <summary>
-    /// Abstract class for menu item.
+    /// Abstract menu model for tools that require one.
     /// </summary>
     [System.Serializable]
     public abstract class AbstractMenuItem : ISelectable
@@ -33,7 +33,13 @@ namespace umi3d.cdk.menu
         /// </summary>
         public string Name = "menu";
 
+        /// <summary>
+        /// Icon associated with the menu.
+        /// </summary>
         public Texture2D icon2D;
+        /// <summary>
+        /// 3D icon associated with the menu.
+        /// </summary>
         public GameObject icon3D;
 
         /// <summary>

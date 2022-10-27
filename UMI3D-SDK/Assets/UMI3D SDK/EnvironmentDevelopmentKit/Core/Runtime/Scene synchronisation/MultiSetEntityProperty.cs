@@ -38,6 +38,7 @@ namespace umi3d.edk
         /// </summary>
         public object value;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty)
@@ -47,7 +48,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new MultiSetEntityPropertyDto()

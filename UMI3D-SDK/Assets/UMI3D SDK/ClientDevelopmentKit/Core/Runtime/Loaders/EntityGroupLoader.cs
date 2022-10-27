@@ -20,6 +20,9 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="EntityGroupDto"/>.
+    /// </summary>
     public static class EntityGroupLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;

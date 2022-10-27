@@ -18,6 +18,7 @@ using System;
 
 namespace umi3d.common
 {
+    [Obsolete]
     [Serializable]
     public class IceServer
     {
@@ -27,6 +28,7 @@ namespace umi3d.common
         public string username;
     }
 
+    [Obsolete]
     public enum IceCredentialType
     {
         Password = 0,

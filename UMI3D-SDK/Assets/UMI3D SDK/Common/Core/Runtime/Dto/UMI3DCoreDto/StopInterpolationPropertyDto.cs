@@ -17,12 +17,12 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// A class to describe a stopping interpolation operation
+    /// Operation DTO to inform an interpolation stopping on a browser.
     /// </summary>
     public class StopInterpolationPropertyDto : AbstractInterpolationPropertyDto
     {
         /// <summary>
-        /// The new value for the property
+        /// The new value for the property.
         /// </summary>
         public object stopValue;
     }

@@ -30,10 +30,13 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-
+    /// <summary>
+    /// Loading helper.
+    /// </summary>
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
 
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
@@ -180,7 +183,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
 
-
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null)
@@ -228,6 +231,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container);
         }
 
+        /// <inheritdoc/>
         public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container))
@@ -267,7 +271,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {
             UMI3DLocalAssetDirectory res = null;
@@ -305,7 +309,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override FileDto ChooseVariant(List<FileDto> files)
         {
             FileDto res = null;
@@ -332,7 +336,7 @@ namespace umi3d.cdk
             return res;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IResourcesLoader SelectLoader(string extension)
         {
             foreach (IResourcesLoader loader in ResourcesLoaders)
@@ -345,7 +349,7 @@ namespace umi3d.cdk
             throw new Umi3dException("there is no compatible loader for this extention : " + extension);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
         {
             foreach (AbstractUMI3DMaterialLoader loader in MaterialLoaders)
@@ -357,7 +361,7 @@ namespace umi3d.cdk
             return null;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override async void loadSkybox(ResourceDto skybox)
         {
             try
@@ -429,7 +433,7 @@ namespace umi3d.cdk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override Task UnknownOperationHandler(AbstractOperationDto operation)
         {
             switch (operation)
@@ -459,6 +463,7 @@ namespace umi3d.cdk
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
             ulong id;

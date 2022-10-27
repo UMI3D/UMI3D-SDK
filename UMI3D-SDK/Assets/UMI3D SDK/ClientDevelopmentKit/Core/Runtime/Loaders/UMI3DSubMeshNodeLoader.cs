@@ -23,11 +23,14 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="UMI3DMeshNodeDto"/>.
+    /// </summary>
     public class UMI3DSubMeshNodeLoader : AbstractRenderedNodeLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
 
@@ -137,6 +140,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         protected override void RevertToOriginalMaterial(UMI3DNodeInstance entity)
         {
 
@@ -174,7 +178,7 @@ namespace umi3d.cdk
             }
         }
 
-
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
@@ -212,6 +216,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)

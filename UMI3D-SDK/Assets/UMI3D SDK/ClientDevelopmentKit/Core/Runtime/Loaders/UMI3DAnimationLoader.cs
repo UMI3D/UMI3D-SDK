@@ -20,6 +20,9 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="UMI3DAbstractAnimationDto"/>.
+    /// </summary>
     public static class UMI3DAnimationLoader
     {
         public static void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node)

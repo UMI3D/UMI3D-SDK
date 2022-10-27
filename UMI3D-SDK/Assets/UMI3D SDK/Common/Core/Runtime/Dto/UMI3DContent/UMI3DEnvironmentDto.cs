@@ -18,17 +18,55 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an Environment under the UMI3D standard.
+    /// </summary>
     [System.Serializable]
     public class UMI3DEnvironmentDto : UMI3DDto
     {
+        /// <summary>
+        /// List of Asset Libraries available for the environment, by their named id.
+        /// </summary>
         public List<string> LibrariesId;
+
+        /// <summary>
+        /// List of scene that are directly packaged with the environment.
+        /// </summary>
         public List<PreloadedSceneDto> preloadedScenes;
+
+        /// <summary>
+        /// Ambient lighting type in the environment.
+        /// </summary>
         public AmbientType ambientType;
+
+        /// <summary>
+        /// Default color of the sky.
+        /// </summary>
         public SerializableColor skyColor;
+
+        /// <summary>
+        /// Default color
+        /// </summary>
         public SerializableColor horizontalColor;
+
+        /// <summary>
+        /// Default color of the ground.
+        /// </summary>
         public SerializableColor groundColor;
+
+        /// <summary>
+        /// Default intensity of the ambient light.
+        /// </summary>
         public float ambientIntensity;
+
+        /// <summary>
+        /// Ressource of the asset for the skybox.
+        /// </summary>
         public ResourceDto skybox;
+
+        /// <summary>
+        /// ressource of the material applied to all objects by default.
+        /// </summary>
         public ResourceDto defaultMaterial;
     }
 }

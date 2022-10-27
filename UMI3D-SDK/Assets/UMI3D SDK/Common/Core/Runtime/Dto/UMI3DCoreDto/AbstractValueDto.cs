@@ -19,7 +19,7 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// An abstract class to describe the value of an entity's property
+    /// Abstract DTO to describe the value of an entity's property.
     /// </summary>
     [Serializable]
     public abstract class AbstractValueDto : UMI3DDto

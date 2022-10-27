@@ -18,16 +18,35 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe any object in the scene graph.
+    /// </summary>
     [System.Serializable]
     public class UMI3DNodeDto : UMI3DAbstractNodeDto
     {
+        /// <summary>
+        /// Is the permanently object constently facing the users' billboard on the X-axis?
+        /// </summary>
         public bool xBillboard = false;
+
+        /// <summary>
+        /// Is the permanently object constently facing the users' billboard on the Y-axis?
+        /// </summary>
         public bool yBillboard = false;
+
+        /// <summary>
+        /// Collider attached to this node.
+        /// </summary>
         public ColliderDto colliderDto = null;
+
+        /// <summary>
+        /// Levels of details available for this node.
+        /// </summary>
         public UMI3DLodDto lodDto;
 
         /// <summary>
-        /// Contains a collection of UMI3DId refering entities with skinnedMeshRenderer and an interger that is the position of this node in the bones array of the skinnedMeshRenderer.
+        /// Contains a collection of UMI3DId refering entities with skinnedMeshRenderer 
+        /// and an interger that is the position of this node in the bones array of the skinnedMeshRenderer.
         /// Used only with Model with tracked sub object and skinnedMeshRenderer
         /// </summary>
         public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();

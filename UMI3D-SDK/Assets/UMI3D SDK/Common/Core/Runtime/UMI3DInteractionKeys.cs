@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains the keys for the available interactions within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning interaction DTOs between the server and clients to identify 
+    /// which interaction is triggered when a user starts them.
     public static class UMI3DInteractionKeys
     {
         public const byte None = 0;

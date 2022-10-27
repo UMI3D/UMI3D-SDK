@@ -20,10 +20,20 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serialized description of an asset directory, a local folder where variants of an assets are stored.
+    /// </summary>
     [System.Serializable]
     public class UMI3DLocalAssetDirectory : IBytable
     {
+        /// <summary>
+        /// Name of the directory.
+        /// </summary>
         public string name = "new variant";
+
+        /// <summary>
+        /// Local path of the directory.
+        /// </summary>
         public string path;
         [SerializeField]
         public AssetMetricDto metrics = new AssetMetricDto();
@@ -42,11 +52,13 @@ namespace umi3d.common
             this.formats = other.formats;
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return

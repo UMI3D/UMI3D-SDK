@@ -26,17 +26,17 @@ namespace umi3d.common.userCapture
     public class UserCameraPropertiesDto : AbstractBrowserRequestDto
     {
         /// <summary>
-        /// todo.
+        /// Scale of the camera.
         /// </summary>
         public float scale;
 
         /// <summary>
-        /// the projection matrix of the user's camera.
+        /// The projection matrix of the user's camera.
         /// </summary>
         public SerializableMatrix4x4 projectionMatrix;
 
         /// <summary>
-        /// the bone corresponding to the camera's position
+        /// The bone corresponding to the camera's position
         /// </summary>
         public uint boneType;
 

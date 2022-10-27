@@ -22,10 +22,7 @@ namespace umi3d.cdk.menu
         public List<MenuItem> MenuItems = new List<MenuItem>();
         public List<Menu> SubMenu = new List<Menu>();
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
-        /// <param name="abstractMenuItem">Menu or menuItem to add</param>
         public override bool Add(AbstractMenuItem abstractMenuItem)
         {
             if (AddWithoutNotify(abstractMenuItem))
@@ -40,10 +37,7 @@ namespace umi3d.cdk.menu
                 return false;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
-        /// <param name="abstractMenuItem"></param>
         public override bool AddWithoutNotify(AbstractMenuItem abstractMenuItem)
         {
             if (Contains(abstractMenuItem))
@@ -63,11 +57,7 @@ namespace umi3d.cdk.menu
                 return false;
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
-        /// <param name="abstractMenuItem"></param>
-        /// <returns></returns>
         public override bool Remove(AbstractMenuItem abstractMenuItem)
         {
             if (RemoveWithoutNotify(abstractMenuItem))
@@ -90,11 +80,7 @@ namespace umi3d.cdk.menu
             OnDestroy.RemoveAllListeners();
         }
 
-        /// <summary>
         /// <inheritdoc/>
-        /// </summary>
-        /// <param name="abstractMenuItem"></param>
-        /// <returns></returns>
         public override bool RemoveWithoutNotify(AbstractMenuItem abstractMenuItem)
         {
             if (!Contains(abstractMenuItem))
@@ -108,7 +94,7 @@ namespace umi3d.cdk.menu
                 return false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool Contains(AbstractMenuItem abstractMenuItem)
         {
             if (abstractMenuItem is MenuItem menuItem)
@@ -119,10 +105,10 @@ namespace umi3d.cdk.menu
                 return false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override int Count => MenuItems.Count + SubMenu.Count;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEnumerable<AbstractMenuItem> GetItems()
         {
             var items = new List<AbstractMenuItem>();
@@ -149,9 +135,7 @@ namespace umi3d.cdk.menu
             return SubMenu;
         }
 
-
-
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Name;

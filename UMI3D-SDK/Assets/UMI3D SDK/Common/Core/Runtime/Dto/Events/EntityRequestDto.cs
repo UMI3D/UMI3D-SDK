@@ -17,8 +17,15 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe a group of entities to load on a browser.
+    /// </summary>
+    /// An EntityRequest is sent when a user gets the whole enviornment while joining.
     public class EntityRequestDto : UMI3DDto
     {
+        /// <summary>
+        /// Entities to load id.
+        /// </summary>
         public List<ulong> entitiesId;
     }
 }

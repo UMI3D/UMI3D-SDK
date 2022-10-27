@@ -46,6 +46,7 @@ namespace umi3d.cdk.collaboration
             return UserList.FirstOrDefault(u => u.id == dto.id);
         }
 
+        /// <inheritdoc/>
         protected override async Task WaitForFirstTransaction()
         {
             while (UMI3DCollaborationClientServer.transactionPending != null
@@ -98,7 +99,7 @@ namespace umi3d.cdk.collaboration
         }
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base._SetUMI3DProperty(entity, property)) return true;

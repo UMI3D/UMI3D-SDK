@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains the keys for all available operations within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning operations or request between the server and clients 
+    /// to identify which process should be started on the receiving side.
     public static class UMI3DOperationKeys
     {
         public const uint Transaction = 1;
@@ -81,6 +86,12 @@ namespace umi3d.common
         public const uint VolumeUserTransit = 10100;
 
     }
+
+    /// <summary>
+    /// Contains the keys for all available parameter types within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning operations or request between the server and clients 
+    /// to identify what parameters to apply on processes started on the receiving side.
     public static class UMI3DParameterKeys
     {
         public const uint FloatRange = 1;

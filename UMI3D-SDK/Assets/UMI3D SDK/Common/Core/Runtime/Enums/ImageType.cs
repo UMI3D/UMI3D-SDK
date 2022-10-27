@@ -16,11 +16,29 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Image display type in UMI3D.
+    /// </summary>
     public enum ImageType
     {
+        /// <summary>
+        /// Full image display.
+        /// </summary>
         Simple = 0,
+
+        /// <summary>
+        /// 9-sliced image display.
+        /// </summary>
         Sliced = 1,
+
+        /// <summary>
+        /// Similar to <see cref="Sliced"/> but the resizable parts of the image are repeated.
+        /// </summary>
         Tiled = 2,
+
+        /// <summary>
+        /// Section of the image display. Left portion is transparent.
+        /// </summary>
         Filled = 3
     }
 }

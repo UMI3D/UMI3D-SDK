@@ -18,12 +18,27 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an animation that triggers others animations.
+    /// </summary>
+    /// Animations of a same group could be triggered at the same time and executed in a particular order that way.
     [System.Serializable]
     public class UMI3DAnimationDto : UMI3DAbstractAnimationDto
     {
+        /// <summary>
+        /// Total duration of the animations.
+        /// </summary>
         public float duration = 10f;
+
+        /// <summary>
+        /// Animations to be played.
+        /// </summary>
         public List<AnimationChainDto> animationChain = null;
 
+        /// <summary>
+        /// DTO describing a piece of animation to play.
+        /// </summary>
+        /// Animations in animation chain could be played simultaneously ou one after another by setting up the <see cref="startOnProgress"/> field.
         public class AnimationChainDto
         {
             /// <summary>

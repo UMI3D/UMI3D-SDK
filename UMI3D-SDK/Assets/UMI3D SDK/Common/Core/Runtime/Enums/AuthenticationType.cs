@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Ahtentification type for UMI3D environments.
+    /// </summary>
     public enum AuthenticationType
     {
         /// <summary>

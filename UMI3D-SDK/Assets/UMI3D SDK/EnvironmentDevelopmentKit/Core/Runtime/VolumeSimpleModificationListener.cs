@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace umi3d.edk.volume
 {
+    /// <summary>
+    /// Obsolete quick simple class to handle volume transactions. Should not be used in production.
+    /// </summary>
     [System.Obsolete("This class isn't mean to be use in production", false)]
     public class VolumeSimpleModificationListener : MonoBehaviour
     {

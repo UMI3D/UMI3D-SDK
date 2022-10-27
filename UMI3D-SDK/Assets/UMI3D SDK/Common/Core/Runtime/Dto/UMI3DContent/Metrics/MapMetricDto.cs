@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing the meta-data measuring a map asset.
+    /// </summary>
     [System.Serializable]
     public class MapMetricDto : AssetMetricDto
     {

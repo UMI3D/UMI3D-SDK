@@ -16,9 +16,18 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Ways to handle the overflow when the text is vertically too long.
+    /// </summary>
     public enum VerticalWrapType
     {
+        /// <summary>
+        /// Displayed text is truncaterd so that the remaining part does not exceed the boundary.
+        /// </summary>
         Truncate = 0,
+        /// <summary>
+        /// Text is allowed to exceed the boundary.
+        /// </summary>
         Overflow = 1
     }
 }

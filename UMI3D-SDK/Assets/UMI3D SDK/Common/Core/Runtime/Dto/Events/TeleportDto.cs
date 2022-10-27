@@ -16,9 +16,15 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO ordering to teleport a user at a precise position and rotation.
+    /// </summary>
     [System.Serializable]
     public class TeleportDto : NavigateDto
     {
+        /// <summary>
+        /// Rotation the teleported user should ends with.
+        /// </summary>
         public SerializableVector4 rotation = null;
 
         public TeleportDto() : base() { }

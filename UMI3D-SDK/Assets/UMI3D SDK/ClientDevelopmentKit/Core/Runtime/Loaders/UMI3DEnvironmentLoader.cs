@@ -29,7 +29,7 @@ using UnityEngine.Rendering;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// 
+    /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
     public class UMI3DEnvironmentLoader : inetum.unityUtils.SingleBehaviour<UMI3DEnvironmentLoader>
     {
@@ -285,7 +285,7 @@ namespace umi3d.cdk
         /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
         public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material(newBaseMat); }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();

@@ -42,7 +42,7 @@ namespace umi3d.cdk.menu.view
         /// Container : Display <= displayDepth + 1 < Hide
         /// Container : Expand <= displayDepth < Collapse
         /// </summary>
-        [Tooltip("Displayer : Display <= displayDepth < Hide. Container : Display <= displayDepth + 1 < Hide; Expand <= displayDepth < Collapse")]
+        [Tooltip("Displayer : Display <= displayDepth < Hide.\nContainer : Display <= displayDepth + 1 < Hide;\nExpand <= displayDepth < Collapse")]
         public int displayDepth = 1;
 
         /// <summary>

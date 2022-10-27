@@ -36,7 +36,7 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>() { ".mtl" };
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
             bool finished = false;

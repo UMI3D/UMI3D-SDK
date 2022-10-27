@@ -18,9 +18,15 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe a Level of Detail effect.
+    /// </summary>
     [System.Serializable]
     public class UMI3DLodDto : UMI3DDto
     {
+        /// <summary>
+        /// List of available levels of details.
+        /// </summary>
         public List<UMI3DLodDefinitionDto> lods;
     }
 }

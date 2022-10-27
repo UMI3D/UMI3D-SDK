@@ -23,7 +23,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// UMI3D empty object.
+    /// Abstract base UMI3D empty object to load on the clients.
     /// </summary>
     [DisallowMultipleComponent]
     [SelectionBase]
@@ -68,42 +68,51 @@ namespace umi3d.edk
             }
         }
 
-
+        /// <summary>
+        /// Get the id of the parent object if any.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DAbstractNode> objectParentId { get { Register(); return _objectParentId; } protected set => _objectParentId = value; }
 
         /// <summary>
-        /// False if the object is alowed to move during the application exectution.
+        /// True if the object is not allowed to move during the application exectution.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("True if the object is not allowed to move during the application exectution.")]
         protected bool isStatic = false;
         /// <summary>
-        /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
+        /// See <see cref="isStatic"/>.
         /// </summary>
         public UMI3DAsyncProperty<bool> objectIsStatic { get { Register(); return _objectIsStatic; } protected set => _objectIsStatic = value; }
 
 
         /// <summary>
-        /// False if the object is alowed to move during the application exectution.
+        /// True if the object should be active is the scene graph.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("True if the object should be active is the scene graph.")]
         protected bool active = true;
         /// <summary>
-        /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
+        /// See <see cref="active"/>.
         /// </summary>
         public UMI3DAsyncProperty<bool> objectActive { get { Register(); return _objectActive; } protected set => _objectActive = value; }
 
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Anchor of the object in the real world, if any, for AR design.
+        /// </summary>
+        /// Nodes that possess an Anchor are placed according to their anchor in the real world, instaed of its position in the scene.
+        [SerializeField, EditorReadOnly, Tooltip("Anchor of the object in the real world, if any, for AR design.")]
         protected UMI3DAnchor UMI3DAnchor;
+        /// <summary>
+        /// See <see cref="UMI3DAnchor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DAnchorDto> objectAnchor { get { Register(); return _objectAnchor; } protected set => _objectAnchor = value; }
 
 
         /// <summary>
-        /// An editor field to modify default objectImmersiveOnly value
+        /// True if the object is only vissible in full 3D media displayers (sush as Computer or Virtual Reality headset).
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("True if the object is only vissible in full 3D media displayers (sush as Computer or Virtual Reality headset).")]
         protected bool immersiveOnly = false;
         /// <summary>
-        /// Indicates if the object is only vissible in full 3D media displayers (sush as Computer or Virtual reality headset)
+        /// See <see cref="immersiveOnly"/>.
         /// </summary>
         public UMI3DAsyncProperty<bool> objectImmersiveOnly { get { Register(); return _objectImmersiveOnly; } protected set => _objectImmersiveOnly = value; }
 
@@ -135,7 +144,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Vector3> _objectScale;
 
         /// <summary>
-        /// Id of the Volume in which the node is present
+        /// Id of the Volume (see <seealso cref="volume.IVolume"/>) in which the node is present
         /// </summary>
         public ulong VolumeId;
 
@@ -240,6 +249,7 @@ namespace umi3d.edk
 
         #endregion
 
+        /// <inheritdoc/>
         protected virtual void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             dto.id = Id();
@@ -250,6 +260,7 @@ namespace umi3d.edk
             dto.anchorDto = objectAnchor.GetValue(user);
         }
 
+        /// <inheritdoc/>
         public virtual Bytable ToBytes(UMI3DUser user)
         {
             UMI3DAnchorDto anchor = objectAnchor.GetValue(user);
@@ -315,6 +326,12 @@ namespace umi3d.edk
             return res;
         }
 
+        /// <summary>
+        /// Retrieve all the <see cref="UMI3DLoadableEntity"/> instances on a node and its children.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="transform"></param>
+        /// <returns></returns>
         public List<UMI3DLoadableEntity> GetAllLoadableEntityUnderThisNode(UMI3DUser user, Transform transform = null)
         {
             var res = new List<UMI3DLoadableEntity>();
@@ -334,7 +351,7 @@ namespace umi3d.edk
             return res;
         }
 
-
+        /// <inheritdoc/>
         public abstract IEntity ToEntityDto(UMI3DUser user);
 
         #endregion

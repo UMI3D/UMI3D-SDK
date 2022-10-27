@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Animation applied on a node through several operations.
+    /// </summary>
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
@@ -68,19 +71,19 @@ namespace umi3d.cdk
             operationChains = dto.animationChain?.Select(chain => new OperationChain(chain)).ToList() ?? new List<OperationChain>();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetProgress()
         {
             return progress;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start()
         {
             Start(0);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Stop()
         {
             if (!started) return;
@@ -96,7 +99,7 @@ namespace umi3d.cdk
             started = false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnEnd()
         {
             PlayingCoroutines = null;
@@ -144,7 +147,7 @@ namespace umi3d.cdk
                 UMI3DTransactionDispatcher.PerformOperation(chain.operation);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -164,6 +167,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
@@ -181,7 +185,7 @@ namespace umi3d.cdk
             return true;
         }
 
-
+        /// <inheritdoc/>
         public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
 
         private bool UpdateChain(UMI3DNodeAnimationDto dto, SetEntityPropertyDto property)
@@ -214,7 +218,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start(float atTime)
         {
             if (started) OnEnd();
@@ -226,7 +230,7 @@ namespace umi3d.cdk
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
-
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
         }

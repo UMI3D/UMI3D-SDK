@@ -25,7 +25,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for UMI3D Mesh
+    /// Loader for <see cref="UMI3DMeshNodeDto"/>.
     /// </summary>
     public class UMI3DMeshNodeLoader : AbstractRenderedNodeLoader
     {

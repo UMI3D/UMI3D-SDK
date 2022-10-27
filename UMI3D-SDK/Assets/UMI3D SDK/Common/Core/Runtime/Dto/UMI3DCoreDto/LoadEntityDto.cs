@@ -20,11 +20,14 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     /// <summary>
-    /// Operation to ask a browser to load an entity
+    /// Operation DTO to ask a browser to load an entity
     /// </summary>
     [Serializable]
     public class LoadEntityDto : AbstractOperationDto
     {
+        /// <summary>
+        /// Entities to load.
+        /// </summary>
         public List<IEntity> entities;
     }
 }

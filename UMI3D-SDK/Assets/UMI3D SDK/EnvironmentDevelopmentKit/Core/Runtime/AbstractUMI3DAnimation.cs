@@ -22,39 +22,79 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// Abstract base for all animated media, such as animations, videoplayers or audioplayers.
+    /// </summary>
     public class UMI3DAbstractAnimation : MonoBehaviour, UMI3DLoadableEntity
     {
+        /// <summary>
+        /// Entity UMI3D id.
+        /// </summary>
         private ulong animationID;
-
-        [SerializeField, EditorReadOnly]
+        
+        /// <summary>
+        /// Is the animation playing?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Is the animation playing?")]
         private bool playing;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Should the animation loop?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Should the animation loop?")]
         private bool looping;
-        [SerializeField, EditorReadOnly]
-        private ulong startTime;
-        [SerializeField, EditorReadOnly]
-        private long pauseFrame;
-        private UMI3DAsyncProperty<bool> _objectPlaying;
-        private UMI3DAsyncProperty<bool> _objectLooping;
-        private UMI3DAsyncProperty<ulong> _objectStartTime;
-        private UMI3DAsyncProperty<long> _objectPauseFrame;
-
-        public UMI3DAsyncProperty<bool> objectPlaying { get { Register(); return _objectPlaying; } protected set => _objectPlaying = value; }
-        public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
-        public UMI3DAsyncProperty<ulong> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
-        public UMI3DAsyncProperty<long> objectPauseTime { get { Register(); return _objectPauseFrame; } protected set => _objectPauseFrame = value; }
 
         /// <summary>
-        /// Get the Id of the animation.
+        /// Animation start time in milliseconds.
         /// </summary>
-        /// <returns></returns>
+        [SerializeField, EditorReadOnly, Tooltip("Animation start time in milliseconds.")]
+        private ulong startTime;
+
+        /// <summary>
+        /// Animation last pause time in milliseconds.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Animation last pause time in milliseconds.")]
+        private long pauseFrame;
+
+        /// <summary>
+        /// See <see cref="playing"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<bool> _objectPlaying;
+        /// <summary>
+        /// See <see cref="looping"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<bool> _objectLooping;
+        /// <summary>
+        /// See <see cref="startTime"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<ulong> _objectStartTime;
+        /// <summary>
+        /// See <see cref="pauseFrame"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<long> _objectPauseFrame;
+
+        /// <summary>
+        /// See <see cref="playing"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectPlaying { get { Register(); return _objectPlaying; } protected set => _objectPlaying = value; }
+        /// <summary>
+        /// See <see cref="looping"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
+        /// <summary>
+        /// See <see cref="startTime"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<ulong> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
+        /// <summary>
+        /// See <see cref="pauseFrame"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<long> objectPauseTime { get { Register(); return _objectPauseFrame; } protected set => _objectPauseFrame = value; }
+
+        /// <inheritdoc/>
         public ulong Id()
         {
             Register();
             return animationID;
         }
-
 
         /// <summary>
         /// Check if the AbstractObject3D has been registered to to the UMI3DScene and do it if not
@@ -95,10 +135,7 @@ namespace umi3d.edk
             objectPauseTime.OnValueChanged += (v) => pauseFrame = v;
         }
 
-        /// <summary>
-        /// Return load operation
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -109,10 +146,7 @@ namespace umi3d.edk
             return operation;
         }
 
-        /// <summary>
-        /// Return delete operation
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
@@ -158,12 +192,13 @@ namespace umi3d.edk
             return new UMI3DAbstractAnimationDto();
         }
 
-
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToAnimationDto(user);
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(Id())
@@ -174,6 +209,7 @@ namespace umi3d.edk
                 + ToBytesAux(user);
         }
 
+        /// <inheritdoc/>
         protected virtual Bytable ToBytesAux(UMI3DUser user)
         {
             return new Bytable();
@@ -182,16 +218,19 @@ namespace umi3d.edk
         #region filter
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        /// <inheritdoc/>
         public bool LoadOnConnection(UMI3DUser user)
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
 
+        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Remove(filter);

@@ -23,6 +23,9 @@ using UnityEngine.UI;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="UICanvasDto"/>.
+    /// </summary>
     public class UMI3DUICanvasNodeLoader
     {
         /// <summary>

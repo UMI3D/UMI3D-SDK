@@ -16,21 +16,24 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO for a texture ressource.
+    /// </summary>
     [System.Serializable]
     public class TextureDto : ResourceDto
     {
         /// <summary>
-        /// optional animator id (used for video texture synchronisation).
+        /// Animator id (optional - used for video texture synchronisation).
         /// </summary>
         public string animationId = null;
 
         /// <summary>
-        /// optional audio source id (used for video texture synchronisation).
+        /// Audio source id (optional - used for video texture synchronisation).
         /// </summary>
         public string audioSourceId = null;
 
         /// <summary>
-        /// optional user Id for video chat.
+        /// Streaming user Id (optional - used for video chat).
         /// </summary>
         public string streamingFromUserId = null;
     }

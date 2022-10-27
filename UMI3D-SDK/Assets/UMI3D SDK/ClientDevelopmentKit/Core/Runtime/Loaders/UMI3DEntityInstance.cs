@@ -20,13 +20,28 @@ using umi3d.common;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Object containing a dto for non gameobject entity
+    /// Intanciated storage of a DTO for a non-gameobject UMI3D entity.
     /// </summary>
     public class UMI3DEntityInstance
     {
+        /// <summary>
+        /// Local copy of the received DTO.
+        /// </summary>
         public UMI3DDto dto;
+
+        /// <summary>
+        /// Entity as an instanciated object.
+        /// </summary>
         public object Object;
+
+        /// <summary>
+        /// Callback executed when the object is deleted.
+        /// </summary>
         public Action Delete;
+
+        /// <summary>
+        /// Callback executed when the object is loaded.
+        /// </summary>
         private Action LoadedCallback;
 
         public UMI3DEntityInstance(Action loadedCallback)
@@ -37,8 +52,14 @@ namespace umi3d.cdk
             this.LoadedCallback = loadedCallback;
         }
 
+        /// <summary>
+        /// Is the UMI3D entity loaded?
+        /// </summary>
         public bool IsLoaded => LoadedCallback == null;
 
+        /// <summary>
+        /// Notify that the entity has been loaded.
+        /// </summary>
         public void NotifyLoaded()
         {
             if (!IsLoaded)

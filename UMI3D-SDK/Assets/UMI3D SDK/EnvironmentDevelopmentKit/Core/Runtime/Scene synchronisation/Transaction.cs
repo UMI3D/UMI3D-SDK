@@ -21,11 +21,26 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Collection of operations with helping 
+    /// </summary>
     public class Transaction : IEnumerable<Operation>
     {
+        /// <summary>
+        /// Reliable transactions are transactions for which receiving is ensuring.
+        /// </summary>
+        /// Note that transactions that are not reliable are lighter
         public bool reliable;
+        /// <summary>
+        /// List of operations to execute on the client.
+        /// </summary>
         private List<Operation> Operations = new List<Operation>();
 
+        /// <summary>
+        /// Convert the transaction to a BSON as a byte array.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>A couple with the BSON in the first item, and a bool that is true when the conversion was sucessful.</returns>
         public (byte[], bool) ToBson(UMI3DUser user)
         {
             var transactionDto = new TransactionDto
@@ -39,6 +54,11 @@ namespace umi3d.edk
             return (null, false);
         }
 
+        /// <summary>
+        /// Convert the transaction a byte array.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>A couple with the BSON in the first item, and a bool that is true when the conversion was sucessful.</returns>
         public (byte[], bool) ToBytes(UMI3DUser user)
         {
             IEnumerable<Operation> operation = Operations.Where((op) => { return op.users.Contains(user); });
@@ -78,6 +98,10 @@ namespace umi3d.edk
 
         public List<Operation> this[UMI3DUser key] => Operations.Where(o => o.users.Contains(key)).ToList();
 
+        /// <summary>
+        /// Optimize the transaction when several operations are contained.
+        /// </summary>
+        /// <exception cref="System.Exception">Exception is thrown when an operation in the transaction is not recognized.</exception>
         public void Simplify()
         {
             Operation lastOperation = null;
@@ -299,11 +323,17 @@ namespace umi3d.edk
             return ((IEnumerable<Operation>)Operations).GetEnumerator();
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<Operation>)Operations).GetEnumerator();
         }
 
+        /// <summary>
+        /// Add an operation to the collection if the operation is not null.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns>True if the operation was successfully added.</returns>
         public bool AddIfNotNull(Operation b)
         {
             if (b != null)
@@ -364,6 +394,10 @@ namespace umi3d.edk
 
         }
 
+        /// <summary>
+        /// Return the number of operations in this transaction.
+        /// </summary>
+        /// <returns></returns>
         public int Count()
         {
             return Operations.Count();

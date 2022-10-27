@@ -19,6 +19,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serializable implementation of a vector with 3 float coordinates.
+    /// </summary>
     [Serializable]
     public class SerializableVector3 : UMI3DDto
     {
@@ -40,7 +43,7 @@ namespace umi3d.common
             Z = z;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return ((Vector3)this).ToString();

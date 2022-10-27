@@ -17,6 +17,9 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing volume cells.
+    /// </summary>
     public abstract class AbstractVolumeCellDto : AbstractVolumeDescriptorDto
     {
         /// <summary>
@@ -24,6 +27,9 @@ namespace umi3d.common.volume
         /// </summary>
         public ulong rootNodeId;
 
+        /// <summary>
+        /// Should user be able to enter this volume?
+        /// </summary>
         public bool isTraversable = true;
     }
 }

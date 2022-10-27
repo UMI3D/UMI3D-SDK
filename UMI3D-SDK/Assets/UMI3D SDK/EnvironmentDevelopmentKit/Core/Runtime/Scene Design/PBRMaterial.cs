@@ -20,24 +20,61 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Physics-Based Rendering (PBR) material 
+    /// </summary>
     [CreateAssetMenu(fileName = "Umi3D_PBR_Material", menuName = "UMI3D/Umi3D_PBR_Material")]
     public class PBRMaterial : MaterialSO
     {
+        /// <summary>
+        /// Base color of the material, define the diffuse albedo for non-metals, and the specular color for metals.
+        /// </summary>
+        /// Default is white.
+        [Tooltip("Base color of the material.")]
         public Color baseColorFactor = Color.white;
-        [Range(0.0f, 1.0f)]
+        /// <summary>
+        /// Metallic behaviour of the surface. 
+        /// </summary>
+        /// Usually either 0 for non-metallic surfaces or 1 for totally metallic ones. A value between 0 and 1 will result in an interpolated behaviour.
+        [Range(0.0f, 1.0f), 
+         Tooltip("Metallic behaviour of the surface.\n" +
+            "Usually either 0 for non-metallic surfaces or 1 for totally metallic ones. " +
+            "A value between 0 and 1 will result in an interpolated behaviour.")]
         public float metallicFactor;
-        [Range(0.0f, 1.0f)]
+        /// <summary>
+        /// Roughness of the surface.
+        /// </summary>
+        /// Rougher surfaces tends to have more blurried reflections.
+        [Range(0.0f, 1.0f),
+         Tooltip("Roughness of the surface.\nRougher surfaces tends to have more blurried reflections.")]
         public float roughnessFactor;
 
+        /// <summary>
+        /// Color emitted by the surface if any.
+        /// Emissive factor for each of the RGB channel. 
+        /// </summary>
+        [Tooltip("Color emitted by the surface if any.")]
         public Color emissive;
-        //   public UMI3DMaterialDto textures;
+
+        /// <summary>
+        /// Custom textures to use.
+        /// </summary>
+        [Tooltip("Custom textures to use with the material.")]
         public CustomTextures textures = new CustomTextures();
 
-
+        /// <summary>
+        /// Scale when using tiling.
+        /// </summary>
+        [Tooltip("Scale when using tiling.")]
         public Vector2 tilingScale = Vector2.one;
+
+        /// <summary>
+        /// Offset when using tiling.
+        /// </summary>
+        [Tooltip("Offset when using tiling.")]
         public Vector2 tilingOffset = Vector2.zero;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
             var extensions = new GlTFMaterialExtensions() { umi3d = textures.ToDto() };
@@ -62,7 +99,7 @@ namespace umi3d.edk
             };
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override ulong GetId()
         {
             if (!registered)
@@ -73,7 +110,7 @@ namespace umi3d.edk
             return textures.id;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void SetId(ulong id)
         {
             textures.id = id;
@@ -82,7 +119,7 @@ namespace umi3d.edk
 
         private bool registered = false;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void OnEnable()
         {
 
@@ -91,47 +128,155 @@ namespace umi3d.edk
 
         }
 
+        #region properties
 
+        /// <summary>
+        /// See <see cref="baseColorFactor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Color> objectBaseColorFactor { get { Id(); return _objectBaseColorFactor; } protected set => _objectBaseColorFactor = value; }
+        /// <summary>
+        /// See <see cref="metallicFactor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectMetallicFactor { get { Id(); return _objectMetallicFactor; } protected set => _objectMetallicFactor = value; }
+        /// <summary>
+        /// See <see cref="roughnessFactor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectRoughnessFactor { get { Id(); return _objectRoughnessFactor; } protected set => _objectRoughnessFactor = value; }
+        /// <summary>
+        /// See <see cref="emissive"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Color> objectEmissiveFactor { get { Id(); return _objectEmissiveFactor; } protected set => _objectEmissiveFactor = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.baseColorTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectMaintexture { get { Id(); return _objectMaintexture; } protected set => _objectMaintexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.metallicRoughnessTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectMetallicRoughnessTexture { get { Id(); return _objectMetallicRoughnessTexture; } protected set => _objectMetallicRoughnessTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.normalTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DScalableTextureResource> objectNormalTexture { get { Id(); return _objectNormalTexture; } protected set => _objectNormalTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.emissiveTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectEmissiveTexture { get { Id(); return _objectEmissiveTexture; } protected set => _objectEmissiveTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.occlusionTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectOcclusionTexture { get { Id(); return _objectOcclusionTexture; } protected set => _objectOcclusionTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.metallicTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectMetallicTexture { get { Id(); return _objectMetallicTexture; } protected set => _objectMetallicTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.roughnessTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectRoughnessTexture { get { Id(); return _objectRoughnessTexture; } protected set => _objectRoughnessTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.channelTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DTextureResource> objectChannelTexture { get { Id(); return _objectChannelTexture; } protected set => _objectChannelTexture = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.heightTexture"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DScalableTextureResource> objectHeightTexture { get { Id(); return _objectHeightTexture; } protected set => _objectHeightTexture = value; }
+        /// <summary>
+        /// See <see cref="tilingScale"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Vector2> objectTextureTilingScale { get { Id(); return _objectTextureTilingScale; } protected set => _objectTextureTilingScale = value; }
+        /// <summary>
+        /// See <see cref="tilingOffset"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Vector2> objectTextureTilingOffset { get { Id(); return _objectTextureTilingOffset; } protected set => _objectTextureTilingOffset = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.normalTexture.scale"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectNormalTextureScale { get { Id(); return _objectNormalTextureScale; } protected set => _objectNormalTextureScale = value; }
+        /// <summary>
+        /// See <see cref="CustomTextures.heightTexture.scale"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectHeightTextureScale { get { Id(); return _objectHeightTextureScale; } protected set => _objectHeightTextureScale = value; }
+
+        #endregion properties
 
         private readonly UMI3DAsyncPropertyEquality pCompare = new UMI3DAsyncPropertyEquality();
 
+        #region asyncproperties
+        /// <summary>
+        /// See <see cref="baseColorFactor"/>.
+        /// </summary>
         private UMI3DAsyncProperty<Color> _objectBaseColorFactor;
+        /// <summary>
+        /// See <see cref="metallicFactor"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectMetallicFactor;
+        /// <summary>
+        /// See <see cref="roughnessFactor"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectRoughnessFactor;
+        /// <summary>
+        /// See <see cref="emissive"/>.
+        /// </summary>
         private UMI3DAsyncProperty<Color> _objectEmissiveFactor;
+        /// <summary>
+        /// See <see cref="CustomTextures.baseColorTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectMaintexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.metallicRoughnessTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectMetallicRoughnessTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.normalTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DScalableTextureResource> _objectNormalTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.emissiveTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectEmissiveTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.occlusionTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectOcclusionTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.metallicTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectMetallicTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.channelTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectChannelTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.roughnessTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DTextureResource> _objectRoughnessTexture;
+        /// <summary>
+        /// See <see cref="CustomTextures.heightTexture"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DScalableTextureResource> _objectHeightTexture;
+        /// <summary>
+        /// See <see cref="tilingScale"/>.
+        /// </summary>
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingScale;
+        /// <summary>
+        /// See <see cref="tilingOffset"/>.
+        /// </summary>
         private UMI3DAsyncProperty<Vector2> _objectTextureTilingOffset;
+        /// <summary>
+        /// See <see cref="CustomTextures.normalTexture.scale"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectNormalTextureScale;
+        /// <summary>
+        /// See <see cref="CustomTextures.heightTexture.scale"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectHeightTextureScale;
         private readonly UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
-        ///<inheritdoc/>
+        #endregion asyncproperties
+
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             objectRoughnessFactor = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.RoughnessFactor, this.roughnessFactor, null, pCompare.FloatEquality);
@@ -199,6 +344,11 @@ namespace umi3d.edk
             objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { /*shaderProperties = d; */};
         }
 
+        /// <summary>
+        /// Update a texture with a new <see cref="UMI3DTextureResource"/> and dispatch it to clients.
+        /// </summary>
+        /// <param name="objectTexture"></param>
+        /// <param name="newTexture"></param>
         public static void UpdateTexture(UMI3DAsyncProperty<UMI3DTextureResource> objectTexture, UMI3DTextureResource newTexture)
         {
             var transaction = new Transaction();
@@ -212,17 +362,21 @@ namespace umi3d.edk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
     }
+    /// <summary>
+    /// Custom texture from ressources.
+    /// </summary>
     [System.Serializable]
     public class CustomTextures
     {
@@ -238,6 +392,7 @@ namespace umi3d.edk
         public UMI3DTextureResource roughnessTexture = new UMI3DTextureResource();
         public UMI3DScalableTextureResource heightTexture = new UMI3DScalableTextureResource();
 
+        /// <inheritdoc/>
         public UMI3DMaterialDto ToDto()
         {
             return new UMI3DMaterialDto()

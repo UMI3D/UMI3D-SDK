@@ -21,17 +21,45 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// Assets libraries are package of assets that are loaded by a user at the connection, if they do not already possess it.
+    /// </summary>
+    /// They are used to reduce the amount of data to transfer when joining a same environment several times. 
+    /// The assets are stored locally. A same library could be used by several environments.
     [CreateAssetMenu(fileName = "NewAssetLibrary", menuName = "UMI3D/Asset Library")]
     public class AssetLibrary : ScriptableObject, UMI3DLoadableEntity
     {
+        /// <summary>
+        /// Id of the library. Choose a unique name.
+        /// </summary>
+        /// Typically "com.compagny.application".
+        [Tooltip("Id of the library. Choose a unique name. Typically 'com.compagny.application'.")]
         public string id = "com.compagny.application";
+
+        /// <summary>
+        /// UMI3D entity ID.
+        /// </summary>
         private ulong eId = 0;
+
+        /// <summary>
+        /// Last time the library has been updated.
+        /// </summary>
+        /// Note that when updating a library, this date should be updated manually. A "Now" button is available in the inspector to that purpose.
         [SerializeField]
+        [Tooltip("Last time the library has been updated.\n" +
+                 "Note that when updating a library, this date should be updated manually. \n" +
+                 "Press the 'Now' button designed to that purpose.")]
         public SerializableDateTime date;
+        /// <summary>
+        /// Directories where a stored all the variants of the library.
+        /// </summary>
+        /// A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.
         [SerializeField]
+        [Tooltip("Variants of the library. " +
+                 "A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.")]
         public List<UMI3DLocalAssetDirectory> variants = new List<UMI3DLocalAssetDirectory>();
 
+        /// <inheritdoc/>
         public AssetLibraryDto ToDto()
         {
             var dto = new AssetLibraryDto
@@ -51,6 +79,7 @@ namespace umi3d.edk
             return dto;
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(id)
@@ -61,6 +90,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.WriteIBytableCollection(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
         }
 
+        /// <inheritdoc/>
         public ulong Id()
         {
             if (eId == 0)
@@ -68,6 +98,7 @@ namespace umi3d.edk
             return eId;
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
@@ -104,16 +135,19 @@ namespace umi3d.edk
         #region filter
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        /// <inheritdoc/>
         public bool LoadOnConnection(UMI3DUser user)
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
 
+        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Remove(filter);

@@ -18,26 +18,64 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe a material based on textures.
+    /// </summary>
+    /// See alos <see cref="PBRMaterialDto"/>.
     [System.Serializable]
     public class UMI3DMaterialDto : AbstractEntityDto, IMaterialDto
     {
         //glTF PBR Texture
+        /// <summary>
+        /// Base color in PBR as a texture.
+        /// </summary>
         public TextureDto baseColorTexture;
+
+        /// <summary>
+        /// Metallic roughness in PBR as a texture.
+        /// </summary>
         public TextureDto metallicRoughnessTexture;
 
         //glTF additional maps
+        /// <summary>
+        /// Normal map as a texture.
+        /// </summary>
         public ScalableTextureDto normalTexture;
+
+        /// <summary>
+        /// Emission map as a texture.
+        /// </summary>
         public TextureDto emissiveTexture;
+
+        /// <summary>
+        /// Occlusion map as a texture.
+        /// </summary>
         public TextureDto occlusionTexture;
 
         //UMI3D additional maps
+        /// <summary>
+        /// Metallic map as a texture.
+        /// </summary>
         public TextureDto metallicTexture;
+
+        /// <summary>
+        /// Roughness map as a texture.
+        /// </summary>
         public TextureDto roughnessTexture;
+
+        /// <summary>
+        /// Height map as a texture.
+        /// </summary>
         public ScalableTextureDto heightTexture;
 
+        /// <summary>
+        /// Map channel as a texture.
+        /// </summary>
         public TextureDto channelTexture;
 
-        // Modified properties in the shader 
+        /// <summary>
+        /// Modified properties in the shader as a key-value collection;
+        /// </summary>
         public Dictionary<string, object> shaderProperties { get; set; }
     }
 }

@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing volume cells with primitive shapes.
+    /// </summary>
     public class AbstractPrimitiveDto : AbstractVolumeCellDto
     {
 

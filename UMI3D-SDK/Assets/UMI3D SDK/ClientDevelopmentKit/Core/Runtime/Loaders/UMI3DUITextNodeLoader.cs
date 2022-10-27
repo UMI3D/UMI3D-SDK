@@ -24,7 +24,7 @@ using UnityEngine.UI;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// LOader for an UMI3D UI Text
+    /// Loader for <see cref="UITextDto"/>.
     /// </summary>
     public class UMI3DUITextNodeLoader
     {
@@ -57,7 +57,8 @@ namespace umi3d.cdk
         /// <summary>
         /// Update a property.
         /// </summary>
-        /// <param name="entity">entity to be updated.</param>
+        /// <param name="dto">Received DTO copy.</param>
+        /// <param name="node">Node where the entity to update is attached.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
         public bool SetUMI3DPorperty(UITextDto dto, UMI3DNodeInstance node, SetEntityPropertyDto property)

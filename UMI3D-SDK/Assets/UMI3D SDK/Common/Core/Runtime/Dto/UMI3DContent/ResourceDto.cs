@@ -18,9 +18,17 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a resource, a list of variants for a file.
+    /// </summary>
+    /// Variants are used to load a file instead of another for optimization purposes.
     [System.Serializable]
     public class ResourceDto : UMI3DDto
     {
+        /// <summary>
+        /// File variants representing a same resource.
+        /// </summary>
+        /// Variants are used to load a file instead of another for optimization purposes.
         public List<FileDto> variants = new List<FileDto>();
 
         public ResourceDto() : base() { }

@@ -25,10 +25,25 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public class Cylinder : AbstractPrimitive
     {
+        /// <summary>
+        /// Radius of the cylinder.
+        /// </summary>
         public float radius { get; private set; }
+        /// <summary>
+        /// Heigth of the cylinder.
+        /// </summary>
         public float height { get; private set; }
+        /// <summary>
+        /// Position of the cylinder.
+        /// </summary>
         public Vector3 position;
+        /// <summary>
+        /// Rotation of the cylinder.
+        /// </summary>
         public Quaternion rotation;
+        /// <summary>
+        /// Scale of the cylinder.
+        /// </summary>
         public Vector3 scale;
 
         /// <summary>

@@ -20,8 +20,15 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO list that is itself a list of DTO.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class UMI3DDtoListDto<T> : UMI3DDto where T : UMI3DDto
     {
+        /// <summary>
+        /// List of DTOs.
+        /// </summary>
         public List<T> values;
     }
 }

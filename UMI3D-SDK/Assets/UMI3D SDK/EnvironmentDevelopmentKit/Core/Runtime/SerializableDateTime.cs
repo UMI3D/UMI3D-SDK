@@ -20,7 +20,9 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// Custom serialization of date time formats.
+    /// </summary>
     [System.Serializable]
     public class SerializableDateTime : ISerializationCallbackReceiver
     {
@@ -35,6 +37,7 @@ namespace umi3d.edk
         [HideInInspector][SerializeField] private int minutes;
         [HideInInspector][SerializeField] private int seconds;
 
+        [Tooltip("Pressing this button will update the date time to the current one.")]
         [HideInInspector][SerializeField] private bool setNow;
 
         [HideInInspector][SerializeField] private string culture = "en-US";
@@ -66,7 +69,7 @@ namespace umi3d.edk
             _dateTime = dateTime.ToString();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return dateTime.ToString(format);

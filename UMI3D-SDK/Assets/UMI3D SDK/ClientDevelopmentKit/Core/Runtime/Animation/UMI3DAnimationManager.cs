@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class UMI3DAnimationManager : inetum.unityUtils.SingleBehaviour<UMI3DAnimationManager>
     {
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
