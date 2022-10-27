@@ -40,11 +40,11 @@ namespace umi3d.edk
 
         #region asyncproperties
         /// <summary>
-        /// Indicates if the object is permanently facing the users XBillboard
+        /// Should the object be permanently facing the users XBillboard?
         /// </summary>
         public UMI3DAsyncProperty<bool> objectXBillboard { get { Register(); return _objectXBillboard; } protected set => _objectXBillboard = value; }
         /// <summary>
-        /// Indicates if the object is permanently facing the users YBillboard
+        /// Should the object be permanently facing the users YBillboard?
         /// </summary>
         public UMI3DAsyncProperty<bool> objectYBillboard { get { Register(); return _objectYBillboard; } protected set => _objectYBillboard = value; }
 
@@ -59,12 +59,12 @@ namespace umi3d.edk
         /// <summary>
         /// An editor field to modify default objectXBillboard value
         /// </summary>
-        [SerializeField, EditorReadOnly, Tooltip("Modify default objectXBillboard value")]
+        [SerializeField, EditorReadOnly, Tooltip("Should the object be permanently facing the users XBillboard?")]
         private bool xBillboard = false;
         /// <summary>
         /// An editor field to modify default objectYBillboard value
         /// </summary>
-        [SerializeField, EditorReadOnly, Tooltip("Modify default objectYBillboard value")]
+        [SerializeField, EditorReadOnly, Tooltip("Should the object be permanently facing the users YBillboard?")]
         private bool yBillboard = false;
 
         /// <summary>
