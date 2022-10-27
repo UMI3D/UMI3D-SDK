@@ -96,6 +96,11 @@ namespace umi3d.edk.userCapture
 
         private void Start()
         {
+            SetUp();
+        }
+
+        public void SetUp()
+        {
             if (NodeAnimation == null)
                 NodeAnimation = GetComponent<UMI3DNodeAnimation>();
 
