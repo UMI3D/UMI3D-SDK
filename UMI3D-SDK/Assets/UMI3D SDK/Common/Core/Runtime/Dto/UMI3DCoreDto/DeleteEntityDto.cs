@@ -25,7 +25,7 @@ namespace umi3d.common
     public class DeleteEntityDto : AbstractOperationDto
     {
         /// <summary>
-        /// Id of the entity to delete.
+        /// UMI3D Id of the entity to delete.
         /// </summary>
         public ulong entityId;
     }

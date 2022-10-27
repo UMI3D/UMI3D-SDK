@@ -21,6 +21,9 @@ namespace umi3d.common
     /// </summary>
     public class MissingEntityDto : AbstractEntityDto, IEntity
     {
+        /// <summary>
+        /// Reason why the entity is missing.
+        /// </summary>
         public MissingEntityDtoReason reason;
     }
 

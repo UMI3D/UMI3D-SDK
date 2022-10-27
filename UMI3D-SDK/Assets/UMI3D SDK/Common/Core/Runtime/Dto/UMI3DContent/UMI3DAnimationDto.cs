@@ -36,7 +36,7 @@ namespace umi3d.common
         public List<AnimationChainDto> animationChain = null;
 
         /// <summary>
-        /// DTo describing a piece of animation to play.
+        /// DTO describing a piece of animation to play.
         /// </summary>
         /// Animations in animation chain could be played simultaneously ou one after another by setting up the <see cref="startOnProgress"/> field.
         public class AnimationChainDto

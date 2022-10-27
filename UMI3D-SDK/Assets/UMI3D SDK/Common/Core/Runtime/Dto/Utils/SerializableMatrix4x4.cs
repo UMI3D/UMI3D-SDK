@@ -41,10 +41,21 @@ namespace umi3d.common
             this.c3 = c3;
         }
 
-
+        /// <summary>
+        /// 1st column.
+        /// </summary>
         public SerializableVector4 c0;
+        /// <summary>
+        /// 2nd column.
+        /// </summary>
         public SerializableVector4 c1;
+        /// <summary>
+        /// 3rd column.
+        /// </summary>
         public SerializableVector4 c2;
+        /// <summary>
+        /// 4th column.
+        /// </summary>
         public SerializableVector4 c3;
 
         public float this[int i]

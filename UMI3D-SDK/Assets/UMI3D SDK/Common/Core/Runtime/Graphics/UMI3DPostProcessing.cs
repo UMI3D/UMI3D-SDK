@@ -27,7 +27,7 @@ using UnityEngine.Rendering.PostProcessing;
 namespace umi3d.common.graphics
 {
     /// <summary>
-    /// Manager for post-processing efdects.
+    /// Manager for post-processing effects.
     /// </summary>
     public class UMI3DPostProcessing : UMI3DAbstractPostProcessing
     {

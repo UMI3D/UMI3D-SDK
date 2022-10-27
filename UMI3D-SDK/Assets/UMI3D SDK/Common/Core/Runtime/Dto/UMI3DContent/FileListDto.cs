@@ -20,6 +20,7 @@ namespace umi3d.common
     /// <summary>
     /// DTO describing a list of files using their path.
     /// </summary>
+    /// Typically used for listing files in a library.
     [System.Serializable]
     public class FileListDto : UMI3DDto
     {

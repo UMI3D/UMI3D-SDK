@@ -24,7 +24,14 @@ namespace umi3d.common
     [System.Serializable]
     public static class UMI3DGlobalID
     {
+        /// <summary>
+        /// Reserved UMI3D id for the server.
+        /// </summary>
         public const ulong ServerId = 100001;
+
+        /// <summary>
+        /// Reserved UMI3D id for the environment.
+        /// </summary>
         public const ulong EnvironementId = 100002;
     }
 }

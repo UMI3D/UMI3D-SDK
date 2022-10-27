@@ -22,7 +22,9 @@ namespace umi3d.common
     [System.Serializable]
     public class UIImageDto : UIRectDto
     {
-        //todo: ?
+        /// <summary>
+        /// Tint color.
+        /// </summary>
         public SerializableColor color;
 
         /// <summary>
@@ -31,9 +33,8 @@ namespace umi3d.common
         public ResourceDto sprite;
 
         /// <summary>
-        /// Type of the image.
+        /// Type of way to display the image.
         /// </summary>
-        // todo: yes and ?
         public ImageType type;
 
         public UIImageDto() : base() { }

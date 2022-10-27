@@ -25,6 +25,7 @@ namespace umi3d.common
         /// X position value of a matrix
         /// </summary>
         public int X;
+
         /// <summary>
         /// Y position value of a matrix
         /// </summary>

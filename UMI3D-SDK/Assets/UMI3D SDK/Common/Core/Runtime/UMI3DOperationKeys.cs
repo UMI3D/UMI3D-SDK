@@ -86,6 +86,12 @@ namespace umi3d.common
         public const uint VolumeUserTransit = 10100;
 
     }
+
+    /// <summary>
+    /// Contains the keys for all available parameter types within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning operations or request between the server and clients 
+    /// to identify what parameters to apply on processes started on the receiving side.
     public static class UMI3DParameterKeys
     {
         public const uint FloatRange = 1;

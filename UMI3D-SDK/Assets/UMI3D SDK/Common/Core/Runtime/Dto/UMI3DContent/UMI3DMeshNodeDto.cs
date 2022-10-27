@@ -16,25 +16,27 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a mesh on the scene graph.
+    /// </summary>
     [System.Serializable]
     public class UMI3DMeshNodeDto : UMI3DRenderedNodeDto
     {
-
         /// <summary>
         /// Model ressource.
         /// </summary>
         public ResourceDto mesh = new ResourceDto();
 
         /// <summary>
-        /// Optional id generator for child objects. Can be used to animate sub objects without to split it in different assets.
-        /// {{pid}} will be replaced by the objects parent id.
+        /// Optional id generator for child objects. Can be used to animate sub objects without to split it in different assets. <br/>
+        /// {{pid}} will be replaced by the objects parent id. <br/>
         /// {{name}} will be replaced by the sub-object's name (if there is any).
         /// </summary>
         public string idGenerator = null;
 
         /// <summary>
-        /// If true, add subobjects with id on the loaded mesh to track children (move, rotate, scale, activated, overide material).
-        /// If true, idGenerator must be not null and subobjects must have unique name.
+        /// If true, add subobjects with id on the loaded mesh to track children (move, rotate, scale, activated, overide material).<br/>
+        /// If true, idGenerator must be not null and subobjects must have unique name.<br/>
         /// If false, it is not possible to move the subobjects of this mesh.
         /// </summary>
         public bool areSubobjectsTracked;

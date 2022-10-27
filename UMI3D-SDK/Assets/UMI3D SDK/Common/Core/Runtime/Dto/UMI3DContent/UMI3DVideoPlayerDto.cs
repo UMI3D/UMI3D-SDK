@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// DTO describing a video player, a enriched playable video resource.K
+    /// DTO describing a video player, a enriched playable video resource.
     /// </summary>
     public class UMI3DVideoPlayerDto : UMI3DAbstractAnimationDto
     {

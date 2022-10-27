@@ -22,6 +22,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Helper to read a DTO in a separated thread.
+    /// </summary>
     public class ThreadDeserializer
     {
         private Thread thread;

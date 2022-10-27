@@ -25,12 +25,16 @@ namespace umi3d.common
     public abstract class AbstractBrowserRequestDto : UMI3DDto, IBytable
     {
         /// <summary>
-        /// Defines if the message have to be reliable.
+        /// Defines if the message have to be reliable. A reliable message will be more expensive but always be delivered.
         /// </summary>
         protected bool reliable = true;
 
-
+        /// <summary>
+        /// Retrieve the UMI3D operation ID assccoiated to the request.
+        /// </summary>
+        /// <returns></returns>
         protected abstract uint GetOperationId();
+
         /// <inheritdoc/>
         public virtual Bytable ToBytableArray(params object[] parameters)
         {

@@ -53,7 +53,9 @@ namespace umi3d.common
         /// </summary>
         public AssetMetricDto metrics;
 
-
+        /// <summary>
+        /// Authorization header for HTTP authentification scheme.
+        /// </summary>
         public string authorization;
 
         public FileDto() : base() { }

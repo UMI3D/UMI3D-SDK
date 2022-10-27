@@ -22,6 +22,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Helper to write a DTO in a separated thread.
+    /// </summary>
     public class ThreadWritter
     {
         private readonly string path;

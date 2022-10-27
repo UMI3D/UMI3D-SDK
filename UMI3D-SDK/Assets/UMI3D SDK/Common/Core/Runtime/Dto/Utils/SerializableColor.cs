@@ -25,9 +25,24 @@ namespace umi3d.common
     [Serializable]
     public class SerializableColor : UMI3DDto
     {
+        /// <summary>
+        /// Red color channel. Value between 0 and 1.
+        /// </summary>
         public float R;
+
+        /// <summary>
+        /// Green color channel. Value between 0 and 1.
+        /// </summary>
         public float G;
+
+        /// <summary>
+        /// Blue color channel. Value between 0 and 1.
+        /// </summary>
         public float B;
+
+        /// <summary>
+        /// Alpha opacity channel. Value between 0 and 1.
+        /// </summary>
         public float A;
 
         public SerializableColor() : base()

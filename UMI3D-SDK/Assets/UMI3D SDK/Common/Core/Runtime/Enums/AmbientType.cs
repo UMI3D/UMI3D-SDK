@@ -21,7 +21,13 @@ namespace umi3d.common
     /// </summary>
     public enum AmbientType
     {
+        /// <summary>
+        /// Compute the ambient color from the Skybox.
+        /// </summary>
         Skybox,
+        /// <summary>
+        /// Single ambient color.
+        /// </summary>
         Flat,
         Gradient
     }
