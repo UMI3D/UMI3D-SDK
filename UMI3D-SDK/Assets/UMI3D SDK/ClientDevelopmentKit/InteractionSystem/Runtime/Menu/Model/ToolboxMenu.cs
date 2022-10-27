@@ -39,7 +39,7 @@ namespace umi3d.cdk.menu.interaction
         /// Set up the menu for the toolbox.
         /// </summary>
         /// <param name="tool"></param>
-        public void Setup(Toolbox toolbox)
+        public async void Setup(Toolbox toolbox)
         {
             this.toolbox = toolbox;
             Name = toolbox.name;
@@ -51,10 +51,8 @@ namespace umi3d.cdk.menu.interaction
 
                 if ((icon2DFile.url != null) && (icon2DFile.url != ""))
                 {
-                    UMI3DResourcesManager.GetFile(
-                        icon2DFile.url,
-                        rawData => this.icon2D.LoadRawTextureData(rawData),
-                        e => UMI3DLogger.LogError(e, DebugScope.Interaction));
+                    var rawData = await UMI3DResourcesManager.GetFile(icon2DFile.url);
+                    this.icon2D.LoadRawTextureData(rawData);
                 }
             }
 

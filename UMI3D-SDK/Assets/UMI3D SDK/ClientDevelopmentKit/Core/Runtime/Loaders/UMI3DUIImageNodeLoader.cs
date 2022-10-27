@@ -17,6 +17,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,7 +38,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the UMI3D UI Image will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public void ReadUMI3DExtension(UIImageDto dto, GameObject node)
+        public async Task ReadUMI3DExtension(UIImageDto dto, GameObject node)
         {
             Image image = node.GetOrAddComponent<Image>();
             image.color = dto.color;
@@ -53,28 +54,16 @@ namespace umi3d.cdk
 
             FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite.variants);
 
-            string url = fileToLoad.url;
             string ext = fileToLoad.extension;
-            string authorization = fileToLoad.authorization;
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
             {
-                UMI3DResourcesManager.LoadFile(
-                    dto.id,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (o) =>
-                    {
-                        var tex = (Texture2D)o;
-                        if (tex != null)
-                            image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
-                        else
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                    },
-                    e => UMI3DLogger.LogException(e, scope),
-                    loader.DeleteObject
-                    );
+                var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad,loader );
+                var tex = (Texture2D)o;
+                if (tex != null)
+                    image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+                else
+                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
             }
         }
 
@@ -112,36 +101,28 @@ namespace umi3d.cdk
                             dto.sprite.variants = null;
                             break;
                         }
-
-                        string url = fileToLoad.url;
-                        string ext = fileToLoad.extension;
-                        string authorization = fileToLoad.authorization;
-                        IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
-                        if (loader != null)
-                        {
-                            UMI3DResourcesManager.LoadFile(
-                                dto.id,
-                                fileToLoad,
-                                loader.UrlToObject,
-                                loader.ObjectFromCache,
-                                (o) =>
-                                {
-                                    var tex = (Texture2D)o;
-                                    if (tex != null)
-                                        image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
-                                    else
-                                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                                },
-                                e => UMI3DLogger.LogException(e, scope),
-                                loader.DeleteObject
-                                );
-                        }
+                        LoadText(image, fileToLoad, dto);
                     }
                     break;
                 default:
                     return false;
             }
             return true;
+        }
+
+        async void LoadText(Image image, FileDto fileToLoad, UIImageDto dto)
+        {
+            string ext = fileToLoad.extension;
+            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            if (loader != null)
+            {
+                var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad, loader);
+                var tex = (Texture2D)o;
+                if (tex != null)
+                    image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+                else
+                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+            }
         }
 
         public bool SetUMI3DPorperty(UIImageDto dto, UMI3DNodeInstance node, uint operationId, uint propertyKey, ByteContainer container)
@@ -172,30 +153,7 @@ namespace umi3d.cdk
                             dto.sprite.variants = null;
                             break;
                         }
-
-                        string url = fileToLoad.url;
-                        string ext = fileToLoad.extension;
-                        string authorization = fileToLoad.authorization;
-                        IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
-                        if (loader != null)
-                        {
-                            UMI3DResourcesManager.LoadFile(
-                                dto.id,
-                                fileToLoad,
-                                loader.UrlToObject,
-                                loader.ObjectFromCache,
-                                (o) =>
-                                {
-                                    var tex = (Texture2D)o;
-                                    if (tex != null)
-                                        image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
-                                    else
-                                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                                },
-                                e => UMI3DLogger.LogWarning(e, scope),
-                                loader.DeleteObject
-                                );
-                        }
+                        LoadText(image, fileToLoad, dto);
                     }
                     break;
                 default:

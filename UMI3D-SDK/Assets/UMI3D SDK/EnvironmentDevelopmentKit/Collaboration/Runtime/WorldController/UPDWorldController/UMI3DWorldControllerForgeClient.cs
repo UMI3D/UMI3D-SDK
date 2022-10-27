@@ -40,7 +40,7 @@ namespace umi3d.worldController
 
         protected override void _ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            api?.OnMessage(frame.GroupId, frame?.StreamData?.byteArr);
+            api?.OnMessage(frame.TimeStep, frame.GroupId, frame?.StreamData?.byteArr);
         }
 
         /// <summary>

@@ -33,6 +33,35 @@ namespace umi3d.edk.userCapture
     public class UMI3DHandPose : ScriptableObject, UMI3DLoadableEntity
     {
         /// <summary>
+        /// To make a clone of the current handpose thats registered to the ressouce manager
+        /// </summary>
+        /// <returns></returns>
+        public UMI3DHandPose Clone()
+        {
+            UMI3DHandPose hp = CreateInstance<UMI3DHandPose>();
+            hp.IsActive = this.IsActive;
+            hp.isRelativeToNode = this.isRelativeToNode;
+            hp.PoseName = this.PoseName;
+            hp.RightHandPosition = this.RightHandPosition;
+            hp.LeftHandPosition = this.LeftHandPosition;
+            hp.RightHandEulerRotation = this.RightHandEulerRotation;
+            hp.LeftHandEulerRotation = this.LeftHandEulerRotation;
+            hp.PhalanxRotations.AddRange(this.PhalanxRotations);
+            hp.registered = false;
+            hp.PoseId = hp.Id();
+            UMI3DEmbodimentManager.Instance.AddAnHandPoseRef(hp);
+            return hp;
+        }
+
+        /// <summary>
+        /// To Diregister the HandposeFrom The embodiment manager at run time
+        /// </summary>
+        public void UnRegistered()
+        {
+            UMI3DEmbodimentManager.Instance.RemoveHandPose(this);
+        }
+
+        /// <summary>
         /// Entity UMI3D id.
         /// </summary>
         [HideInInspector]
@@ -59,11 +88,11 @@ namespace umi3d.edk.userCapture
         public class PhalanxRotation
         {
             [HideInInspector]
-            public uint phalanxId;
+            public int phalanxId;
             public string Phalanx;
             public Vector3 PhalanxEulerRotation;
 
-            public PhalanxRotation(uint id, string boneType, Vector3 rotation)
+            public PhalanxRotation(int id, string boneType, Vector3 rotation)
             {
                 phalanxId = id;
                 Phalanx = boneType;
@@ -164,14 +193,13 @@ namespace umi3d.edk.userCapture
                 id = PoseId,
                 Name = PoseName,
                 IsActive = IsActive,
-                //IsRight = IsRight,
                 HoverPose = HoverAnimation,
                 isRelativeToNode = isRelativeToNode,
                 RightHandPosition = RightHandPosition,
                 RightHandEulerRotation = RightHandEulerRotation,
                 LeftHandPosition = LeftHandPosition,
                 LeftHandEulerRotation = LeftHandEulerRotation,
-                PhalanxRotations = PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation)
+                PhalanxRotations = PhalanxRotations.ToDictionary(x => (uint)x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation)
             };
         }
 

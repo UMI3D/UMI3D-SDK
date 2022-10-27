@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2022 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,24 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+#if UNITY_EDITOR
+
+using UnityEditor;
+
+namespace umi3d.edk.editor
 {
-    public class DofType : GenericEnumString
+    [CustomEditor(typeof(UMI3DLineRenderer), true)]
+    [CanEditMultipleObjects]
+    public class UMI3DLineRendererEditor : RenderedNodeEditor
     {
-        public DofType(string value) : base(value)
+        ///<inheritdoc/>
+        protected override void InspectorForMeshCollider()
         {
-        }
-
-        public static DofType Translation => new DofType("Translation");
-        public static DofType Rotation => new DofType("Rotation");
-
-        public static implicit operator DofType(string str)
-        {
-            if (str == Translation)
-                return Translation;
-            if (str == Rotation)
-                return Rotation;
-            return Translation;
+            EditorGUILayout.PropertyField(isMeshCustom);
         }
     }
 }
+#endif

@@ -39,7 +39,7 @@ namespace umi3d.cdk.menu.interaction
         /// Set up the menu for the global tool.
         /// </summary>
         /// <param name="tool"></param>
-        public void Setup(GlobalTool tool)
+        public async void Setup(GlobalTool tool)
         {
             RemoveAll();
             this.tool = tool;
@@ -51,10 +51,10 @@ namespace umi3d.cdk.menu.interaction
                 FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(tool.icon2D.variants);
 
                 if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
-                    UMI3DResourcesManager.GetFile(
-                        icon2DFile.url,
-                        rawData => this.icon2D.LoadRawTextureData(rawData),
-                        e => UMI3DLogger.LogError(e, DebugScope.Interaction));
+                {
+                    var rawData = await UMI3DResourcesManager.GetFile(icon2DFile.url);
+                    this.icon2D.LoadRawTextureData(rawData);
+                }
             }
 
             tool.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id)));

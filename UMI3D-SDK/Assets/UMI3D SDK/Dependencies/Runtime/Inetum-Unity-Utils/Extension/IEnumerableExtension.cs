@@ -41,6 +41,9 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static string ToString<A>(this IEnumerable<A> source, Func<A, string> action)
         {
+            if (source.Count() == 0)
+                return "[]";
+
             return ($"[{source.Select(v => action(v)).Aggregate((a, b) => $"{a};{b}")}]");
         }
         /// <summary>

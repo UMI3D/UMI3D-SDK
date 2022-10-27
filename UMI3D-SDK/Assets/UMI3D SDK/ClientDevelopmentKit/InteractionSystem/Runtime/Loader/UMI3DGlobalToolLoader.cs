@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -68,36 +69,21 @@ namespace umi3d.cdk.interaction
         /// <param name="dto">Tool dto</param>
         /// <param name="finished">Callback on finished</param>
         /// <param name="failed">Callback on failed</param>
-        public static void ReadUMI3DExtension(GlobalToolDto dto, Action finished, Action<Umi3dException> failed, Toolbox parent = null)
+        public static async Task ReadUMI3DExtension(GlobalToolDto dto, Toolbox parent = null)
         {
             if (GlobalTool.GetGlobalTools().Exists(t => t.id == dto.id))
                 return;
-
+            
             if (dto is ToolboxDto toolbox)
             {
                 var tool = new Toolbox(dto, parent);
                 var subTools = new Stack<GlobalToolDto>(toolbox.tools);
-
-                Action recursiveSubToolsLoading = null;
-                recursiveSubToolsLoading = () =>
-                {
-                    if (subTools.Count > 0)
-                    {
-                        ReadUMI3DExtension(subTools.Pop(), recursiveSubToolsLoading, failed, tool);
-                    }
-                    else
-                    {
-                        finished?.Invoke();
-                        onGlobalToolCreation.Invoke(tool);
-                    }
-                };
-                recursiveSubToolsLoading();
+                onGlobalToolCreation?.Invoke(tool);
+                while (subTools.Count > 0)
+                    await ReadUMI3DExtension(subTools.Pop(), tool);
             }
             else
-            {
-                finished?.Invoke();
-                onGlobalToolCreation.Invoke(new GlobalTool(dto, parent));
-            }
+                onGlobalToolCreation?.Invoke(new GlobalTool(dto, parent));
         }
 
         /// <summary>
@@ -149,7 +135,7 @@ namespace umi3d.cdk.interaction
                                 UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
                                 return false;
                             }
-                            ReadUMI3DExtension(value, null, null);
+                            ReadUMI3DExtension(value, null);
                             break;
                         case SetEntityListRemovePropertyDto rem:
                             int i = rem.index;
@@ -167,7 +153,7 @@ namespace umi3d.cdk.interaction
                             list.Clear();
                             list.AddRange(property.value as List<GlobalToolDto>);
                             foreach (GlobalToolDto t in list)
-                                ReadUMI3DExtension(t, null, null);
+                                ReadUMI3DExtension(t, null);
                             break;
                     }
                     onGlobalToolUpdate?.Invoke(tb);
@@ -213,7 +199,7 @@ namespace umi3d.cdk.interaction
                                 UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
                                 return false;
                             }
-                            ReadUMI3DExtension(value, null, null);
+                            ReadUMI3DExtension(value, null);
                             break;
                         case UMI3DOperationKeys.SetEntityListRemoveProperty:
                             int i = UMI3DNetworkingHelper.Read<int>(container);
@@ -231,7 +217,7 @@ namespace umi3d.cdk.interaction
                             list.Clear();
                             list.AddRange(UMI3DNetworkingHelper.ReadList<GlobalToolDto>(container));
                             foreach (GlobalToolDto t in list)
-                                ReadUMI3DExtension(t, null, null);
+                                ReadUMI3DExtension(t, null);
                             break;
                     }
                     onGlobalToolUpdate?.Invoke(tb);

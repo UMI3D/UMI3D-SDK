@@ -368,9 +368,11 @@ namespace umi3d.cdk.collaboration
                 switch (dto)
                 {
                     case TransactionDto transaction:
-                        MainThreadManager.Run(() =>
+                        MainThreadManager.Run(async () =>
                         {
-                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(transaction));
+                            await UMI3DTransactionDispatcher.PerformTransaction(transaction);
+                            if(UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
 
                         break;
@@ -378,6 +380,8 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                         });
 
                         break;
@@ -385,6 +389,9 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             SendGetLocalInfo(requestGet.key);
+
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                         });
 
                         break;
@@ -399,6 +406,9 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 SendPostFile(token, fileName, bytesToUpload);
+
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -406,12 +416,16 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.Connect(redirection);
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                         });
                         break;
                     case ForceLogoutDto forceLogout:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                         });
                         break;
                     default:
@@ -421,14 +435,17 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame.StreamData.byteArr);
+                var container = new ByteContainer(frame);
                 uint TransactionId = UMI3DNetworkingHelper.Read<uint>(container);
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
-                        MainThreadManager.Run(() =>
+                        MainThreadManager.Run(async () =>
                         {
-                            StartCoroutine(UMI3DTransactionDispatcher.PerformTransaction(container));
+                            await UMI3DTransactionDispatcher.PerformTransaction(container);
+
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
@@ -438,6 +455,8 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 StartCoroutine(UMI3DNavigation.Navigate(nav));
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -449,6 +468,9 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 StartCoroutine(UMI3DNavigation.Navigate(nav));
+
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -470,6 +492,9 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 StartCoroutine(UMI3DNavigation.Navigate(nav));
+
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -498,6 +523,9 @@ namespace umi3d.cdk.collaboration
                             {
                                 StartCoroutine(UMI3DNavigation.Navigate(nav));
                                 UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
+
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -512,6 +540,9 @@ namespace umi3d.cdk.collaboration
                                     UMI3DClientUserTracking.Instance.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
                                 else
                                     UMI3DClientUserTracking.Instance.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
+
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -532,6 +563,9 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 SendPostFile(token, name, bytesToUpload);
+
+                                if (UMI3DCollaborationClientServer.transactionPending != null)
+                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                             });
                         }
                         break;
@@ -540,6 +574,9 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.Connect(redirection);
+
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                         });
                         break;
                     case UMI3DOperationKeys.ForceLogoutRequest:
@@ -547,6 +584,9 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
+
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
+                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
                         });
                         break;
                     default:
@@ -626,11 +666,10 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame.StreamData.byteArr);
+                var container = new ByteContainer(frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DNetworkingHelper.ReadList<UserTrackingFrameDto>(container);
-
                     foreach (UserTrackingFrameDto trackingFrame in frames)
                     {
                         if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar) && userAvatar is UMI3DCollaborativeUserAvatar user)

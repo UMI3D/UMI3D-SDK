@@ -193,9 +193,13 @@ namespace umi3d.edk.collaboration
 
             if (!notifiedByUser)
             {
-                lostUsers.Add(user.Id(), user);
+                if (!lostUsers.ContainsKey(user.Id()))
+                    lostUsers.Add(user.Id(), user);
+                else
+                    UMI3DLogger.LogError($"Lost users already contains a key with {user.Id()}", scope);
+
                 await UMI3DAsyncManager.Delay(600000); // wait 10 min for reco
-                if (user.status != StatusType.NONE)
+                if (user.status == StatusType.NONE)
                 {
                     lostUsers.Remove(user.Id());
                     UMI3DCollaborationServer.Instance.NotifyUnregistered(user);
@@ -312,8 +316,10 @@ namespace umi3d.edk.collaboration
         private IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            SetEntityProperty op = objectUserList.Add(user);
-            op.users = new HashSet<UMI3DUser>(op.users.Where((u) => u.hasJoined));
+            objectUserList.Add(user);
+
+            SetEntityProperty op = objectUserList.GetSetEntityOperationForUsers(u => u.hasJoined);
+
             var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(op);
             UMI3DServer.Dispatch(tr);
@@ -335,14 +341,13 @@ namespace umi3d.edk.collaboration
         private IEnumerator UpdateUser(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            int index = objectUserList.GetValue().IndexOf(user);
-            if (index > 0)
-            {
-                var operation = objectUserList.GetSetEntityOperationForUsers(index, (u) => u.hasJoined);
-                var tr = new Transaction() { reliable = true };
-                tr.AddIfNotNull(operation);
-                UMI3DServer.Dispatch(tr);
-            }
+
+            Transaction transaction = new Transaction() { reliable = true };
+
+            var operation = objectUserList.GetSetEntityOperationForUsers(u => u.hasJoined);
+
+            transaction.AddIfNotNull(operation);
+            transaction.Dispatch();
         }
 
 

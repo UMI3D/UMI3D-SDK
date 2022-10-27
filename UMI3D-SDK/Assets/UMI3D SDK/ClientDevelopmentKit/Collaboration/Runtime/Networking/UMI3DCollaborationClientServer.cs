@@ -27,6 +27,8 @@ namespace umi3d.cdk.collaboration
 
     public class OnForceLogoutEvent : UnityEvent<string> { }
 
+    public class OnProgressEvent : UnityEvent<Progress> { }
+
     /// <summary>
     /// Collaboration Extension of the UMI3DClientServer
     /// </summary>
@@ -37,12 +39,16 @@ namespace umi3d.cdk.collaboration
         public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
         public static bool useDto => environmentClient?.useDto ?? false;
 
+        public static PendingTransactionDto transactionPending = null;
+
         private static UMI3DWorldControllerClient worldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 
         public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
 
         protected override ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
+
+        public static Func<MultiProgress> EnvironmentProgress = null;
 
         public UnityEvent OnLeaving = new UnityEvent();
         public UnityEvent OnLeavingEnvironment = new UnityEvent();
@@ -56,6 +62,8 @@ namespace umi3d.cdk.collaboration
 
         public UnityEvent OnConnectionCheck = new UnityEvent();
         public UnityEvent OnConnectionRetreived = new UnityEvent();
+
+        static public OnProgressEvent onProgress = new OnProgressEvent();
 
         public OnForceLogoutEvent OnForceLogoutMessage = new OnForceLogoutEvent();
 
@@ -115,7 +123,11 @@ namespace umi3d.cdk.collaboration
             {
                 Instance.OnReconnect.Invoke();
                 UMI3DEnvironmentLoader.Clear(false);
-                environmentClient = await worldControllerClient.ConnectToEnvironment();
+
+                MultiProgress progress = new MultiProgress("Reconnect");
+                onProgress.Invoke(progress);
+
+                environmentClient = await worldControllerClient.ConnectToEnvironment(progress);
                 environmentClient.status = StatusType.CREATED;
             }
         }
@@ -157,8 +169,11 @@ namespace umi3d.cdk.collaboration
                         //Connection will not restart without this...
                         await Task.Yield();
 
+                        MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joinning Environment");
+                        onProgress.Invoke(progress);
+
                         worldControllerClient = wc;
-                        environmentClient = await wc.ConnectToEnvironment();
+                        environmentClient = await wc.ConnectToEnvironment(progress);
                         environmentClient.status = StatusType.CREATED;
                     }
                 }

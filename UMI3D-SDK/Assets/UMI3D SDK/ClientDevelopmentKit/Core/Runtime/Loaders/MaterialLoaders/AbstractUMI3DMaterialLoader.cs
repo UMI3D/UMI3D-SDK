@@ -76,7 +76,7 @@ namespace umi3d.cdk
         /// <param name="materialKey">The Shader property, it contains the id/name used to change the good texture in the material</param>
         /// <param name="mat">the material to modify</param>
         /// <param name="alternativeCallback">The basic callback is juste apply the new shader property in the shader but you can overide it to do some other action and then apply the property in the shader</param>
-        public static void LoadTextureInMaterial(ulong id, TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat, Action<Texture2D> alternativeCallback = null)
+        public static async void LoadTextureInMaterial(ulong id, TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat, Action<Texture2D> alternativeCallback = null)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1)
             {
@@ -92,42 +92,32 @@ namespace umi3d.cdk
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
             {
-                UMI3DResourcesManager.LoadFile(
-                    id,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (o) =>
-                    {
-                        var tex = (Texture2D)o;
-                        if (tex != null)
-                        {
+                var o = await UMI3DResourcesManager.LoadFile(id, fileToLoad, loader);
+                var tex = (Texture2D)o;
+                if (tex != null)
+                {
 
-                            try
-                            {
-                                if (alternativeCallback == null)
-                                    mat.ApplyShaderProperty(materialKey, tex);
-                                else
-                                    alternativeCallback.Invoke(tex);
-                            }
-                            catch
-                            {
-                                UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
-                            }
-                        }
+                    try
+                    {
+                        if (alternativeCallback == null)
+                            mat.ApplyShaderProperty(materialKey, tex);
                         else
-                        {
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                        }
-                    },
-                    e => UMI3DLogger.LogWarning(e, scope),
-                    loader.DeleteObject
-                    );
+                            alternativeCallback.Invoke(tex);
+                    }
+                    catch
+                    {
+                        UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
+                    }
+                }
+                else
+                {
+                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                }
             }
         }
 
         [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
-        protected static void LoadTextureInMaterial(ulong id, TextureDto textureDto, string materialKey, Material mat)
+        protected static async void LoadTextureInMaterial(ulong id, TextureDto textureDto, string materialKey, Material mat)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
 
@@ -139,38 +129,28 @@ namespace umi3d.cdk
             IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
             if (loader != null)
             {
-                UMI3DResourcesManager.LoadFile(
-                    id,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (o) =>
+                var o = await UMI3DResourcesManager.LoadFile(id, fileToLoad, loader);
+                var tex = (Texture2D)o;
+                if (tex != null)
+                {
+                    /*  if (textureDto is ScalableTextureDto)
+                      {
+                          tex.Resize((int)(tex.width * ((ScalableTextureDto)textureDto).scale), (int)(tex.height * ((ScalableTextureDto)textureDto).scale));
+                      }*/
+                    try
                     {
-                        var tex = (Texture2D)o;
-                        if (tex != null)
-                        {
-                            /*  if (textureDto is ScalableTextureDto)
-                              {
-                                  tex.Resize((int)(tex.width * ((ScalableTextureDto)textureDto).scale), (int)(tex.height * ((ScalableTextureDto)textureDto).scale));
-                              }*/
-                            try
-                            {
-                                mat.SetTexture(materialKey, tex);
-                            }
-                            catch(Exception e)
-                            {
-                                UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
-                                UMI3DLogger.LogException(e, scope);
-                            }
-                        }
-                        else
-                        {
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                        }
-                    },
-                    e => UMI3DLogger.LogException(e, scope),
-                    loader.DeleteObject
-                    );
+                        mat.SetTexture(materialKey, tex);
+                    }
+                    catch (Exception e)
+                    {
+                        UMI3DLogger.LogError("invalid texture key : " + materialKey, scope);
+                        UMI3DLogger.LogException(e, scope);
+                    }
+                }
+                else
+                {
+                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                }
             }
         }
 

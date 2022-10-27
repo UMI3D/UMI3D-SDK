@@ -251,42 +251,33 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-
         /// <summary>
         /// Send request using POST method to update user Identity.
         /// </summary>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
-        public async void SendPostUpdateIdentityAsync(UserConnectionAnswerDto answer, bool throwError = false, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task<PendingTransactionDto> SendPostUpdateIdentity(UserConnectionAnswerDto answer, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            try
-            {
-                await SendPostUpdateIdentity(answer, shouldTryAgain);
-            }
-            catch (UMI3DAsyncManagerException)
-            {
-
-            }
-            catch
-            {
-                if (throwError)
-                    throw;
-            }
-        }
-
-        /// <summary>
-        /// Send request using POST method to update user Identity.
-        /// </summary>
-        /// <param name="callback">Action to be call when the request succeed.</param>
-        /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostUpdateIdentity(UserConnectionAnswerDto answer, Func<RequestFailedArgument, bool> shouldTryAgain = null)
-        {
+            PendingTransactionDto result = null;
             UMI3DLogger.Log($"Send PostUpdateIdentity", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, null, answer.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            using (UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.connection_information_update, null, answer.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+                try
+                {
+                    var b = uwr?.downloadHandler.data;
+                    if(b != null)
+                    {
+                        result = UMI3DDto.FromBson<PendingTransactionDto>(b);
+                    }
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
+            }
             UMI3DLogger.Log($"Received PostUpdateIdentity", scope | DebugScope.Connection);
+            return result;
         }
-
-
 
         /// <summary>
         /// Send request using POST method to update user Identity.
@@ -318,7 +309,8 @@ namespace umi3d.cdk.collaboration
         public async Task SendPostUpdateStatus(StatusType status, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostUpdateStatus", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.status_update, null, new StatusDto() { status = status }.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.status_update, null, new StatusDto() { status = status }.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            uwr.Dispose();
             UMI3DLogger.Log($"Received PostUpdateStatus", scope | DebugScope.Connection);
         }
 
@@ -330,7 +322,8 @@ namespace umi3d.cdk.collaboration
         public async Task SendPostLogout(Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Send PostLogout", scope | DebugScope.Connection);
-            await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.logout, null, new UMI3DDto().ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.logout, null, new UMI3DDto().ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            uwr.Dispose();
             UMI3DLogger.Log($"Received PostLogout", scope | DebugScope.Connection);
         }
         #endregion
@@ -514,7 +507,8 @@ namespace umi3d.cdk.collaboration
         {
             UMI3DLogger.Log($"Send PostLocalInfo {key}", scope | DebugScope.Connection);
             string url = System.Text.RegularExpressions.Regex.Replace(httpUrl + UMI3DNetworkingKeys.localData, ":param", key);
-            await _PostRequest(HeaderToken, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            UnityWebRequest uwr = await _PostRequest(HeaderToken, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+            uwr.Dispose();
             UMI3DLogger.Log($"Received PostLocalInfo {key}", scope | DebugScope.Connection);
         }
 
@@ -555,7 +549,8 @@ namespace umi3d.cdk.collaboration
             {
                 (UMI3DNetworkingKeys.contentHeader, fileName)
             };
-            await _PostRequest(HeaderToken, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers);
+            UnityWebRequest uwr = await _PostRequest(HeaderToken, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers);
+            uwr.Dispose();
         }
         #endregion
 
@@ -593,7 +588,7 @@ namespace umi3d.cdk.collaboration
                 if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
                     return await _GetRequest(HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount + 1);
                 else
-                    throw new Umi3dException(www.responseCode, www.error + " Failed to get " + www.url);
+                    throw new Umi3dNetworkingException(www, "Failed to get ");
             }
             return www;
         }
@@ -635,7 +630,7 @@ namespace umi3d.cdk.collaboration
                 else
                 {
                     UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(bytes));
-                    throw new Umi3dException(www.responseCode, www.error + " Failed to post " + www.url + "\n " + www.downloadHandler.text);
+                    throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
                 }
             }
             return www;

@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -35,22 +36,18 @@ namespace umi3d.cdk.interaction
         /// <param name="node">Associated node</param>
         /// <param name="finished">Callback on finished</param>
         /// <param name="failed">Callback on failed</param>
-        public static void ReadUMI3DExtension(InteractableDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public static async Task ReadUMI3DExtension(InteractableDto dto, GameObject node)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId, (e) =>
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId);
+
+            if (e is UMI3DNodeInstance nodeI)
             {
-                if (e is UMI3DNodeInstance nodeI)
-                {
-                    node = nodeI.gameObject;
-                    Interactable interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-                    UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
-                    finished?.Invoke();
-                }
-                else
-                {
-                    failed.Invoke(new Umi3dException($"Entity [{dto.nodeId}] is not a node"));
-                }
-            });
+                node = nodeI.gameObject;
+                Interactable interactable = node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
+                UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
+            }
+            else
+                throw (new Umi3dException($"Entity [{dto.nodeId}] is not a node"));
         }
 
         /// <summary>

@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.utils.extrapolation;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.utils.serialization;
 using UnityEngine;
@@ -67,6 +68,35 @@ namespace umi3d.cdk
                 else
                     Instance.entitywaited[id] = new List<(Action<UMI3DEntityInstance>, Action)>() { (entityLoaded, entityFailedToLoad) };
             }
+        }
+
+        public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id)
+        {
+            if (!Exists)
+                throw new Umi3dException("Do Not Exist");
+            if (Instance.entitywaited == null)
+                throw new Umi3dException("Do Not Exist");
+
+            UMI3DEntityInstance node = GetEntity(id);
+            if (node != null && node.IsLoaded)
+            {
+                return (node);
+            }
+            UMI3DEntityInstance loaded = null;
+            bool error = false;
+            bool finished = false;
+
+            Action<UMI3DEntityInstance> entityLoaded = (e) => { loaded = e; finished = true; };
+            Action entityFailedToLoad = () => { error = true; finished = true; };
+
+            WaitForAnEntityToBeLoaded(id, entityLoaded, entityFailedToLoad);
+
+            while (!finished)
+                await UMI3DAsyncManager.Yield();
+            if (error)
+                throw new Umi3dException("Entity Failed to be loaded");
+
+            return loaded;
         }
 
         private static bool NotifyEntityToBeLoaded(ulong id)
@@ -215,29 +245,6 @@ namespace umi3d.cdk
         /// </summary>
         private GlTFEnvironmentDto environment;
 
-        /// <summary>
-        /// Number of UMI3D nodes.
-        /// = Number of scenes + Number of glTF nodes
-        /// </summary>
-        private float nodesToInstantiate = 0;
-
-        /// <summary>
-        /// Number of UMI3D nodes.
-        /// = Number of scenes + Number of glTF nodes
-        /// </summary>
-        private float instantiatedNodes = 0;
-
-        /// <summary>
-        /// Number of UMI3D nodes.
-        /// = Number of scenes + Number of glTF nodes
-        /// </summary>
-        private float resourcesToLoad = 0;
-
-        /// <summary>
-        /// Number of loaded resources.
-        /// </summary>
-        private float loadedResources = 0;
-
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
 
@@ -289,26 +296,9 @@ namespace umi3d.cdk
         #region workflow
 
         /// <summary>
-        /// Indicates if a UMI3D environment has been loaded
-        /// </summary>
-        public bool started { get; private set; } = false;
-
-        /// <summary>
-        /// Indicates if the UMI3D environment's resources has been loaded
-        /// </summary>
-        public bool downloaded { get; private set; } = false;
-
-        /// <summary>
         /// Indicates if the UMI3D environment has been fully loaded
         /// </summary>
         public bool loaded { get; private set; } = false;
-
-        [System.Serializable]
-        public class ProgressListener : UnityEvent<float> { }
-        public ProgressListener onProgressChange = new ProgressListener();
-
-        public class ProgressListenerTitle : UnityEvent<string> { }
-        public ProgressListenerTitle onProgressTitleChange = new ProgressListenerTitle();
 
         public UnityEvent onResourcesLoaded = new UnityEvent();
         public UnityEvent onEnvironmentLoaded = new UnityEvent();
@@ -318,12 +308,6 @@ namespace umi3d.cdk
         /// </summary>
         public bool isEnvironmentLoaded = false;
 
-
-        public void NotifyLoad()
-        {
-            onProgressChange.Invoke(0);
-        }
-
         /// <summary>
         /// Load the Environment.
         /// </summary>
@@ -331,90 +315,84 @@ namespace umi3d.cdk
         /// <param name="onSuccess">Finished callback.</param>
         /// <param name="onError">Error callback.</param>
         /// <returns></returns>
-        public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
+        public async Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress)
         {
+            Progress downloadingProgress = new Progress(0, "Downloading");
+            Progress ReadingDataProgress = new Progress(2, "Reading Data");
+            MultiProgress loadingProgress = new MultiProgress("Loading");
+            Progress endProgress = new Progress(6, "Cleaning the room");
+            LoadProgress.Add(downloadingProgress);
+            LoadProgress.Add(ReadingDataProgress);
+            LoadProgress.Add(loadingProgress);
+            LoadProgress.Add(endProgress);
+
             if (baseMaterial == null)
             {
                 throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
             }
-            onProgressTitleChange.Invoke("Init Loading");
-            onProgressChange.Invoke(0.1f);
+
             isEnvironmentLoaded = false;
 
             environment = dto;
             RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
-            nodesToInstantiate = dto.scenes.Count;
-            foreach (GlTFSceneDto sce in dto.scenes)
-                nodesToInstantiate += sce.nodes.Count;
             //
             // Load resources
             //
-            onProgressTitleChange.Invoke("Load resources");
-            StartCoroutine(LoadResources(dto));
-            while (!downloaded)
-            {
-                onProgressChange.Invoke(resourcesToLoad == 0 ? 0.2f : 0.1f + (loadedResources / resourcesToLoad * 0.4f));
-                onProgressTitleChange.Invoke($"Load resources {(loadedResources / resourcesToLoad * 100).ToString("N2")} %");
-                yield return null;
-            }
-            onProgressTitleChange.Invoke("Resources Loaded");
+            await LoadResources(dto, downloadingProgress);
 
-            onProgressChange.Invoke(0.5f);
             onResourcesLoaded.Invoke();
 
+            ReadingDataProgress.AddComplete();
             //
             // Instantiate nodes
             //
-            onProgressTitleChange.Invoke("Load environment data");
-            ReadUMI3DExtension(dto, null);
+            await ReadUMI3DExtension(dto, null);
+            ReadingDataProgress.AddComplete();
+            await InstantiateNodes(loadingProgress);
 
-            onProgressTitleChange.Invoke("Instantiate environment");
-            InstantiateNodes();
-            while (!loaded)
-            {
-                onProgressChange.Invoke(nodesToInstantiate == 0 ? 0.6f : 0.5f + (instantiatedNodes / nodesToInstantiate * 0.4f));
-                onProgressTitleChange.Invoke($"Instantiate environment {(instantiatedNodes / nodesToInstantiate * 100).ToString("N2")} %");
-                yield return null;
-            }
+            endProgress.AddComplete();
+            await UMI3DAsyncManager.Delay(200);
 
-            onProgressTitleChange.Invoke("Instantiation is done");
-            onProgressChange.Invoke(0.9f);
-            yield return new WaitForSeconds(0.3f);
-            isEnvironmentLoaded = true;
-            Action onFinish = () =>
-            {
-                StartCoroutine(Load());
-            };
-
-            IEnumerator Load()
-            {
-                onProgressTitleChange.Invoke("Loading over");
-                RenderProbes();
-
-                onProgressChange.Invoke(1f);
-                yield return new WaitForSeconds(0.3f);
-                onEnvironmentLoaded.Invoke();
-                yield return null;
-                onSuccess.Invoke();
-            }
-
-
+            endProgress.AddComplete();
             if (UMI3DVideoPlayerLoader.HasVideoToLoad)
             {
-                UMI3DVideoPlayerLoader.LoadVideoPlayers(() => { onFinish(); });
+                endProgress.SetStatus("Loading videos");
+                Debug.Log("wait for video");
+                await UMI3DVideoPlayerLoader.LoadVideoPlayers();
+                Debug.Log("wait for video end");
             }
-            else
-            {
-                onFinish();
-            }
+            endProgress.AddComplete();
+
+            endProgress.SetStatus("Rendering Probes");
+            await RenderProbes();
+            endProgress.AddComplete();
+            await UMI3DAsyncManager.Yield();
+
+            endProgress.SetStatus("Updating the world");
+            await WaitForFirstTransaction();
+            endProgress.AddComplete();
+            await UMI3DAsyncManager.Yield();
+
+            isEnvironmentLoaded = true;
+            onEnvironmentLoaded.Invoke();
+
+            await UMI3DAsyncManager.Yield();
+            endProgress.AddComplete();
+        }
+
+        protected virtual Task WaitForFirstTransaction()
+        {
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// Renders all <see cref="ReflectionProbe"/> set to <see cref=" ReflectionProbeMode.Realtime"/> 
         /// and <see cref="ReflectionProbeRefreshMode.OnAwake"/> of the environment.
         /// </summary>
-        private void RenderProbes()
+        private async Task RenderProbes()
         {
+            List<(ReflectionProbe probe, int id)> probeList = new List<(ReflectionProbe, int)>();
+
             foreach (var entity in entities)
             {
                 if (entity.Value.dto is GlTFSceneDto && entity.Value is UMI3DNodeInstance scene)
@@ -423,11 +401,18 @@ namespace umi3d.cdk
                     {
                         if (probe.mode == ReflectionProbeMode.Realtime && probe.refreshMode == ReflectionProbeRefreshMode.OnAwake)
                         {
-                            probe.RenderProbe();
+                            var id = probe.RenderProbe();
+                            probeList.Add((probe, id));
                         }
                     }
                 }
             }
+            await Task.WhenAll(probeList.Select(
+                async p =>
+                {
+                    while (!p.probe.IsFinishedRendering(p.id))
+                        await UMI3DAsyncManager.Yield();
+                }));
         }
 
         #endregion
@@ -437,15 +422,12 @@ namespace umi3d.cdk
         /// <summary>
         /// Load the environment's resources
         /// </summary>
-        private IEnumerator LoadResources(GlTFEnvironmentDto dto)
+        private async Task LoadResources(GlTFEnvironmentDto dto, Progress progress)
         {
-            started = true;
-            downloaded = false;
             List<string> ids = dto.extensions.umi3d.LibrariesId;
             foreach (GlTFSceneDto scene in dto.scenes)
                 ids.AddRange(scene.extensions.umi3d.LibrariesId);
-            yield return StartCoroutine(UMI3DResourcesManager.LoadLibraries(ids, (i) => { loadedResources = i; }, (i) => { resourcesToLoad = i; }));
-            downloaded = true;
+            await UMI3DResourcesManager.LoadLibraries(ids, progress);
         }
 
         #endregion
@@ -463,10 +445,10 @@ namespace umi3d.cdk
         /// <summary>
         /// Load the environment's resources
         /// </summary>
-        private void InstantiateNodes()
+        private async Task InstantiateNodes(MultiProgress progress)
         {
-            Action finished = () => { loaded = true; };
-            StartCoroutine(_InstantiateNodes(environment.scenes, finished));
+            await _InstantiateNodes(environment.scenes, progress);
+            loaded = true;
         }
 
         /// <summary>
@@ -474,30 +456,29 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="scenes">scenes to loads</param>
         /// <returns></returns>
-        private IEnumerator _InstantiateNodes(List<GlTFSceneDto> scenes, Action finished)
+        private async Task _InstantiateNodes(List<GlTFSceneDto> scenes, MultiProgress progress)
         {
+
             //Load scenes without hierarchy
-            foreach (GlTFSceneDto scene in scenes)
+            await Task.WhenAll(scenes.Select(async scene =>
             {
-                float tmpLoadedNodes = instantiatedNodes;
-                bool isFinished = false;
-                float total = 0;
-                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => total = i, (i) => instantiatedNodes = tmpLoadedNodes + (i * 0.5f));
-                yield return new WaitUntil(() => isFinished == true);
-                instantiatedNodes = tmpLoadedNodes + (total * 0.5f);
-            }
-            int count = 0;
+                Progress progress1 = new Progress(0, $"Load scene {scene.name}");
+                progress.Add(progress1);
+                await sceneLoader.LoadGlTFScene(scene, progress1);
+
+            }));
             //Organize scenes
-            foreach (GlTFSceneDto scene in scenes)
+            await Task.WhenAll(scenes.Select(async scene =>
             {
-                count += 1;
+                Progress progress1 = new Progress(2, $"Generate scene {scene.name}");
+                progress.Add(progress1);
+                progress1.AddComplete();
                 var node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 0.5f; }, (s) => { count -= 1; UMI3DLogger.LogWarning(s, scope); });
+                await sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject);
+                progress1.AddComplete();
                 node.gameObject.SetActive(true);
-            }
-            yield return new WaitUntil(() => count <= 0);
-            finished.Invoke();
+            }));
         }
 
         #endregion
@@ -507,72 +488,15 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        public static void LoadEntity(IEntity entity, Action performed)
+        public static async Task LoadEntity(IEntity entity)
         {
-            if (Exists) Instance._LoadEntity(entity, performed);
+            if (Exists) await Instance._LoadEntity(entity);
         }
 
-        public static void LoadEntity(ByteContainer container, Action performed)
+        public static async Task LoadEntity(ByteContainer container)
         {
-            if (Exists) Instance._LoadEntity(container, performed);
-        }
-
-        /// <summary>
-        /// Load IEntity.
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="performed"></param>
-        private void _LoadEntity(IEntity entity, Action performed)
-        {
-            switch (entity)
-            {
-                case GlTFSceneDto scene:
-                    StartCoroutine(_InstantiateNodes(new List<GlTFSceneDto>() { scene }, performed));
-                    break;
-                case GlTFNodeDto node:
-                    StartCoroutine(nodeLoader.LoadNodes(new List<GlTFNodeDto>() { node }, performed));
-                    break;
-                case AssetLibraryDto library:
-                    UMI3DResourcesManager.DownloadLibrary(library,
-                        UMI3DClientServer.Media.name,
-                        (i, s) =>
-                        {
-                            if (i > 0)
-                            {
-                                UMI3DLogger.LogError($"Download Library failed for {library.libraryId}", scope);
-                                performed.Invoke();
-                                return;
-                            }
-                            UMI3DResourcesManager.LoadLibrary(library.libraryId, performed);
-                        });
-                    break;
-                case AbstractEntityDto dto:
-                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.LogException(s, scope); performed.Invoke(); });
-                    break;
-                case GlTFMaterialDto matDto:
-                    Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
-                    {
-
-                        if (matDto.name != null && matDto.name.Length > 0)
-                            m.name = matDto.name;
-                        //register the material
-                        if (m == null)
-                        {
-                            RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, new List<Material>()).NotifyLoaded();
-                        }
-                        else
-                        {
-                            RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
-                        }
-                        performed.Invoke();
-                    });
-                    break;
-                default:
-                    UMI3DLogger.Log($"load entity fail missing case {entity.GetType()}", scope);
-                    performed.Invoke();
-                    break;
-
-            }
+            if (Exists) 
+                await Instance._LoadEntity(container);
         }
 
         /// <summary>
@@ -580,37 +504,83 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        private void _LoadEntity(ByteContainer container, Action performed)
+        private async Task _LoadEntity(IEntity entity)
         {
-            List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
-            ids.ForEach(id => NotifyEntityToBeLoaded(id));
-
-            int performedCount = 0;
-
-            Action<LoadEntityDto> callback = (load) =>
-            {
-                int count = load.entities.Count;
-                Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
-                foreach (IEntity item in load.entities)
-                {
-                    if (item is MissingEntityDto missing)
-                    {
-                        NotifyEntityFailedToLoad(missing.id);
-                        UMI3DLogger.Log($"Get entity [{missing.id}] failed : {missing.reason}", scope);
-                    }
-                    else
-                        LoadEntity(item, performed2);
-                }
-            };
-
             try
             {
-                UMI3DClientServer.GetEntity(ids, callback);
+                switch (entity)
+                {
+                    case GlTFSceneDto scene:
+                        await _InstantiateNodes(new List<GlTFSceneDto>() { scene }, new MultiProgress("Load Entity"));
+                        break;
+                    case GlTFNodeDto node:
+                        await nodeLoader.LoadNodes(new List<GlTFNodeDto>() { node }, new Progress(0, "Load Entity"));
+                        break;
+                    case AssetLibraryDto library:
+                        await UMI3DResourcesManager.DownloadLibrary(library, UMI3DClientServer.Media.name, new MultiProgress("Load Entity"));
+                        await UMI3DResourcesManager.LoadLibrary(library.libraryId);
+                        break;
+                    case AbstractEntityDto dto:
+                        await Parameters.ReadUMI3DExtension(dto, null);
+                        break;
+                    case GlTFMaterialDto matDto:
+                        Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
+                        {
+
+                            if (matDto.name != null && matDto.name.Length > 0)
+                                m.name = matDto.name;
+                            //register the material
+                            if (m == null)
+                            {
+                                RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, new List<Material>()).NotifyLoaded();
+                            }
+                            else
+                            {
+                                RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
+                            }
+                        });
+                        break;
+                    default:
+                        UMI3DLogger.Log($"load entity fail missing case {entity.GetType()}", scope);
+                        break;
+                }
             }
             catch (Exception e)
             {
                 UMI3DLogger.LogException(e, scope);
-                performed?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Load IEntity.
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="performed"></param>
+        private async Task _LoadEntity(ByteContainer container)
+        {
+            List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
+            ids.ForEach(id => NotifyEntityToBeLoaded(id));
+
+            try
+            {
+                var load = await UMI3DClientServer.GetEntity(ids);
+
+                await Task.WhenAll(
+                    load.entities.Select(async item =>
+                        {
+                            if (item is MissingEntityDto missing)
+                            {
+                                NotifyEntityFailedToLoad(missing.id);
+                                UMI3DLogger.Log($"Get entity [{missing.id}] failed : {missing.reason}", scope);
+                            }
+                            else
+                                await LoadEntity(item);
+                        }));
+
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
             }
         }
 
@@ -619,7 +589,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entityId"></param>
         /// <param name="performed"></param>
-        public static void DeleteEntity(ulong entityId, Action performed)
+        public static async Task DeleteEntity(ulong entityId)
         {
             if (Instance.entities.ContainsKey(entityId))
             {
@@ -644,7 +614,8 @@ namespace umi3d.cdk
             }
             else if (UMI3DEnvironmentLoader.IsEntityToBeLoaded(entityId))
             {
-                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) => DeleteEntity(entityId, null));
+                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId);
+                await DeleteEntity(entityId);
             }
             else if (UMI3DEnvironmentLoader.IsEntityToFailedBeLoaded(entityId))
             {
@@ -654,8 +625,6 @@ namespace umi3d.cdk
             {
                 UMI3DLogger.LogError($"Entity [{entityId}] To Destroy Not Found And Not in Entities to be loaded", scope);
             }
-
-            performed?.Invoke();
         }
 
         /// <summary>
@@ -667,28 +636,27 @@ namespace umi3d.cdk
 
             foreach (ulong entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
-                DeleteEntity(entity, null);
+                DeleteEntity(entity);
             }
             if (clearCache)
                 UMI3DResourcesManager.Instance.ClearCache();
 
-            Instance.entities.Clear();
-            Instance.entitywaited.Clear();
-            Instance.entityToBeLoaded.Clear();
+            Instance.InternalClear();
+        }
+
+        protected virtual void InternalClear()
+        {
+            UMI3DVideoPlayerLoader.Clear();
+
+            entities.Clear();
+            entitywaited.Clear();
+            entityToBeLoaded.Clear();
             Instance.entityFailedToBeLoaded.Clear();
 
-            Instance.isEnvironmentLoaded = false;
+            isEnvironmentLoaded = false;
 
-            Instance.environment = null;
-            Instance.nodesToInstantiate = 0;
-            Instance.instantiatedNodes = 0;
-            Instance.resourcesToLoad = 0;
-            Instance.loadedResources = 0;
-
-            Instance.started = false;
-            Instance.downloaded = false;
-            Instance.loaded = false;
-
+            environment = null;
+            loaded = false;
         }
 
         /// <summary>
@@ -696,7 +664,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="node"></param>
-        public virtual void ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node)
+        public virtual async Task ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node)
         {
             UMI3DEnvironmentDto extension = dto?.extensions?.umi3d;
             if (extension != null)
@@ -707,7 +675,7 @@ namespace umi3d.cdk
                     LoadDefaultMaterial(extension.defaultMaterial);
                 }
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
-                    Parameters.ReadUMI3DExtension(scene, node, null, (e) => UMI3DLogger.LogException(e, scope));
+                    await Parameters.ReadUMI3DExtension(scene, node);
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor;
                 RenderSettings.ambientEquatorColor = extension.horizontalColor;
@@ -724,25 +692,16 @@ namespace umi3d.cdk
         /// Load DefaultMaterial from matDto
         /// </summary>
         /// <param name="matDto"></param>
-        private void LoadDefaultMaterial(ResourceDto matDto)
+        private async void LoadDefaultMaterial(ResourceDto matDto)
         {
             FileDto fileToLoad = Parameters.ChooseVariant(matDto.variants);
             if (fileToLoad == null) return;
-            string url = fileToLoad.url;
             string ext = fileToLoad.extension;
-            string authorization = fileToLoad.authorization;
             IResourcesLoader loader = Parameters.SelectLoader(ext);
             if (loader != null)
             {
-                UMI3DResourcesManager.LoadFile(
-                    UMI3DGlobalID.EnvironementId,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (mat) => SetBaseMaterial((Material)mat),
-                    (e) => UMI3DLogger.LogException(e, scope),
-                    loader.DeleteObject
-                    );
+                var mat = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                SetBaseMaterial((Material)mat);
             }
         }
 

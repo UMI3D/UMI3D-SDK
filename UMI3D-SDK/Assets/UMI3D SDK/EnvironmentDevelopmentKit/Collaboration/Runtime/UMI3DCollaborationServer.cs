@@ -53,8 +53,6 @@ namespace umi3d.edk.collaboration
 
         public static murmur.MumbleManager MumbleManager => Exists ? Instance.mumbleManager : null;
 
-        public static bool NeedToWaitForCallBackAtUserJoin = false;
-
         public float tokenLifeTime = 10f;
 
         public IdentifierApi Identifier;
@@ -289,16 +287,11 @@ namespace umi3d.edk.collaboration
         {
             user.hasJoined = true;
             Collaboration.UserJoin(user);
-            bool finished = !NeedToWaitForCallBackAtUserJoin;
             MainThreadManager.Run(async () =>
             {
                 UMI3DLogger.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>", scope);
                 await Instance.NotifyUserJoin(user);
-                finished = true;
             });
-
-            while (!finished)
-                await UMI3DAsyncManager.Yield();
         }
 
         /// <summary>
@@ -540,18 +533,26 @@ namespace umi3d.edk.collaboration
             base._Dispatch(transaction);
             foreach (UMI3DCollaborationUser user in UMI3DCollaborationServer.Collaboration.Users)
             {
-                if (user.status == StatusType.NONE)
+                switch (user.status)
                 {
-                    continue;
+                    case StatusType.NONE:
+                    case StatusType.REGISTERED:
+                        continue;
+                    case StatusType.MISSING:
+                    case StatusType.CREATED:
+                    case StatusType.READY:
+                        if (!TransactionToBeSend.ContainsKey(user))
+                        {
+                            TransactionToBeSend[user] = new Transaction();
+                        }
+
+                        TransactionToBeSend[user] += transaction;
+                        continue;
                 }
-                if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
+
+                if (user.networkPlayer == null)
                 {
-                    if (!TransactionToBeSend.ContainsKey(user))
-                    {
-                        TransactionToBeSend[user] = new Transaction();
-                    }
-                    
-                    TransactionToBeSend[user] += transaction;
+                    UMI3DLogger.LogWarning($"Network player null, user : id {user.Id()}, display name {user.displayName}", scope);
                     continue;
                 }
 
@@ -574,12 +575,12 @@ namespace umi3d.edk.collaboration
                     if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
                     {
 
-                        if (!NavigationToBeSend.ContainsKey(user))
+                        if (!DispatchableToBeSend.ContainsKey(user))
                         {
-                            NavigationToBeSend[user] = new List<DispatchableRequest>();
+                            DispatchableToBeSend[user] = new List<DispatchableRequest>();
                         }
 
-                        NavigationToBeSend[user].Add(dispatchableRequest);
+                        DispatchableToBeSend[user].Add(dispatchableRequest);
                         continue;
                     }
 
@@ -602,7 +603,14 @@ namespace umi3d.edk.collaboration
         }
 
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> NavigationToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
+        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> DispatchableToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
+
+        public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
+        {
+            areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user))),
+            areDispatchableRequestPending = (DispatchableToBeSend.ContainsKey(user) && DispatchableToBeSend[user].Any(o => o.users.Contains(user)))
+        };
+
         private void Update()
         {
             foreach (KeyValuePair<UMI3DCollaborationUser, Transaction> kp in TransactionToBeSend.ToList())
@@ -619,19 +627,19 @@ namespace umi3d.edk.collaboration
                 SendTransaction(user, transaction);
                 TransactionToBeSend.Remove(user);
             }
-            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in NavigationToBeSend.ToList())
+            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in DispatchableToBeSend.ToList())
             {
                 UMI3DCollaborationUser user = kp.Key;
                 List<DispatchableRequest> navigations = kp.Value;
                 if (user.status == StatusType.NONE)
                 {
-                    NavigationToBeSend.Remove(user);
+                    DispatchableToBeSend.Remove(user);
                     continue;
                 }
                 if (user.status < StatusType.ACTIVE) continue;
                 foreach (var navigation in navigations)
                     SendNavigationRequest(user, navigation);
-                TransactionToBeSend.Remove(user);
+                DispatchableToBeSend.Remove(user);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,8 +26,8 @@ namespace umi3d
         /// </summary>
         public static string version => major + "." + minor + "." + status + "." + date;
         public static readonly string major = "2";
-        public static readonly string minor = "5";
+        public static readonly string minor = "6";
         public static readonly string status = "b";
-        public static readonly string date = "221010";
+        public static readonly string date = "221027";
     }
 }

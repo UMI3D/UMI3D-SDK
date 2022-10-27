@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -36,13 +37,12 @@ namespace umi3d.cdk
         /// <param name="node">node on which the scene should be loaded.</param>
         /// <param name="finished">finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public static void ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public static async Task ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node)
         {
-            CreatePreloadedScene(dto, node);
-            finished?.Invoke();
+            await CreatePreloadedScene(dto, node);
         }
 
-        private static void CreatePreloadedScene(PreloadedSceneDto scenesdto, GameObject node)
+        private static async Task CreatePreloadedScene(PreloadedSceneDto scenesdto, GameObject node)
         {
             ResourceDto resourceScene = scenesdto.scene;
 
@@ -55,18 +55,8 @@ namespace umi3d.cdk
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 if (loader != null)
                 {
-                    UMI3DResourcesManager.LoadFile(
-                        UMI3DGlobalID.EnvironementId,
-                        fileToLoad,
-                        loader.UrlToObject,
-                        loader.ObjectFromCache,
-                        (o) =>
-                        {
-                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
-                        },
-                        e => UMI3DLogger.LogException(e, scope),
-                        loader.DeleteObject
-                        );
+                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                    UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
                 }
             }
         }

@@ -84,7 +84,7 @@ namespace umi3d.cdk.collaboration
 
         public void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
+            UMI3DEnvironmentLoader.DeleteEntity(dto.id);
             OnRemoveUser.Invoke(this);
         }
 

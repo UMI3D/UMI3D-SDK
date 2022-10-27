@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -51,8 +52,8 @@ namespace umi3d.cdk
             return ignoredFileExtentions.Contains(extension);
         }
 
-        /// <inheritdoc/>
-        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+         /// <inheritdoc/>
+        public virtual async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
             UnityWebRequest www = url.Contains("http") ? UnityWebRequestTexture.GetTexture(url) : UnityWebRequestTexture.GetTexture("file://" + url);
@@ -61,20 +62,16 @@ namespace umi3d.cdk
 #endif
 
             SetCertificate(www, authorization);
-            UMI3DResourcesManager.DownloadObject(www,
-                () =>
-                {
-                    Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-                    callback.Invoke(texture);
-                },
-                s => failCallback.Invoke(s)
-            );
+            await UMI3DResourcesManager.DownloadObject(www);
+            Texture2D texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            www.Dispose();
+            return texture;
         }
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
+        public virtual async Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
         {
-            callback.Invoke(o);
+            return (o);
         }
 
         /// <summary>

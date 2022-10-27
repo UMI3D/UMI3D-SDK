@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The unique user display Name.
         /// </summary>
-        public string displayName => identityDto.displayName;
+        public string displayName => identityDto.displayName ?? login ?? userId.ToString();
 
         /// <summary>
         /// The unique user login.
@@ -58,7 +58,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// The user token
         /// </summary>
-        public string token => identityDto?.localToken;
+        public string token => identityDto.localToken;
 
         public UMI3DForgeServer forgeServer;
 

@@ -40,6 +40,10 @@ namespace umi3d.cdk
         /// </summary>
         public bool isPrepared => videoPlayer?.isPrepared ?? false;
 
+        bool readyOrFailed => isPrepared || preparationFailed;
+
+        public bool preparationFailed { get; private set; } = false;
+
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
             //init material
@@ -75,6 +79,8 @@ namespace umi3d.cdk
             videoPlayer.waitForFirstFrame = false;
             videoPlayer.isLooping = dto.looping;
             videoPlayer.Prepare();
+            videoPlayer.errorReceived += VideoPlayer_errorReceived;
+
 
 
             if (dto.playing)
@@ -99,6 +105,17 @@ namespace umi3d.cdk
             }
         }
 
+        public void Clean()
+        {
+            videoPlayer.Stop();
+        }
+
+        private async void VideoPlayer_errorReceived(VideoPlayer source, string message)
+        {
+            await UMI3DAsyncManager.Delay(100);
+            preparationFailed = true;
+        }
+
         /// <summary>
         /// Coroutine to set <see cref="videoPlayer"/> audioSource.
         /// </summary>
@@ -113,7 +130,7 @@ namespace umi3d.cdk
 
             videoPlayer.Prepare();
 
-            while (!videoPlayer.isPrepared)
+            while (!readyOrFailed)
                 yield return null;
 
             if (dto.playing)
@@ -131,7 +148,7 @@ namespace umi3d.cdk
 
         private IEnumerator StartAfterLoading()
         {
-            while (!videoPlayer.isPrepared)
+            while (!readyOrFailed)
             {
                 yield return new WaitForEndOfFrame();
             }
@@ -159,7 +176,7 @@ namespace umi3d.cdk
             yield return null;
             yield return null;
 
-            while (!videoPlayer.isPrepared)
+            while (!readyOrFailed)
             {
                 yield return new WaitForEndOfFrame();
             }
@@ -276,7 +293,7 @@ namespace umi3d.cdk
         {
             if (videoPlayer != null)
             {
-                if (videoPlayer.isPrepared)
+                if (readyOrFailed)
                 {
                     videoPlayer.frame = (int)Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000);
                     videoPlayer.Play();

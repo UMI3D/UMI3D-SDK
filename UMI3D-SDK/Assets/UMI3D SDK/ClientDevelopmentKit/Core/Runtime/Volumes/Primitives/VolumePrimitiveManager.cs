@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common.volume;
 using UnityEngine;
 using UnityEngine.Events;
@@ -66,7 +67,7 @@ namespace umi3d.cdk.volumes
             onPrimitiveDelete.RemoveListener(callback);
         }
 
-        public static void CreatePrimitive(AbstractPrimitiveDto dto, UnityAction<AbstractVolumeCell> finished)
+        public static async Task<AbstractVolumeCell> CreatePrimitive(AbstractPrimitiveDto dto)
         {
             Matrix4x4 localToWorldMatrix = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId)?.transform.localToWorldMatrix ?? Matrix4x4.identity;
 
@@ -80,8 +81,7 @@ namespace umi3d.cdk.volumes
                     primitives.Add(boxDto.id, box);
                     box.isTraversable = dto.isTraversable;
                     onPrimitiveCreation.Invoke(box);
-                    finished.Invoke(box);
-                    break;
+                    return (box);
                 case CylinderDto cylinderDto:
                     var c = new Cylinder()
                     {
@@ -97,8 +97,7 @@ namespace umi3d.cdk.volumes
                     primitives.Add(dto.id, c);
                     c.isTraversable = dto.isTraversable;
                     onPrimitiveCreation.Invoke(c);
-                    finished.Invoke(c);
-                    break;
+                    return (c);
                 default:
                     throw new System.Exception("Unknown primitive type !");
             }

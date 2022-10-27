@@ -55,12 +55,6 @@ namespace umi3d.edk
             res.streamingFromUserId = streamingFromUserId;
             return res;
         }
-        /*
-                public static implicit operator TextureDto (UMI3DTextureResource r)
-                {
-                    return r.ToDto();
-                }
-                */
     }
 
     /// <summary>
@@ -88,11 +82,5 @@ namespace umi3d.edk
                 streamingFromUserId = textureDto.streamingFromUserId
             };
         }
-
-        /*
-        public static implicit operator ScalableTextureDto(UMI3DScalableTextureReource r)
-        {
-            return r.ToDto();
-        }*/
     }
 }

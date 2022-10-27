@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -26,9 +27,9 @@ namespace umi3d.cdk
     public class UMI3DAbstractAnchorLoader
     {
 
-        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public virtual async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
-            finished.Invoke();
+            
         }
 
         public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)

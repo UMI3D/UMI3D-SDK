@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -32,17 +33,14 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public virtual async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
-            {
-                failed.Invoke(new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
-                return;
-            }
+                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
+            
             if (dto != null)
             {
-
                 if (nodeDto.pid != 0)
                 {
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
@@ -61,12 +59,6 @@ namespace umi3d.cdk
 
                 if (nodeDto.isStatic != node.isStatic)
                     node.isStatic = nodeDto.isStatic;
-                finished?.Invoke();
-
-            }
-            else
-            {
-                finished?.Invoke();
             }
         }
 

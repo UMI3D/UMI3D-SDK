@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -81,7 +82,6 @@ namespace umi3d.edk.userCapture
         {
             if (ActivateEmbodiments)
             {
-                UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
                 UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
                 WriteCollections();
             }
@@ -97,62 +97,70 @@ namespace umi3d.edk.userCapture
                 return false;
         }
 
-        public void JoinDtoReception(ulong userId, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
-        {
-            if (ActivateEmbodiments)
-            {
-                if (embodimentSize.ContainsKey(userId))
-                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
-                else
-                    embodimentSize.Add(userId, (Vector3)userSize);
-
-                if (embodimentTrackedBonetypes.ContainsKey(userId))
-                    UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
-                else
-                    embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
-            }
-        }
-
         /// <summary>
-        /// Create an Embodiment for a User.
+        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, Dictionary{uint, bool})"/>.
         /// </summary>
-        /// <param name="user">the concerned UMI3DUser</param>
-        protected void CreateEmbodiment(UMI3DUser user)
+        static object joinLock = new object();
+
+        public async Task JoinDtoReception(UMI3DUser user, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
         {
-            if (ActivateEmbodiments)
+            if (ActivateEmbodiments && user is UMI3DTrackedUser trackedUser)
             {
-                var trackedUser = user as UMI3DTrackedUser;
-                if (embodimentInstances.ContainsKey(user.Id()))
+                ulong userId = user.Id();
+
+                lock (joinLock)
                 {
-                    UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
-                    return;
+                    UMI3DLogger.Log("EmbodimentManager.JoinDtoReception before " + userId, scope);
+
+                    if (embodimentSize.ContainsKey(userId))
+                        UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
+                    else
+                        embodimentSize.Add(userId, (Vector3)userSize);
+
+                    if (embodimentTrackedBonetypes.ContainsKey(userId))
+                        UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
+                    else
+                        embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
+
+                    if (embodimentInstances.ContainsKey(userId))
+                    {
+                        UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
+                        return;
+                    }
+
+                    var embd = new GameObject("Embodiment" + userId, typeof(UMI3DAvatarNode));
+                    embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
+                    embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
+
+                    if (EmbodimentsScene != null)
+                        embd.transform.SetParent(EmbodimentsScene.transform);
+                    else
+                        UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
+
+                    trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
+
+                    LoadAvatarNode(trackedUser.Avatar);
+
+                    GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
+
+                    if (embodimentSize.ContainsKey(userId))
+                        skeleton.transform.localScale = embodimentSize[userId];
+                    else
+                        UMI3DLogger.LogError("EmbodimentSize does not contain key " + userId, scope);
+
+                    trackedUser.Avatar.userId = userId;
+                    trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
+
+                    embodimentInstances.Add(userId, trackedUser.Avatar);
                 }
 
-                var embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
-                embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
-                embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
-
-                if (EmbodimentsScene != null)
-                    embd.transform.SetParent(EmbodimentsScene.transform);
-                else
-                    UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
-
-                trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
-
-                LoadAvatarNode(trackedUser.Avatar);
-
-                GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
-                skeleton.transform.localScale = embodimentSize[user.Id()];
-
-                trackedUser.Avatar.userId = user.Id();
-                trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
-
-                embodimentInstances.Add(user.Id(), trackedUser.Avatar);
+                await UMI3DAsyncManager.Yield();
 
                 NewEmbodiment.Invoke(trackedUser.Avatar);
+
+                UMI3DLogger.Log("EmbodimentManager.JoinDtoReception end " + userId, scope);
             }
         }
-
 
         /// <summary>
         /// Update the Embodiment from the received Dto.
@@ -261,7 +269,12 @@ namespace umi3d.edk.userCapture
                 DeleteEmbodimentObj(embd);
 
                 Destroy(embd.transform.gameObject);
-                embodimentInstances.Remove(user.Id());
+
+                if (user?.Id() != null)
+                {
+                    embodimentInstances.Remove(user.Id());
+                    embodimentSize.Remove(user.Id());
+                }
             }
         }
 
@@ -523,13 +536,45 @@ namespace umi3d.edk.userCapture
         [EditorReadOnly]
         public List<UMI3DBodyPose> PreloadedBodyPoses = new List<UMI3DBodyPose>();
 
+        #region Runtime referencing of handpose
+        /// <summary>
+        /// Add a new handpose at run time to subscribe
+        /// </summary>
+        /// <param name="Hp">A umi3D hand pose to add</param>
+        public void AddAnHandPoseRef(UMI3DHandPose Hp)
+        {
+            if (!PreloadedHandPoses.Contains(Hp))
+            {
+                PreloadedHandPoses.Add(Hp);
+                ReWriteHandPoseCollection();
+            }
+        }
+        /// <summary>
+        /// Remove An handpose at run time
+        /// </summary>
+        /// <param name="hp">A umi3D hand pose to remove</param>
+        public void RemoveHandPose(UMI3DHandPose hp)
+        {
+            PreloadedHandPoses.Remove(hp);
+            ReWriteHandPoseCollection();
+        }
+        /// <summary>
+        /// Rewrite the collection after modifiction of the handpose
+        /// </summary>
+        public void ReWriteHandPoseCollection()
+        {
+            handPoseIds.Clear();
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()).ToList());
+        }
+        #endregion
+
         protected virtual void WriteCollections()
         {
             handPoseIds.Clear();
-            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()));
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()).ToList());
 
             bodyPoseIds.Clear();
-            bodyPoseIds.AddRange(PreloadedBodyPoses.Select(bp => bp.Id()));
+            bodyPoseIds.AddRange(PreloadedBodyPoses.Select(bp => bp.Id()).ToList());
         }
 
         public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
