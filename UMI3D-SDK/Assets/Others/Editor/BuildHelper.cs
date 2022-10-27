@@ -217,7 +217,7 @@ public class BuildHelper : EditorWindow
 
                 info += $"Release";
 
-                ReleaseSdk._ReleaseSdk(_data.Token, newVersion, _data.Branch, assets, message);
+                ReleaseSdk._ReleaseSdk(_data.Token, newVersion, _data.Branch, assets, _data.message);
             }
 
             //Open folder
