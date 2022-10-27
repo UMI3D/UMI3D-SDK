@@ -17,6 +17,9 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing volumes.
+    /// </summary>
     public abstract class AbstractVolumeDescriptorDto : AbstractEntityDto, IEntity
     {
 
