@@ -78,7 +78,10 @@ namespace umi3d.cdk
                     while (!performed)
                     {
                         if (Time.time > ErrorTime)
-                            UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec it might have failed.\n Transaction count {transaction}.\n Operation count {op}.\n Container : {container} ", scope);
+                        {
+                            UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec it might have failed.\n Transaction count {transaction}.\n Operation count {op}.\n Container : {container}\n SubContainer : {c}", scope);
+                            await UMI3DAsyncManager.Delay(1000);
+                        }
                         await UMI3DAsyncManager.Yield();
                     }
                 }
