@@ -94,7 +94,7 @@ public class BuildHelper : EditorWindow
     //\StandardAssets\Changelog
 
     // Add menu named "My Window" to the Window menu
-    [MenuItem("Browser/Build")]
+    [MenuItem("UMI3D/Release")]
     static void Open()
     {
 
@@ -216,14 +216,17 @@ public class BuildHelper : EditorWindow
             }
             await Task.Delay(100);
 
-            info += $"Commit";
-
             if (comit)
+            {
+                info += $"Commit";
+
+
                 await CommitAll();
 
-            info += $"Release";
+                info += $"Release";
 
-            ReleaseSdk._ReleaseSdk(_data.Token, newVersion, _data.Branch, assets, message);
+                ReleaseSdk._ReleaseSdk(_data.Token, newVersion, _data.Branch, assets, message);
+            }
 
             //Open folder
             OpenFile(_data.PackageFolderPath);
