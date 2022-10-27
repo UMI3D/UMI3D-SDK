@@ -46,18 +46,47 @@ namespace umi3d.edk
         /// Animation start time 
         /// </summary>
         //? whut
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("")]
         private ulong startTime;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Animation start time 
+        /// </summary>
+        //? whut
+        [SerializeField, EditorReadOnly, Tooltip("")]
         private long pauseFrame;
+
+        /// <summary>
+        /// See <see cref="playing"/>.
+        /// </summary>
         private UMI3DAsyncProperty<bool> _objectPlaying;
+        /// <summary>
+        /// See <see cref="looping"/>.
+        /// </summary>
         private UMI3DAsyncProperty<bool> _objectLooping;
+        /// <summary>
+        /// See <see cref="startTime"/>.
+        /// </summary>
         private UMI3DAsyncProperty<ulong> _objectStartTime;
+        /// <summary>
+        /// See <see cref="pauseFrame"/>.
+        /// </summary>
         private UMI3DAsyncProperty<long> _objectPauseFrame;
 
+        /// <summary>
+        /// See <see cref="playing"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectPlaying { get { Register(); return _objectPlaying; } protected set => _objectPlaying = value; }
+        /// <summary>
+        /// See <see cref="looping"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectLooping { get { Register(); return _objectLooping; } protected set => _objectLooping = value; }
+        /// <summary>
+        /// See <see cref="startTime"/>.
+        /// </summary>
         public UMI3DAsyncProperty<ulong> objectStartTime { get { Register(); return _objectStartTime; } protected set => _objectStartTime = value; }
+        /// <summary>
+        /// See <see cref="pauseFrame"/>.
+        /// </summary>
         public UMI3DAsyncProperty<long> objectPauseTime { get { Register(); return _objectPauseFrame; } protected set => _objectPauseFrame = value; }
 
         /// <inheritdoc/>

@@ -32,13 +32,19 @@ namespace umi3d.edk
         /// It could be null.
         [Tooltip("VideoPlayer from Unity. Could be null. mainly used to synchronize the video progress.")]
         public VideoPlayer video;
-        [SerializeField]
+
+        /// <summary>
+        /// Material on which the video is applied to.
+        /// </summary>
+        [SerializeField, Tooltip("Material on which the video is applied to.")]
         private MaterialSO material;
+
         /// <summary>
         /// Video to play as a resource.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Video to play as a resource.")]
         private UMI3DResource videoResources;
+
         /// <summary>
         /// Audio player for the sound of the video.
         /// </summary>
@@ -48,8 +54,13 @@ namespace umi3d.edk
         /// See <see cref="videoResources"/>.
         /// </summary>
         private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
-
+        /// <summary>
+        /// See <see cref="material"/>.
+        /// </summary>
         public UMI3DAsyncProperty<MaterialSO> ObjectMaterial;
+        /// <summary>
+        /// See <see cref="videoResources"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource { get { Register(); return objectVideoResource; } protected set => objectVideoResource = value; }
 
         /// <inheritdoc/>

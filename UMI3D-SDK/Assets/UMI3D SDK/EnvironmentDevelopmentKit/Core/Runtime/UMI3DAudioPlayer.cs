@@ -25,7 +25,10 @@ namespace umi3d.edk
     /// </summary>
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Node where the audio should come from.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Node where the audio should come from.")]
         private UMI3DNode node;
         /// <summary>
         /// Audio to play as a resource.
@@ -55,16 +58,46 @@ namespace umi3d.edk
                  "A 0 value will result in a sound with no spatialisation, while 1 ends up with full 3D effects.")]
         [Range(0f, 1f)]
         private float spatialBlend;
+        /// <summary>
+        /// See <see cref="node"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
+        /// <summary>
+        /// See <see cref="audioResources"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DResource> _objectAudioResource;
+        /// <summary>
+        /// See <see cref="volume"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectVolume;
+        /// <summary>
+        /// See <see cref="pitch"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectPitch;
+        /// <summary>
+        /// See <see cref="spatialBlend"/>.
+        /// </summary>
         private UMI3DAsyncProperty<float> _objectSpacialBlend;
 
+        /// <summary>
+        /// See <see cref="node"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DNode> ObjectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
+        /// <summary>
+        /// See <see cref="audioResources"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> ObjectAudioResource { get { Register(); return _objectAudioResource; } protected set => _objectAudioResource = value; }
+        /// <summary>
+        /// See <see cref="volume"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> ObjectVolume { get { Register(); return _objectVolume; } protected set => _objectVolume = value; }
+        /// <summary>
+        /// See <see cref="pitch"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> ObjectPitch { get { Register(); return _objectPitch; } protected set => _objectPitch = value; }
+        /// <summary>
+        /// See <see cref="spatialBlend"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> ObjectSpacialBlend { get { Register(); return _objectSpacialBlend; } protected set => _objectSpacialBlend = value; }
 
         /// <inheritdoc/>

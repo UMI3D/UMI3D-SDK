@@ -28,6 +28,10 @@ namespace umi3d.edk
         /// </summary>
         [Tooltip("Model that serves as a based for the submodel.")]
         public UMI3DModel parentModel;
+
+        /// <summary>
+        /// Named label of the submodel.
+        /// </summary>
         public string subModelName { get; protected set; }
 
         /// <summary>
@@ -46,6 +50,9 @@ namespace umi3d.edk
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("If true, the submodel won't be impacted by a change of material on the model.")]
         protected bool ignoreModelMaterialOverride = false;
+        /// <summary>
+        /// See <see cref="ignoreModelMaterialOverride"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
 

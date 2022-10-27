@@ -131,18 +131,36 @@ namespace umi3d.edk
             return null;
         }
 
+        /// <summary>
+        /// Notify that the user has changed.
+        /// </summary>
+        /// <param name="user"></param>
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
         }
 
+        /// <summary>
+        /// Get the set of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
         public virtual HashSet<UMI3DUser> UserSet()
         {
             return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
         }
+
+        /// <summary>
+        /// Get the set of all <see cref="UMI3DUser"/> instances in the environment that have already joined.
+        /// </summary>
+        /// <returns></returns>
         public virtual HashSet<UMI3DUser> UserSetWhenHasJoined()
         {
             return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where((u) => u.hasJoined));
         }
+
+        /// <summary>
+        /// Get the collection of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
         public virtual IEnumerable<UMI3DUser> Users()
         {
             return UMI3DEnvironment.GetEntities<UMI3DUser>();
@@ -182,17 +200,25 @@ namespace umi3d.edk
         /// <param name="user">User to check the presence.</param>
         protected virtual void LookForMissing(UMI3DUser user) { }
 
-
+        /// <summary>
+        /// Send a <see cref="Transaction"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
         public static void Dispatch(Transaction transaction)
         {
             if (Exists) Instance._Dispatch(transaction);
         }
 
+        /// <summary>
+        /// Send a <see cref="DispatchableRequest"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
         public static void Dispatch(DispatchableRequest dispatchableRequest)
         {
             if (Exists) Instance._Dispatch(dispatchableRequest);
         }
 
+        //? empty ?
         protected virtual void _Dispatch(Transaction transaction)
         {
         }
@@ -200,6 +226,10 @@ namespace umi3d.edk
         {
         }
 
+        /// <summary>
+        /// Get the current server Unity time in seconds since it has started.
+        /// </summary>
+        /// <returns></returns>
         public virtual float ReturnServerTime()
         {
             return Time.time;

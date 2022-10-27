@@ -35,7 +35,12 @@ namespace umi3d.edk
         /// Typically "com.compagny.application".
         [Tooltip("Id of the library. Choose a unique name. Typically 'com.compagny.application'.")]
         public string id = "com.compagny.application";
+
+        /// <summary>
+        /// UMI3D entity ID.
+        /// </summary>
         private ulong eId = 0;
+
         /// <summary>
         /// Last time the library has been updated.
         /// </summary>

@@ -47,6 +47,7 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Should the object receive shadows from other objects?")]
         protected bool receiveShadow = true;
 
+        #region properties
         /// <summary>
         /// See <see cref="overrideModelMaterials"/>
         /// </summary>
@@ -63,11 +64,26 @@ namespace umi3d.edk
         /// See <see cref="receiveShadow"/>
         /// </summary>
         public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
+        #endregion properties
 
+        #region asyncproperties
+        /// <summary>
+        /// See <see cref="overrideModelMaterials"/>
+        /// </summary>
         protected UMI3DAsyncProperty<bool> _objectMaterialsOverrided;
+        /// <summary>
+        /// See <see cref="materialsOverrider"/>
+        /// </summary>
         protected UMI3DAsyncListProperty<MaterialOverrider> _objectMaterialOverriders;
+        /// <summary>
+        /// See <see cref="castShadow"/>
+        /// </summary>
         protected UMI3DAsyncProperty<bool> _objectCastShadow;
+        /// <summary>
+        /// See <see cref="receiveShadow"/>
+        /// </summary>
         protected UMI3DAsyncProperty<bool> _objectReceiveShadow;
+        #endregion asyncproperties
 
         /// <inheritdoc/>
         protected override void InitDefinition(ulong id)

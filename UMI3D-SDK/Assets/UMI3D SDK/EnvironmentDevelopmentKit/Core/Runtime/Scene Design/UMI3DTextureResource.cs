@@ -24,10 +24,11 @@ namespace umi3d.edk
     [System.Serializable]
     public class UMI3DTextureResource : UMI3DResource
     {
-        [Header("Options")]
+
         /// <summary>
         /// Optional animator id (used for video texture synchronisation).
         /// </summary>
+        [Header("Options")]
         [Tooltip("Optional animator id (used for video texture synchronisation).")]
         public string animationId = null;
 

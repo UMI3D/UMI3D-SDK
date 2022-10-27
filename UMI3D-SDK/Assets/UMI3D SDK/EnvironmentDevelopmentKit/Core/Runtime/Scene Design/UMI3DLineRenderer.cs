@@ -22,18 +22,48 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Rendered line.
+    /// </summary>
     public partial class UMI3DLineRenderer : AbstractRenderedNode
     {
+        /// <summary>
+        /// Unity line renderer.
+        /// </summary>
         public LineRenderer lineRenderer;
 
-        public UMI3DAsyncProperty<Color> objectStartColor { get { Register(); return _objectStartColor; } protected set => _objectStartColor = value; }
-        public UMI3DAsyncProperty<Color> objectEndColor { get { Register(); return _objectEndColor; } protected set => _objectEndColor = value; }
-        public UMI3DAsyncProperty<float> objectStartWidth { get { Register(); return _objectStartWidth; } protected set => _objectStartWidth = value; }
-        public UMI3DAsyncProperty<float> objectEndWidth { get { Register(); return _objectEndWidth; } protected set => _objectEndWidth = value; }
-        public UMI3DAsyncProperty<bool> objectLoop { get { Register(); return _objectLoop; } protected set => _objectLoop = value; }
-        public UMI3DAsyncProperty<bool> objectUseWorldSpace { get { Register(); return _objectUseWorldSpace; } protected set => _objectUseWorldSpace = value; }
+        #region asyncproperties
 
+        /// <summary>
+        /// See <see cref="startColor"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<Color> objectStartColor { get { Register(); return _objectStartColor; } protected set => _objectStartColor = value; }
+        /// <summary>
+        /// See <see cref="endColor"/>.
+        /// </summary
+        public UMI3DAsyncProperty<Color> objectEndColor { get { Register(); return _objectEndColor; } protected set => _objectEndColor = value; }
+        /// <summary>
+        /// See <see cref="startWidth"/>.
+        /// </summary
+        public UMI3DAsyncProperty<float> objectStartWidth { get { Register(); return _objectStartWidth; } protected set => _objectStartWidth = value; }
+        /// <summary>
+        /// See <see cref="endWidth"/>.
+        /// </summary
+        public UMI3DAsyncProperty<float> objectEndWidth { get { Register(); return _objectEndWidth; } protected set => _objectEndWidth = value; }
+        /// <summary>
+        /// See <see cref="loop"/>.
+        /// </summary
+        public UMI3DAsyncProperty<bool> objectLoop { get { Register(); return _objectLoop; } protected set => _objectLoop = value; }
+        /// <summary>
+        /// See <see cref="useWorldSpace"/>.
+        /// </summary
+        public UMI3DAsyncProperty<bool> objectUseWorldSpace { get { Register(); return _objectUseWorldSpace; } protected set => _objectUseWorldSpace = value; }
+        /// <summary>
+        /// See <see cref="positions"/>.
+        /// </summary
         public UMI3DAsyncListProperty<Vector3> objectPositions { get { Register(); return _objectPositions; } protected set => _objectPositions = value; }
+
+        #endregion asyncproperties
 
         /// <summary>
         /// Color of the line.
@@ -77,13 +107,38 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly]
         protected List<Vector3> positions = new List<Vector3>();
 
+        #region asyncproperties
+
+        /// <summary>
+        /// See <see cref="startColor"/>.
+        /// </summary
         private UMI3DAsyncProperty<Color> _objectStartColor;
+        /// <summary>
+        /// See <see cref="endColor"/>.
+        /// </summary
         private UMI3DAsyncProperty<Color> _objectEndColor;
+        /// <summary>
+        /// See <see cref="useWorldSpace"/>.
+        /// </summary
         private UMI3DAsyncProperty<bool> _objectUseWorldSpace;
+        /// <summary>
+        /// See <see cref="loop"/>.
+        /// </summary
         private UMI3DAsyncProperty<bool> _objectLoop;
+        /// <summary>
+        /// See <see cref="startWidth"/>.
+        /// </summary
         private UMI3DAsyncProperty<float> _objectStartWidth;
+        /// <summary>
+        /// See <see cref="endWidth"/>.
+        /// </summary
         private UMI3DAsyncProperty<float> _objectEndWidth;
+        /// <summary>
+        /// See <see cref="positions"/>.
+        /// </summary
         private UMI3DAsyncListProperty<Vector3> _objectPositions;
+
+        #endregion asyncproperties
 
         /// <inheritdoc/>
         protected override void InitDefinition(ulong id)

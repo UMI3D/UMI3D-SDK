@@ -36,11 +36,22 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller.")]
         private string stateName = "";
 
+        /// <summary>
+        /// See <see cref="node"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
+        /// <summary>
+        /// See <see cref="stateName"/>.
+        /// </summary>
         private UMI3DAsyncProperty<string> _objectStateName;
 
-
+        /// <summary>
+        /// See <see cref="node"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DNode> ObjectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
+        /// <summary>
+        /// See <see cref="stateName"/>.
+        /// </summary>
         public UMI3DAsyncProperty<string> ObjectStateName { get { Register(); return _objectStateName; } protected set => _objectStateName = value; }
 
         /// <inheritdoc/>

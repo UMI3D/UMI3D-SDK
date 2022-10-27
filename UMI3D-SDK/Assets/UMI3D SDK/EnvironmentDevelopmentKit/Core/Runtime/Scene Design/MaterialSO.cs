@@ -25,26 +25,57 @@ namespace umi3d.edk
     /// </summary>
     public abstract class MaterialSO : ScriptableObject, UMI3DLoadableEntity
     {
-        //? whut
+        /// <summary>
+        /// Custom shader properties for customized shaders.
+        /// </summary>
+        [Tooltip("Custom shader properties for customized shaders.")]
         public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
+        /// <summary>
+        /// See <see cref="shaderProperties"/>.
+        /// </summary>
         public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
-
+        /// <summary>
+        /// See <see cref="shaderProperties"/>.
+        /// </summary>
         private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
-        //? whut
+        /// <summary>
+        /// Alpha blending settings.
+        /// </summary>
         public enum AlphaMode
         {
-            OPAQUE, MASK, BLEND
+            /// <summary>
+            /// No alpha blending.
+            /// </summary>
+            OPAQUE, 
+            /// <summary>
+            /// Superpose material.
+            /// </summary>
+            MASK, 
+            /// <summary>
+            /// Blend material.
+            /// </summary>
+            BLEND
         }
+        /// <summary>
+        /// Alpha blending mode.
+        /// </summary>
+        [Tooltip("Alpha blending mode.")]
         public AlphaMode alphaMode = AlphaMode.BLEND;
 
         /// <summary>
         /// Unity's function called when the object is activated and active.
         /// </summary>
         protected abstract void OnEnable();
+
         /// <inheritdoc/>
         protected abstract ulong GetId();
 
+        /// <summary>
+        /// Set the UMI3D id.
+        /// </summary>
+        /// Be sure to register the entity before.
+        /// <param name="id"></param>
         protected abstract void SetId(ulong id);
 
         /// <inheritdoc/>

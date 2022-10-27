@@ -326,6 +326,12 @@ namespace umi3d.edk
             return res;
         }
 
+        /// <summary>
+        /// Retrieve all the <see cref="UMI3DLoadableEntity"/> instances on a node and its children.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="transform"></param>
+        /// <returns></returns>
         public List<UMI3DLoadableEntity> GetAllLoadableEntityUnderThisNode(UMI3DUser user, Transform transform = null)
         {
             var res = new List<UMI3DLoadableEntity>();

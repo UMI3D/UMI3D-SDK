@@ -38,11 +38,20 @@ namespace umi3d.edk
         [SerializeField]
         private OverridedMaterialList materialListToOverride = new OverridedMaterialList();
 
+        #region properties
+        /// <summary>
+        /// See <see cref="materialListToOverride.overrideAllMaterial"/>.
+        /// </summary>
         public bool overrideAllMaterial { get => materialListToOverride.overrideAllMaterial; set => materialListToOverride.overrideAllMaterial = value; }
-
+        /// <summary>
+        /// See <see cref="materialListToOverride.addMaterialIfNotExists"/>.
+        /// </summary>
         public bool addMaterialIfNotExists { get => materialListToOverride.addMaterialIfNotExists; set => materialListToOverride.addMaterialIfNotExists = value; }
-
+        /// <summary>
+        /// See <see cref="materialListToOverride.overidedMaterials"/>.
+        /// </summary>
         public List<string> overidedMaterials { get => materialListToOverride.overidedMaterials; set => materialListToOverride.overidedMaterials = value; }
+        #endregion properties
 
         /// <summary>
         /// Structure to store info about overrided materials.
@@ -67,6 +76,10 @@ namespace umi3d.edk
             public List<string> overidedMaterials = new List<string>();
         }
 
+        /// <summary>
+        /// Use this field to replace all the materials.
+        /// </summary>
+        /// Used not to have to specify all the materials to replace.
         private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
 
         /// <inheritdoc/>

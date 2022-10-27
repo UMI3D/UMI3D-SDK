@@ -20,12 +20,17 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// Request relative to vehicles
+    /// Request relative to vehicle boarding.
     /// </summary>
-    // todo: complete
     public class VehicleRequest : TeleportRequest
     {
+        /// <summary>
+        /// Vehicle boarded in UMI3D id.
+        /// </summary>
         public ulong VehicleId = 0;
+        /// <summary>
+        /// Should the navigation be blocked in the vehicle ?
+        /// </summary>
         public bool StopNavigation = false;
 
         public VehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)

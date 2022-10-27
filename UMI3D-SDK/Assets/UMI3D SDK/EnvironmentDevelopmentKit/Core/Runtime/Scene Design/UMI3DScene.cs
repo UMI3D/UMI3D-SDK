@@ -23,21 +23,23 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// UMI3D empty object that serves as reference for a scene description.
+    /// UMI3D scene description.
     /// </summary>
     [DisallowMultipleComponent]
     [SelectionBase]
     public class UMI3DScene : UMI3DAbstractNode
     {
 
-        #region properties
+        #region fields
         /// <summary>
         /// Libraries required for the access to the scene.
         /// </summary>
         [EditorReadOnly, Tooltip("Libraries required for the access to the scene.")]
         public List<AssetLibrary> libraries;
-        #endregion
+
         private List<UMI3DNode> nodes;
+        #endregion
+
 
         #region initialization
 
@@ -134,14 +136,26 @@ namespace umi3d.edk
         }
 
         //Remember already added entities
+        /// <summary>
+        /// UMI3D ids of <see cref="MaterialSO"/> that are required for the scene.
+        /// </summary>
         [HideInInspector]
         public List<ulong> materialIds = new List<ulong>();
+        /// <summary>
+        /// UMI3D ids of <see cref="UMI3DAbstractAnimation"/> that are required for the scene.
+        /// </summary>
         [HideInInspector]
         public List<ulong> animationIds = new List<ulong>();
 
-        [EditorReadOnly]
+        /// <summary>
+        /// <see cref="MaterialSO"/> that are required for the scene.
+        /// </summary>
+        [EditorReadOnly, Tooltip("Materials required for the scene.")]
         public List<MaterialSO> materialSOs = new List<MaterialSO>();
-        [EditorReadOnly]
+        /// <summary>
+        /// <see cref="MaterialSO"/> that are required for the scene.
+        /// </summary>
+        [EditorReadOnly, Tooltip("Materials required for the scene.")]
         public List<MaterialSO> PreloadedMaterials = new List<MaterialSO>();
 
 

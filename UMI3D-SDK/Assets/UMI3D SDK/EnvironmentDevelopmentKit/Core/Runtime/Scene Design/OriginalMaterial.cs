@@ -21,7 +21,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// UMI3D material
+    /// UMI3D material with custom shaders.
     /// </summary>
     [CreateAssetMenu(fileName = "Umi3D_Original_Material", menuName = "UMI3D/Umi3D_Original_Material")]
     public class OriginalMaterial : MaterialSO

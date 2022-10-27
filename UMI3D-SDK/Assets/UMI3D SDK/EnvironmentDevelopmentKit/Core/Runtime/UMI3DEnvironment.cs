@@ -79,7 +79,13 @@ namespace umi3d.edk
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Default rotation in the environment.")]
         private Vector3 defaultStartOrientation = new Vector3(0, 0, 0);
+        /// <summary>
+        /// See <see cref="defaultStartPosition"/>.
+        /// </summary>
         public static UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultStartOrientation"/>.
+        /// </summary>
         public static UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
 
         private void Start()
@@ -185,9 +191,14 @@ namespace umi3d.edk
 
         }
 
-
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Scene that are loaded with the environment the first time.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Scene that are loaded with the environment the first time.")]
         private List<UMI3DResource> preloadedScenes = new List<UMI3DResource>();
+        /// <summary>
+        /// See <see cref="objectPreloadedScenes"/>.
+        /// </summary>
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
         /// <summary>

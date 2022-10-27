@@ -26,8 +26,17 @@ namespace umi3d.edk
     /// Objects that posses an Anchor are placed according to their anchor in the real world, instaed of its position in the scene.
     public class UMI3DAnchor : MonoBehaviour
     {
+        /// <summary>
+        /// Position offset of the anchor relative to the object.
+        /// </summary>
         public Vector3 PositionOffset;
+        /// <summary>
+        /// Rotation offset of the anchor relative to the object.
+        /// </summary>
         public Quaternion RotationOffset;
+        /// <summary>
+        /// Scale offset of the anchor relative to the object.
+        /// </summary>
         public Vector3 ScaleOffset;
 
         /// <inheritdoc/>

@@ -24,15 +24,16 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// UMI3D empty object to load on the clients.
+    /// UMI3D empty object to load on the clients on their scene graph.
     /// </summary>
     [DisallowMultipleComponent]
     [SelectionBase]
     public class UMI3DNode : UMI3DAbstractNode
     {
 
-        #region properties
+        #region fields
 
+        #region asyncproperties
         /// <summary>
         /// Indicates if the object is permanently facing the users XBillboard
         /// </summary>
@@ -48,6 +49,7 @@ namespace umi3d.edk
         /// </summary>
         public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();
 
+        #endregion asyncproperties
 
         /// <summary>
         /// An editor field to modify default objectXBillboard value
@@ -66,7 +68,8 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Check this box if a collider is attached to that node.")]
         protected bool hasCollider = false;
 
-        #region collider fields for editor
+
+        #region collider
 
         /// <summary>
         /// Type of the collider generated in front end.
@@ -122,8 +125,8 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Custom MeshCollider used if isMeshCustom.")]
         protected UMI3DResource customMeshCollider;
 
+        #region asyncproperties
 
-        // UMI3DAsyncProperties for 
         /// <summary>
         /// See <see cref="hasCollider"/>.
         /// </summary>
@@ -166,8 +169,12 @@ namespace umi3d.edk
         /// Custom mesh collider is not synchronized at runtime
         public UMI3DAsyncProperty<UMI3DResource> objectCustomMeshCollider { get { Register(); return _objectCustomMeshCollider; } protected set => _objectCustomMeshCollider = value; }
 
+        #endregion asyncproperties
 
-        #endregion
+        #endregion collider
+
+        #region asyncproperties
+
         public UMI3DAsyncProperty<UMI3DKHRLight> objectLight { get { Register(); return _objectLight; } protected set => _objectLight = value; }
 
         private UMI3DAsyncProperty<bool> _objectXBillboard;
@@ -184,7 +191,9 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<UMI3DResource> _objectCustomMeshCollider;
         private UMI3DAsyncProperty<UMI3DKHRLight> _objectLight;
 
-        #endregion
+        #endregion asyncproperties
+
+        #endregion fields
 
 
         #region initialization

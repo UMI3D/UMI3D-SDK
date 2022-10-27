@@ -22,6 +22,9 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// 3D model, representation of an object with rendered sufaces.
+    /// </summary>
     public partial class UMI3DModel : AbstractRenderedNode
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core;
@@ -29,40 +32,54 @@ namespace umi3d.edk
         [Obsolete("will be removed soon")]
         public bool lockColliders = false;
 
-
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Model's ressource.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Model's ressource.")]
         private UMI3DResource model = new UMI3DResource();
+        /// <summary>
+        /// <see cref="model"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> objectModel { get { Register(); return _objectModel; } protected set => _objectModel = value; }
 
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
 
         /// <summary>
-        /// 
+        /// Should the subobjects considered as seperated nodes?
         /// </summary>
-        /// Should not be modified after init 
+        /// Should not be modified after init
+        [Tooltip("Should the subobjects considered as seperated nodes?")]
         public bool areSubobjectsTracked = false;
         /// <summary>
-        /// State if submodel have already been added under this model.
+        /// Have submodels already been added under this model?
         /// </summary>
+        /// Set to true after calling <see cref="SetSubHierarchy"/>.
+        [Tooltip("Have submodels already been added under this model?")]
         public bool areSubobjectsAlreadyMarked = false;
 
         /// <summary>
-        /// 
+        /// Is the model in right hand coordinates?
         /// </summary>
         /// Should not be modified after init 
+        [Tooltip("Is the model in right hand coordinates?")]
         public bool isRightHanded = true;
 
         /// <summary>
-        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// Should this mesh be used for navmesh generation on the browser?
         /// </summary>
+        [Tooltip("Should this mesh be used for navmesh generation on the browser?")]
         public bool isPartOfNavmesh = false;
 
         /// <summary>
-        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// Should the user be allowed to navigate through this object?
         /// </summary>
+        /// When set to true, it will alter the navigation mesh generation.
+        [Tooltip("Should the user be allowed to navigate through this object?")]
         public bool isTraversable = true;
 
-
+        /// <summary>
+        /// <see cref="model"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DResource> _objectModel;
 
         /// <inheritdoc/>
@@ -92,6 +109,9 @@ namespace umi3d.edk
             objectModel.OnValueChanged += v => model = v;
         }
 
+        /// <summary>
+        /// Add automatically <see cref="UMI3DSubModel"/> nodes on all subobjects of the model that possess a renderer, and <see cref="UMI3DNode"/> on others.
+        /// </summary>
         public void SetSubHierarchy()
         {
             if (idGenerator == null || idGenerator.Length < 1)
