@@ -84,6 +84,7 @@ namespace umi3d.cdk
 
                 isOk();
                 await PerformOperation(c);
+                performed = true;
             }
         }
 
