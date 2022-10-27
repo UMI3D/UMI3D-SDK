@@ -204,7 +204,7 @@ public class BuildHelper : EditorWindow
             var assets = Build(_data.PackageFolderPath);
             foreach(var asset in assets)
             {
-                info += $"Build {asset.Item2} : {asset.Item1}";
+                info += $"Build {asset.Item2} : {asset.Item1}\n";
             }
             await Task.Delay(100);
 
