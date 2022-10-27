@@ -78,15 +78,7 @@ public class BuildHelper : EditorWindow
     VersionRegex patternDate ;
 
     string CommitMessage => $"SDK {newVersion}";
-    const string CommitMessageEdkTitle = "## EDK";
-    const string CommitMessageCdkTitle = "## CDK";
-    const string CommitMessageCommonTitle = "## Common";
-    string Edkmessage;
-    string Cdkmessage;
-    string Commonmessage;
 
-
-    string message => CommitMessageCommonTitle+"\n"+Commonmessage+ "\n\n" + CommitMessageEdkTitle + "\n" + Edkmessage + "\n\n" + CommitMessageCdkTitle + "\n" + Cdkmessage+"\n\n";
 
     string info = "";
     Vector2 ScrollPos;
@@ -161,14 +153,14 @@ public class BuildHelper : EditorWindow
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Separator();
-        EditorGUILayout.LabelField(CommitMessageCommonTitle);
-        Commonmessage = EditorGUILayout.TextArea(Commonmessage);
+        EditorGUILayout.LabelField(_data.CommitMessageCommonTitle);
+        _data.Commonmessage = EditorGUILayout.TextArea(_data.Commonmessage);
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField(CommitMessageEdkTitle);
-        Edkmessage = EditorGUILayout.TextArea(Edkmessage);
+        EditorGUILayout.LabelField(_data.CommitMessageEdkTitle);
+        _data.Edkmessage = EditorGUILayout.TextArea(_data.Edkmessage);
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField(CommitMessageCdkTitle);
-        Cdkmessage = EditorGUILayout.TextArea(Cdkmessage);
+        EditorGUILayout.LabelField(_data.CommitMessageCdkTitle);
+        _data.Cdkmessage = EditorGUILayout.TextArea(_data.Cdkmessage);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Full Changelog: <...>");
         EditorGUILayout.Separator();

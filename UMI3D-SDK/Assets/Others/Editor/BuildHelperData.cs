@@ -30,6 +30,16 @@ public class BuildHelperData : ScriptableObject
     public string Token;
     public string PackageFolderPath;
     public bool display;
+
+    public string Edkmessage;
+    public string Cdkmessage;
+    public string Commonmessage;
+
+    public readonly string CommitMessageEdkTitle = "## EDK";
+    public readonly string CommitMessageCdkTitle = "## CDK";
+    public readonly string CommitMessageCommonTitle = "## Common";
+    public string message => CommitMessageCommonTitle + "\n" + Commonmessage + "\n\n" + CommitMessageEdkTitle + "\n" + Edkmessage + "\n\n" + CommitMessageCdkTitle + "\n" + Cdkmessage + "\n\n";
+
 }
 
 [CustomEditor(typeof(BuildHelperData))]
