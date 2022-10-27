@@ -221,7 +221,7 @@ public class BuildHelper : EditorWindow
             }
 
             //Open folder
-            OpenFile(_data.PackageFolderPath);
+            OpenFile(Application.dataPath + "/../" + _data.PackageFolderPath);
         }
         catch (Exception e)
         {
