@@ -23,7 +23,7 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
         {
             if (gltfMatDto.extensions.umi3d is ExternalMaterialDto)
@@ -31,7 +31,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override async void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null)
         {
             var externalMat = dto.extensions.umi3d as ExternalMaterialDto;

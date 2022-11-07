@@ -22,11 +22,16 @@ using UnityEngine;
 namespace umi3d.edk
 {
     public class UMI3DSubModel : AbstractRenderedNode
-
-
     {
-
+        /// <summary>
+        /// Model that serves as a based for the submodel.
+        /// </summary>
+        [Tooltip("Model that serves as a based for the submodel.")]
         public UMI3DModel parentModel;
+
+        /// <summary>
+        /// Named label of the submodel.
+        /// </summary>
         public string subModelName { get; protected set; }
 
         /// <summary>
@@ -40,8 +45,14 @@ namespace umi3d.edk
         public List<int> subModelHierachyIndexes = new List<int>();/*{ get; set; }*/
 
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// If true, the submodel won't be impacted by a change of material on the model.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("If true, the submodel won't be impacted by a change of material on the model.")]
         protected bool ignoreModelMaterialOverride = false;
+        /// <summary>
+        /// See <see cref="ignoreModelMaterialOverride"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
 
@@ -56,7 +67,7 @@ namespace umi3d.edk
         public bool isTraversable = true;
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -77,7 +88,7 @@ namespace umi3d.edk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);
@@ -112,6 +123,7 @@ namespace umi3d.edk
             subDto.isPartOfNavmesh = isPartOfNavmesh;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)

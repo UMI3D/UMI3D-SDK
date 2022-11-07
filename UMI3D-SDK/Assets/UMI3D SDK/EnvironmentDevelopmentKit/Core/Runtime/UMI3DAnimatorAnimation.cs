@@ -20,27 +20,47 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Animation using an animator to animate objects.
+    /// </summary>
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Node where the animator can be found on.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Node where the animator can be found on.")]
         private UMI3DNode node = null;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Aniumation state's name in the animator controller.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller.")]
         private string stateName = "";
 
+        /// <summary>
+        /// See <see cref="node"/>.
+        /// </summary>
         private UMI3DAsyncProperty<UMI3DNode> _objectNode;
+        /// <summary>
+        /// See <see cref="stateName"/>.
+        /// </summary>
         private UMI3DAsyncProperty<string> _objectStateName;
 
-
+        /// <summary>
+        /// See <see cref="node"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DNode> ObjectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
+        /// <summary>
+        /// See <see cref="stateName"/>.
+        /// </summary>
         public UMI3DAsyncProperty<string> ObjectStateName { get { Register(); return _objectStateName; } protected set => _objectStateName = value; }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DAnimatorAnimationDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -51,7 +71,7 @@ namespace umi3d.edk
             ObjectStateName.OnValueChanged += (d) => stateName = d;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -60,6 +80,7 @@ namespace umi3d.edk
             Adto.stateName = ObjectStateName.GetValue(user);
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return base.ToBytesAux(user)

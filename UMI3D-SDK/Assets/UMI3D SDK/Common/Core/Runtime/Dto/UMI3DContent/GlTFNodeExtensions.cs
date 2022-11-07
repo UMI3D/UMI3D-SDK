@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// glTF extensions available for UMI3D nodes.
+    /// </summary>
     public class GlTFNodeExtensions : AbstractGlTFExtensions<UMI3DNodeDto>
     {
         public KHR_lights_punctual KHR_lights_punctual;

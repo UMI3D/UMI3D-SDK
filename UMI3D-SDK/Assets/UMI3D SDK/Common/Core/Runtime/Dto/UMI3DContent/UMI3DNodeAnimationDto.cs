@@ -18,16 +18,31 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an animation that triggers others animations by applying operations on the node.
+    /// </summary>
+    /// Animations of a same group could be triggered at the same time and executed in a particular order that way.
     public class UMI3DNodeAnimationDto : UMI3DAbstractAnimationDto
     {
         /// <summary>
         /// Duration of the animation, in seconds.
         /// </summary>
         public float duration = 10f;
+
+        /// <summary>
+        /// Operations to apply to create the animation.
+        /// </summary>
         public List<OperationChainDto> animationChain = null;
 
+        /// <summary>
+        /// DTO describing a piece of animation to play using an operation.
+        /// </summary>
+        /// Animations in animation chain could be played simultaneously ou one after another by setting up the <see cref="startOnProgress"/> field.
         public class OperationChainDto
-        {
+        {   
+            /// <summary>
+            /// Operation to apply.
+            /// </summary>
             public AbstractOperationDto operation;
             /// <summary>
             /// Time in second after which this operation will be performed.

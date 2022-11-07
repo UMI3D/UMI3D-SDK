@@ -17,8 +17,12 @@ using UnityEngine;
 
 namespace umi3d.cdk.menu
 {
+    /// <returns></returns>
     public class ImageMenu : Menu
     {
+        /// <summary>
+        /// Image to display.
+        /// </summary>
         public Sprite image;
     }
 }

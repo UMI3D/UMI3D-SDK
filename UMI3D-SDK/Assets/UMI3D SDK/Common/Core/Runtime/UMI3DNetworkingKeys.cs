@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains all the URI required for HTTP requests within the UMI3D protocol. 
+    /// </summary>
     public static class UMI3DNetworkingKeys
     {
         //users

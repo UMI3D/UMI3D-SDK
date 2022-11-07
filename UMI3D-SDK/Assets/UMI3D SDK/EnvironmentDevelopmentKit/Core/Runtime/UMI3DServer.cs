@@ -22,9 +22,17 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Manager for the UMI3D server.
+    /// </summary>
+    /// Management of users is performed by the server.
     public class UMI3DServer : SingleBehaviour<UMI3DServer>
     {
-        [SerializeField]
+        /// <summary>
+        /// IP of the UMI3D server.
+        /// </summary>
+        /// Default to "Localhost.
+        [SerializeField, Tooltip("IP of the UMI3D server.")]
         protected string ip = "localhost";
 
         /// <summary>
@@ -75,7 +83,7 @@ namespace umi3d.edk
         #endregion
 
         /// <summary>
-        /// Return the Url of the Http Server.
+        /// Return the URL of the HTTP Server.
         /// </summary>
         /// <returns></returns>
         public static string GetHttpUrl()
@@ -113,33 +121,56 @@ namespace umi3d.edk
             return ip;
         }*/
 
+        /// <summary>
+        /// Return a <see cref="ForgeConnectionDto"/> with essential info for connection. 
+        /// Warning : returns null.
+        /// </summary>
+        /// <returns></returns>
         public virtual ForgeConnectionDto ToDto()
         {
             return null;
         }
 
+        /// <summary>
+        /// Notify that the user has changed.
+        /// </summary>
+        /// <param name="user"></param>
         public virtual void NotifyUserChanged(UMI3DUser user)
         {
         }
 
+        /// <summary>
+        /// Get the set of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
         public virtual HashSet<UMI3DUser> UserSet()
         {
             return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>());
         }
+
+        /// <summary>
+        /// Get the set of all <see cref="UMI3DUser"/> instances in the environment that have already joined.
+        /// </summary>
+        /// <returns></returns>
         public virtual HashSet<UMI3DUser> UserSetWhenHasJoined()
         {
             return new HashSet<UMI3DUser>(UMI3DEnvironment.GetEntities<UMI3DUser>().Where((u) => u.hasJoined));
         }
+
+        /// <summary>
+        /// Get the collection of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
         public virtual IEnumerable<UMI3DUser> Users()
         {
             return UMI3DEnvironment.GetEntities<UMI3DUser>();
         }
 
         /// <summary>
-        /// Call To Notify a user status change.
+        /// Call to notify a user status change.
         /// </summary>
-        /// <param name="user">user that get its staus updated</param>
-        /// <param name="status">new status</param>
+        /// <param name="user">User that get its status updated</param>
+        /// <param name="status">New status</param>
         public virtual void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
             switch (status)
@@ -163,19 +194,31 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Looks for a missing user.
+        /// </summary>
+        /// <param name="user">User to check the presence.</param>
         protected virtual void LookForMissing(UMI3DUser user) { }
 
-
+        /// <summary>
+        /// Send a <see cref="Transaction"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
         public static void Dispatch(Transaction transaction)
         {
             if (Exists) Instance._Dispatch(transaction);
         }
 
+        /// <summary>
+        /// Send a <see cref="DispatchableRequest"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
         public static void Dispatch(DispatchableRequest dispatchableRequest)
         {
             if (Exists) Instance._Dispatch(dispatchableRequest);
         }
 
+        //? empty ?
         protected virtual void _Dispatch(Transaction transaction)
         {
         }
@@ -183,6 +226,10 @@ namespace umi3d.edk
         {
         }
 
+        /// <summary>
+        /// Get the current server Unity time in seconds since it has started.
+        /// </summary>
+        /// <returns></returns>
         public virtual float ReturnServerTime()
         {
             return Time.time;

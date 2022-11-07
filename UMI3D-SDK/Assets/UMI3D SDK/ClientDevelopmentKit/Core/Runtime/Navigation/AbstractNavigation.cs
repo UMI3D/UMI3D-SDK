@@ -24,12 +24,12 @@ namespace umi3d.cdk
     public abstract class AbstractNavigation : MonoBehaviour
     {
         /// <summary>
-        /// Disable this navigation method.
+        /// Disable this navigation system.
         /// </summary>
         public abstract void Disable();
 
         /// <summary>
-        /// Activate this navigation method.
+        /// Activate this navigation system.
         /// </summary>
         public abstract void Activate();
 

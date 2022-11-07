@@ -19,12 +19,30 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serializable implementation of a color using RGBA channels with float values.
+    /// </summary>
     [Serializable]
     public class SerializableColor : UMI3DDto
     {
+        /// <summary>
+        /// Red color channel. Value between 0 and 1.
+        /// </summary>
         public float R;
+
+        /// <summary>
+        /// Green color channel. Value between 0 and 1.
+        /// </summary>
         public float G;
+
+        /// <summary>
+        /// Blue color channel. Value between 0 and 1.
+        /// </summary>
         public float B;
+
+        /// <summary>
+        /// Alpha opacity channel. Value between 0 and 1.
+        /// </summary>
         public float A;
 
         public SerializableColor() : base()
@@ -43,7 +61,7 @@ namespace umi3d.common
             A = a;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return ((Color)this).ToString();

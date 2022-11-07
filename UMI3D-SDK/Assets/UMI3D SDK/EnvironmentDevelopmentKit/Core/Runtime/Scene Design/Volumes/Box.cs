@@ -26,12 +26,29 @@ namespace umi3d.edk.volume
     /// </summary>
     public class Box : AbstractPrimitive
     {
+        /// <summary>
+        /// If true, the extents vector start from a center that is on the bottom face of the box.
+        /// </summary>
+        /// This means that the center require to be put up of the extent on the y-axis.
         public bool extendFromBottom = false;
 
+        /// <summary>
+        /// Bounds of the box.
+        /// </summary>
+        /// Bounds are axis-aligned bounding boxes.
         [SerializeField]
-        [EditorReadOnly]
+        [EditorReadOnly, Tooltip("Bounds of the box.")]
         private Bounds bounds = new Bounds(Vector3.zero, Vector3.one);
+        /// <summary>
+        /// Size of the box.
+        /// </summary>
+        [Tooltip("Size of the box.")]
         public UMI3DAsyncProperty<Vector3> size;
+        /// <summary>
+        /// Center of the box.
+        /// </summary>
+        /// Located at the center of mass.
+        [Tooltip("Center of the box.")]
         public UMI3DAsyncProperty<Vector3> center;
 
 
@@ -46,6 +63,7 @@ namespace umi3d.edk.volume
             size.OnValueChanged += s => bounds.size = s;
         }
 
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new BoxDto()
@@ -58,6 +76,9 @@ namespace umi3d.edk.volume
             };
         }
 
+        /// <summary>
+        /// Unity's OnDrawGizmos function
+        /// </summary>
         public void OnDrawGizmos()
         {
             Bounds displayBound = bounds;

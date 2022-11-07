@@ -16,10 +16,22 @@ limitations under the License.
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Define who will receive any data stream.
+    /// </summary>
     public enum Receivers
     {
+        /// <summary>
+        /// Every user.
+        /// </summary>
         All = 0,
+        /// <summary>
+        /// Every user except the sender.
+        /// </summary>
         Others = 1,
+        /// <summary>
+        /// Only a defined target.
+        /// </summary>
         Target = 2
     }
 }

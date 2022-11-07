@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to confirm the onboarding in a vehicle.
+    /// </summary>
     public class VehicleConfirmation : AbstractBrowserRequestDto
     {
         /// <summary>

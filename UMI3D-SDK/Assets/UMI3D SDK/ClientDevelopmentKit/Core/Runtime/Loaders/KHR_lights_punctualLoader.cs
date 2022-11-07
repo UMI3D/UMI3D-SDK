@@ -22,7 +22,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Load KHR Light
+    /// Load KHR Light, see <see cref="KHR_lights_punctual"/>.
     /// </summary>
     public class KHR_lights_punctualLoader
     {

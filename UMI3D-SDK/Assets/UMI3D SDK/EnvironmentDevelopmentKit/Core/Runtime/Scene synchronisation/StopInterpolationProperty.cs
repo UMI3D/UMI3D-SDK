@@ -27,6 +27,7 @@ namespace umi3d.edk
         /// </summary>
         public object stopValue;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StopInterpolationProperty)
@@ -35,6 +36,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(stopValue);
         }
 
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var stopInterpolation = new StopInterpolationPropertyDto

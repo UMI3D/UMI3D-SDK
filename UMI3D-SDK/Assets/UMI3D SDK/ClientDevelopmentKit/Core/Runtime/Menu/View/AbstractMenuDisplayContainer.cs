@@ -27,12 +27,12 @@ namespace umi3d.cdk.menu.view
     public abstract partial class AbstractMenuDisplayContainer : AbstractDisplayer
     {
         /// <summary>
-        /// Is the container being expanded ?
+        /// Is the container being expanded?
         /// </summary>
         [SerializeField]
         public bool isExpanded { get; protected set; }
         /// <summary>
-        /// Is the container being displayed ?
+        /// Is the container being displayed?
         /// </summary>
         public bool isDisplayed { get; protected set; }
 
@@ -50,18 +50,21 @@ namespace umi3d.cdk.menu.view
         }
 
         /// <summary>
-        /// Generation to replace on Expand. Negative value means no replacement; 0 replace siblings;
+        /// Generation to replace on Expand. Negative value means no replacement, 0 replace siblings.
         /// </summary>
+        [Tooltip("Generation to replace on Expand. Negative value means no replacement, 0 replace siblings.")]
         public int generationOffsetOnExpand = -1;
 
         /// <summary>
-        /// Does the container allow to navigate on several branch at once
+        /// Does the container allow to navigate on several branches at once?
         /// </summary>
+        [Tooltip("Does the container allow to navigate on several branches at once?")]
         public bool parallelNavigation = false;
 
         /// <summary>
         /// Parent container (if any).
         /// </summary>
+        [Tooltip("Parent container (if any).")]
         public AbstractMenuDisplayContainer parent;
 
         /// <summary>

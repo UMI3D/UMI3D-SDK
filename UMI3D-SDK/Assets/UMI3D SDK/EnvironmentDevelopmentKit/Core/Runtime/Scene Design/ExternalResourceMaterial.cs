@@ -20,15 +20,24 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Material imported from an external ressource, such as a file.
+    /// </summary>
     [CreateAssetMenu(fileName = "Umi3D_External_Material", menuName = "UMI3D/Umi3D_External_Material")]
     public class ExternalResourceMaterial : MaterialSO
     {
-
+        /// <summary>
+        /// Material id.
+        /// </summary>
         public ulong matId;
+        /// <summary>
+        /// File infos as <see cref="UMI3DResource"/> associated with the material ressource.
+        /// </summary>
+        [Tooltip("File infos associated with the material ressource.")]
         public UMI3DResource resource;
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override GlTFMaterialDto ToDto()
         {
             var res = new GlTFMaterialDto
@@ -42,12 +51,15 @@ namespace umi3d.edk
 
             return res;
         }
+
+        /// <inheritdoc/>
+        /// Not implemented yet.
         public override Bytable ToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
@@ -55,7 +67,7 @@ namespace umi3d.edk
 
         private bool registered = false;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override ulong GetId()
         {
             if (!registered)
@@ -69,7 +81,7 @@ namespace umi3d.edk
             return matId;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
@@ -82,14 +94,14 @@ namespace umi3d.edk
             objectShaderProperties.OnValueChanged += (Dictionary<string, object> d) => { shaderProperties = d; };
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void OnEnable()
         {
             matId = 0;
             registered = false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void SetId(ulong id)
         {
             registered = true;

@@ -26,13 +26,32 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public class VolumeTracker : MonoBehaviour
     {
+        /// <summary>
+        /// Tracked volumes in the environment.
+        /// </summary>
         public List<AbstractVolumeCell> volumesToTrack = new List<AbstractVolumeCell>();
+        /// <summary>
+        /// Number of detection check per frame.
+        /// </summary>
         public float detectionFrameRate = 30;
 
         private Coroutine trackingRoutine = null;
+        /// <summary>
+        /// Actions triggered when entering a tracked volume.
+        /// </summary>
         private readonly List<UnityAction<ulong>> callbacksOnEnter = new List<UnityAction<ulong>>();
+        /// <summary>
+        /// Actions triggered when exiting a tracked volume.
+        /// </summary>
         private readonly List<UnityAction<ulong>> callbacksOnExit = new List<UnityAction<ulong>>();
+
+        /// <summary>
+        /// Was the user in a volume during last frame?
+        /// </summary>
         private bool wasInsideOneVolumeLastFrame = false;
+        /// <summary>
+        /// UMI3D id of the last volume the user was detected in.
+        /// </summary>
         private ulong? lastVolumeId;
 
         protected virtual void Awake()
@@ -40,6 +59,9 @@ namespace umi3d.cdk.volumes
             StartTracking();
         }
 
+        /// <summary>
+        /// Active the detection in the <see cref="volumesToTrack"/>.
+        /// </summary>
         public void StartTracking()
         {
             if (trackingRoutine == null)
@@ -49,6 +71,9 @@ namespace umi3d.cdk.volumes
             }
         }
 
+        /// <summary>
+        /// Deactive the detection in the <see cref="volumesToTrack"/>.
+        /// </summary>
         public void StopTracking()
         {
             if (trackingRoutine != null)
@@ -63,6 +88,10 @@ namespace umi3d.cdk.volumes
             StopTracking();
         }
 
+        /// <summary>
+        /// Coroutine constantly checking if the gameobject this component is attached to is inside a cell.
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator Track()
         {
             while (true)

@@ -16,9 +16,18 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Ways to handle the overflow when the text is horizontally too long.
+    /// </summary>
     public enum HorizontalWrapType
     {
+        /// <summary>
+        /// Text is modified to fit within the boundaries.
+        /// </summary>
         Wrap,
+        /// <summary>
+        /// Text is allowed to exceed the boundary.
+        /// </summary>
         Overflow
     }
 }

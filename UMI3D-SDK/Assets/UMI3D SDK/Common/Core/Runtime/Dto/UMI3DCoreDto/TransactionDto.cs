@@ -20,13 +20,13 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     /// <summary>
-    /// Class to describe a transaction the 3D media is asking a browser to execute.
+    /// Describe a transaction from the 3D media to the browser, to ask one or more specific operation(s) to execute.
     /// </summary>
     [Serializable]
     public class TransactionDto : UMI3DDto
     {
         /// <summary>
-        /// The list of operations to be executed by the device
+        /// Operations to be executed by the device.
         /// </summary>
         public List<AbstractOperationDto> operations = new List<AbstractOperationDto>();
     }

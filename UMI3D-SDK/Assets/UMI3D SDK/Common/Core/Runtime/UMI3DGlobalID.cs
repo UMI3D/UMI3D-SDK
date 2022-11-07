@@ -17,10 +17,21 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Reserved and fixed UMI3D ids.
+    /// </summary>
+    /// Those id will always be the same on every environment.
     [System.Serializable]
     public static class UMI3DGlobalID
     {
+        /// <summary>
+        /// Reserved UMI3D id for the server.
+        /// </summary>
         public const ulong ServerId = 100001;
+
+        /// <summary>
+        /// Reserved UMI3D id for the environment.
+        /// </summary>
         public const ulong EnvironementId = 100002;
     }
 }

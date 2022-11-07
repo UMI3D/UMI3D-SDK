@@ -17,10 +17,15 @@ limitations under the License.
 namespace umi3d.edk
 {
     /// <summary>
-    /// Interface for UMI3D entities.
+    /// Interface for filtering nodes not to load for specific users.
     /// </summary>
     public interface UMI3DUserFilter
     {
+        /// <summary>
+        /// Authorize the loading of a node.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         bool Accept(UMI3DUser user);
     }
 }

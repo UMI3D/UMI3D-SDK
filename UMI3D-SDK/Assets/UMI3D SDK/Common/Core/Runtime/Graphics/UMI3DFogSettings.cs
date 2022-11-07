@@ -18,52 +18,95 @@ using UnityEngine;
 
 namespace umi3d.common.graphics
 {
+    /// <summary>
+    /// Post-processing deferred fog effect. Overlayfs a color on distant objects depending on their distance.
+    /// </summary>
+    /// It is useful to simulates the effect of fog or mist.
     public class UMI3DFogSettings : MonoBehaviour
     {
-        //
-        // Summary:
-        //     Fog mode to use.
+        /// <summary>
+        /// Fog mode to use.
+        /// </summary>
         public enum FogMode
         {
-            //
-            // Summary:
-            //     Linear fog.
+            /// <summary>
+            /// Linear fog.
+            /// </summary>
             Linear = 1,
-            //
-            // Summary:
-            //     Exponential fog.
+            /// <summary>
+            /// Exponential fog.
+            /// </summary>
             Exponential = 2,
-            //
-            // Summary:
-            //     Exponential squared fog (default).
+            /// <summary>
+            /// Exponential squared fog (default).
+            /// </summary>
             ExponentialSquared = 3
         }
 
-        [SerializeField]
+        /// <summary>
+        /// Should the fog effect be enabled?
+        /// </summary>
+        [SerializeField, Tooltip("Should the fog effect be enabled?")]
         private bool fogEnabled = false;
 
-        [SerializeField]
+        /// <summary>
+        /// Color of the foggy overlay.
+        /// </summary>
+        [SerializeField, Tooltip("Color of the foggy overlay.")]
         private Color color = new Color(0.5f, 0.5f, 0.5f);
 
-        [SerializeField]
+        /// <summary>
+        /// Fog mode. Configure the increase of the fog effect with distance.
+        /// </summary>
+        [SerializeField, Tooltip("Fog mode. Configure the increase of the fog effect with distance.")]
         private FogMode mode = FogMode.ExponentialSquared;
 
-        [SerializeField]
+        /// <summary>
+        /// Fog density. A denser fog will be opaque for closer objects.
+        /// </summary>
+        [SerializeField, Tooltip("Fog density. A denser fog will be opaque for closer objects.")]
         private float density = 0.01f;
 
-        [SerializeField]
+        /// <summary>
+        /// Distance at which the deferred fog effect should start to be applied.
+        /// </summary>
+        [SerializeField, Tooltip("Distance at which the deferred fog effect should start to be applied.")]
         private float startDistance = 0f;
 
-        [SerializeField]
+        /// <summary>
+        /// Distance at which the deferred fog effect should stop to increase
+        /// </summary>
+        [SerializeField, Tooltip("Distance at which the deferred fog effect should stop to increase.")]
         private float endDistance = 300f;
 
+        /// <summary>
+        /// See <see cref="fogEnabled"/>.
+        /// </summary>
         public bool FogEnabled => fogEnabled;
+        /// <summary>
+        /// See <see cref="color"/>.
+        /// </summary
         public Color Color => color;
+        /// <summary>
+        /// See <see cref="mode"/>.
+        /// </summary
         public FogMode Mode => mode;
+        /// <summary>
+        /// See <see cref="density"/>.
+        /// </summary
         public float Density => density;
+        /// <summary>
+        /// See <see cref="startDistance"/>.
+        /// </summary
         public float StartDistance => startDistance;
+        /// <summary>
+        /// See <see cref="endDistance"/>.
+        /// </summary
         public float EndDistance => endDistance;
 
+        /// <summary>
+        /// Remove the deferred fog efect.
+        /// </summary>
         public static void ResetFogSettings()
         {
             UMI3DAbstractPostProcessing.ResetFog();

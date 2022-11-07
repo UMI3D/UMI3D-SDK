@@ -16,16 +16,35 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an audio player, a enriched playable video resource.
+    /// </summary>
     public class UMI3DAudioPlayerDto : UMI3DAbstractAnimationDto
     {
-        public ResourceDto audioResource;
-        public ulong nodeID;
         /// <summary>
-        /// Spacial Blend.
-        /// 0:not spacialized; 1:Spacialized on the node; 
+        /// Ressource containing the audio.
+        /// </summary>
+        public ResourceDto audioResource;
+
+        /// <summary>
+        /// Node where to diffuse the audio from.
+        /// </summary>
+        public ulong nodeID;
+
+        /// <summary>
+        /// Spacial Blend value.
+        /// 0:not spacialized. 1:Spacialized on the node.
         /// </summary>
         public float spatialBlend = 0f;
+
+        /// <summary>
+        /// Volume value between 0 and 1.
+        /// </summary>
         public float volume = 1f;
+
+        /// <summary>
+        /// Value of pitch change induced by a slowdown or speed up effect of the audio ressource. Value 1 is normal speed.
+        /// </summary>
         public float pitch = 1f;
 
     }

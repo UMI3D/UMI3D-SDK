@@ -22,6 +22,7 @@ namespace umi3d.edk
     /// <summary>
     /// UI Text.
     /// </summary>
+    /// See <see cref="UnityEngine.UI.Text"/>.
     [RequireComponent(typeof(Text))]
     public class UIText : UIRect
     {
@@ -178,16 +179,13 @@ namespace umi3d.edk
             VerticalOverflow = new UMI3DAsyncProperty<VerticalWrapMode>(objectId, UMI3DPropertyKeys.VerticalOverflow, verticalOverflow, (a, u) => a.Convert());
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UITextDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -209,6 +207,7 @@ namespace umi3d.edk
             textDto.verticalOverflow = VerticalOverflow.GetValue(user).Convert();
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             string text = Text.GetValue(user);

@@ -21,10 +21,16 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Helper class for byte serialization.
+    /// </summary>
     public static class UMI3DNetworkingHelper
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
+        /// <summary>
+        /// Networking helpers from other modules.
+        /// </summary>
         private static readonly List<Umi3dNetworkingHelperModule> modules = new List<Umi3dNetworkingHelperModule>();
 
         /// <summary>
@@ -337,11 +343,24 @@ namespace umi3d.common
             return false;
         }
 
+        /// <summary>
+        /// Read a byteContainer known to be a collection of elements.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="container"></param>
+        /// <returns>A deserialized array of the elements.</returns>
         public static T[] ReadArray<T>(ByteContainer container)
         {
             return ReadList<T>(container).ToArray();
         }
 
+        /// <summary>
+        /// Read a byteContainer known to be a collection of elements.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="container"></param>
+        /// <returns>A deserialized list of the elements.</returns>
+        /// <exception cref="Exception">Not a known collection type.</exception>
         public static List<T> ReadList<T>(ByteContainer container)
         {
             byte listType = UMI3DNetworkingHelper.Read<byte>(container);
@@ -356,6 +375,14 @@ namespace umi3d.common
             }
         }
 
+        /// <summary>
+        /// Applies an operation to a <paramref name="list"/> based on the value in a byte <paramref name="container"/>.
+        /// </summary>
+        /// Passing an invalid or no operation id will clear the list and fill it again with the container values.
+        /// <typeparam name="T"></typeparam>
+        /// <param name="operationId">Operation to apply UMI3D key</param>
+        /// <param name="container">Byte container with the interesting value (index or index+value)</param>
+        /// <param name="list">List to apply the changes</param>
         public static void ReadList<T>(uint operationId, ByteContainer container, List<T> list)
         {
             switch (operationId)
@@ -390,11 +417,16 @@ namespace umi3d.common
         /// </summary>
         private abstract class TypedDictionaryEntry
         {
+            /// <summary>
+            /// Read the entry.
+            /// </summary>
+            /// <param name="container"></param>
+            /// <returns></returns>
             public abstract bool Read(ByteContainer container);
         }
 
         /// <summary>
-        /// class to describe a Dictionary<K,V> entry that can be read from a ByteContainer
+        /// Utility class to describe a Dictionary<K,V> entry that can be read from a ByteContainer
         /// </summary>
         /// <typeparam name="K">Key Type</typeparam>
         /// <typeparam name="V">Value Type</typeparam>
@@ -405,6 +437,11 @@ namespace umi3d.common
 
             public KeyValuePair<K, V> keyValuePair => new KeyValuePair<K, V>(key, value);
 
+            /// <summary>
+            /// Read both the key and value stored in the container.
+            /// </summary>
+            /// <param name="container"></param>
+            /// <returns></returns>
             public override bool Read(ByteContainer container)
             {
                 return TryRead(container, out key) && TryRead(container, out value);
@@ -457,6 +494,12 @@ namespace umi3d.common
             return result;
         }
 
+        /// <summary>
+        /// Read a collection in way that cannot exceed the indicated collection size in the <paramref name="container"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="container"></param>
+        /// <returns></returns>
         private static List<T> ReadCountList<T>(ByteContainer container)
         {
             int count = UMI3DNetworkingHelper.Read<int>(container);
@@ -472,6 +515,11 @@ namespace umi3d.common
             return res;
         }
 
+        /// <summary>
+        /// Read an array of bytes from a <paramref name="container"/>.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public static byte[] ReadByteArray(ByteContainer container)
         {
             byte type = UMI3DNetworkingHelper.Read<byte>(container);
@@ -481,6 +529,12 @@ namespace umi3d.common
             return res;
         }
 
+        /// <summary>
+        /// Get an enumerable collection of <see cref="ByteContainer"/> 
+        /// from a <paramref name="container"/> that is an indexed array.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <returns></returns>
         public static IEnumerable<ByteContainer> ReadIndexesList(ByteContainer container)
         {
             byte listType = UMI3DNetworkingHelper.Read<byte>(container);
@@ -509,6 +563,12 @@ namespace umi3d.common
             yield break;
         }
 
+        /// <summary>
+        /// Get the right <see cref="UMI3DObjectKeys"/> for a value of a given type.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private static Bytable GetType<T>(T value)
         {
             switch (value)
@@ -540,16 +600,33 @@ namespace umi3d.common
             }
         }
 
+        /// <summary>
+        /// Get a bytable from a enumerable set of values of unknown type.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Bytable Write(IEnumerable value)
         {
             return WriteCollection(value.Cast<object>());
         }
 
+        /// <summary>
+        /// Get a bytable from a key-value set of values of unknown type.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Bytable Write(IDictionary value)
         {
             return WriteCollection(value);
         }
 
+        /// <summary>
+        /// Get a bytable from any <paramref name="value"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public static Bytable Write<T>(T value)
         {
             Func<byte[], int, int, (int, int)> f;
@@ -722,6 +799,11 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
+        /// <summary>
+        /// Get a bytable from a enumerable set of values of unknown type.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Bytable WriteCollection<T>(IEnumerable<T> value)
         {
             if (typeof(IBytable).IsAssignableFrom(typeof(T)) || (value.Count() > 0 && !value.Any(e => !typeof(IBytable).IsAssignableFrom(e.GetType()))))
@@ -734,6 +816,11 @@ namespace umi3d.common
             return b;
         }
 
+        /// <summary>
+        /// Get a bytable from a enumerable set of key-value pairs of unknown types.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Bytable WriteCollection(IDictionary value)
         {
             if (value.Count > 0 && !value.Entries().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
@@ -746,6 +833,9 @@ namespace umi3d.common
             return b;
         }
 
+        /// <summary>
+        /// Utility class for dictionnary serialization of key-value pairs.
+        /// </summary>
         private class DictionaryEntryBytable : IBytable
         {
             private readonly object key;
@@ -756,19 +846,25 @@ namespace umi3d.common
                 this.key = entry.Key;
                 this.value = entry.Value as IBytable;
             }
-
+            
+            /// <inheritdoc/>
             public bool IsCountable()
             {
                 return value.IsCountable();
             }
 
+            /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return Write(key) + Write(value);
             }
         }
 
-
+        /// <summary>
+        /// Get a <see cref="Bytable"/> from an enumerable set of bytes.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Bytable WriteCollection(IEnumerable<byte> value)
         {
             int count = value.Count();
@@ -781,6 +877,11 @@ namespace umi3d.common
             return b + new Bytable(count, f);
         }
 
+        /// <summary>
+        /// Get a <see cref="Bytable"/> from an enumerable set of adequate values and <paramref name="parameters"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Bytable WriteIBytableCollection(IEnumerable<IBytable> ibytes, params object[] parameters)
         {
             if (ibytes.Count() > 0)
@@ -792,6 +893,12 @@ namespace umi3d.common
                 + Write(0);
         }
 
+        /// <summary>
+        /// Get a <see cref="Bytable"/> from an enumerable set of <paramref name="operations"/> to apply and their <paramref name="parameters"/>.
+        /// </summary>
+        /// <param name="operations"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         private static Bytable ListToIndexesBytable(IEnumerable<IBytable> operations, params object[] parameters)
         {
             Bytable ret = Write(UMI3DObjectKeys.IndexesArray);
@@ -836,6 +943,11 @@ namespace umi3d.common
             return ret;
         }
 
+        /// <summary>
+        /// Get a bytable with a known size from a list of <paramref name="operations"/> to apply and their <paramref name="parameters"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private static Bytable ListToCountBytable(IEnumerable<IBytable> operations, params object[] parameters)
         {
             return Write(UMI3DObjectKeys.CountArray)
@@ -844,17 +956,46 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Object that could be converted to an array of bytes.
+    /// </summary>
     public interface IBytable
     {
+        /// <summary>
+        /// Could the number of elements be deduced from a size parameter?
+        /// </summary>
+        /// <returns></returns>
         bool IsCountable();
+
+        /// <summary>
+        /// Convert the parameters to an array of <see cref="Bytable"/>.
+        /// </summary>
+        /// This method is used in the bytes networking system.
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         Bytable ToBytableArray(params object[] parameters);
     }
 
+    /// <summary>
+    /// Bytes section in an array of bytes.
+    /// </summary>
     public class ByteContainer
     {
         public ulong timeStep { get; private set; }
+        
+        /// <summary>
+        /// The byte array that the container section belongs to.
+        /// </summary>
         public byte[] bytes { get; private set; }
+
+        /// <summary>
+        /// Starting index of the section in the <see cref="bytes"/> array.
+        /// </summary>
         public int position;
+
+        /// <summary>
+        /// Number of byte in the section.
+        /// </summary>
         public int length;
 
         public ByteContainer(Binary frame) : this(frame.TimeStep, frame.StreamData.byteArr)
@@ -878,17 +1019,29 @@ namespace umi3d.common
             timeStep = container.timeStep;
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return $"{bytes.ToString<byte>()} [{position} : {length}]";
         }
     }
 
+    /// <summary>
+    /// Intermediary class used for serialization of objects into an array of bytes.
+    /// </summary>
+    /// it is possible to sum 2 bytables to obtain a larger bytable.
     public class Bytable
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
+        /// <summary>
+        /// Size of the array of byte to reserve.
+        /// </summary>
         public int size { get; private set; }
+        /// <summary>
+        /// Function that take an array of byte to fill up, an index of a cell to write, and an already been used size. 
+        /// This function shoudl return a couple ((position+newly reserved size),(current total size + newly reserved size)).
+        /// </summary>
         public Func<byte[], int, int, (int, int)> function { get; private set; }
 
         public Bytable(int size, Func<byte[], int, int, (int, int)> function)
@@ -963,10 +1116,29 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Helper class to serialize objects.
+    /// </summary>
+    /// Typically used to serialize objects that are not defined in the UMI3D core.
     public abstract class Umi3dNetworkingHelperModule
     {
+        /// <summary>
+        /// Write the object as a <see cref="Bytable"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the object to serialize.</typeparam>
+        /// <param name="value">Object to serialize.</param>
+        /// <param name="bytable">Object as a bytable.</param>
+        /// <returns></returns>
         public abstract bool Write<T>(T value, out Bytable bytable);
 
+        /// <summary>
+        /// Retrieve an object from a <see cref="Bytable"/>.
+        /// </summary>
+        /// <typeparam name="T">Type of the object to deserialize.</typeparam>
+        /// <param name="container">Byte container containing the object.</param>
+        /// <param name="readable">has the containr successfully been read?</param>
+        /// <param name="result">Deserialized object.</param>
+        /// <returns></returns>
         public abstract bool Read<T>(ByteContainer container, out bool readable, out T result);
     }
 }

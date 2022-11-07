@@ -18,9 +18,15 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a material through custom shader properties.
+    /// </summary>
     [System.Serializable]
     public class UMI3DOriginalMaterialDto : AbstractEntityDto, IMaterialDto
     {
+        /// <summary>
+        /// Collection of custoim key-value shader properties.
+        /// </summary>
         public Dictionary<string, object> shaderProperties { get; set; }
     }
 }

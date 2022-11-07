@@ -20,18 +20,24 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// <see cref="Operation"/> to send to request the loading of an object on clients.
+    /// </summary>
     public class LoadEntity : Operation
     {
-
+        /// <summary>
+        /// Entities to request loading for.
+        /// </summary>
         public List<UMI3DLoadableEntity> entities;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.LoadEntity)
                 + UMI3DNetworkingHelper.Write(entities.Select((e) => e.Id()));
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new LoadEntityDto()

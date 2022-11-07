@@ -16,15 +16,46 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an asset file.
+    /// </summary>
     [System.Serializable]
     public class FileDto : UMI3DDto
     {
+        /// <summary>
+        /// Relative path of the file in the data folder.
+        /// </summary>
         public string url;
+
+        /// <summary>
+        /// relative sub-path if the file is packaged in an Asset Bundle.
+        /// </summary>
+        /// For Unity, see <see cref="UnityEngine.AssetBundle"/>.
         public string pathIfInBundle;
+
+        /// <summary>
+        /// Unique name of the library if the assets belongs to an asset library.
+        /// </summary>
         public string libraryKey;
+
+        /// <summary>
+        /// Format used to write the file.
+        /// </summary>
         public string format;
+
+        /// <summary>
+        /// Extension of the file.
+        /// </summary>
         public string extension;
+
+        /// <summary>
+        /// Metrics measuring this asset.
+        /// </summary>
         public AssetMetricDto metrics;
+
+        /// <summary>
+        /// Authorization header for HTTP authentification scheme.
+        /// </summary>
         public string authorization;
 
         public FileDto() : base() { }

@@ -21,7 +21,7 @@ using UnityEngine;
 namespace umi3d.common.volume
 {
     /// <summary>
-    /// Contains several useful methods for geometry computing.
+    /// Contains several useful functions for geometry computing.
     /// </summary>
     public abstract class GeometryTools
     {

@@ -131,7 +131,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Collaboration.NotifyUserStatusChanged(this);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void SetStatus(StatusType status)
         {
             bool isSame = status == this.status;

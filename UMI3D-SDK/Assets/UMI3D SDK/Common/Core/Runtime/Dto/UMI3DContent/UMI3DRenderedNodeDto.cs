@@ -18,6 +18,9 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a node that has a rendered part in the scene.
+    /// </summary>
     public class UMI3DRenderedNodeDto : UMI3DNodeDto
     {
         /// <summary>

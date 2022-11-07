@@ -21,6 +21,9 @@ using UnityEditor;
 
 namespace umi3d.edk.volume
 {
+    /// <summary>
+    /// Custom editor for <see cref="Box"/> objects.
+    /// </summary>
     [CustomEditor(typeof(Box))]
     [CanEditMultipleObjects]
     public class BoxEditor : Editor

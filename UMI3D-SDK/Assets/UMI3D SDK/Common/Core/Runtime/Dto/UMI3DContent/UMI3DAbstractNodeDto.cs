@@ -16,13 +16,35 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO for all nodes of the UMI3D environment tree.
+    /// </summary>
     [System.Serializable]
     public class UMI3DAbstractNodeDto : AbstractEntityDto
     {
+        /// <summary>
+        /// Should the node run it active scripts and components, and be displayed in the scene?
+        /// </summary>
         public bool active = true;
+
+        /// <summary>
+        /// Should the node exist only on immersive devices?
+        /// </summary>
         public bool immersiveOnly = false;
+
+        /// <summary>
+        /// Anchor related to that node for Augmented reality.
+        /// </summary>
         public UMI3DAnchorDto anchorDto = null;
+
+        /// <summary>
+        /// UMI3D id of the parent node.
+        /// </summary>
         public ulong pid = 0;
+
+        /// <summary>
+        /// Should the node be immuned to modifications?
+        /// </summary>
         public bool isStatic = false;
     }
 }

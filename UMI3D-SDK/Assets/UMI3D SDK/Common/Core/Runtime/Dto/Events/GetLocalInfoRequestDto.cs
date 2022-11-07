@@ -16,11 +16,14 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO for Local Info Requests, that act like cookies.
+    /// </summary>
     [System.Serializable]
     public class GetLocalInfoRequestDto : UMI3DDto
     {
         /// <summary>
-        /// Local file id. Used in the http Get request. /!\ Warning : Contains only lower case letter or number 
+        /// Local file id. Used in the http Get request. It should only contains only lower case letter or number.
         /// </summary>
         public string key;
 

@@ -173,7 +173,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Determine if data have to be relayed
+        /// Determine if data have to be relayed.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="to"></param>

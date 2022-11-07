@@ -27,8 +27,6 @@ namespace umi3d.cdk.menu
     /// </summary>
     public abstract class AbstractMenu : AbstractMenuItem
     {
-
-
         /// <summary>
         /// Is navigation allowed through this menu.
         /// </summary>

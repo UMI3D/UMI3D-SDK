@@ -23,9 +23,20 @@ namespace umi3d.cdk
     /// </summary>
     public class Billboard : MonoBehaviour
     {
-
+        /// <summary>
+        /// Should the constraint be applied horizontally?
+        /// </summary>
+        [Tooltip("Should the constraint be applied horizontally?")]
         public bool X;
+        /// <summary>
+        /// Should the constraint be applied vertically?
+        /// </summary>
+        [Tooltip("Should the constraint be applied vertically?")]
         public bool Y;
+        /// <summary>
+        /// Reference node of the object.
+        /// </summary>
+        [Tooltip("Reference node of the object.")]
         public GlTFNodeDto glTFNodeDto;
 
         private void Start()
@@ -38,6 +49,9 @@ namespace umi3d.cdk
             ComputeOrientation();
         }
 
+        /// <summary>
+        /// Rotates the object as it should to be always in front of the user.
+        /// </summary>
         private void ComputeOrientation()
         {
             if (glTFNodeDto == null)

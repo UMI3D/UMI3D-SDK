@@ -16,11 +16,24 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a video player, a enriched playable video resource.
+    /// </summary>
     public class UMI3DVideoPlayerDto : UMI3DAbstractAnimationDto
     {
+        /// <summary>
+        /// Video ressource to be played.
+        /// </summary>
         public ResourceDto videoResource;
+
+        /// <summary>
+        /// UMI3D id of the material on which the video texture is applied.
+        /// </summary>
         public ulong materialId;
 
+        /// <summary>
+        /// UMI3D id of the audio played during the video.
+        /// </summary>
         public ulong audioId;
 
     }

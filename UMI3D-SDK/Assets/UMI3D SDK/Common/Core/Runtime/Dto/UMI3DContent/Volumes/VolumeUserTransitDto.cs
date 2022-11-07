@@ -28,8 +28,10 @@ namespace umi3d.common.volume
         /// </summary>
         public bool direction;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.VolumeUserTransit; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)

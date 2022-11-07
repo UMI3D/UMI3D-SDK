@@ -25,7 +25,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader fot UMI3D Node
+    /// Loader for <see cref="UMI3DNodeDto"/>.
     /// </summary>
     public class UMI3DNodeLoader : UMI3DAbstractNodeLoader
     {
@@ -374,6 +374,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             var node = entity as UMI3DNodeInstance;

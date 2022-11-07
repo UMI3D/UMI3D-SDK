@@ -45,7 +45,7 @@ namespace umi3d.cdk.editor
             containerSelector = target as ContainerSelector;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             EditorGUI.BeginChangeCheck();

@@ -17,12 +17,12 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// A class to describe a starting interpolation operation
+    /// Operation DTO to inform an interpolation starting on a browser.
     /// </summary>
     public class StartInterpolationPropertyDto : AbstractInterpolationPropertyDto
     {
         /// <summary>
-        /// The value with witch to start interpolation
+        /// The value at which to start interpolation.
         /// </summary>
         public object startValue;
     }

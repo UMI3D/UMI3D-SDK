@@ -21,6 +21,9 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Levels used for debugging purposes.
+    /// </summary>
     [Flags]
     public enum DebugLevel
     {
@@ -31,6 +34,13 @@ namespace umi3d.common
         Exception = 1 << 3
     }
 
+    /// <summary>
+    /// Contains the available debug scope byte identifiers. They are used to define precisely the debugging scope.
+    /// </summary>
+    /// Debug scopes are objects of 32 bits, with a only one isolated bit per scope. This allows to use bitwise operators like "|" 
+    /// to define multiscope debugging. <br/>
+    /// Example : the common scope is "00000000_00000000_00000000_00000001" and the core scope is "00000000_00000000_00000000_00001000", 
+    /// so the common.core scope is "00000000_00000000_00000000_00001001".
     [Flags]
     public enum DebugScope
     {
@@ -60,6 +70,9 @@ namespace umi3d.common
         Other = 1 << 28
     }
 
+    /// <summary>
+    /// Helper class to use to log error related to UMI3D.
+    /// </summary>
     public class UMI3DLogger : inetum.unityUtils.PersistentSingleBehaviour<UMI3DLogger>
     {
         #region logging
@@ -68,6 +81,9 @@ namespace umi3d.common
         [SerializeField]
         private DebugLevel _logLevel = DebugLevel.Default | DebugLevel.Warning | DebugLevel.Error;
 
+        /// <summary>
+        /// Path where the logs are written.
+        /// </summary>
         public static string LogPath
         {
             get => Exists ? Instance.logPath : null;
@@ -82,8 +98,16 @@ namespace umi3d.common
                 }
             }
         }
+
+        /// <summary>
+        /// Path where the logs are written.
+        /// </summary>
         [SerializeField]
         private string logPath;
+
+        /// <summary>
+        /// If true, logging is allowed.
+        /// </summary>
         public static bool ShouldLog
         {
             get => Exists && Instance.log;
@@ -127,6 +151,11 @@ namespace umi3d.common
                     Debug.Log(GetTime() + o);
         }
 
+        /// <summary>
+        /// Debug log raising a Warning.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="scope"></param>
         public static void LogWarning(object o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Warning) && validScope(scope))
@@ -136,6 +165,11 @@ namespace umi3d.common
                     Debug.LogWarning(GetTime() + o);
         }
 
+        /// <summary>
+        /// Debug log raising an Error.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="scope"></param>
         public static void LogError(object o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
@@ -145,6 +179,11 @@ namespace umi3d.common
                     Debug.LogError(GetTime() + o);
         }
 
+        /// <summary>
+        /// Debug log related to an Exception.
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="scope"></param>
         public static void LogException(Exception o, DebugScope scope)
         {
             if (validLevel(DebugLevel.Error) && validScope(scope))
@@ -409,6 +448,7 @@ namespace umi3d.common
             return lastValue;
         }
 
+        /// <inheritdoc/>
         public override (bool, string) GetData()
         {
             bool ok = Updated();
@@ -427,11 +467,13 @@ namespace umi3d.common
             return null;
         }
 
+        /// <inheritdoc/>
         public override string GetCurrentData()
         {
             return serializer(GetTData());
         }
 
+        /// <inheritdoc/>
         public override bool Updated()
         {
             if (updated)

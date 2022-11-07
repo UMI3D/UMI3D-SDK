@@ -20,13 +20,23 @@ using UnityEngine;
 
 namespace umi3d.cdk.menu.view
 {
+    /// <summary>
+    /// Serializable implementation of a enumerable collection of key-value pairs.
+    /// </summary>
+    /// <typeparam name="TKey">Type of the keys.</typeparam>
+    /// <typeparam name="TValue">Type of the values.</typeparam>
     [System.Serializable]
     public class SerializableDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
-
-        [SerializeField]
+        /// <summary>
+        /// List of keys.
+        /// </summary>
+        [SerializeField, Tooltip("List of keys.")]
         private List<TKey> keys = new List<TKey>();
-        [SerializeField]
+        /// <summary>
+        /// List of values.
+        /// </summary>
+        [SerializeField, Tooltip("List of values.")]
         private List<TValue> values = new List<TValue>();
 
 
@@ -79,6 +89,7 @@ namespace umi3d.cdk.menu.view
             }
         }
 
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             var dic = new Dictionary<TKey, TValue>();

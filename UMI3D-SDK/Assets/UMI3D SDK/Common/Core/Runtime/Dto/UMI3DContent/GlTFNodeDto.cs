@@ -18,14 +18,42 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO to describe a node in the glTF scene graph.
+    /// </summary>
     [System.Serializable]
     public class GlTFNodeDto : UMI3DDto, IEntity
     {
+        /// <summary>
+        /// Description labelling the node.
+        /// </summary>
         public string name;
+
+        /// <summary>
+        /// Position of the node on the 3 axes.
+        /// </summary>
+        /// The position is given in a left-hand coordinate system, just like Unity does.
         public SerializableVector3 position;
+
+        /// <summary>
+        /// Rotation of the node as a quaternion.
+        /// </summary>
         public SerializableVector4 rotation;
+
+        /// <summary>
+        /// Scale of the node.
+        /// </summary>
+        /// The scale is given in a left-hand coordinate system, just like Unity does.
         public SerializableVector3 scale;
+
+        /// <summary>
+        /// List of the node's children UMI3D id.
+        /// </summary>
         public List<int> children = null;
+
+        /// <summary>
+        /// glTF extensions available for that node.
+        /// </summary>
         public GlTFNodeExtensions extensions = new GlTFNodeExtensions();
     }
 }

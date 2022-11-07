@@ -24,7 +24,7 @@ using UnityEngine.SceneManagement;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for Preloade Scene
+    /// Loader for <see cref="PreloadedSceneDto"/>.
     /// </summary>
     public class PreloadedSceneLoader
     {

@@ -25,7 +25,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader For GlTFNode.
+    /// Loader for <see cref="GlTFNodeDto"/>.
     /// </summary>
     public class GlTFNodeLoader
     {

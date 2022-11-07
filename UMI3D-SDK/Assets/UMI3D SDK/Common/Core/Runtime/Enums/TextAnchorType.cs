@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Anchors available for texts in UI, relatively to their boxing rectangle.
+    /// </summary>
     public enum TextAnchorType
     {
         UpperLeft,

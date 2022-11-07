@@ -18,14 +18,28 @@ using inetum.unityUtils;
 using System.Threading.Tasks;
 using UnityEngine;
 
+
+/// <summary>
+/// Helper that contains functions for <see cref="Task"/> with further security related to the application lifecycle. 
+/// </summary>
+/// Throw excepton if a task is launched while the application is not running or is stopping.
 public class UMI3DAsyncManager
 {
+    /// <summary>
+    /// Similar to <see cref="Task.Yield()"/> with security if the app is quitted in the meanwhile.
+    /// </summary>
+    /// <returns></returns>
     public static async Task Yield()
     {
         ErrorIfQuitting();
         await Task.Yield();
     }
 
+    /// <summary>
+    /// Similar to <see cref="Task.Delay(int)"/> with security if the app is quitted in the meanwhile.
+    /// </summary>
+    /// <param name="milliseconds"></param>
+    /// <returns></returns>
     public static async Task Delay(int milliseconds)
     {
         ErrorIfQuitting();

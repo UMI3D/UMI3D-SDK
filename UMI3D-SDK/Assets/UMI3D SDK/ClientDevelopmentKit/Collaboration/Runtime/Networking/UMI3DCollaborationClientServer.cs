@@ -356,14 +356,14 @@ namespace umi3d.cdk.collaboration
 
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override async Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader)
         {
             UMI3DLogger.Log($"GetFile {url}", scope);
             return await (environmentClient?.GetFile(url, useParameterInsteadOfHeader) ?? Task.FromResult<byte[]>(null));
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
         {
             List<ulong> idsToSend = new List<ulong>();
@@ -405,21 +405,22 @@ namespace umi3d.cdk.collaboration
         private static SortedSet<ulong> loadingEntities = new SortedSet<ulong>();
 
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override ulong GetUserId() { return worldControllerClient?.GetUserID() ?? 0; }
 
+        /// <inheritdoc/>
         public UMI3DEnvironmentClient.UserInfo GetUser() { return environmentClient?.UserDto; }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override ulong GetTime()
         {
             return environmentClient?.TimeStep ?? 0;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override double GetRoundTripLAtency() { return environmentClient?.ForgeClient?.RoundTripLatency ?? 0; }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override string _getAuthorization() { return environmentClient?.HttpClient.HeaderToken; }
 
         /// <summary>

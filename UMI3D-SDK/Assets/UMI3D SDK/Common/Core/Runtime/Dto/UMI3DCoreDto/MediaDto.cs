@@ -37,11 +37,30 @@ namespace umi3d.common
         /// </summary>
         public ResourceDto icon3D;
 
+        /// <summary>
+        /// Major part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionMajor;
+        /// <summary>
+        /// Minor part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionMinor;
+        /// <summary>
+        /// Status part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionStatus;
+        /// <summary>
+        /// Date part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionDate;
 
+        /// <summary>
+        /// Path of the media.
+        /// </summary>
         public string url;
 
         public MediaDto() : base() { }

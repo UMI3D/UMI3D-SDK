@@ -84,6 +84,7 @@ namespace umi3d.cdk
             SetMaterialOverided(lineDto, nodeInstance);
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity?.dto is UMI3DLineDto && entity is UMI3DNodeInstance node)
@@ -158,6 +159,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
@@ -231,6 +233,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         protected override void SetModelCollider(ulong id, UMI3DNodeInstance node, ColliderDto dto)
         {
             if (node == null) return;

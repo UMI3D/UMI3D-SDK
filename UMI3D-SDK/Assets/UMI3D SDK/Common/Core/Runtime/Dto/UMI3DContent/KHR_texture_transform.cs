@@ -20,8 +20,8 @@ namespace umi3d.common
 {
     /// <summary>
     /// glTF 2.0 extension for texture tilling and offset.
-    /// https://github.com/KhronosGroup/glTF/blob/master/extensions/2.0/Khronos/KHR_texture_transform/README.md
     /// </summary>
+    /// See <a href="https://github.com/KhronosGroup/glTF/blob/master/extensions/2.0/Khronos/KHR_texture_transform/README.md"/>
     [System.Serializable]
     public class KHR_texture_transform
     {

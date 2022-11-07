@@ -19,11 +19,14 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// DTO tu use when several entities are the target by a same operation.
     /// </summary>
     [System.Serializable]
     public class EntityGroupDto : AbstractEntityDto, IEntity
     {
+        /// <summary>
+        /// UMI3D ids of all the target entities of the oepration.
+        /// </summary>
         public List<ulong> entitiesId;
     }
 }

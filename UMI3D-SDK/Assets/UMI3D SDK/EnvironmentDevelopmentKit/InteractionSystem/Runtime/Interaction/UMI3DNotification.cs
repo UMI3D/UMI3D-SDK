@@ -29,12 +29,40 @@ namespace umi3d.edk
     {
         public class NotificationCallbackEvent : UnityEvent<bool> { }
 
+        /// <summary>
+        /// Level of priority with which the notification should be considered.
+        /// </summary>
+        /// Notification can be treated differently accoridng to their priority.
         public UMI3DAsyncProperty<NotificationPriority> priorityProperty;
+
+        /// <summary>
+        /// Syntehtic name of the notification.
+        /// </summary>
         public UMI3DAsyncProperty<string> titleProperty;
+
+        /// <summary>
+        /// Textual content to provide more information.
+        /// </summary>
         public UMI3DAsyncProperty<string> contentProperty;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public UMI3DAsyncProperty<string[]> callbackProperty;
+
+        /// <summary>
+        /// How long the notification should be displayed.
+        /// </summary>
         public UMI3DAsyncProperty<float> durationProperty;
+
+        /// <summary>
+        /// Icon to display.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> icon2dProperty;
+
+        /// <summary>
+        /// Icon to display.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> icon3dProperty;
 
 
@@ -67,7 +95,7 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Notification id
+        /// Notification UMI3D id.
         /// </summary>
         private ulong notificationId;
 
@@ -156,11 +184,19 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <summary>
+        /// Called when the notification callback is received.
+        /// </summary>
+        /// <param name="notificationCallback"></param>
         public void OnCallbackReceived(NotificationCallbackDto notificationCallback)
         {
             CallbackTrigger.Invoke(notificationCallback.callback);
         }
 
+        /// <summary>
+        /// Called when the notification callback is received.
+        /// </summary>
+        /// <param name="container">Callback value as a boolean</param>
         public void OnCallbackReceived(ByteContainer container)
         {
             bool callback = UMI3DNetworkingHelper.Read<bool>(container);

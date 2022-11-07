@@ -18,12 +18,23 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO for Level of Detail component, switching between nodes to display on constraints.
+    /// </summary>
     [System.Serializable]
-
     public class UMI3DLodDefinitionDto : UMI3DDto
     {
+        /// <summary>
+        /// Nodes to display or not according to the current level of detail.
+        /// </summary>
         public List<ulong> nodes;
+
+
         public float screenSize;
+
+        /// <summary>
+        /// Value between 0 and 1 that define the transition zone size.
+        /// </summary>
         public float fadeTransition;
     }
 }

@@ -20,9 +20,12 @@ using System.Linq;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// <see cref="UMI3DAsyncProperty"/> for list-like collections.
+    /// </summary>
+    /// <typeparam name="T">Type of the values in the collection.</typeparam>
     public class UMI3DAsyncListProperty<T> : UMI3DAsyncProperty<List<T>>
     {
-
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
@@ -50,20 +53,25 @@ namespace umi3d.edk
         public Action<int, UMI3DUser, T> OnUserInnerValueRemoved;
 
         /// <summary>
-        /// the function use to check the Equality between two T objects;
+        /// The function checking the Equality between two <see cref="T"/> objects;
         /// </summary>
         private readonly Func<T, T, bool> Equal;
 
         /// <summary>
-        /// the function use to serialize a T object;
+        /// The function serializing a <see cref="T"/> object.
         /// </summary>
         private readonly Func<T, UMI3DUser, object> Serializer;
 
         /// <summary>
-        /// the function use to serialize a T object;
+        /// The function serializing a <see cref="T"/> object.
         /// </summary>
         private readonly Func<List<T>, List<T>> Copier;
 
+        /// <summary>
+        /// Convert a serializer for a single value to a list serializer.
+        /// </summary>
+        /// <param name="serializer">Serializer for a single value.</param>
+        /// <returns>Serializer for lists.</returns>
         private static Func<List<T>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializer)
         {
             if (serializer == null) return null;
@@ -74,6 +82,9 @@ namespace umi3d.edk
             return ListSerializer;
         }
 
+        /// <summary>
+        /// Helper class to compare two <see cref="T"/> objects.
+        /// </summary>
         private class Comparer : IEqualityComparer<T>
         {
             private readonly Func<T, T, bool> _equals;
@@ -94,6 +105,11 @@ namespace umi3d.edk
             }
         };
 
+        /// <summary>
+        /// Convert a equal check function for a single value to a list check function.
+        /// </summary>
+        /// <param name="serializer"></param>
+        /// <returns>True if all the objects of the collections are the same</returns>
         private static Func<List<T>, List<T>, bool> EqualToListEqual(Func<T, T, bool> equal)
         {
             if (equal == null) return null;
@@ -123,16 +139,18 @@ namespace umi3d.edk
             Copier = copier;
         }
 
+        //get[] operator definition
         public T this[int index] => GetValue()[index];
 
         public T this[int index, UMI3DUser user] => GetValue(user)[index];
 
         /// <summary>
-        /// Get property value for a given user
+        /// Get property value by index for a given user.
         /// </summary>
         /// <param name="index">the index</param>
         /// <param name="user">the user</param>
         /// <returns></returns>
+        /// A null user will call <see cref="UMI3DAsyncProperty.GetValue"/>
         public T GetValue(int index, UMI3DUser user = null)
         {
             return GetValue(user)[index];
@@ -144,6 +162,7 @@ namespace umi3d.edk
         /// <param name="index">the index</param>
         /// <param name="value">the new property's value</param>
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty SetValue(int index, T value, bool forceOperation = false)
         {
             T oldValue = GetValue()[index];
@@ -170,6 +189,7 @@ namespace umi3d.edk
         /// <param name="index">the index</param>
         /// <param name="value">the new property's value</param>
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty SetValue(UMI3DUser user, int index, T value, bool forceOperation = false)
         {
             T oldValue = GetValue(user)[index];
@@ -205,6 +225,11 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Add a value to the collection.
+        /// </summary>
+        /// <param name="value">Value to add.</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Add(T value)
         {
             int index = GetValue().Count;
@@ -235,6 +260,11 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <summary>
+        /// Add a value to the collection for a given user.
+        /// </summary>
+        /// <param name="value">Value to add</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Add(UMI3DUser user, T value)
         {
             int index = GetValue(user).Count;
@@ -274,6 +304,11 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Remove a value from the collection.
+        /// </summary>
+        /// <param name="value">Value to remove</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Remove(T value)
         {
             if (!GetValue().Contains(value)) return null;
@@ -282,6 +317,11 @@ namespace umi3d.edk
             return RemoveAt(index);
         }
 
+        /// <summary>
+        /// Remove a value from the collection for a given user.
+        /// </summary>
+        /// <param name="value">Value to remove</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Remove(UMI3DUser user, T value)
         {
             if (!GetValue(user).Contains(value)) return null;
@@ -290,6 +330,11 @@ namespace umi3d.edk
             return RemoveAt(user, index);
         }
 
+        /// <summary>
+        /// Remove a value from the collection at a given index.
+        /// </summary>
+        /// <param name="index">Index of the value to remove</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty RemoveAt(int index)
         {
             if (index < 0 || index >= GetValue().Count) return null;
@@ -320,6 +365,11 @@ namespace umi3d.edk
             return operation;
         }
 
+        /// <summary>
+        /// Remove a value from the collection at a given index for a given user.
+        /// </summary>
+        /// <param name="index">Index of the value to remove</param>
+        /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty RemoveAt(UMI3DUser user, int index)
         {
             if (index < 0 || index >= GetValue(user).Count) return null;
@@ -357,7 +407,7 @@ namespace umi3d.edk
             }
         }
 
-
+        /// <inheritdoc/>
         protected override List<T> CopyOfValue(List<T> value) { return Copier(value); }
 
         /// <summary>

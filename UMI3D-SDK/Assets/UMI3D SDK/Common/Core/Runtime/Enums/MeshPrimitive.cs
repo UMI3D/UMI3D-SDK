@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Primitives meshes supported by UMI3D.
+    /// </summary>
     public enum MeshPrimitive
     {
         Capsule = 0,

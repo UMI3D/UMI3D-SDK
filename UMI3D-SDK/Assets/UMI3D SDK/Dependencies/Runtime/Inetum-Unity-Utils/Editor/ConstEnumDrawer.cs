@@ -25,7 +25,7 @@ namespace inetum.unityUtils.editor
     [CustomPropertyDrawer(typeof(ConstEnumAttribute))]
     public class ConstEnumDrawer : PropertyDrawer
     {
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var cseAttribute = attribute as ConstEnumAttribute;

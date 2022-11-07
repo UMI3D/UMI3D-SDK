@@ -16,9 +16,19 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing a cylindric volume cell.
+    /// </summary>
     public class CylinderDto : AbstractPrimitiveDto
     {
+        /// <summary>
+        /// Radius of the cylinder.
+        /// </summary>
         public float radius;
+
+        /// <summary>
+        /// Height of the cylinder, along the Y-axis.
+        /// </summary>
         public float height;
     }
 }

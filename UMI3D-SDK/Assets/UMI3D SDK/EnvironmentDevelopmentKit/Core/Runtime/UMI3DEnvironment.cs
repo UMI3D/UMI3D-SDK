@@ -24,15 +24,25 @@ using UnityEngine.Rendering;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Root node of any UMI3D enviroment.
+    /// </summary>
+    /// As there is only one envionment node, it could be called as a manager.
     public class UMI3DEnvironment : SingleBehaviour<UMI3DEnvironment>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration;
 
+        /// <summary>
+        /// If true, the environment will use JSON Data Transfer Objects for network communications with browsers.
+        /// </summary>
+        /// Not that it is not recommended as JSON DTOs are way heavier, and thus slower, than the recent byte networking system.
         [EditorReadOnly]
+        [Tooltip("If true, the environment will use JSON Data Transfer Objects for network communications with browsers.\n" +
+                 "Negatively affects the performance of the networking system by increasing the size of exchanged messages.")]
         public bool useDto = false;
 
         #region initialization
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -44,19 +54,38 @@ namespace umi3d.edk
         /// Environment's name.
         /// </summary>
         [EditorReadOnly]
+        [Tooltip("Name of the environment. Will be seen by users when connecting to the environment.")]
         public string environmentName = "Environment Name";
 
+        /// <summary>
+        /// Scenes that are available in environment.
+        /// </summary>
         [HideInInspector]
         public List<UMI3DScene> scenes;
 
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// List of <see cref="AssetLibrary"/> required in the environment.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("List of asset libraries required to access the environment.")]
         public List<AssetLibrary> globalLibraries;
 
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Default spawn position in the environment.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default position in the environment.")]
         private Vector3 defaultStartPosition = new Vector3(0, 0, 0);
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Default spawn rotation in the environment.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default rotation in the environment.")]
         private Vector3 defaultStartOrientation = new Vector3(0, 0, 0);
+        /// <summary>
+        /// See <see cref="defaultStartPosition"/>.
+        /// </summary>
         public static UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultStartOrientation"/>.
+        /// </summary>
         public static UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
 
         private void Start()
@@ -67,6 +96,11 @@ namespace umi3d.edk
             InitDefinition();
         }
 
+        /// <summary>
+        /// Convert the environment to a <see cref="GlTFEnvironmentDto"/>.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public virtual GlTFEnvironmentDto ToDto(UMI3DUser user)
         {
             var env = new GlTFEnvironmentDto
@@ -80,7 +114,7 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Write Properties on a UMI3DEnvironmentDto.
+        /// Write Properties on a <see cref="UMI3DEnvironmentDto"/>.
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="user"></param>
@@ -98,7 +132,7 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Create a UMI3DEnvironmentDto.
+        /// Create an empty <see cref="UMI3DEnvironmentDto"/>.
         /// </summary>
         /// <returns></returns>
         protected virtual UMI3DEnvironmentDto CreateDto()
@@ -106,12 +140,19 @@ namespace umi3d.edk
             return new UMI3DEnvironmentDto();
         }
 
+        /// <summary>
+        /// Create an <see cref="EnterDto"/> describing the entrance point of the environment.
+        /// </summary>
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
             return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user), usedDto = Instance.useDto };
         }
 
-
+        /// <summary>
+        /// Export the required assets libraries as a <see cref="LibrariesDto"/>.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public virtual LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
             List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
@@ -121,6 +162,10 @@ namespace umi3d.edk
             return new LibrariesDto() { libraries = libraries };
         }
 
+        /// <summary>
+        /// Is the environment requiring any asset library to be accessed?
+        /// </summary>
+        /// <returns></returns>
         public static bool UseLibrary()
         {
             return Exists && (Instance.globalLibraries.Any() || Instance.scenes.Any(s => s.libraries.Any()));
@@ -146,50 +191,73 @@ namespace umi3d.edk
 
         }
 
-
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Scene that are loaded with the environment the first time.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Scene that are loaded with the environment the first time.")]
         private List<UMI3DResource> preloadedScenes = new List<UMI3DResource>();
+        /// <summary>
+        /// See <see cref="objectPreloadedScenes"/>.
+        /// </summary>
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
         /// <summary>
-        /// AsyncProperties of the ambient Type.
+        /// AsyncProperties of the ambient Type. See <see cref="RenderSettings.ambientMode"/>.
         /// </summary>
         private AmbientMode mode => RenderSettings.ambientMode;
+        /// <summary>
+        /// See <see cref="mode"/>.
+        /// </summary>
         public UMI3DAsyncProperty<AmbientMode> objectAmbientType;
 
         /// <summary>
-        /// AsyncProperties of the ambient color.
+        /// AsyncProperties of the ambient color. See <see cref="RenderSettings.ambientSkyColor"/>.
         /// </summary>
         private Color skyColor => RenderSettings.ambientSkyColor;
+        /// <summary>
+        /// See <see cref="skyColor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Color> objectSkyColor;
 
         /// <summary>
-        /// AsyncProperties of the ambient color.
+        /// AsyncProperties of the ambient color. See <see cref="RenderSettings.ambientEquatorColor"/>.
         /// </summary>
         private Color horizontalColor => RenderSettings.ambientEquatorColor;
+        /// <summary>
+        /// See <see cref="horizontalColor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Color> objectHorizonColor;
 
         /// <summary>
-        /// AsyncProperties of the ambient color.
+        /// AsyncProperties of the ambient color. See <see cref="RenderSettings.ambientGroundColor"/>.
         /// </summary>
         private Color groundColor => RenderSettings.ambientGroundColor;
+        /// <summary>
+        /// See <see cref="groundColor"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Color> objectGroundColor;
 
         /// <summary>
-        /// AsyncProperties of the ambient Intensity.
+        /// AsyncProperties of the ambient Intensity. See <see cref="RenderSettings.ambientIntensity"/>.
         /// </summary>
         private float ambientIntensity => RenderSettings.ambientIntensity;
+        /// <summary>
+        /// See <see cref="ambientIntensity"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectAmbientIntensity;
         /// <summary>
         /// AsyncProperties of the Skybox Image
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Image of the sybox as a resource.")]
         private UMI3DResource skyboxImage = null;
+        /// <summary>
+        /// See <see cref="skyboxImage"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> objectAmbientSkyboxImage;
         /// <summary>
         /// Properties of the default Material, it is used to initialise loaded materials in clients. 
         /// </summary>
-        [SerializeField]
+        [SerializeField, Tooltip("Properties of the default Material, it is used to initialise loaded materials in clients.")]
         private UMI3DResource defaultMaterial = null;
 
         #endregion
@@ -332,7 +400,7 @@ namespace umi3d.edk
         }
 
         /// <summary>
-        /// Remove an object from the scene. 
+        /// Remove an entity from the scene. 
         /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
         /// </summary>
         /// <param name="obj">Object to remove</param>
@@ -342,6 +410,11 @@ namespace umi3d.edk
                 Instance?.entities?.Remove(obj.Id());
         }
 
+        /// <summary>
+        /// Remove an entity from the scene by id. 
+        /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
+        /// </summary>
+        /// <param name="id">UMI3D id of the object to remove</param>
         public static void Remove(ulong id)
         {
             if (id != 0 && Exists)
