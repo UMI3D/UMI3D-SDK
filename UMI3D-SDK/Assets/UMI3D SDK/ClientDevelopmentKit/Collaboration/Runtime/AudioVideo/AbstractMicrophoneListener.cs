@@ -18,8 +18,10 @@ using inetum.unityUtils;
 using Mumble;
 using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -63,7 +65,7 @@ namespace umi3d.cdk.collaboration
     }
 
     [RequireComponent(typeof(AudioSource))]
-    public abstract class AbstractMicrophoneListener<T> : SingleBehaviour<T> where T : AbstractMicrophoneListener<T> /*, ILoggable*/
+    public abstract class AbstractMicrophoneListener<T> : SingleBehaviour<T>, common.IPublisher<float[]> where T : AbstractMicrophoneListener<T>
     {
         class EventUpdater<L>
         {
@@ -95,6 +97,8 @@ namespace umi3d.cdk.collaboration
 
         public static MumbleEvent OnMumbleStatusUpdate = new MumbleEvent();
         EventUpdater<MumbleStatus> OnMumbleStatusUpdateUpdater;
+
+        List<Action<float[]>> subscribed = new List<Action<float[]>>();
 
         protected class Identity
         {
@@ -746,6 +750,9 @@ namespace umi3d.cdk.collaboration
 
         private void DebugSample(PcmArray array)
         {
+            foreach (var action in subscribed)
+                action?.Invoke(array.Pcm);
+
             if (debugSampling)
             {
                 float sum = 0;
@@ -827,6 +834,21 @@ namespace umi3d.cdk.collaboration
         protected virtual void LogException(Exception log)
         {
             Debug.LogException(log);
+        }
+
+        public bool Subscribe(Action<float[]> callback)
+        {
+            if (!subscribed.Contains(callback))
+            {
+                subscribed.Add(callback);
+                return true;
+            }
+            return false;
+        }
+
+        public bool UnSubscribe(Action<float[]> callback)
+        {
+            return subscribed.Remove(callback);
         }
 
     }
