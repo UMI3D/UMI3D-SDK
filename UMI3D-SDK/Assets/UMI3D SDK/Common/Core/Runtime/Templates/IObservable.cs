@@ -22,7 +22,7 @@ namespace umi3d.common
     /// Interface for objects containing a value that is subscribed upon.
     /// </summary>
     /// <typeparam name="T">Type of the value contained.</typeparam>
-    public interface IObservable<T>
+    public interface IObservable<T> : IPublisher<T>
     {
         /// <summary>
         /// Get contained value.
@@ -35,19 +35,5 @@ namespace umi3d.common
         /// <param name="newValue">New value</param>
         /// <param name="hoveredObjectId">Id of the </param>
         void NotifyValueChange(T newValue);
-
-        /// <summary>
-        /// Subscribe a callback to the value change.
-        /// </summary>
-        /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{T})"/>
-        void Subscribe(UnityAction<T> callback);
-
-        /// <summary>
-        /// Unsubscribe a callback from the value change.
-        /// </summary>
-        /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
-        void UnSubscribe(UnityAction<T> callback);
     }
 }

@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,7 +24,7 @@ namespace umi3d.cdk.volumes
     /// <summary>
     /// Base class for volume cells.
     /// </summary>
-    public abstract class AbstractVolumeCell
+    public abstract class AbstractVolumeCell : umi3d.common.IPublisher
     {
         /// <summary>
         /// Get UMI3D id.
@@ -55,16 +56,27 @@ namespace umi3d.cdk.volumes
         /// <returns></returns>
         public abstract Mesh GetMesh();
 
-
-        protected UnityEvent onUpdate = new UnityEvent();
-        protected void SubscribeToUpdate(UnityAction callback)
+        void OnUpdate()
         {
-            onUpdate.AddListener(callback);
+            foreach (var sub in subscribed)
+                sub.Invoke();
         }
 
-        protected void UnsubscribeToUpdate(UnityAction callback)
+        List<Action> subscribed = new List<Action>();
+        protected UnityEvent onUpdate = new UnityEvent();
+        public bool Subscribe(Action callback)
         {
-            onUpdate.RemoveListener(callback);
+            if (subscribed.Contains(callback))
+            {
+                subscribed.Add(callback);
+                return true;
+            }
+            return false;
+        }
+
+        public bool UnSubscribe(Action callback)
+        {
+            return subscribed.Remove(callback);
         }
     }
 }

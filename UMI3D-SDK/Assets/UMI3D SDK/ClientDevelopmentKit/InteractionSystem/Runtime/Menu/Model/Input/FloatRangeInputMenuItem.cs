@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -28,7 +29,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change.
         /// </summary>
-        protected List<UnityAction<float>> subscribers = new List<UnityAction<float>>();
+        protected List<Action<float>> subscribers = new List<Action<float>>();
 
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace umi3d.cdk.menu
                 value = newValue;
             }
 
-            foreach (UnityAction<float> sub in subscribers)
+            foreach (Action<float> sub in subscribers)
             {
                 sub.Invoke(value);
             }
@@ -85,20 +86,22 @@ namespace umi3d.cdk.menu
         /// Add an action to the onChanged subscribers 
         /// </summary>
         /// <param name="callback">Action to Add( the Parameter is the value of the MenuItem )</param>
-        public override void Subscribe(UnityAction<float> callback)
+        public override bool Subscribe(Action<float> callback)
         {
             if (!subscribers.Contains(callback))
                 subscribers.Add(callback);
+            else
+                return false;
+            return true;
         }
 
         /// <summary>
         /// Remove an action to the onChanged subscribers 
         /// </summary>
         /// <param name="callback">Action to Remove</param>
-        public override void UnSubscribe(UnityAction<float> callback)
+        public override bool UnSubscribe(Action<float> callback)
         {
-            if (subscribers.Contains(callback))
-                subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
     }
 }

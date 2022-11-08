@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
@@ -60,7 +61,7 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Selection event subscribers.
         /// </summary>
-        private readonly List<UnityAction> subscribers = new List<UnityAction>();
+        private readonly List<Action> subscribers = new List<Action>();
     }
 
     public abstract partial class AbstractDisplayer : ISelectable
@@ -71,7 +72,7 @@ namespace umi3d.cdk.menu.view
         [ContextMenu("Select")]
         public virtual void Select()
         {
-            foreach (UnityAction sub in subscribers)
+            foreach (Action sub in subscribers)
                 sub.Invoke();
         }
 
@@ -79,20 +80,21 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the selection event.
         /// </summary>
         /// <param name="callback">Callback to raise on selection</param>
-        /// <see cref="UnSubscribe(UnityAction)"/>
-        public virtual void Subscribe(UnityAction callback)
+        /// <see cref="UnSubscribe(Action)"/>
+        public virtual bool Subscribe(Action callback)
         {
             subscribers.Add(callback);
+            return true;
         }
 
         /// <summary>
         /// Unsubscribe a callback from the selection event.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction)"/>
-        public virtual void UnSubscribe(UnityAction callback)
+        /// <see cref="Subscribe(Action)"/>
+        public virtual bool UnSubscribe(Action callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
     }
 }

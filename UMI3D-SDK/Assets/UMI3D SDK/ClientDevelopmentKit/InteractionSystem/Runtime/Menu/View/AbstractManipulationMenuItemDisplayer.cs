@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.cdk.menu.interaction;
 using umi3d.common;
@@ -30,7 +31,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         public ManipulationMenuItem manipulationMenuItem => menu as ManipulationMenuItem;
 
-        private UnityAction<bool> itemSubscriber;
+        private Action<bool> itemSubscriber;
 
         /// <summary>
         /// Set menu item to display and initialise the display.
@@ -65,14 +66,14 @@ namespace umi3d.cdk.menu.view
         /// <summary>
         /// Selection event subscribers.
         /// </summary>
-        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> subscribers = new List<Action<bool>>();
 
         /// <summary>
         /// Raise selection event.
         /// </summary>
         public override void Select()
         {
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
                 sub.Invoke(true);
             base.Select();
         }
@@ -82,7 +83,7 @@ namespace umi3d.cdk.menu.view
         /// </summary>
         public virtual void Deselect()
         {
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
                 sub.Invoke(false);
         }
 
@@ -90,20 +91,21 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the selection event.
         /// </summary>
         /// <param name="callback">Callback to raise on selection</param>
-        /// <see cref="UnSubscribe(UnityAction)"/>
-        public virtual void Subscribe(UnityAction<bool> callback)
+        /// <see cref="UnSubscribe(Action)"/>
+        public virtual bool Subscribe(Action<bool> callback)
         {
             subscribers.Add(callback);
+            return true;
         }
 
         /// <summary>
         /// Unsubscribe a callback from the selection event.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction)"/>
-        public virtual void UnSubscribe(UnityAction<bool> callback)
+        /// <see cref="Subscribe(Action)"/>
+        public virtual bool UnSubscribe(Action<bool> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
 
         /// <summary>

@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -31,7 +32,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
+        private readonly List<Action<string>> subscribers = new List<Action<string>>();
 
         /// <inheritdoc/>
         public override string GetValue()
@@ -46,7 +47,7 @@ namespace umi3d.cdk.menu
         public override void NotifyValueChange(string newValue)
         {
             value = newValue;
-            foreach (UnityAction<string> sub in subscribers)
+            foreach (Action<string> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -58,20 +59,22 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback for input value change.
         /// </summary>
         /// <param name="callback">Callback to invoke on input value change</param>
-        public override void Subscribe(UnityAction<string> callback)
+        public override bool Subscribe(Action<string> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public override void UnSubscribe(UnityAction<string> callback)
+        public override bool UnSubscribe(Action<string> callback)
         {
-            subscribers.Remove(callback);
+           return subscribers.Remove(callback);
         }
 
         /// <inheritdoc/>

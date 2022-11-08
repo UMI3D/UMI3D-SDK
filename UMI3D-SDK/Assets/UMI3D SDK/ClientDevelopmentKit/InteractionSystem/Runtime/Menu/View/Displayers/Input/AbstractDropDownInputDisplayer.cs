@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine.Events;
@@ -33,7 +34,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private readonly List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
+        private readonly List<Action<string>> subscribers = new List<Action<string>>();
 
         /// <summary>
         /// Get displayed value.
@@ -50,7 +51,7 @@ namespace umi3d.cdk.menu.view
         public void NotifyValueChange(string newValue)
         {
             menuItem.NotifyValueChange(newValue);
-            foreach (UnityAction<string> sub in subscribers)
+            foreach (Action<string> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -60,8 +61,8 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{string})"/>
-        public void Subscribe(UnityAction<string> callback)
+        /// <see cref="UnSubscribe(Action{string})"/>
+        public void Subscribe(Action<string> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -73,8 +74,8 @@ namespace umi3d.cdk.menu.view
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{string})"/>
-        public void UnSubscribe(UnityAction<string> callback)
+        /// <see cref="Subscribe(Action{string})"/>
+        public void UnSubscribe(Action<string> callback)
         {
             subscribers.Remove(callback);
         }

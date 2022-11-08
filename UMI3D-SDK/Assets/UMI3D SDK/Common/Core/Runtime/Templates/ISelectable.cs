@@ -21,25 +21,12 @@ namespace umi3d.common
     /// <summary>
     /// Interface for selectable objects.
     /// </summary>
-    public interface ISelectable
+    public interface ISelectable : IPublisher
     {
         /// <summary>
         /// Raise selection event.
         /// </summary>
         void Select();
 
-        /// <summary>
-        /// Subscribe a callback to the selection event.
-        /// </summary>
-        /// <param name="callback">Callback to raise on selection</param>
-        /// <see cref="UnSubscribe(UnityAction)"/>
-        void Subscribe(UnityAction callback);
-
-        /// <summary>
-        /// Unsubscribe a callback from the selection event.
-        /// </summary>
-        /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction)"/>
-        void UnSubscribe(UnityAction callback);
     }
 }
