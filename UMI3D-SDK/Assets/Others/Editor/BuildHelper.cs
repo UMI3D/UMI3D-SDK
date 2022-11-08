@@ -83,6 +83,7 @@ public class BuildHelper : EditorWindow
     string info = "";
     Vector2 ScrollPos;
     bool isBuilding = false;
+    string branchName = "";
     //\StandardAssets\Changelog
 
     // Add menu named "My Window" to the Window menu
@@ -108,6 +109,14 @@ public class BuildHelper : EditorWindow
 
         _data = GetScriptable();
         GetEditor();
+
+        RefreshBranch();
+
+    }
+
+    async void RefreshBranch()
+    {
+        _data.Branch = await GetBranchName();
     }
 
     void OnGUI()
@@ -119,6 +128,16 @@ public class BuildHelper : EditorWindow
         UnityEngine.Debug.Assert(editor != null);
 
         editor?.OnInspectorGUI();
+
+
+        EditorGUILayout.BeginHorizontal();
+
+        EditorGUILayout.LabelField("Current Branch");
+        EditorGUILayout.LabelField(_data.Branch);
+        if (GUILayout.Button("Refresh Branch"))
+            RefreshBranch();
+
+        EditorGUILayout.EndHorizontal();
 
         GUILayout.Label("Build Version", EditorStyles.boldLabel);
 
@@ -169,7 +188,7 @@ public class BuildHelper : EditorWindow
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Build but not push"))
             CleanComputeBuild(false);
-        if (GUILayout.Button("Build and push"))
+        if (GUILayout.Button($"Build and push on {_data.Branch}"))
             CleanComputeBuild(true);
         EditorGUILayout.EndHorizontal();
         //if (GUILayout.Button("Test"))
@@ -250,6 +269,18 @@ public class BuildHelper : EditorWindow
     #endregion
 
     #region BuildUtils
+
+    //git branch --show-current
+    async Task<string> GetBranchName()
+    {
+        string gitCommand = "git";
+        string gitAddArgument = @"branch --show-current";
+        string answer = null;
+
+        await ExecuteCommand(gitCommand, gitAddArgument, (s) => answer += s, (s) => answer += s);
+        
+        return answer;
+    }
 
     async Task CommitAll()
     {
