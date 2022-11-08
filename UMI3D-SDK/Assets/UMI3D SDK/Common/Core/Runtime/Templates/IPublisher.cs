@@ -22,6 +22,7 @@ namespace umi3d.common
     /// Interface for objects containing a value that is subscribed upon.
     /// </summary>
     /// <typeparam name="T">Type of the value contained.</typeparam>
+    /// <seealso cref="IPublisher"/>
     public interface IPublisher<T>
     {
         /// <summary>
@@ -39,6 +40,10 @@ namespace umi3d.common
         bool UnSubscribe(Action<T> callback);
     }
 
+    /// <summary>
+    /// Interface for objects containing that can be subscribed.
+    /// </summary>
+    /// <seealso cref="IPublisher{T}"/>
     public interface IPublisher
     {
         /// <summary>
