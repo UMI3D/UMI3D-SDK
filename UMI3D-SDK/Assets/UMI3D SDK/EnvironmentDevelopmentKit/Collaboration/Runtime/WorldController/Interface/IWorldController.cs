@@ -17,7 +17,10 @@ limitations under the License.
 using System.Threading.Tasks;
 using umi3d.common;
 
-public interface IWorldController
+namespace umi3d.worldController
 {
-    Task<MediaDto> GetMediaDto();
+    public interface IWorldController
+    {
+        Task<MediaDto> GetMediaDto();
+    }
 }
