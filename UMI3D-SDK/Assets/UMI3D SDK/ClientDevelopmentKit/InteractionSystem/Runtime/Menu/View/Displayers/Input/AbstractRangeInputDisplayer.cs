@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine.Events;
@@ -22,7 +23,7 @@ namespace umi3d.cdk.menu.view
     /// <summary>
     /// Base class for <see cref="FloatRangeInputMenuItem"/> display.
     /// </summary>
-    public abstract class AbstractRangeInputDisplayer : AbstractInputMenuItemDisplayer<float>, IObservable<float>
+    public abstract class AbstractRangeInputDisplayer : AbstractInputMenuItemDisplayer<float>, common.IObservable<float>
     {
         /// <summary>
         /// Menu item displayed.
@@ -33,7 +34,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private readonly List<UnityAction<float>> subscribers = new List<UnityAction<float>>();
+        private readonly List<Action<float>> subscribers = new List<Action<float>>();
 
         /// <summary>
         /// Get displayed value.
@@ -50,7 +51,7 @@ namespace umi3d.cdk.menu.view
         public void NotifyValueChange(float newValue)
         {
             menuItem.NotifyValueChange(newValue);
-            foreach (UnityAction<float> sub in subscribers)
+            foreach (Action<float> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -77,23 +78,25 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        public void Subscribe(UnityAction<float> callback)
+        /// <see cref="UnSubscribe(Action{bool})"/>
+        public bool Subscribe(Action<float> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{bool})"/>
-        public void UnSubscribe(UnityAction<float> callback)
+        /// <see cref="Subscribe(Action{bool})"/>
+        public bool UnSubscribe(Action<float> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
 
         /// <summary>

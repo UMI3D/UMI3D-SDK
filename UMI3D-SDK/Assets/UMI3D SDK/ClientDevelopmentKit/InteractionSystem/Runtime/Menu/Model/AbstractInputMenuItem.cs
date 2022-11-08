@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -22,7 +23,7 @@ namespace umi3d.cdk.menu
     /// <summary>
     /// Base class for input menu items.
     /// </summary>
-    public abstract class AbstractInputMenuItem<T> : AbstractInputMenuItem, IObservable<T>
+    public abstract class AbstractInputMenuItem<T> : AbstractInputMenuItem, common.IObservable<T>
     {
         /// <summary>
         /// Parameter DTO the menu is for.
@@ -54,15 +55,15 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{T})"/>
-        public abstract void Subscribe(UnityAction<T> callback);
+        /// <see cref="UnSubscribe(Action{T})"/>
+        public abstract bool Subscribe(Action<T> callback);
 
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
-        public abstract void UnSubscribe(UnityAction<T> callback);
+        /// <see cref="Subscribe(Action{T})"/>
+        public abstract bool UnSubscribe(Action<T> callback);
     }
 
     /// <summary>

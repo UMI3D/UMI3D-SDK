@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -37,7 +38,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<T>> subscribers = new List<UnityAction<T>>();
+        private readonly List<Action<T>> subscribers = new List<Action<T>>();
 
         /// <summary>
         /// Get displayed value.
@@ -54,7 +55,7 @@ namespace umi3d.cdk.menu
         public override void NotifyValueChange(T newValue)
         {
             value = newValue;
-            foreach (UnityAction<T> sub in subscribers)
+            foreach (Action<T> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -64,13 +65,15 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{T})"/>
-        public override void Subscribe(UnityAction<T> callback)
+        /// <see cref="UnSubscribe(Action{T})"/>
+        public override bool Subscribe(Action<T> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
 
 
@@ -78,10 +81,10 @@ namespace umi3d.cdk.menu
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
-        public override void UnSubscribe(UnityAction<T> callback)
+        /// <see cref="Subscribe(Action{T})"/>
+        public override bool UnSubscribe(Action<T> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
     }
 }

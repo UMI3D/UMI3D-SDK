@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -37,7 +38,7 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> subscribers = new List<Action<bool>>();
 
 
 
@@ -45,7 +46,7 @@ namespace umi3d.cdk.menu.interaction
         /// Subscribe a callback for button press.
         /// </summary>
         /// <param name="callback">Callback to invoke on button press</param>
-        public virtual void Subscribe(UnityAction<bool> callback)
+        public virtual void Subscribe(Action<bool> callback)
         {
             if (!subscribers.Contains(callback))
             {
@@ -57,7 +58,7 @@ namespace umi3d.cdk.menu.interaction
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public virtual void UnSubscribe(UnityAction<bool> callback)
+        public virtual void UnSubscribe(Action<bool> callback)
         {
             subscribers.Remove(callback);
         }
@@ -85,7 +86,7 @@ namespace umi3d.cdk.menu.interaction
         {
             value = newValue;
 
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
             {
                 sub.Invoke(value);
             }

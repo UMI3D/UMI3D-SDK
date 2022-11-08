@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -32,7 +33,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> subscribers = new List<Action<bool>>();
 
 
         /// <summary>
@@ -50,7 +51,7 @@ namespace umi3d.cdk.menu
         public override void NotifyValueChange(bool newValue)
         {
             value = newValue;
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -60,13 +61,15 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        public override void Subscribe(UnityAction<bool> callback)
+        /// <see cref="UnSubscribe(Action{bool})"/>
+        public override bool Subscribe(Action<bool> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
 
         /// <inheritdoc/>
@@ -79,10 +82,10 @@ namespace umi3d.cdk.menu
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{bool})"/>
-        public override void UnSubscribe(UnityAction<bool> callback)
+        /// <see cref="Subscribe(Action{bool})"/>
+        public override bool UnSubscribe(Action<bool> callback)
         {
-            subscribers.Remove(callback);
+           return subscribers.Remove(callback);
         }
     }
 }

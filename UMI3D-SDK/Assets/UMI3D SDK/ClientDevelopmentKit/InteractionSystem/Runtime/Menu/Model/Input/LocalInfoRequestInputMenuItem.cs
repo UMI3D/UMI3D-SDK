@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -33,17 +34,17 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<bool>> readSubscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> readSubscribers = new List<Action<bool>>();
 
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<LocalInfoRequestParameterValue>> subscribers = new List<UnityAction<LocalInfoRequestParameterValue>>();
+        private readonly List<Action<LocalInfoRequestParameterValue>> subscribers = new List<Action<LocalInfoRequestParameterValue>>();
 
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<bool>> writeSubscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> writeSubscribers = new List<Action<bool>>();
 
 
         /// <summary>
@@ -62,19 +63,19 @@ namespace umi3d.cdk.menu
         {
             if (value.read != newValue.read)
             {
-                foreach (UnityAction<bool> sub in readSubscribers)
+                foreach (Action<bool> sub in readSubscribers)
                 {
                     sub.Invoke(newValue.read);
                 }
             }
             if (value.write != newValue.write)
             {
-                foreach (UnityAction<bool> sub in writeSubscribers)
+                foreach (Action<bool> sub in writeSubscribers)
                 {
                     sub.Invoke(newValue.write);
                 }
             }
-            foreach (UnityAction<LocalInfoRequestParameterValue> sub in subscribers)
+            foreach (Action<LocalInfoRequestParameterValue> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -86,13 +87,15 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        public override void Subscribe(UnityAction<LocalInfoRequestParameterValue> callback)
+        /// <see cref="UnSubscribe(Action{bool})"/>
+        public override bool Subscribe(Action<LocalInfoRequestParameterValue> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
 
         /// <inheritdoc/>
@@ -105,10 +108,10 @@ namespace umi3d.cdk.menu
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{bool})"/>
-        public override void UnSubscribe(UnityAction<LocalInfoRequestParameterValue> callback)
+        /// <see cref="Subscribe(Action{bool})"/>
+        public override bool UnSubscribe(Action<LocalInfoRequestParameterValue> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
     }
 }

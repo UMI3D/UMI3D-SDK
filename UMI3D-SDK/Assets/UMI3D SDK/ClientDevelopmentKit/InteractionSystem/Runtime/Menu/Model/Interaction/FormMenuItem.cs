@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -28,7 +29,7 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<List<ParameterSettingRequestDto>>> subscribers = new List<UnityAction<List<ParameterSettingRequestDto>>>();
+        private readonly List<Action<List<ParameterSettingRequestDto>>> subscribers = new List<Action<List<ParameterSettingRequestDto>>>();
 
         /// <summary>
         /// Answers to the form as a list of <see cref="ParameterSettingRequestDto"/>.
@@ -54,7 +55,7 @@ namespace umi3d.cdk.menu.interaction
         public void NotifyValueChange(List<ParameterSettingRequestDto> newValue)
         {
             answers = newValue;
-            foreach (UnityAction<List<ParameterSettingRequestDto>> callback in subscribers)
+            foreach (Action<List<ParameterSettingRequestDto>> callback in subscribers)
                 callback(answers);
         }
 
@@ -62,8 +63,8 @@ namespace umi3d.cdk.menu.interaction
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback">Callback to raise on a value change (argument is the new value)</param>
-        /// <see cref="UnSubscribe(UnityAction{FormDto})"/>
-        public void Subscribe(UnityAction<List<ParameterSettingRequestDto>> callback)
+        /// <see cref="UnSubscribe(Action{FormDto})"/>
+        public void Subscribe(Action<List<ParameterSettingRequestDto>> callback)
         {
             if (callback != null && !subscribers.Contains(callback))
                 subscribers.Add(callback);
@@ -73,8 +74,8 @@ namespace umi3d.cdk.menu.interaction
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{T})"/>
-        public void UnSubscribe(UnityAction<List<ParameterSettingRequestDto>> callback)
+        /// <see cref="Subscribe(Action{T})"/>
+        public void UnSubscribe(Action<List<ParameterSettingRequestDto>> callback)
         {
             if (callback != null)
                 subscribers.Remove(callback);
