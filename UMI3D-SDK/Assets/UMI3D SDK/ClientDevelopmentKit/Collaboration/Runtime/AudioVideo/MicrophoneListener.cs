@@ -274,6 +274,5 @@ namespace umi3d.cdk.collaboration
         {
             await UMI3DAsyncManager.Delay(millisecondsDelay);
         }
-
     }
 }
