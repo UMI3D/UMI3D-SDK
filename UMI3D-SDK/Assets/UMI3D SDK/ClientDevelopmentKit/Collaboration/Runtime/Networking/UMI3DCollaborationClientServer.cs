@@ -81,6 +81,10 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        public string environementName => environmentClient?.connectionDto?.name;
+        public string worldName => worldControllerClient?.name;
+
+
         protected override void OnDestroy()
         {
             base.OnDestroy();

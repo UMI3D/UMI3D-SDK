@@ -137,6 +137,7 @@ namespace umi3d.edk.collaboration
         {
             var dto = new ForgeConnectionDto
             {
+                name = UMI3DEnvironment.Instance.environmentName,
                 forgeHost = ip,
                 httpUrl = _GetHttpUrl(),
                 forgeServerPort = forgePort,

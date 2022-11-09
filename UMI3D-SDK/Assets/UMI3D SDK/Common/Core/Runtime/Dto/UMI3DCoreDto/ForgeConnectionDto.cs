@@ -22,6 +22,7 @@ namespace umi3d.common
     [System.Serializable]
     public class ForgeConnectionDto : UMI3DDto
     {
+        public string name;
         public string httpUrl;
         public string resourcesUrl;
         public bool authorizationInHeader;
