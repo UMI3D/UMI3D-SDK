@@ -23,11 +23,22 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Animation that plays sound.
+    /// </summary>
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
+        /// <summary>
+        /// Get an <see cref="UMI3DAudioPlayer"/> by id.
+        /// </summary>
+        /// <param name="id">UMI3D id</param>
+        /// <returns></returns>
         public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
+        /// <summary>
+        /// Audio source in Unity.
+        /// </summary>
         public AudioSource audioSource { get; private set; }
 
 

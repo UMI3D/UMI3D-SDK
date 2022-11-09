@@ -24,6 +24,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Loader for <see cref="UMI3DCollaborationEnvironmentDto"/>.
+    /// </summary>
     public class UMI3DCollaborationEnvironmentLoader : UMI3DEnvironmentLoader
     {
         public static new UMI3DCollaborationEnvironmentLoader Instance { get => UMI3DEnvironmentLoader.Instance as UMI3DCollaborationEnvironmentLoader; set => UMI3DEnvironmentLoader.Instance = value; }
@@ -67,6 +70,11 @@ namespace umi3d.cdk.collaboration
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
         }
 
+        /// <summary>
+        /// Called when a user starts to speak.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="isSpeaking"></param>
         void OnUserSpeaking(UMI3DUser user, bool isSpeaking)
         {
             if (isSpeaking)
@@ -127,6 +135,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        /// <inheritdoc/>
         protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base._SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;

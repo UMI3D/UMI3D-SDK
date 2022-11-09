@@ -24,6 +24,9 @@ using umi3d.common;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Used to connect to a Master Server, when a World Controller is not used.
+    /// </summary>
     public class LaucherOnMasterServer
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;

@@ -28,8 +28,9 @@ using UnityEngine.Networking;
 namespace umi3d.cdk.collaboration
 {
     /// <summary>
-    /// Class to send Http Request.
+    /// Send HTTP requests to the environment server.
     /// </summary>
+    /// Usually used before connection or to retrieve DTOs.
     public class HttpClient
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
