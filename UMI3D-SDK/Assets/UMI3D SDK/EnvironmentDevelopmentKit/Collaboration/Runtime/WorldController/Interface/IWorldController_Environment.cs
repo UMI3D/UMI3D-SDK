@@ -17,16 +17,19 @@ limitations under the License.
 using System.Threading.Tasks;
 using umi3d.edk.collaboration;
 
-/// <summary>
-/// API for communication from an environment to a world controller.
-/// </summary>
-public interface IWorldController_Environment
+namespace umi3d.worldController
 {
-    Task NotifyUserRegister(UMI3DCollaborationUser user);
+    /// <summary>
+    /// API for communication from an environment to a world controller.
+    /// </summary>
+    public interface IWorldController_Environment
+    {
+        Task NotifyUserRegister(UMI3DCollaborationUser user);
 
-    Task NotifyUserJoin(UMI3DCollaborationUser user);
+        Task NotifyUserJoin(UMI3DCollaborationUser user);
 
-    Task NotifyUserLeave(UMI3DCollaborationUser user);
+        Task NotifyUserLeave(UMI3DCollaborationUser user);
 
-    Task NotifyUserUnregister(UMI3DCollaborationUser user);
+        Task NotifyUserUnregister(UMI3DCollaborationUser user);
+    }
 }

@@ -332,7 +332,7 @@ namespace umi3d.cdk.collaboration
             running = true;
 
             await Delay(millisecondsHeartBeat);
-            while (running)
+            while (running && Exists && UMI3DCollaborationClientServer.Exists)
             {
                 switch (mumbleStatus)
                 {
@@ -356,6 +356,7 @@ namespace umi3d.cdk.collaboration
                 }
                 await Delay(millisecondsHeartBeat);
             }
+            Reset();
         }
 
         protected void Reset()

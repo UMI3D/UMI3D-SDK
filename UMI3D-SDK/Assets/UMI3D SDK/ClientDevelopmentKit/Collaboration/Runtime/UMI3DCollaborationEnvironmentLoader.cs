@@ -250,22 +250,35 @@ namespace umi3d.cdk.collaboration
         {
             if (UserList.Exists((user) => user.id == userDto.id)) return;
 
-            UserList.Insert(index, new UMI3DUser(userDto));
-            dto.userList.Insert(index, userDto);
-            OnUpdateUserList?.Invoke();
-            OnUpdateJoinnedUserList?.Invoke();
+            if (index >= 0 && index <= UserList.Count)
+            {
+                UserList.Insert(index, new UMI3DUser(userDto));
+                dto.userList.Insert(index, userDto);
+                OnUpdateUserList?.Invoke();
+                OnUpdateJoinnedUserList?.Invoke();
+            } else
+            {
+                UMI3DLogger.LogWarning("Impossible to insert new user into user list, index out of range " + index, DebugScope.CDK);
+            }
         }
 
         private void RemoveUserAt(UMI3DCollaborationEnvironmentDto dto, int index)
         {
             if (UserList.Count <= index) return;
 
-            UMI3DUser Olduser = UserList[index];
-            UserList.RemoveAt(index);
-            dto.userList.RemoveAt(index);
-            Olduser.Destroy();
-            OnUpdateUserList?.Invoke();
-            OnUpdateJoinnedUserList?.Invoke();
+            if (index >= 0 && index < UserList.Count)
+            {
+                UMI3DUser Olduser = UserList[index];
+                UserList.RemoveAt(index);
+                dto.userList.RemoveAt(index);
+                Olduser.Destroy();
+                OnUpdateUserList?.Invoke();
+                OnUpdateJoinnedUserList?.Invoke();
+            }
+            else
+            {
+                UMI3DLogger.LogWarning("Impossible to remove user from user list, index out of range " + index, DebugScope.CDK);
+            }
         }
 
         private void ReplaceUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userNew)
@@ -274,7 +287,6 @@ namespace umi3d.cdk.collaboration
 
             if (index < UserList.Count)
             {
-
                 bool userWasReady = UserList[index].status < StatusType.AWAY;
                 bool userIsReady = userNew.status < StatusType.AWAY;
                 bool userReadyListUpdated = userWasReady != userIsReady;

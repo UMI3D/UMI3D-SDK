@@ -85,13 +85,6 @@ public class BuildHelperDataEditor : Editor
             data.Token = TextField(data.Token, ref changed);
             EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.Space();
-
-            EditorGUILayout.LabelField("Branch");
-            EditorGUILayout.BeginHorizontal();
-            data.Branch = TextField(data.Branch, ref changed);
-            EditorGUILayout.EndHorizontal();
-
             if (changed)
                 EditorUtility.SetDirty(data);
 
