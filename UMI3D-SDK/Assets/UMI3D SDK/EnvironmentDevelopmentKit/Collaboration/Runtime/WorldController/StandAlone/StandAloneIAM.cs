@@ -21,6 +21,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Identity and Access manager that run on the server as a standalone.
+    /// </summary>
     public class StandAloneIAM : IIAM
     {
         protected readonly IEnvironment environment;

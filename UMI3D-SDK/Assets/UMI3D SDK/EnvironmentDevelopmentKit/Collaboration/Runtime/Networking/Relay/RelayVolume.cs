@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Relay for a collaboration room defined by a volume. 
+    /// </summary>
     public class RelayVolume : MonoBehaviour, ICollaborationRoom
     {
         public static Dictionary<ulong, RelayVolume> relaysVolumes = new Dictionary<ulong, RelayVolume>();

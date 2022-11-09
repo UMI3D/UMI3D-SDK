@@ -17,7 +17,14 @@ limitations under the License.
 using System.Threading.Tasks;
 using umi3d.common;
 
+/// <summary>
+/// Behaviour of a 3D media that manages a set of environments within a same world.
+/// </summary>
 public interface IWorldController
 {
+    /// <summary>
+    /// Retrieve the world.
+    /// </summary>
+    /// <returns></returns>
     Task<MediaDto> GetMediaDto();
 }

@@ -16,7 +16,16 @@ limitations under the License.
 
 using WebSocketSharp.Net;
 
+/// <summary>
+/// Behaviour of an API using HTTP GET/POST requests.
+/// </summary>
 public interface IHttpApi
 {
+    /// <summary>
+    /// Define the authentification method used on routes.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="allowOldToken"></param>
+    /// <returns></returns>
     bool isAuthenticated(HttpListenerRequest request, bool allowOldToken);
 }

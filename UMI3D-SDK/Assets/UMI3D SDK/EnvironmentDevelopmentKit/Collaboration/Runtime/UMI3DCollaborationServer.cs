@@ -60,8 +60,10 @@ namespace umi3d.edk.collaboration
         [EditorReadOnly, Tooltip("World controller for stand alone api.")]
         public worldController.WorldControllerAPI WorldController;
 
-
-        [EditorReadOnly]
+        /// <summary>
+        /// IP adress of the Murmur server.
+        /// </summary>
+        [EditorReadOnly, Tooltip("IP adress of the Mumur server.")]
         public string mumbleIp = "";
 
         [EditorReadOnly]
@@ -91,9 +93,9 @@ namespace umi3d.edk.collaboration
         public ushort httpPort;
 
         [EditorReadOnly]
-        [Tooltip("set to this HttpUrl if empty")]
+        [Tooltip("URL of the default resources server. Set to this HttpUrl if empty")]
         /// <summary>
-        /// Url of the default resources server. Set to this HttpUrl if empty.
+        /// URL of the default resources server. Set to this HttpUrl if empty.
         /// </summary>
         public string resourcesUrl;
 
@@ -108,14 +110,15 @@ namespace umi3d.edk.collaboration
         public string iconServerUrl;
 
         /// <summary>
-        /// Forge server session id
+        /// Forge server session id.
         /// </summary>
         [HideInInspector]
         public string sessionId = "";
 
         /// <summary>
-        /// Forge server description scene (comment)
+        /// Forge server description scene (comment).
         /// </summary>
+        [Tooltip("Forge server description scene (comment).")]
         public string descriptionComment = "";
 
         /// <inheritdoc/>
@@ -560,6 +563,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <inheritdoc/>
         protected override void _Dispatch(DispatchableRequest dispatchableRequest)
         {
             base._Dispatch(dispatchableRequest);

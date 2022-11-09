@@ -429,7 +429,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="i">current index. 
         /// It should be set to last argument used.
-        /// 
         /// </param>
         /// <param name="args"></param>
         protected virtual void OtherParam(ref int i, string[] args) { }
@@ -443,12 +442,11 @@ namespace umi3d.edk.collaboration
 
         /// <summary>
         /// Launch the server.
-        /// Called automaticaly, 3f second after <see cref="Start"/> is called, if <see cref="LaunchServerOnStart"/> is true.
         /// </summary>
+        /// Called automaticaly, 3 seconds after <see cref="Start"/> is called, if <see cref="LaunchServerOnStart"/> is true.
         public virtual void LaunchServer() { UMI3DCollaborationServer.Instance.Init(); }
 
 
-        // Start is called before the first frame update
         protected virtual void Start()
         {
             string[] args = System.Environment.GetCommandLineArgs();

@@ -18,9 +18,12 @@ using umi3d.common.collaboration;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Helper for serialization of classes from the Collaboration module.
+    /// </summary>
     public class UMI3DEnvironmentNetworkingCollaborationModule : Umi3dNetworkingHelperModule
     {
-
+        /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
@@ -50,6 +53,7 @@ namespace umi3d.edk.collaboration
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Write<T>(T value, out Bytable bytable)
         {
             switch (value)

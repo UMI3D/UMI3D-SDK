@@ -21,6 +21,9 @@ using umi3d.edk.userCapture;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// <see cref="UMI3DTrackedUser"/> in a collaborative context, with authentication, sound and video streaming etc...
+    /// </summary>
     public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;

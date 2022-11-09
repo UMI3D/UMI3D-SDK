@@ -26,6 +26,9 @@ using UnityEngine;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// World controller that is hosted on the same server than the environment as a standalone.
+    /// </summary>
     [CreateAssetMenu(fileName = "SandAloneWorldControlerAPI", menuName = "UMI3D/SandAlone WorldControler")]
     public class StandAloneWorldControler : StandAloneWorldControllerAPI
     {

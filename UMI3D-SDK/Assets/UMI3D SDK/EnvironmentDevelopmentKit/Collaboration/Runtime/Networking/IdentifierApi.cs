@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Identifier for users access.
+    /// </summary>
     [CreateAssetMenu(fileName = "DefaultIdentifierApi", menuName = "UMI3D/Default Identifier")]
     public class IdentifierApi : ScriptableObject
     {

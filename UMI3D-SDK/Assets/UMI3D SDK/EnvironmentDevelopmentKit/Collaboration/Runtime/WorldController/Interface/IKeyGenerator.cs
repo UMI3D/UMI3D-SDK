@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Behaviour of creating keys for authentification.
+    /// </summary>
+    /// Implement this interface if you want to manage key generation in a custom way.
     public interface IKeyGenerator
     {
         string GenerateLocalToken(string oldToken);

@@ -21,14 +21,32 @@ using umi3d.edk.collaboration;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Abstracted world controller that is hosted on the same server than the environment as a standalone.
+    /// </summary>
     public abstract class StandAloneWorldControllerAPI : WorldControllerAPI, IWorldController_Client, IWorldController
     {
+        /// <summary>
+        /// Name of the set of environments that aggregate into a world.
+        /// </summary>
         public virtual string worldName { get; set; }
+
+        /// <summary>
+        /// IP Address of the world controller.
+        /// </summary>
         public virtual string ip { get; set; }
 
+        /// <summary>
+        /// Picture symbolizing the world.
+        /// </summary>
         public umi3d.edk.UMI3DResource Icon2D;
+
+        /// <summary>
+        /// 3D object symbolizing the world.
+        /// </summary>
         public umi3d.edk.UMI3DResource Icon3D;
 
+        /// <inheritdoc/>
         public override void Setup()
         {
             worldName = UMI3DCollaborationEnvironment.Instance.environmentName;
@@ -36,12 +54,19 @@ namespace umi3d.worldController
             edk.collaboration.UMI3DHttp.Instance.AddRoot(new worldController.UMI3DStandAloneApi(this));
         }
 
+        /// <inheritdoc/>
         public abstract Task<UMI3DDto> Connect(ConnectionDto connectionDto);
+
+        /// <inheritdoc/>
         public virtual Task<MediaDto> GetMediaDto()
         {
             return Task.FromResult(ToDto());
         }
 
+        /// <summary>
+        /// Create a DTO for the hosted world.
+        /// </summary>
+        /// <returns></returns>
         public virtual MediaDto ToDto()
         {
             var res = new MediaDto
@@ -61,6 +86,7 @@ namespace umi3d.worldController
             return res;
         }
 
+        /// <inheritdoc/>
         public abstract Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto);
 
     }
