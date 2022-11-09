@@ -19,9 +19,12 @@ using umi3d.common.userCapture;
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// Helper module to serialize objects related to the Collaboration module.
+    /// </summary>
     public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
     {
-
+        /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
@@ -469,6 +472,7 @@ namespace umi3d.common.collaboration
             }
         }
 
+        /// <inheritdoc/>
         public override bool Write<T>(T value, out Bytable bytable)
         {
             switch (value)

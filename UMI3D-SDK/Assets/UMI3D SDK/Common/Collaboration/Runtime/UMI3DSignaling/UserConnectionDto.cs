@@ -20,14 +20,21 @@ using umi3d.common.interaction;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing user requirements for a connection.
     /// </summary>
+    /// Typically sent by a server during the connection process.
     [Serializable]
     public class UserConnectionDto : UserDto
     {
-
+        /// <summary>
+        /// Connection form as a set of parameters.
+        /// </summary>
         public FormDto parameters;
         public bool librariesUpdated = false;
+
+        /// <summary>
+        /// Password to use to connect to the vocal server.
+        /// </summary>
         public string audioPassword;
 
         public UserConnectionDto() : base()

@@ -18,11 +18,16 @@ using System;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing an identity sent to the UMI3D server.
     /// </summary>
+    /// Same than <see cref="IdentityDto"/> but with customizable metadata.
     [Serializable]
     public class RegisterIdentityDto : IdentityDto
     {
+        /// <summary>
+        /// Customizable data as a byte array. 
+        /// </summary>
+        /// The server should know how to parse them.
         public byte[] metaData;
     }
 }

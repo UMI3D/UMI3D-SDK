@@ -17,8 +17,9 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// Data Tranfert Object for UMI3D media, the abstraction of a set of environments.
     /// </summary>
+    /// A media can either be a world or a single environment.
     [System.Serializable]
     public class MediaDto : UMI3DDto
     {

@@ -18,10 +18,23 @@ using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 
+/// <summary>
+/// 
+/// </summary>
 public interface IWorldController_Client
 {
+    /// <summary>
+    /// Connect to the World Controller.
+    /// </summary>
+    /// <param name="connectionDto"></param>
+    /// <returns></returns>
     Task<UMI3DDto> Connect(ConnectionDto connectionDto);
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="identityDto"></param>
+    /// <returns></returns>
     Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto);
 
 }

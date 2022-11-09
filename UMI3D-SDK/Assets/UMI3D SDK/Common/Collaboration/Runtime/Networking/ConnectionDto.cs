@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// BaseConnection message to connect to a media.
+    /// DTO describing a base connection message to connect to a media.
     /// </summary>
     public class ConnectionDto : UMI3DDto
     {
@@ -27,15 +27,15 @@ namespace umi3d.common.collaboration
         public string globalToken;
 
         /// <summary>
-        /// Gate data to help the media where to redirect the user.
+        /// Gate data to help the environment where to redirect the user.
         /// </summary>
         public GateDto gate;
 
         /// <summary>
-        /// State if the client want only to download library.
-        /// if false : the client to connect normaly.
-        /// if true : the client ask only for the library it will need in a later connection.
+        /// Is the client only wanting to download a library rather than connecting right now?
         /// </summary>
+        /// If false : the client to connect normaly. <br/>
+        /// If true : the client ask only for the library it will need in a later connection.
         public bool libraryPreloading;
     }
 }
