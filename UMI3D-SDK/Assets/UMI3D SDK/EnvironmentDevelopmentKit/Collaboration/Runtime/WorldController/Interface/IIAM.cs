@@ -21,6 +21,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Identity and Access Management interface.
+    /// </summary>
     public interface IIAM
     {
         /// <summary>

@@ -22,6 +22,10 @@ using UnityEngine;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// API used for World Controllers using the UDP communication protocol.
+    /// </summary>
+    /// Not tested at the moment.
     public class UPDWorldControllerAPI : WorldControllerAPI
     {
         private UMI3DWorldControllerForgeClient forgeClient;

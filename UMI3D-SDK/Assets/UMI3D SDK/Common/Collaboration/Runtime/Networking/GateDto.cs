@@ -17,8 +17,9 @@ limitations under the License.
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Dto use to help a masterserver to guide a user
+    /// DTO describing to use to help a masterserver to guide a user through a gate.
     /// </summary>
+    /// This DTO is sent in a <see cref="RedirectionDto"/>.
     public class GateDto : UMI3DDto
     {
         /// <summary>
@@ -29,6 +30,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Data a server can give to an other server for experience quality.
         /// </summary>
+        /// The receiving server should be able to parse this customized data.
         public byte[] metaData;
     }
 }

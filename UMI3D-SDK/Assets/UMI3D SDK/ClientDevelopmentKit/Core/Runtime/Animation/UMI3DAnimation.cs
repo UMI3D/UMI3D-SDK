@@ -24,13 +24,21 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Animation composed of several a,oatop,
+    /// Animation composed of a chain of severam animations
     /// </summary>
     public class UMI3DAnimation : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        /// <summary>
+        /// Get an animation by id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static new UMI3DAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimation; }
+        /// <summary>
+        /// DTO local copy.
+        /// </summary>
         protected new UMI3DAnimationDto dto { get => base.dto as UMI3DAnimationDto; set => base.dto = value; }
 
         private readonly List<Coroutine> Coroutines = new List<Coroutine>();

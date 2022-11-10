@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing the number of users in an environment at a given time.
+    /// </summary>
     public class PlayerCountDto : UMI3DDto
     {
         /// <summary>

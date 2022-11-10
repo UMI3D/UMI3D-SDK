@@ -1,45 +1,128 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="umi3d.common.userCapture.BoneBindingDto" Collapsed="true">
+  <Class Name="umi3d.common.SetSendingCameraPropertiesDto" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\Operations\SetSendingCameraPropertiesDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetSendingTrackingDto" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\Operations\SetSendingTrackingDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetStreamedBonesDto" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\Operations\SetStreamedBonesDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.SetTrackingTargetFPSDto" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\Operations\SetTrackingTargetFPSDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.userCapture.EmoteRequest" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAIAABAAAAAICAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\Requests\EmoteRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.userCapture.BoardedVehicleDto" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAACAIAEAAABAAAAAAAAAIAAAAAI=</HashCode>
-      <FileName>Assets\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\BoneBindingDto.cs</FileName>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\BoardedVehicleDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.common.userCapture.BoneDto" Collapsed="true">
+  <Class Name="umi3d.common.userCapture.BoneBindingDto" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAACAIAQCAAAAAAAAAAAAAAAAAAI=</HashCode>
-      <FileName>Assets\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\BoneDto.cs</FileName>
+      <HashCode>AAAAAAIABHAAAAAAAAAAAAEAAAJEAAAEAAEAIAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\BoneBindingDto.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="umi3d.common.userCapture.BoneType" Collapsed="true">
+  <Class Name="umi3d.common.userCapture.BoneDto" Collapsed="true" BaseTypeListCollapsed="true">
     <Position X="4" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEUIAkgCAAIFIBMAAAhQECAgAAMgkAgIAAQAQEIAAA=</HashCode>
-      <FileName>Assets\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\BoneTypes.cs</FileName>
+      <HashCode>AABAAAAAAAAAAAAAAACAAACAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\BoneDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.common.userCapture.BoneType" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAQAAkDKAAcRIBYCBYBRCHCgACUAgSgBQAOQSEIGAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\BoneTypes.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.common.userCapture.UMI3DAvatarNodeDto" Collapsed="true">
-    <Position X="0.5" Y="1.5" Width="1.5" />
+    <Position X="0.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAgAAAAAAAAAABAAAA=</HashCode>
-      <FileName>Assets\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\UMI3DAvatarNodeDto.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAEACIAAAAABAAEgAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UMI3DAvatarNodeDto.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.common.userCapture.UserCameraPropertiesDto" Collapsed="true">
-    <Position X="2.25" Y="1.5" Width="1.5" />
+  <Class Name="umi3d.common.userCapture.UMI3DBodyPoseDto" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAI=</HashCode>
-      <FileName>Assets\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\UserCameraPropertiesDto.cs</FileName>
+      <HashCode>AAIAAAAAAAgAAAAAEAABAAQEAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UMI3DBodyPoseDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.common.userCapture.UMI3DEmoteDto" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAABAAAEAAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UMI3DEmoteDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.common.userCapture.UMI3DEmotesConfigDto" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAQAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UMI3DEmotesConfigDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.common.userCapture.UMI3DHandPoseDto" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAIAAAAAAAkAAAAAYAAAAAEgAAAAAAQAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UMI3DHandPoseDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.common.userCapture.UserCameraPropertiesDto" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAACAAICAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UserCameraPropertiesDto.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.common.userCapture.UserTrackingFrameDto" Collapsed="true">
-    <Position X="4" Y="1.5" Width="1.5" />
+    <Position X="2.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAACACAIAICAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\UserTrackingFrameDto.cs</FileName>
+      <HashCode>AAAAAAMAAAAAAAAACACAIAIAAAICAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UserTrackingFrameDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.userCapture.BoneTypeConverter" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\UserCapture\Runtime\UMI3DUserTrackingSystem\TrackingData\UserTrackingTypeConverter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

@@ -24,7 +24,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-
+    /// <summary>
+    /// Loader for <see cref="UMI3DAvatarNodeDto"/> in a collaborative context.
+    /// </summary>
     public class UMI3DCollabAvatarNodeLoader : UMI3DAvatarNodeLoader
     {
         /// <summary>

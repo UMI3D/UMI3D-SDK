@@ -34,6 +34,9 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Environment API to handle HTTP requests.
+    /// </summary>
     public class UMI3DEnvironmentApi : IHttpApi
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;

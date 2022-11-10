@@ -1,39 +1,177 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="umi3d.edk.userCapture.UMI3DAvatarNode" Collapsed="true">
+  <Class Name="umi3d.edk.userCapture.BodyAnimation" Collapsed="true">
     <Position X="2.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAAABAgAQAAAAAAACAIAIBBBQAAiAAAAAAACAIBIAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DAvatarNode.cs</FileName>
+      <HashCode>AAAAAAAAACAAIAAAAgEAAAAAAAAAAQAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\BodyAnimation.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.edk.userCapture.UMI3DEmbodimentManager" Collapsed="true">
+  <Class Name="umi3d.edk.userCapture.BodyDescription" Collapsed="true">
     <Position X="4" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BA4hEBABACAICAACAAEAAAAKQKABABYAAAIBBAAAgGA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DEmbodimentManager.cs</FileName>
+      <HashCode>gAYAAAAAIEACBABAgAABAAAAAAAAEggAAAEAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\BodyDescription.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.BodyPoseSetter" Collapsed="true">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAJAgAAAIgQJCAJIAhAAAAAAQAAAUAIAEAAQAABAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\BodyPoseSetter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.HandAnimation" Collapsed="true">
+    <Position X="0.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAIQgAAIEAAACAAAAAAABAAAAAQAAgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\HandAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.HandDescription" Collapsed="true">
+    <Position X="2.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAIAAABABAgAAAAAAAAAAAEggAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\HandDescription.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.HandPoseSetter" Collapsed="true">
+    <Position X="4" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ASEBQgAAAAgABCpJAAAAAIyAAAAAAAAIBGAAQAABCAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\HandPoseSetter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DBodyPose" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABICCBCEAAAAIQCAkAAFABAEAAAAAAAADAACQAJACAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\UMI3DBodyPose.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DEmote" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="4" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ARACAACEAAAAARAAgBBAABBAAAAAAAAACAACACAAAgQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\UMI3DEmote.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DEmotesConfig" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACAACEACAAAUAAgAgAABAAAAAAAAAACAACAAAAAkQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\UMI3DEmotesConfig.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DHandAnimation" Collapsed="true">
+    <Position X="7.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAMAAAAAAAAAAAAAAAAAAAQAQAAAAAQAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\UMI3DHandAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DHandPose" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACCACEIAAAIQCAkAAEABIAAAAgEgAADgACQAIACBQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\UMI3DHandPose.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.userCapture.BoardedVehicleRequest" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAQAAAAAAAAAAAAAAAYBAAAAAAAAAAgAAAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Scene Synchonisation\BoardedVehicleRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.EmoteDispatchRequest" Collapsed="true">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAEAIAABAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Scene Synchonisation\EmoteDispatchRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.SetSendingCameraProperties" Collapsed="true">
+    <Position X="5.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgBAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Scene Synchonisation\SetSendingCameraProperties.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.SetSendingTracking" Collapsed="true">
+    <Position X="7.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAgBAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Scene Synchonisation\SetSendingTracking.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.SetStreamedBones" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAABAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Scene Synchonisation\SetStreamedBones.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.SetTrackingTargetFPS" Collapsed="true">
+    <Position X="2.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAgIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Scene Synchonisation\SetTrackingTargetFPS.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DAvatarNode" Collapsed="true">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAABAiAQAAAAAAACQIAIBBBQAAiAAAAAAACAIBIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DAvatarNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DAvatarViewpointHelper" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DAvatarViewpointHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DBinding" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAAIQBHAAAAAAAAAAAACAAAAAAAAEBAEAAAQAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DBinding.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.userCapture.UMI3DEmbodimentManager" Collapsed="true">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>lAYgEgkIACgIQAEDBIAhABgLQAABABYEBEMBAAACEGA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DEmbodimentManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.userCapture.UMI3DUserEmbodimentBone" Collapsed="true">
-    <Position X="2.25" Y="1.5" Width="1.5" />
+    <Position X="4" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAACAAAAEAAAAAAAAAAAIAAAAAAAAI=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DUserEmbodimentBone.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.userCapture.Binding" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AQAAAAAQBDAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAI=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DUserEmbodimentBone.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Tracking\UMI3DUserEmbodimentBone.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.userCapture.UMI3DTrackedUser" Collapsed="true">
-    <Position X="0.5" Y="1.5" Width="1.5" />
+    <Position X="2.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\UserCapture\Runtime\UMI3DTrackedUser.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\UMI3DTrackedUser.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Struct Name="umi3d.edk.userCapture.SpatialDataInfo" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAACAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\UserCapture\Runtime\Animations\HandDescription.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

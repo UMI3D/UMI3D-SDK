@@ -18,6 +18,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Loading helper in a collaboration context.
+    /// </summary>
     [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Collab Loading Parameters")]
     public class UMI3DCollabLoadingParameters : UMI3DLoadingParameters
     {

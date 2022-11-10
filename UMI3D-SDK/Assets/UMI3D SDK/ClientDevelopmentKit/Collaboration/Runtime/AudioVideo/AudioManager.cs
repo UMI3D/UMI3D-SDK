@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
     public class AudioUserIsSpeaking : UnityEvent<UMI3DUser, bool> { }
 
     /// <summary>
-    /// Singleton use to read AudioDto.
+    /// Manger for audio reading.
     /// </summary>
     public class AudioManager : SingleBehaviour<AudioManager>
     {

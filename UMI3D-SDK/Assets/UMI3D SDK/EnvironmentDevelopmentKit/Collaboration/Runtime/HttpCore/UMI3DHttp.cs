@@ -21,6 +21,9 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Manager for the REST HTTP server.
+    /// </summary>
     public class UMI3DHttp : inetum.unityUtils.Singleton<UMI3DHttp>
     {
 
@@ -91,7 +94,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Stop the http server.
+        /// Stop the HTTP server.
         /// </summary>
         public void Stop()
         {

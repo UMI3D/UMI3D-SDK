@@ -20,13 +20,17 @@ using umi3d.common.interaction;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing the browser answer to connection requirements.
     /// </summary>
     [Serializable]
     public class UserConnectionAnswerDto : UserDto
     {
-
+        /// <summary>
+        /// Answers to the connection form.
+        /// </summary>
+        /// Not null if the received <see cref="UserConnectionDto"/> contained a form.
         public FormAnswerDto parameters;
+
         public bool librariesUpdated = false;
 
         public UserConnectionAnswerDto() : base()

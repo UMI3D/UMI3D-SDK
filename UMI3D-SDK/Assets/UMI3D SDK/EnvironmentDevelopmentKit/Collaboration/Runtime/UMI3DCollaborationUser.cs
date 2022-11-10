@@ -21,12 +21,16 @@ using umi3d.edk.userCapture;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// <see cref="UMI3DTrackedUser"/> in a collaborative context, with authentication, sound and video streaming etc...
+    /// </summary>
     public class UMI3DCollaborationUser : UMI3DTrackedUser
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
 
         private RegisterIdentityDto identityDto;
 
+        /// <inheritdoc/>
         protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }
         /// <summary>
         /// The unique user login.
@@ -60,15 +64,22 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string token => identityDto.localToken;
 
+
         public UMI3DForgeServer forgeServer;
 
+        /// <summary>
+        /// Audio source from the user.
+        /// </summary>
         public UMI3DAudioPlayer audioPlayer;
 
+        /// <summary>
+        /// Video source from the user.
+        /// </summary>
         public UMI3DAudioPlayer videoPlayer;
 
+        #region audioSettings
         public UMI3DAsyncProperty<int> audioFrequency;
         public UMI3DAsyncProperty<bool> microphoneStatus;
-        public UMI3DAsyncProperty<bool> avatarStatus;
         public UMI3DAsyncProperty<bool> attentionRequired;
 
         public UMI3DAsyncProperty<string> audioChannel;
@@ -76,6 +87,9 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<bool> audioUseMumble;
         public UMI3DAsyncProperty<string> audioPassword;
         public UMI3DAsyncProperty<string> audioLogin;
+        #endregion audioSettings
+
+        public UMI3DAsyncProperty<bool> avatarStatus;
 
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
@@ -103,6 +117,10 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
 
+        /// <summary>
+        /// Update the identity of the user.
+        /// </summary>
+        /// <param name="identity"></param>
         public void Update(RegisterIdentityDto identity)
         {
             ulong id = Id();
@@ -121,6 +139,9 @@ namespace umi3d.edk.collaboration
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
         }
 
+        /// <summary>
+        /// Remove a user fom the environment.
+        /// </summary>
         public void Logout()
         {
             UMI3DEnvironment.Remove(this);

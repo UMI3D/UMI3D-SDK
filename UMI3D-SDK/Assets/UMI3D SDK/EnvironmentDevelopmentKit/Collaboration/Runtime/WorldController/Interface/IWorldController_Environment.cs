@@ -19,6 +19,9 @@ using umi3d.edk.collaboration;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// API for communication from an environment to a world controller.
+    /// </summary>
     public interface IWorldController_Environment
     {
         Task NotifyUserRegister(UMI3DCollaborationUser user);

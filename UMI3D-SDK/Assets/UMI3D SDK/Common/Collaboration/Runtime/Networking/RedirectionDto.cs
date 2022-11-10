@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Tell a user to disconnect from an environment and connect to an other.
+    /// DTO describing the order to a user to disconnect from an environment and connect to an other.
     /// </summary>
     public class RedirectionDto : UMI3DDto
     {

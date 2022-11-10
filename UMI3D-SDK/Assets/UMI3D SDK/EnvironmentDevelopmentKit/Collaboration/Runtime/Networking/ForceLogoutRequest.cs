@@ -21,8 +21,14 @@ using umi3d.common.collaboration;
 using umi3d.edk;
 using UnityEngine;
 
+/// <summary>
+/// Request to prevent the user that they are being forced logged out.
+/// </summary>
 public class ForceLogoutRequest : DispatchableRequest
 {
+    /// <summary>
+    /// Explanation for the forced log out.
+    /// </summary>
     string reason;
 
     public ForceLogoutRequest(string reason, bool reliable, HashSet<UMI3DUser> users) : base(reliable, users)
@@ -36,11 +42,13 @@ public class ForceLogoutRequest : DispatchableRequest
             + UMI3DNetworkingHelper.Write(reason);
     }
 
+    /// <inheritdoc/>
     public override byte[] ToBytes()
     {
         return ToBytable().ToBytes();
     }
 
+    /// <inheritdoc/>
     public override byte[] ToBson()
     {
         ForceLogoutDto dto = CreateDto();

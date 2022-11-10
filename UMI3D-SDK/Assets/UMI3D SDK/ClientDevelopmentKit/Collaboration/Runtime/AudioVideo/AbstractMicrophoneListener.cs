@@ -560,7 +560,7 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// An example of how to serialize the positional data that you're interested in
+        /// An example of how to serialize the positional data that you're interested in. <br/>
         /// NOTE: this function, in the current implementation, is called regardless
         /// of if the user is speaking
         /// </summary>

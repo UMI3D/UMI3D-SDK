@@ -30,8 +30,9 @@ using UnityEngine.Events;
 namespace umi3d.edk.collaboration
 {
     /// <summary>
-    /// 
+    /// Environment Forge server, handling most of the transactions to the browsers.
     /// </summary>
+    /// The Forge server handles UDP messaging.
     public class UMI3DForgeServer : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
@@ -78,7 +79,7 @@ namespace umi3d.edk.collaboration
         #endregion
 
         /// <summary>
-        /// 
+        /// Create a Forge server.
         /// </summary>
         /// <param name="ip"></param>
         /// <param name="port"></param>
@@ -166,7 +167,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// 
+        /// Stops the server.
         /// </summary>
         public void Stop()
         {
