@@ -1,74 +1,208 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="umi3d.cdk.collaboration.AudioManager" Collapsed="true">
-    <Position X="3" Y="0.5" Width="1.5" />
+  <Class Name="umi3d.cdk.collaboration.MicrophoneEvent" Collapsed="true">
+    <Position X="6.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAEAAAAAAAAAAEAAAAAIAAgAAAAAAAAAAAAAAIAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AudioManager.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.MumbleEvent" Collapsed="true">
+    <Position X="8" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.SaturatedEvent" Collapsed="true">
+    <Position X="4.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.AbstractMicrophoneListener&lt;T&gt;" Collapsed="true">
+    <Position X="0.75" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>kCUQEQTDZTCerIAIGAQCEMYYbK4OAAB4ABHBxQBCAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.AudioUserIsSpeaking" Collapsed="true">
+    <Position X="6.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AudioManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.AudioManager" Collapsed="true">
+    <Position X="4.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAAAACCAEBAAAEgBAABAABoAABQQQAAICAIAQAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AudioManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.collaboration.MicrophoneListener" Collapsed="true">
-    <Position X="6.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="5" Width="3" />
     <TypeIdentifier>
-      <HashCode>AAQBAAAAACAQAABAAAAAAIIAAQAAAAAAAEAAAAAAAIA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\MicrophoneListener.cs</FileName>
+      <HashCode>AAAYAAAAACAAAQAAAAAgAAEAIAgOAAAAAAAAAwwIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\MicrophoneListener.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.cdk.collaboration.ClientIdentifierApi" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="8" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIAAAAAAAAAAAAAAAQAAAAEAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\Networking\ClientIdentifierApi.cs</FileName>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\ClientIdentifierApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.collaboration.HttpClient" Collapsed="true">
-    <Position X="4.75" Y="0.5" Width="1.5" />
+    <Position X="9.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AJAAAQAAAAAAgAAAAAAAggSAAgASAAAAAAgEBABABAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\Networking\HttpClient.cs</FileName>
+      <HashCode>AJCBAQAAAAAAgAAAEACkioCAAgASAAgAYAoUAUBABAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\HttpClient.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.cdk.collaboration.PinClientIdentifierApi" Collapsed="true">
-    <Position X="0.5" Y="2" Width="1.5" />
+  <Class Name="umi3d.cdk.collaboration.LaucherOnMasterServer" Collapsed="true">
+    <Position X="11.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAABAAAAAAAAAAAAAAACAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\Networking\PinClientIdentifierApi.cs</FileName>
+      <HashCode>AAAAQAAAAAACAAAAAAAgAAAAAAAAAAACAAgADIAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\LaucherOnMasterServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.LocalInfoSender" Collapsed="true">
+    <Position X="4.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAgAAAABAQAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\LocalInfoSender.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.OnForceLogoutEvent" Collapsed="true">
+    <Position X="9.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DCollaborationClientServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.OnProgressEvent" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DCollaborationClientServer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.collaboration.UMI3DCollaborationClientServer" Collapsed="true">
-    <Position X="3" Y="1.5" Width="1.5" />
+    <Position X="8" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>QFABAEBABGABQAgAAlACAoIBCgBAAgACwECaQAIAQAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DCollaborationClientServer.cs</FileName>
+      <HashCode>BwQBECTAgCYEQAAAshAiAOIAAgDIBgBCUBAaSABCAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DCollaborationClientServer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.cdk.collaboration.WebRTCClient" Collapsed="true">
-    <Position X="3" Y="2.5" Width="1.5" />
+  <Class Name="umi3d.cdk.collaboration.UMI3DEnvironmentClient" Collapsed="true">
+    <Position X="8" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>CAAAAEAAAAAAAAAAAIAgABEAABAAAABABAAABQAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\Networking\WebRTCClient.cs</FileName>
+      <HashCode>ABQAAQCAAAIOAQhAAEEhQpIACkCAAgACAcLmCADIQBE=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DEnvironmentClient.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.cdk.collaboration.WebSocketClient" Collapsed="true">
-    <Position X="4.75" Y="2.5" Width="1.5" />
+  <Class Name="umi3d.cdk.collaboration.UMI3DForgeClient" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAABAIQAAAABQAAACEAAAAAAAAAAAAAAAQACBACAgAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\Networking\WebSocketClient.cs</FileName>
+      <HashCode>AACDCAgAkCIEBAhLMIAhAQCDAAAggEACIgCBhABCAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DForgeClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DWorldControllerClient" Collapsed="true">
+    <Position X="6.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAQgBAAAEAQMIAAASkAAAIAEAABAhAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWorldControllerClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DCollabAvatarNodeLoader" Collapsed="true">
+    <Position X="6.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\TrackingKalmanFilters\UMI3DCollabAvatarNodeLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DCollaborativeUserAvatar" Collapsed="true">
+    <Position X="6.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAKABAAAACAAAAAAACAAAAEAAQAAAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\TrackingKalmanFilters\UMI3DCollaborativeUserAvatar.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DViewpointHelper" Collapsed="true">
+    <Position X="4.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\TrackingKalmanFilters\UMI3DViewpointHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DCollabLoadingParameters" Collapsed="true">
+    <Position X="0.5" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\UMI3DCollabLoadingParameters.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.collaboration.UMI3DCollaborationClientUserTracking" Collapsed="true">
-    <Position X="4.75" Y="1.5" Width="1.5" />
+    <Position X="9.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationClientUserTracking.cs</FileName>
+      <HashCode>EAAAAAAAACAAABAAAAAEAAAAAAAAABAAACAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationClientUserTracking.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DCollaborationEnvironmentLoader" Collapsed="true">
+    <Position X="11.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACCABAACAAHBABAAgAAEAIEAAYAIAAAAUAAABAAAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationEnvironmentLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DCollaborationNetworkingModule" Collapsed="true">
+    <Position X="4.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationNetworkingModule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DUser" Collapsed="true">
+    <Position X="11.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EERAIgAAAFCAKAQSEIEABRAEJQDBAQQQIAQoCaEAEgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\UMI3DUser.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.UMI3DLoadingParameters" Collapsed="true">
-    <Position X="6.5" Y="1.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAUAAgQCAAAAAQgAJAAFAAACAAAAIAAAAAAAAAAIAgA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\Collaboration\Runtime\UMI3DLoadingParameters.cs</FileName>
+      <HashCode>AAUAAiRAAAAAAQgAJAAlAAACAAAAIAAAAABIAAAICgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\UMI3DLoadingParameters.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Enum Name="umi3d.cdk.collaboration.MicrophoneMode" Collapsed="true">
+    <Position X="4.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAIAAQAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.cdk.collaboration.MumbleStatus" Collapsed="true">
+    <Position X="8" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAACAAAAAAAAAAAAACAAAAAAAAAAQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="umi3d.cdk.collaboration.MicrophoneStatus" Collapsed="true">
+    <Position X="6.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAACAAAAAACQAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Runtime\AudioVideo\AbstractMicrophoneListener.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>
