@@ -23,6 +23,9 @@ using UnityEngine;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Client for a World Controller based on UDP.
+    /// </summary>
     public class UMI3DWorldControllerForgeClient : ForgeSocketBase
     {
 

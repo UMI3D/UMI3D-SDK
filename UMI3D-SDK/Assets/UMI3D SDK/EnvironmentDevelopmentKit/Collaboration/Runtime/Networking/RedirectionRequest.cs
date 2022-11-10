@@ -39,11 +39,13 @@ namespace umi3d.edk.collaboration
                 + UMI3DNetworkingHelper.Write(redirection);
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBytes()
         {
             return ToBytable().ToBytes();
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBson()
         {
             RedirectionDto dto = CreateDto();

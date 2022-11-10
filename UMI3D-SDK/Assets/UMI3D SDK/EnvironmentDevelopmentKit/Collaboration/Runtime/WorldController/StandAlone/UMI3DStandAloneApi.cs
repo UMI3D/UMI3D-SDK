@@ -28,7 +28,9 @@ using WebSocketSharp.Server;
 
 namespace umi3d.worldController
 {
-
+    /// <summary>
+    /// Standalone API to handle UMI3D-related HTTP requests.
+    /// </summary>
     public class UMI3DStandAloneApi : IHttpApi
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;

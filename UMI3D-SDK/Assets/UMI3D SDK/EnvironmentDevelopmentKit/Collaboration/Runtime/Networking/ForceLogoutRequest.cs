@@ -42,11 +42,13 @@ public class ForceLogoutRequest : DispatchableRequest
             + UMI3DNetworkingHelper.Write(reason);
     }
 
+    /// <inheritdoc/>
     public override byte[] ToBytes()
     {
         return ToBytable().ToBytes();
     }
 
+    /// <inheritdoc/>
     public override byte[] ToBson()
     {
         ForceLogoutDto dto = CreateDto();

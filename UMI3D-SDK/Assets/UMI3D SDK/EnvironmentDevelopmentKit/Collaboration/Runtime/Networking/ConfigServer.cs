@@ -31,11 +31,11 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string nameParam = "";
         /// <summary>
-        /// Set the public IP of the server.
+        /// Set the public IP address of the server.
         /// </summary>
         public string ipParam = "";
         /// <summary>
-        /// Set the public IP of the server.
+        /// Set the resources' default URL.
         /// </summary>
         public string resourcesDefaultUrlParam = "";
         /// <summary>

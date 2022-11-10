@@ -32,11 +32,17 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Manager for the UMI3D server in a collaborative context.
+    /// </summary>
     public class UMI3DCollaborationServer : UMI3DServer, IEnvironment
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         public static new UMI3DCollaborationServer Instance { get => UMI3DServer.Instance as UMI3DCollaborationServer; set => UMI3DServer.Instance = value; }
 
+        /// <summary>
+        /// Is the server active?
+        /// </summary>
         public bool isRunning { get; protected set; } = false;
 
         [SerializeField, ReadOnly]
@@ -57,7 +63,7 @@ namespace umi3d.edk.collaboration
 
         public IdentifierApi Identifier;
 
-        [EditorReadOnly, Tooltip("World controller for stand alone api.")]
+        [EditorReadOnly, Tooltip("World controller for standalone API.")]
         public worldController.WorldControllerAPI WorldController;
 
         /// <summary>
@@ -133,7 +139,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Get the ForgeConnectionDto.
+        /// Get the <see cref="ForgeConnectionDto"/>.
         /// </summary>
         /// <returns></returns>
         public override ForgeConnectionDto ToDto()
@@ -185,9 +191,7 @@ namespace umi3d.edk.collaboration
                 UMI3DHttp.Destroy();
         }
 
-        /// <summary>
-        /// Initialize the server.
-        /// </summary>
+        /// <inheritdoc/>
         public override void Init()
         {
             UMI3DLogger.Log($"Server Init", scope);

@@ -20,7 +20,7 @@ using UnityEngine;
 namespace umi3d.edk.collaboration
 {
     /// <summary>
-    /// Relay that allow to transmit data from one user to another.
+    /// Relay that allows to transmit data from one user to another.
     /// </summary>
     [CreateAssetMenu(fileName = "UMI3DRelayDescription", menuName = "UMI3D/UMI3D_Relay_Description")]
     public class RelayDescription : ScriptableObject
