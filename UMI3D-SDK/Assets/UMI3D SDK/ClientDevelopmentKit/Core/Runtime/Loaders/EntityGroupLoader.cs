@@ -15,7 +15,10 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using umi3d.common;
 
 namespace umi3d.cdk
@@ -23,31 +26,43 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="EntityGroupDto"/>.
     /// </summary>
-    public static class EntityGroupLoader
+    public class EntityGroupLoader : AbstractLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        public static void ReadUMI3DExtension(EntityGroupDto groupDto)
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            groupDto.entitiesId = groupDto.entitiesId.ToList();
-            UMI3DEnvironmentLoader.RegisterEntityInstance(groupDto.id, groupDto, null).NotifyLoaded();
+            return data.dto is EntityGroupDto;
         }
 
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
-            if (entity != null && entity.dto is EntityGroupDto groupDto)
+            var dto = value.dto as EntityGroupDto;
+            if(dto == null)
+                throw (new Umi3dException("dto should be an EntityGroupDto"));
+            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+        }
+
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
+        {
+            return false;
+        }
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            if (value.entity != null && value.entity.dto is EntityGroupDto groupDto)
             {
-                switch (property.property)
+                switch (value.property.property)
                 {
                     case UMI3DPropertyKeys.EntityGroupIds:
-                        UpdateEntities(entity, groupDto, property);
+                        UpdateEntities(value, groupDto);
                         break;
                     default:
                         foreach (ulong e in groupDto.entitiesId)
                         {
-                            SetEntityPropertyDto np = property.Copy();
+                            SetEntityPropertyDto np = value.property.Copy();
                             np.entityId = e;
-                            UMI3DEnvironmentLoader.SetEntity(np);
+                            await UMI3DEnvironmentLoader.SetEntity(np);
                         }
                         break;
                 }
@@ -56,20 +71,19 @@ namespace umi3d.cdk
             return false;
         }
 
-
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            if (entity != null && entity.dto is EntityGroupDto groupDto)
+            if (value.entity != null && value.entity.dto is EntityGroupDto groupDto)
             {
-                switch (propertyKey)
+                switch (value.propertyKey)
                 {
                     case UMI3DPropertyKeys.EntityGroupIds:
-                        UpdateEntities(entity, groupDto, operationId, propertyKey, container);
+                        UpdateEntities(value.entity, groupDto, value.operationId, value.propertyKey, value.container);
                         break;
                     default:
                         foreach (ulong e in groupDto.entitiesId)
                         {
-                            UMI3DEnvironmentLoader.SetEntity(operationId, e, propertyKey, new ByteContainer(container));
+                            await UMI3DEnvironmentLoader.SetEntity(value.operationId, e, value.propertyKey, new ByteContainer(value.container));
                         }
                         break;
                 }
@@ -78,15 +92,10 @@ namespace umi3d.cdk
             return false;
         }
 
-        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
-        {
-            return false;
-        }
-
-        private static void UpdateEntities(UMI3DEntityInstance entity, EntityGroupDto groupDto, SetEntityPropertyDto property)
+        private static void UpdateEntities(SetUMI3DPropertyData value, EntityGroupDto groupDto)
         {
             List<ulong> list = groupDto.entitiesId;
-            switch (property)
+            switch (value.property)
             {
                 case SetEntityListAddPropertyDto add:
                     if (add.index == list.Count())
@@ -109,7 +118,7 @@ namespace umi3d.cdk
                         UMI3DLogger.LogWarning($"Set value ignore for {set.index} in collection of size {list.Count}", scope);
                     break;
                 default:
-                    groupDto.entitiesId = (property.value as List<object>).Select(o => (ulong)(long)o).ToList();
+                    groupDto.entitiesId = (value.property.value as List<object>).Select(o => (ulong)(long)o).ToList();
                     break;
             }
         }

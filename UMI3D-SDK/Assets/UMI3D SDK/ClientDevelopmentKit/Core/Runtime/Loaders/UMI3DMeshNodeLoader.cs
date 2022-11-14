@@ -36,6 +36,10 @@ namespace umi3d.cdk
         }
         public UMI3DMeshNodeLoader() { }
 
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DAbstractNodeDto && base.CanReadUMI3DExtension(data);
+        }
 
         /// <summary>
         /// Load a mesh node.
@@ -44,19 +48,18 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            var nodeDto = dto as UMI3DAbstractNodeDto;
-            if (node == null)
+            var nodeDto = data.dto as UMI3DAbstractNodeDto;
+            if (data.node == null)
             {
                 throw (new Umi3dException("Dto should be an UMI3DAbstractNodeDto"));
             }
 
-            await base.ReadUMI3DExtension(dto, node);
-
+            await base.ReadUMI3DExtension(data);
 
             //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)data.dto).mesh.variants);  // Peut etre ameliore
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
@@ -68,10 +71,10 @@ namespace umi3d.cdk
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(nodeDto.id, fileToLoad, loader);
-                if (o is GameObject g && dto is UMI3DMeshNodeDto meshDto)
-                    await CallbackAfterLoadingForMesh(g, meshDto, node.transform, offset);
+                if (o is GameObject g && data.dto is UMI3DMeshNodeDto meshDto)
+                    await CallbackAfterLoadingForMesh(g, meshDto, data.node.transform, offset);
                 else
-                    throw (new Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {dto.GetType()} into UMI3DMeshNodeDto"));
+                    throw (new Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {data.dto.GetType()} into UMI3DMeshNodeDto"));
             }
             else
                 throw (new Umi3dException($"No loader found for {ext}"));

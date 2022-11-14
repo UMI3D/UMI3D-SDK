@@ -24,7 +24,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for Abstract Anchor
     /// </summary>
-    public class UMI3DAbstractAnchorLoader
+    public class UMI3DAbstractAnchorLoader : AbstractLoader
     {
 
         public virtual async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)

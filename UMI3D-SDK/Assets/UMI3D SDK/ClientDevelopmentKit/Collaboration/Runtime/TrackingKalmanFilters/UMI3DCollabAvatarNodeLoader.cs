@@ -29,29 +29,9 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollabAvatarNodeLoader : UMI3DAvatarNodeLoader
     {
-        /// <summary>
-        /// Load an avatar node for collaborative user.
-        /// </summary>
-        /// <param name="dto">dto.</param>
-        /// <param name="node">gameObject on which the abstract node will be loaded.</param>
-        /// <param name="finished">Finish callback.</param>
-        /// <param name="failed">error callback.</param>
-        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override UserAvatar GetUserAvatar(ReadUMI3DExtensionData data)
         {
-            var nodeDto = dto as UMI3DAbstractNodeDto;
-            if (node == null)
-            {
-                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
-            }
-
-            await base.ReadUMI3DExtension(dto, node);
-
-            if (!(dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetUserId()))
-            {
-                UserAvatar ua = node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
-                ua.Set(dto as UMI3DAvatarNodeDto);
-                UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
-            }
+            return data.node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
         }
     }
 }

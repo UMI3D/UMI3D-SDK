@@ -124,13 +124,13 @@ namespace umi3d.cdk
                     UMI3DEnvironmentLoader.SetEntity(set);
                     break;
                 case MultiSetEntityPropertyDto multiSet:
-                    UMI3DEnvironmentLoader.SetMultiEntity(multiSet);
+                    await UMI3DEnvironmentLoader.SetMultiEntity(multiSet);
                     break;
                 case StartInterpolationPropertyDto interpolationStart:
-                    UMI3DEnvironmentLoader.StartInterpolation(interpolationStart);
+                    await UMI3DEnvironmentLoader.StartInterpolation(interpolationStart);
                     break;
                 case StopInterpolationPropertyDto interpolationStop:
-                    UMI3DEnvironmentLoader.StopInterpolation(interpolationStop);
+                    await UMI3DEnvironmentLoader.StopInterpolation(interpolationStop);
                     break;
 
                 default:
@@ -159,13 +159,13 @@ namespace umi3d.cdk
                         break;
                     }
                 case UMI3DOperationKeys.MultiSetEntityProperty:
-                    UMI3DEnvironmentLoader.SetMultiEntity(container);
+                    await UMI3DEnvironmentLoader.SetMultiEntity(container);
                     break;
                 case UMI3DOperationKeys.StartInterpolationProperty:
-                    UMI3DEnvironmentLoader.StartInterpolation(container);
+                    await UMI3DEnvironmentLoader.StartInterpolation(container);
                     break;
                 case UMI3DOperationKeys.StopInterpolationProperty:
-                    UMI3DEnvironmentLoader.StopInterpolation(container);
+                    await UMI3DEnvironmentLoader.StopInterpolation(container);
                     break;
 
                 default:

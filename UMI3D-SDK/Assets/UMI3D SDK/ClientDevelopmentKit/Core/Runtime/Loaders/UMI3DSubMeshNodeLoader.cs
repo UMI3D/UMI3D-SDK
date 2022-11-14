@@ -30,13 +30,19 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is SubModelDto && base.CanReadUMI3DExtension(data);
+        }
+
+
         /// <inheritdoc/>
-        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
 
-            await base.ReadUMI3DExtension(dto, node);
+            await base.ReadUMI3DExtension(data);
 
-            var nodeDto = dto as SubModelDto;
+            var nodeDto = data.dto as SubModelDto;
             if (nodeDto == null)
             {
                 throw (new Umi3dException("nodeDto should not be null"));
@@ -61,7 +67,7 @@ namespace umi3d.cdk
                         UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, nodeDto.subModelHierachyIndexes, nodeDto.subModelHierachyNames, (o) =>
                         {
 
-                            instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
+                            instance = GameObject.Instantiate((GameObject)o, data.node.gameObject.transform, false);
 
                             AbstractMeshDtoLoader.ShowModelRecursively(instance);
                             if (!rootDto.isRightHanded)
@@ -69,7 +75,7 @@ namespace umi3d.cdk
                                 instance.transform.localEulerAngles += new Vector3(0, 180, 0);
                             }
 
-                            SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)dto).colliderDto);
+                            SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), ((UMI3DNodeDto)data.dto).colliderDto);
 
                             UMI3DEnvironmentLoader.GetNode(nodeDto.modelId).subNodeInstances.Add(nodeInstance);
                             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
@@ -179,28 +185,29 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
+            if ((data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
             {
-                if (base.SetUMI3DProperty(entity, property)) return true;
-                var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as SubModelDto;
+                if (await base.SetUMI3DProperty(data))
+                    return true;
+                var extension = ((GlTFNodeDto)data.entity?.dto)?.extensions?.umi3d as SubModelDto;
                 if (extension == null) return false;
-                switch (property.property)
+                switch (data.property.property)
                 {
                     case UMI3DPropertyKeys.IgnoreModelMaterialOverride:
-                        extension.ignoreModelMaterialOverride = (bool)property.value;
-                        if ((bool)property.value) //revert model override and apply only subModel overriders 
+                        extension.ignoreModelMaterialOverride = (bool)data.property.value;
+                        if ((bool)data.property.value) //revert model override and apply only subModel overriders 
                         {
-                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
-                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+                            RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)data.entity);
                         }
                         else
                         {
-                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                            RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
                             var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
-                            SetMaterialOverided(parentDto, (UMI3DNodeInstance)entity);
-                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+                            SetMaterialOverided(parentDto, (UMI3DNodeInstance)data.entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)data.entity);
                         }
                         break;
 
@@ -217,28 +224,28 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            if ((entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
+            if ((data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d is SubModelDto)
             {
-                if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
-                var extension = ((GlTFNodeDto)entity?.dto)?.extensions?.umi3d as SubModelDto;
+                if (await base.SetUMI3DProperty(data)) return true;
+                var extension = ((GlTFNodeDto)data.entity?.dto)?.extensions?.umi3d as SubModelDto;
                 if (extension == null) return false;
-                switch (propertyKey)
+                switch (data.propertyKey)
                 {
                     case UMI3DPropertyKeys.IgnoreModelMaterialOverride:
-                        extension.ignoreModelMaterialOverride = UMI3DNetworkingHelper.Read<bool>(container);
+                        extension.ignoreModelMaterialOverride = UMI3DNetworkingHelper.Read<bool>(data.container);
                         if (extension.ignoreModelMaterialOverride) //revert model override and apply only subModel overriders 
                         {
-                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
-                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+                            RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)data.entity);
                         }
                         else
                         {
-                            RevertToOriginalMaterial((UMI3DNodeInstance)entity);
+                            RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
                             var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
-                            SetMaterialOverided(parentDto, (UMI3DNodeInstance)entity);
-                            SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
+                            SetMaterialOverided(parentDto, (UMI3DNodeInstance)data.entity);
+                            SetMaterialOverided(extension, (UMI3DNodeInstance)data.entity);
                         }
                         break;
 

@@ -66,19 +66,24 @@ namespace umi3d.cdk
             }
         }
 
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DSceneNodeDto && base.CanReadUMI3DExtension(data);
+        }
+
         /// <summary>
         /// Setup a scene node based on a UMI3DSceneNodeDto
         /// </summary>
         /// <param name="node"></param>
         /// <param name="dto"></param>
-        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            await base.ReadUMI3DExtension(dto, node);
-            var sceneDto = dto as UMI3DSceneNodeDto;
+            await base.ReadUMI3DExtension(data);
+            var sceneDto = data.dto as UMI3DSceneNodeDto;
             if (sceneDto == null) return;
-            node.transform.localPosition = sceneDto.position;
-            node.transform.localRotation = sceneDto.rotation;
-            node.transform.localScale = sceneDto.scale;
+            data.node.transform.localPosition = sceneDto.position;
+            data.node.transform.localRotation = sceneDto.rotation;
+            data.node.transform.localScale = sceneDto.scale;
             await Task.WhenAll(sceneDto.LibrariesId.Select(async libraryId => await UMI3DResourcesManager.LoadLibrary(libraryId, sceneDto.id)));
 
             if (sceneDto.otherEntities != null)
@@ -98,21 +103,21 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            var node = entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null)
             {
-                return SetUMI3DMaterialProperty(entity, property);
+                return SetUMI3DMaterialProperty(data.entity, data.property);
             }
-            if (base.SetUMI3DProperty(entity, property))
+            if (await base.SetUMI3DProperty(data))
                 return true;
             UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
-            switch (property.property)
+            switch (data.property.property)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = (SerializableVector3)property.value;
+                    dto.position = (SerializableVector3)data.property.value;
                     if (node.updatePose)
                     {
                         node.transform.localPosition = dto.position;
@@ -120,7 +125,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    dto.rotation = (SerializableVector4)property.value;
+                    dto.rotation = (SerializableVector4)data.property.value;
                     if (node.updatePose)
                     {
                         node.transform.localRotation = dto.rotation;
@@ -128,7 +133,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = (SerializableVector3)property.value;
+                    dto.scale = (SerializableVector3)data.property.value;
                     if (node.updatePose)
                     {
                         node.transform.localScale = dto.scale;
@@ -147,21 +152,21 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            var node = entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null)
             {
-                return SetUMI3DMaterialProperty(entity, operationId, propertyKey, container);
+                return SetUMI3DMaterialProperty(data.entity, data.operationId, data.propertyKey, data.container);
             }
-            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container))
+            if (await base.SetUMI3DProperty(data))
                 return true;
             UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
+                    dto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container); ;
                     if (node.updatePose)
                     {
                         node.transform.localPosition = dto.position;
@@ -169,7 +174,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container); ;
+                    dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(data.container); ;
                     if (node.updatePose)
                     {
                         node.transform.localRotation = dto.rotation;
@@ -177,7 +182,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container); ;
+                    dto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container); ;
                     if (node.updatePose)
                     {
                         node.transform.localScale = dto.scale;
@@ -191,22 +196,22 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            if (ReadUMI3DMaterialProperty(ref value, propertyKey, container))
+            if (ReadUMI3DMaterialProperty(ref data.result, data.propertyKey, data.container))
                 return true;
-            if (base.ReadUMI3DProperty(ref value, propertyKey, container))
+            if (await base.ReadUMI3DProperty(data))
                 return true;
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    value = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    data.result = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    value = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                    data.result = UMI3DNetworkingHelper.Read<SerializableVector4>(data.container);
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    value = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                    data.result = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container);
                     break;
                 default:
                     return false;

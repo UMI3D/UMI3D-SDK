@@ -67,7 +67,7 @@ namespace umi3d.cdk
                         progress.AddTotal();
                         try
                         {
-                            await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(dto.extensions.umi3d, node.gameObject);
+                            await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.extensions.umi3d, node.gameObject));
 
                             ReadLightingExtensions(dto, node.gameObject);
                             // Important: all nodes in the scene must be registred before to handle hierarchy. 

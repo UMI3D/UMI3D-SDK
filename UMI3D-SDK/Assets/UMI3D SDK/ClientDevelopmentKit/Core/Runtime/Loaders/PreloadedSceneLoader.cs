@@ -26,7 +26,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="PreloadedSceneDto"/>.
     /// </summary>
-    public class PreloadedSceneLoader
+    public class PreloadedSceneLoader : AbstractLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 

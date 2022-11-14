@@ -26,6 +26,12 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DAbstractNodeLoader : AbstractLoader
     {
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DAbstractNodeDto;
+        }
+
         /// <summary>
         /// Load an abstract node dto.
         /// </summary>
@@ -33,7 +39,7 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override async Task<bool> ReadUMI3DExtension(ReadUMI3DData data)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             var nodeDto = data.dto as UMI3DAbstractNodeDto;
             if (data.node == null)
@@ -60,8 +66,6 @@ namespace umi3d.cdk
                 if (nodeDto.isStatic != data.node.isStatic)
                     data.node.isStatic = nodeDto.isStatic;
             }
-
-            return true;
         }
 
         /// <summary>

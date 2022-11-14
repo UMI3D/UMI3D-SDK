@@ -67,7 +67,7 @@ namespace umi3d.cdk
         /// <param name="node">Gameobject on which to setup the object.</param>
         /// <param name="finished">Finished callback.</param>
         /// <param name="failed">Error callback.</param>
-        public abstract Task ReadUMI3DExtension(UMI3DDto dto, GameObject node);
+        public abstract Task ReadUMI3DExtension(ReadUMI3DExtensionData data);
 
         /// <summary>
         /// Update a property.
@@ -75,7 +75,7 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the updated value.</param>
         /// <returns></returns>
-        public abstract bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property);
+        public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data);
 
         /// <summary>
         /// Update a property from a value in a <paramref name="container"/>.
@@ -85,7 +85,7 @@ namespace umi3d.cdk
         /// <param name="propertyKey">UMI3D property key in <see cref="UMI3DPropertyKeys"/>.</param>
         /// <param name="container">Container of the updated value to read.</param>
         /// <returns></returns>
-        public abstract bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container);
+        public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data);
 
         /// <summary>
         /// Read a property in a <paramref name="container"/> and stores its value.
@@ -94,7 +94,7 @@ namespace umi3d.cdk
         /// <param name="propertyKey">UMI3D key of the property to read.</param>
         /// <param name="container">Container of the value to read.</param>
         /// <returns></returns>
-        public abstract bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container);
+        public abstract Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data);
 
         /// <summary>
         /// Handle Operation not handled by default.

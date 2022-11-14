@@ -26,7 +26,7 @@ namespace umi3d.cdk.interaction
     /// <summary>
     /// Helper class that manages the loading of <see cref="Interactable"/> entities.
     /// </summary>
-    public static class UMI3DInteractableLoader
+    public class UMI3DInteractableLoader : AbstractLoader
     {
         /// <summary>
         /// Reads the value of an <see cref="InteractableDto"/> and update the associated node.

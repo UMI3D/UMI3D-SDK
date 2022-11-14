@@ -20,16 +20,16 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class ReadUMI3DData
+    public class ReadUMI3DExtensionData
     {
         public UMI3DDto dto;
         public GameObject node;
 
-        public ReadUMI3DData(UMI3DDto dto) : this(dto, null)
+        public ReadUMI3DExtensionData(UMI3DDto dto) : this(dto, null)
         {
         }
 
-        public ReadUMI3DData(UMI3DDto dto, GameObject node)
+        public ReadUMI3DExtensionData(UMI3DDto dto, GameObject node)
         {
             this.dto = dto;
             this.node = node;
@@ -98,7 +98,7 @@ namespace umi3d.cdk
         }
     }
 
-    public class AbstractLoader : IHandler<ReadUMI3DData, bool>, IHandler<SetUMI3DPropertyData, bool>, IHandler<SetUMI3DPropertyContainerData, bool>, IHandler<ReadUMI3DPropertyData, object>
+    public abstract class AbstractLoader : IHandler<ReadUMI3DExtensionData, bool>, IHandler<SetUMI3DPropertyData, bool>, IHandler<SetUMI3DPropertyContainerData, bool>, IHandler<ReadUMI3DPropertyData, object>
     {
         AbstractLoader successor;
 
@@ -114,7 +114,7 @@ namespace umi3d.cdk
         }
 
 
-        IHandler<ReadUMI3DData, bool> IHandler<ReadUMI3DData, bool>.GetNext()
+        IHandler<ReadUMI3DExtensionData, bool> IHandler<ReadUMI3DExtensionData, bool>.GetNext()
         {
             return successor;
         }
@@ -134,7 +134,7 @@ namespace umi3d.cdk
             return this.successor;
         }
 
-        IHandler<ReadUMI3DData, bool> IHandler<ReadUMI3DData, bool>.SetNext(IHandler<ReadUMI3DData, bool> successor)
+        IHandler<ReadUMI3DExtensionData, bool> IHandler<ReadUMI3DExtensionData, bool>.SetNext(IHandler<ReadUMI3DExtensionData, bool> successor)
         {
             if (successor is AbstractLoader loader)
                 this.successor = loader;
@@ -162,10 +162,13 @@ namespace umi3d.cdk
             return this.successor;
         }
 
-        public async Task<bool> Handle(ReadUMI3DData value)
+        public async Task<bool> Handle(ReadUMI3DExtensionData value)
         {
-            if (await ReadUMI3DExtension(value))
+            if (CanReadUMI3DExtension(value)) 
+            {
+                await ReadUMI3DExtension(value);
                 return true;
+            }
             if (successor != null)
                 return await successor.Handle(value);
             throw new Umi3dException($"No loader for this data {value}");
@@ -198,24 +201,14 @@ namespace umi3d.cdk
             throw new Umi3dException($"No loader for this data {value}");
         }
 
-        public virtual Task<bool> ReadUMI3DExtension(ReadUMI3DData value)
-        {
-            return Task.FromResult(false);
-        }
+        public abstract bool CanReadUMI3DExtension(ReadUMI3DExtensionData data);
 
-        public virtual Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
-        {
-            return Task.FromResult(false);
-        }
+        public abstract Task ReadUMI3DExtension(ReadUMI3DExtensionData value);
 
-        public virtual Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
-        {
-            return Task.FromResult(false);
-        }
+        public abstract Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value);
 
-        public virtual Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
-        {
-            return Task.FromResult(false);
-        }
+        public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value);
+
+        public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value);
     }
 }

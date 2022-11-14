@@ -108,16 +108,16 @@ namespace umi3d.cdk.collaboration
 
 
         /// <inheritdoc/>
-        protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        protected override async Task<bool> _SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            if (base._SetUMI3DProperty(entity, property)) return true;
-            if (entity == null) return false;
+            if (await base._SetUMI3DProperty(data)) return true;
+            if (data.entity == null) return false;
 
-            switch (property.property)
+            switch (data.property.property)
             {
                 case UMI3DPropertyKeys.UserList:
-                    var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-                    return SetUserList(dto, property);
+                    var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
+                    return SetUserList(dto, data.property);
 
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
@@ -128,7 +128,7 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioServer:
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                 case UMI3DPropertyKeys.UserAudioChannel:
-                    return UpdateUser(property.property, entity, property.value);
+                    return UpdateUser(data.property.property, data.entity, data.property.value);
 
                 default:
                     return false;
@@ -136,37 +136,37 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <inheritdoc/>
-        protected override bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        protected override async Task<bool> _SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            if (base._SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
-            if (entity == null) return false;
+            if (await base._SetUMI3DProperty(data)) return true;
+            if (data.entity == null) return false;
 
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.UserList:
-                    var dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-                    return SetUserList(dto, operationId, propertyKey, container);
+                    var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
+                    return SetUserList(dto, data.operationId, data.propertyKey, data.container);
 
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                     {
-                        bool value = UMI3DNetworkingHelper.Read<bool>(container);
-                        return UpdateUser(propertyKey, entity, value);
+                        bool value = UMI3DNetworkingHelper.Read<bool>(data.container);
+                        return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 case UMI3DPropertyKeys.UserAudioFrequency:
                     {
-                        int value = UMI3DNetworkingHelper.Read<int>(container);
-                        return UpdateUser(propertyKey, entity, value);
+                        int value = UMI3DNetworkingHelper.Read<int>(data.container);
+                        return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 case UMI3DPropertyKeys.UserAudioLogin:
                 case UMI3DPropertyKeys.UserAudioPassword:
                 case UMI3DPropertyKeys.UserAudioServer:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     {
-                        string value = UMI3DNetworkingHelper.Read<string>(container);
-                        return UpdateUser(propertyKey, entity, value);
+                        string value = UMI3DNetworkingHelper.Read<string>(data.container);
+                        return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 default:
                     return false;
