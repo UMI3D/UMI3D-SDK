@@ -407,12 +407,16 @@ namespace umi3d.cdk
                     }
                 }
             }
-            await Task.WhenAll(probeList.Select(
-                async p =>
-                {
-                    while (!p.probe.IsFinishedRendering(p.id))
-                        await UMI3DAsyncManager.Yield();
-                }));
+            await Task.WhenAll
+                (probeList.Select
+                    (
+                        async p =>
+                        {
+                            while (QualitySettings.realtimeReflectionProbes && !p.probe.IsFinishedRendering(p.id))
+                                await UMI3DAsyncManager.Yield();
+                        }
+                    )
+                );
         }
 
         #endregion
