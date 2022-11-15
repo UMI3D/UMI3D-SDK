@@ -19,31 +19,102 @@ using System;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing a user as a collaborative entity.
     /// </summary>
     [Serializable]
     public class UserDto : AbstractEntityDto
     {
+        /// <summary>
+        /// Current attributed status of the user.
+        /// </summary>
         public StatusType status;
 
+        /// <summary>
+        /// User's avatar UMI3D id.
+        /// </summary>
         public ulong avatarId;
-        public ulong audioSourceId;
-        public int audioFrequency;
-        public ulong videoSourceId;
+
+        /// <summary>
+        /// Forge id of the user.
+        /// </summary>
         public uint networkId;
+
+        #region audio
+        /// <summary>
+        /// UMI3D id of the audio source where the user's voice comes from.
+        /// </summary>
+        public ulong audioSourceId;
+
+        /// <summary>
+        /// Voice recording frequency.
+        /// </summary>
+        public int audioFrequency;
+
+        /// <summary>
+        /// To stream video. Not used at the moment.
+        /// </summary>
+        public ulong videoSourceId;
+        #endregion audio
+
+        /// <summary>
+        /// Name of the user to display.
+        /// </summary>
         public string login;
 
+        /// <summary>
+        /// Is the user's microphone activated?
+        /// </summary>
         public bool microphoneStatus;
+
+        /// <summary>
+        /// Has the user an avatar?
+        /// </summary>
         public bool avatarStatus;
+
+        /// <summary>
+        /// Is the user indicating they require special attention?
+        /// </summary>
+        /// It is the equivalent of a "raise your end" feature in videochat.
         public bool attentionRequired;
 
+        #region audioNetworking
+
+        /// <summary>
+        /// Name of the channel the user belongs to, on the audio server.
+        /// </summary>
         public string audioChannel;
+
+        /// <summary>
+        /// URL of the audio server the user belongs to.
+        /// </summary>
         public string audioServerUrl;
+
+        /// <summary>
+        /// Login of the user to connect to the audio server.
+        /// </summary>
         public string audioLogin;
+
+        /// <summary>
+        /// Is the audio server a Murmur server?
+        /// </summary>
+        /// A Murmur server is used by Mumble clients.
         public bool audioUseMumble;
 
+        #endregion audioNetworking
+
+        #region audioAnimation 
+
+        /// <summary>
+        /// UMI3D id of the <see cref="UMI3DAnimationDto"/> to play when the user starts to talk.
+        /// </summary>
         public ulong onStartSpeakingAnimationId;
+
+        /// <summary>
+        /// UMI3D id of the <see cref="UMI3DAnimationDto"/> to play when the user stops to talk.
+        /// </summary>
         public ulong onStopSpeakingAnimationId;
+
+        #endregion audioAnimation 
 
         public UserDto(UserDto source)
         {

@@ -62,7 +62,7 @@ namespace umi3d.cdk
         public List<AbstractUMI3DMaterialLoader> MaterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader(), new UMI3DOriginalMaterialLoader() };
 
         /// <summary>
-        /// Load an UMI3DObject.
+        /// Load an UMI3D Object.
         /// </summary>
         /// <param name="dto">dto.</param>
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
@@ -132,12 +132,7 @@ namespace umi3d.cdk
                 await AnchorLoader.ReadUMI3DExtension(dto, node);
         }
 
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null)
@@ -295,7 +290,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// is "a" bigger than "b" and inferior than max
+        /// Is <paramref name="a"/> bigger than <paramref name="b"/> and inferior than <paramref name="max"/>?
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>

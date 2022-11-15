@@ -32,11 +32,17 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Manager for the UMI3D server in a collaborative context.
+    /// </summary>
     public class UMI3DCollaborationServer : UMI3DServer, IEnvironment
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         public static new UMI3DCollaborationServer Instance { get => UMI3DServer.Instance as UMI3DCollaborationServer; set => UMI3DServer.Instance = value; }
 
+        /// <summary>
+        /// Is the server active?
+        /// </summary>
         public bool isRunning { get; protected set; } = false;
 
         [SerializeField, ReadOnly]
@@ -57,11 +63,13 @@ namespace umi3d.edk.collaboration
 
         public IdentifierApi Identifier;
 
-        [EditorReadOnly, Tooltip("World controller for stand alone api.")]
+        [EditorReadOnly, Tooltip("World controller for standalone API.")]
         public worldController.WorldControllerAPI WorldController;
 
-
-        [EditorReadOnly]
+        /// <summary>
+        /// IP adress of the Murmur server.
+        /// </summary>
+        [EditorReadOnly, Tooltip("IP adress of the Mumur server.")]
         public string mumbleIp = "";
 
         [EditorReadOnly]
@@ -91,9 +99,9 @@ namespace umi3d.edk.collaboration
         public ushort httpPort;
 
         [EditorReadOnly]
-        [Tooltip("set to this HttpUrl if empty")]
+        [Tooltip("URL of the default resources server. Set to this HttpUrl if empty")]
         /// <summary>
-        /// Url of the default resources server. Set to this HttpUrl if empty.
+        /// URL of the default resources server. Set to this HttpUrl if empty.
         /// </summary>
         public string resourcesUrl;
 
@@ -108,14 +116,15 @@ namespace umi3d.edk.collaboration
         public string iconServerUrl;
 
         /// <summary>
-        /// Forge server session id
+        /// Forge server session id.
         /// </summary>
         [HideInInspector]
         public string sessionId = "";
 
         /// <summary>
-        /// Forge server description scene (comment)
+        /// Forge server description scene (comment).
         /// </summary>
+        [Tooltip("Forge server description scene (comment).")]
         public string descriptionComment = "";
 
         /// <inheritdoc/>
@@ -130,7 +139,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Get the ForgeConnectionDto.
+        /// Get the <see cref="ForgeConnectionDto"/>.
         /// </summary>
         /// <returns></returns>
         public override ForgeConnectionDto ToDto()
@@ -183,9 +192,7 @@ namespace umi3d.edk.collaboration
                 UMI3DHttp.Destroy();
         }
 
-        /// <summary>
-        /// Initialize the server.
-        /// </summary>
+        /// <inheritdoc/>
         public override void Init()
         {
             UMI3DLogger.Log($"Server Init", scope);
@@ -561,6 +568,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
+        /// <inheritdoc/>
         protected override void _Dispatch(DispatchableRequest dispatchableRequest)
         {
             base._Dispatch(dispatchableRequest);

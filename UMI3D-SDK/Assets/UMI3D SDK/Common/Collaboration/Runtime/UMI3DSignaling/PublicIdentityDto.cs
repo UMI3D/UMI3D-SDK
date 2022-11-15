@@ -18,13 +18,24 @@ using System;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing a publicly visible identity. All browsers can see this identity.
     /// </summary>
     [Serializable]
     public class PublicIdentityDto : UMI3DDto
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public ulong userId = 0;
+
+        /// <summary>
+        /// Public login attributed to the user.
+        /// </summary>
         public string login = null;
+
+        /// <summary>
+        /// Public name attributed to the user and that should be displayed on browsers.
+        /// </summary>
         public string displayName = null;
     }
 }

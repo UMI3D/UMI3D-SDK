@@ -18,11 +18,14 @@ using System;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing an identity, a set of identifying info of the user.
     /// </summary>
     [Serializable]
     public class IdentityDto : PublicIdentityDto
     {
+        /// <summary>
+        /// Local token of the user.
+        /// </summary>
         public string localToken;
         public string headerToken;
         public string key;

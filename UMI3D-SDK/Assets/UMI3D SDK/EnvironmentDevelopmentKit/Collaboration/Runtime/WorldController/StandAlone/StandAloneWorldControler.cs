@@ -26,13 +26,23 @@ using UnityEngine;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// World controller that is hosted on the same server than the environment as a standalone.
+    /// </summary>
     [CreateAssetMenu(fileName = "SandAloneWorldControlerAPI", menuName = "UMI3D/SandAlone WorldControler")]
     public class StandAloneWorldControler : StandAloneWorldControllerAPI
     {
+        /// <summary>
+        /// Identifier and Access Manager.
+        /// </summary>
         protected IIAM IAM;
+        /// <summary>
+        /// Key generation manager.
+        /// </summary>
         protected IKeyGenerator keyGenerator;
         protected Dictionary<string, User> userMap = new Dictionary<string, User>();
 
+        /// <inheritdoc/>
         public override void Setup()
         {
             base.Setup();
@@ -42,6 +52,7 @@ namespace umi3d.worldController
                 keyGenerator = new StandAloneKeyGenerator();
         }
 
+        /// <inheritdoc/>
         public override async Task<UMI3DDto> Connect(ConnectionDto connectionDto)
         {
             User user = GetUser(connectionDto);
@@ -52,11 +63,13 @@ namespace umi3d.worldController
             return dto;
         }
 
+        /// <inheritdoc/>
         public override Task NotifyUserJoin(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public override async Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto)
         {
             if (identityDto?.GlobalToken != null && userMap.ContainsKey(identityDto.GlobalToken))
@@ -84,7 +97,7 @@ namespace umi3d.worldController
         }
 
         /// <summary>
-        /// return a token that can be used to identify a user temporaly.
+        /// return a token that can be used to identify a user temporarily.
         /// </summary>
         /// <returns></returns>
         private string generateFakeToken()
@@ -123,16 +136,19 @@ namespace umi3d.worldController
             return privateId;
         }
 
+        /// <inheritdoc/>
         public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public override Task NotifyUserLeave(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public override Task NotifyUserRegister(UMI3DCollaborationUser user)
         {
             return Task.CompletedTask;

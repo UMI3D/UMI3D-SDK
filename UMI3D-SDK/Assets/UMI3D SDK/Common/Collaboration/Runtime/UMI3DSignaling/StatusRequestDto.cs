@@ -16,8 +16,14 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing a request from the server to know the current status of the browser's client.
+    /// </summary>
     public class StatusRequestDto : UMI3DDto
     {
+        /// <summary>
+        /// Browser's client status.
+        /// </summary>
         public StatusType CurrentStatus;
     }
 }

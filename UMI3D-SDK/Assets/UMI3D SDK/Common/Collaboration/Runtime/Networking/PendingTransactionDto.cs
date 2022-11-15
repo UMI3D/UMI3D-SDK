@@ -16,10 +16,20 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
-
+    /// <summary>
+    /// DTO describing the indication that a user should wait for Transactions or Requests to come 
+    /// before finishing the scene loading
+    /// </summary>
     public class PendingTransactionDto : UMI3DDto
     {
+        /// <summary>
+        /// Are there Transactions still to wait before finishing the loading?
+        /// </summary>
         public bool areTransactionPending { get; set; }
+
+        /// <summary>
+        /// Are there DispatachableRequests still to wait before finishing the loading?
+        /// </summary>
         public bool areDispatchableRequestPending { get; set; }
     }
 }

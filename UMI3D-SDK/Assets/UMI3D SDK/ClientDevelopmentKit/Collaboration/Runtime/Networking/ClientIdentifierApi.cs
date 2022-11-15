@@ -23,13 +23,12 @@ using UnityEngine;
 namespace umi3d.cdk.collaboration
 {
     /// <summary>
-    /// Api to give a password for the client, return filled up Form, and state if needed libraries should be downloaded.
+    /// API to give a password for the client, return filled up Form, and state if needed libraries should be downloaded.
     /// </summary>
     public abstract class ClientIdentifierApi : ScriptableObject
     {
-
         /// <summary>
-        /// Should fill a formDto and return it via a callback.
+        /// Fill a form and return it via a callback.
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>

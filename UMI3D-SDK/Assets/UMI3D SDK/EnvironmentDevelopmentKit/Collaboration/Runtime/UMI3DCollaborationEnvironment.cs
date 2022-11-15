@@ -19,6 +19,9 @@ using umi3d.common.collaboration;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Root node of any collaborative environment.
+    /// </summary>
     public class UMI3DCollaborationEnvironment : UMI3DEnvironment
     {
         /// <inheritdoc/>

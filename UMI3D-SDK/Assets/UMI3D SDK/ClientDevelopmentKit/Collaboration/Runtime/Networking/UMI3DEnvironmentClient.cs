@@ -28,10 +28,22 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Client for the UMI3D environment server, handles the connection to environments.
+    /// </summary>
+    /// The Environment Client singlely handles all that is connection and creates 
+    /// an <see cref="umi3d.cdk.collaboration.HttpClient"/> and a <see cref="UMI3DForgeClient"/> to handle other messages.
     public class UMI3DEnvironmentClient
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
+
         private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
+
+        /// <summary>
+        /// Is the client connected to the environment server?
+        /// </summary>
+        /// Require that the Forge client is connected.
+        /// <returns></returns>
         public bool IsConnected()
         {
             return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconected;
@@ -40,22 +52,53 @@ namespace umi3d.cdk.collaboration
         public class ConnectionStateEvent : UnityEvent<string> { };
         public static ConnectionStateEvent ConnectionState = new ConnectionStateEvent();
 
+        /// <summary>
+        /// Max waiting time before attempting again a request that failed.
+        /// </summary>
         public readonly double maxMillisecondToWait = 10000;
 
+        /// <summary>
+        /// Data for connection through the Forge server.
+        /// </summary>
         public readonly ForgeConnectionDto connectionDto;
+
         private readonly UMI3DWorldControllerClient worldControllerClient;
 
         static public UnityEvent EnvironementJoinned = new UnityEvent();
         static public UnityEvent EnvironementLoaded = new UnityEvent();
 
+        /// <summary>
+        /// Get current user UMI3D id.
+        /// </summary>
+        /// <returns></returns>
         public ulong GetUserID() { return UserDto.answerDto.id; }
 
         public DateTime lastTokenUpdate { get; private set; }
+
+        #region clients
+
+        /// <summary>
+        /// Handles HTTP requests before connection or to retrieve DTOs.
+        /// </summary>
         public HttpClient HttpClient { get; private set; }
+
+        /// <summary>
+        /// Handles most of the transaction-related message after connection.
+        /// </summary>
         public UMI3DForgeClient ForgeClient { get; private set; }
+
         public ulong TimeStep => ForgeClient.GetNetWorker().Time.Timestep;
+
+        #endregion clients
+
+        /// <summary>
+        /// Is the server using json serialization rather than byte containers?
+        /// </summary>
         public bool useDto { get; private set; } = false;
 
+        /// <summary>
+        /// Status to set on the server.
+        /// </summary>
         public StatusType _statusToBeSet = StatusType.ACTIVE;
         public StatusType statusToBeSet
         {
@@ -68,6 +111,10 @@ namespace umi3d.cdk.collaboration
                 }
             }
         }
+
+        /// <summary>
+        /// Status of the user attributed by the environmet.
+        /// </summary>
         public StatusType status
         {
             get => IsConnected() ? UserDto.answerDto.status : StatusType.NONE;
@@ -89,10 +136,25 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        #region loadingProgress
+
         MultiProgress progress;
+
+        /// <summary>
+        /// Progress of the joining process.
+        /// </summary>
         MultiProgress joinProgress;
+
+        /// <summary>
+        /// Progress of the library downloading.
+        /// </summary>
         MultiProgress libraryProgress;
 
+        #endregion loadingProgress
+
+        /// <summary>
+        /// User specific information related to the environment.
+        /// </summary>
         public class UserInfo
         {
             public FormDto formdto;
@@ -120,6 +182,9 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        /// <summary>
+        /// Local copy of the user description.
+        /// </summary>
         public UserInfo UserDto = new UserInfo();
 
 
@@ -143,6 +208,10 @@ namespace umi3d.cdk.collaboration
             needToGetFirstConnectionInfo = true;
         }
 
+        /// <summary>
+        /// Connect to the environment.
+        /// </summary>
+        /// <returns>False if already connected or connecting. True otherwise.</returns>
         public bool Connect()
         {
             ConnectionState.Invoke("Connecting to the Environment");
@@ -209,6 +278,11 @@ namespace umi3d.cdk.collaboration
             isConnected = false;
         }
 
+        /// <summary>
+        /// Log out from the environment.
+        /// </summary>
+        /// <param name="notify"></param>
+        /// <returns></returns>
         public async Task<bool> Logout(bool notify = true)
         {
             bool ok = false;
@@ -235,6 +309,10 @@ namespace umi3d.cdk.collaboration
             return ok;
         }
 
+        /// <summary>
+        /// Log out and destroy the client.
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> Clear()
         {
             if (IsConnected())
@@ -320,9 +398,9 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// 
+        /// Called when the client status is required to change.
         /// </summary>
-        /// <param name="status"></param>
+        /// <param name="status">New status description.</param>
         public async void OnStatusChanged(StatusDto statusDto)
         {
             try
@@ -531,6 +609,11 @@ namespace umi3d.cdk.collaboration
             ForgeClient.SendTrackingFrame(dto);
         }
 
+        /// <summary>
+        /// Send audio <paramref name="sample"/> using Voice over IP.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="sample"></param>
         public void SendVOIP(int length, byte[] sample)
         {
             ForgeClient?.SendVOIP(length, sample);

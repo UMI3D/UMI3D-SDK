@@ -1,0 +1,300 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="umi3d.common.interaction.AbstractInteractionDto" Collapsed="true">
+    <Position X="18.5" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAIAAgAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\AbstractInteractionDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.AbstractToolDto" Collapsed="true">
+    <Position X="1.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAIAAgAAAAAAAEAAAAAAAAIAAAEAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\AbstractToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ConnectionFormDto" Collapsed="true">
+    <Position X="8.75" Y="3.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\ConnectionFormDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.EventDto" Collapsed="true">
+    <Position X="6.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\EventDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.FormDto" Collapsed="true">
+    <Position X="9" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\FormDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.GlobalToolDto" Collapsed="true">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\GlobalToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.InteractableDto" Collapsed="true">
+    <Position X="2.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAgAACAAAQAAgo=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\InteractableDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.common.interaction.LinkDto" Collapsed="true">
+    <Position X="2" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\LinkDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ManipulationDto" Collapsed="true">
+    <Position X="4.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.DofGroupDto" Collapsed="true">
+    <Position X="37.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.DofGroupOptionDto" Collapsed="true">
+    <Position X="39.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.AbstractParameterDto&lt;V&gt;" Collapsed="true">
+    <Position X="23" Y="3.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\AbstractParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.AbstractParameterDto" Collapsed="true">
+    <Position X="23.25" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\AbstractParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.AbstractRangeParameterDto&lt;T&gt;" Collapsed="true">
+    <Position X="12.75" Y="4.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\AbstractRangeParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.BooleanParameterDto" Collapsed="true">
+    <Position X="17.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\BooleanParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.EnumParameterDto&lt;T&gt;" Collapsed="true">
+    <Position X="24" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\EnumParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.FloatParameterDto" Collapsed="true">
+    <Position X="29.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\FloatParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.FloatRangeParameterDto" Collapsed="true">
+    <Position X="11.25" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\FloatRangeParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.IntegerParameterDto" Collapsed="true">
+    <Position X="35" Y="4.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\IntegerParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.IntegerRangeParameterDto" Collapsed="true">
+    <Position X="14.25" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\IntegerRangeParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.LocalInfoRequestParameterValue" Collapsed="true">
+    <Position X="41.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEACAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\LocalInfoRequestParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.LocalInfoRequestParameterDto" Collapsed="true">
+    <Position X="20" Y="4.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAoAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\LocalInfoRequestParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.StringParameterDto" Collapsed="true">
+    <Position X="26.75" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\StringParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.UploadFileParameterDto" Collapsed="true">
+    <Position X="32.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\Parameter\UploadFileParameterDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ToolboxDto" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\ToolboxDto.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.common.interaction.ProjectToolDto" Collapsed="true">
+    <Position X="5.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Operations\ProjectToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ReleaseToolDto" Collapsed="true">
+    <Position X="39.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Operations\ReleaseToolDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.SwitchToolDto" Collapsed="true">
+    <Position X="5.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Operations\SwitchToolsDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.EventStateChangedDto" Collapsed="true">
+    <Position X="3.5" Y="9" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAICAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\EventStateChangedDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.EventTriggeredDto" Collapsed="true">
+    <Position X="9" Y="9" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\EventTriggeredDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.FormAnswerDto" Collapsed="true">
+    <Position X="11.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAJCAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\FormAnswerDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.HoveredDto" Collapsed="true">
+    <Position X="17" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAIAgAAAICAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\HoveredDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.HoverStateChangedDto" Collapsed="true">
+    <Position X="16.75" Y="10.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAICAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\HoverStateChangedDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.InteractionRequestDto" Collapsed="true">
+    <Position X="9" Y="7.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAICAAAAgAAAAAAAAgI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\InteractionRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.LinkOpened" Collapsed="true">
+    <Position X="1.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\LinkOpened.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ManipulationRequestDto" Collapsed="true">
+    <Position X="6.25" Y="9" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAACAAAAAAAICAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\ManipulationRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.NotificationCallbackDto" Collapsed="true">
+    <Position X="37.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAAAAAAAAAAAICAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\NotificationCallbackDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ParameterSettingRequestDto" Collapsed="true">
+    <Position X="13.75" Y="9" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAICAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\ParameterSettingRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ToolProjectedDto" Collapsed="true">
+    <Position X="41.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAICAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\ToolProjectedDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.ToolReleasedDto" Collapsed="true">
+    <Position X="37.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAAAAAAAAAAAICAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\ToolReleasedDto .cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.common.interaction.UploadFileRequestDto" Collapsed="true">
+    <Position X="13.75" Y="10.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\Requests\UploadFileRequestDto.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="umi3d.common.interaction.DofGroupEnum" Collapsed="true">
+    <Position X="37.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAACAAAMAIAAAAEMAIAAAgCIAAAAAAAAAAgAAYAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\Common\InteractionSystem\Runtime\UMI3DInteractionSystem\InteractionModel\ManipulationDto.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

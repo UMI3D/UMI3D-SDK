@@ -21,10 +21,13 @@ using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing a forced logout order.
+    /// </summary>
     public class ForceLogoutDto : UMI3DDto
     {
         /// <summary>
-        /// reason for force logout
+        /// Reason for forcing user logout.
         /// </summary>
         public string reason;
     }

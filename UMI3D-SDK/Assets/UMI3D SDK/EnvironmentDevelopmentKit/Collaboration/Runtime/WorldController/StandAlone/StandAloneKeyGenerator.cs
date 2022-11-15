@@ -16,6 +16,9 @@ limitations under the License.
 
 using umi3d.worldController;
 
+/// <summary>
+/// Key geneation manager that runs on the server as a standalone.
+/// </summary>
 public class StandAloneKeyGenerator : IKeyGenerator
 {
     public virtual string GenerateHeaderToken(string oldToken)

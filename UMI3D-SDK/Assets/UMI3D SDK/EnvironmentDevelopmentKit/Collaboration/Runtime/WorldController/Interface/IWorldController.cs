@@ -19,8 +19,15 @@ using umi3d.common;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Behaviour of a 3D media that manages a set of environments within a same world.
+    /// </summary>
     public interface IWorldController
     {
+        /// <summary>
+        /// Retrieve the world.
+        /// </summary>
+        /// <returns></returns>
         Task<MediaDto> GetMediaDto();
     }
 }

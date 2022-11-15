@@ -19,6 +19,9 @@ using umi3d.common.collaboration;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Request to disconnect from an environment and connect to another.
+    /// </summary>
     public class RedirectionRequest : DispatchableRequest
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Networking;
@@ -36,11 +39,13 @@ namespace umi3d.edk.collaboration
                 + UMI3DNetworkingHelper.Write(redirection);
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBytes()
         {
             return ToBytable().ToBytes();
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBson()
         {
             RedirectionDto dto = CreateDto();

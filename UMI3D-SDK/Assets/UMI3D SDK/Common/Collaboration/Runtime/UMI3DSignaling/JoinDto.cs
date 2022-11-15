@@ -18,9 +18,19 @@ using System.Collections.Generic;
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing user configuration when joining an environment.
+    /// </summary>
     public class JoinDto : UMI3DDto
     {
+        /// <summary>
+        /// Bones tracked by the user tracking system.
+        /// </summary>
         public Dictionary<uint, bool> trackedBonetypes;
+
+        /// <summary>
+        /// User size scale relative to the environment.
+        /// </summary>
         public SerializableVector3 userSize;
     }
 }

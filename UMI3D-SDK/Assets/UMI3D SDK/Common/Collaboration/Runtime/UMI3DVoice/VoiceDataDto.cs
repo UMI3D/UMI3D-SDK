@@ -16,10 +16,24 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing a vocal message sent through the UMI3D server.
+    /// </summary>
     public class VoiceDataDto : UMI3DDto
     {
+        /// <summary>
+        /// Forge ID of the sending browser.
+        /// </summary>
         public uint senderId;
+
+        /// <summary>
+        /// Length of the message in bytes.
+        /// </summary>
         public int length;
+
+        /// <summary>
+        /// Message as a byte array.
+        /// </summary>
         public byte[] data;
     }
 }

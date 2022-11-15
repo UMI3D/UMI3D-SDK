@@ -16,11 +16,30 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing a vocal server configuration.
+    /// </summary>
+    /// This server can be a Murmur server, for example.
     public class VoiceDto
     {
+        /// <summary>
+        /// URL of the vocal server.
+        /// </summary>
         public string url;
+
+        /// <summary>
+        /// Login credential to connect to the vocal server.
+        /// </summary>
         public string login;
+
+        /// <summary>
+        /// Password credential to connect to the vocal server.
+        /// </summary>
         public string password;
+
+        /// <summary>
+        /// Name of the channel to join in the server.
+        /// </summary>
         public string channelName;
     }
 }

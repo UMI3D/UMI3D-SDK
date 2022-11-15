@@ -18,12 +18,12 @@ using umi3d.common.interaction;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Connection dto to connect to a media with a form answer.
+    /// DTO describing a connection to a media with a form answer.
     /// </summary>
     public class FormConnectionAnswerDto : ConnectionDto
     {
         /// <summary>
-        /// Globaltoken previously used in the media the client want to connect to.
+        /// Global token, as a set of form answers, previously used in the media the client want to connect to.
         /// </summary>
         public FormAnswerDto formAnswerDto;
     }

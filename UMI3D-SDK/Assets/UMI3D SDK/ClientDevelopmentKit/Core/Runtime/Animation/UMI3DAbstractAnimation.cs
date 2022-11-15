@@ -159,7 +159,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// DTO of the animation object.
+        /// DTO local copy.
         /// </summary>
         protected UMI3DAbstractAnimationDto dto { get; set; }
 

@@ -21,8 +21,14 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Manager for client user tracking event for other users in a collaborative context.
+    /// </summary>
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
+        /// <summary>
+        /// Skeleton of the tracked user.
+        /// </summary>
         public GameObject UnitSkeleton;
 
         private Coroutine forceSendTrackingCoroutine;

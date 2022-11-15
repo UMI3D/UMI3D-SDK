@@ -30,9 +30,20 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        /// <summary>
+        /// Get an <see cref="UMI3DNodeAnimation"/> by id.
+        /// </summary>
+        /// <param name="id">UMI3D id</param>
+        /// <returns></returns>
         public static new UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
+        /// <summary>
+        /// DTO local copy.
+        /// </summary>
         protected new UMI3DNodeAnimationDto dto { get => base.dto as UMI3DNodeAnimationDto; set => base.dto = value; }
 
+        /// <summary>
+        /// Operation to apply as an animation node.
+        /// </summary>
         public class OperationChain
         {
             public AbstractOperationDto operation;
