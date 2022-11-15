@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -84,6 +84,9 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        public string environementName => environmentClient?.connectionDto?.name;
+        public string worldName => worldControllerClient?.name;
+        
         /// <inheritdoc/>
         protected override void OnDestroy()
         {
