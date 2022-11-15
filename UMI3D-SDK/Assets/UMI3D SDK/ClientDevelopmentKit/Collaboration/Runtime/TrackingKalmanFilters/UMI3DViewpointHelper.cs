@@ -20,5 +20,8 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Component attached to the viewpoint of any skeleton.
+    /// </summary>
     public class UMI3DViewpointHelper : MonoBehaviour {}
 }

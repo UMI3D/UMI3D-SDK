@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,13 +30,16 @@ namespace umi3d.cdk.collaboration
     public class OnProgressEvent : UnityEvent<Progress> { }
 
     /// <summary>
-    /// Collaboration Extension of the UMI3DClientServer
+    /// UMI3D server on the browser, in a collaborative context.
     /// </summary>
     public class UMI3DCollaborationClientServer : UMI3DClientServer
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
         public static new UMI3DCollaborationClientServer Instance { get => UMI3DClientServer.Instance as UMI3DCollaborationClientServer; set => UMI3DClientServer.Instance = value; }
+        /// <summary>
+        /// Should serialization be done using json DTOs rather than byte containers?
+        /// </summary>
         public static bool useDto => environmentClient?.useDto ?? false;
 
         public static PendingTransactionDto transactionPending = null;
@@ -84,13 +87,16 @@ namespace umi3d.cdk.collaboration
         public string environementName => environmentClient?.connectionDto?.name;
         public string worldName => worldControllerClient?.name;
 
-
+        /// <inheritdoc/>
         protected override void OnDestroy()
         {
             base.OnDestroy();
             Clear();
         }
 
+        /// <summary>
+        /// Makes all client log out and delete references to them.
+        /// </summary>
         public async void Clear()
         {
             if (Exists)
@@ -350,7 +356,11 @@ namespace umi3d.cdk.collaboration
             environmentClient?.SendTracking(dto);
         }
 
-
+        /// <summary>
+        /// Send a vocal message through VoIP.
+        /// </summary>
+        /// <param name="length"></param>
+        /// <param name="sample"></param>
         public static void SendVOIP(int length, byte[] sample)
         {
             if (Exists && Connected()

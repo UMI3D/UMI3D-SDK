@@ -19,6 +19,9 @@ using umi3d.common.collaboration;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// User representation for a world controller.
+    /// </summary>
     public class User
     {
         public bool LoadLibraryOnly;

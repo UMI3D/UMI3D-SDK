@@ -42,6 +42,9 @@ namespace umi3d.cdk
 
     public class MultiProgress : Progress
     {
+        /// <summary>
+        /// Collection of processes progress.
+        /// </summary>
         List<Progress> progressList;
 
         public MultiProgress(string state, IEnumerable<Progress> progresses) : this(state)
@@ -58,8 +61,11 @@ namespace umi3d.cdk
         bool ForcedFailed = false;
         bool ForcedCompleted = false;
         bool _started => ForcedCompleted || ForcedFailed;
+
+        /// <inheritdoc/>
         public override bool started { get => progressList.Count > 0 ? progressList.Any(p => p.started) : _started; }
 
+        /// <inheritdoc/>
         public override float completed
         {
             get
@@ -68,6 +74,8 @@ namespace umi3d.cdk
                 return c > 0 ? progressList.Aggregate(0f, (a, b) => a + (b.completedPercent / 100f)) : ForcedCompleted ? 1 : 0;
             }
         }
+
+        /// <inheritdoc/>
         public override float failed
         {
             get
@@ -76,6 +84,8 @@ namespace umi3d.cdk
                 return c > 0 ? progressList.Aggregate(0f, (a, b) => a + (b.failedPercent / 100f)) : ForcedFailed ? 1 : 0;
             }
         }
+
+        /// <inheritdoc/>
         public override float total
         {
             get
@@ -85,6 +95,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override string currentState
         {
             get
@@ -122,8 +133,15 @@ namespace umi3d.cdk
             state = this.currentState;
         }
 
+        /// <summary>
+        /// Number of processes in this MultiProgress.
+        /// </summary>
         public int Count => progressList.Count;
 
+        /// <summary>
+        /// Add a process progress.
+        /// </summary>
+        /// <param name="item"></param>
         public void Add(Progress item)
         {
             GetStatus(out float completed, out float failed, out string state);
@@ -136,6 +154,10 @@ namespace umi3d.cdk
             NotifyUpdate(completed, failed, state);
         }
 
+        /// <summary>
+        /// Add a range of process progresses.
+        /// </summary>
+        /// <param name="item"></param>
         public void AddRange(IEnumerable<Progress> items)
         {
             GetStatus(out float completed, out float failed, out string state);
@@ -165,6 +187,7 @@ namespace umi3d.cdk
             progressList.Clear();
             NotifyUpdate(completed, failed, state);
         }
+
 
         public bool Contains(Progress item)
         {
@@ -229,6 +252,9 @@ namespace umi3d.cdk
         void OnFailed(float f) { OnFailedUpdated.Invoke(failed); }
         void OnStatus(string s) { OnStatusUpdated.Invoke(currentState); }
 
+        /// <summary>
+        /// Indicate directly that all processes have failed.
+        /// </summary>
         public override void SetAsFailed()
         {
             if (progressList.Count > 0)
@@ -239,6 +265,10 @@ namespace umi3d.cdk
             else
                 ForcedFailed = true;
         }
+
+        /// <summary>
+        /// Indicate directly that all processes have been completed.
+        /// </summary>
         public override void SetAsCompleted()
         {
             if (progressList.Count > 0)
@@ -255,6 +285,7 @@ namespace umi3d.cdk
             return CompactString();
         }
 
+        /// <inheritdoc/>
         public override string CompactString()
         {
             if (progressList == null || progressList.Count <= 0)
@@ -270,6 +301,9 @@ namespace umi3d.cdk
         }
     }
 
+    /// <summary>
+    /// Progression representation of a process.
+    /// </summary>
     public class Progress
     {
         public Progress(float total, string state = "")
@@ -280,35 +314,123 @@ namespace umi3d.cdk
             currentState = state ?? "Null";
         }
 
-
+        /// <summary>
+        /// To connect to a popup to ask to resume or stop.
+        /// </summary>
         public Func<Exception, Task<bool>> ResumeAfterFail = null;
 
+        #region progressEvents
+
+        /// <summary>
+        /// Invoked when a task is completed.
+        /// </summary>
         public ProgressValueUpdate OnCompleteUpdated = new ProgressValueUpdate();
+
+        /// <summary>
+        /// Invoked when a task fails.
+        /// </summary>
         public ProgressValueUpdate OnFailedUpdated = new ProgressValueUpdate();
+
+        /// <summary>
+        /// Invoked when a task status change.
+        /// </summary>
         public ProgressStateUpdate OnStatusUpdated = new ProgressStateUpdate();
 
+        #endregion progressEvents
+
+        #region progressStats
+
+        /// <summary>
+        /// Has the process started?
+        /// </summary>
         public virtual bool started { get; protected set; } = false;
+
+        /// <summary>
+        /// Fraction of the number of completed task over the total number of tasks.
+        /// </summary>
         public virtual float completed { get; protected set; }
+
+        /// <summary>
+        /// Fraction of the number of failed task over the total number of tasks.
+        /// </summary>
         public virtual float failed { get; protected set; }
+
+        /// <summary>
+        /// Total number of tasks.
+        /// </summary>
         public virtual float total { get; protected set; }
 
+
+        /// <summary>
+        /// Name of the current state of the process.
+        /// </summary>
         public virtual string currentState { get; protected set; }
 
+        /// <summary>
+        /// Progress of the process. Start: 0, End: 1.
+        /// </summary>
         public virtual float progress { get => started ? completed + failed : 0; }
-        public virtual float completedPercent { get => !started || total == 0 ? 0 : (completed * 100f) / total; }
-        public virtual float failedPercent { get => !started || total == 0 ? 0 : (failed * 100f) / total; }
-        public virtual float progressPercent { get => !started || total == 0 ? 0 : (progress * 100f) / total; }
 
+
+        /// <summary>
+        /// Percentage of completed task over the total number of tasks.
+        /// </summary>
+        public virtual float completedPercent { get => !started || total == 0 ? 0 : (completed * 100f) / total; }
+
+        /// <summary>
+        /// Percentage of failed task over the total number of tasks.
+        /// </summary>
+        public virtual float failedPercent { get => !started || total == 0 ? 0 : (failed * 100f) / total; }
+
+        /// <summary>
+        /// Percentage of total processed tasks.
+        /// </summary>
+        /// Includes both completed and failed tasks.
+        public virtual float progressPercent { get => !started || total == 0 ? 0 : (progress * 100f) / total; }
+        
+        #endregion progressStats
+
+        /// <summary>
+        /// Add a completed task.
+        /// </summary>
         public virtual void AddComplete() { started = true; completed += 1; OnCompleteUpdated.Invoke(completed); }
+
+        /// <summary>
+        /// Add a failed task.
+        /// </summary>
         public virtual async Task<bool> AddFailed(Exception e) { started = true; failed += 1; OnFailedUpdated.Invoke(failed); return await (ResumeAfterFail?.Invoke(e) ?? Task.FromResult( true)); }
+
+        /// <summary>
+        /// Set directly the current <paramref name="status"/> of the progress.
+        /// </summary>
+        /// <param name="status"></param>
         public virtual void SetStatus(string status) { currentState = status; OnStatusUpdated.Invoke(currentState); }
 
+        /// <summary>
+        /// Indicate directly that the progress has failed.
+        /// </summary>
         public virtual void SetAsFailed() { started = true; if (total == 0) total = 1; failed = total - completed; OnFailedUpdated.Invoke(failed); }
+        
+        /// <summary>
+        /// Indicate directly that the progress was completed.
+        /// </summary>
         public virtual void SetAsCompleted() { started = true; if (total == 0) total = 1; completed = total - failed; OnCompleteUpdated.Invoke(completed); }
 
+        /// <summary>
+        /// Set the number of task in this process.
+        /// </summary>
+        /// <param name="total"></param>
         public virtual void SetTotal(float total) { this.total = total; }
+
+        /// <summary>
+        /// Add one more task to be processed to the process.
+        /// </summary>
         public virtual void AddTotal() { this.total += 1; }
 
+        /// <summary>
+        /// Add one more task to be processed to the process and set a specific <paramref name="status"/>.
+        /// </summary>
+        /// <param name="status"></param>
         public virtual void AddAndSetStatus(string status) { completed += 1; currentState = status; OnStatusUpdated.Invoke(currentState); OnCompleteUpdated.Invoke(completed); }
 
 
@@ -319,6 +441,10 @@ namespace umi3d.cdk
             $"Progress : {(progress)} / {total}               | Complete {(completed)} / {total}               | Failed {(failed)} / {total}   ");
         }
 
+        /// <summary>
+        /// Compact representation of the process progress.
+        /// </summary>
+        /// <returns></returns>
         public virtual string CompactString()
         {
             return ($"subState : {(currentState)} {(progressPercent).ToString("N2")} % {(progress)} / {total} | Complete {(completedPercent).ToString("N2")} % {(completed)} / {total} | Failed {(failedPercent).ToString("N2")} %  {(failed)} / {total} | {started}");

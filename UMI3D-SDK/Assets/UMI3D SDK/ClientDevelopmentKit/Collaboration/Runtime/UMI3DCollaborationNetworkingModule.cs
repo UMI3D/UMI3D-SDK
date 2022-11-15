@@ -21,8 +21,12 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Helper to serialize classes of the Collaboration module.
+    /// </summary>
     public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
     {
+        /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
@@ -119,6 +123,7 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Write<T>(T value, out Bytable bytable)
         {
             bytable = null;

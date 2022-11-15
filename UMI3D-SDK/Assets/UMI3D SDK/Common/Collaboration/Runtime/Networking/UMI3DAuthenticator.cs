@@ -18,16 +18,27 @@ using System;
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// Check that the client-server connection is valid and authorized.
+    /// </summary>
     public sealed class UMI3DAuthenticator : IUserAuthenticator
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
 
+        /// <inheritdoc/>
         public void IssueChallenge(NetWorker networker, NetworkingPlayer player, Action<NetworkingPlayer, BMSByte> issueChallengeAction, Action<NetworkingPlayer> skipAuthAction)
         {
             issueChallengeAction(player, ObjectMapper.BMSByte());
         }
 
+        /// <summary>
+        /// Provide a local token to the user.
+        /// </summary>
         private readonly Action<Action<string>> getLocalToken;
+
+        /// <summary>
+        /// Allow to tell is a user is authorized to connect.
+        /// </summary>
         public Action<string, NetworkingPlayer, Action<bool>> shouldAccdeptPlayer;
 
 
@@ -41,7 +52,7 @@ namespace umi3d.common.collaboration
 
         }
 
-
+        /// <inheritdoc/>
         public void AcceptChallenge(NetWorker networker, BMSByte challenge, Action<BMSByte> authServerAction, Action rejectServerAction)
         {
             if (getLocalToken != null)
@@ -57,6 +68,7 @@ namespace umi3d.common.collaboration
 
         }
 
+        /// <inheritdoc/>
         public void VerifyResponse(NetWorker networker, NetworkingPlayer player, BMSByte response, Action<NetworkingPlayer> authUserAction, Action<NetworkingPlayer> rejectUserAction)
         {
             string basicString = response.GetBasicType<string>();

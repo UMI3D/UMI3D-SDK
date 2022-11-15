@@ -19,56 +19,60 @@ using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
-
+    /// <summary>
+    /// Forge server configuration and adresses.
+    /// </summary>
     public abstract class ForgeSocketBase : MonoBehaviour
     {
         /// <summary>
-        /// 
+        /// IPv4 adress of the server.
         /// </summary>
         public string ip = "127.0.0.1";
 
         /// <summary>
-        /// 
+        /// Listening port number of the server.
         /// </summary>
         public ushort port = 15937;
 
         /// <summary>
-        /// 
+        /// IP address of the master server.
         /// </summary>
+        /// The master server lists available environments. 
         public string masterServerHost = string.Empty;
 
         /// <summary>
-        /// 
+        /// TCP/IP port of the master server.
         /// </summary>
         public ushort masterServerPort = 15940;
 
         /// <summary>
-        /// 
+        /// IP address of the Network Address Translation (NAT) server.
         /// </summary>
+        /// NAT servers are typically used to bypass firewalls when exchanging flows of data
+        /// by hiding private IP addresses.
         public string natServerHost = string.Empty;
 
         /// <summary>
-        /// 
+        /// TCP/IP port of the Network Address Translation (NAT) server.
         /// </summary>
         public ushort natServerPort = 15941;
 
         /// <summary>
-        /// 
+        /// Forge networking manager instance reference.
         /// </summary>
         public GameObject networkManager = null; //should be a prefab is setted
 
         /// <summary>
-        /// 
+        /// Copy of the Forge networking manager used for deco/reco issues.
         /// </summary>
         protected NetworkManager mgr = null;
 
-
-
         /// <summary>
+        /// Number of users connected to the environment, whatever status they have.
+        /// </summary>
         /// The server can get the player count from the networker but the client
         /// currently can not, so we will track player counts in this variable for
         /// both the client and the server
-        /// </summary>
         public int playerCount = 0;
 
         /// <summary>
@@ -90,7 +94,7 @@ namespace umi3d.common.collaboration
         }
 
         /// <summary>
-        /// Used to determine how much bandwidth (in bytes) hass been read
+        /// Determine how much bandwidth (in bytes) hass been read.
         /// </summary>
         public static ulong BandwidthIn
         {
@@ -103,7 +107,7 @@ namespace umi3d.common.collaboration
         }
 
         /// <summary>
-        /// Used to determine how much bandwidth (in bytes) hass been written
+        /// Determine how much bandwidth (in bytes) hass been written.
         /// </summary>
         public static ulong BandwidthOut
         {
@@ -116,7 +120,7 @@ namespace umi3d.common.collaboration
         }
 
         /// <summary>
-        /// Should info pannel should be displyed in top left corner.
+        /// Should Forge info pannel should be displayed in top left corner?
         /// </summary>
         public bool DisplayForgeInfo = false;
 

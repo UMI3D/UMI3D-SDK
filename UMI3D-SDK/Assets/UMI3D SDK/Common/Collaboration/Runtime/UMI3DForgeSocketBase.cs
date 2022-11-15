@@ -19,7 +19,7 @@ using UnityEngine;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// 
+    /// Forge server configuration and UMI3D data communication.
     /// </summary>
     public abstract class UMI3DForgeSocketBase : ForgeSocketBase
     {

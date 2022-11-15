@@ -33,6 +33,7 @@ namespace umi3d.edk.collaboration
         {
         }
 
+        /// <inheritdoc/>
         protected override byte[] GetMessage(List<UserTrackingFrameDto> frames)
         {
             if (UMI3DEnvironment.Instance.useDto)

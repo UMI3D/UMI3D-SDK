@@ -24,6 +24,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Handles the sending of Local Infos on request.
+    /// </summary>
     public class LocalInfoSender
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;

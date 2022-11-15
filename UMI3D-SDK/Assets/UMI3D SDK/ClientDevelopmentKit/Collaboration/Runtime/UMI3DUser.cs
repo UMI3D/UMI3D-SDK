@@ -22,27 +22,80 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// UMI3D user representation.
+    /// </summary>
     [Serializable]
     public class UMI3DUser
     {
+        /// <summary>
+        /// DTO local copy.
+        /// </summary>
         private UserDto dto;
 
+        /// <summary>
+        /// See <see cref="UserDto.id"/>.
+        /// </summary>
         public ulong id => dto.id;
+        /// <summary>
+        /// See <see cref="UserDto.networkId"/>.
+        /// </summary>
         public uint networkId => dto.networkId;
+        /// <summary>
+        /// See <see cref="UserDto.status"/>.
+        /// </summary>
         public StatusType status => dto.status;
+
+        /// <summary>
+        /// See <see cref="UserDto.audioSourceId"/>.
+        /// </summary>
         public ulong audioPlayerId => dto.audioSourceId;
+        /// <summary>
+        /// See <see cref="UserDto.audioFrequency"/>.
+        /// </summary>
         public int audioFrequency => dto.audioFrequency;
+        /// <summary>
+        /// Audio player attached to the user.
+        /// </summary>
         public UMI3DAudioPlayer audioplayer => UMI3DAudioPlayer.Get(dto.audioSourceId);
+        /// <summary>
+        /// See <see cref="UserDto.videoSourceId"/>.
+        /// </summary>
         public ulong videoPlayerId => dto.videoSourceId;
+        /// <summary>
+        /// Video player attached to the user.
+        /// </summary>
         public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
+
+        /// <summary>
+        /// Virtual representation of the user in the media.
+        /// </summary>
         public UserAvatar avatar => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar;
 
+        /// <summary>
+        /// See <see cref="UserDto.microphoneStatus"/>.
+        /// </summary>
         public bool microphoneStatus => dto.microphoneStatus;
+        /// <summary>
+        /// See <see cref="UserDto.avatarStatus"/>.
+        /// </summary>
         public bool avatarStatus => dto.avatarStatus;
+        /// <summary>
+        /// See <see cref="UserDto.attentionRequired"/>.
+        /// </summary>
         public bool attentionRequired => dto.attentionRequired;
 
+        /// <summary>
+        /// See <see cref="UserDto.audioUseMumble"/>.
+        /// </summary>
         public bool useMumble => dto.audioUseMumble;
+        /// <summary>
+        /// See <see cref="UserDto.audioLogin"/>.
+        /// </summary>
         public string audioLogin => dto.audioLogin;
+        /// <summary>
+        /// See <see cref="UMI3DEnvironmentClient.UserInfo.AudioPassword"/>.
+        /// </summary>
         public string audioPassword
         {
             get
@@ -65,12 +118,27 @@ namespace umi3d.cdk.collaboration
                 }
             }
         }
+        /// <summary>
+        /// See <see cref="UserDto.audioChannel"/>.
+        /// </summary>
         public string audioChannel => dto.audioChannel;
+        /// <summary>
+        /// See <see cref="UserDto.audioServerUrl"/>.
+        /// </summary>
         public string audioServer => dto.audioServerUrl;
 
+        /// <summary>
+        /// See <see cref="UserDto.onStartSpeakingAnimationId"/>.
+        /// </summary>
         public ulong onStartSpeakingAnimationId => dto.onStartSpeakingAnimationId;
+        /// <summary>
+        /// See <see cref="UserDto.onStopSpeakingAnimationId"/>.
+        /// </summary>
         public ulong onStopSpeakingAnimationId => dto.onStopSpeakingAnimationId;
 
+        /// <summary>
+        /// See <see cref="UserDto.login"/>.
+        /// </summary>
         public string login => dto?.login;
 
         public bool isClient => id == UMI3DCollaborationClientServer.Instance.GetUserId();

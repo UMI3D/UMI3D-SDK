@@ -16,8 +16,15 @@ limitations under the License.
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// DTO describing the current status of the user from the server point of view.
+    /// </summary>
+    /// Receiving on a browser this DTO should set the user status to the attributed one.
     public class StatusDto : UMI3DDto
     {
+        /// <summary>
+        /// Attributed user status.
+        /// </summary>
         public StatusType status;
     }
 }

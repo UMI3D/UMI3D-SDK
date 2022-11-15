@@ -21,6 +21,10 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Handles the connection to a World Controller.
+    /// </summary>
+    /// Creates the <see cref="UMI3DEnvironmentClient"/>.
     public class UMI3DWorldControllerClient
     {
         private readonly MediaDto media;
@@ -30,6 +34,10 @@ namespace umi3d.cdk.collaboration
         private string globalToken;
         private UMI3DEnvironmentClient environment;
         private PrivateIdentityDto privateIdentity;
+
+        /// <summary>
+        /// Called to create a new Public Identity for this client.
+        /// </summary>
         public PublicIdentityDto PublicIdentity => new PublicIdentityDto()
         {
             userId = privateIdentity.userId,
@@ -38,6 +46,9 @@ namespace umi3d.cdk.collaboration
 
         };
 
+        /// <summary>
+        /// Called to create a new Identity for this client.
+        /// </summary>
         public IdentityDto Identity => new IdentityDto()
         {
             userId = privateIdentity.userId,
@@ -148,11 +159,17 @@ namespace umi3d.cdk.collaboration
                 return null;
         }
 
+        /// <summary>
+        /// Logout from the World Controller server.
+        /// </summary>
         public void Logout()
         {
 
         }
 
+        /// <summary>
+        /// Logout from the World Controller server and clear infos.
+        /// </summary>
         public void Clear()
         {
             Logout();

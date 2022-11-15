@@ -19,6 +19,11 @@ namespace umi3d.common.collaboration
 {
     public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironmentDto
     {
+        /// <summary>
+        /// List of users connected to the environment, whatever the status they have.
+        /// </summary>
+        /// Users initialized through this list are added/deleted through transactions
+        /// when they connect/disconnect.
         public List<UserDto> userList;
     }
 }

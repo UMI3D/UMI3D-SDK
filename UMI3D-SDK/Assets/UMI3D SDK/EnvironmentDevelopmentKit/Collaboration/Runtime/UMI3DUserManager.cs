@@ -65,6 +65,10 @@ namespace umi3d.edk.collaboration
             return objectUserList.GetValue().Select(u => u.ToUserDto(user)).ToList();
         }
 
+        /// <summary>
+        /// Get the current number of connected users in the environment as a DTO.
+        /// </summary>
+        /// <returns></returns>
         public PlayerCountDto GetPlayerCount()
         {
             var pc = new PlayerCountDto

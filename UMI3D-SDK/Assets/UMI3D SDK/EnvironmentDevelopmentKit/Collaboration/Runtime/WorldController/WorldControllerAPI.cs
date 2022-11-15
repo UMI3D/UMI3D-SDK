@@ -20,6 +20,9 @@ using UnityEngine;
 
 namespace umi3d.worldController
 {
+    /// <summary>
+    /// Base API for any World Controller, a server that manages a set of environments within a same world.
+    /// </summary>
     public abstract class WorldControllerAPI : ScriptableObject, IWorldController_Environment
     {
         public abstract Task NotifyUserJoin(UMI3DCollaborationUser user);

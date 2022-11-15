@@ -27,8 +27,9 @@ using UnityEngine;
 namespace umi3d.cdk.collaboration
 {
     /// <summary>
-    /// 
+    /// Client for the Forge server, handling most of the transactions coming from the environment.
     /// </summary>
+    /// The Forge client retrieve all the UDP messages sent by the Forge server.
     public class UMI3DForgeClient : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;

@@ -1,389 +1,585 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="umi3d.edk.UMI3DAbstractAnimation" Collapsed="true">
-    <Position X="4" Y="6.5" Width="1.5" />
+    <Position X="6.25" Y="6.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAKAAAEQAQAAgAAgAggABBQQAABIAAABACAAAAAAQQ=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\AbstractUMI3DAnimation.cs</FileName>
+      <HashCode>ABAKgACEQARAAwAAgAggABBQQAABIAAADACCAAQAAwQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\AbstractUMI3DAnimation.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.edk.AssetLibrary" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="17" Y="0.5" Width="1.5" />
+    <Position X="27" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAEAAAQAAAAgAAAAAAAAAAAAAAABAAAAQAAAgQ=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\AssetLibrary.cs</FileName>
+      <HashCode>ABACABCEAAAQAQAAgAAAAAAAAAAAAAAADAACAQAAAgQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\AssetLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.ConnectionLoadFilter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="30.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAACAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\ConnectionLoadFilter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.edk.UMI3DAsyncDictionnaryProperty&lt;T, L&gt;" Collapsed="true">
-    <Position X="10.5" Y="7.75" Width="1.5" />
+    <Position X="8.75" Y="18.25" Width="3" />
     <TypeIdentifier>
-      <HashCode>AIIAABAAoAAAAoAAmAAABAAAgAQBAAAAAQAQAAAAAAE=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncDictionnaryProperty.cs</FileName>
+      <HashCode>AIIAABAAoIAAAoAAmAAABgAAgAQBIAAAAQAQAAAABAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncDictionnaryProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DAsyncListProperty&lt;T&gt;" Collapsed="true">
-    <Position X="12.75" Y="7.75" Width="1.5" />
+    <Position X="12.5" Y="18.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAIAABAAIAAAAqAAmAAABAAAgAQBAAAACQAQAAAAAAE=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncListProperty.cs</FileName>
+      <HashCode>AAIAABAAIIAAAqAAmAAABgAAgAQBIAAACQAQAAAABAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncListProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DAsyncProperty" Collapsed="true">
+    <Position X="10.75" Y="15.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAACAAAAAAiAQAAAAIAAAgAAAAAQABAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DAsyncProperty&lt;T&gt;" Collapsed="true">
-    <Position X="11.75" Y="6.5" Width="1.5" />
+    <Position X="10.75" Y="16.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>IAAAEAAAIAAAAiCAgAAAACAQAAIAACEAgBAAAAUCAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncProperty.cs</FileName>
+      <HashCode>IAAAEAAAIIAAAiCAgAAAAiAQAAIAICEAgBAAAAUCBAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DAsyncPropertyEquality" Collapsed="true">
-    <Position X="22.25" Y="1.5" Width="1.5" />
+    <Position X="32.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAABAEAAAAAAAAAAAgABABAIAAAAAAAAAAAAgAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncProperty.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DAsyncProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DUser" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="22.25" Y="2.5" Width="1.5" />
+    <Position X="32.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>EAQCAAAAAAAAAAAAiAAAAAAAQAAAAAIAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DUser.cs</FileName>
+      <HashCode>EBQCAAAAAAAAgQAAiAAAAAAAQAAAAAABCAACAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Multi User\UMI3DUser.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.edk.AbstractRenderedNode" Collapsed="true">
-    <Position X="11" Y="3.5" Width="1.5" />
+    <Position X="3.25" Y="12.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAEABQCAAAABAAAAAIRACQAAAAAABgAAAAAIkAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\AbstractRenderedNode.cs</FileName>
+      <HashCode>AQAAAECAQCAQAABAAAAAIRAGQAAAAAAAAAAAAAIkAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\AbstractRenderedNode.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.edk.MaterialOverrider" Collapsed="true">
-    <Position X="20.5" Y="0.5" Width="1.5" />
+  <Class Name="umi3d.edk.ExternalResourceMaterial" Collapsed="true">
+    <Position X="14.75" Y="6" Width="2" />
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAAAABAAAAQAAAAAAAAAABAAAIAAgAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\MaterialOverrider.cs</FileName>
+      <HashCode>AAAAAAKAAAAAICAAgAAAABAAAAAAAAAABAAAAAIACAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\ExternalResourceMaterial.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.MaterialOverrider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="27" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEBAAAgAAAAAAAAABAAAAQCAAAAAAAAABAAAIAAgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\MaterialOverrider.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.edk.MaterialSO" Collapsed="true">
-    <Position X="14.5" Y="0.5" Width="1.5" />
+    <Position X="17.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAIEAAAAIAAAgAAAABAAAAAAAAEABAAAAAIACAQ=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\MaterialSO.cs</FileName>
+      <HashCode>ABACAAKEAAAAIQAAgAAAABAAAAAAAAEADAQCAAJACAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\MaterialSO.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="umi3d.edk.PBRMaterial" Collapsed="true">
-    <Position X="14.5" Y="2" Width="1.5" />
+  <Class Name="umi3d.edk.OriginalMaterial" Collapsed="true">
+    <Position X="17.5" Y="6" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAiIQBAEUCMgAGhACAMDAKAQAUAIAAHgRGIGbADEA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\PBRMaterial.cs</FileName>
+      <HashCode>AAAAAAKAAAAAIAAAgAAAABAAAAAAAAAABAAAAAIACAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\OriginalMaterial.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.PBRMaterial" Collapsed="true">
+    <Position X="19.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAiISBAEUCMgAGhACAMDAKAQAUAIAQlgRGIGaADEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\PBRMaterial.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.CustomTextures" Collapsed="true">
-    <Position X="18.75" Y="0.5" Width="1.5" />
+    <Position X="32.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAgAAAAAAAAAAQAAAAAAIBAAgBgAAAgI=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\PBRMaterial.cs</FileName>
+      <HashCode>AAAAAAAAACAAAgAAAAAAAAAAQAAAAAAIBAAgBgAAEgI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\PBRMaterial.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UICanvas" Collapsed="true">
-    <Position X="3.25" Y="4.75" Width="1.5" />
+    <Position X="10.25" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgAAABAQBAgAAgAABAAEBAQQAJACAAAAAAAAAAACAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UICanvas.cs</FileName>
+      <HashCode>AAgAAADAQBAgAAgAABAAEBAQQAJACAAAAAAAAAAACAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UICanvas.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UIImage" Collapsed="true">
-    <Position X="5.5" Y="4.75" Width="1.5" />
+    <Position X="12.5" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAIAAAAAAAAABAAQBABAACQAAEAsAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UIImage.cs</FileName>
+      <HashCode>AAAAAACAQAAIAAAAAAAAABAAQBABAACQAAEAsAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UIImage.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UIRect" Collapsed="true">
-    <Position X="5.5" Y="3.5" Width="1.5" />
+    <Position X="10.25" Y="12.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BEAEAAQARAAAAAAAAAaUABYAQMBAAyAAIAagBQBAAIQ=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UIRect.cs</FileName>
+      <HashCode>BEAEAASARAAAAAAAAAaUABYAQMBAAyAAIAagBQBAAIQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UIRect.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UIText" Collapsed="true">
-    <Position X="7.75" Y="4.75" Width="1.5" />
+    <Position X="8" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAQAAAYAAAAgkKCCIQIhgoQARcAQCIGBUACAwEAEA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UIText.cs</FileName>
+      <HashCode>AAIAQACAYAAAAgkKCCIQIhgoQARcAQCIGBUACAwEAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UI\UIText.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DAbstractNode" Collapsed="true">
-    <Position X="6.5" Y="0.5" Width="1.5" />
+    <Position X="8" Y="9.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACABEFQAAAAAgIgAEgUBAIQIRHSAAAECAAIQIABEU=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DAbstractNode.cs</FileName>
+      <HashCode>ABACAhGFQAAAAQgIgAEgUBAIQIRHSAAAGCACIQIABEU=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DAbstractNode.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.edk.UMI3DAnchor" Collapsed="true">
-    <Position X="20.5" Y="1.5" Width="1.5" />
+    <Position X="30.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAQAEAAAAAAAAAAAAAABAAAAEAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DAnchor.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DAnchor.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DKHRLight" Collapsed="true">
-    <Position X="17" Y="2.5" Width="1.5" />
+    <Position X="27" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AACAAAAAAAACAADABAAAAAAAgAAAAAAABAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DKHRLight.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DKHRLight.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DLineRenderer" Collapsed="true">
+    <Position X="3.25" Y="13.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAACGAQAAAiCAMwAQAIRAIQAAAAEAAAAAAAMCARgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DLineRenderer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DModel" Collapsed="true">
-    <Position X="12.25" Y="4.75" Width="1.5" />
+    <Position X="1" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAkAQAAAAAAAAAAEABAAQAQAAEAAAAAAACAIAAI=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DModel.cs</FileName>
+      <HashCode>EACAAAmAQCAAAACAAAAkABAAUAQAAEAAAAAAQCAIAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DNode" Collapsed="true">
-    <Position X="7.75" Y="2" Width="1.5" />
+    <Position X="6.75" Y="11" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>hCWAphB5QAHAGAAAgoIHIxAARUAEAAAICDIQCAkAAJI=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DNode.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.UMI3DNotification" Collapsed="true">
-    <Position X="0.5" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAACAAAEQAAAAIBAiAAAAAAAQAEBABAAAAAAgAAAAAQ=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DNotification.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="umi3d.edk.UMI3DNotificationOnObject" Collapsed="true">
-    <Position X="0.5" Y="4.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAQAAAAAACAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DNotification.cs</FileName>
+      <HashCode>hBWApxCxQAHAGAAAgoIHA5QARUAEAAAICDIQCAkAABI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DNode.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DResource" Collapsed="true">
-    <Position X="0.5" Y="12.5" Width="1.5" />
+    <Position X="1" Y="18.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DResource.cs</FileName>
+      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAQAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DResource.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.edk.UMI3DResourceFile" Collapsed="true">
-    <Position X="18.75" Y="2.5" Width="1.5" />
+  <Class Name="umi3d.edk.UMI3DResourceFile" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAIAAAAAAAAAAAAACCAAAAgIAAAIABAUAAAAAIAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DResourceFile.cs</FileName>
+      <HashCode>AABAAIAAAAAAAAAAAAACCACAAgIAAAIABAUAAAQAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DResourceFile.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.edk.UMI3DScene" Collapsed="true">
-    <Position X="1" Y="2" Width="1.5" />
+    <Position X="14.75" Y="11" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>BAAAAAQAQAAAAAAAgAAhABAAQQAAAAAABAAEBAAAIAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DScene.cs</FileName>
+      <HashCode>BAAAAASAQAAAAAAAgAAhABAAQQAAAAAABAAEBAAAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DScene.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DSubModel" Collapsed="true">
-    <Position X="10" Y="4.75" Width="1.5" />
+    <Position X="5.75" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAACAAIQAAAAAAAgAAAABAAQAABAAAAAAAAAAEAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DSubModel.cs</FileName>
+      <HashCode>AAGACACIQAAAAAAAgAAAABAAQAABAAAAAQAAQAEAIAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DSubModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DTextureResource" Collapsed="true">
-    <Position X="0.5" Y="13.75" Width="1.5" />
+    <Position X="0.75" Y="19.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEAAAAAAI=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DTextureResource.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DTextureResource.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DScalableTextureResource" Collapsed="true">
-    <Position X="0.5" Y="15.25" Width="1.5" />
+    <Position X="0.5" Y="21.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAABAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DTextureResource.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DTextureResource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.OnDestroyListener" Collapsed="true">
+    <Position X="30.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\OnDestroyListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.AbstractInterpolationProperty" Collapsed="true">
+    <Position X="15.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\AbstractInterpolationProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.DeleteEntity" Collapsed="true">
-    <Position X="12.25" Y="10.75" Width="1.5" />
+    <Position X="19.5" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAIAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\DeleteEntity.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAABIAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\DeleteEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.DispatchableRequest" Collapsed="true">
+    <Position X="3.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAgAAACAAAAAAAAAAAAAAAAAAABAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\DispatchableRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.EntityGroup" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="34" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABACAACEAAAIAQAAgEAAABAAAAJAAQAACAACAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\EntityGroup.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.GetLocalInfoRequest" Collapsed="true">
+    <Position X="0.75" Y="16.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAQAAAAAAAAAAEAAAAQBAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\GetLocalInfoRequest.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.LoadEntity" Collapsed="true">
-    <Position X="1" Y="10.75" Width="1.5" />
+    <Position X="21.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAABAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\LoadEntity.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAABAAAQAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\LoadEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.MultiSetEntityProperty" Collapsed="true">
+    <Position X="24" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABIAACAgAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\MultiSetEntityProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.NavigationRequest" Collapsed="true">
+    <Position X="5.75" Y="16.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAQAAAAAAAAAAAIAAAQBAAAAAAIAAAAAAAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\NavigationRequest.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.Operation" Collapsed="true">
-    <Position X="6.5" Y="9.5" Width="1.5" />
+    <Position X="13" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\Operation.cs</FileName>
+      <HashCode>IABAAAAAAAAAAAAAQAEAAACAABAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\Operation.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.edk.SetEntityDictionaryAddProperty" Collapsed="true">
-    <Position X="3.25" Y="13.75" Width="1.5" />
+    <Position X="1.5" Y="4.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityDictionaryAddProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAQAEgAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityDictionaryAddProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SetEntityDictionaryProperty" Collapsed="true">
-    <Position X="4.25" Y="12.25" Width="1.5" />
+    <Position X="3.5" Y="3.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEEAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityDictionaryProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAgAAAAAQAEkAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityDictionaryProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SetEntityDictionaryRemoveProperty" Collapsed="true">
-    <Position X="5.5" Y="13.75" Width="1.5" />
+    <Position X="4.75" Y="4.75" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityDictionaryRemoveProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAgAAAAAQAEgAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityDictionaryRemoveProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SetEntityListAddProperty" Collapsed="true">
-    <Position X="7.75" Y="13.75" Width="1.5" />
+    <Position X="8.25" Y="4.75" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityListAddProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAQAEgAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityListAddProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SetEntityListProperty" Collapsed="true">
-    <Position X="8.75" Y="12.25" Width="1.5" />
+    <Position X="10" Y="3.25" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAABAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityListProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAgAAAAAQAEgAAAAAAAAAAAgAAAAAAABAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityListProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SetEntityListRemoveProperty" Collapsed="true">
-    <Position X="10" Y="13.75" Width="1.5" />
+    <Position X="11" Y="4.75" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityListRemoveProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAQAEgAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityListRemoveProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SetEntityProperty" Collapsed="true">
-    <Position X="6.5" Y="10.75" Width="1.5" />
+    <Position X="6.75" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAEAAAAAAAIAACAgAAAAAAAAAAE=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityProperty.cs</FileName>
+      <HashCode>AAAAAAAAAAgAAAAAQAEgAAAAABIAACAgAAAAAAAAAAE=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\SetEntityProperty.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.edk.Transaction" Collapsed="true">
-    <Position X="18.75" Y="1.5" Width="1.5" />
+  <Class Name="umi3d.edk.StartInterpolationProperty" Collapsed="true">
+    <Position X="14" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAACAAAAAAAASAAAAAAAAABAAAAAAAAAAAAAACA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\Transaction.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgABAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\StartInterpolationProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.StopInterpolationProperty" Collapsed="true">
+    <Position X="16.75" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAwAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\StopInterpolationProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.TeleportRequest" Collapsed="true">
+    <Position X="5.75" Y="18.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAACAAAAAQBAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\TeleportRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.Transaction" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAoAAADCAAAAABAASAAAAAQAAABAQAAEIAAAAAAAACA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\Transaction.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.UploadFileRequest" Collapsed="true">
+    <Position X="3.25" Y="16.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAEAAACAQAAAAAAAAAAgAAAAQBAAAAAAIgAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\UploadFileRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.VehicleRequest" Collapsed="true">
+    <Position X="5.75" Y="19.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAABAAAQBAAgAAAAAAAAAAAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\VehicleRequest.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.SerializableDateTime" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="22.25" Y="0.5" Width="1.5" />
+    <Position X="32.25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAkIBAQQEBAAAAEAAAAAAAABARAAAAAAAAAAAAAIQA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\SerializableDateTime.cs</FileName>
+      <HashCode>AAAkIBAQQEBAAAAEAAABCAAABQxAAAAAAAAAAAAAIQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\SerializableDateTime.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.edk.SimpleModificationListener" Collapsed="true">
-    <Position X="24" Y="0.5" Width="1.5" />
+    <Position X="34" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAwDEBABACAAABAIAAAAAIAAACAAAAAAAAAABAAAIAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\SimpleModificationListener.cs</FileName>
+      <HashCode>AAwDEBABACAAABEIAAAgAIAAACAAAAAAAAAABAAAoAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\SimpleModificationListener.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.ToUMI3DSerializable" Collapsed="true">
-    <Position X="17" Y="1.5" Width="1.5" />
+    <Position X="27" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAQAAAAAAAIAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\ToUMI3DSerializable.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\ToUMI3DSerializable.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DAnimation" Collapsed="true">
-    <Position X="5.25" Y="8" Width="1.5" />
+    <Position X="1" Y="8" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIAQAIAAAAAAAEAABAAQAAAAAAAAAQAAAAAABA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DAnimation.cs</FileName>
+      <HashCode>AAAAAAIAQAIAAAAAAAEAABAAQAAAAAAAAAQAAAQAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DAnimation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.UMI3DAnimatorAnimation" Collapsed="true">
+    <Position X="3.5" Y="8" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>IQAAACAAQAAAAAAAABAAABAAQAAAAAAAAAAAAAYAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DAnimatorAnimation.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DAudioPlayer" Collapsed="true">
-    <Position X="7.5" Y="8" Width="1.5" />
+    <Position X="6.5" Y="8" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AQAACCAgQAAAACAAABAAABAAQAGQDkAAAAAAAEACAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DAudioPlayer.cs</FileName>
+      <HashCode>AQAACCAgQAAAACAAABAAABAAQAGQDkAAAAAAAEQCAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DAudioPlayer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DEnvironment" Collapsed="true">
-    <Position X="24" Y="1.5" Width="1.5" />
+    <Position X="34" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAARQAAAAjIAAQSEQCBBBpCAAgABAQAABAgCAwhEgEA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DEnvironment.cs</FileName>
+      <HashCode>AAAxQAAAQDIEASSEQCBhBpCAQgEBARAABAACAwhkgEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DEnvironment.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DNodeAnimation" Collapsed="true">
-    <Position X="0.75" Y="8" Width="1.5" />
+    <Position X="9" Y="8" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAIEQAIAAAAAAAAAABAAQBAAAAAAAAQAAAAAABA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DNodeAnimation.cs</FileName>
+      <HashCode>AAAAAAIEQAIAAAAAAAAAABAAQBAAAAAAAAQAAAQAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DNodeAnimation.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DServer" Collapsed="true">
-    <Position X="20.5" Y="2.5" Width="1.5" />
+    <Position X="30.5" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAgAAICAAAIEqkIAAQIAABEEgAAAAwAIBICiAUAAAEE=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DServer.cs</FileName>
+      <HashCode>AAgAAKCAAAIEikAACYYQABQEgCAAAQAIFIDiAUAAAkE=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DServer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DUserEvent" Collapsed="true">
-    <Position X="17" Y="3.5" Width="1.5" />
+    <Position X="34" Y="3.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DUserEvents.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.UMI3DUserBoneEvent" Collapsed="true">
-    <Position X="24" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DUserEvents.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DUserEvents.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.UMI3DVideoPlayer" Collapsed="true">
-    <Position X="3" Y="8" Width="1.5" />
+    <Position X="11.75" Y="8" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAABQAEAAAAAAAAAABAAQAEAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\UMI3DVideoPlayer.cs</FileName>
+      <HashCode>AAAAAAABQAEAAAAAAAAAABAAQAEAAAAAACAACAVAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\UMI3DVideoPlayer.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.edk.VisibilityFilter" Collapsed="true">
-    <Position X="18.75" Y="3.5" Width="1.5" />
+  <Class Name="umi3d.edk.volume.AbstractPrimitive" Collapsed="true">
+    <Position X="18.75" Y="7.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\VisibilityFilter.cs</FileName>
+      <HashCode>ABADAACEAAAAAQgAgAAAAAAAAAAABEBACAACQAAAEkQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\AbstractPrimitive.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.edk.volume.Box" Collapsed="true">
+    <Position X="17.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgEAAAAAAAAAAAAgIAAAAAAAAAAAAAAAAQCAAAAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\Box.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="umi3d.edk.volume.BoxEditor" Collapsed="true">
+    <Position X="28.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAACAAAAAAAAAAAAAAAAAAACAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\BoxEditor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.volume.Cylinder" Collapsed="true">
+    <Position X="19.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAACAAAAAQAgAAAAAAAAAAAAAMAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\Cylinder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.volume.OBJVolume" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="28.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABADAICEAAAAAQgAgAAAAAAAAAAABEBACAACQAAAAgQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\OBJVolume.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.volume.VolumeManager" Collapsed="true">
+    <Position X="27" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\VolumeManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.volume.VolumeSimpleModificationListener" Collapsed="true">
+    <Position X="28.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAACAAAEAAAAAAAAAACAAAAAEAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\VolumeSimpleModificationListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="umi3d.edk.UMI3DLoadableEntity" Collapsed="true">
+    <Position X="19" Y="15.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACEAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DLoadableEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.edk.UMI3DMediaEntity" Collapsed="true">
+    <Position X="19" Y="13.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DMediaEntity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Interface Name="umi3d.edk.UMI3DEntity" Collapsed="true">
-    <Position X="12.5" Y="12.5" Width="1.5" />
+    <Position X="18" Y="12.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DEntity.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DMediaEntity.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="umi3d.edk.UMI3DLoadableEntity" Collapsed="true">
-    <Position X="12.5" Y="13.75" Width="1.5" />
+  <Interface Name="umi3d.edk.UMI3DUserFilter" Collapsed="true">
+    <Position X="27" Y="5.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAEAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DLoadableEntity.cs</FileName>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\UMI3DUserFilter.cs</FileName>
     </TypeIdentifier>
   </Interface>
+  <Interface Name="umi3d.edk.ICollaborationRoom" Collapsed="true">
+    <Position X="16.5" Y="13.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAIABAAAAAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\Relay\ICollaborationRoom.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.edk.volume.IVolume" Collapsed="true">
+    <Position X="19.25" Y="18.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\IVolume.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.edk.volume.IVolumeDescriptor" Collapsed="true">
+    <Position X="19" Y="16.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene Design\Volumes\IVolumeDescriptor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="umi3d.edk.Receivers" Collapsed="true">
+    <Position X="27" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Core\Runtime\Scene synchronisation\Relay\Receivers.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

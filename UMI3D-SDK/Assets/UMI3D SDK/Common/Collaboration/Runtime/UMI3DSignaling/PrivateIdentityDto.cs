@@ -19,13 +19,24 @@ using System.Collections.Generic;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO describing idnetifiers that are known only from the user and the media.
     /// </summary>
     [Serializable]
     public class PrivateIdentityDto : IdentityDto
     {
+        /// <summary>
+        /// Global token of the user.
+        /// </summary>
         public string GlobalToken;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public ForgeConnectionDto connectionDto;
+
+        /// <summary>
+        /// Libraries possessed by the user.
+        /// </summary>
         public List<LibrariesDto> libraries;
     }
 }
