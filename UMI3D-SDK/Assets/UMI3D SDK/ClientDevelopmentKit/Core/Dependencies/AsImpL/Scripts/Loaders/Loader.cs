@@ -381,7 +381,7 @@ namespace AsImpL
             ObjectBuilder.buildOptions = buildOptions;
             bool hasColors = dataSet.colorList.Count > 0;
             bool hasMaterials = materialData != null;
-            ObjectBuilder.InitBuildMaterials(materialData, hasColors);
+            ObjectBuilder.InitBuildMaterials(materialData, hasColors, baseMaterial);
             float objInitPerc = objLoadingProgress.percentage;
             if (hasMaterials)
             {
