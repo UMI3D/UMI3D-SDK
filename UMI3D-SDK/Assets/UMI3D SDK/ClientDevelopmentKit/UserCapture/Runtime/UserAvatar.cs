@@ -207,7 +207,7 @@ namespace umi3d.cdk.userCapture
                     UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null).NotifyLoaded();
 
             if (dto.emotesConfigDto != null)
-                UMI3DEmotesConfigLoader.Load(dto.emotesConfigDto);
+                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.emotesConfigDto));
 
             if (activeUserBindings && userBindings != null)
             {

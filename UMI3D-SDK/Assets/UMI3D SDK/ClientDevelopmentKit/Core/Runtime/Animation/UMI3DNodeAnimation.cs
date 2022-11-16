@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -150,27 +151,27 @@ namespace umi3d.cdk
             action.Invoke();
         }
 
-        void PerformChain(OperationChain chain)
+        async void PerformChain(OperationChain chain)
         {
             if (chain.IsByte)
-                UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
+                await UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
             else
-                UMI3DTransactionDispatcher.PerformOperation(chain.operation);
+                await UMI3DTransactionDispatcher.PerformOperation(chain.operation);
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            if (base.SetUMI3DProperty(entity, property)) return true;
+            if (await base.SetUMI3DProperty(value)) return true;
             UMI3DNodeAnimationDto ADto = dto;
             if (ADto == null) return false;
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    ADto.duration = (float)(Double)property.value;
+                    ADto.duration = (float)(Double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
-                    return UpdateChain(dto, property);
+                    return UpdateChain(dto, value.property);
                 default:
                     return false;
             }
@@ -179,16 +180,16 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
-            switch (propertyKey)
+            if (await base.SetUMI3DProperty(value)) return true;
+            switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    dto.duration = UMI3DNetworkingHelper.Read<float>(container);
+                    dto.duration = UMI3DNetworkingHelper.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
-                    return UpdateChain(operationId, propertyKey, container);
+                    return UpdateChain(value.operationId, value.propertyKey, value.container);
                 default:
                     return false;
             }
@@ -197,7 +198,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
+        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value) { return Task.FromResult(false); }
 
         private bool UpdateChain(UMI3DNodeAnimationDto dto, SetEntityPropertyDto property)
         {

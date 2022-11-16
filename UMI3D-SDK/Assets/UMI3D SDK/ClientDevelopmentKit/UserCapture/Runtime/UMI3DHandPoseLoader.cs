@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.ComponentModel;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -23,31 +25,44 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="UMI3DHandPoseDto"/>.
     /// </summary>
-    public class UMI3DHandPoseLoader
+    public class UMI3DHandPoseLoader : AbstractLoader
     {
-        /// <summary>
-        /// Load a UMI3DHandPose
-        /// </summary>
-        /// <param name="dto"></param>
-        public static void Load(UMI3DHandPoseDto dto)
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
+            return data.dto is UMI3DHandPoseDto;
+        }
+
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            var dto = value.dto as UMI3DHandPoseDto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
         }
 
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            var dto = entity.dto as UMI3DHandPoseDto;
+            var dto = value.entity.dto as UMI3DHandPoseDto;
             if (dto == null) return false;
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ActiveHandPose:
-                    dto.IsActive = (bool)property.value;
+                    dto.IsActive = (bool)value.property.value;
+                    UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            var dto = value.entity.dto as UMI3DHandPoseDto;
+            if (dto == null) return false;
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.ActiveHandPose:
+                    dto.IsActive = UMI3DNetworkingHelper.Read<bool>(value.container);
                     UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
                     break;
                 default:
@@ -63,36 +78,14 @@ namespace umi3d.cdk
         /// <param name="propertyKey"></param>
         /// <param name="container"></param>
         /// <returns></returns>
-        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public  override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ActiveHandPose:
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
                     break;
 
-                default:
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            var dto = entity.dto as UMI3DHandPoseDto;
-            if (dto == null) return false;
-            switch (propertyKey)
-            {
-                case UMI3DPropertyKeys.ActiveHandPose:
-                    dto.IsActive = UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
-                    break;
                 default:
                     return false;
             }

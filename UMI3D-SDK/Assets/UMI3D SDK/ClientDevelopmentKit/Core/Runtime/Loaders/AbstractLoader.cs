@@ -205,7 +205,10 @@ namespace umi3d.cdk
 
         public abstract Task ReadUMI3DExtension(ReadUMI3DExtensionData value);
 
-        public abstract Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value);
+        public virtual Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
+        {
+            return Task.FromResult(false);
+        }
 
         public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value);
 

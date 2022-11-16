@@ -12,42 +12,59 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.userCapture;
+using static umi3d.cdk.UMI3DResourcesManager;
 
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
     /// Loader for <see cref="UMI3DEmotesConfigDto"/>.
     /// </summary>
-    public class UMI3DEmotesConfigLoader
+    public class UMI3DEmotesConfigLoader : AbstractLoader
     {
-        /// <summary>
-        /// Load a UMI3D Emote config dto
-        /// </summary>
-        /// <param name="dto"></param>
-        public static void Load(UMI3DEmotesConfigDto dto)
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
+            return data.dto is UMI3DEmotesConfigDto;
+        }
+
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            var dto = value.dto as UMI3DEmotesConfigDto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
                 UMI3DEnvironmentLoader.RegisterEntityInstance(emoteDto.id, emoteDto, null).NotifyLoaded();
             UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
         }
 
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            var dto = entity.dto as UMI3DEmotesConfigDto;
+            var dto = value.entity.dto as UMI3DEmotesConfigDto;
             if (dto == null) return false;
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    dto.emotes = property.value as List<UMI3DEmoteDto>;
+                    dto.emotes = value.property.value as List<UMI3DEmoteDto>;
+                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                    break;
+
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            var dto = value.entity.dto as UMI3DEmotesConfigDto;
+            if (dto == null) return false;
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.ChangeEmoteConfig:
+                    dto.emotes = UMI3DNetworkingHelper.Read<List<UMI3DEmoteDto>>(value.container);
                     UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
                     break;
 
@@ -60,41 +77,15 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Load an emote config
         /// </summary>
-        /// <param name="value"></param>
-        /// <param name="propertyKey"></param>
-        /// <param name="container"></param>
         /// <returns></returns>
-        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public override async Task< bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    value = UMI3DNetworkingHelper.Read<UMI3DEmotesConfigDto>(container);
+                    data.result = UMI3DNetworkingHelper.Read<UMI3DEmotesConfigDto>(data.container);
 
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(value as UMI3DEmotesConfigDto);
-                    break;
-
-                default:
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            var dto = entity.dto as UMI3DEmotesConfigDto;
-            if (dto == null) return false;
-            switch (propertyKey)
-            {
-                case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    dto.emotes = UMI3DNetworkingHelper.Read<List<UMI3DEmoteDto>>(container);
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(data.result as UMI3DEmotesConfigDto);
                     break;
 
                 default:

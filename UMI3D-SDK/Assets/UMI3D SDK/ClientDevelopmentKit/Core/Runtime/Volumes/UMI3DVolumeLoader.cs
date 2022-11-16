@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.volume;
@@ -25,53 +26,59 @@ namespace umi3d.cdk.volumes
     /// <summary>
     /// Loader for <see cref="AbstractVolumeCellDto"/>.
     /// </summary>
-	public static class UMI3DVolumeLoader
+	public class UMI3DVolumeLoader : AbstractLoader
     {
-        public static async Task ReadUMI3DExtension(AbstractVolumeDescriptorDto dto)
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
+            return data.dto is AbstractVolumeDescriptorDto;
+        }
+
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            var dto = value.dto as AbstractVolumeDescriptorDto;
             switch (dto)
             {
                 case AbstractPrimitiveDto prim:
                     var p = await VolumePrimitiveManager.CreatePrimitive(prim);
                     UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, p, () => VolumePrimitiveManager.DeletePrimitive(dto.id));
-                    
+
                     break;
                 case OBJVolumeDto obj:
                     var objVolume = await ExternalVolumeDataManager.Instance.CreateOBJVolume(obj);
                     UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, objVolume, () => ExternalVolumeDataManager.Instance.DeleteOBJVolume(dto.id));
-                    
+
                     break;
                 default:
                     throw (new Umi3dException("Unknown Dto Type"));
             }
         }
 
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Center:
-                    var box_1 = entity.Object as Box;
-                    var newCenter = (Vector3)property.value;
+                    var box_1 = value.entity.Object as Box;
+                    var newCenter = (Vector3)value.property.value;
                     Vector3 size = box_1.bounds.size;
                     box_1.SetBounds(new Bounds(newCenter, size));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Size:
-                    var box_2 = entity.Object as Box;
+                    var box_2 = value.entity.Object as Box;
                     Vector3 center = box_2.bounds.center;
-                    var newsize = (Vector3)property.value;
+                    var newsize = (Vector3)value.property.value;
                     box_2.SetBounds(new Bounds(center, newsize));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Cylinder_Height:
-                    var cyl_1 = entity.Object as Cylinder;
-                    cyl_1.SetHeight((float)property.value);
+                    var cyl_1 = value.entity.Object as Cylinder;
+                    cyl_1.SetHeight((float)value.property.value);
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Cylinder_Radius:
-                    var cyl_2 = entity.Object as Cylinder;
-                    cyl_2.SetRadius((float)property.value);
+                    var cyl_2 = value.entity.Object as Cylinder;
+                    cyl_2.SetRadius((float)value.property.value);
                     return true;
 
                 default:
@@ -79,32 +86,32 @@ namespace umi3d.cdk.volumes
             }
         }
 
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            switch (propertyKey)
+            switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Center:
-                    var box_1 = entity.Object as Box;
-                    Vector3 newCenter = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    var box_1 = value.entity.Object as Box;
+                    Vector3 newCenter = UMI3DNetworkingHelper.Read<Vector3>(value.container);
                     Vector3 size = box_1.bounds.size;
                     box_1.SetBounds(new Bounds(newCenter, size));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Size:
-                    var box_2 = entity.Object as Box;
+                    var box_2 = value.entity.Object as Box;
                     Vector3 center = box_2.bounds.center;
-                    Vector3 newsize = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    Vector3 newsize = UMI3DNetworkingHelper.Read<Vector3>(value.container);
                     box_2.SetBounds(new Bounds(center, newsize));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Cylinder_Height:
-                    var cyl_1 = entity.Object as Cylinder;
-                    cyl_1.SetHeight(UMI3DNetworkingHelper.Read<float>(container));
+                    var cyl_1 = value.entity.Object as Cylinder;
+                    cyl_1.SetHeight(UMI3DNetworkingHelper.Read<float>(value.container));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Cylinder_Radius:
-                    var cyl_2 = entity.Object as Cylinder;
-                    cyl_2.SetRadius(UMI3DNetworkingHelper.Read<float>(container));
+                    var cyl_2 = value.entity.Object as Cylinder;
+                    cyl_2.SetRadius(UMI3DNetworkingHelper.Read<float>(value.container));
                     return true;
 
                 default:

@@ -43,11 +43,6 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
         }
 
-        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
-        {
-            return false;
-        }
-
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             if (value.entity != null && value.entity.dto is EntityGroupDto groupDto)

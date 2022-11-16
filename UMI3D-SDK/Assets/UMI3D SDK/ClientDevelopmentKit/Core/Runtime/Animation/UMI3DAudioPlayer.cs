@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using MainThreadDispatcher;
 using System.Collections;
+using System.Diagnostics.Contracts;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -130,26 +131,26 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            if (base.SetUMI3DProperty(entity, property)) return true;
+            if (await base.SetUMI3DProperty(value)) return true;
             var ADto = dto as UMI3DAudioPlayerDto;
             if (ADto == null) return false;
 
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = (float)(double)property.value;
+                    audioSource.volume = ADto.volume = (float)(double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = (float)(double)property.value;
+                    audioSource.pitch = ADto.pitch = (float)(double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = (float)(double)property.value;
+                    audioSource.spatialBlend = ADto.spatialBlend = (float)(double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
-                    ADto.audioResource = (ResourceDto)property.value;
+                    ADto.audioResource = (ResourceDto)value.property.value;
                     if (ADto.audioResource == res) return true;
                     FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
@@ -164,7 +165,7 @@ namespace umi3d.cdk
                     GameObject g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
                     audioSource = null;
-                    ADto.nodeID = (ulong)(long)property.value;
+                    ADto.nodeID = (ulong)(long)value.property.value;
                     InitPlayer(ADto);
                     break;
                 default:
@@ -190,24 +191,24 @@ namespace umi3d.cdk
         }
 
          /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
-            var ADto = entity.dto as UMI3DAudioPlayerDto;
-            switch (propertyKey)
+            if (await base.SetUMI3DProperty(value)) return true;
+            var ADto = value.entity.dto as UMI3DAudioPlayerDto;
+            switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = UMI3DNetworkingHelper.Read<float>(container);
+                    audioSource.volume = ADto.volume = UMI3DNetworkingHelper.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = UMI3DNetworkingHelper.Read<float>(container);
+                    audioSource.pitch = ADto.pitch = UMI3DNetworkingHelper.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = UMI3DNetworkingHelper.Read<float>(container);
+                    audioSource.spatialBlend = ADto.spatialBlend = UMI3DNetworkingHelper.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
-                    ADto.audioResource = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    ADto.audioResource = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
                     if (ADto.audioResource == res) return true;
                     FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
@@ -223,7 +224,7 @@ namespace umi3d.cdk
                     GameObject g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
                     audioSource = null;
-                    ADto.nodeID = UMI3DNetworkingHelper.Read<ulong>(container);
+                    ADto.nodeID = UMI3DNetworkingHelper.Read<ulong>(value.container);
                     InitPlayer(ADto);
                     break;
                 default:
@@ -233,7 +234,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
+        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value) { return Task.FromResult(false); }
 
         /// <inheritdoc/>
         public override void Start(float atTime)

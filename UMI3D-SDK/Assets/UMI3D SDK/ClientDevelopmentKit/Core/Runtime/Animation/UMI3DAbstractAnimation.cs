@@ -16,6 +16,8 @@ limitations under the License.
 
 using MainThreadDispatcher;
 using System.Collections;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -24,7 +26,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Abstract class for all components that could be played.
     /// </summary>
-    public abstract class UMI3DAbstractAnimation
+    public abstract class UMI3DAbstractAnimation : AbstractLoader
     {
         /// <summary>
         /// Get an animation by id.
@@ -33,50 +35,77 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
+
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return false;
+        }
+
         /// <summary>
-        /// Update an UMI3D Property.
+        /// This Method should not be called to load an AbstractAnimation.
+        /// Please use <see cref="UMI3DAnimationLoader.ReadUMI3DExtension(ReadUMI3DExtensionData)"/> instead.
         /// </summary>
-        /// <param name="entity"></param>
-        /// <param name="property"></param>
+        /// <param name="value"></param>
         /// <returns></returns>
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        /// <exception cref="Umi3dException"></exception>
+        /// <see cref="UMI3DAnimationLoader.ReadUMI3DExtension(ReadUMI3DExtensionData)"/>
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
-            switch (property.property)
+            throw new Umi3dException("This Method should not be called to load an AbstractAnimation.\nPlease use UMI3DAnimationLoader.ReadUMI3DExtension(<>) instead.");
+        }
+
+        /// <summary>
+        /// This Method should not be called to Read an AbstractAnimation.
+        /// Please use <see cref="UMI3DAnimationLoader.ReadUMI3DProperty(ReadUMI3DPropertyData)"/> instead.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="Umi3dException"></exception>
+        /// <see cref="UMI3DAnimationLoader.ReadUMI3DProperty(ReadUMI3DPropertyData)"
+        public override Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
+        {
+            throw new Umi3dException("This Method should not be called to load an AbstractAnimation.\nPlease use UMI3DAnimationLoader.ReadUMI3DProperty(<>) instead.");
+        }
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
                     bool old = dto.playing;
-                    dto.playing = (bool)property.value;
+                    dto.playing = (bool)value.property.value;
                     if (old != dto.playing)
                     {
                         if (dto.playing)
                         {
                             if (dto.startTime == default)
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start();
+                                (value.entity.Object as UMI3DAbstractAnimation).Start();
                             }
                             else
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                                (value.entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
                         else
                         {
-                            (entity.Object as UMI3DAbstractAnimation).Stop();
+                            (value.entity.Object as UMI3DAbstractAnimation).Stop();
                         }
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
-                    dto.looping = (bool)property.value;
+                    dto.looping = (bool)value.property.value;
                     if (dto is UMI3DVideoPlayerDto)
                     {
-                        (entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
+                        (value.entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    dto.startTime = (ulong)(long)property.value;
+                    dto.startTime = (ulong)(long)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    dto.pauseTime = (long)property.value;
+                    dto.pauseTime = (long)value.property.value;
                     SetProgress(dto.pauseTime);
                     break;
                 default:
@@ -85,75 +114,48 @@ namespace umi3d.cdk
             return true;
         }
 
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            switch (propertyKey)
+            switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
                     bool old = dto.playing;
-                    dto.playing = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.playing = UMI3DNetworkingHelper.Read<bool>(value.container);
                     if (old != dto.playing)
                     {
                         if (dto.playing)
                         {
                             if (dto.startTime == default)
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start();
+                                (value.entity.Object as UMI3DAbstractAnimation).Start();
                             }
                             else
                             {
-                                (entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                                (value.entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
                             }
                         }
                         else
                         {
-                            (entity.Object as UMI3DAbstractAnimation).Stop();
+                            (value.entity.Object as UMI3DAbstractAnimation).Stop();
                         }
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
-                    dto.looping = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.looping = UMI3DNetworkingHelper.Read<bool>(value.container);
                     if (dto is UMI3DVideoPlayerDto)
                     {
-                        (entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
+                        (value.entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    dto.startTime = UMI3DNetworkingHelper.Read<ulong>(container);
+                    dto.startTime = UMI3DNetworkingHelper.Read<ulong>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    dto.pauseTime = UMI3DNetworkingHelper.Read<long>(container);
+                    dto.pauseTime = UMI3DNetworkingHelper.Read<long>(value.container);
                     SetProgress(dto.pauseTime);
                     break;
                 default:
                     return false;
-            }
-            return true;
-        }
-
-        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
-        {
-            switch (propertyKey)
-            {
-                case UMI3DPropertyKeys.AnimationPlaying:
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
-                    break;
-                case UMI3DPropertyKeys.AnimationLooping:
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
-                    break;
-                case UMI3DPropertyKeys.AnimationStartTime:
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
-                    break;
-                case UMI3DPropertyKeys.AnimationPauseFrame:
-                    value = UMI3DNetworkingHelper.Read<long>(container);
-                    break;
-                default:
-                    if (UMI3DAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container))
-                        return true;
-                    if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey, container))
-                        return true;
-                    return UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container);
-
             }
             return true;
         }

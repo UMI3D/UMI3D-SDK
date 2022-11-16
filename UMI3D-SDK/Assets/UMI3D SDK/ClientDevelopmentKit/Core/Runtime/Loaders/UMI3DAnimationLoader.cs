@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -25,14 +27,15 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DAnimationLoader : AbstractLoader
     {
-        public static void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node)
-        {
-            if (dto == null)
-            {
-                throw (new Umi3dException("dto shouldn't be null"));
-            }
 
-            switch (dto)
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DAbstractAnimationDto;
+        }
+
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            switch (value.dto)
             {
                 case UMI3DAnimationDto animation:
                     new UMI3DAnimation(animation);
@@ -52,24 +55,44 @@ namespace umi3d.cdk
             }
         }
 
-
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            var anim = entity?.Object as UMI3DAbstractAnimation;
+            var anim = value.entity?.Object as UMI3DAbstractAnimation;
             if (anim == null) return false;
-            return anim.SetUMI3DProperty(entity, property);
+            return await anim.SetUMI3DProperty(value);
         }
 
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            var anim = entity?.Object as UMI3DAbstractAnimation;
+            var anim = value.entity?.Object as UMI3DAbstractAnimation;
             if (anim == null) return false;
-            return anim.SetUMI3DProperty(entity, operationId, propertyKey, container);
+            return await anim.SetUMI3DProperty(value);
         }
 
-        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
         {
-            return UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container);
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationPlaying:
+                    value.result = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    break;
+                case UMI3DPropertyKeys.AnimationLooping:
+                    value.result = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    break;
+                case UMI3DPropertyKeys.AnimationStartTime:
+                    value.result = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    break;
+                case UMI3DPropertyKeys.AnimationPauseFrame:
+                    value.result = UMI3DNetworkingHelper.Read<long>(value.container);
+                    break;
+                default:
+                    if (await UMI3DAnimation.ReadMyUMI3DProperty(value))
+                        return true;
+                    if (await UMI3DAudioPlayer.ReadMyUMI3DProperty(value))
+                        return true;
+                    return await UMI3DNodeAnimation.ReadMyUMI3DProperty(value);
+            }
+            return true;
         }
     }
 }

@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -99,16 +100,16 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async  Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            if (base.SetUMI3DProperty(entity, property)) return true;
-            switch (property.property)
+            if (await base.SetUMI3DProperty(value)) return true;
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.AnimationNodeId:
-                    dto.nodeId = (ulong)(long)property.value;
+                    dto.nodeId = (ulong)(long)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationStateName:
-                    dto.stateName = (string)property.value;
+                    dto.stateName = (string)value.property.value;
                     break;
                 default:
                     return false;
