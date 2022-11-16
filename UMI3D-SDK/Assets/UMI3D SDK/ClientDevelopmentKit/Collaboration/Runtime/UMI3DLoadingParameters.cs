@@ -97,19 +97,28 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            throw new NotImplementedException();
+            var b = await loader.Handle(data);
+            if (AnchorLoader != null)
+                await AnchorLoader.Handle(data);
+            return b;
         }
 
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            throw new NotImplementedException();
+            var b = await loader.Handle(data);
+            if (AnchorLoader != null)
+                await AnchorLoader.Handle(data);
+            return b;
         }
 
-        public override Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            throw new NotImplementedException();
+            var b = await loader.Handle(data);
+            if (AnchorLoader != null)
+                await AnchorLoader.Handle(data);
+            return b;
         }
 
         ///// <summary>

@@ -98,7 +98,7 @@ namespace umi3d.cdk
         }
     }
 
-    public abstract class AbstractLoader : IHandler<ReadUMI3DExtensionData, bool>, IHandler<SetUMI3DPropertyData, bool>, IHandler<SetUMI3DPropertyContainerData, bool>, IHandler<ReadUMI3DPropertyData, object>
+    public abstract class AbstractLoader : IHandler<ReadUMI3DExtensionData, bool>, IHandler<SetUMI3DPropertyData, bool>, IHandler<SetUMI3DPropertyContainerData, bool>, IHandler<ReadUMI3DPropertyData, bool>
     {
         AbstractLoader successor;
 
@@ -129,7 +129,7 @@ namespace umi3d.cdk
             return this.successor;
         }
 
-        IHandler<ReadUMI3DPropertyData, object> IHandler<ReadUMI3DPropertyData, object>.GetNext()
+        IHandler<ReadUMI3DPropertyData, bool> IHandler<ReadUMI3DPropertyData, bool>.GetNext()
         {
             return this.successor;
         }
@@ -155,7 +155,7 @@ namespace umi3d.cdk
             return this.successor;
         }
 
-        IHandler<ReadUMI3DPropertyData, object> IHandler<ReadUMI3DPropertyData, object>.SetNext(IHandler<ReadUMI3DPropertyData, object> value)
+        IHandler<ReadUMI3DPropertyData, bool> IHandler<ReadUMI3DPropertyData, bool>.SetNext(IHandler<ReadUMI3DPropertyData, bool> value)
         {
             if (successor is AbstractLoader loader)
                 this.successor = loader;
@@ -192,10 +192,10 @@ namespace umi3d.cdk
             throw new Umi3dException($"No loader for this data {value}");
         }
 
-        public async Task<object> Handle(ReadUMI3DPropertyData value)
+        public async Task<bool> Handle(ReadUMI3DPropertyData value)
         {
             if (await ReadUMI3DProperty(value))
-                return value.result;
+                return true;
             if (successor != null)
                 return await successor.Handle(value);
             throw new Umi3dException($"No loader for this data {value}");
