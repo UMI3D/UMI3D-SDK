@@ -292,6 +292,11 @@ namespace umi3d.cdk.collaboration
             UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
         }
 
+        public override string ToString()
+        {
+            return $"[User {id} : login : {login}, audioLogin : {audioLogin}, status : {status}]";
+        }
+
         /// <summary>
         /// Event raising an UMI3DUser instance.
         /// </summary>
