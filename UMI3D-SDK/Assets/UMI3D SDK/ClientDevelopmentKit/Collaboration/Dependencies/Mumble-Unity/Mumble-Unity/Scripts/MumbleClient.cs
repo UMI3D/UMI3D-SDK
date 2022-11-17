@@ -48,6 +48,7 @@ namespace Mumble
             }
         }
         public bool ReadyToConnect { get; private set; }
+
         public bool ConnectionSetupFinished { get; private set; }
         /// <summary>
         /// Methods to create or delete the Unity audio players
@@ -169,9 +170,8 @@ namespace Mumble
                     _outputSampleRate = 48000;
                     break;
             }
-            //Debug.Log("Using output sample rate: " + _outputSampleRate);
 
-            switch (AudioSettings.speakerMode)
+            /*switch (AudioSettings.speakerMode)
             {
                 case AudioSpeakerMode.Mono:
                     // TODO sometimes, even though the speaker mode is mono,
@@ -185,8 +185,9 @@ namespace Mumble
                     Debug.LogError("Unsupported speaker mode " + AudioSettings.speakerMode + " please set this in Edit->Audio->DefaultSpeakerMode to either Mono or Stereo");
                     _outputChannelCount = 2;
                     break;
-            }
-            // Debug.Log("Using output channel count of: " + _outputChannelCount);
+            }*/
+
+            _outputChannelCount = 1;
 
             if (debugVals == null)
                 debugVals = new DebugValues();
@@ -256,7 +257,7 @@ namespace Mumble
             NumSamplesPerOutgoingPacket = MumbleConstants.NUM_FRAMES_PER_OUTGOING_PACKET * EncoderSampleRate / 100;
             _manageSendBuffer.InitForSampleRate(EncoderSampleRate);
         }
-        internal PcmArray GetAvailablePcmArray()
+        public PcmArray GetAvailablePcmArray()
         {
             return _manageSendBuffer.GetAvailablePcmArray();
         }
@@ -393,6 +394,7 @@ namespace Mumble
                 //Debug.Log("Adding audioPlayer session #" + userState.Session);
                 // We also create a new audio player for the user
                 MumbleAudioPlayer newPlayer = _audioPlayerCreator(userState.Name, userState.Session);
+                Debug.Assert(newPlayer != null, "MumbleAudioPlayer created null for " + userState.Name + ", " + userState.Session);
                 _mumbleAudioPlayers.Add(userState.Session, newPlayer);
                 newPlayer.Initialize(this, userState.Session);
             });
@@ -493,7 +495,6 @@ namespace Mumble
         }
         public void Close()
         {
-            // Debug.Log("Closing mumble");
             if (_manageSendBuffer != null)
                 _manageSendBuffer.Dispose();
             _manageSendBuffer = null;

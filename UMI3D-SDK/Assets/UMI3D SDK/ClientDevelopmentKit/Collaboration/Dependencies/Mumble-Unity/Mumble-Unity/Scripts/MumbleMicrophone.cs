@@ -61,10 +61,10 @@ namespace Mumble
                 return NumRecordingSeconds * _mumbleClient.EncoderSampleRate;
             }
         }
-        public int NumSamplesPerOutgoingPacket { get; private set; }
+        public int NumSamplesPerOutgoingPacket { get; protected set; }
         public AudioClip SendAudioClip { get; private set; }
 
-        private MumbleClient _mumbleClient;
+        protected MumbleClient _mumbleClient;
         public bool isRecording { get; private set; } = false;
         private string _currentMic;
         private int _previousPosition = 0;
@@ -75,7 +75,7 @@ namespace Mumble
         private int _sampleNumberOfLastMinAmplitudeVoice;
         private float _secondsWithoutMicSamples = 0;
         private float _secondsWithMicDataNotUpdated = 0;
-        private WritePositionalData _writePositionalDataFunc = null;
+        protected WritePositionalData _writePositionalDataFunc = null;
         // How many seconds to wait before we consider the mic being disconnected
         const float MaxSecondsWithoutMicData = 1f;
         const float MaxSecondsWithMicDataNotUpdated = 5f;
@@ -94,7 +94,7 @@ namespace Mumble
         /// Find the microphone to use and return it's sample rate
         /// </summary>
         /// <returns>New Mic's sample rate</returns>
-        internal int InitializeMic()
+        public virtual int InitializeMic()
         {
             //Make sure the requested mic index exists
             if (Microphone.devices.Length <= MicNumberToUse)
@@ -123,30 +123,33 @@ namespace Mumble
 
             return micSampleRate;
         }
-        public int GetMicPosition()
+
+        public virtual int GetMicPosition()
         {
             if (_currentMic == null)
                 return 0;
             return Microphone.GetPosition(_currentMic);
         }
+
         public void SetBitrate(int bitrate)
         {
             _mumbleClient.SetBitrate(bitrate);
         }
+
         public int GetBitrate()
         {
             return _mumbleClient.GetBitrate();
         }
-        void SendVoiceIfReady()
+
+        /// <summary>
+        /// Sends voice to Murmur server.
+        /// </summary>
+        protected virtual void SendVoiceIfReady()
         {
             int currentPosition = Microphone.GetPosition(_currentMic);
-           // Debug.Log($"Is recording mic {_currentMic} {currentPosition} " + Microphone.IsRecording(_currentMic));
 
-            //Debug.Log(currentPosition);
             if (currentPosition < _previousPosition)
                 _numTimesLooped++;
-
-            //Debug.Log("mic position: " + currentPosition + " was: " + _previousPosition + " looped: " + _numTimesLooped);
 
             int totalSamples = currentPosition + _numTimesLooped * NumSamplesInMicBuffer;
             bool isEmpty = currentPosition == 0 && _previousPosition == 0;
@@ -239,7 +242,8 @@ namespace Mumble
                 }
             }
         }
-        private static bool AmplitudeHigherThan(float minAmplitude, float[] pcm)
+
+        protected static bool AmplitudeHigherThan(float minAmplitude, float[] pcm)
         {
             //return true;
             float currentSum = pcm[0];
@@ -252,13 +256,14 @@ namespace Mumble
                 if (i % checkInterval == 0 && currentSum / i > minAmplitude)
                     return true;
             }
+
             return currentSum / pcm.Length > minAmplitude;
         }
-        public bool HasMic()
+        public virtual bool HasMic()
         {
             return _currentMic != null;
         }
-        public string GetCurrentMicName()
+        public virtual string GetCurrentMicName()
         {
             return _currentMic;
         }
@@ -268,7 +273,7 @@ namespace Mumble
             StartSendingAudio(_mumbleClient.EncoderSampleRate);
         }
 
-        public void StartSendingAudio(int sampleRate)
+        public virtual void StartSendingAudio(int sampleRate)
         {
             if (_currentMic == null)
             {
@@ -285,13 +290,13 @@ namespace Mumble
             isRecording = true;
             //_mumbleClient.SetSelfMute(false);
         }
-        public void StopSendingAudio()
+        public virtual void StopSendingAudio()
         {
             Microphone.End(_currentMic);
             _mumbleClient?.StopSendingVoice();
             isRecording = false;
         }
-        void Update()
+        protected virtual void Update()
         {
             if (_mumbleClient == null || !_mumbleClient.ConnectionSetupFinished)
                 return;
