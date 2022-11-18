@@ -38,7 +38,7 @@ namespace umi3d.cdk
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            return data.dto is UMI3DAbstractNodeDto && base.CanReadUMI3DExtension(data);
+            return data.dto is UMI3DMeshNodeDto && base.CanReadUMI3DExtension(data);
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace umi3d.cdk
         /// <param name="failed">error callback.</param>
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            var nodeDto = data.dto as UMI3DAbstractNodeDto;
+            var nodeDto = data.dto as UMI3DMeshNodeDto;
             if (data.node == null)
             {
                 throw (new Umi3dException("Dto should be an UMI3DAbstractNodeDto"));
@@ -59,7 +59,7 @@ namespace umi3d.cdk
             await base.ReadUMI3DExtension(data);
 
             //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)data.dto).mesh.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(nodeDto.mesh.variants);  // Peut etre ameliore
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;

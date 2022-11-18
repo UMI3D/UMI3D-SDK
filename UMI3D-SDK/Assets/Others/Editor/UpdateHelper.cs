@@ -1,0 +1,345 @@
+/*
+Copyright 2019 - 2022 Inetum
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+#if UNITY_EDITOR
+
+using inetum.unityUtils;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using umi3d;
+using UnityEditor;
+using UnityEngine;
+
+
+public class SubUpdateHelper : EditorWindow
+{
+    public static void Open(bool sourceIsA, string name1, string name2, string path1, string path2, Action<(bool,List<string>)> callback, List<string> folders = null)
+    {
+        // \Assets\Scripts\UI\UXML\
+        // Get existing open window or if none, make a new one :
+        SubUpdateHelper window = (SubUpdateHelper)EditorWindow.GetWindow(typeof(SubUpdateHelper));
+        window.Init(sourceIsA, name1, name2, path1, path2, folders, callback);
+        window.Show();
+    }
+
+    bool sourceIsA;
+    string name1;
+    string name2;
+    string path1;
+    string path2;
+    Vector2 pos;
+    List<string> folders;
+    folder sdkFolder;
+    Action<(bool, List<string>)> callback;
+    GUIStyle style;
+
+    public class folder
+    {
+        public bool display;
+        public bool? selected = false;
+        public string path;
+        public string name;
+        public List<folder> folders;
+
+        public folder(string path)
+        {
+            this.path = path;
+            display = false;
+            selected = false;
+            name = path.Split('\\').Last();
+            folders = new List<folder>();
+        }
+    }
+
+    void Init(bool sourceIsA, string name1, string name2, string path1, string path2, List<string> folders, Action<(bool, List<string>)> callback)
+    {
+        if (folders == null)
+            folders = new List<string>();
+
+        this.sourceIsA = sourceIsA;
+        this.path1 = path1;
+        this.path2 = path2;
+        this.name1 = name1;
+        this.name2 = name2;
+        this.folders = folders;
+        this.callback = callback;
+        InitFolder();
+
+        style = new GUIStyle(EditorStyles.foldout);
+        style.stretchWidth = false;
+        //GUI.skin.toggle = style;
+    }
+
+    void OnGUI()
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Source");
+        if (GUILayout.Button(sourceIsA ? name1 : name2))
+        {
+            sourceIsA = !sourceIsA;
+            InitFolder();
+        }
+        EditorGUILayout.EndHorizontal();
+        pos = EditorGUILayout.BeginScrollView(pos);
+        var indent = EditorGUI.indentLevel;
+        Display(sdkFolder);
+        EditorGUI.indentLevel = indent;
+        EditorGUILayout.EndScrollView();
+        if (GUILayout.Button("validate"))
+        {
+            ComputeFolder();
+            callback.Invoke((sourceIsA, folders));
+        }
+    }
+
+    void ComputeFolder()
+    {
+
+    }
+
+    void Display(folder folder, int i = 0)
+    {
+        EditorGUI.indentLevel = i;
+        EditorGUILayout.BeginHorizontal();
+        if (folder.folders.Count > 0)
+        {
+            folder.display = EditorGUILayout.Foldout(folder.display, GUIContent.none, style);
+            EditorGUI.indentLevel -= 2;
+        }
+        else
+        {
+            EditorGUI.indentLevel += 2;
+        }
+        var b = folder.selected;
+
+        EditorGUI.showMixedValue = folder.selected == null;
+        folder.selected = EditorGUILayout.ToggleLeft(folder.name, (folder.selected ?? false), (GUILayoutOption[])null);
+        EditorGUI.showMixedValue = false;
+        if (b != folder.selected && !(!(folder.selected.Value) && b == null))
+            SelectSub(folder);
+
+        GUILayout.FlexibleSpace();
+        EditorGUILayout.EndHorizontal();
+
+        if (folder.display && folder.folders.Count > 0)
+        {
+            bool allSelected = true;
+            bool allNotSelected = true;
+            foreach (var f in folder.folders)
+            {
+                Display(f, i + 1);
+                if (!(f.selected ?? false))
+                    allSelected = false;
+                if ((f.selected ?? true))
+                    allNotSelected = false;
+            }
+            folder.selected = allSelected ? true : allNotSelected ? false : (bool?)null;
+        }
+
+    }
+
+    void SelectSub(folder folder)
+    {
+        foreach (var f in folder.folders)
+        {
+            if (f.selected != folder.selected)
+            {
+                f.selected = folder.selected;
+                SelectSub(f);
+            }
+        }
+    }
+
+    void InitFolder()
+    {
+        var path = sourceIsA ? path1 : path2;
+        sdkFolder = new folder(path);
+        Found(sdkFolder);
+        sdkFolder.display= true;
+        folders.Clear();
+    }
+
+    void Found(folder folder)
+    {
+        var d = Directory.GetDirectories(folder.path, "*", SearchOption.TopDirectoryOnly);
+        foreach(var p in d)
+        {
+            var f = new folder(p);
+            folder.folders.Add(f);
+            Found(f);
+        }
+    }
+
+}
+
+public class UpdateHelper : EditorWindow
+{
+    const string _scriptableFolderPath = "EXCLUDED";
+    const string scriptablePathNoExt = "Assets/" + _scriptableFolderPath + "/UpdateHelperData";
+    const string scriptablePath = scriptablePathNoExt + ".asset";
+
+    UpdateHelperData _data;
+
+    // Add menu named "My Window" to the Window menu
+    [MenuItem("UMI3D/Update")]
+    static void Open()
+    {
+        UpdateHelper window = (UpdateHelper)EditorWindow.GetWindow(typeof(UpdateHelper));
+        window.Init();
+        window.Show();
+    }
+
+    void Init()
+    {
+        _data = GetScriptable();
+        GetEditor();
+    }
+
+    void OnGUI()
+    {
+
+        var editor = GetEditor();
+        UnityEngine.Debug.Assert(_data != null);
+        UnityEngine.Debug.Assert(editor != null);
+
+        editor?.OnInspectorGUI();
+
+        if (GUILayout.Button("Test"))
+            Test();
+    }
+
+    async void Test()
+    {
+
+    }
+
+
+    #region BuildUtils
+
+
+
+    void cleanBuildFolder(string buildFolder)
+    {
+        if (Directory.Exists(buildFolder))
+            Directory.Delete(buildFolder, true);
+        Directory.CreateDirectory(buildFolder);
+    }
+
+    List<(string, string)> Build(string buildFolder)
+    {
+        return PackagesExporter.ExportPackages(buildFolder + "/");
+    }
+
+    static void OpenFile(string path)
+    {
+        path = path.Replace('/', '\\');
+
+        if (File.Exists(path))
+        {
+            FileAttributes attr = File.GetAttributes(path);
+            //detect whether its a directory or file
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            {
+                OpenFileWith("explorer.exe", path, "/root,");
+            }
+            else
+            {
+                OpenFileWith("explorer.exe", path, "/select,");
+            }
+        }
+        else
+            UnityEngine.Debug.LogError("no file at " + path);
+    }
+
+    static void OpenFileWith(string exePath, string path, string arguments)
+    {
+        if (path == null)
+            return;
+
+        try
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
+            if (exePath != null)
+            {
+                process.StartInfo.FileName = exePath;
+                //Pre-post insert quotes for fileNames with spaces.
+                process.StartInfo.Arguments = string.Format("{0}\"{1}\"", arguments, path);
+            }
+            else
+            {
+                process.StartInfo.FileName = path;
+                process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
+            }
+            if (!path.Equals(process.StartInfo.WorkingDirectory))
+            {
+                process.Start();
+            }
+        }
+        catch (System.ComponentModel.Win32Exception ex)
+        {
+            UnityEngine.Debug.LogException(ex);
+        }
+    }
+
+    #endregion
+
+    #region Scriptable Handler
+
+    Editor ScriptableEditor;
+    Editor GetEditor()
+    {
+        if (ScriptableEditor == null)
+            ScriptableEditor = Editor.CreateEditor(_data);
+        return ScriptableEditor;
+    }
+
+    static UpdateHelperData GetScriptable() => LoadScriptable() ?? CreateScriptable();
+
+    static UpdateHelperData CreateScriptable()
+    {
+        CreateFolder();
+        UpdateHelperData asset = ScriptableObject.CreateInstance<UpdateHelperData>();
+        AssetDatabase.CreateAsset(asset, scriptablePath);
+        AssetDatabase.SaveAssets();
+        return asset;
+    }
+
+    static void CreateFolder()
+    {
+        if (!System.IO.Directory.Exists(Application.dataPath + System.IO.Path.GetDirectoryName(scriptablePath).TrimStart("Assets".ToCharArray())))
+        {
+            AssetDatabase.CreateFolder("Assets", _scriptableFolderPath);
+        }
+
+    }
+
+    static UpdateHelperData LoadScriptable()
+    {
+        var asset = AssetDatabase.LoadAssetAtPath<UpdateHelperData>(scriptablePath);
+        UnityEngine.Debug.Assert(asset != null, scriptablePath);
+        return asset;
+    }
+
+    #endregion
+}
+#endif

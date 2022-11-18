@@ -36,6 +36,11 @@ namespace umi3d.cdk
 
         public void SendOnPoseUpdated() { OnPoseUpdated.Invoke(); }
 
+        public override string ToString()
+        {
+            return $"UMI3DNodeInstance [{dto} : {Object} : {gameObject}]";
+        }
+
         public bool updatePose = true;
 
         private List<Renderer> _renderers;
