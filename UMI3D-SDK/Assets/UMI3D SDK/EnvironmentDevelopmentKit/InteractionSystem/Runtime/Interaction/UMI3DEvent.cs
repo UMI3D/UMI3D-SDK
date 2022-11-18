@@ -26,6 +26,7 @@ namespace umi3d.edk.interaction
     /// </summary>
     public class UMI3DEvent : AbstractInteraction
     {
+        #region fields
         /// <summary>
         /// Is the interaction an hold interaction (continuous) or a trigger one (instantaneous) ?
         /// </summary>
@@ -60,6 +61,34 @@ namespace umi3d.edk.interaction
         /// </summary>
         [SerializeField, Tooltip("Client animation triggered when is released by a user.")]
         public UMI3DAbstractAnimation ReleaseAnimation;
+
+        /// <summary>
+        /// Animation Asych property of the animatiuon triggered when the interaction is triggered
+        /// </summary>
+        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _triggerAnimation;
+        /// <summary>
+        /// Animation Asych property of the animatiuon triggered when the interaction is realeased
+        /// </summary>
+        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _releaseAnimation;
+
+        /// <summary>
+        /// Animation Asych Attribute of the animatiuon triggered when the interaction is triggered
+        /// </summary>
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> triggerAnimation { get { Register(); return _triggerAnimation; } set => _triggerAnimation = value; }
+        /// <summary>
+        /// Animation Asych Attribute of the animatiuon triggered when the interaction is realeased
+        /// </summary>
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> releaseAnimation { get { Register(); return _releaseAnimation; } set => _releaseAnimation = value; }
+
+        #endregion
+
+        protected override void InitDefinition(ulong id)
+        {
+            base.InitDefinition(id);
+
+            triggerAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventTriggerAnimation, TriggerAnimation, (v, u) => v?.Id());
+            releaseAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventReleaseAnimation, ReleaseAnimation, (v, u) => v?.Id());
+        }
 
         /// <summary>
         /// Called by a user on interaction.
@@ -122,6 +151,8 @@ namespace umi3d.edk.interaction
         {
             return base.ToByte(user)
                     + UMI3DNetworkingHelper.Write(Hold);
+                    //+ ((UMI3DLoadableEntity)this.triggerAnimation).ToBytes(user)
+                    //+ ((UMI3DLoadableEntity)this.releaseAnimation).ToBytes(user);
         }
 
         /// <inheritdoc/>
@@ -143,8 +174,8 @@ namespace umi3d.edk.interaction
             if (dto is EventDto _dto)
             {
                 _dto.hold = Hold;
-                _dto.TriggerAnimationId = TriggerAnimation != null ? TriggerAnimation.Id() : 0;
-                _dto.ReleaseAnimationId = ReleaseAnimation != null ? ReleaseAnimation.Id() : 0;
+                _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
+                _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
             }
         }
     }
