@@ -191,7 +191,7 @@ public class ProjectLinkEditor : PropertyDrawer
             return;
         }
 
-        if (AtoB)
+        if (AtoB == sourceIsA)
         {
             if (Directory.Exists(AtoB ? pathB : pathA))
                 Directory.Delete(AtoB ? pathB : pathA, true);
