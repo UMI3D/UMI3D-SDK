@@ -135,10 +135,13 @@ namespace umi3d.cdk.userCapture
 
         public class HandPoseEvent : UnityEvent<UMI3DHandPoseDto> { };
         public class BodyPoseEvent : UnityEvent<UMI3DBodyPoseDto> { };
+        public class BoardedVehicleEvent : UnityEvent<ulong> { };
 
         public HandPoseEvent handPoseEvent = new HandPoseEvent();
 
         public BodyPoseEvent bodyPoseEvent = new BodyPoseEvent();
+
+        public BoardedVehicleEvent boardedVehicleEvent = new BoardedVehicleEvent();
 
         public class EmotesConfigEvent : UnityEvent<UMI3DEmotesConfigDto> { };
         public class EmoteEvent : UnityEvent<UMI3DEmoteDto> { };
@@ -593,7 +596,10 @@ namespace umi3d.cdk.userCapture
             {
                 var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
                 if (anim != null)
+                {
+                    boardedVehicleEvent.Invoke(vehicleDto.VehicleId);
                     anim.Start();
+                }
             }
 
             var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
