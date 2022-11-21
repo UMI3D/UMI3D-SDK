@@ -120,6 +120,8 @@ namespace umi3d.common
 
         public const uint InteractableHoverEnterAnimation = 5301;
         public const uint InteractableHoverExitAnimation = 5302;
+        public const uint EventTriggerAnimation = 5303;
+        public const uint EventReleaseAnimation = 5304;
         #endregion
 
         #region UI
