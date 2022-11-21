@@ -544,6 +544,12 @@ namespace umi3d.cdk.collaboration
             if (this.isMute != isMute)
             {
                 this.isMute = isMute;
+
+                UMI3DUser user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
+
+                if (user.microphoneStatus == isMute)
+                    user.SetMicrophoneStatus(!isMute);
+
                 if (microphoneStatus == MicrophoneStatus.MicrophoneReady)
                     mumbleClient.SetSelfMute(isMute);
             }
