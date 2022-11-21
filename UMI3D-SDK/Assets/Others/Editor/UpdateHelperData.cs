@@ -191,10 +191,12 @@ public class ProjectLinkEditor : PropertyDrawer
             return;
         }
 
-
-        if (Directory.Exists(AtoB ? pathB : pathA))
-            Directory.Delete(AtoB ? pathB : pathA, true);
-        Directory.CreateDirectory(AtoB ? pathB : pathA);
+        if (AtoB)
+        {
+            if (Directory.Exists(AtoB ? pathB : pathA))
+                Directory.Delete(AtoB ? pathB : pathA, true);
+            Directory.CreateDirectory(AtoB ? pathB : pathA);
+        }
 
         folders
             .Select(path => path.Substring((sourceIsA) ? pathA.Length : pathB.Length))
