@@ -242,11 +242,6 @@ public class ProjectLinkEditor : PropertyDrawer
         {
             pl.sourceIsA = c.Item1;
             pl.folders = c.Item2;
-
-            for(int i = 0; i < c.Item2.Count; i++)
-            {
-                Debug.Log(c.Item2[i]);
-            }
         };
     }
 
