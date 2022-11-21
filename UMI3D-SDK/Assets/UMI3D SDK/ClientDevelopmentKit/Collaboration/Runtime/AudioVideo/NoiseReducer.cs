@@ -44,30 +44,51 @@ namespace umi3d.cdk.collaboration
             Destroy();
         }
 
+        /// <summary>
+        /// Reduce audio noise from <paramref name="pcm"/>.
+        /// </summary>
+        /// <param name="pcm"></param>
+        /// <param name="channel"></param>
         public void ReduceNoise(short[] pcm, int channel)
         {
             if (_ptr == IntPtr.Zero) return;
             NativeMethods.ReduceNoise(_ptr, pcm, pcm.Length, channel);
         }
 
+        /// <summary>
+        /// Reduce audio noise from <paramref name="pcm"/>.
+        /// </summary>
+        /// <param name="pcm"></param>
+        /// <param name="channel"></param>
         public void ReduceNoiseFloat(float[] pcm, int channel)
         {
             if (_ptr == IntPtr.Zero) return;
             NativeMethods.ReduceNoiseFloat(_ptr, pcm, pcm.Length, channel);
         }
 
+        /// <summary>
+        /// Change noise attenuation strenght.
+        /// </summary>
+        /// <param name="value"></param>
         public void SetAttenuation(double value)
         {
             if (_ptr == IntPtr.Zero) return;
             NativeMethods.SetMaxAttenuation(_ptr, value);
         }
 
+        /// <summary>
+        /// Change rn model use to perform noise reduction.
+        /// </summary>
+        /// <param name="model"></param>
         public void ChangeRnnModel(RnNoiseModel model)
         {
             if (_ptr == IntPtr.Zero) return;
             NativeMethods.ChangeRnnModel(_ptr, model);
         }
 
+        /// <summary>
+        /// Dispose object.
+        /// </summary>
         public void Destroy()
         {
             if (_ptr == IntPtr.Zero) return;
@@ -79,6 +100,9 @@ namespace umi3d.cdk.collaboration
             _ptr = data.Ptr;
         }
 
+        /// <summary>
+        /// Config for noise reducing.
+        /// </summary>
         public struct NoiseReducerConfig
         {
             public int NumChannels;
@@ -87,6 +111,9 @@ namespace umi3d.cdk.collaboration
             public RnNoiseModel Model;
         }
 
+        /// <summary>
+        /// List of RN model supported.
+        /// </summary>
         public enum RnNoiseModel : byte
         {
             General = 0,
