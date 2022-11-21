@@ -23,6 +23,7 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
+using static umi3d.common.NotificationDto;
 
 namespace umi3d.edk.collaboration
 {
@@ -377,6 +378,11 @@ namespace umi3d.edk.collaboration
                 case UMI3DOperationKeys.UserMicrophoneStatus:
                     if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
                         tr.AddIfNotNull(users[dto.id].microphoneStatus.SetValue(dto.value));
+
+                    if (tr.Count() > 0 && user.Id() != dto.id)
+                    {
+                        tr.AddIfNotNull(GetMuteNotification(user).GetLoadEntity(new HashSet<UMI3DUser> { users[dto.id] }));
+                    }
                     break;
 
                 case UMI3DOperationKeys.UserAvatarStatus:
@@ -390,8 +396,7 @@ namespace umi3d.edk.collaboration
                     break;
 
                 case UMI3DOperationKeys.MuteAllMicrophoneStatus:
-                    foreach (UMI3DCollaborationUser u in users.Values)
-                        tr.AddIfNotNull(u.microphoneStatus.SetValue(false));
+                    tr.AddIfNotNull(MuteAll(user));
                     break;
 
                 case UMI3DOperationKeys.MuteAllAvatarStatus:
@@ -420,8 +425,14 @@ namespace umi3d.edk.collaboration
                 case UMI3DOperationKeys.UserMicrophoneStatus:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     value = UMI3DNetworkingHelper.Read<bool>(container);
+
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
+
+                    if (tr.Count() > 0 && user.Id() != id)
+                    {
+                        tr.AddIfNotNull(GetMuteNotification(user).GetLoadEntity(new HashSet<UMI3DUser> { users[id] }));
+                    }
                     break;
 
                 case UMI3DOperationKeys.UserAvatarStatus:
@@ -439,8 +450,7 @@ namespace umi3d.edk.collaboration
                     break;
 
                 case UMI3DOperationKeys.MuteAllMicrophoneStatus:
-                    foreach (UMI3DCollaborationUser u in users.Values)
-                        tr.AddIfNotNull(u.microphoneStatus.SetValue(false));
+                    tr.AddIfNotNull(MuteAll(user));
                     break;
 
                 case UMI3DOperationKeys.MuteAllAvatarStatus:
@@ -454,6 +464,48 @@ namespace umi3d.edk.collaboration
                     break;
             }
             tr.Dispatch();
+        }
+
+        /// <summary>
+        /// Mute everyone except <see cref="user"/>
+        /// </summary>
+        /// <param name="user">User who muted everyone</param>
+        /// <returns></returns>
+        private List<Operation> MuteAll(UMI3DUser user)
+        {
+            List<Operation> ops = new List<Operation>();
+            HashSet<UMI3DUser> usersMuted = new HashSet<UMI3DUser>();
+
+            foreach (UMI3DCollaborationUser u in users.Values)
+            {
+                if (u != user && u.microphoneStatus.GetValue())
+                {
+                    ops.Add(u.microphoneStatus.SetValue(false));
+                    usersMuted.Add(u);
+                }
+            }
+
+            ops.Add(GetMuteNotification(user).GetLoadEntity(usersMuted));
+
+            return ops;
+        }
+
+        /// <summary>
+        /// Returns a notification to display to users they were muted by <paramref name="user"/>.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private UMI3DNotification GetMuteNotification(UMI3DUser user)
+        {
+            UMI3DNotification notif;
+
+            if (user is UMI3DCollaborationUser collabUser)
+                notif = new UMI3DNotification(NotificationPriority.Low, "Microphone",
+                    "You were muted by " + (string.IsNullOrEmpty(collabUser.login) ? "user " + collabUser.Id() : collabUser.login), 2.5f, null, null);
+            else
+                notif = new UMI3DNotification(NotificationPriority.Low, "Microphone", "You were muted.", 2.5f, null, null);
+
+            return notif;
         }
     }
 }
