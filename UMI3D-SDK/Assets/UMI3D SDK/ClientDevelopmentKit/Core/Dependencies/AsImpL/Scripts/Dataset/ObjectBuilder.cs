@@ -63,27 +63,38 @@ namespace AsImpL
         /// </summary>
         /// <param name="materialData">List of material data</param>
         /// <param name="hasColors">If true and materialData is null and vertex colors are available, then use them</param>
-        public void InitBuildMaterials(List<MaterialData> materialData, bool hasColors)
+        public void InitBuildMaterials(List<MaterialData> materialData, bool hasColors, Material baseMaterial)
         {
             this.materialData = materialData;
             currMaterials = new Dictionary<string, Material>();
             if (materialData == null || materialData.Count == 0)
             {
-                string shaderName = "VertexLit";
-                if (hasColors)
+                Material mat;
+
+                if(baseMaterial != null)
                 {
-                    shaderName = "Unlit/Simple Vertex Colors Shader";
-                    if (Shader.Find(shaderName) == null)
+                    mat = baseMaterial;
+                } else
+                {
+                    string shaderName = "VertexLit";
+                    if (hasColors)
                     {
-                        shaderName = "Mobile/Particles/Alpha Blended";
+                        shaderName = "Unlit/Simple Vertex Colors Shader";
+                        if (Shader.Find(shaderName) == null)
+                        {
+                            shaderName = "Mobile/Particles/Alpha Blended";
+                        }
+                        //Debug.Log("No material library defined. Using vertex colors.");
                     }
-                    //Debug.Log("No material library defined. Using vertex colors.");
+                    else
+                    {
+                        //Debug.LogWarning("No material library defined. Using a default material.");
+                    }
+
+                    mat = MaterialFactory.Create(shaderName);
                 }
-                else
-                {
-                    //Debug.LogWarning("No material library defined. Using a default material.");
-                }
-                currMaterials.Add("default", MaterialFactory.Create(shaderName));
+
+                currMaterials.Add("default", mat);
             }
         }
 

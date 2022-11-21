@@ -1,0 +1,18 @@
+[bB]in/
+[oO]bj/
+[pP]ackages/
+AppPackages/
+TestResults/
+TestResult.xml
+BuildArtefacts/
+_ReSharper*/
+*.suo
+*.ncrunchsolution
+*.user
+*.ncrunchproject
+*.orig
+*.lock.json
+.vs/
+.fake/
+# cake:
+Tools/

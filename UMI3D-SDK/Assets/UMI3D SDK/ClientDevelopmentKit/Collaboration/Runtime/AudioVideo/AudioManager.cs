@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
     public class AudioUserIsSpeaking : UnityEvent<UMI3DUser, bool> { }
 
     /// <summary>
-    /// Manger for audio reading.
+    /// Manager for audio reading.
     /// </summary>
     public class AudioManager : SingleBehaviour<AudioManager>
     {
@@ -42,7 +42,6 @@ namespace umi3d.cdk.collaboration
         public readonly Dictionary<string, float> gainMemory = new Dictionary<string, float>();
 
         public AudioUserIsSpeaking OnUserSpeaking = new AudioUserIsSpeaking();
-
 
         public void Setup(Dictionary<string, float> volumeMemory, Dictionary<string, float> gainMemory)
         {
@@ -159,7 +158,6 @@ namespace umi3d.cdk.collaboration
             return player;
         }
 
-
         private MumbleAudioPlayer MumbleAudioPlayerContain(ulong id)
         {
             if (SpacialReader.ContainsKey(id))
@@ -168,7 +166,6 @@ namespace umi3d.cdk.collaboration
                 return GlobalReader[id];
             return null;
         }
-
 
         public MumbleAudioPlayer GetMumbleAudioPlayer(UMI3DUser user)
         {
@@ -196,6 +193,9 @@ namespace umi3d.cdk.collaboration
 
         private MumbleAudioPlayer CreatePrending(string username)
         {
+            if (string.IsNullOrEmpty(username))
+                return null;
+
             lock (PendingMumbleAudioPlayer)
                 if (!PendingMumbleAudioPlayer.ContainsKey(username) || PendingMumbleAudioPlayer[username] == null)
                 {
@@ -221,9 +221,21 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        public bool DeletePending(string username, uint session)
+        {
+            if (!string.IsNullOrEmpty(username) && PendingMumbleAudioPlayer.ContainsKey(username))
+            {
+                PendingMumbleAudioPlayer[username].Reset();
+                GameObject.Destroy(PendingMumbleAudioPlayer[username].gameObject);
+                PendingMumbleAudioPlayer.Remove(username);
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
-        /// MAnage user update
+        /// Manage user update
         /// </summary>
         /// <param name="user"></param>
         private void OnUserDisconected(UMI3DUser user)
@@ -233,16 +245,28 @@ namespace umi3d.cdk.collaboration
                 StopCoroutine(WaitCoroutine[user.id]);
                 WaitCoroutine.Remove(user.id);
             }
+
+            var pending = CreatePrending(user.audioLogin);
+
             if (GlobalReader.ContainsKey(user.id))
             {
+                pending?.Setup(GlobalReader[user.id]);
+
                 GlobalReader[user.id].Reset();
                 Destroy(GlobalReader[user.id].gameObject);
                 GlobalReader.Remove(user.id);
             }
             if (SpacialReader.ContainsKey(user.id))
             {
+                pending?.Setup(SpacialReader[user.id]);
+
                 SpacialReader[user.id].Reset();
                 SpacialReader.Remove(user.id);
+            }
+
+            if (pending != null && !pending.IsMumbleClientSet())
+            {
+                CleanPending(user);
             }
         }
 

@@ -384,7 +384,8 @@ namespace umi3d.edk.collaboration.murmur
 
                 Channels.Where(c => !data.sub_channels.Any(d => d.c.id == c.data.id)).ToList().ForEach(c => Channels.Remove(c));
 
-                IEnumerable<SubChannelData> toAdd = data.sub_channels.Where(d => !Channels.Any(c => d.c.id == c.data.id));
+
+                IEnumerable<SubChannelData> toAdd = data?.sub_channels?.Where(d => !Channels.Any(c => d.c.id == c.data.id)) ?? new List<SubChannelData>();
 
                 if (toAdd.Count() > 0)
                     toAdd.ForEach(d => Channel.Create(murmur, this, d.c));
