@@ -64,10 +64,10 @@ namespace umi3d.cdk.interaction
                     dto.active = (bool)value.property.value;
                     break;
                 case UMI3DPropertyKeys.EventTriggerAnimation:
-                    (dto.interactions.Find(evt => evt.id.Equals(property.entityId)) as EventDto).TriggerAnimationId = (ulong)property.value;
+                    (dto.interactions.Find(evt => evt.id.Equals(value.property.entityId)) as EventDto).TriggerAnimationId = (ulong)value.property.value;
                     break;
                 case UMI3DPropertyKeys.EventReleaseAnimation:
-                    (dto.interactions.Find(evt => evt.id.Equals(property.entityId)) as EventDto).ReleaseAnimationId = (ulong)property.value;
+                    (dto.interactions.Find(evt => evt.id.Equals(value.property.entityId)) as EventDto).ReleaseAnimationId = (ulong)value.property.value;
                     break;
                 default:
                     return false;
