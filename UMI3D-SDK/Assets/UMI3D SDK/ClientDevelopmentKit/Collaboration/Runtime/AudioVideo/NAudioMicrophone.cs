@@ -20,6 +20,8 @@ using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using WebSocketSharp;
+using static umi3d.cdk.collaboration.NoiseReducer;
 
 namespace umi3d.cdk.collaboration
 {
@@ -39,9 +41,9 @@ namespace umi3d.cdk.collaboration
         private int currentMicIndex = -1;
 
         /// <summary>
-        /// Current sample rate used to record audio.
+        /// Current sample rate used to record audio. Value forced to 48000 to be able to use noise reduction.
         /// </summary>
-        private int currentMicSampleRate = -1;
+        private readonly int currentMicSampleRate = 48000;
 
         /// <summary>
         /// Two channels are recorded by default because some microphones only record data in one channel.
@@ -95,6 +97,34 @@ namespace umi3d.cdk.collaboration
 
         #endregion
 
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+
+        #region Noise Reducer
+
+        /// <summary>
+        /// Noise reducer handler.
+        /// </summary>
+        private NoiseReducer noiseReducer;
+
+        [field: SerializeField]
+        private bool UseNoiseReducer { get; set; } = true;
+
+        /// <summary>
+        /// Model used to perform noise reduction.
+        /// </summary>
+        private RnNoiseModel noiseModel = RnNoiseModel.Speech;
+
+        /// <summary>
+        /// Strenght of noise reduction.
+        /// </summary>
+        private int attenuationStrenght = 50;
+
+        float[] noiseReductionBuffer = new float[480];
+        float[] tmpBuffer = new float[4800];
+
+        #endregion
+#endif
+
         #endregion
 
         #region Methods
@@ -123,60 +153,100 @@ namespace umi3d.cdk.collaboration
 
             Microphone.GetDeviceCaps(Microphone.devices[MicNumberToUse], out int minFreq, out int maxFreq);
 
-
-            currentMicSampleRate = MumbleClient.GetNearestSupportedSampleRate(maxFreq);
             NumSamplesPerOutgoingPacket = MumbleConstants.NUM_FRAMES_PER_OUTGOING_PACKET * currentMicSampleRate / 100;
 
-            if (currentMicSampleRate != 48000)
-                Debug.LogWarning("Using a possibly unsupported sample rate of " + currentMicSampleRate + " things might get weird");
+            if (maxFreq != currentMicSampleRate)
+            {
+                Debug.Log("Microphone supports only " + maxFreq + " Hz, value forced to 48000 to be able to use noise reduction.");
+            }
 
-            InitializeInternalMic(currentMicSampleRate);
+            if (waveIn == null)
+            {
+                waveIn = new WaveInEvent();
+
+                waveIn.DataAvailable += ProcessAudio;
+            }
+
+            waveIn.WaveFormat = new WaveFormat(currentMicSampleRate, numberOfChannel);
+            waveIn.DeviceNumber = MicNumberToUse;
+
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+            noiseReducer?.Destroy();
+            noiseReducer = new NoiseReducer(new NoiseReducerConfig()
+            {
+                SampleRate = currentMicSampleRate,
+                NumChannels = 1,
+                Attenuation = attenuationStrenght,
+                Model = noiseModel
+            });
+#endif
 
             return currentMicSampleRate;
         }
 
         /// <summary>
-        /// Inits <see cref="waveIn"/>.
+        /// Processess audio and add filters if enabled.
         /// </summary>
         /// <param name="micSampleRate"></param>
-        protected void InitializeInternalMic(int micSampleRate)
+        protected void ProcessAudio(object o, WaveInEventArgs a)
         {
-            if (waveIn == null)
+            if (!shouldSendAudioToServer)
+                return;
+
+            byte[] buffer = a.Buffer;
+
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+
+            if (UseNoiseReducer)
             {
-                waveIn = new WaveInEvent();
+                tmpBuffer = new float[4800];
+                int j = 0;
 
-                waveIn.DataAvailable += (s, a) =>
+                for (int index = 0; index < a.BytesRecorded; index += 2 * numberOfChannel)
                 {
-                    if (!shouldSendAudioToServer)
-                        return;
+                    tmpBuffer[j] = ((short)((buffer[channelChoosen + index + 1] << 8) | buffer[channelChoosen + index])) / 32768f;
+                    j++;
+                }
 
-                    byte[] buffer = a.Buffer;
-
-                    lock (data)
+                lock (data)
+                {
+                    for (int i = 0; i < tmpBuffer.Length; i += 480)
                     {
-                        for (int index = 0; index < a.BytesRecorded; index += 2 * numberOfChannel)
-                        {
-                            short sample = (short)((buffer[channelChoosen + index + 1] << 8) | buffer[channelChoosen + index]);
-
-                            data.Add(sample / 32768f);
-                        }
+                        noiseReductionBuffer = tmpBuffer.SubArray(i, 480);
+                        noiseReducer.ReduceNoiseFloat(noiseReductionBuffer, 0);
+                        data.AddRange(noiseReductionBuffer);
                     }
-
-                    if (!isChannelChoosen)
-                        ChooseChannel(buffer, a.BytesRecorded, micSampleRate);
-
-                };
+                }
             }
+            else
+            {
+                ConvertAudioInputToData(a.BytesRecorded, buffer);
+            }
+#else
+            ConvertAudioInputToData(a.BytesRecorded, buffer);
+#endif
 
-            waveIn.WaveFormat = new WaveFormat(micSampleRate, numberOfChannel);
-            waveIn.DeviceNumber = MicNumberToUse;
+            if (!isChannelChoosen)
+                ChooseChannel(buffer, a.BytesRecorded);
+        }
+
+        private void ConvertAudioInputToData(int ntBytes, byte[] buffer)
+        {
+            lock (data)
+            {
+                for (int index = 0; index < ntBytes; index += 2 * numberOfChannel)
+                {
+                    short sample = (short)((buffer[channelChoosen + index + 1] << 8) | buffer[channelChoosen + index]);
+                    data.Add(sample / 32768f);
+                }
+            }
         }
 
         /// <summary>
         /// Sets up <see cref="channelChoosen"/>, meaning choose the audio input channel to send to the server.
         /// </summary>
         /// <returns></returns>
-        private void ChooseChannel(byte[] buffer, int nbByte, int sampleRate)
+        private void ChooseChannel(byte[] buffer, int nbByte)
         {
             if (!isChannelChoosen)
             {
@@ -364,10 +434,13 @@ namespace umi3d.cdk.collaboration
 
         protected void OnDestroy()
         {
+#if UNITY_STANDALONE_WIN || UNITY_STANDALONE_OSX
+            noiseReducer?.Destroy();
+#endif
             waveIn?.Dispose();
         }
 
-        #endregion
+        #endregion     
     }
 }
 
