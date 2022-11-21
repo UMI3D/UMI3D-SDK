@@ -70,5 +70,10 @@ namespace umi3d.common
             dto.property = property;
             dto.value = value;
         }
+
+        public override string ToString()
+        {
+            return $"SetEntityPropertyDto {entityId} {property} {value}";
+        }
     }
 }
