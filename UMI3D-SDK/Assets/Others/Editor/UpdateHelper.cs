@@ -16,25 +16,17 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
-using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using umi3d;
 using UnityEditor;
 using UnityEngine;
-
 
 public class SubUpdateHelper : EditorWindow
 {
     public static void Open(bool sourceIsA, string name1, string name2, string path1, string path2, Action<(bool,List<string>)> callback, List<string> folders = null)
     {
-        // \Assets\Scripts\UI\UXML\
         // Get existing open window or if none, make a new one :
         SubUpdateHelper window = (SubUpdateHelper)EditorWindow.GetWindow(typeof(SubUpdateHelper));
         window.Init(sourceIsA, name1, name2, path1, path2, folders, callback);
@@ -104,17 +96,35 @@ public class SubUpdateHelper : EditorWindow
         Display(sdkFolder);
         EditorGUI.indentLevel = indent;
         EditorGUILayout.EndScrollView();
-        if (GUILayout.Button("validate"))
+        if (GUILayout.Button("Validate"))
         {
             ComputeFolder();
             callback.Invoke((sourceIsA, folders));
+            Close();
+        }
+        if (GUILayout.Button("Cancel"))
+        {
+            Close();
         }
     }
 
     void ComputeFolder()
     {
-
+        folders.Clear();
+        ComputeFolder(folders, sdkFolder);
     }
+
+    void ComputeFolder(List<string> result, folder folder)
+    {
+        if (folder.selected == null)
+            foreach (var f in folder.folders)
+            {
+                ComputeFolder(result, f);
+            }
+        else if (folder.selected.Value)
+            result.Add(folder.path);
+    }
+
 
     void Display(folder folder, int i = 0)
     {
@@ -173,9 +183,10 @@ public class SubUpdateHelper : EditorWindow
     {
         var path = sourceIsA ? path1 : path2;
         sdkFolder = new folder(path);
+        sdkFolder.selected = IsSelected(null, path);
         Found(sdkFolder);
-        sdkFolder.display= true;
-        folders.Clear();
+        sdkFolder.display = true;
+        
     }
 
     void Found(folder folder)
@@ -185,8 +196,22 @@ public class SubUpdateHelper : EditorWindow
         {
             var f = new folder(p);
             folder.folders.Add(f);
+            f.selected = IsSelected(folder.selected, p);
+
             Found(f);
         }
+    }
+    bool? IsSelected(bool? parentState, string path)
+    {
+        bool? selected = false;
+        if (parentState == null)
+        {
+            var p = folders.FirstOrDefault(pa => pa.StartsWith(path));
+            selected = (p == null) ? false : (path == p) ? true : (bool?)null;
+        }
+        else if (parentState.Value)
+            selected = parentState;
+        return selected;
     }
 
 }
@@ -216,92 +241,12 @@ public class UpdateHelper : EditorWindow
 
     void OnGUI()
     {
-
         var editor = GetEditor();
         UnityEngine.Debug.Assert(_data != null);
         UnityEngine.Debug.Assert(editor != null);
 
         editor?.OnInspectorGUI();
-
-        if (GUILayout.Button("Test"))
-            Test();
     }
-
-    async void Test()
-    {
-
-    }
-
-
-    #region BuildUtils
-
-
-
-    void cleanBuildFolder(string buildFolder)
-    {
-        if (Directory.Exists(buildFolder))
-            Directory.Delete(buildFolder, true);
-        Directory.CreateDirectory(buildFolder);
-    }
-
-    List<(string, string)> Build(string buildFolder)
-    {
-        return PackagesExporter.ExportPackages(buildFolder + "/");
-    }
-
-    static void OpenFile(string path)
-    {
-        path = path.Replace('/', '\\');
-
-        if (File.Exists(path))
-        {
-            FileAttributes attr = File.GetAttributes(path);
-            //detect whether its a directory or file
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-            {
-                OpenFileWith("explorer.exe", path, "/root,");
-            }
-            else
-            {
-                OpenFileWith("explorer.exe", path, "/select,");
-            }
-        }
-        else
-            UnityEngine.Debug.LogError("no file at " + path);
-    }
-
-    static void OpenFileWith(string exePath, string path, string arguments)
-    {
-        if (path == null)
-            return;
-
-        try
-        {
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
-            if (exePath != null)
-            {
-                process.StartInfo.FileName = exePath;
-                //Pre-post insert quotes for fileNames with spaces.
-                process.StartInfo.Arguments = string.Format("{0}\"{1}\"", arguments, path);
-            }
-            else
-            {
-                process.StartInfo.FileName = path;
-                process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
-            }
-            if (!path.Equals(process.StartInfo.WorkingDirectory))
-            {
-                process.Start();
-            }
-        }
-        catch (System.ComponentModel.Win32Exception ex)
-        {
-            UnityEngine.Debug.LogException(ex);
-        }
-    }
-
-    #endregion
 
     #region Scriptable Handler
 
@@ -330,7 +275,6 @@ public class UpdateHelper : EditorWindow
         {
             AssetDatabase.CreateFolder("Assets", _scriptableFolderPath);
         }
-
     }
 
     static UpdateHelperData LoadScriptable()

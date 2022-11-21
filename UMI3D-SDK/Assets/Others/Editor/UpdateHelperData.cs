@@ -16,19 +16,17 @@ limitations under the License.
 #if UNITY_EDITOR
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using static umi3d.cdk.UMI3DResourcesManager;
-using static UnityEngine.GraphicsBuffer;
 
 //[CreateAssetMenu(fileName = "UpdateHelperData", menuName = "Build Helper/Build Helper Data", order = 1)]
 public class UpdateHelperData : ScriptableObject
 {
     //public List<ProjectData> projects = new List<ProjectData>();
-    public List<ProjectLink> projectsLink = new List<ProjectLink>();
+    public ProjectLink[] projectsLink;
 }
 
 [Serializable]
@@ -77,11 +75,9 @@ public class ProjectDataEditor : PropertyDrawer
             EditorGUI.indentLevel = 0;
 
             // Calculate rects
-            var Refresh = new Rect(position.x, position.y, 60, position.height);
-            var browseRect = new Rect(position.x + 65, position.y, 60, position.height);
+            var browseRect = new Rect(position.x, position.y, 60, position.height);
 
             // Draw fields - pass GUIContent.none to each so they are drawn without labels
-            if (GUI.Button(Refresh, "Refresh")) { }
             if (GUI.Button(browseRect, "Browse"))
                 Browse(property,property.FindPropertyRelative("sdkPath").stringValue);
 
@@ -99,7 +95,7 @@ public class ProjectDataEditor : PropertyDrawer
 
         var s = res.Split(new char[] { '/', '\\' });
 
-        var projectName = "None";
+        string projectName = null;
         var tmp = "";
         foreach(var folder in s)
         {
@@ -109,7 +105,7 @@ public class ProjectDataEditor : PropertyDrawer
             }
             tmp = folder;
         }
-        property.FindPropertyRelative("projectName").stringValue = projectName;
+        property.FindPropertyRelative("projectName").stringValue = projectName ?? path.Split('\\','/').Last();
         property.FindPropertyRelative("sdkPath").stringValue = res;
     }
 
@@ -141,7 +137,7 @@ public class ProjectLinkEditor : PropertyDrawer
         string pAp = pA.FindPropertyRelative("sdkPath").stringValue;
         string pBp = pB.FindPropertyRelative("sdkPath").stringValue;
         var expand = property.FindPropertyRelative("expand");
-
+        var source = property.FindPropertyRelative("sourceIsA").boolValue;
 
         // Draw label
         label.text = (!string.IsNullOrEmpty(pAN) || !string.IsNullOrEmpty(pBN)) ? pAN+" : "+ pBN : "Select Projects";
@@ -158,18 +154,17 @@ public class ProjectLinkEditor : PropertyDrawer
             var rectPush = new Rect(position.x + indentation, position.y + 4 * line, half, line);
             var rectPull = new Rect(position.x + indentation + half + 5, position.y + 4 * line, half, line);
 
-
             expand.boolValue = EditorGUI.Foldout(rectfold, expand.boolValue, label);
 
             var indent = EditorGUI.indentLevel;
             EditorGUI.indentLevel = 0;
 
-
             EditorGUI.PropertyField(rectPa, pA);
             EditorGUI.PropertyField(rectPb, pB);
-            if (GUI.Button(rectfolder, "open")) SubUpdateHelper.Open(true,pAN,pBN,pAp,pBp,null,null);
-            if (GUI.Button(rectPush, pAN + " -> " + pBN)) { }
-            if (GUI.Button(rectPull, pAN + " <- " + pBN)) { }
+            var folders = GetFolders(property);
+            if (GUI.Button(rectfolder, "Manage Folders")) SubUpdateHelper.Open(source, pAN,pBN,pAp,pBp, Callback(property), folders);
+            if (GUI.Button(rectPush, pAN + " -> " + pBN)) { Copy(source, pAp, pBp, folders, true); }
+            if (GUI.Button(rectPull, pAN + " <- " + pBN)) { Copy(source, pAp, pBp, folders, false); }
 
             EditorGUI.indentLevel = indent;
         }
@@ -180,9 +175,90 @@ public class ProjectLinkEditor : PropertyDrawer
 
         //EditorGUI.Popup(position, userIndexProperty.intValue, _choices);
 
-
         EditorGUI.EndProperty();
     }
+
+    void Copy(bool sourceIsA, string pathA, string pathB, List<string> folders, bool AtoB)
+    {
+        if (folders  == null || folders.Count == 0)
+            return;
+        if (folders.Count == 1 && ((sourceIsA && folders[0] == pathA) || (!sourceIsA && folders[0] == pathB)))
+        {
+            if (AtoB)
+                CopyFolder(pathA, pathB);
+            else
+                CopyFolder(pathB, pathA);
+            return;
+        }
+
+        if (Directory.Exists(pathB))
+            Directory.Delete(pathB, true);
+        Directory.CreateDirectory(pathB);
+
+        folders
+            .Select(path => path.Substring((sourceIsA) ? pathA.Length : pathB.Length))
+            .Select(path => {
+                if (AtoB) return (pathA + path, pathB + path);
+                return (pathB + path, pathA + path);
+            })
+            .ForEach(c => CopyFolder(c.Item1, c.Item2));
+    }
+
+    void CopyFolder(string pathFrom, string pathTo)
+    {
+        if(Directory.Exists(pathTo))
+            Directory.Delete(pathTo, true);
+        Directory.CreateDirectory(pathTo);
+
+        //Now Create all of the directories
+        foreach (string dirPath in Directory.GetDirectories(pathFrom, "*", SearchOption.AllDirectories))
+        {
+            Directory.CreateDirectory(dirPath.Replace(pathFrom, pathTo));
+        }
+
+        //Copy all the files & Replaces any files with the same name
+        foreach (string newPath in Directory.GetFiles(pathFrom, "*.*", SearchOption.AllDirectories))
+        {
+            File.Copy(newPath, newPath.Replace(pathFrom, pathTo), true);
+        }
+
+    }
+
+
+    Action<(bool, List<string>)> Callback(SerializedProperty property)
+    {
+        var obj = fieldInfo.GetValue(property.serializedObject.targetObject);
+        ProjectLink pl = obj as ProjectLink;
+        if (obj.GetType().IsArray)
+        {
+            var index = Convert.ToInt32(new string(property.propertyPath.Where(c => char.IsDigit(c)).ToArray()));
+            pl = ((ProjectLink[])obj)[index];
+        }
+
+        return c =>
+        {
+            pl.sourceIsA = c.Item1;
+            pl.folders = c.Item2;
+
+            for(int i = 0; i < c.Item2.Count; i++)
+            {
+                Debug.Log(c.Item2[i]);
+            }
+        };
+    }
+
+    List<string> GetFolders(SerializedProperty property)
+    {
+        var folder = property.FindPropertyRelative("folders");
+        var list = new List<string>();
+        var folderCount = folder.arraySize;
+        for (int i = 0; i < folderCount; i++)
+        {
+            list.Add(folder.GetArrayElementAtIndex(i).stringValue);
+        }
+        return list;
+    }
+
 
     void Browse(SerializedProperty property, string path = null)
     {
