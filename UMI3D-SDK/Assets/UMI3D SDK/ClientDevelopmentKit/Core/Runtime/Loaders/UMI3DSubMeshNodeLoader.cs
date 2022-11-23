@@ -99,6 +99,9 @@ namespace umi3d.cdk
                             }
 
                             UpdateLightmapReferences(rootDto.id, renderers, o as GameObject);
+
+                            nodeInstance.IsTraversable = nodeDto.isTraversable;
+                            nodeInstance.IsPartOfNavmesh = nodeDto.isPartOfNavmesh;
                         });
 
                     }
@@ -204,6 +207,13 @@ namespace umi3d.cdk
                         }
                         break;
 
+                    case UMI3DPropertyKeys.IsPartOfNavmesh:
+                        (entity as UMI3DNodeInstance).IsPartOfNavmesh = (bool)property.value;
+                        return true;
+                    case UMI3DPropertyKeys.IsTraversable:
+                        (entity as UMI3DNodeInstance).IsTraversable = (bool)property.value;
+                        return true;
+
                     default:
                         return false;
                 }
@@ -241,6 +251,14 @@ namespace umi3d.cdk
                             SetMaterialOverided(extension, (UMI3DNodeInstance)entity);
                         }
                         break;
+
+                    case UMI3DPropertyKeys.IsPartOfNavmesh:
+                        (entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DNetworkingHelper.Read<bool>(container);
+                        return true;
+
+                    case UMI3DPropertyKeys.IsTraversable:
+                        (entity as UMI3DNodeInstance).IsTraversable = UMI3DNetworkingHelper.Read<bool>(container);
+                        return true;
 
                     default:
                         return false;
