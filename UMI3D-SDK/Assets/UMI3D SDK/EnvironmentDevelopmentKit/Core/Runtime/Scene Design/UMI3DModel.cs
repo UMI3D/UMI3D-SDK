@@ -71,11 +71,25 @@ namespace umi3d.edk
         public bool isPartOfNavmesh = false;
 
         /// <summary>
+        /// Property to change if th object is part of the navmesh. This property has priority over <see cref="objectTraversable"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectPartOfNavmesh { get { Register(); return _objectPartOfNavmesh; } protected set => _objectPartOfNavmesh = value; }
+
+        private UMI3DAsyncProperty<bool> _objectPartOfNavmesh;
+
+        /// <summary>
         /// Should the user be allowed to navigate through this object?
         /// </summary>
         /// When set to true, it will alter the navigation mesh generation.
         [Tooltip("Should the user be allowed to navigate through this object?")]
         public bool isTraversable = true;
+
+        /// <summary>
+        /// Property to set or not the object as traversable.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectTraversable { get { Register(); return _objectTraversable; } protected set => _objectTraversable = value; }
+
+        private UMI3DAsyncProperty<bool> _objectTraversable;
 
         /// <summary>
         /// <see cref="model"/>.
@@ -107,6 +121,12 @@ namespace umi3d.edk
 
             objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r, u) => r?.ToDto());
             objectModel.OnValueChanged += v => model = v;
+
+            _objectPartOfNavmesh = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsPartOfNavmesh, isPartOfNavmesh);
+            _objectPartOfNavmesh.OnValueChanged += b => isPartOfNavmesh = b;
+
+            _objectTraversable = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsTraversable, isTraversable);
+            _objectTraversable.OnValueChanged += b => isTraversable = b;
         }
 
         /// <summary>
