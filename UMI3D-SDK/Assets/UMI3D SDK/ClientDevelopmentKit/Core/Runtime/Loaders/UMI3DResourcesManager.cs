@@ -886,7 +886,7 @@ namespace umi3d.cdk
             if (Instance.librariesMap.ContainsKey(id))
             {
                 string libraryID = Instance.librariesMap[id];
-                UnloadLibrary(id, SceneId);
+                UnloadLibrary(libraryID, SceneId);
             }
         }
 
