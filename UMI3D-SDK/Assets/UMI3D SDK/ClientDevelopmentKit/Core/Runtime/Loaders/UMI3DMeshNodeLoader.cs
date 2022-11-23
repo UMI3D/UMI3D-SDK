@@ -55,7 +55,6 @@ namespace umi3d.cdk
             await base.ReadUMI3DExtension(dto, node);
 
 
-            //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
             FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)dto).mesh.variants);  // Peut etre ameliore
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
@@ -75,6 +74,61 @@ namespace umi3d.cdk
             }
             else
                 throw (new Umi3dException($"No loader found for {ext}"));
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        {
+            if (base.SetUMI3DProperty(entity, property)) return true;
+
+            var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DMeshNodeDto;
+            if (extension == null || entity as UMI3DNodeInstance == null) return false;
+
+            switch (property.property)
+            {
+                case UMI3DPropertyKeys.IsPartOfNavmesh:
+                    (entity as UMI3DNodeInstance).IsPartOfNavmesh = (bool)property.value;
+                    return true;
+                case UMI3DPropertyKeys.IsTraversable:
+                    (entity as UMI3DNodeInstance).IsTraversable = (bool)property.value;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="operationId"></param>
+        /// <param name="propertyKey"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        {
+            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
+
+            var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DMeshNodeDto;
+            if (extension == null) return false;
+            var node = entity as UMI3DNodeInstance;
+
+            switch (propertyKey)
+            {
+                case UMI3DPropertyKeys.IsPartOfNavmesh:
+                    (entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DNetworkingHelper.Read<bool>(container);
+                    return true;
+                case UMI3DPropertyKeys.IsTraversable:
+                    (entity as UMI3DNodeInstance).IsTraversable = UMI3DNetworkingHelper.Read<bool>(container);
+                    return true;
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
@@ -184,6 +238,8 @@ namespace umi3d.cdk
             SetMaterialOverided(dto, nodeInstance);
             SetLightMap(instance, nodeInstance);
 
+            nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
+            nodeInstance.IsTraversable = dto.isTraversable;
         }
 
         /// <summary>
