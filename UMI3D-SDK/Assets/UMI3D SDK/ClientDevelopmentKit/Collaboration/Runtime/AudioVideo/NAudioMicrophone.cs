@@ -135,6 +135,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public override int InitializeMic()
         {
+            StopRecording();
             if (MicNumberToUse == currentMicIndex)
             {
                 Debug.Log("Mic already init " + GetCurrentMicName());
@@ -152,7 +153,6 @@ namespace umi3d.cdk.collaboration
             isChannelChoosen = false;
 
             Microphone.GetDeviceCaps(Microphone.devices[MicNumberToUse], out int minFreq, out int maxFreq);
-
             NumSamplesPerOutgoingPacket = MumbleConstants.NUM_FRAMES_PER_OUTGOING_PACKET * currentMicSampleRate / 100;
 
             if (maxFreq != currentMicSampleRate)
@@ -309,6 +309,9 @@ namespace umi3d.cdk.collaboration
                     {
                         if (data.Count > NumSamplesPerOutgoingPacket)
                             data = data.GetRange(NumSamplesPerOutgoingPacket + 1, data.Count - NumSamplesPerOutgoingPacket - 1);
+
+                        if (OnMicData != null)
+                            OnMicData(newData);
 
                         if (_writePositionalDataFunc != null)
                             _writePositionalDataFunc(ref newData.PositionalData, ref newData.PositionalDataLength);
