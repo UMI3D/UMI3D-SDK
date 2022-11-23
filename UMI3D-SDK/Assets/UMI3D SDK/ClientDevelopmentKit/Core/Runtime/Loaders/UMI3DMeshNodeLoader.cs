@@ -208,10 +208,12 @@ namespace umi3d.cdk
 
         private async Task CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
         {
+            var modelTracker = parent.gameObject.AddComponent<ModelTracker>();
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
                 root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
+                modelTracker.areSubObjectTracked = true;
             }
             else
             {
@@ -223,6 +225,15 @@ namespace umi3d.cdk
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
+
+            if (dto.areSubobjectsTracked)
+            {
+                nodeInstance.mainInstance = instance;
+                if(instance.GetComponent<Animator>())
+                {
+                    modelTracker.animatorsToRebind.Add(instance.GetComponent<Animator>());
+                }
+            }
 
             foreach (Renderer renderer in renderers)
             {

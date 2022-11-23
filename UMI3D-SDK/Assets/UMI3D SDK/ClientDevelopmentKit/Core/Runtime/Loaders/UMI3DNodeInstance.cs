@@ -31,6 +31,7 @@ namespace umi3d.cdk
 
         private bool isPartOfNavmesh = false;
 
+        public GameObject mainInstance;
         /// <summary>
         /// Is this node part of the navmesh ?
         /// </summary>
