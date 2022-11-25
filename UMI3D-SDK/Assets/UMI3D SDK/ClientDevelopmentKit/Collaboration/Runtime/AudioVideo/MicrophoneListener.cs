@@ -223,6 +223,20 @@ namespace umi3d.cdk.collaboration
         #endregion
         #endregion
 
+        public bool UseNoiseReduction
+        {
+            get
+            {
+                if (!(mumbleMic is NAudioMicrophone nAudio)) return false;
+                return nAudio.UseNoiseReducer;
+            }
+            set
+            {
+                if (!(mumbleMic is NAudioMicrophone nAudio)) return;
+                nAudio.UseNoiseReducer = value;
+            }
+        }
+
         public List<DebugInfo> GetInfos()
         {
             return new List<DebugInfo>()
