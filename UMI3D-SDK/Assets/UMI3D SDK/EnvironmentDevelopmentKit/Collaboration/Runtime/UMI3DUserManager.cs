@@ -274,29 +274,41 @@ namespace umi3d.edk.collaboration
         /// <param name="onUserCreated">Callback called when the user has been created.</param>
         public void CreateUser(RegisterIdentityDto LoginDto, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            lock (users)
+            UMI3DLogger.Log($"CreateUser() begins", scope);
+
+            UMI3DCollaborationUser user;
+            bool reconnection = false;
+            if (guidMap.ContainsKey(LoginDto.guid))
             {
-                UMI3DCollaborationUser user;
-                bool reconnection = false;
-                if (guidMap.ContainsKey(LoginDto.guid))
-                {
-                    user = guidMap[LoginDto.guid];
-                    oldTokenOfUpdatedUser.Add(user.token);
-                    forgeMap.Remove(user.networkPlayer.NetworkId);
-                    (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer, true);
-                    user.Update(LoginDto);
-                    user.SetStatus(StatusType.CREATED);
-                    reconnection = true;
-                }
-                else
-                {
-                    user = new UMI3DCollaborationUser(LoginDto);
-                    users.Add(user.Id(), user);
-                    guidMap.Add(LoginDto.guid, user);
-                    SetLastUpdate();
-                }
-                onUserCreated.Invoke(user, reconnection);
+                user = guidMap[LoginDto.guid];
+
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} already contained in guidMap", scope);
+
+                oldTokenOfUpdatedUser.Add(user.token);
+                forgeMap.Remove(user.networkPlayer.NetworkId);
+                (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer, true);
+                user.Update(LoginDto);
+                user.SetStatus(StatusType.CREATED);
+                reconnection = true;
             }
+            else
+            {
+                user = new UMI3DCollaborationUser(LoginDto);
+
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
+                lock (users)
+                {
+                    users.Add(user.Id(), user);
+                }
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} added to users, release lock", scope);
+
+                guidMap.Add(LoginDto.guid, user);
+                SetLastUpdate();
+            }
+
+            onUserCreated.Invoke(user, reconnection);
+
+            UMI3DLogger.Log($"CreateUser() ends", scope);
         }
 
         /// <summary>
