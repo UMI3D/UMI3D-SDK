@@ -107,7 +107,7 @@ namespace umi3d.cdk.collaboration
         private NoiseReducer noiseReducer;
 
         [field: SerializeField]
-        private bool UseNoiseReducer { get; set; } = true;
+        public bool UseNoiseReducer { get; set; } = true;
 
         /// <summary>
         /// Model used to perform noise reduction.
