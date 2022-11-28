@@ -33,12 +33,16 @@ namespace umi3d.common
 
         public const byte BooleanParameter = 20;
         public const byte StringParameter = 21;
+        public const byte ColorParameter = 22;
+        public const byte Vector2Parameter = 23;
+        public const byte Vector3Parameter = 24;
+        public const byte Vector4Parameter = 25;
 
-        public const byte LocalInfoParameter = 23;
-        public const byte StringEnumParameter = 24;
-        public const byte UploadParameter = 25;
+        public const byte LocalInfoParameter = 30;
+        public const byte StringEnumParameter = 31;
+        public const byte UploadParameter = 32;
 
-        public const byte FloatRangeParameter = 26;
+        public const byte FloatRangeParameter = 40;
 
     }
 }

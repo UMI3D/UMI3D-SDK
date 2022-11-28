@@ -20,6 +20,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
+using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
@@ -284,6 +285,30 @@ namespace umi3d.cdk.interaction
                     ReadAbstractParameterDto(Bool, container);
                     Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
                     interaction = Bool;
+                    break;
+                case UMI3DInteractionKeys.ColorParameter:
+                    var Color = new ColorParameterDto();
+                    ReadAbstractParameterDto(Color, container);
+                    Color.value = UMI3DNetworkingHelper.Read<Color>(container);
+                    interaction = Color;
+                    break;
+                case UMI3DInteractionKeys.Vector2Parameter:
+                    var Vector2 = new Vector2ParameterDto();
+                    ReadAbstractParameterDto(Vector2, container);
+                    Vector2.value = UMI3DNetworkingHelper.Read<Vector2>(container);
+                    interaction = Vector2;
+                    break;
+                case UMI3DInteractionKeys.Vector3Parameter:
+                    var Vector3 = new Vector3ParameterDto();
+                    ReadAbstractParameterDto(Vector3, container);
+                    Vector3.value = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    interaction = Vector3;
+                    break;
+                case UMI3DInteractionKeys.Vector4Parameter:
+                    var Vector4 = new Vector4ParameterDto();
+                    ReadAbstractParameterDto(Vector4, container);
+                    Vector4.value = UMI3DNetworkingHelper.Read<Vector4>(container);
+                    interaction = Vector4;
                     break;
                 case UMI3DInteractionKeys.UploadParameter:
                     var Upload = new UploadFileParameterDto();

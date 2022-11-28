@@ -184,6 +184,9 @@ namespace umi3d.cdk.collaboration
                                     value = token.ToObject<int>()
                                 };
                             break;
+                        default:
+                            UnityEngine.Debug.LogError("TODO Add Case for Color, Range, Vector 2 3 4");
+                            break;
                     }
                 }
                 if (dto == null)
@@ -191,6 +194,8 @@ namespace umi3d.cdk.collaboration
 
                 if (jo.TryGetValue("privateParameter", out JToken tokenp))
                     dto.privateParameter = tokenp.ToObject<bool>();
+                if (jo.TryGetValue("isDisplayer", out JToken tokendisp))
+                    dto.isDisplayer = tokendisp.ToObject<bool>();
                 if (jo.TryGetValue("description", out JToken tokend))
                     dto.description = tokend.ToObject<string>();
                 if (jo.TryGetValue("id", out JToken tokeni))
