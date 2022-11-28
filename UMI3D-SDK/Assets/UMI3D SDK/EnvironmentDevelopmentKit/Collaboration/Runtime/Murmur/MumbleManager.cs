@@ -148,11 +148,17 @@ namespace umi3d.edk.collaboration.murmur
 
         private string GenerateUserName(UMI3DCollaborationUser user, string userID)
         {
-            return @"User_"+user.displayName+"_"+ userID + @"_[" + guid + @"]";
+            return RemoveSpace(@"User_" +user.displayName+"_"+ userID + @"_[" + guid + @"]");
         }
+
+        string RemoveSpace(string value)
+        {
+            return new string( value.Where(c => !Char.IsWhiteSpace(c)).ToArray());
+        }
+
         private string GenerateRoomName(int i)
         {
-            return @"Room" + i.ToString() + @"_[" + guid + @"]";
+            return RemoveSpace(@"Room" + i.ToString() + @"_[" + guid + @"]");
         }
 
         public async Task Refresh()

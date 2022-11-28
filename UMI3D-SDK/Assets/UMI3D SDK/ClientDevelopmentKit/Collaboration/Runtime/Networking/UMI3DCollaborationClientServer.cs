@@ -105,6 +105,7 @@ namespace umi3d.cdk.collaboration
                 if (environmentClient != null) await environmentClient?.Clear();
                 worldControllerClient = null;
                 environmentClient = null;
+                IsRedirectionInProgress = false;
             }
         }
 
@@ -147,6 +148,12 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static async void Connect(RedirectionDto redirection, Action<string> failed = null)
         {
+            if (!Exists)
+            {
+                failed?.Invoke("No Intance of UMI3DCollaborationServer");
+                return;
+            }
+
             if (UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress)
             {
                 failed?.Invoke("Redirection already in progress");
@@ -228,7 +235,9 @@ namespace umi3d.cdk.collaboration
             {
                 Instance.OnLeavingEnvironment.Invoke();
                 Instance.OnLeaving.Invoke();
+                Instance.IsRedirectionInProgress = false;
             }
+
         }
 
 

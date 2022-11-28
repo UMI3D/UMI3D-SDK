@@ -81,6 +81,64 @@ namespace umi3d.cdk
         }
 
         /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
+        {
+            if (await base.SetUMI3DProperty(data))
+                return true;
+
+            var extension = (data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DMeshNodeDto;
+            if (extension == null || data.entity as UMI3DNodeInstance == null) return false;
+
+            switch (data.property.property)
+            {
+                case UMI3DPropertyKeys.IsPartOfNavmesh:
+                    (data.entity as UMI3DNodeInstance).IsPartOfNavmesh = (bool)data.property.value;
+                    return true;
+                case UMI3DPropertyKeys.IsTraversable:
+                    (data.entity as UMI3DNodeInstance).IsTraversable = (bool)data.property.value;
+                    return true;
+                default:
+                    return false;
+            }
+
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="operationId"></param>
+        /// <param name="propertyKey"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
+        {
+            if (await base.SetUMI3DProperty(data))
+                return true;
+
+            var extension = (data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DMeshNodeDto;
+            if (extension == null) return false;
+            var node = data.entity as UMI3DNodeInstance;
+
+            switch (data.propertyKey)
+            {
+                case UMI3DPropertyKeys.IsPartOfNavmesh:
+                    (data.entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.IsTraversable:
+                    (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
         ///  Set Sub Objects References.
         /// </summary>
         /// <param name="goInCache"></param>
@@ -157,10 +215,12 @@ namespace umi3d.cdk
 
         private async Task CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
         {
+            var modelTracker = parent.gameObject.AddComponent<ModelTracker>();
             GameObject root = null;
             if (dto.areSubobjectsTracked)
             {
                 root = SetSubObjectsReferences(go, dto, rotationOffsetByLoader);
+                modelTracker.areSubObjectTracked = true;
             }
             else
             {
@@ -172,6 +232,15 @@ namespace umi3d.cdk
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
+
+            if (dto.areSubobjectsTracked)
+            {
+                nodeInstance.mainInstance = instance;
+                if (instance.GetComponent<Animator>())
+                {
+                    modelTracker.animatorsToRebind.Add(instance.GetComponent<Animator>());
+                }
+            }
 
             foreach (Renderer renderer in renderers)
             {
@@ -187,6 +256,8 @@ namespace umi3d.cdk
             SetMaterialOverided(dto, nodeInstance);
             SetLightMap(instance, nodeInstance);
 
+            nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
+            nodeInstance.IsTraversable = dto.isTraversable;
         }
 
         /// <summary>
@@ -217,5 +288,7 @@ namespace umi3d.cdk
 
             data.Init();
         }
+
+
     }
 }

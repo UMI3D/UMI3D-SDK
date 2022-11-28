@@ -1106,5 +1106,35 @@ namespace umi3d.cdk
         }
 
         #endregion
+
+        #region Navmesh
+
+        public delegate void NodeNavmeshModifiedDelegate(UMI3DNodeInstance node);
+
+        public event NodeNavmeshModifiedDelegate onNodePartOfNavmeshSet;
+
+        /// <summary>
+        /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its part of navmesh status.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="isPartOfNavmesh"></param>
+        public void SetNodePartOfNavmesh(UMI3DNodeInstance node)
+        {
+            onNodePartOfNavmeshSet?.Invoke(node);
+        }
+
+        public event NodeNavmeshModifiedDelegate onNodeTraversableSet;
+
+        /// <summary>
+        /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its traversable status.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="isTraversable"></param>
+        public void SetNodeTraversable(UMI3DNodeInstance node)
+        {
+            onNodeTraversableSet?.Invoke(node);
+        }
+
+        #endregion
     }
 }

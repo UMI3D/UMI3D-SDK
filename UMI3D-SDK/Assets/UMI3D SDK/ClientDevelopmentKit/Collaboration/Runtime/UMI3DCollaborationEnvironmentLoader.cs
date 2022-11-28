@@ -53,7 +53,7 @@ namespace umi3d.cdk.collaboration
         protected override async Task WaitForFirstTransaction()
         {
             while (UMI3DCollaborationClientServer.transactionPending != null
-                && (UMI3DCollaborationClientServer.transactionPending.areTransactionPending 
+                && (UMI3DCollaborationClientServer.transactionPending.areTransactionPending
                     || UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending))
                 await UMI3DAsyncManager.Yield();
         }
@@ -257,10 +257,10 @@ namespace umi3d.cdk.collaboration
             if (index >= 0 && index <= UserList.Count)
             {
                 UserList.Insert(index, new UMI3DUser(userDto));
-                dto.userList.Insert(index, userDto);
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
-            } else
+            }
+            else
             {
                 UMI3DLogger.LogWarning("Impossible to insert new user into user list, index out of range " + index, DebugScope.CDK);
             }
@@ -274,7 +274,6 @@ namespace umi3d.cdk.collaboration
             {
                 UMI3DUser Olduser = UserList[index];
                 UserList.RemoveAt(index);
-                dto.userList.RemoveAt(index);
                 Olduser.Destroy();
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
@@ -307,8 +306,7 @@ namespace umi3d.cdk.collaboration
         private void ReplaceAllUser(UMI3DCollaborationEnvironmentDto dto, List<UserDto> usersNew)
         {
             foreach (UMI3DUser user in UserList) user.Destroy();
-            dto.userList = usersNew;
-            UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+            UserList = usersNew.Select(u => new UMI3DUser(u)).ToList();
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
         }

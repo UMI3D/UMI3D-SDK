@@ -19,18 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.cdk;
-using UnityEditor;
 using UnityEngine.Networking;
-using inetum.unityUtils;
-using BeardedManStudios.Forge.Networking;
 using UnityEngine;
-using umi3d.common.collaboration;
-using umi3d.common;
 using System.Linq;
-using UnityEditor.Experimental.GraphView;
-using umi3d.common.userCapture;
 using System.IO;
-using UnityEditor.PackageManager.Requests;
 
 public class ReleaseSdk
 {

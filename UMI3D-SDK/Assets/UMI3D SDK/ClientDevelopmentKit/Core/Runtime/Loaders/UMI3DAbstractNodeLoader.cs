@@ -52,7 +52,22 @@ namespace umi3d.cdk
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
                     {
                         if (e is UMI3DNodeInstance instance)
-                            data.node.transform.SetParent(instance.transform, false);
+                        {
+                            var nodeInstance = UMI3DEnvironmentLoader.GetEntity(nodeDto.pid) as UMI3DNodeInstance;
+                            if ( nodeInstance != null && nodeInstance.mainInstance != null)
+                            {
+                                data.node.transform.SetParent(nodeInstance.mainInstance.transform, false);
+                            }
+                            else
+                                data.node.transform.SetParent(instance.transform, false);
+
+                            ModelTracker modelTracker = data.node.GetComponentInParent<ModelTracker>();
+                            if(modelTracker != null && modelTracker.areSubObjectTracked)
+                            {
+                                modelTracker.RebindAnimators();
+                            }
+                        }
+
                     });
                 }
                 else
@@ -97,6 +112,14 @@ namespace umi3d.cdk
                     ulong pid = dto.pid = (ulong)(long)data.property.value;
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                    if(parent != null)
+                    {
+                        ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();
+                        if (modelTracker != null && modelTracker.areSubObjectTracked)
+                        {
+                            modelTracker.RebindAnimators();
+                        }
+                    }
 
                     break;
                 default:
@@ -153,7 +176,14 @@ namespace umi3d.cdk
                     ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(data.container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
-
+                    if (parent != null)
+                    {
+                        ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();
+                        if (modelTracker != null && modelTracker.areSubObjectTracked)
+                        {
+                            modelTracker.RebindAnimators();
+                        }
+                    }
                     break;
                 default:
                     return false;
