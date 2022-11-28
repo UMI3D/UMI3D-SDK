@@ -101,7 +101,6 @@ namespace umi3d.edk.interaction
                 case UMI3DOperationKeys.ParameterSettingRequest:
                     uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DNetworkingHelper.Read<bool>(container);
                     value = UMI3DNetworkingHelper.Read<Vector2>(container);
                     onChange.Invoke(new ParameterEventContent<Vector2>(user, toolId, interactionId, hoverredId, boneType, value));
                     break;

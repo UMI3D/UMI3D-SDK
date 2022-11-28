@@ -137,6 +137,7 @@ namespace umi3d.cdk
 
         private static void NotifyEntityFailedToLoad(ulong id)
         {
+            UnityEngine.Debug.LogError("Failed to load " + id);
             if (Exists)
             {
                 if (Instance.entitywaited.ContainsKey(id))
