@@ -70,6 +70,8 @@ namespace umi3d.common
         public const uint AmbientGroundColor = 2104;
         public const uint AmbientIntensity = 2105;
         public const uint AmbientSkyboxImage = 2106;
+        public const uint AmbientSkyboxRotation = 2107;
+        public const uint AmbientSkyboxExposure = 2108;
         #endregion
 
         #region Model
