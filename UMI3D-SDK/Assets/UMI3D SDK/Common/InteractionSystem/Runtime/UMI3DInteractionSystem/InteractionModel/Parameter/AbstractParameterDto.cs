@@ -49,6 +49,12 @@ namespace umi3d.common.interaction
         public bool privateParameter;
 
         /// <summary>
+        /// State if a parameter is a displayer.
+        /// If set to true the value will not be editable.
+        /// </summary>
+        public bool isDisplayer;
+
+        /// <summary>
         /// Retrieve the parameter value.
         /// </summary>
         /// <returns>Parameter value to retrieve</returns>

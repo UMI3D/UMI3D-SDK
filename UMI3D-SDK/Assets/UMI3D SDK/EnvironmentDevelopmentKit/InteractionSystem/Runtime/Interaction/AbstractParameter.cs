@@ -30,6 +30,8 @@ namespace umi3d.edk.interaction
         /// </summary>
         public bool isPrivate = false;
 
+        public bool isDisplayer = false;
+
         /// <summary>
         /// Event when an interaction is performed on a parameter.
         /// </summary>
@@ -65,14 +67,18 @@ namespace umi3d.edk.interaction
         {
             base.WriteProperties(dto, user);
             if (dto is AbstractParameterDto parameter)
+            {
                 parameter.privateParameter = isPrivate;
+                parameter.isDisplayer = isDisplayer;
+            }
         }
 
         /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write(isPrivate);
+                + UMI3DNetworkingHelper.Write(isPrivate)
+                + UMI3DNetworkingHelper.Write(isDisplayer);
         }
     }
 }

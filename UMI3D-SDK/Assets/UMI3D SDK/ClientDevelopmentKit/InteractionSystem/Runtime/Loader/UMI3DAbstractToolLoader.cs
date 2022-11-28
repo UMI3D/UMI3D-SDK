@@ -99,7 +99,7 @@ namespace umi3d.cdk.interaction
                 case UMI3DPropertyKeys.AbstractToolActive:
                     dto.active = UMI3DNetworkingHelper.Read<bool>(value.container);
                     break;
-                default:    
+                default:
                     return false;
             }
             return true;
@@ -281,30 +281,26 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DInteractionKeys.BooleanParameter:
                     var Bool = new BooleanParameterDto();
-                    ReadAbstractInteractionDto(Bool, container);
-                    Bool.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
+                    ReadAbstractParameterDto(Bool, container);
                     Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
                     interaction = Bool;
                     break;
                 case UMI3DInteractionKeys.UploadParameter:
                     var Upload = new UploadFileParameterDto();
-                    ReadAbstractInteractionDto(Upload, container);
-                    Upload.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
+                    ReadAbstractParameterDto(Upload, container);
                     Upload.value = UMI3DNetworkingHelper.Read<string>(container);
                     Upload.authorizedExtensions = UMI3DNetworkingHelper.Read<List<string>>(container);
                     interaction = Upload;
                     break;
                 case UMI3DInteractionKeys.StringParameter:
                     var String = new StringParameterDto();
-                    ReadAbstractInteractionDto(String, container);
-                    String.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
+                    ReadAbstractParameterDto(String, container);
                     String.value = UMI3DNetworkingHelper.Read<string>(container);
                     interaction = String;
                     break;
                 case UMI3DInteractionKeys.LocalInfoParameter:
                     var LocalInfo = new LocalInfoRequestParameterDto();
-                    LocalInfo.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
-                    ReadAbstractInteractionDto(LocalInfo, container);
+                    ReadAbstractParameterDto(LocalInfo, container);
                     LocalInfo.app_id = UMI3DNetworkingHelper.Read<string>(container);
                     LocalInfo.serverName = UMI3DNetworkingHelper.Read<string>(container);
                     LocalInfo.reason = UMI3DNetworkingHelper.Read<string>(container);
@@ -314,16 +310,14 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DInteractionKeys.StringEnumParameter:
                     var EString = new EnumParameterDto<string>();
-                    EString.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
-                    ReadAbstractInteractionDto(EString, container);
+                    ReadAbstractParameterDto(EString, container);
                     EString.possibleValues = UMI3DNetworkingHelper.ReadList<string>(container);
                     EString.value = UMI3DNetworkingHelper.Read<string>(container);
                     interaction = EString;
                     break;
                 case UMI3DInteractionKeys.FloatRangeParameter:
                     var RFloat = new FloatRangeParameterDto();
-                    RFloat.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
-                    ReadAbstractInteractionDto(RFloat, container);
+                    ReadAbstractParameterDto(RFloat, container);
                     RFloat.min = UMI3DNetworkingHelper.Read<float>(container);
                     RFloat.max = UMI3DNetworkingHelper.Read<float>(container);
                     RFloat.increment = UMI3DNetworkingHelper.Read<float>(container);
@@ -353,6 +347,21 @@ namespace umi3d.cdk.interaction
             interactionDto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
             interactionDto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
             interactionDto.description = UMI3DNetworkingHelper.Read<string>(container);
+            
+        }
+
+        /// <summary>
+        /// Reads an <see cref="AbstractParameterDto"/> from a received <see cref="ByteContainer"/> and updates it.
+        /// <br/> Part of the bytes networking workflow.
+        /// </summary>
+        ///  <param name="ParameterDto">interaction dto to update.</param>
+        /// <param name="container">Byte container</param>
+        /// <returns></returns>
+        private static void ReadAbstractParameterDto(AbstractParameterDto ParameterDto, ByteContainer container)
+        {
+            ReadAbstractParameterDto(ParameterDto, container);
+            ParameterDto.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
+            ParameterDto.isDisplayer = UMI3DNetworkingHelper.Read<bool>(container);
         }
     }
 }
