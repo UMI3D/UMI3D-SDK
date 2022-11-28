@@ -52,15 +52,17 @@ namespace umi3d.cdk
 
             await base.ReadUMI3DExtension(data);
 
-            if (nodeDto.userId.Equals(UMI3DClientServer.Instance.GetUserId()))
-            {
-                UserAvatar ua = GetUserAvatar(data);
-                ua.Set(nodeDto);
-                UMI3DClientUserTracking.Instance.RegisterEmbd(nodeDto.userId, ua);
-            }
+            UserAvatar ua = (nodeDto.userId.Equals(UMI3DClientServer.Instance.GetUserId())) ? GetUserAvatar(data) : GetOtherUserAvatar(data);
+            ua.Set(nodeDto);
+            UMI3DClientUserTracking.Instance.RegisterEmbd(nodeDto.userId, ua);
         }
 
         public virtual UserAvatar GetUserAvatar(ReadUMI3DExtensionData data)
+        {
+            return data.node.GetOrAddComponent<UserAvatar>();
+        }
+
+        public virtual UserAvatar GetOtherUserAvatar(ReadUMI3DExtensionData data)
         {
             return data.node.GetOrAddComponent<UserAvatar>();
         }
