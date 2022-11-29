@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.interaction;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration
@@ -128,6 +129,95 @@ namespace umi3d.cdk.collaboration
                 return objectType == typeof(AbstractParameterDto);
             }
 
+
+            public AbstractParameterDto ReadObjectArray(JObject obj, JToken tokenA)
+            {
+                switch (ReadObjectValue(obj))
+                {
+                    case Color col:
+                        return new EnumParameterDto<Color>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(obj => (Color)ReadObjectValue(obj as JObject)).ToList(),
+                            value = col
+                        };
+                    case Vector4 v4:
+                        return new EnumParameterDto<Vector4>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(obj => (Vector4)ReadObjectValue(obj as JObject)).ToList(),
+                            value = v4
+                        };
+                    case Vector3 v3:
+                        return new EnumParameterDto<Vector3>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(obj => (Vector3)ReadObjectValue(obj as JObject)).ToList(),
+                            value = v3
+                        };
+                    case Vector2 v2:
+                        return new EnumParameterDto<Vector2>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(obj => (Vector2)ReadObjectValue(obj as JObject)).ToList(),
+                            value = v2
+                        };
+                }
+                UnityEngine.Debug.LogError($"Missing case. {obj}");
+                return null;
+            }
+
+            public AbstractParameterDto ReadObject(JObject obj)
+            {
+                switch (ReadObjectValue(obj))
+                {
+                    case Color col:
+                        return new ColorParameterDto
+                        {
+                            value = col
+                        };
+                    case Vector4 v4:
+                        return new Vector4ParameterDto
+                        {
+                            value = v4
+                        };
+                    case Vector3 v3:
+                        return new Vector3ParameterDto
+                        {
+                            value = v3
+                        };
+                    case Vector2 v2:
+                        return new Vector2ParameterDto
+                        {
+                            value = v2
+                        };
+                }
+                UnityEngine.Debug.LogError($"Missing case. {obj}");
+                return null;
+            }
+
+            public object ReadObjectValue(JObject obj)
+            {
+                if (obj.TryGetValue("R", out JToken tokenR)
+                    && obj.TryGetValue("G", out JToken tokenG)
+                    && obj.TryGetValue("B", out JToken tokenB)
+                    && obj.TryGetValue("A", out JToken tokenA))
+                {
+                    return  new Color(tokenR.ToObject<float>(), tokenG.ToObject<float>(), tokenB.ToObject<float>(), tokenA.ToObject<float>());
+                }
+
+                if (obj.TryGetValue("X", out JToken tokenX)
+                    && obj.TryGetValue("Y", out JToken tokenY))
+                {
+                    if (obj.TryGetValue("Z", out JToken tokenZ))
+                    {
+                        if (obj.TryGetValue("W", out JToken tokenW))
+                            return  new Vector4(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>(), tokenW.ToObject<float>());
+                        return  new Vector3(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>());
+                    }
+                    return  new Vector2(tokenX.ToObject<float>(), tokenY.ToObject<float>());
+                }
+                UnityEngine.Debug.LogError($"Missing case. {obj}");
+                return null;
+            }
+
+
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
                 var jo = JObject.Load(reader);
@@ -184,8 +274,15 @@ namespace umi3d.cdk.collaboration
                                     value = token.ToObject<int>()
                                 };
                             break;
+                        case JTokenType.Object:
+                            var obj = token.ToObject<object>() as JObject;
+                            if (isArray)
+                                dto = ReadObjectArray(obj, tokenA);
+                            else
+                                dto = ReadObject(obj);
+                            break;
                         default:
-                            UnityEngine.Debug.LogError("TODO Add Case for Color, Range, Vector 2 3 4");
+                            UnityEngine.Debug.LogError($"TODO Add Case for Color, Range or Vector 2 3 4. {token.Type}");
                             break;
                     }
                 }
