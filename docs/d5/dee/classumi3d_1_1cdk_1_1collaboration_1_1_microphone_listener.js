@@ -1,12 +1,14 @@
 var classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener =
 [
-    [ "OnDestroy", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#ac548734bf7ecbcb840319cab59eba105", null ],
-    [ "_OnSaturated", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a7a47eebad03b0c6d5d69d9a1323d0394", null ],
-    [ "_OnSending", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#afaf707b96b00b064f6b78a47382dba50", null ],
-    [ "_MinRMSToSend", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#acd3273e54607c542fa3fb2f2c71865c8", null ],
-    [ "DB", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a80416fc496f1113e560b3c027ff42463", null ],
-    [ "DisplayedSaturated", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a5cd2b88e524e40426b6534f38242f831", null ],
-    [ "RMS", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#ac0aa956077cc5421129490e963ba3c88", null ],
-    [ "Saturated", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a32bff53fc07d2bab385a3ff5758d9b3d", null ],
-    [ "ShouldSend", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#abf32a6e14d2cc80f8ca6d33b39e37eec", null ]
+    [ "PacketData", "dd/d0a/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener_1_1_packet_data.html", "dd/d0a/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener_1_1_packet_data" ],
+    [ "_OnApplicationQuit", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a97b23b048f287774677f00ace4defab6", null ],
+    [ "Delay", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a024d9dd9651474e548608b92b63fb811", null ],
+    [ "GetInfos", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a10bcc5ba8274038b5d64e7949ee2382d", null ],
+    [ "GetLogName", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a4193fd2d46f63b1cb4c7be0f03daa5e3", null ],
+    [ "Log", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a7a5a0cae233b30889f2e5aa2489656b2", null ],
+    [ "LogError", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a2d0ea09190658f231ba43c9171a5b60d", null ],
+    [ "LogException", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a92f62daebe942c7c5e317e5d1e441b9f", null ],
+    [ "Start", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#afbe718fc4c12bc81d01b2594d438c4c7", null ],
+    [ "Yield", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#aeb0d5eaed38bb2bb143dc4bd590494a6", null ],
+    [ "UseNoiseReduction", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html#a8c9a70244c8b504f8d003f0826e5f66c", null ]
 ];

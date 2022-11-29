@@ -13,6 +13,7 @@ var classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client =
     [ "SendSignalingData", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a7fea06672bc3c829791ea124a4d83214", null ],
     [ "SendTrackingFrame", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a4274498bd86d96700bef72bc3779fcc8", null ],
     [ "SendVOIP", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a633405df4d2ad0eccb1e3490b99f6c4d", null ],
+    [ "SetRoundTripLatency", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#ad7eb5c9d8ab304679ac23e7b54fa4a75", null ],
     [ "Stop", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a04c0abee5941dda1170b2f24b5220811", null ],
     [ "IsConnected", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a0d1e717e8099d994785707b37a554bf2", null ],
     [ "NetworkingId", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html#a1e19c1e15a663942116c9c1753bd58b2", null ]

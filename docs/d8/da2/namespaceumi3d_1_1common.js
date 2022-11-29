@@ -4,6 +4,7 @@ var namespaceumi3d_1_1common =
     [ "graphics", "d2/d12/namespaceumi3d_1_1common_1_1graphics.html", "d2/d12/namespaceumi3d_1_1common_1_1graphics" ],
     [ "interaction", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html", "d9/db3/namespaceumi3d_1_1common_1_1interaction" ],
     [ "userCapture", "d4/d52/namespaceumi3d_1_1common_1_1user_capture.html", "d4/d52/namespaceumi3d_1_1common_1_1user_capture" ],
+    [ "utils", "d7/dd9/namespaceumi3d_1_1common_1_1utils.html", "d7/dd9/namespaceumi3d_1_1common_1_1utils" ],
     [ "volume", "d8/db0/namespaceumi3d_1_1common_1_1volume.html", "d8/db0/namespaceumi3d_1_1common_1_1volume" ],
     [ "AbstractBrowserRequestDto", "d8/d24/classumi3d_1_1common_1_1_abstract_browser_request_dto.html", "d8/d24/classumi3d_1_1common_1_1_abstract_browser_request_dto" ],
     [ "AbstractEntityDto", "d4/dbf/classumi3d_1_1common_1_1_abstract_entity_dto.html", "d4/dbf/classumi3d_1_1common_1_1_abstract_entity_dto" ],
@@ -13,7 +14,6 @@ var namespaceumi3d_1_1common =
     [ "AbstractValueDto", "d0/d65/classumi3d_1_1common_1_1_abstract_value_dto.html", null ],
     [ "AssetLibraryDto", "d0/d07/classumi3d_1_1common_1_1_asset_library_dto.html", "d0/d07/classumi3d_1_1common_1_1_asset_library_dto" ],
     [ "AssetMetricDto", "dd/db0/classumi3d_1_1common_1_1_asset_metric_dto.html", "dd/db0/classumi3d_1_1common_1_1_asset_metric_dto" ],
-    [ "AudioDto", "df/de6/classumi3d_1_1common_1_1_audio_dto.html", "df/de6/classumi3d_1_1common_1_1_audio_dto" ],
     [ "BoneObjectPair", "dd/d42/classumi3d_1_1common_1_1_bone_object_pair.html", "dd/d42/classumi3d_1_1common_1_1_bone_object_pair" ],
     [ "BonePairDictionary", "d6/d7e/classumi3d_1_1common_1_1_bone_pair_dictionary.html", "d6/d7e/classumi3d_1_1common_1_1_bone_pair_dictionary" ],
     [ "BoolObservable", "db/d70/classumi3d_1_1common_1_1_bool_observable.html", "db/d70/classumi3d_1_1common_1_1_bool_observable" ],
@@ -22,9 +22,9 @@ var namespaceumi3d_1_1common =
     [ "ByteContainer", "de/dc4/classumi3d_1_1common_1_1_byte_container.html", "de/dc4/classumi3d_1_1common_1_1_byte_container" ],
     [ "CameraDto", "db/d0b/classumi3d_1_1common_1_1_camera_dto.html", "db/d0b/classumi3d_1_1common_1_1_camera_dto" ],
     [ "ColliderDto", "dc/d43/classumi3d_1_1common_1_1_collider_dto.html", "dc/d43/classumi3d_1_1common_1_1_collider_dto" ],
+    [ "ConferenceBrowserRequest", "dc/d03/classumi3d_1_1common_1_1_conference_browser_request.html", "dc/d03/classumi3d_1_1common_1_1_conference_browser_request" ],
     [ "DebugInfo", "d9/d00/classumi3d_1_1common_1_1_debug_info.html", "d9/d00/classumi3d_1_1common_1_1_debug_info" ],
     [ "DeleteEntityDto", "d9/d74/classumi3d_1_1common_1_1_delete_entity_dto.html", "d9/d74/classumi3d_1_1common_1_1_delete_entity_dto" ],
-    [ "DofType", "d0/d4d/classumi3d_1_1common_1_1_dof_type.html", "d0/d4d/classumi3d_1_1common_1_1_dof_type" ],
     [ "EnterDto", "da/d32/classumi3d_1_1common_1_1_enter_dto.html", "da/d32/classumi3d_1_1common_1_1_enter_dto" ],
     [ "EntityGroupDto", "dc/d45/classumi3d_1_1common_1_1_entity_group_dto.html", "dc/d45/classumi3d_1_1common_1_1_entity_group_dto" ],
     [ "EntityRequestDto", "dc/d27/classumi3d_1_1common_1_1_entity_request_dto.html", "dc/d27/classumi3d_1_1common_1_1_entity_request_dto" ],
@@ -32,7 +32,6 @@ var namespaceumi3d_1_1common =
     [ "FileDto", "df/db0/classumi3d_1_1common_1_1_file_dto.html", "df/db0/classumi3d_1_1common_1_1_file_dto" ],
     [ "FileListDto", "d5/dc8/classumi3d_1_1common_1_1_file_list_dto.html", "d5/dc8/classumi3d_1_1common_1_1_file_list_dto" ],
     [ "ForgeConnectionDto", "d9/db9/classumi3d_1_1common_1_1_forge_connection_dto.html", "d9/db9/classumi3d_1_1common_1_1_forge_connection_dto" ],
-    [ "GenericEnumString", "d9/d9b/classumi3d_1_1common_1_1_generic_enum_string.html", "d9/d9b/classumi3d_1_1common_1_1_generic_enum_string" ],
     [ "GetLocalInfoRequestDto", "d5/d06/classumi3d_1_1common_1_1_get_local_info_request_dto.html", "d5/d06/classumi3d_1_1common_1_1_get_local_info_request_dto" ],
     [ "GlTFAsset", "d8/dfb/classumi3d_1_1common_1_1_gl_t_f_asset.html", "d8/dfb/classumi3d_1_1common_1_1_gl_t_f_asset" ],
     [ "GlTFEnvironmentDto", "d5/deb/classumi3d_1_1common_1_1_gl_t_f_environment_dto.html", "d5/deb/classumi3d_1_1common_1_1_gl_t_f_environment_dto" ],
@@ -48,7 +47,6 @@ var namespaceumi3d_1_1common =
     [ "IEntity", "d9/d53/interfaceumi3d_1_1common_1_1_i_entity.html", null ],
     [ "ILoggable", "d5/d07/interfaceumi3d_1_1common_1_1_i_loggable.html", "d5/d07/interfaceumi3d_1_1common_1_1_i_loggable" ],
     [ "IMaterialDto", "d1/d6d/interfaceumi3d_1_1common_1_1_i_material_dto.html", "d1/d6d/interfaceumi3d_1_1common_1_1_i_material_dto" ],
-    [ "InputType", "da/d1d/classumi3d_1_1common_1_1_input_type.html", "da/d1d/classumi3d_1_1common_1_1_input_type" ],
     [ "IObservable", "da/d39/interfaceumi3d_1_1common_1_1_i_observable.html", "da/d39/interfaceumi3d_1_1common_1_1_i_observable" ],
     [ "ISelectable", "d3/d2c/interfaceumi3d_1_1common_1_1_i_selectable.html", "d3/d2c/interfaceumi3d_1_1common_1_1_i_selectable" ],
     [ "ITogglable", "de/de0/interfaceumi3d_1_1common_1_1_i_togglable.html", "de/de0/interfaceumi3d_1_1common_1_1_i_togglable" ],
@@ -66,10 +64,8 @@ var namespaceumi3d_1_1common =
     [ "NotificationOnObjectDto", "da/df8/classumi3d_1_1common_1_1_notification_on_object_dto.html", "da/df8/classumi3d_1_1common_1_1_notification_on_object_dto" ],
     [ "ObservableProperty", "d7/d79/classumi3d_1_1common_1_1_observable_property.html", "d7/d79/classumi3d_1_1common_1_1_observable_property" ],
     [ "PBRMaterialDto", "d2/d22/classumi3d_1_1common_1_1_p_b_r_material_dto.html", "d2/d22/classumi3d_1_1common_1_1_p_b_r_material_dto" ],
-    [ "PersistentSingleton", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton" ],
     [ "Physics", "de/d03/classumi3d_1_1common_1_1_physics.html", null ],
     [ "PreloadedSceneDto", "d0/dc3/classumi3d_1_1common_1_1_preloaded_scene_dto.html", "d0/dc3/classumi3d_1_1common_1_1_preloaded_scene_dto" ],
-    [ "QuittingManager", "df/d23/classumi3d_1_1common_1_1_quitting_manager.html", "df/d23/classumi3d_1_1common_1_1_quitting_manager" ],
     [ "RequestHttpUploadDto", "d3/d84/classumi3d_1_1common_1_1_request_http_upload_dto.html", "d3/d84/classumi3d_1_1common_1_1_request_http_upload_dto" ],
     [ "ResourceDto", "d5/d63/classumi3d_1_1common_1_1_resource_dto.html", "d5/d63/classumi3d_1_1common_1_1_resource_dto" ],
     [ "ScalableTextureDto", "da/d80/classumi3d_1_1common_1_1_scalable_texture_dto.html", "da/d80/classumi3d_1_1common_1_1_scalable_texture_dto" ],
@@ -90,7 +86,6 @@ var namespaceumi3d_1_1common =
     [ "SetSendingTrackingDto", "d4/daa/classumi3d_1_1common_1_1_set_sending_tracking_dto.html", "d4/daa/classumi3d_1_1common_1_1_set_sending_tracking_dto" ],
     [ "SetStreamedBonesDto", "dc/dd7/classumi3d_1_1common_1_1_set_streamed_bones_dto.html", "dc/dd7/classumi3d_1_1common_1_1_set_streamed_bones_dto" ],
     [ "SetTrackingTargetFPSDto", "d8/d19/classumi3d_1_1common_1_1_set_tracking_target_f_p_s_dto.html", "d8/d19/classumi3d_1_1common_1_1_set_tracking_target_f_p_s_dto" ],
-    [ "Singleton", "df/d5d/classumi3d_1_1common_1_1_singleton.html", "df/d5d/classumi3d_1_1common_1_1_singleton" ],
     [ "StartInterpolationPropertyDto", "d7/d8e/classumi3d_1_1common_1_1_start_interpolation_property_dto.html", "d7/d8e/classumi3d_1_1common_1_1_start_interpolation_property_dto" ],
     [ "StopInterpolationPropertyDto", "d1/dc3/classumi3d_1_1common_1_1_stop_interpolation_property_dto.html", "d1/dc3/classumi3d_1_1common_1_1_stop_interpolation_property_dto" ],
     [ "SubModelDto", "d2/dec/classumi3d_1_1common_1_1_sub_model_dto.html", "d2/dec/classumi3d_1_1common_1_1_sub_model_dto" ],
@@ -110,6 +105,7 @@ var namespaceumi3d_1_1common =
     [ "UMI3DAnimatorAnimationDto", "d2/d4c/classumi3d_1_1common_1_1_u_m_i3_d_animator_animation_dto.html", "d2/d4c/classumi3d_1_1common_1_1_u_m_i3_d_animator_animation_dto" ],
     [ "UMI3DAudioPlayerDto", "de/d13/classumi3d_1_1common_1_1_u_m_i3_d_audio_player_dto.html", "de/d13/classumi3d_1_1common_1_1_u_m_i3_d_audio_player_dto" ],
     [ "UMI3DDto", "d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html", "d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto" ],
+    [ "UMI3DDtoListDto", "d6/d50/classumi3d_1_1common_1_1_u_m_i3_d_dto_list_dto.html", "d6/d50/classumi3d_1_1common_1_1_u_m_i3_d_dto_list_dto" ],
     [ "UMI3DEnvironmentDto", "df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html", "df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto" ],
     [ "UMI3DLineDto", "d0/d46/classumi3d_1_1common_1_1_u_m_i3_d_line_dto.html", "d0/d46/classumi3d_1_1common_1_1_u_m_i3_d_line_dto" ],
     [ "UMI3DLocalAssetDirectory", "dc/daf/classumi3d_1_1common_1_1_u_m_i3_d_local_asset_directory.html", "dc/daf/classumi3d_1_1common_1_1_u_m_i3_d_local_asset_directory" ],
@@ -126,6 +122,8 @@ var namespaceumi3d_1_1common =
     [ "UMI3DSceneNodeDto", "df/d71/classumi3d_1_1common_1_1_u_m_i3_d_scene_node_dto.html", "df/d71/classumi3d_1_1common_1_1_u_m_i3_d_scene_node_dto" ],
     [ "UMI3DShaderPropertyDto", "d5/da3/classumi3d_1_1common_1_1_u_m_i3_d_shader_property_dto.html", "d5/da3/classumi3d_1_1common_1_1_u_m_i3_d_shader_property_dto" ],
     [ "UMI3DVideoPlayerDto", "d9/dac/classumi3d_1_1common_1_1_u_m_i3_d_video_player_dto.html", "d9/dac/classumi3d_1_1common_1_1_u_m_i3_d_video_player_dto" ],
+    [ "VehicleConfirmation", "dc/d17/classumi3d_1_1common_1_1_vehicle_confirmation.html", "dc/d17/classumi3d_1_1common_1_1_vehicle_confirmation" ],
+    [ "VehicleDto", "de/dc5/classumi3d_1_1common_1_1_vehicle_dto.html", "de/dc5/classumi3d_1_1common_1_1_vehicle_dto" ],
     [ "AmbientType", "d8/da2/namespaceumi3d_1_1common.html#aa9f0762b736d51b409b20e686a17389d", [
       [ "Skybox", "d8/da2/namespaceumi3d_1_1common.html#aa9f0762b736d51b409b20e686a17389da63fbbc4fe17b5b4262ebe7c2921518ed", null ],
       [ "Flat", "d8/da2/namespaceumi3d_1_1common.html#aa9f0762b736d51b409b20e686a17389da745e3db6a7ffd50e1a72b39482f0882d", null ],
@@ -158,7 +156,8 @@ var namespaceumi3d_1_1common =
       [ "None", "d8/da2/namespaceumi3d_1_1common.html#ad98e1c157e24909860dd18fdcee390e6a6adf97f83acf6453d4a6a4b1070f3754", null ],
       [ "Default", "d8/da2/namespaceumi3d_1_1common.html#ad98e1c157e24909860dd18fdcee390e6a7a1920d61156abc05a60135aefe8bc67", null ],
       [ "Error", "d8/da2/namespaceumi3d_1_1common.html#ad98e1c157e24909860dd18fdcee390e6a902b0d55fddef6f8d651fe1035b7d4bd", null ],
-      [ "Warning", "d8/da2/namespaceumi3d_1_1common.html#ad98e1c157e24909860dd18fdcee390e6a0eaadb4fcb48a0a0ed7bc9868be9fbaa", null ]
+      [ "Warning", "d8/da2/namespaceumi3d_1_1common.html#ad98e1c157e24909860dd18fdcee390e6a0eaadb4fcb48a0a0ed7bc9868be9fbaa", null ],
+      [ "Exception", "d8/da2/namespaceumi3d_1_1common.html#ad98e1c157e24909860dd18fdcee390e6ab0d4998a26f5b5742ad38c4af8817e32", null ]
     ] ],
     [ "DebugScope", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728e", [
       [ "None", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728ea6adf97f83acf6453d4a6a4b1070f3754", null ],
@@ -176,6 +175,7 @@ var namespaceumi3d_1_1common =
       [ "Bytes", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728ea600e754f49b68aa0fc90a9cd64eb7051", null ],
       [ "User", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728ea8f9bfe9d1345237cb3b2b205864da075", null ],
       [ "Connection", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728eac2cc7082a89c1ad6631a2f66af5f00c0", null ],
+      [ "Mumble", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728ea7ddff71af55c1d8dc9e25af89eb4547d", null ],
       [ "Editor", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728ea344a7f427fb765610ef96eb7bce95257", null ],
       [ "Other", "d8/da2/namespaceumi3d_1_1common.html#a4b10f949acaf550ff0c2ea62c875728ea6311ae17c1ee52b36e68aaf4ad066387", null ]
     ] ],
@@ -241,12 +241,17 @@ var namespaceumi3d_1_1common =
       [ "Soft", "d8/da2/namespaceumi3d_1_1common.html#ad444e3cdabcb0ad6d1f2c20781b85419a682160fc6ad12f783f70608a9b46b9b9", null ],
       [ "Hard", "d8/da2/namespaceumi3d_1_1common.html#ad444e3cdabcb0ad6d1f2c20781b85419a3656183169810334a96b91129dc9d881", null ]
     ] ],
+    [ "SkyboxType", "d8/da2/namespaceumi3d_1_1common.html#aee774560c495223137bb3e0a5fc41968", [
+      [ "Equirectangular", "d8/da2/namespaceumi3d_1_1common.html#aee774560c495223137bb3e0a5fc41968acc576e08e51864baf5eb49275e2a4f96", null ],
+      [ "Cubemap", "d8/da2/namespaceumi3d_1_1common.html#aee774560c495223137bb3e0a5fc41968a29b142520cd0349c9f7375be4aa848c0", null ]
+    ] ],
     [ "StatusType", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60", [
       [ "NONE", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60ab50339a10e1de285ac99d4c3990b8693", null ],
+      [ "REGISTERED", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60ac1a4d3eaa5e512053eb2894e21c4a2bf", null ],
       [ "CREATED", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60a98690bf632c29c17c9e4c5a64069903c", null ],
       [ "READY", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60a2baa69eafc7204f3bd8648eba580c489", null ],
-      [ "AWAY", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60aa67fec128062c7b2e0eab6c1c5864864", null ],
       [ "MISSING", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60a10d1208b485425756fcc932229386b02", null ],
+      [ "AWAY", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60aa67fec128062c7b2e0eab6c1c5864864", null ],
       [ "ACTIVE", "d8/da2/namespaceumi3d_1_1common.html#ad76e996ae54ef621b086d52618348a60a18ff74f43da410c5529f7d6fca84f115", null ]
     ] ],
     [ "TextAnchorType", "d8/da2/namespaceumi3d_1_1common.html#a426011c4fac43065d55a2a706a3fa9dc", [

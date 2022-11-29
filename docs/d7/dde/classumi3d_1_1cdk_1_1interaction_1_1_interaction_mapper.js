@@ -1,7 +1,5 @@
 var classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper =
 [
-    [ "CreateTool", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#ada0d353a5aa32af96f1105fcaaaea3bf", null ],
-    [ "CreateToolbox", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#a3554732c0e848cbf438d7a64b975882f", null ],
     [ "GetController", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#ac1a06283d2d4be902b400841e1aaff5d", null ],
     [ "GetController", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#ad6e5fdb6b16ae40f7623a9ee23e36c7b", null ],
     [ "GetInteraction", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html#abbb39e76a94e92a40c468cf87b99cd50", null ],

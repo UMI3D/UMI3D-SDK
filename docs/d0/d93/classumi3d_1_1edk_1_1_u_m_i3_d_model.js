@@ -1,7 +1,6 @@
 var classumi3d_1_1edk_1_1_u_m_i3_d_model =
 [
     [ "CreateDto", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#ab145ad28e9965a68357596e24629326b", null ],
-    [ "GetSubModelGameObjectOfUMI3DModel", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a75611815fe46ce761aeb264ecc4d5d6f", null ],
     [ "InitDefinition", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#ac7be7e34baae200159ea03fa27a1d264", null ],
     [ "SetSubHierarchy", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a270e2649a2e31dd5b020112d62641a92", null ],
     [ "ToBytes", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#aa93fa3a55cbb907001747a2b7d725f3d", null ],
@@ -13,5 +12,7 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_model =
     [ "isRightHanded", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a7804e6761eb92fe05f703e63ae5fb172", null ],
     [ "isTraversable", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#aa2648045decf4f0a498ded20848206b9", null ],
     [ "lockColliders", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a111d71507737ad2384ff9a11ad22b080", null ],
-    [ "objectModel", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a1a9d4092521dca5ae6be01c27615099f", null ]
+    [ "objectModel", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a1a9d4092521dca5ae6be01c27615099f", null ],
+    [ "objectPartOfNavmesh", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a630b284bb36125ea602c909eb16702ca", null ],
+    [ "objectTraversable", "d0/d93/classumi3d_1_1edk_1_1_u_m_i3_d_model.html#a022517649498af8116548cd1b42fb7b5", null ]
 ];

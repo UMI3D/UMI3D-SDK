@@ -1,10 +1,15 @@
 var classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager =
 [
     [ "Back", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a6341819409e6e18905df5856369ee2ed", null ],
+    [ "Clear", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a3d7c81b5ad8323030bafe1ae48cc284b", null ],
+    [ "Collapse", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a1f5424c2f9a4c81dcae3145a4fcd21bd", null ],
+    [ "CollapseAll", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ad3879ac3844de7aedec0fccb71af3dba", null ],
+    [ "CreateMenuAndDisplay", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a28372dce2ca929b80ac75aab5c064625", null ],
     [ "Display", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a47daca552befd0b29c94668de9c00f1d", null ],
+    [ "DisplayAndExpandAll", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a02ce7b5b375252eccf85fb72b70b420f", null ],
     [ "Expand", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ab951acd4ab7dfecf0812743f781e46b1", null ],
-    [ "Hide", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ac0b277bc56bfc39791b9c696db6dfadd", null ],
-    [ "Hide", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a46f74c4f5aa2d52a949c82e52fb49325", null ],
+    [ "ExpandAll", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a9399140a1bda0854cbad108993b804fa", null ],
+    [ "Hide", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ab7d3c79cd0b6bf0244427972f793007d", null ],
     [ "Navigate", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a52b5a438dd2567a87388637f1bcccbec", null ],
     [ "containerSelector", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ab9736b5a3abc5f184e3ebf2baaf7968f", null ],
     [ "displayDepth", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a98313aa330f8eb4de0581e8403fc443b", null ],
@@ -17,6 +22,7 @@ var classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager =
     [ "onDisplay", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a9d604c9302b893e83253a5361de3b15e", null ],
     [ "onHide", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#accf005616c195ff8e10e5dc0c7e55a7a", null ],
     [ "isDisplaying", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a268c57dbcc1b4a84521da74fe85f2ecd", null ],
+    [ "IsMenuCreated", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#a7b32fc5eb85880dd6c62f749228b4543", null ],
     [ "lastMenuContainerUnderNavigation", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ab9da44b47378b1ad35e11c3dc4ac8409", null ],
     [ "menu", "de/dea/classumi3d_1_1cdk_1_1menu_1_1view_1_1_menu_display_manager.html#ad5e5b9876626587916fe1b2bf4f76ffc", null ]
 ];

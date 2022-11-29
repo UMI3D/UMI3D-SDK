@@ -1,0 +1,28 @@
+var classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user =
+[
+    [ "address", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a1b461c4a6257468a1861bae0a52b92eb", null ],
+    [ "bytespersec", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#afe1ba998ecfb7c0170d4e2ccfc817ecb", null ],
+    [ "channel", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#aa21148f748e45306d35b0e9bc1f885fd", null ],
+    [ "comment", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a8ebbc727c3bf6d856e6ab7f0ce2f3721", null ],
+    [ "context", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a5b84602fc2159042921aac7f369955da", null ],
+    [ "deaf", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#afa123862e84978669d61730d0908e3f7", null ],
+    [ "identity", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#aaedba3fe1e25595855bb1ca122951dbe", null ],
+    [ "idlesecs", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a46abc85976ae34acdccf93440bb1407e", null ],
+    [ "mute", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#adb5858d75c1bf8a0a1dcf79341ab70b8", null ],
+    [ "name", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a13ce97cd708e64b9f1d39709a722003c", null ],
+    [ "onlinesecs", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#ac7379c63133a810cb8e3fc1195748ebe", null ],
+    [ "os", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a6d22f23ed2a6b3b00c4e45e371d3ffc5", null ],
+    [ "osversion", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a423d381b152d4c3f5d21be303b6fff02", null ],
+    [ "prioritySpeaker", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#af4440d782b8220683cf64647e9908f90", null ],
+    [ "recording", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a40b958f33187332730da220c05a350a1", null ],
+    [ "release", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a9541d134275f8fb775769336db406145", null ],
+    [ "selfDeaf", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a2b6fd46c697eb2353b72d820727d16f2", null ],
+    [ "selfMute", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a743b2116433746eed85600fbb3af49f2", null ],
+    [ "session", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#aa3a76b7dd1d6fc64c46fa775bfaae829", null ],
+    [ "suppress", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a59a94d0173d694dd5b8060aee3a4597b", null ],
+    [ "tcponly", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a02d311bfac0f89bc4857547d1405b6a7", null ],
+    [ "tcpPing", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#afca64f58603266de95af6dd22b6b99cf", null ],
+    [ "udpPing", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a8507d14b0a1adfddc0f4bfadfa6629b1", null ],
+    [ "userid", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a25b4b29591543cbe3425ed9c55eaab6e", null ],
+    [ "version", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html#a337fa1294c8b0b1a27c79d09b4ace639", null ]
+];
