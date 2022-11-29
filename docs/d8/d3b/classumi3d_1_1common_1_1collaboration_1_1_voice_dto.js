@@ -1,6 +1,7 @@
 var classumi3d_1_1common_1_1collaboration_1_1_voice_dto =
 [
-    [ "data", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#a51e5895842ef9755b2eda19e0fca4ccf", null ],
-    [ "length", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#af7955b150a44e05ed65a258f293affee", null ],
-    [ "senderId", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#abed28204db6c2ad6ee6eb08cf87b4259", null ]
+    [ "channelName", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#aa50256cec47f7bd54b55a1782bbdeefb", null ],
+    [ "login", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#a0443f856797ad5a3974ea42adf52e7f7", null ],
+    [ "password", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#acd370859b23c0c4c5818126dd20cf7d1", null ],
+    [ "url", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html#ae2419fad2c12ccb472e7e01edf18ff0c", null ]
 ];

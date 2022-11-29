@@ -7,6 +7,7 @@ var namespaceumi3d_1_1cdk_1_1menu =
     [ "AbstractMenu", "df/d6e/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu.html", "df/d6e/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu" ],
     [ "AbstractMenuItem", "d4/d0b/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item.html", "d4/d0b/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item" ],
     [ "AbstractMenuItemAdded", "da/d88/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item_added.html", null ],
+    [ "AbstractMenuItemRemoved", "d4/d07/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item_removed.html", null ],
     [ "AbstractRangeInputMenuItem", "d7/dea/classumi3d_1_1cdk_1_1menu_1_1_abstract_range_input_menu_item.html", "d7/dea/classumi3d_1_1cdk_1_1menu_1_1_abstract_range_input_menu_item" ],
     [ "BooleanInputMenuItem", "d5/d45/classumi3d_1_1cdk_1_1menu_1_1_boolean_input_menu_item.html", "d5/d45/classumi3d_1_1cdk_1_1menu_1_1_boolean_input_menu_item" ],
     [ "ButtonInputMenuItem", "d9/d11/classumi3d_1_1cdk_1_1menu_1_1_button_input_menu_item.html", "d9/d11/classumi3d_1_1cdk_1_1menu_1_1_button_input_menu_item" ],

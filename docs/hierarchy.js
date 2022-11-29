@@ -3,6 +3,12 @@ var hierarchy =
     [ "umi3d.cdk.menu.AbstractEnumInputMenuItem< string >", "d4/db7/classumi3d_1_1cdk_1_1menu_1_1_abstract_enum_input_menu_item.html", [
       [ "umi3d.cdk.menu.DropDownInputMenuItem", "d6/d21/classumi3d_1_1cdk_1_1menu_1_1_drop_down_input_menu_item.html", null ]
     ] ],
+    [ "AbstractExtrapolator", null, [
+      [ "umi3d.cdk.utils.extrapolation.AbstractExtrapolator< T >", "d6/dac/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_extrapolator.html", [
+        [ "umi3d.cdk.utils.extrapolation.AbstractLinearDelayedExtrapolator< T >", "d9/db2/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_delayed_extrapolator.html", null ],
+        [ "umi3d.cdk.utils.extrapolation.AbstractLinearExtrapolator< T >", "d6/d0a/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_extrapolator.html", null ]
+      ] ]
+    ] ],
     [ "umi3d.common.AbstractGlTFExtensions< UMI3D_EXT >", "df/da8/classumi3d_1_1common_1_1_abstract_gl_t_f_extensions.html", null ],
     [ "umi3d.common.AbstractGlTFExtensions< IMaterialDto >", "df/da8/classumi3d_1_1common_1_1_abstract_gl_t_f_extensions.html", [
       [ "umi3d.common.GlTFMaterialExtensions", "d8/d29/classumi3d_1_1common_1_1_gl_t_f_material_extensions.html", null ]
@@ -37,6 +43,33 @@ var hierarchy =
       [ "umi3d.cdk.menu.view.AbstractTextInputDisplayer", "d0/db4/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_text_input_displayer.html", null ],
       [ "umi3d.cdk.menu.view.AbstractUploadInputDisplayer", "d6/df3/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_upload_input_displayer.html", null ]
     ] ],
+    [ "umi3d.cdk.utils.extrapolation.AbstractLinearDelayedExtrapolator< float >", "d9/db2/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_delayed_extrapolator.html", [
+      [ "umi3d.cdk.utils.extrapolation.FloatLinearDelayedExtrapolator", "da/db6/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_float_linear_delayed_extrapolator.html", null ]
+    ] ],
+    [ "umi3d.cdk.utils.extrapolation.AbstractLinearDelayedExtrapolator< Quaternion >", "d9/db2/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_delayed_extrapolator.html", [
+      [ "umi3d.cdk.utils.extrapolation.QuaternionLinearDelayedExtrapolator", "d7/d65/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_quaternion_linear_delayed_extrapolator.html", null ]
+    ] ],
+    [ "umi3d.cdk.utils.extrapolation.AbstractLinearDelayedExtrapolator< Vector3 >", "d9/db2/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_delayed_extrapolator.html", [
+      [ "umi3d.cdk.utils.extrapolation.Vector3LinearDelayedExtrapolator", "de/d05/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_vector3_linear_delayed_extrapolator.html", null ]
+    ] ],
+    [ "umi3d.cdk.utils.extrapolation.AbstractLinearExtrapolator< float >", "d6/d0a/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_extrapolator.html", [
+      [ "umi3d.cdk.utils.extrapolation.FloatLinearExtrapolator", "dd/d78/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_float_linear_extrapolator.html", [
+        [ "umi3d.cdk.utils.extrapolation.kalman.FloatKalmanExtrapolator", "db/dd0/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_float_kalman_extrapolator.html", null ]
+      ] ]
+    ] ],
+    [ "umi3d.cdk.utils.extrapolation.AbstractLinearExtrapolator< Quaternion >", "d6/d0a/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_extrapolator.html", [
+      [ "umi3d.cdk.utils.extrapolation.QuaternionLinearExtrapolator", "dc/d8f/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_quaternion_linear_extrapolator.html", [
+        [ "umi3d.cdk.utils.extrapolation.kalman.QuaternionKalmanExtrapolator", "d3/d7b/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_quaternion_kalman_extrapolator.html", null ]
+      ] ]
+    ] ],
+    [ "umi3d.cdk.utils.extrapolation.AbstractLinearExtrapolator< Vector3 >", "d6/d0a/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_abstract_linear_extrapolator.html", [
+      [ "umi3d.cdk.utils.extrapolation.Vector3LinearExtrapolator", "d3/d5d/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1_vector3_linear_extrapolator.html", [
+        [ "umi3d.cdk.utils.extrapolation.kalman.Vector3KalmanExtrapolator", "d4/d0c/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_vector3_kalman_extrapolator.html", null ]
+      ] ]
+    ] ],
+    [ "umi3d.cdk.collaboration.AbstractMicrophoneListener< MicrophoneListener >", "d5/d91/classumi3d_1_1cdk_1_1collaboration_1_1_abstract_microphone_listener.html", [
+      [ "umi3d.cdk.collaboration.MicrophoneListener", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html", null ]
+    ] ],
     [ "AbstractParameterDto", null, [
       [ "umi3d.common.interaction.AbstractParameterDto< V >", "d6/d80/classumi3d_1_1common_1_1interaction_1_1_abstract_parameter_dto.html", null ]
     ] ],
@@ -50,8 +83,10 @@ var hierarchy =
       [ "umi3d.common.interaction.IntegerRangeParameterDto", "d5/d17/classumi3d_1_1common_1_1interaction_1_1_integer_range_parameter_dto.html", null ]
     ] ],
     [ "umi3d.cdk.interaction.AbstractTool", "d1/d0a/classumi3d_1_1cdk_1_1interaction_1_1_abstract_tool.html", [
-      [ "umi3d.cdk.interaction.Interactable", "d9/db8/classumi3d_1_1cdk_1_1interaction_1_1_interactable.html", null ],
-      [ "umi3d.cdk.interaction.Tool", "dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html", null ]
+      [ "umi3d.cdk.interaction.GlobalTool", "d0/d9f/classumi3d_1_1cdk_1_1interaction_1_1_global_tool.html", [
+        [ "umi3d.cdk.interaction.Toolbox", "d9/d59/classumi3d_1_1cdk_1_1interaction_1_1_toolbox.html", null ]
+      ] ],
+      [ "umi3d.cdk.interaction.Interactable", "d9/db8/classumi3d_1_1cdk_1_1interaction_1_1_interactable.html", null ]
     ] ],
     [ "umi3d.cdk.AbstractUMI3DMaterialLoader", "dd/dab/classumi3d_1_1cdk_1_1_abstract_u_m_i3_d_material_loader.html", [
       [ "umi3d.cdk.UMI3DExternalMaterialLoader", "d9/d2b/classumi3d_1_1cdk_1_1_u_m_i3_d_external_material_loader.html", null ],
@@ -66,6 +101,7 @@ var hierarchy =
       [ "umi3d.cdk.volumes.OBJVolumeCell", "d1/d9d/classumi3d_1_1cdk_1_1volumes_1_1_o_b_j_volume_cell.html", null ]
     ] ],
     [ "umi3d.common.UMI3DAnimationDto.AnimationChainDto", "d6/d65/classumi3d_1_1common_1_1_u_m_i3_d_animation_dto_1_1_animation_chain_dto.html", null ],
+    [ "umi3d.cdk.collaboration.NoiseReducer.ApiError", "d3/d01/structumi3d_1_1cdk_1_1collaboration_1_1_noise_reducer_1_1_api_error.html", null ],
     [ "System.Attribute", null, [
       [ "umi3d.edk.collaboration.WebServiceMethodAttribute", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html", [
         [ "umi3d.edk.collaboration.HttpGet", "dd/d78/classumi3d_1_1edk_1_1collaboration_1_1_http_get.html", null ],
@@ -78,6 +114,7 @@ var hierarchy =
     [ "umi3d.common.ByteContainer", "de/dc4/classumi3d_1_1common_1_1_byte_container.html", null ],
     [ "umi3d.edk.collaboration.ConfigServer", "df/d8d/classumi3d_1_1edk_1_1collaboration_1_1_config_server.html", null ],
     [ "umi3d.edk.CustomTextures", "dd/df5/classumi3d_1_1edk_1_1_custom_textures.html", null ],
+    [ "umi3d.cdk.collaboration.NoiseReducer.Data", "d4/da7/structumi3d_1_1cdk_1_1collaboration_1_1_noise_reducer_1_1_data.html", null ],
     [ "umi3d.cdk.UMI3DResourcesManager.Data", "dc/dd6/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager_1_1_data.html", null ],
     [ "umi3d.cdk.UMI3DResourcesManager.DataFile", "d3/dc7/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager_1_1_data_file.html", null ],
     [ "DebugInfo", null, [
@@ -87,24 +124,30 @@ var hierarchy =
       [ "umi3d.cdk.GltfastCustomMaterialGenerator", "d1/d66/classumi3d_1_1cdk_1_1_gltfast_custom_material_generator.html", null ]
     ] ],
     [ "umi3d.edk.UMI3DEnvironment.DictionaryGenerator< A >", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html", null ],
+    [ "umi3d.edk.UMI3DEnvironment.DictionaryGenerator< umi3d.edk.UMI3DEntity >", "d2/d20/classumi3d_1_1edk_1_1_u_m_i3_d_environment_1_1_dictionary_generator.html", null ],
     [ "umi3d.edk.DispatchableRequest", "d5/dee/classumi3d_1_1edk_1_1_dispatchable_request.html", [
+      [ "ForceLogoutRequest", "d6/d95/class_force_logout_request.html", null ],
       [ "umi3d.edk.GetLocalInfoRequest", "d0/dc2/classumi3d_1_1edk_1_1_get_local_info_request.html", null ],
       [ "umi3d.edk.NavigationRequest", "de/d36/classumi3d_1_1edk_1_1_navigation_request.html", [
-        [ "umi3d.edk.TeleportRequest", "d6/d34/classumi3d_1_1edk_1_1_teleport_request.html", null ]
+        [ "umi3d.edk.TeleportRequest", "d6/d34/classumi3d_1_1edk_1_1_teleport_request.html", [
+          [ "umi3d.edk.VehicleRequest", "d5/de9/classumi3d_1_1edk_1_1_vehicle_request.html", [
+            [ "umi3d.edk.userCapture.BoardedVehicleRequest", "d1/d79/classumi3d_1_1edk_1_1user_capture_1_1_boarded_vehicle_request.html", null ]
+          ] ]
+        ] ]
       ] ],
-      [ "umi3d.edk.UploadFileRequest", "d1/df2/classumi3d_1_1edk_1_1_upload_file_request.html", null ]
-    ] ],
-    [ "Exception", null, [
-      [ "umi3d.cdk.Umi3dException", "d2/dc2/classumi3d_1_1cdk_1_1_umi3d_exception.html", null ]
+      [ "umi3d.edk.UploadFileRequest", "d1/df2/classumi3d_1_1edk_1_1_upload_file_request.html", null ],
+      [ "umi3d.edk.collaboration.RedirectionRequest", "db/d10/classumi3d_1_1edk_1_1collaboration_1_1_redirection_request.html", null ],
+      [ "umi3d.edk.userCapture.EmoteDispatchRequest", "d1/dd2/classumi3d_1_1edk_1_1user_capture_1_1_emote_dispatch_request.html", null ]
     ] ],
     [ "System.Exception", null, [
+      [ "UMI3DAsyncManagerException", "d5/d37/class_u_m_i3_d_async_manager_exception.html", null ],
+      [ "umi3d.cdk.Umi3dException", "d2/dc2/classumi3d_1_1cdk_1_1_umi3d_exception.html", [
+        [ "umi3d.cdk.Umi3dLoadingException", "d7/d00/classumi3d_1_1cdk_1_1_umi3d_loading_exception.html", null ],
+        [ "umi3d.cdk.Umi3dNetworkingException", "da/ddb/classumi3d_1_1cdk_1_1_umi3d_networking_exception.html", null ]
+      ] ],
       [ "umi3d.cdk.interaction.ProjectionMemory.NoInputFoundException", "d7/d44/classumi3d_1_1cdk_1_1interaction_1_1_projection_memory_1_1_no_input_found_exception.html", null ]
     ] ],
     [ "umi3d.common.volume.GeometryTools.Face3", "d2/d4d/classumi3d_1_1common_1_1volume_1_1_geometry_tools_1_1_face3.html", null ],
-    [ "umi3d.common.GenericEnumString", "d9/d9b/classumi3d_1_1common_1_1_generic_enum_string.html", [
-      [ "umi3d.common.DofType", "d0/d4d/classumi3d_1_1common_1_1_dof_type.html", null ],
-      [ "umi3d.common.InputType", "da/d1d/classumi3d_1_1common_1_1_input_type.html", null ]
-    ] ],
     [ "umi3d.common.volume.GeometryTools", "de/de8/classumi3d_1_1common_1_1volume_1_1_geometry_tools.html", null ],
     [ "umi3d.common.GlTFAsset", "d8/dfb/classumi3d_1_1common_1_1_gl_t_f_asset.html", null ],
     [ "umi3d.cdk.GlTFNodeLoader", "d8/d2f/classumi3d_1_1cdk_1_1_gl_t_f_node_loader.html", null ],
@@ -112,6 +155,8 @@ var hierarchy =
     [ "umi3d.edk.collaboration.HttpRoutingUtil", "d3/d62/classumi3d_1_1edk_1_1collaboration_1_1_http_routing_util.html", null ],
     [ "umi3d.common.IBytable", "d6/d5c/interfaceumi3d_1_1common_1_1_i_bytable.html", [
       [ "umi3d.common.AbstractBrowserRequestDto", "d8/d24/classumi3d_1_1common_1_1_abstract_browser_request_dto.html", [
+        [ "umi3d.common.ConferenceBrowserRequest", "dc/d03/classumi3d_1_1common_1_1_conference_browser_request.html", null ],
+        [ "umi3d.common.VehicleConfirmation", "dc/d17/classumi3d_1_1common_1_1_vehicle_confirmation.html", null ],
         [ "umi3d.common.interaction.InteractionRequestDto", "d9/d21/classumi3d_1_1common_1_1interaction_1_1_interaction_request_dto.html", [
           [ "umi3d.common.interaction.EventStateChangedDto", "d4/d93/classumi3d_1_1common_1_1interaction_1_1_event_state_changed_dto.html", null ],
           [ "umi3d.common.interaction.EventTriggeredDto", "d3/dba/classumi3d_1_1common_1_1interaction_1_1_event_triggered_dto.html", null ],
@@ -125,8 +170,10 @@ var hierarchy =
             [ "umi3d.common.interaction.UploadFileRequestDto", "d2/d9d/classumi3d_1_1common_1_1interaction_1_1_upload_file_request_dto.html", null ]
           ] ]
         ] ],
+        [ "umi3d.common.interaction.NotificationCallbackDto", "df/d37/classumi3d_1_1common_1_1interaction_1_1_notification_callback_dto.html", null ],
         [ "umi3d.common.interaction.ToolProjectedDto", "df/d14/classumi3d_1_1common_1_1interaction_1_1_tool_projected_dto.html", null ],
         [ "umi3d.common.interaction.ToolReleasedDto", "da/d08/classumi3d_1_1common_1_1interaction_1_1_tool_released_dto.html", null ],
+        [ "umi3d.common.userCapture.EmoteRequest", "d9/df4/classumi3d_1_1common_1_1user_capture_1_1_emote_request.html", null ],
         [ "umi3d.common.userCapture.UserCameraPropertiesDto", "db/d8d/classumi3d_1_1common_1_1user_capture_1_1_user_camera_properties_dto.html", null ],
         [ "umi3d.common.userCapture.UserTrackingFrameDto", "dc/d07/classumi3d_1_1common_1_1user_capture_1_1_user_tracking_frame_dto.html", null ],
         [ "umi3d.common.volume.VolumeUserTransitDto", "da/db8/classumi3d_1_1common_1_1volume_1_1_volume_user_transit_dto.html", null ]
@@ -182,11 +229,16 @@ var hierarchy =
       ] ],
       [ "umi3d.edk.interaction.UMI3DManipulation.DofGroup", "df/d93/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_manipulation_1_1_dof_group.html", null ],
       [ "umi3d.edk.interaction.UMI3DManipulation.DofGroupOption", "df/dc3/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_manipulation_1_1_dof_group_option.html", null ],
-      [ "umi3d.edk.interaction.UMI3DTool", "d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool.html", null ],
       [ "umi3d.edk.userCapture.UMI3DBinding", "d7/d57/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_binding.html", null ],
-      [ "umi3d.edk.userCapture.UMI3DHandAnimation.PhalanxRotations", "db/d20/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_animation_1_1_phalanx_rotations.html", null ]
+      [ "umi3d.edk.userCapture.UMI3DHandAnimation.PhalanxRotations", "db/d20/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_animation_1_1_phalanx_rotations.html", null ],
+      [ "umi3d.worldController.WorldControllerMessage", "d8/df1/classumi3d_1_1world_controller_1_1_world_controller_message.html", [
+        [ "umi3d.worldController.WorldControllerUserJoinMessage", "dc/d49/classumi3d_1_1world_controller_1_1_world_controller_user_join_message.html", [
+          [ "umi3d.worldController.WorldControllerUserLeaveMessage", "dd/d80/classumi3d_1_1world_controller_1_1_world_controller_user_leave_message.html", null ]
+        ] ]
+      ] ]
     ] ],
     [ "umi3d.common.IceServer", "d9/dfd/classumi3d_1_1common_1_1_ice_server.html", null ],
+    [ "umi3d.cdk.collaboration.AbstractMicrophoneListener< T >.Identity", "d8/dd6/classumi3d_1_1cdk_1_1collaboration_1_1_abstract_microphone_listener_1_1_identity.html", null ],
     [ "umi3d.common.IEntity", "d9/d53/interfaceumi3d_1_1common_1_1_i_entity.html", [
       [ "umi3d.common.AssetLibraryDto", "d0/d07/classumi3d_1_1common_1_1_asset_library_dto.html", null ],
       [ "umi3d.common.EntityGroupDto", "dc/d45/classumi3d_1_1common_1_1_entity_group_dto.html", null ],
@@ -206,8 +258,10 @@ var hierarchy =
         [ "umi3d.common.UMI3DVideoPlayerDto", "d9/dac/classumi3d_1_1common_1_1_u_m_i3_d_video_player_dto.html", null ]
       ] ],
       [ "umi3d.common.interaction.InteractableDto", "d5/d8a/classumi3d_1_1common_1_1interaction_1_1_interactable_dto.html", null ],
-      [ "umi3d.common.interaction.ToolDto", "db/d5e/classumi3d_1_1common_1_1interaction_1_1_tool_dto.html", null ],
       [ "umi3d.common.interaction.ToolboxDto", "df/d24/classumi3d_1_1common_1_1interaction_1_1_toolbox_dto.html", null ],
+      [ "umi3d.common.userCapture.UMI3DBodyPoseDto", "d7/d90/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_body_pose_dto.html", null ],
+      [ "umi3d.common.userCapture.UMI3DEmoteDto", "db/d43/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_emote_dto.html", null ],
+      [ "umi3d.common.userCapture.UMI3DEmotesConfigDto", "dd/d4a/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_emotes_config_dto.html", null ],
       [ "umi3d.common.userCapture.UMI3DHandPoseDto", "d1/d5f/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_hand_pose_dto.html", null ],
       [ "umi3d.common.volume.AbstractVolumeDescriptorDto", "d4/d77/classumi3d_1_1common_1_1volume_1_1_abstract_volume_descriptor_dto.html", [
         [ "umi3d.common.volume.AbstractVolumeCellDto", "d8/d02/classumi3d_1_1common_1_1volume_1_1_abstract_volume_cell_dto.html", [
@@ -223,6 +277,24 @@ var hierarchy =
       [ "umi3d.cdk.menu.view.AbstractMenuDisplayContainer", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html", null ],
       [ "umi3d.cdk.menu.view.SerializableDictionary< TKey, TValue >", "d0/db7/classumi3d_1_1cdk_1_1menu_1_1view_1_1_serializable_dictionary.html", null ],
       [ "umi3d.edk.Transaction", "d2/d68/classumi3d_1_1edk_1_1_transaction.html", null ]
+    ] ],
+    [ "IEnvironment", "db/de5/interface_i_environment.html", [
+      [ "umi3d.edk.collaboration.UMI3DCollaborationServer", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html", null ]
+    ] ],
+    [ "IHttpApi", "db/d64/interface_i_http_api.html", [
+      [ "umi3d.edk.collaboration.UMI3DEnvironmentApi", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html", null ],
+      [ "umi3d.worldController.UMI3DStandAloneApi", "dd/dee/classumi3d_1_1world_controller_1_1_u_m_i3_d_stand_alone_api.html", null ]
+    ] ],
+    [ "umi3d.worldController.IIAM", "d8/d11/interfaceumi3d_1_1world_controller_1_1_i_i_a_m.html", [
+      [ "umi3d.worldController.StandAloneIAM", "d5/d49/classumi3d_1_1world_controller_1_1_stand_alone_i_a_m.html", null ]
+    ] ],
+    [ "umi3d.cdk.utils.extrapolation.kalman.IKalman", "d7/d17/interfaceumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_i_kalman.html", [
+      [ "umi3d.cdk.utils.extrapolation.kalman.FloatKalmanExtrapolator", "db/dd0/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_float_kalman_extrapolator.html", null ],
+      [ "umi3d.cdk.utils.extrapolation.kalman.QuaternionKalmanExtrapolator", "d3/d7b/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_quaternion_kalman_extrapolator.html", null ],
+      [ "umi3d.cdk.utils.extrapolation.kalman.Vector3KalmanExtrapolator", "d4/d0c/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_vector3_kalman_extrapolator.html", null ]
+    ] ],
+    [ "umi3d.worldController.IKeyGenerator", "da/d99/interfaceumi3d_1_1world_controller_1_1_i_key_generator.html", [
+      [ "StandAloneKeyGenerator", "dc/d1f/class_stand_alone_key_generator.html", null ]
     ] ],
     [ "umi3d.common.ILoggable", "d5/d07/interfaceumi3d_1_1common_1_1_i_loggable.html", [
       [ "umi3d.cdk.collaboration.MicrophoneListener", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html", null ]
@@ -281,8 +353,8 @@ var hierarchy =
         [ "umi3d.cdk.menu.AbstractMenu", "df/d6e/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu.html", [
           [ "umi3d.cdk.menu.Menu", "df/d78/classumi3d_1_1cdk_1_1menu_1_1_menu.html", [
             [ "umi3d.cdk.menu.ImageMenu", "d9/d20/classumi3d_1_1cdk_1_1menu_1_1_image_menu.html", null ],
-            [ "umi3d.cdk.menu.interaction.ToolMenuItem", "db/da3/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_tool_menu_item.html", null ],
-            [ "umi3d.cdk.menu.interaction.ToolboxSubMenu", "dc/d94/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_toolbox_sub_menu.html", null ]
+            [ "umi3d.cdk.menu.interaction.GlobalToolMenu", "d8/dc8/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_global_tool_menu.html", null ],
+            [ "umi3d.cdk.menu.interaction.ToolboxMenu", "df/d2d/classumi3d_1_1cdk_1_1menu_1_1interaction_1_1_toolbox_menu.html", null ]
           ] ]
         ] ],
         [ "umi3d.cdk.menu.MenuItem", "dd/da5/classumi3d_1_1cdk_1_1menu_1_1_menu_item.html", [
@@ -331,8 +403,25 @@ var hierarchy =
     [ "IUserAuthenticator", null, [
       [ "umi3d.common.collaboration.UMI3DAuthenticator", "df/d89/classumi3d_1_1common_1_1collaboration_1_1_u_m_i3_d_authenticator.html", null ]
     ] ],
-    [ "umi3d.cdk.userCapture.UserAvatar.KalmanPosition", "d6/d85/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar_1_1_kalman_position.html", null ],
-    [ "umi3d.cdk.userCapture.UserAvatar.KalmanRotation", "d7/d77/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar_1_1_kalman_rotation.html", null ],
+    [ "umi3d.worldController.IWorldController", "d5/dc0/interfaceumi3d_1_1world_controller_1_1_i_world_controller.html", [
+      [ "umi3d.worldController.StandAloneWorldControllerAPI", "d7/da5/classumi3d_1_1world_controller_1_1_stand_alone_world_controller_a_p_i.html", [
+        [ "umi3d.worldController.StandAloneWorldControler", "de/dcd/classumi3d_1_1world_controller_1_1_stand_alone_world_controler.html", null ]
+      ] ]
+    ] ],
+    [ "umi3d.worldController.IWorldController_Client", "dd/d34/interfaceumi3d_1_1world_controller_1_1_i_world_controller___client.html", [
+      [ "umi3d.worldController.StandAloneWorldControllerAPI", "d7/da5/classumi3d_1_1world_controller_1_1_stand_alone_world_controller_a_p_i.html", null ]
+    ] ],
+    [ "umi3d.worldController.IWorldController_Environment", "de/d20/interfaceumi3d_1_1world_controller_1_1_i_world_controller___environment.html", [
+      [ "umi3d.worldController.WorldControllerAPI", "da/dbb/classumi3d_1_1world_controller_1_1_world_controller_a_p_i.html", [
+        [ "umi3d.worldController.StandAloneWorldControllerAPI", "d7/da5/classumi3d_1_1world_controller_1_1_stand_alone_world_controller_a_p_i.html", null ],
+        [ "umi3d.worldController.UPDWorldControllerAPI", "d3/d16/classumi3d_1_1world_controller_1_1_u_p_d_world_controller_a_p_i.html", null ]
+      ] ]
+    ] ],
+    [ "umi3d.edk.userCapture.BodyDescription.JointData", "dc/d18/classumi3d_1_1edk_1_1user_capture_1_1_body_description_1_1_joint_data.html", null ],
+    [ "umi3d.edk.userCapture.UMI3DBodyPose.JointRotation", "d1/dc3/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose_1_1_joint_rotation.html", null ],
+    [ "Newtonsoft.Json.JsonConverter", null, [
+      [ "umi3d.cdk.collaboration.HttpClient.ParameterConverter", "d6/de7/classumi3d_1_1cdk_1_1collaboration_1_1_http_client_1_1_parameter_converter.html", null ]
+    ] ],
     [ "umi3d.common.KHR_lights_punctual", "da/d0f/classumi3d_1_1common_1_1_k_h_r__lights__punctual.html", null ],
     [ "umi3d.cdk.KHR_lights_punctualLoader", "d3/d81/classumi3d_1_1cdk_1_1_k_h_r__lights__punctual_loader.html", null ],
     [ "umi3d.common.KHR_lights_punctual.KHR_spot", "db/d4d/classumi3d_1_1common_1_1_k_h_r__lights__punctual_1_1_k_h_r__spot.html", null ],
@@ -342,10 +431,11 @@ var hierarchy =
     [ "umi3d.common.interaction.LocalInfoRequestParameterValue", "d8/d51/classumi3d_1_1common_1_1interaction_1_1_local_info_request_parameter_value.html", null ],
     [ "umi3d.cdk.collaboration.LocalInfoSender", "d5/dbf/classumi3d_1_1cdk_1_1collaboration_1_1_local_info_sender.html", null ],
     [ "MonoBehaviour", null, [
+      [ "ModelTracker", "dd/d4c/class_model_tracker.html", null ],
       [ "umi3d.cdk.AbstractNavigation", "d3/dea/classumi3d_1_1cdk_1_1_abstract_navigation.html", null ],
       [ "umi3d.cdk.Billboard", "d8/da4/classumi3d_1_1cdk_1_1_billboard.html", null ],
       [ "umi3d.cdk.OldMaterialContainer", "df/d69/classumi3d_1_1cdk_1_1_old_material_container.html", null ],
-      [ "umi3d.cdk.collaboration.AudioReader", "d8/d3f/classumi3d_1_1cdk_1_1collaboration_1_1_audio_reader.html", null ],
+      [ "umi3d.cdk.collaboration.UMI3DViewpointHelper", "d2/d17/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_viewpoint_helper.html", null ],
       [ "umi3d.cdk.interaction.AbstractController", "de/d3c/classumi3d_1_1cdk_1_1interaction_1_1_abstract_controller.html", null ],
       [ "umi3d.cdk.interaction.AbstractInteractionMapper", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html", [
         [ "umi3d.cdk.interaction.InteractionMapper", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html", null ]
@@ -362,15 +452,15 @@ var hierarchy =
       [ "umi3d.cdk.userCapture.UserAvatar", "d4/d35/classumi3d_1_1cdk_1_1user_capture_1_1_user_avatar.html", [
         [ "umi3d.cdk.collaboration.UMI3DCollaborativeUserAvatar", "d4/d2f/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaborative_user_avatar.html", null ]
       ] ],
+      [ "umi3d.cdk.volumes.BasicAllVolumesTracker", "de/d8d/classumi3d_1_1cdk_1_1volumes_1_1_basic_all_volumes_tracker.html", null ],
       [ "umi3d.cdk.volumes.VolumeTracker", "db/d78/classumi3d_1_1cdk_1_1volumes_1_1_volume_tracker.html", null ],
       [ "umi3d.common.Physics", "de/d03/classumi3d_1_1common_1_1_physics.html", null ],
-      [ "umi3d.common.QuittingManager", "df/d23/classumi3d_1_1common_1_1_quitting_manager.html", [
-        [ "umi3d.common.PersistentSingleton< T >", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html", null ],
-        [ "umi3d.common.Singleton< T >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", null ]
-      ] ],
       [ "umi3d.common.collaboration.ForgeSocketBase", "d8/da2/classumi3d_1_1common_1_1collaboration_1_1_forge_socket_base.html", [
-        [ "umi3d.cdk.collaboration.UMI3DForgeClient", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html", null ],
-        [ "umi3d.edk.collaboration.UMI3DForgeServer", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html", null ]
+        [ "umi3d.common.collaboration.UMI3DForgeSocketBase", "db/d58/classumi3d_1_1common_1_1collaboration_1_1_u_m_i3_d_forge_socket_base.html", [
+          [ "umi3d.cdk.collaboration.UMI3DForgeClient", "d3/dc3/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_forge_client.html", null ],
+          [ "umi3d.edk.collaboration.UMI3DForgeServer", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html", null ]
+        ] ],
+        [ "umi3d.worldController.UMI3DWorldControllerForgeClient", "d1/d9f/classumi3d_1_1world_controller_1_1_u_m_i3_d_world_controller_forge_client.html", null ]
       ] ],
       [ "umi3d.common.graphics.UMI3DFogSettings", "d5/d71/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_fog_settings.html", null ],
       [ "umi3d.common.graphics.UMI3DGlobalBloom", "d5/d72/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_bloom.html", null ],
@@ -408,11 +498,14 @@ var hierarchy =
       [ "umi3d.edk.collaboration.UMI3DLauncher", "d3/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_launcher.html", null ],
       [ "umi3d.edk.interaction.AbstractInteraction", "dd/d35/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction.html", null ],
       [ "umi3d.edk.interaction.AbstractTool", "d8/ddb/classumi3d_1_1edk_1_1interaction_1_1_abstract_tool.html", [
-        [ "umi3d.edk.interaction.UMI3DInteractable", "d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html", null ],
-        [ "umi3d.edk.interaction.UMI3DTool", "d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool.html", null ]
+        [ "umi3d.edk.interaction.GlobalTool", "d3/d4a/classumi3d_1_1edk_1_1interaction_1_1_global_tool.html", [
+          [ "umi3d.edk.interaction.Toolbox", "d1/dfc/classumi3d_1_1edk_1_1interaction_1_1_toolbox.html", null ]
+        ] ],
+        [ "umi3d.edk.interaction.UMI3DInteractable", "d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html", null ]
       ] ],
-      [ "umi3d.edk.interaction.UMI3DToolbox", "df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox.html", null ],
+      [ "umi3d.edk.userCapture.BodyAnimation", "df/da6/classumi3d_1_1edk_1_1user_capture_1_1_body_animation.html", null ],
       [ "umi3d.edk.userCapture.HandAnimation", "d1/df0/classumi3d_1_1edk_1_1user_capture_1_1_hand_animation.html", null ],
+      [ "umi3d.edk.userCapture.UMI3DAvatarViewpointHelper", "d5/d67/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_avatar_viewpoint_helper.html", null ],
       [ "umi3d.edk.volume.AbstractPrimitive", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html", [
         [ "umi3d.edk.volume.Box", "d9/d63/classumi3d_1_1edk_1_1volume_1_1_box.html", null ],
         [ "umi3d.edk.volume.Cylinder", "dc/d80/classumi3d_1_1edk_1_1volume_1_1_cylinder.html", null ]
@@ -420,9 +513,27 @@ var hierarchy =
       [ "umi3d.edk.volume.OBJVolume", "de/d49/classumi3d_1_1edk_1_1volume_1_1_o_b_j_volume.html", null ],
       [ "umi3d.edk.volume.VolumeSimpleModificationListener", "d2/d7d/classumi3d_1_1edk_1_1volume_1_1_volume_simple_modification_listener.html", null ]
     ] ],
+    [ "umi3d.edk.collaboration.murmur.MumbleManager", "db/d8a/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_mumble_manager.html", null ],
+    [ "MumbleMicrophone", null, [
+      [ "umi3d.cdk.collaboration.NAudioMicrophone", "d0/d0a/classumi3d_1_1cdk_1_1collaboration_1_1_n_audio_microphone.html", null ]
+    ] ],
+    [ "umi3d.edk.collaboration.murmur.MurmurAPI", "dd/d42/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i.html", null ],
+    [ "umi3d.edk.collaboration.murmur.MurmurAPI.MurmurClass", "dc/d81/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_murmur_class.html", [
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.ChannelData", "dc/d32/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_channel_data.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.NewUserData", "d1/d51/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_new_user_data.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.Server", "d2/d89/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_server.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.Server.Channel", "d2/d5a/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_server_1_1_channel.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.ServerData", "d7/d8d/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_server_data.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.ServerDataShort", "d8/d46/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_server_data_short.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.SubChannelData", "d6/df4/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_sub_channel_data.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.User", "de/d40/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user.html", null ],
+      [ "umi3d.edk.collaboration.murmur.MurmurAPI.UserData", "d5/d46/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_user_data.html", null ]
+    ] ],
     [ "NetworkManager", null, [
       [ "umi3d.cdk.collaboration.UMI3DNetworkManager", "dc/d49/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_network_manager.html", null ]
     ] ],
+    [ "umi3d.cdk.collaboration.NoiseReducer", "dc/dda/classumi3d_1_1cdk_1_1collaboration_1_1_noise_reducer.html", null ],
+    [ "umi3d.cdk.collaboration.NoiseReducer.NoiseReducerConfig", "d1/db5/structumi3d_1_1cdk_1_1collaboration_1_1_noise_reducer_1_1_noise_reducer_config.html", null ],
     [ "umi3d.common.ObservableProperty< ValueType >", "d7/d79/classumi3d_1_1common_1_1_observable_property.html", null ],
     [ "umi3d.common.ObservableProperty< bool >", "d7/d79/classumi3d_1_1common_1_1_observable_property.html", [
       [ "umi3d.common.BoolObservable", "db/d70/classumi3d_1_1common_1_1_bool_observable.html", null ]
@@ -433,24 +544,25 @@ var hierarchy =
     [ "umi3d.cdk.UMI3DNodeAnimation.OperationChain", "d9/dc2/classumi3d_1_1cdk_1_1_u_m_i3_d_node_animation_1_1_operation_chain.html", null ],
     [ "umi3d.common.UMI3DNodeAnimationDto.OperationChainDto", "de/db1/classumi3d_1_1common_1_1_u_m_i3_d_node_animation_dto_1_1_operation_chain_dto.html", null ],
     [ "umi3d.edk.MaterialOverrider.OverridedMaterialList", "d1/d12/classumi3d_1_1edk_1_1_material_overrider_1_1_overrided_material_list.html", null ],
+    [ "umi3d.cdk.collaboration.MicrophoneListener.PacketData", "dd/d0a/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener_1_1_packet_data.html", null ],
     [ "umi3d.common.PBRMaterialDto", "d2/d22/classumi3d_1_1common_1_1_p_b_r_material_dto.html", null ],
-    [ "umi3d.common.PersistentSingleton< UMI3DClientServer >", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html", [
+    [ "inetum.unityUtils.PersistentSingleBehaviour", null, [
       [ "umi3d.cdk.UMI3DClientServer", "d5/d74/classumi3d_1_1cdk_1_1_u_m_i3_d_client_server.html", [
         [ "umi3d.cdk.collaboration.UMI3DCollaborationClientServer", "d0/d29/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_server.html", null ]
-      ] ]
-    ] ],
-    [ "umi3d.common.PersistentSingleton< UMI3DEmbodimentManager >", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html", [
+      ] ],
+      [ "umi3d.cdk.UMI3DResourcesManager", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html", null ],
+      [ "umi3d.common.UMI3DLogger", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html", null ],
       [ "umi3d.edk.userCapture.UMI3DEmbodimentManager", "d2/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_embodiment_manager.html", null ]
-    ] ],
-    [ "umi3d.common.PersistentSingleton< UMI3DLogger >", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html", [
-      [ "umi3d.common.UMI3DLogger", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html", null ]
-    ] ],
-    [ "umi3d.common.PersistentSingleton< UMI3DResourcesManager >", "dc/de8/classumi3d_1_1common_1_1_persistent_singleton.html", [
-      [ "umi3d.cdk.UMI3DResourcesManager", "d7/d4f/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager.html", null ]
     ] ],
     [ "umi3d.edk.userCapture.HandDescription.PhalanxData", "d3/da2/classumi3d_1_1edk_1_1user_capture_1_1_hand_description_1_1_phalanx_data.html", null ],
     [ "umi3d.edk.userCapture.UMI3DHandPose.PhalanxRotation", "d6/d79/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose_1_1_phalanx_rotation.html", null ],
+    [ "umi3d.cdk.collaboration.NoiseReducer.PointerResult", "d7/d96/structumi3d_1_1cdk_1_1collaboration_1_1_noise_reducer_1_1_pointer_result.html", null ],
     [ "umi3d.cdk.PreloadedSceneLoader", "d3/d49/classumi3d_1_1cdk_1_1_preloaded_scene_loader.html", null ],
+    [ "umi3d.cdk.Progress", "d3/d45/classumi3d_1_1cdk_1_1_progress.html", [
+      [ "umi3d.cdk.MultiProgress", "db/df9/classumi3d_1_1cdk_1_1_multi_progress.html", [
+        [ "umi3d.cdk.DebugProgress", "db/da0/classumi3d_1_1cdk_1_1_debug_progress.html", null ]
+      ] ]
+    ] ],
     [ "umi3d.edk.interaction.AbstractTool.ProjectionContent", "d4/d32/classumi3d_1_1edk_1_1interaction_1_1_abstract_tool_1_1_projection_content.html", null ],
     [ "umi3d.cdk.interaction.ProjectionTreeNode", "d6/d9f/classumi3d_1_1cdk_1_1interaction_1_1_projection_tree_node.html", [
       [ "umi3d.cdk.interaction.EventNode", "da/d75/classumi3d_1_1cdk_1_1interaction_1_1_event_node.html", null ],
@@ -472,9 +584,7 @@ var hierarchy =
         ] ]
       ] ],
       [ "umi3d.cdk.NotificationLoader", "d4/d83/classumi3d_1_1cdk_1_1_notification_loader.html", null ],
-      [ "umi3d.cdk.collaboration.ClientIdentifierApi", "dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html", [
-        [ "umi3d.cdk.collaboration.PinClientIdentifierApi", "dd/d22/classumi3d_1_1cdk_1_1collaboration_1_1_pin_client_identifier_api.html", null ]
-      ] ],
+      [ "umi3d.cdk.collaboration.ClientIdentifierApi", "dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html", null ],
       [ "umi3d.cdk.menu.MenuAsset", "de/d0a/classumi3d_1_1cdk_1_1menu_1_1_menu_asset.html", null ],
       [ "umi3d.edk.AssetLibrary", "d3/d15/classumi3d_1_1edk_1_1_asset_library.html", null ],
       [ "umi3d.edk.MaterialSO", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html", [
@@ -485,69 +595,53 @@ var hierarchy =
       [ "umi3d.edk.collaboration.IdentifierApi", "dd/de6/classumi3d_1_1edk_1_1collaboration_1_1_identifier_api.html", [
         [ "umi3d.edk.collaboration.PinIdentifierApi", "dc/da5/classumi3d_1_1edk_1_1collaboration_1_1_pin_identifier_api.html", [
           [ "umi3d.edk.collaboration.PinIdentifierWithFormApi", "d5/d79/classumi3d_1_1edk_1_1collaboration_1_1_pin_identifier_with_form_api.html", null ]
-        ] ],
-        [ "umi3d.edk.collaboration.UnsecuredIdentifierApi", "d5/da9/classumi3d_1_1edk_1_1collaboration_1_1_unsecured_identifier_api.html", null ]
+        ] ]
       ] ],
       [ "umi3d.edk.collaboration.RelayDescription", "de/d7e/classumi3d_1_1edk_1_1collaboration_1_1_relay_description.html", null ],
+      [ "umi3d.edk.userCapture.BodyDescription", "d1/dc1/classumi3d_1_1edk_1_1user_capture_1_1_body_description.html", null ],
       [ "umi3d.edk.userCapture.HandDescription", "d4/d8a/classumi3d_1_1edk_1_1user_capture_1_1_hand_description.html", null ],
-      [ "umi3d.edk.userCapture.UMI3DHandPose", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html", null ]
+      [ "umi3d.edk.userCapture.UMI3DBodyPose", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html", null ],
+      [ "umi3d.edk.userCapture.UMI3DEmotesConfig", "d5/de1/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_emotes_config.html", null ],
+      [ "umi3d.edk.userCapture.UMI3DHandPose", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html", null ],
+      [ "umi3d.worldController.WorldControllerAPI", "da/dbb/classumi3d_1_1world_controller_1_1_world_controller_a_p_i.html", null ]
     ] ],
     [ "umi3d.cdk.menu.view.SerializableDictionary< string, AbstractMenuDisplayContainer >", "d0/db7/classumi3d_1_1cdk_1_1menu_1_1view_1_1_serializable_dictionary.html", [
       [ "umi3d.cdk.menu.view.ContainerDictionary", "dc/d99/classumi3d_1_1cdk_1_1menu_1_1view_1_1_container_dictionary.html", null ]
     ] ],
-    [ "umi3d.common.Singleton< AudioManager >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.collaboration.AudioManager", "d3/dec/classumi3d_1_1cdk_1_1collaboration_1_1_audio_manager.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< ExternalVolumeDataManager >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.volumes.ExternalVolumeDataManager", "dc/d2f/classumi3d_1_1cdk_1_1volumes_1_1_external_volume_data_manager.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< MicrophoneListener >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.collaboration.MicrophoneListener", "d5/dee/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_listener.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DAbstractPostProcessing >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.common.graphics.UMI3DAbstractPostProcessing", "dc/d01/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_abstract_post_processing.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DAnimationManager >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.UMI3DAnimationManager", "d0/da9/classumi3d_1_1cdk_1_1_u_m_i3_d_animation_manager.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DAudioBridger >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.edk.collaboration.UMI3DAudioBridger", "da/d63/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_audio_bridger.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DClientUserTracking >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.userCapture.UMI3DClientUserTracking", "d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html", [
-        [ "umi3d.cdk.collaboration.UMI3DCollaborationClientUserTracking", "d7/d91/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_user_tracking.html", null ]
-      ] ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DEnvironment >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.edk.UMI3DEnvironment", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html", [
-        [ "umi3d.edk.collaboration.UMI3DCollaborationEnvironment", "d0/d06/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_environment.html", null ]
-      ] ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DEnvironmentLoader >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
+    [ "inetum.unityUtils.SingleBehaviour", null, [
+      [ "umi3d.cdk.UMI3DAnimationManager", "d0/da9/classumi3d_1_1cdk_1_1_u_m_i3_d_animation_manager.html", null ],
       [ "umi3d.cdk.UMI3DEnvironmentLoader", "df/dd5/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader.html", [
         [ "umi3d.cdk.collaboration.UMI3DCollaborationEnvironmentLoader", "dc/da2/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_environment_loader.html", null ]
-      ] ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DNavigation >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.UMI3DNavigation", "d3/d9d/classumi3d_1_1cdk_1_1_u_m_i3_d_navigation.html", null ]
-    ] ],
-    [ "umi3d.common.Singleton< UMI3DServer >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
+      ] ],
+      [ "umi3d.cdk.UMI3DNavigation", "d3/d9d/classumi3d_1_1cdk_1_1_u_m_i3_d_navigation.html", null ],
+      [ "umi3d.cdk.collaboration.AbstractMicrophoneListener< T >", "d5/d91/classumi3d_1_1cdk_1_1collaboration_1_1_abstract_microphone_listener.html", null ],
+      [ "umi3d.cdk.collaboration.AudioManager", "d3/dec/classumi3d_1_1cdk_1_1collaboration_1_1_audio_manager.html", null ],
+      [ "umi3d.cdk.interaction.GlobalToolMenuManager", "d0/ddd/classumi3d_1_1cdk_1_1interaction_1_1_global_tool_menu_manager.html", null ],
+      [ "umi3d.cdk.userCapture.UMI3DClientUserTracking", "d7/d24/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking.html", [
+        [ "umi3d.cdk.collaboration.UMI3DCollaborationClientUserTracking", "d7/d91/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_user_tracking.html", null ]
+      ] ],
+      [ "umi3d.cdk.volumes.ExternalVolumeDataManager", "dc/d2f/classumi3d_1_1cdk_1_1volumes_1_1_external_volume_data_manager.html", null ],
+      [ "umi3d.cdk.volumes.VolumePrimitiveManager", "d2/dac/classumi3d_1_1cdk_1_1volumes_1_1_volume_primitive_manager.html", null ],
+      [ "umi3d.common.graphics.UMI3DAbstractPostProcessing", "dc/d01/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_abstract_post_processing.html", null ],
+      [ "umi3d.edk.UMI3DEnvironment", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html", [
+        [ "umi3d.edk.collaboration.UMI3DCollaborationEnvironment", "d0/d06/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_environment.html", null ]
+      ] ],
       [ "umi3d.edk.UMI3DServer", "db/d4d/classumi3d_1_1edk_1_1_u_m_i3_d_server.html", [
         [ "umi3d.edk.collaboration.UMI3DCollaborationServer", "d2/de4/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_collaboration_server.html", null ]
-      ] ]
-    ] ],
-    [ "umi3d.common.Singleton< VolumeManager >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
+      ] ],
+      [ "umi3d.edk.collaboration.UMI3DAudioBridger", "da/d63/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_audio_bridger.html", null ],
       [ "umi3d.edk.volume.VolumeManager", "d7/d86/classumi3d_1_1edk_1_1volume_1_1_volume_manager.html", null ]
     ] ],
-    [ "umi3d.common.Singleton< VolumePrimitiveManager >", "df/d5d/classumi3d_1_1common_1_1_singleton.html", [
-      [ "umi3d.cdk.volumes.VolumePrimitiveManager", "d2/dac/classumi3d_1_1cdk_1_1volumes_1_1_volume_primitive_manager.html", null ]
+    [ "inetum.unityUtils.Singleton", null, [
+      [ "umi3d.edk.collaboration.UMI3DHttp", "d5/d5f/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_http.html", null ]
     ] ],
     [ "umi3d.edk.userCapture.SpatialDataInfo", "dd/de8/structumi3d_1_1edk_1_1user_capture_1_1_spatial_data_info.html", null ],
     [ "umi3d.edk.userCapture.UMI3DUserEmbodimentBone.SpatialPosition", "d8/d31/structumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_user_embodiment_bone_1_1_spatial_position.html", null ],
     [ "umi3d.edk.collaboration.RelayDescription.Strategy", "d2/dac/structumi3d_1_1edk_1_1collaboration_1_1_relay_description_1_1_strategy.html", null ],
+    [ "umi3d.cdk.UMI3DResourcesManager.SubmodelDataCollection", "d0/d02/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager_1_1_submodel_data_collection.html", null ],
+    [ "umi3d.edk.userCapture.UMI3DBodyPose.TargetTransform", "df/df2/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose_1_1_target_transform.html", null ],
     [ "umi3d.common.ThreadDeserializer", "d3/d42/classumi3d_1_1common_1_1_thread_deserializer.html", null ],
     [ "umi3d.common.ThreadWritter", "de/dda/classumi3d_1_1common_1_1_thread_writter.html", null ],
-    [ "umi3d.cdk.interaction.Toolbox", "d9/d59/classumi3d_1_1cdk_1_1interaction_1_1_toolbox.html", null ],
     [ "umi3d.cdk.UMI3DAbstractAnchorLoader", "d5/dff/classumi3d_1_1cdk_1_1_u_m_i3_d_abstract_anchor_loader.html", null ],
     [ "umi3d.cdk.UMI3DAbstractAnimation", "d2/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_abstract_animation.html", [
       [ "umi3d.cdk.UMI3DAnimation", "dd/d03/classumi3d_1_1cdk_1_1_u_m_i3_d_animation.html", null ],
@@ -570,17 +664,60 @@ var hierarchy =
       ] ],
       [ "umi3d.cdk.UMI3DSceneLoader", "d6/da3/classumi3d_1_1cdk_1_1_u_m_i3_d_scene_loader.html", null ]
     ] ],
-    [ "umi3d.edk.collaboration.UMI3DApi", "df/d5d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api.html", null ],
+    [ "umi3d.edk.UMI3DAsyncDictionnaryProperty< string, object >", "d7/daf/classumi3d_1_1edk_1_1_u_m_i3_d_async_dictionnary_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.collaboration.UMI3DCollaborationUser >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.interaction.AbstractInteraction >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.interaction.GlobalTool >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.MaterialOverrider >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.UMI3DAnimation.AnimationChain >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.UMI3DMediaEntity >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.UMI3DNodeAnimation.OperationChain >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.UMI3DResource >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< umi3d.edk.userCapture.UMI3DBinding >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncListProperty< Vector3 >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ],
+    [ "UMI3DAsyncManager", "d6/d0b/class_u_m_i3_d_async_manager.html", null ],
     [ "UMI3DAsyncProperty", null, [
       [ "umi3d.edk.UMI3DAsyncProperty< T >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ]
     ] ],
+    [ "umi3d.edk.UMI3DAsyncProperty< AmbientMode >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< bool >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< ColliderType >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< Color >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
     [ "umi3d.edk.UMI3DAsyncProperty< Dictionary< T, L > >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", [
       [ "umi3d.edk.UMI3DAsyncDictionnaryProperty< T, L >", "d7/daf/classumi3d_1_1edk_1_1_u_m_i3_d_async_dictionnary_property.html", null ]
     ] ],
+    [ "umi3d.edk.UMI3DAsyncProperty< DirectionalType >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< float >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< Font >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< FontStyle >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< HorizontalWrapMode >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< Image.Type >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< int >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< KHR_lights_punctual.KHR_spot >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
     [ "umi3d.edk.UMI3DAsyncProperty< List< T > >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", [
       [ "umi3d.edk.UMI3DAsyncListProperty< T >", "de/db3/classumi3d_1_1edk_1_1_u_m_i3_d_async_list_property.html", null ]
     ] ],
+    [ "umi3d.edk.UMI3DAsyncProperty< long >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< NotificationPriority >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< Quaternion >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< string >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< string[]>", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< TextAnchor >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< ulong >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.MaterialSO >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DAbstractAnimation >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DAbstractNode >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DKHRLight >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DNode >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DResource >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DScalableTextureResource >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< umi3d.edk.UMI3DTextureResource >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< UMI3DAnchorDto >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< Vector2 >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< Vector3 >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
+    [ "umi3d.edk.UMI3DAsyncProperty< VerticalWrapMode >", "da/db8/classumi3d_1_1edk_1_1_u_m_i3_d_async_property.html", null ],
     [ "umi3d.edk.UMI3DAsyncPropertyEquality", "de/dc9/classumi3d_1_1edk_1_1_u_m_i3_d_async_property_equality.html", null ],
+    [ "umi3d.cdk.UMI3DBodyPoseLoader", "d4/d76/classumi3d_1_1cdk_1_1_u_m_i3_d_body_pose_loader.html", null ],
     [ "umi3d.common.UMI3DDto", "d3/d2d/classumi3d_1_1common_1_1_u_m_i3_d_dto.html", [
       [ "umi3d.common.AbstractBrowserRequestDto", "d8/d24/classumi3d_1_1common_1_1_abstract_browser_request_dto.html", null ],
       [ "umi3d.common.AbstractEntityDto", "d4/dbf/classumi3d_1_1common_1_1_abstract_entity_dto.html", [
@@ -636,15 +773,21 @@ var hierarchy =
           ] ],
           [ "umi3d.common.interaction.AbstractParameterDto< V >", "d6/d80/classumi3d_1_1common_1_1interaction_1_1_abstract_parameter_dto.html", null ],
           [ "umi3d.common.interaction.EventDto", "d2/d19/classumi3d_1_1common_1_1interaction_1_1_event_dto.html", null ],
-          [ "umi3d.common.interaction.FormDto", "db/ddb/classumi3d_1_1common_1_1interaction_1_1_form_dto.html", null ],
+          [ "umi3d.common.interaction.FormDto", "db/ddb/classumi3d_1_1common_1_1interaction_1_1_form_dto.html", [
+            [ "umi3d.common.interaction.ConnectionFormDto", "d2/d93/classumi3d_1_1common_1_1interaction_1_1_connection_form_dto.html", null ]
+          ] ],
           [ "umi3d.common.interaction.LinkDto", "d5/de2/classumi3d_1_1common_1_1interaction_1_1_link_dto.html", null ],
           [ "umi3d.common.interaction.ManipulationDto", "d9/ddb/classumi3d_1_1common_1_1interaction_1_1_manipulation_dto.html", null ]
         ] ],
         [ "umi3d.common.interaction.AbstractToolDto", "d6/df2/classumi3d_1_1common_1_1interaction_1_1_abstract_tool_dto.html", [
-          [ "umi3d.common.interaction.InteractableDto", "d5/d8a/classumi3d_1_1common_1_1interaction_1_1_interactable_dto.html", null ],
-          [ "umi3d.common.interaction.ToolDto", "db/d5e/classumi3d_1_1common_1_1interaction_1_1_tool_dto.html", null ]
+          [ "umi3d.common.interaction.GlobalToolDto", "d8/d41/classumi3d_1_1common_1_1interaction_1_1_global_tool_dto.html", [
+            [ "umi3d.common.interaction.ToolboxDto", "df/d24/classumi3d_1_1common_1_1interaction_1_1_toolbox_dto.html", null ]
+          ] ],
+          [ "umi3d.common.interaction.InteractableDto", "d5/d8a/classumi3d_1_1common_1_1interaction_1_1_interactable_dto.html", null ]
         ] ],
-        [ "umi3d.common.interaction.ToolboxDto", "df/d24/classumi3d_1_1common_1_1interaction_1_1_toolbox_dto.html", null ],
+        [ "umi3d.common.userCapture.UMI3DBodyPoseDto", "d7/d90/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_body_pose_dto.html", null ],
+        [ "umi3d.common.userCapture.UMI3DEmoteDto", "db/d43/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_emote_dto.html", null ],
+        [ "umi3d.common.userCapture.UMI3DEmotesConfigDto", "dd/d4a/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_emotes_config_dto.html", null ],
         [ "umi3d.common.userCapture.UMI3DHandPoseDto", "d1/d5f/classumi3d_1_1common_1_1user_capture_1_1_u_m_i3_d_hand_pose_dto.html", null ],
         [ "umi3d.common.volume.AbstractVolumeDescriptorDto", "d4/d77/classumi3d_1_1common_1_1volume_1_1_abstract_volume_descriptor_dto.html", null ]
       ] ],
@@ -682,7 +825,6 @@ var hierarchy =
         [ "umi3d.common.MapMetricDto", "da/d9d/classumi3d_1_1common_1_1_map_metric_dto.html", null ],
         [ "umi3d.common.MeshMetricDto", "da/db7/classumi3d_1_1common_1_1_mesh_metric_dto.html", null ]
       ] ],
-      [ "umi3d.common.AudioDto", "df/de6/classumi3d_1_1common_1_1_audio_dto.html", null ],
       [ "umi3d.common.BoneObjectPair", "dd/d42/classumi3d_1_1common_1_1_bone_object_pair.html", null ],
       [ "umi3d.common.BonePairDictionary", "d6/d7e/classumi3d_1_1common_1_1_bone_pair_dictionary.html", null ],
       [ "umi3d.common.ColliderDto", "dc/d43/classumi3d_1_1common_1_1_collider_dto.html", null ],
@@ -698,7 +840,11 @@ var hierarchy =
       [ "umi3d.common.LibrariesDto", "d0/d32/classumi3d_1_1common_1_1_libraries_dto.html", null ],
       [ "umi3d.common.MediaDto", "d5/d5d/classumi3d_1_1common_1_1_media_dto.html", null ],
       [ "umi3d.common.NavigateDto", "d9/d1e/classumi3d_1_1common_1_1_navigate_dto.html", [
-        [ "umi3d.common.TeleportDto", "d3/d95/classumi3d_1_1common_1_1_teleport_dto.html", null ]
+        [ "umi3d.common.TeleportDto", "d3/d95/classumi3d_1_1common_1_1_teleport_dto.html", [
+          [ "umi3d.common.VehicleDto", "de/dc5/classumi3d_1_1common_1_1_vehicle_dto.html", [
+            [ "umi3d.common.userCapture.BoardedVehicleDto", "db/dec/classumi3d_1_1common_1_1user_capture_1_1_boarded_vehicle_dto.html", null ]
+          ] ]
+        ] ]
       ] ],
       [ "umi3d.common.PreloadedSceneDto", "d0/dc3/classumi3d_1_1common_1_1_preloaded_scene_dto.html", null ],
       [ "umi3d.common.RequestHttpUploadDto", "d3/d84/classumi3d_1_1common_1_1_request_http_upload_dto.html", null ],
@@ -714,6 +860,7 @@ var hierarchy =
       [ "umi3d.common.SerializableVector4", "dd/d8a/classumi3d_1_1common_1_1_serializable_vector4.html", null ],
       [ "umi3d.common.TransactionDto", "d0/df7/classumi3d_1_1common_1_1_transaction_dto.html", null ],
       [ "umi3d.common.UMI3DAnchorDto", "dc/d2e/classumi3d_1_1common_1_1_u_m_i3_d_anchor_dto.html", null ],
+      [ "umi3d.common.UMI3DDtoListDto< T >", "d6/d50/classumi3d_1_1common_1_1_u_m_i3_d_dto_list_dto.html", null ],
       [ "umi3d.common.UMI3DEnvironmentDto", "df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html", [
         [ "umi3d.common.collaboration.UMI3DCollaborationEnvironmentDto", "d5/dbb/classumi3d_1_1common_1_1collaboration_1_1_u_m_i3_d_collaboration_environment_dto.html", null ]
       ] ],
@@ -721,18 +868,32 @@ var hierarchy =
       [ "umi3d.common.UMI3DLodDto", "d4/d70/classumi3d_1_1common_1_1_u_m_i3_d_lod_dto.html", null ],
       [ "umi3d.common.UMI3DRenderedNodeDto.MaterialOverrideDto", "d9/df2/classumi3d_1_1common_1_1_u_m_i3_d_rendered_node_dto_1_1_material_override_dto.html", null ],
       [ "umi3d.common.UMI3DShaderPropertyDto", "d5/da3/classumi3d_1_1common_1_1_u_m_i3_d_shader_property_dto.html", null ],
-      [ "umi3d.common.collaboration.IdentityDto", "d8/dbe/classumi3d_1_1common_1_1collaboration_1_1_identity_dto.html", null ],
+      [ "umi3d.common.collaboration.ConnectionDto", "d1/dc6/classumi3d_1_1common_1_1collaboration_1_1_connection_dto.html", [
+        [ "umi3d.common.collaboration.FormConnectionAnswerDto", "d1/ddc/classumi3d_1_1common_1_1collaboration_1_1_form_connection_answer_dto.html", null ]
+      ] ],
+      [ "umi3d.common.collaboration.ForceLogoutDto", "d3/d08/classumi3d_1_1common_1_1collaboration_1_1_force_logout_dto.html", null ],
+      [ "umi3d.common.collaboration.GateDto", "d3/db3/classumi3d_1_1common_1_1collaboration_1_1_gate_dto.html", null ],
       [ "umi3d.common.collaboration.JoinDto", "da/d64/classumi3d_1_1common_1_1collaboration_1_1_join_dto.html", null ],
+      [ "umi3d.common.collaboration.PendingTransactionDto", "df/d88/classumi3d_1_1common_1_1collaboration_1_1_pending_transaction_dto.html", null ],
       [ "umi3d.common.collaboration.PlayerCountDto", "df/d83/classumi3d_1_1common_1_1collaboration_1_1_player_count_dto.html", null ],
+      [ "umi3d.common.collaboration.PublicIdentityDto", "da/df9/classumi3d_1_1common_1_1collaboration_1_1_public_identity_dto.html", [
+        [ "umi3d.common.collaboration.IdentityDto", "d8/dbe/classumi3d_1_1common_1_1collaboration_1_1_identity_dto.html", [
+          [ "umi3d.common.collaboration.PrivateIdentityDto", "d1/de9/classumi3d_1_1common_1_1collaboration_1_1_private_identity_dto.html", null ],
+          [ "umi3d.common.collaboration.RegisterIdentityDto", "de/db9/classumi3d_1_1common_1_1collaboration_1_1_register_identity_dto.html", null ]
+        ] ]
+      ] ],
+      [ "umi3d.common.collaboration.RedirectionDto", "d4/dea/classumi3d_1_1common_1_1collaboration_1_1_redirection_dto.html", null ],
       [ "umi3d.common.collaboration.StatusDto", "dc/dd1/classumi3d_1_1common_1_1collaboration_1_1_status_dto.html", null ],
       [ "umi3d.common.collaboration.StatusRequestDto", "de/de0/classumi3d_1_1common_1_1collaboration_1_1_status_request_dto.html", null ],
       [ "umi3d.common.collaboration.TokenDto", "d2/d98/classumi3d_1_1common_1_1collaboration_1_1_token_dto.html", null ],
-      [ "umi3d.common.collaboration.VoiceDto", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html", null ],
+      [ "umi3d.common.collaboration.VoiceDataDto", "d4/d95/classumi3d_1_1common_1_1collaboration_1_1_voice_data_dto.html", null ],
       [ "umi3d.common.interaction.DofGroupDto", "d3/d72/classumi3d_1_1common_1_1interaction_1_1_dof_group_dto.html", null ],
       [ "umi3d.common.interaction.DofGroupOptionDto", "d6/d14/classumi3d_1_1common_1_1interaction_1_1_dof_group_option_dto.html", null ],
       [ "umi3d.common.userCapture.BoneBindingDto", "d5/d91/classumi3d_1_1common_1_1user_capture_1_1_bone_binding_dto.html", null ],
       [ "umi3d.common.userCapture.BoneDto", "d3/d3c/classumi3d_1_1common_1_1user_capture_1_1_bone_dto.html", null ]
     ] ],
+    [ "umi3d.cdk.userCapture.UMI3DEmoteLoader", "d2/d52/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_emote_loader.html", null ],
+    [ "umi3d.cdk.userCapture.UMI3DEmotesConfigLoader", "d1/d67/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_emotes_config_loader.html", null ],
     [ "umi3d.edk.UMI3DEntity", "d0/dca/interfaceumi3d_1_1edk_1_1_u_m_i3_d_entity.html", [
       [ "umi3d.edk.ICollaborationRoom", "dd/da5/interfaceumi3d_1_1edk_1_1_i_collaboration_room.html", [
         [ "umi3d.edk.collaboration.RelayVolume", "da/d90/classumi3d_1_1edk_1_1collaboration_1_1_relay_volume.html", null ]
@@ -747,9 +908,11 @@ var hierarchy =
           [ "umi3d.edk.UMI3DNotification", "d1/d88/classumi3d_1_1edk_1_1_u_m_i3_d_notification.html", [
             [ "umi3d.edk.UMI3DNotificationOnObject", "d9/dae/classumi3d_1_1edk_1_1_u_m_i3_d_notification_on_object.html", null ]
           ] ],
+          [ "umi3d.edk.interaction.Toolbox", "d1/dfc/classumi3d_1_1edk_1_1interaction_1_1_toolbox.html", null ],
           [ "umi3d.edk.interaction.UMI3DInteractable", "d3/d66/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_interactable.html", null ],
-          [ "umi3d.edk.interaction.UMI3DTool", "d9/d9c/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_tool.html", null ],
-          [ "umi3d.edk.interaction.UMI3DToolbox", "df/dbe/classumi3d_1_1edk_1_1interaction_1_1_u_m_i3_d_toolbox.html", null ],
+          [ "umi3d.edk.userCapture.UMI3DBodyPose", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html", null ],
+          [ "umi3d.edk.userCapture.UMI3DEmote", "d7/d79/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_emote.html", null ],
+          [ "umi3d.edk.userCapture.UMI3DEmotesConfig", "d5/de1/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_emotes_config.html", null ],
           [ "umi3d.edk.userCapture.UMI3DHandPose", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html", null ],
           [ "umi3d.edk.volume.IVolumeDescriptor", "d2/deb/interfaceumi3d_1_1edk_1_1volume_1_1_i_volume_descriptor.html", [
             [ "umi3d.edk.volume.IVolume", "d3/d33/interfaceumi3d_1_1edk_1_1volume_1_1_i_volume.html", [
@@ -770,16 +933,27 @@ var hierarchy =
     [ "umi3d.cdk.UMI3DEntityInstance", "d6/d84/classumi3d_1_1cdk_1_1_u_m_i3_d_entity_instance.html", [
       [ "umi3d.cdk.UMI3DNodeInstance", "dd/d7d/classumi3d_1_1cdk_1_1_u_m_i3_d_node_instance.html", null ]
     ] ],
+    [ "umi3d.cdk.collaboration.UMI3DEnvironmentClient", "d5/dfc/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_environment_client.html", null ],
     [ "umi3d.cdk.UMI3DHandPoseLoader", "d3/ddb/classumi3d_1_1cdk_1_1_u_m_i3_d_hand_pose_loader.html", null ],
-    [ "umi3d.edk.collaboration.UMI3DHttp", "d5/d5f/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_http.html", null ],
     [ "umi3d.cdk.UMI3DILoadingPolicy", "de/de0/interfaceumi3d_1_1cdk_1_1_u_m_i3_d_i_loading_policy.html", [
       [ "umi3d.cdk.UMI3DDefaultLoadingPolicy", "d0/d09/classumi3d_1_1cdk_1_1_u_m_i3_d_default_loading_policy.html", null ]
+    ] ],
+    [ "umi3d.cdk.userCapture.UMI3DKalmanLerp< T >", "d8/def/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_kalman_lerp.html", null ],
+    [ "umi3d.cdk.userCapture.UMI3DKalmanLerp< Quaternion >", "d8/def/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_kalman_lerp.html", [
+      [ "umi3d.cdk.userCapture.UMI3DKalmanQuaternionLerp", "df/d46/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_kalman_quaternion_lerp.html", null ]
+    ] ],
+    [ "umi3d.cdk.userCapture.UMI3DKalmanLerp< Vector3 >", "d8/def/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_kalman_lerp.html", [
+      [ "umi3d.cdk.userCapture.UMI3DKalmanVector3Lerp", "d7/dfa/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_kalman_vector3_lerp.html", null ]
     ] ],
     [ "umi3d.edk.UMI3DKHRLight", "dc/d4e/classumi3d_1_1edk_1_1_u_m_i3_d_k_h_r_light.html", null ],
     [ "umi3d.common.Umi3dNetworkingHelperModule", "da/d20/classumi3d_1_1common_1_1_umi3d_networking_helper_module.html", [
       [ "umi3d.cdk.collaboration.UMI3DCollaborationNetworkingModule", "d1/d25/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_networking_module.html", null ],
       [ "umi3d.common.collaboration.UMI3DCollaborationNetworkingModule", "d1/d5c/classumi3d_1_1common_1_1collaboration_1_1_u_m_i3_d_collaboration_networking_module.html", null ],
       [ "umi3d.edk.collaboration.UMI3DEnvironmentNetworkingCollaborationModule", "da/d32/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_networking_collaboration_module.html", null ]
+    ] ],
+    [ "umi3d.edk.collaboration.UMI3DRelay< T >", "d4/d0e/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_relay.html", null ],
+    [ "umi3d.edk.collaboration.UMI3DRelay< UserTrackingFrameDto >", "d4/d0e/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_relay.html", [
+      [ "umi3d.edk.collaboration.UMI3DTrackingRelay", "d2/da6/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_tracking_relay.html", null ]
     ] ],
     [ "umi3d.edk.UMI3DResource", "d2/d6c/classumi3d_1_1edk_1_1_u_m_i3_d_resource.html", [
       [ "umi3d.edk.UMI3DTextureResource", "da/d86/classumi3d_1_1edk_1_1_u_m_i3_d_texture_resource.html", [
@@ -789,7 +963,7 @@ var hierarchy =
     [ "umi3d.cdk.UMI3DUICanvasNodeLoader", "d5/d37/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_canvas_node_loader.html", null ],
     [ "umi3d.cdk.UMI3DUIImageNodeLoader", "dc/dd1/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_image_node_loader.html", null ],
     [ "umi3d.cdk.UMI3DUITextNodeLoader", "d8/d70/classumi3d_1_1cdk_1_1_u_m_i3_d_u_i_text_node_loader.html", null ],
-    [ "umi3d.cdk.UMI3DUnscentedKalmanFilter", "d6/d57/classumi3d_1_1cdk_1_1_u_m_i3_d_unscented_kalman_filter.html", null ],
+    [ "umi3d.cdk.utils.extrapolation.kalman.UMI3DUnscentedKalmanFilter", "d0/dc1/classumi3d_1_1cdk_1_1utils_1_1extrapolation_1_1kalman_1_1_u_m_i3_d_unscented_kalman_filter.html", null ],
     [ "umi3d.cdk.collaboration.UMI3DUser", "dc/d9b/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_user.html", null ],
     [ "umi3d.edk.userCapture.UMI3DUserEmbodimentBone", "d6/d5a/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_user_embodiment_bone.html", null ],
     [ "umi3d.edk.UMI3DUserFilter", "d5/d6b/interfaceumi3d_1_1edk_1_1_u_m_i3_d_user_filter.html", [
@@ -797,17 +971,29 @@ var hierarchy =
     ] ],
     [ "umi3d.edk.collaboration.UMI3DUserManager", "d4/dde/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_user_manager.html", null ],
     [ "umi3d.cdk.UMI3DVideoPlayerLoader", "dd/dfc/classumi3d_1_1cdk_1_1_u_m_i3_d_video_player_loader.html", null ],
+    [ "umi3d.cdk.collaboration.UMI3DWorldControllerClient", "dd/d0c/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_world_controller_client.html", null ],
     [ "UnityEngine.Events.UnityEvent", null, [
       [ "umi3d.cdk.collaboration.MicrophoneEvent", "dd/d4e/classumi3d_1_1cdk_1_1collaboration_1_1_microphone_event.html", null ],
+      [ "umi3d.cdk.collaboration.MumbleEvent", "de/da8/classumi3d_1_1cdk_1_1collaboration_1_1_mumble_event.html", null ],
+      [ "umi3d.cdk.collaboration.OnForceLogoutEvent", "d3/d9e/classumi3d_1_1cdk_1_1collaboration_1_1_on_force_logout_event.html", null ],
+      [ "umi3d.cdk.collaboration.OnProgressEvent", "db/d94/classumi3d_1_1cdk_1_1collaboration_1_1_on_progress_event.html", null ],
+      [ "umi3d.cdk.collaboration.SaturatedEvent", "d1/dde/classumi3d_1_1cdk_1_1collaboration_1_1_saturated_event.html", null ],
+      [ "umi3d.cdk.collaboration.UMI3DEnvironmentClient.ConnectionStateEvent", "db/da2/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_environment_client_1_1_connection_state_event.html", null ],
       [ "umi3d.cdk.collaboration.UMI3DUser.UMI3DUserEvent", "db/d99/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_user_1_1_u_m_i3_d_user_event.html", null ],
+      [ "umi3d.cdk.interaction.GlobalToolEvent", "d8/dd4/classumi3d_1_1cdk_1_1interaction_1_1_global_tool_event.html", null ],
       [ "umi3d.cdk.interaction.Interactable.Event", "df/d2b/classumi3d_1_1cdk_1_1interaction_1_1_interactable_1_1_event.html", null ],
-      [ "umi3d.cdk.interaction.Tool.Event", "dd/df4/classumi3d_1_1cdk_1_1interaction_1_1_tool_1_1_event.html", null ],
       [ "umi3d.cdk.menu.AbstractMenuItemAdded", "da/d88/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item_added.html", null ],
+      [ "umi3d.cdk.menu.AbstractMenuItemRemoved", "d4/d07/classumi3d_1_1cdk_1_1menu_1_1_abstract_menu_item_removed.html", null ],
       [ "umi3d.cdk.userCapture.UMI3DClientUserTracking.AvatarEvent", "d4/df4/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_avatar_event.html", null ],
+      [ "umi3d.cdk.userCapture.UMI3DClientUserTracking.BoardedVehicleEvent", "d8/d06/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_boarded_vehicle_event.html", null ],
+      [ "umi3d.cdk.userCapture.UMI3DClientUserTracking.BodyPoseEvent", "d7/da2/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_body_pose_event.html", null ],
+      [ "umi3d.cdk.userCapture.UMI3DClientUserTracking.EmoteEvent", "d8/dc3/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_emote_event.html", null ],
+      [ "umi3d.cdk.userCapture.UMI3DClientUserTracking.EmotesConfigEvent", "d9/dd3/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_emotes_config_event.html", null ],
       [ "umi3d.cdk.userCapture.UMI3DClientUserTracking.HandPoseEvent", "da/db3/classumi3d_1_1cdk_1_1user_capture_1_1_u_m_i3_d_client_user_tracking_1_1_hand_pose_event.html", null ],
+      [ "umi3d.edk.UMI3DNotification.NotificationCallbackEvent", "dc/d91/classumi3d_1_1edk_1_1_u_m_i3_d_notification_1_1_notification_callback_event.html", null ],
       [ "umi3d.edk.UMI3DUserEvent", "d7/dc0/classumi3d_1_1edk_1_1_u_m_i3_d_user_event.html", null ],
-      [ "umi3d.edk.collaboration.UMI3DApi.ReceiveLocalInfoEvent", "d1/db6/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api_1_1_receive_local_info_event.html", null ],
-      [ "umi3d.edk.collaboration.UMI3DApi.SendLocalinfoEvent", "d2/d0d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_api_1_1_send_localinfo_event.html", null ],
+      [ "umi3d.edk.collaboration.UMI3DEnvironmentApi.ReceiveLocalInfoEvent", "dd/d04/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api_1_1_receive_local_info_event.html", null ],
+      [ "umi3d.edk.collaboration.UMI3DEnvironmentApi.SendLocalinfoEvent", "d6/daa/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api_1_1_send_localinfo_event.html", null ],
       [ "umi3d.edk.collaboration.UMI3DForgeServer.AvatarFrameEvent", "de/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server_1_1_avatar_frame_event.html", null ],
       [ "umi3d.edk.interaction.AbstractInteraction.InteractionEvent", "da/d92/classumi3d_1_1edk_1_1interaction_1_1_abstract_interaction_1_1_interaction_event.html", null ],
       [ "umi3d.edk.interaction.AbstractParameter.ParameterEvent< T >", "dc/d44/classumi3d_1_1edk_1_1interaction_1_1_abstract_parameter_1_1_parameter_event.html", [
@@ -829,9 +1015,13 @@ var hierarchy =
       [ "umi3d.edk.userCapture.UMI3DEmbodimentManager.EmbodimentEvent", "df/deb/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_embodiment_manager_1_1_embodiment_event.html", null ]
     ] ],
     [ "UnityEvent", null, [
-      [ "umi3d.cdk.UMI3DEnvironmentLoader.ProgressListener", "de/d52/classumi3d_1_1cdk_1_1_u_m_i3_d_environment_loader_1_1_progress_listener.html", null ],
-      [ "umi3d.cdk.UMI3DResourcesManager.ProgressListener", "d9/d70/classumi3d_1_1cdk_1_1_u_m_i3_d_resources_manager_1_1_progress_listener.html", null ]
+      [ "umi3d.cdk.ProgressStateUpdate", "da/d1f/classumi3d_1_1cdk_1_1_progress_state_update.html", null ],
+      [ "umi3d.cdk.ProgressValueUpdate", "d1/df6/classumi3d_1_1cdk_1_1_progress_value_update.html", null ],
+      [ "umi3d.cdk.collaboration.AudioUserIsSpeaking", "d4/da3/classumi3d_1_1cdk_1_1collaboration_1_1_audio_user_is_speaking.html", null ]
     ] ],
-    [ "umi3d.cdk.collaboration.UMI3DCollaborationClientServer.UserInfo", "da/dd1/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_collaboration_client_server_1_1_user_info.html", null ],
+    [ "umi3d.edk.collaboration.murmur.MurmurAPI.Server.User", "dc/d16/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_server_1_1_user.html", null ],
+    [ "umi3d.worldController.User", "d9/d06/classumi3d_1_1world_controller_1_1_user.html", null ],
+    [ "umi3d.cdk.collaboration.UMI3DEnvironmentClient.UserInfo", "d5/d85/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_environment_client_1_1_user_info.html", null ],
+    [ "umi3d.common.collaboration.VoiceDto", "d8/d3b/classumi3d_1_1common_1_1collaboration_1_1_voice_dto.html", null ],
     [ "umi3d.edk.collaboration.WebServiceMethod", "d6/d7f/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method.html", null ]
 ];

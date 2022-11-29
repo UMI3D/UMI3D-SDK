@@ -1,7 +1,7 @@
 var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server =
 [
     [ "AvatarFrameEvent", "de/d75/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server_1_1_avatar_frame_event.html", null ],
-    [ "GetCurrentDelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#acee8a7ff7ec868b25fef2743a3f04652", null ],
+    [ "AudioFrame", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#abf78e1f89ed6b3a1e671a4a980544ea2", null ],
     [ "GetNetWorker", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aa4519bf4f4683fcf51d3be20b1c4f568", null ],
     [ "Host", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#ade766f3549e975c4e5866d1c3bc62a38", null ],
     [ "OnAvatarFrame", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aec36bedc10509adabe23c80a585b7e43", null ],
@@ -10,23 +10,13 @@ var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server =
     [ "OnVideoFrame", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aef55a4e3b36c98ada77d6cd8da67945f", null ],
     [ "OnVoIPFrame", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aec70c17ee9ff7d191cd90d686c77662f", null ],
     [ "RelayBinaryDataTo", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a0d1689632d54a194b6f58b8aa7ef51d9", null ],
-    [ "RelayMessage", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aeac33853944f6217d3974e90e94a5562", null ],
     [ "SendBinaryDataTo", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#ac98291c89d460ac6057a6860ad981543", null ],
     [ "SendBinaryDataToAll", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a1c4fd753c6abbf207236ba6eeb9a6069", null ],
     [ "SendData", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a9031af069021b96c5e7aea2d37d92600", null ],
     [ "SendSignalingMessage", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a677aa2c782812b4e7d237a63ef43154c", null ],
-    [ "ShouldRelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#acfcd50242fbe66228b04c43957e062b5", null ],
     [ "Stop", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#af6d77c538a8b21b65874c5dc6b8a9823", null ],
     [ "connectionPort", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#af9552fdc00f2ace4a3bb09b7703c61e2", null ],
     [ "environmentType", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#ae6f3ee9da0e60bcef8c01c33450f32a1", null ],
-    [ "maxFPSRelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#af5e52aa54529e6f3de008697330a812a", null ],
     [ "maxNbPlayer", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#aeb7b50b9524b73fb76e404e3e5d2e3a2", null ],
-    [ "maxProximityRelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#ae23253c199b54a5be4372cad49378674", null ],
-    [ "minFPSRelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a7b159d01e44bdc4e1de16217be0a8718", null ],
-    [ "minProximityRelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#af470e86c9e4f48b45bb6590d92dc0a90", null ],
-    [ "proximityCutout", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a98ae6f0f234c6ed898f1a696ef74d7bb", null ],
-    [ "proximityRelay", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#af8c5f7abeab97e1809987617bf7fe2a3", null ],
-    [ "startProximityAt", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#a86387d404cb6f0e24b6198ccf702687e", null ],
-    [ "maxProximityRelayFPS", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#afd50132a9d83cc06bccd412c2e0cb826", null ],
-    [ "minProximityRelayFPS", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#ab4063a6459241fbba376aada2689305b", null ]
+    [ "time", "d4/d79/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_forge_server.html#abbfbd672fb16f2827b36d3489f52c19f", null ]
 ];

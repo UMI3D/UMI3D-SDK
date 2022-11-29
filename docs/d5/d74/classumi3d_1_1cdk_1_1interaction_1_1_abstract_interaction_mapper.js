@@ -1,8 +1,6 @@
 var classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper =
 [
     [ "Awake", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a115e8d802dae868850848e6a39c17b72", null ],
-    [ "CreateTool", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#ae6a001a335409d80cc447829ee979d5f", null ],
-    [ "CreateToolbox", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a6e5b2ff5d51d94cf4c4c79b79c7c1c85", null ],
     [ "GetController", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a3ae198abe8656c62e889877413e93578", null ],
     [ "GetInteraction", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#a0d3acf06366ead0a0348d6a435da668c", null ],
     [ "GetInteractions", "d5/d74/classumi3d_1_1cdk_1_1interaction_1_1_abstract_interaction_mapper.html#aaa8af3c82c39ca741de7793cd1de911e", null ],

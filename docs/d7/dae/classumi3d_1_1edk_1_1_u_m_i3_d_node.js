@@ -17,6 +17,7 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_node =
     [ "customMeshCollider", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3cac414162f44b8a490bdd69fd03dd99", null ],
     [ "hasCollider", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#aa90fd343111f72689ecaaae12f17fb78", null ],
     [ "isMeshCustom", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#ac5c705b469e2bf7584dc2361ce7e29c0", null ],
+    [ "nodeName", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a8abb39608f23f08909de4cb842c2980d", null ],
     [ "skinnedRendererLinks", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a3289850baa803eac4ea420c8f3e160ac", null ],
     [ "objectColliderBoxSize", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a404051209bb94bcd9f270c748316e5f6", null ],
     [ "objectColliderCenter", "d7/dae/classumi3d_1_1edk_1_1_u_m_i3_d_node.html#a5c6ec5b8d0a77bf719a16dc55328acfb", null ],

@@ -1,0 +1,27 @@
+var classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose =
+[
+    [ "JointRotation", "d1/dc3/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose_1_1_joint_rotation.html", "d1/dc3/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose_1_1_joint_rotation" ],
+    [ "TargetTransform", "df/df2/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose_1_1_target_transform.html", "df/df2/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose_1_1_target_transform" ],
+    [ "AddConnectionFilter", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#ac78a2505e76c6ba8cb3ace6fd8e36eba", null ],
+    [ "GetDeleteEntity", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a400f9de4e271cface3b76487eedf0198", null ],
+    [ "GetId", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a62fb764c6bb972801bf9611e8ca47e51", null ],
+    [ "GetLoadEntity", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a7e2fd5dc08f5282f871e137a177bb980", null ],
+    [ "Id", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#af60fa77c6e15980b35f4afdb941d3194", null ],
+    [ "LoadOnConnection", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a4124f35b1e3f77ba44facab5ad9ac404", null ],
+    [ "OnEnable", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a87535787e203957db9e3bdc1ee749525", null ],
+    [ "RegisterPose", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#adce7007d8487a6f019340a55d1a7bc36", null ],
+    [ "RemoveConnectionFilter", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a2983b4d2ed37f379a38ae677cceca73a", null ],
+    [ "SetId", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#ae7c504ceaa308c50fd6565bc972dbef2", null ],
+    [ "ToBytes", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#aa67b3920d93a190b50ecba1b1afa5230", null ],
+    [ "ToDto", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a30dd75372834615ea66493987a3a6773", null ],
+    [ "ToEntityDto", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#aad74b3d8a9feca45b7b10d2059e73fb1", null ],
+    [ "AllowOverriding", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#ae881fd59594bae6088acfe688cd6f46b", null ],
+    [ "BodyEulerRotation", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#ad9403e0a2f909ac62418418dfd4ee5d3", null ],
+    [ "BodyPosition", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#ab9fbb80fa897432bf707eea48dbc0e39", null ],
+    [ "IsActive", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#afd3843d05410d0b999f43f706f807e4e", null ],
+    [ "isRelativeToNode", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#aa0e9f6994e0a98d7f0555702376d1a5a", null ],
+    [ "JointRotations", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#ae6bcb55d328b2d609d4249c31d25dad5", null ],
+    [ "PoseId", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a689780e72289112b2552e65ba8bae790", null ],
+    [ "PoseName", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a7e9b1015c80865273740dd954a4079b8", null ],
+    [ "TargetTransforms", "d9/dbf/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_body_pose.html#a8c8521ec925f76a12cb0b2ab92b735eb", null ]
+];

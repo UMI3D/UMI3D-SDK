@@ -5,7 +5,6 @@ var classumi3d_1_1edk_1_1volume_1_1_abstract_primitive =
     [ "GetDeleteEntity", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#ad7dfed24c8ed49a32fee3c6d9b9b4e0d", null ],
     [ "GetLoadEntity", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#a1ca1aa7f526fcb6ae2dfe52d29edffe2", null ],
     [ "GetRootNode", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#ac0cf9da9b51f956b4e0fbc706f59109d", null ],
-    [ "GetRootNodeToLocalMatrix", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#a1dd4cb3a7588ebeaedcc90ba46a3e8e5", null ],
     [ "GetUserEnter", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#a7c64346c239641bd23a07146620431d5", null ],
     [ "GetUserExit", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#a6d46a70a3ca76c48e5533b6106ae0ae0", null ],
     [ "Id", "d0/d1f/classumi3d_1_1edk_1_1volume_1_1_abstract_primitive.html#ad9d8a83bad5abf18b64e889bef180aca", null ],

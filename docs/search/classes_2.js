@@ -1,14 +1,20 @@
 var searchData=
 [
   ['cameradto_0',['CameraDto',['../db/d0b/classumi3d_1_1common_1_1_camera_dto.html',1,'umi3d::common']]],
-  ['checkboxlistener_1',['CheckboxListener',['../d2/dae/classumi3d_1_1edk_1_1interaction_1_1_boolean_parameter_1_1_checkbox_listener.html',1,'umi3d::edk::interaction::BooleanParameter']]],
-  ['clientidentifierapi_2',['ClientIdentifierApi',['../dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html',1,'umi3d::cdk::collaboration']]],
-  ['colliderdto_3',['ColliderDto',['../dc/d43/classumi3d_1_1common_1_1_collider_dto.html',1,'umi3d::common']]],
-  ['configserver_4',['ConfigServer',['../df/d8d/classumi3d_1_1edk_1_1collaboration_1_1_config_server.html',1,'umi3d::edk::collaboration']]],
-  ['connectionloadfilter_5',['ConnectionLoadFilter',['../dc/d5e/classumi3d_1_1edk_1_1_connection_load_filter.html',1,'umi3d::edk']]],
-  ['containerdictionary_6',['ContainerDictionary',['../dc/d99/classumi3d_1_1cdk_1_1menu_1_1view_1_1_container_dictionary.html',1,'umi3d::cdk::menu::view']]],
-  ['containerselector_7',['ContainerSelector',['../d3/d03/classumi3d_1_1cdk_1_1menu_1_1view_1_1_container_selector.html',1,'umi3d::cdk::menu::view']]],
-  ['customtextures_8',['CustomTextures',['../dd/df5/classumi3d_1_1edk_1_1_custom_textures.html',1,'umi3d::edk']]],
-  ['cylinder_9',['Cylinder',['../de/dea/classumi3d_1_1cdk_1_1volumes_1_1_cylinder.html',1,'umi3d.cdk.volumes.Cylinder'],['../dc/d80/classumi3d_1_1edk_1_1volume_1_1_cylinder.html',1,'umi3d.edk.volume.Cylinder']]],
-  ['cylinderdto_10',['CylinderDto',['../de/ddb/classumi3d_1_1common_1_1volume_1_1_cylinder_dto.html',1,'umi3d::common::volume']]]
+  ['channel_1',['Channel',['../d2/d5a/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_server_1_1_channel.html',1,'umi3d::edk::collaboration::murmur::MurmurAPI::Server']]],
+  ['channeldata_2',['ChannelData',['../dc/d32/classumi3d_1_1edk_1_1collaboration_1_1murmur_1_1_murmur_a_p_i_1_1_channel_data.html',1,'umi3d::edk::collaboration::murmur::MurmurAPI']]],
+  ['checkboxlistener_3',['CheckboxListener',['../d2/dae/classumi3d_1_1edk_1_1interaction_1_1_boolean_parameter_1_1_checkbox_listener.html',1,'umi3d::edk::interaction::BooleanParameter']]],
+  ['clientidentifierapi_4',['ClientIdentifierApi',['../dd/d62/classumi3d_1_1cdk_1_1collaboration_1_1_client_identifier_api.html',1,'umi3d::cdk::collaboration']]],
+  ['colliderdto_5',['ColliderDto',['../dc/d43/classumi3d_1_1common_1_1_collider_dto.html',1,'umi3d::common']]],
+  ['conferencebrowserrequest_6',['ConferenceBrowserRequest',['../dc/d03/classumi3d_1_1common_1_1_conference_browser_request.html',1,'umi3d::common']]],
+  ['configserver_7',['ConfigServer',['../df/d8d/classumi3d_1_1edk_1_1collaboration_1_1_config_server.html',1,'umi3d::edk::collaboration']]],
+  ['connectiondto_8',['ConnectionDto',['../d1/dc6/classumi3d_1_1common_1_1collaboration_1_1_connection_dto.html',1,'umi3d::common::collaboration']]],
+  ['connectionformdto_9',['ConnectionFormDto',['../d2/d93/classumi3d_1_1common_1_1interaction_1_1_connection_form_dto.html',1,'umi3d::common::interaction']]],
+  ['connectionloadfilter_10',['ConnectionLoadFilter',['../dc/d5e/classumi3d_1_1edk_1_1_connection_load_filter.html',1,'umi3d::edk']]],
+  ['connectionstateevent_11',['ConnectionStateEvent',['../db/da2/classumi3d_1_1cdk_1_1collaboration_1_1_u_m_i3_d_environment_client_1_1_connection_state_event.html',1,'umi3d::cdk::collaboration::UMI3DEnvironmentClient']]],
+  ['containerdictionary_12',['ContainerDictionary',['../dc/d99/classumi3d_1_1cdk_1_1menu_1_1view_1_1_container_dictionary.html',1,'umi3d::cdk::menu::view']]],
+  ['containerselector_13',['ContainerSelector',['../d3/d03/classumi3d_1_1cdk_1_1menu_1_1view_1_1_container_selector.html',1,'umi3d::cdk::menu::view']]],
+  ['customtextures_14',['CustomTextures',['../dd/df5/classumi3d_1_1edk_1_1_custom_textures.html',1,'umi3d::edk']]],
+  ['cylinder_15',['Cylinder',['../de/dea/classumi3d_1_1cdk_1_1volumes_1_1_cylinder.html',1,'umi3d.cdk.volumes.Cylinder'],['../dc/d80/classumi3d_1_1edk_1_1volume_1_1_cylinder.html',1,'umi3d.edk.volume.Cylinder']]],
+  ['cylinderdto_16',['CylinderDto',['../de/ddb/classumi3d_1_1common_1_1volume_1_1_cylinder_dto.html',1,'umi3d::common::volume']]]
 ];
