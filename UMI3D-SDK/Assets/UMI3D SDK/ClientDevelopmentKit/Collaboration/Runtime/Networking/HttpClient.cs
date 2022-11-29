@@ -137,25 +137,25 @@ namespace umi3d.cdk.collaboration
                     case Color col:
                         return new EnumParameterDto<Color>()
                         {
-                            possibleValues = tokenA.Values<object>().Select(obj => (Color)ReadObjectValue(obj as JObject)).ToList(),
+                            possibleValues = tokenA.Values<object>().Select(objA => (Color)ReadObjectValue(objA as JObject)).ToList(),
                             value = col
                         };
                     case Vector4 v4:
                         return new EnumParameterDto<Vector4>()
                         {
-                            possibleValues = tokenA.Values<object>().Select(obj => (Vector4)ReadObjectValue(obj as JObject)).ToList(),
+                            possibleValues = tokenA.Values<object>().Select(objA => (Vector4)ReadObjectValue(objA as JObject)).ToList(),
                             value = v4
                         };
                     case Vector3 v3:
                         return new EnumParameterDto<Vector3>()
                         {
-                            possibleValues = tokenA.Values<object>().Select(obj => (Vector3)ReadObjectValue(obj as JObject)).ToList(),
+                            possibleValues = tokenA.Values<object>().Select(objA => (Vector3)ReadObjectValue(objA as JObject)).ToList(),
                             value = v3
                         };
                     case Vector2 v2:
                         return new EnumParameterDto<Vector2>()
                         {
-                            possibleValues = tokenA.Values<object>().Select(obj => (Vector2)ReadObjectValue(obj as JObject)).ToList(),
+                            possibleValues = tokenA.Values<object>().Select(objA => (Vector2)ReadObjectValue(objA as JObject)).ToList(),
                             value = v2
                         };
                 }
