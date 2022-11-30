@@ -223,6 +223,7 @@ namespace umi3d.cdk.collaboration
         #endregion
         #endregion
 
+#if UNITY_STANDALONE
         public bool UseNoiseReduction
         {
             get
@@ -236,6 +237,7 @@ namespace umi3d.cdk.collaboration
                 nAudio.UseNoiseReducer = value;
             }
         }
+#endif
 
         public List<DebugInfo> GetInfos()
         {
