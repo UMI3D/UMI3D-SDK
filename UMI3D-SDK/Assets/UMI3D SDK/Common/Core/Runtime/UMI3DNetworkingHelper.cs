@@ -290,6 +290,29 @@ namespace umi3d.common
                         return true;
                     }
                     break;
+                case true when typeof(T) == typeof(SerializableKeyframe):
+                    if (container.length >= 3 * 2 * sizeof(float))
+                    {
+                        TryRead(container, out Vector2 v0);
+                        TryRead(container, out Vector2 v1);
+                        TryRead(container, out Vector2 v2);
+
+                        result = (T)Convert.ChangeType(new SerializableKeyframe(v0.x, v0.y, v1.x, v2.x, v1.y, v2.y), typeof(T));
+                        return true;
+                    }
+                    break;
+                case true when typeof(T) == typeof(SerializableAnimationCurve):
+                    List<SerializableKeyframe> keys = ReadList<SerializableKeyframe>(container);
+                    if (keys != null)
+                    {
+                        result = (T)Convert.ChangeType(new SerializableAnimationCurve(keys), typeof(T));
+                        return true;
+                    }
+                    else
+                    {
+                        result = default;
+                        return false;
+                    }
                 case true when typeof(T) == typeof(UMI3DShaderPropertyDto):
                     var shader = UMI3DShaderPropertyDto.FromByte(container);
                     result = (T)Convert.ChangeType(shader, typeof(T));
@@ -771,6 +794,17 @@ namespace umi3d.common
                     return bc;
                 case Matrix4x4 v4:
                     return Write((SerializableMatrix4x4)v4);
+                case AnimationCurve animationCurve:
+                    return Write((SerializableAnimationCurve)animationCurve);
+                case SerializableAnimationCurve serializableAnimationCurve:
+                    return WriteCollection(serializableAnimationCurve.keys);
+                case Keyframe keyframe:
+                    return Write((SerializableKeyframe)keyframe);
+                case SerializableKeyframe serializableFrame:
+                    bc = Write(serializableFrame.point);
+                    bc += Write(serializableFrame.intTangeant);
+                    bc += Write(serializableFrame.outTangeant);
+                    return bc;
                 case string str:
                     bc = Write((uint)str.Length);
                     foreach (char ch in str)
@@ -846,7 +880,7 @@ namespace umi3d.common
                 this.key = entry.Key;
                 this.value = entry.Value as IBytable;
             }
-            
+
             /// <inheritdoc/>
             public bool IsCountable()
             {
@@ -982,7 +1016,7 @@ namespace umi3d.common
     public class ByteContainer
     {
         public ulong timeStep { get; private set; }
-        
+
         /// <summary>
         /// The byte array that the container section belongs to.
         /// </summary>

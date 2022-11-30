@@ -38,6 +38,21 @@ namespace umi3d.common
         public float spatialBlend = 0f;
 
         /// <summary>
+        /// Defines which curve model is used to perform a volume attenuation.
+        /// </summary>
+        public AudioSourceCurveMode volumeAttenuationMode = AudioSourceCurveMode.Logarithmic;
+
+        /// <summary>
+        /// Max distance used to perform volume attenuation.
+        /// </summary>
+        public float volumeMaxDistance = 500f;
+
+        /// <summary>
+        /// Volume attenuation curve used if <see cref="volumeAttenuationMode"/> is set to <see cref="AudioSourceCurveMode.Custom"/>.
+        /// </summary>
+        public SerializableAnimationCurve volumeAttenuationCurve = new SerializableAnimationCurve();
+
+        /// <summary>
         /// Volume value between 0 and 1.
         /// </summary>
         public float volume = 1f;
@@ -46,6 +61,12 @@ namespace umi3d.common
         /// Value of pitch change induced by a slowdown or speed up effect of the audio ressource. Value 1 is normal speed.
         /// </summary>
         public float pitch = 1f;
+    }
 
+    public enum AudioSourceCurveMode
+    {
+        Logarithmic,
+        Linear,
+        Custom
     }
 }
