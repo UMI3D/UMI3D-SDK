@@ -226,6 +226,9 @@ namespace umi3d.common
         public const uint AnimationVolume = 13201;
         public const uint AnimationPitch = 13202;
         public const uint AnimationSpacialBlend = 13203;
+        public const uint VolumeAttenuationMode = 13204;
+        public const uint VolumeMaxDistance = 13205;
+        public const uint VolumeCustomCurve = 13206;
 
         public const uint AnimationDuration = 13301;
         public const uint AnimationChain = 13302;
