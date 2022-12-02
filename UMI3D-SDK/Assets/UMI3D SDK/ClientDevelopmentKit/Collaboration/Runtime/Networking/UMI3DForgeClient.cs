@@ -538,9 +538,9 @@ namespace umi3d.cdk.collaboration
                             MainThreadManager.Run(() =>
                             {
                                 if (trigger)
-                                    UMI3DClientUserTracking.Instance.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
+                                    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
                                 else
-                                    UMI3DClientUserTracking.Instance.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
+                                    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
 
                                 if (UMI3DCollaborationClientServer.transactionPending != null)
                                     UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;

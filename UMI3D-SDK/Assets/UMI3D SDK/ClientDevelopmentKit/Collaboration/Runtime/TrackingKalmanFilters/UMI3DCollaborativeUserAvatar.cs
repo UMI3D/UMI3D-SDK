@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
         /// Tools to perfom interpolation for every avatar bones.
         /// </summary>
         private readonly Dictionary<uint, QuaternionLinearDelayedExtrapolator> boneRotationFilters = new Dictionary<uint, QuaternionLinearDelayedExtrapolator>();
-        
+
         /// <summary>
         /// Reference to the skeleton object of the avatar.
         /// </summary>
@@ -50,6 +50,7 @@ namespace umi3d.cdk.collaboration
         /// Coroutine used to update avatar position.
         /// </summary>
         Coroutine updateCoroutine = null;
+        private Animator userAnimator;
 
         #endregion
 
@@ -58,9 +59,15 @@ namespace umi3d.cdk.collaboration
         private void Start()
         {
             viewpointObject = GetComponentInChildren<UMI3DViewpointHelper>()?.transform;
+            userAnimator = skeleton.GetComponentInChildren<Animator>();
         }
 
         private void Update()
+        {
+            // void not to receive unity update messages
+        }
+
+        private void LateUpdate()
         {
             if (nodePositionExtrapolator != null)
                 this.transform.localPosition = nodePositionExtrapolator.ExtrapolateState();
@@ -77,9 +84,17 @@ namespace umi3d.cdk.collaboration
                 skeleton.transform.localPosition = new Vector3(0, skeletonHeightExtrapolator.ExtrapolateState(), 0);
             }
 
+            if (ForceDisablingBinding)
+                return;
+            if (userAnimator == null)
+                userAnimator = skeleton.GetComponentInChildren<Animator>();
+            if (userAnimator == null)
+                return;
+            UpdateBoneBindings();
+        }
 
-            Animator userAnimator = skeleton.GetComponentInChildren<Animator>();
-
+        public void UpdateBoneBindings()
+        {
             foreach (uint boneType in boneRotationFilters.Keys)
             {
                 Transform boneTransform;
@@ -161,7 +176,7 @@ namespace umi3d.cdk.collaboration
 
 
         /// <summary>
-        /// Update the a UserAvatar directly sent by another client.
+        /// Update the a UserAvatar skeleton directly sent by another client.
         /// </summary>
         /// <param name="trackingFrameDto">a dto containing the tracking data</param>
         /// <param name="timeFrame">sending time in ms</param>
