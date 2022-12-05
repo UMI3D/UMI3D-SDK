@@ -49,7 +49,7 @@ namespace umi3d.common.interaction
         /// </summary>
         public ResourceDto icon3D = null;
 
-        public List<AbstractInteractionDto> interactions = new List<AbstractInteractionDto>();
+        public List<ulong> interactions = new List<ulong>();
 
         public AbstractToolDto() : base() { }
     }

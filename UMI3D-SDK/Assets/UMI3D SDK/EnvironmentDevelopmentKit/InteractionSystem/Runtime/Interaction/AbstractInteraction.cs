@@ -28,7 +28,7 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction. Base class for all interactions.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IBytable
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity, IBytable
     {
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Indicates if the interaction is part of another.
         /// </summary>
-        [HideInInspector] 
+        [HideInInspector]
         public bool IsSubInteraction = false;
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public virtual Bytable ToByte(UMI3DUser user)
+        public virtual Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(GetInteractionKey())
                     + UMI3DNetworkingHelper.Write(Id())
@@ -237,14 +237,39 @@ namespace umi3d.edk.interaction
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
-                return ToByte(null);
-            return ToByte(parameters[0] as UMI3DUser);
+                return ToBytes(null);
+            return ToBytes(parameters[0] as UMI3DUser);
         }
 
         /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
+        }
+
+        public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new LoadEntity()
+            {
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+            };
+            return operation;
+        }
+
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+            };
+            return operation;
+        }
+
+        public IEntity ToEntityDto(UMI3DUser user)
+        {
+            return ToDto(user);
         }
 
         #region filter

@@ -64,12 +64,6 @@ namespace umi3d.cdk.interaction
                 case UMI3DPropertyKeys.AbstractToolActive:
                     dto.active = (bool)value.property.value;
                     break;
-                case UMI3DPropertyKeys.EventTriggerAnimation:
-                    (dto.interactions.Find(evt => evt.id.Equals(value.property.entityId)) as EventDto).TriggerAnimationId = (ulong)value.property.value;
-                    break;
-                case UMI3DPropertyKeys.EventReleaseAnimation:
-                    (dto.interactions.Find(evt => evt.id.Equals(value.property.entityId)) as EventDto).ReleaseAnimationId = (ulong)value.property.value;
-                    break;
                 default:
                     return false;
             }
@@ -155,24 +149,24 @@ namespace umi3d.cdk.interaction
         private static bool SetInteractions(AbstractToolDto dto, AbstractTool tool, uint operationId, uint propertyKey, ByteContainer container)
         {
             int index;
-            AbstractInteractionDto value;
+            ulong value;
 
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
-                    value = UMI3DNetworkingHelper.Read<AbstractInteractionDto>(container);
+                    value = UMI3DNetworkingHelper.Read<ulong>(container);
                     if (index == dto.interactions.Count)
                         dto.interactions.Add(value);
                     else if (index < dto.interactions.Count)
                         dto.interactions.Insert(index, value);
                     else return false;
-                    tool.Added(value); break;
+                    tool.Added(UMI3DEnvironmentLoader.GetEntity(value).dto as AbstractInteractionDto); break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
                     if (index < dto.interactions.Count)
                     {
-                        AbstractInteractionDto removed = dto.interactions[index];
+                        AbstractInteractionDto removed = UMI3DEnvironmentLoader.GetEntity(dto.interactions[index]).dto as AbstractInteractionDto;
                         dto.interactions.RemoveAt(index);
                         tool.Removed(removed);
                     }
@@ -180,14 +174,14 @@ namespace umi3d.cdk.interaction
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
                     index = UMI3DNetworkingHelper.Read<int>(container);
-                    value = UMI3DNetworkingHelper.Read<AbstractInteractionDto>(container);
+                    value = UMI3DNetworkingHelper.Read<ulong>(container);
                     if (index < dto.interactions.Count)
                         dto.interactions[index] = value;
                     else return false;
                     tool.Updated();
                     break;
                 default:
-                    dto.interactions = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(container);
+                    dto.interactions = UMI3DNetworkingHelper.ReadList<ulong>(container);
                     tool.Updated();
                     break;
             }
@@ -206,7 +200,7 @@ namespace umi3d.cdk.interaction
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
-                    dto.interactions.Add((AbstractInteractionDto)add.value);
+                    dto.interactions.Add((ulong)add.value);
                     break;
                 case SetEntityListRemovePropertyDto rem:
                     if ((int)(Int64)rem.index < dto.interactions.Count)
@@ -215,11 +209,11 @@ namespace umi3d.cdk.interaction
                     break;
                 case SetEntityListPropertyDto set:
                     if ((int)(Int64)set.index < dto.interactions.Count)
-                        dto.interactions[(int)(Int64)set.index] = (AbstractInteractionDto)set.value;
+                        dto.interactions[(int)(Int64)set.index] = (ulong)set.value;
                     else return false;
                     break;
                 default:
-                    dto.interactions = (List<AbstractInteractionDto>)property.value;
+                    dto.interactions = (List<ulong>)property.value;
                     break;
             }
             tool.Updated();
@@ -238,155 +232,6 @@ namespace umi3d.cdk.interaction
         {
             data.result = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(data.container);
             return true;
-        }
-
-        /// <summary>
-        /// Read an <see cref="AbstractInteractionDto"/> from a received <see cref="ByteContainer"/>.
-        /// <br/> Part of the bytes networking workflow.
-        /// </summary>
-        /// <param name="container">Byte container</param>
-        /// <param name="readable">True if the byte container has been correctly read.</param>
-        /// <returns></returns>
-        public static AbstractInteractionDto ReadAbstractInteractionDto(ByteContainer container, out bool readable)
-        {
-            AbstractInteractionDto interaction;
-            byte interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
-            switch (interactionCase)
-            {
-                case UMI3DInteractionKeys.Event:
-                    var Event = new EventDto();
-                    ReadAbstractInteractionDto(Event, container);
-                    Event.hold = UMI3DNetworkingHelper.Read<bool>(container);
-                    Event.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    Event.ReleaseAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    interaction = Event;
-                    break;
-                case UMI3DInteractionKeys.Manipulation:
-                    var Manipulation = new ManipulationDto();
-                    ReadAbstractInteractionDto(Manipulation, container);
-                    Manipulation.frameOfReference = UMI3DNetworkingHelper.Read<ulong>(container);
-                    Manipulation.dofSeparationOptions = UMI3DNetworkingHelper.ReadList<DofGroupOptionDto>(container);
-                    interaction = Manipulation;
-                    break;
-                case UMI3DInteractionKeys.Form:
-                    var Form = new FormDto();
-                    ReadAbstractInteractionDto(Form, container);
-                    Form.fields = UMI3DNetworkingHelper.ReadList<AbstractParameterDto>(container);
-                    interaction = Form;
-                    break;
-                case UMI3DInteractionKeys.Link:
-                    var Link = new LinkDto();
-                    ReadAbstractInteractionDto(Link, container);
-                    Link.url = UMI3DNetworkingHelper.Read<string>(container);
-                    interaction = Link;
-                    break;
-                case UMI3DInteractionKeys.BooleanParameter:
-                    var Bool = new BooleanParameterDto();
-                    ReadAbstractParameterDto(Bool, container);
-                    Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
-                    interaction = Bool;
-                    break;
-                case UMI3DInteractionKeys.ColorParameter:
-                    var Color = new ColorParameterDto();
-                    ReadAbstractParameterDto(Color, container);
-                    Color.value = UMI3DNetworkingHelper.Read<Color>(container);
-                    interaction = Color;
-                    break;
-                case UMI3DInteractionKeys.Vector2Parameter:
-                    var Vector2 = new Vector2ParameterDto();
-                    ReadAbstractParameterDto(Vector2, container);
-                    Vector2.value = UMI3DNetworkingHelper.Read<Vector2>(container);
-                    interaction = Vector2;
-                    break;
-                case UMI3DInteractionKeys.Vector3Parameter:
-                    var Vector3 = new Vector3ParameterDto();
-                    ReadAbstractParameterDto(Vector3, container);
-                    Vector3.value = UMI3DNetworkingHelper.Read<Vector3>(container);
-                    interaction = Vector3;
-                    break;
-                case UMI3DInteractionKeys.Vector4Parameter:
-                    var Vector4 = new Vector4ParameterDto();
-                    ReadAbstractParameterDto(Vector4, container);
-                    Vector4.value = UMI3DNetworkingHelper.Read<Vector4>(container);
-                    interaction = Vector4;
-                    break;
-                case UMI3DInteractionKeys.UploadParameter:
-                    var Upload = new UploadFileParameterDto();
-                    ReadAbstractParameterDto(Upload, container);
-                    Upload.value = UMI3DNetworkingHelper.Read<string>(container);
-                    Upload.authorizedExtensions = UMI3DNetworkingHelper.Read<List<string>>(container);
-                    interaction = Upload;
-                    break;
-                case UMI3DInteractionKeys.StringParameter:
-                    var String = new StringParameterDto();
-                    ReadAbstractParameterDto(String, container);
-                    String.value = UMI3DNetworkingHelper.Read<string>(container);
-                    interaction = String;
-                    break;
-                case UMI3DInteractionKeys.LocalInfoParameter:
-                    var LocalInfo = new LocalInfoRequestParameterDto();
-                    ReadAbstractParameterDto(LocalInfo, container);
-                    LocalInfo.app_id = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.serverName = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.reason = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.key = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.value = new LocalInfoRequestParameterValue(UMI3DNetworkingHelper.Read<bool>(container), UMI3DNetworkingHelper.Read<bool>(container));
-                    interaction = LocalInfo;
-                    break;
-                case UMI3DInteractionKeys.StringEnumParameter:
-                    var EString = new EnumParameterDto<string>();
-                    ReadAbstractParameterDto(EString, container);
-                    EString.possibleValues = UMI3DNetworkingHelper.ReadList<string>(container);
-                    EString.value = UMI3DNetworkingHelper.Read<string>(container);
-                    interaction = EString;
-                    break;
-                case UMI3DInteractionKeys.FloatRangeParameter:
-                    var RFloat = new FloatRangeParameterDto();
-                    ReadAbstractParameterDto(RFloat, container);
-                    RFloat.min = UMI3DNetworkingHelper.Read<float>(container);
-                    RFloat.max = UMI3DNetworkingHelper.Read<float>(container);
-                    RFloat.increment = UMI3DNetworkingHelper.Read<float>(container);
-                    RFloat.value = UMI3DNetworkingHelper.Read<float>(container);
-                    interaction = RFloat;
-                    break;
-                default:
-                    interaction = null;
-                    readable = false;
-                    return null;
-            }
-            readable = true;
-            return interaction;
-        }
-
-        /// <summary>
-        /// Reads an <see cref="AbstractInteractionDto"/> from a received <see cref="ByteContainer"/> and updates it.
-        /// <br/> Part of the bytes networking workflow.
-        /// </summary>
-        ///  <param name="interactionDto">interaction dto to update.</param>
-        /// <param name="container">Byte container</param>
-        /// <returns></returns>
-        private static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto, ByteContainer container)
-        {
-            interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);
-            interactionDto.name = UMI3DNetworkingHelper.Read<string>(container);
-            interactionDto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-            interactionDto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-            interactionDto.description = UMI3DNetworkingHelper.Read<string>(container);
-            
-        }
-
-        /// <summary>
-        /// Reads an <see cref="AbstractParameterDto"/> from a received <see cref="ByteContainer"/> and updates it.
-        /// <br/> Part of the bytes networking workflow.
-        /// </summary>
-        ///  <param name="ParameterDto">interaction dto to update.</param>
-        /// <param name="container">Byte container</param>
-        /// <returns></returns>
-        private static void ReadAbstractParameterDto(AbstractParameterDto ParameterDto, ByteContainer container)
-        {
-            ReadAbstractParameterDto(ParameterDto, container);
-            ParameterDto.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
-            ParameterDto.isDisplayer = UMI3DNetworkingHelper.Read<bool>(container);
         }
     }
 }

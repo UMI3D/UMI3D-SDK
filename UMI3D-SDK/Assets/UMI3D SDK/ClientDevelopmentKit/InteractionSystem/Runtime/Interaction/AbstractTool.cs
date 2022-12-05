@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -58,7 +59,8 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Contained tools.
         /// </summary>
-        public List<AbstractInteractionDto> interactions => abstractDto.interactions;
+        public List<ulong> interactionsId => abstractDto.interactions;
+        public List<AbstractInteractionDto> interactions => abstractDto.interactions.Select(UMI3DEnvironmentLoader.GetNode).Select(node => node.dto as AbstractInteractionDto).ToList();
 
         // could be removed if unity project version is 2020.1 or newer 
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
