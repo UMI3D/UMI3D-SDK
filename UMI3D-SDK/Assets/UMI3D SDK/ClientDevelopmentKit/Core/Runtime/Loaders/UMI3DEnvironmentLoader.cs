@@ -691,7 +691,7 @@ namespace umi3d.cdk
                 RenderSettings.ambientIntensity = extension.ambientIntensity;
                 if (extension.skybox != null)
                 {
-                    Parameters.loadSkybox(extension.skybox);
+                    Parameters.LoadSkybox(extension.skybox, extension.skyboxType, extension.skyboxRotation, extension.skyboxExposure);
                 }
             }
         }
@@ -766,6 +766,31 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
                     return await Parameters.SetUMI3DProperty(data);
+                case UMI3DPropertyKeys.AmbientType:
+                    RenderSettings.ambientMode = (AmbientMode)data.property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyColor:
+                    RenderSettings.ambientSkyColor = (SerializableColor)data.property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientHorizontalColor:
+                    RenderSettings.ambientEquatorColor = (SerializableColor)data.property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientGroundColor:
+                    RenderSettings.ambientGroundColor = (SerializableColor)data.property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientIntensity:
+                    RenderSettings.ambientIntensity = (float)data.property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxImage:
+                    if (dto.skybox != null)
+                    {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
+                    }
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxRotation:
+                case UMI3DPropertyKeys.AmbientSkyboxExposure:
+                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
+                    
                 default:
                     return false;
             }
@@ -788,6 +813,30 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
                     return await Parameters.SetUMI3DProperty(data);
+                case UMI3DPropertyKeys.AmbientType:
+                    RenderSettings.ambientMode = (AmbientMode)UMI3DNetworkingHelper.Read<int>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyColor:
+                    RenderSettings.ambientSkyColor = UMI3DNetworkingHelper.Read<SerializableColor>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientHorizontalColor:
+                    RenderSettings.ambientEquatorColor = UMI3DNetworkingHelper.Read<SerializableColor>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientGroundColor:
+                    RenderSettings.ambientGroundColor = UMI3DNetworkingHelper.Read<SerializableColor>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientIntensity:
+                    RenderSettings.ambientIntensity = UMI3DNetworkingHelper.Read<float>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxImage:
+                    if (dto.skybox != null)
+                    {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
+                    }
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxRotation:
+                case UMI3DPropertyKeys.AmbientSkyboxExposure:
+                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
                 default:
                     return false;
             }

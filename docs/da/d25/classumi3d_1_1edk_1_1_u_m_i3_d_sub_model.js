@@ -11,5 +11,9 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_sub_model =
     [ "isTraversable", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#ab99f477881c8953972050244a03042cd", null ],
     [ "objectIgnoreModelMaterialOverride", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#a2aad134cb21ba7469f33a5b3062094cc", null ],
     [ "parentModel", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#a918ef23ccb73b08bbc1846dd1d97c0d3", null ],
+    [ "subModelHierachyIndexes", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#a15f3c0d0b996483983ccfe386093b09c", null ],
+    [ "subModelHierachyNames", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#ab05b747525ece197b65b17205dd50fda", null ],
+    [ "objectPartOfNavmesh", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#ac9d05e31720ce7ae473a4d8a35eca362", null ],
+    [ "objectTraversable", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#a854c7e41485b14f554d6f62c06d340c3", null ],
     [ "subModelName", "da/d25/classumi3d_1_1edk_1_1_u_m_i3_d_sub_model.html#afd971cd03c1e003e5ba267dcc411aa7c", null ]
 ];

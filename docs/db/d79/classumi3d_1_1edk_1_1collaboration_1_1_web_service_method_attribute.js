@@ -2,7 +2,8 @@ var classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute =
 [
     [ "Security", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0", [
       [ "Public", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0a3d067bedfe2f4677470dd6ccf64d05ed", null ],
-      [ "Private", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0a47f9082fc380ca62d531096aa1d110f1", null ]
+      [ "Private", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0a47f9082fc380ca62d531096aa1d110f1", null ],
+      [ "PrivateAllowOldToken", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a742709977f041e0a99b83e357f9571c0a86854ab4406ca3364522f60f49b71608", null ]
     ] ],
     [ "Type", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a196d519d89dbeb3125b8b2ddf42acc34", [
       [ "Method", "db/d79/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method_attribute.html#a196d519d89dbeb3125b8b2ddf42acc34a4c3880bb027f159e801041b1021e88e8", null ],

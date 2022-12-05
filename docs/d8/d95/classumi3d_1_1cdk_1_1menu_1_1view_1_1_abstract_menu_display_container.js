@@ -1,12 +1,15 @@
 var classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container =
 [
     [ "Back", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a062c8d47c0d66251f5b73301a153ff75", null ],
-    [ "Collapse", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a70f05cb1c4b61860fa58d0754372a866", null ],
+    [ "Collapse", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#ab3355675a1814e812344ca04b6149e95", null ],
+    [ "CollapseImp", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a0fd0d01b8ef3c21147ef98ec4249b37b", null ],
     [ "Contains", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#ad02c4d5bec3cd3aa7f912f9527a40be4", null ],
     [ "Count", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#afe5d25922469d50c0beef32b5f1b203f", null ],
     [ "CurrentMenuDisplayContainer", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#ae9e86867275a62f98ef1a42d9952d975", null ],
-    [ "Expand", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#adecf1edb7f49f3ea4cef760a796232e3", null ],
-    [ "ExpandAs", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#aca7aaea8c8c18a7becc5c8a7a0827cc4", null ],
+    [ "Expand", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a47e9f4c9d3e0cad8d7c951ce2c25f41a", null ],
+    [ "ExpandAs", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a8cc0aadee57232bd30a14a8b9e227f5d", null ],
+    [ "ExpandAsImp", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a6de04f9bb19367989008a50667b60632", null ],
+    [ "ExpandImp", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a0deb4b012b4a0313fc3788504aa41349", null ],
     [ "GetDisplayers", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a8a3a89574b6235fbc19e9ce774d60698", null ],
     [ "GetEnumerator", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#acf339a84556da4e7e6a25d7aca5b63ee", null ],
     [ "GetIndexOf", "d8/d95/classumi3d_1_1cdk_1_1menu_1_1view_1_1_abstract_menu_display_container.html#a378e19137a12d3acec5491cd5044cde3", null ],

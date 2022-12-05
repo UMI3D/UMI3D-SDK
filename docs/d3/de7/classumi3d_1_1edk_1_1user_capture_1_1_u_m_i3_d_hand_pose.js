@@ -2,6 +2,7 @@ var classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose =
 [
     [ "PhalanxRotation", "d6/d79/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose_1_1_phalanx_rotation.html", "d6/d79/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose_1_1_phalanx_rotation" ],
     [ "AddConnectionFilter", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a4f8242bf154dbaa48dc79439463e6429", null ],
+    [ "Clone", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#adeb2c76821d835a3d3baf8743b96aac5", null ],
     [ "GetDeleteEntity", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a66db18f193d9f55bca7fffd968747c42", null ],
     [ "GetId", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#aac89b8960a3eb3d5e872199aa77fc03f", null ],
     [ "GetLoadEntity", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a5420bb0b673b5a147e0c4cf7ce761396", null ],
@@ -14,6 +15,7 @@ var classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose =
     [ "ToBytes", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a9d32341b94ecd827f68a4ea59b2e3c32", null ],
     [ "ToDto", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#afbcc2e19ca5bad57295b4ed5f18d9fad", null ],
     [ "ToEntityDto", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#aa0831ede981210aef90357a622861f6c", null ],
+    [ "UnRegistered", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#ad32631c1a3c23faee808abc090cb73b4", null ],
     [ "HoverAnimation", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a119c6ab97e3750b3fcfbd0cb8fe78fa9", null ],
     [ "IsActive", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a8d9d59fb69e1626d6f720c1ff6f514f0", null ],
     [ "isRelativeToNode", "d3/de7/classumi3d_1_1edk_1_1user_capture_1_1_u_m_i3_d_hand_pose.html#a33f40bbba653e324092f91e1c6cfec6a", null ],

@@ -115,7 +115,15 @@ namespace umi3d.cdk
         /// Load a <see cref="ResourceDto"/> as a Skybox.
         /// </summary>
         /// <param name="skybox"></param>
-        public abstract void loadSkybox(ResourceDto skybox);
+        public abstract void LoadSkybox(ResourceDto skybox, SkyboxType type, float skyboxRotatio, float skyboxExposure);
 
+        /// <summary>
+        /// Sets skybox properties.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="skyboxRotatio"></param>
+        /// <param name="skyboxExposure"></param>
+        /// <returns></returns>
+        public abstract bool SetSkyboxProperties(SkyboxType type, float skyboxRotatio, float skyboxExposure);
     }
 }

@@ -65,6 +65,21 @@ namespace umi3d.common
         public ResourceDto skybox;
 
         /// <summary>
+        /// Format for <see cref="skybox"/>.
+        /// </summary>
+        public SkyboxType skyboxType;
+
+        /// <summary>
+        /// Rotation for <see cref="skybox"/>, only works with <see cref="SkyboxType.Equirectangular"/> [0, 360] degrees.
+        /// </summary>
+        public float skyboxRotation = 0;
+
+        /// <summary>
+        /// Exposure for <see cref="skybox"/>, only works with <see cref="SkyboxType.Equirectangular"/>.
+        /// </summary>
+        public float skyboxExposure = 0;
+
+        /// <summary>
         /// ressource of the material applied to all objects by default.
         /// </summary>
         public ResourceDto defaultMaterial;

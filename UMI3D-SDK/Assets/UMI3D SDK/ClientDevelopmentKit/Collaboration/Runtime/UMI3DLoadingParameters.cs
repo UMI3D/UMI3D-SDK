@@ -53,6 +53,23 @@ namespace umi3d.cdk
         private Material _skyboxMaterial;
         public Material skyboxMaterial { get { if (_skyboxMaterial == null) { _skyboxMaterial = new Material(RenderSettings.skybox); RenderSettings.skybox = _skyboxMaterial; } return _skyboxMaterial; } }
 
+        [SerializeField]
+        private Material _skyboxEquirectangularMaterial;
+
+        public Material skyboxEquirectangularMaterial
+        {
+            get
+            {
+                if (_skyboxEquirectangularMaterial == null)
+                {
+                    _skyboxEquirectangularMaterial = new Material(RenderSettings.skybox);
+                    RenderSettings.skybox = _skyboxEquirectangularMaterial;
+                }
+
+                return _skyboxEquirectangularMaterial;
+            }
+        }
+
         public List<IResourcesLoader> ResourcesLoaders { get; } = new List<IResourcesLoader>() { new ObjMeshDtoLoader(), new ImageDtoLoader(), new GlTFMeshDtoLoader(), new BundleDtoLoader(), new AudioLoader() };
 
         public List<AbstractUMI3DMaterialLoader> MaterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader(), new UMI3DOriginalMaterialLoader() };
@@ -215,7 +232,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override async void loadSkybox(ResourceDto skybox)
+        public override async void LoadSkybox(ResourceDto skybox, SkyboxType type, float skyboxRotation, float skyboxExposure)
         {
             try
             {
@@ -229,50 +246,17 @@ namespace umi3d.cdk
                     var tex = (Texture2D)o;
                     if (tex != null)
                     {
-
-                        Cubemap cube;
-                        Color[] imageColors;
-
-                        //prerequises: 
-                        // 1) image is in format
-                        //     +y
-                        //  -x +z +x -z
-                        //     -Y
-                        // 2) faces are cubes
-
-                        int size = tex.width / 4;
-                        cube = new Cubemap(size, TextureFormat.RGB24, false);
-
-                        //Need to invert y ? Oo
-                        var buffer = new Texture2D(tex.width, tex.height);
-                        buffer.SetPixels(tex.GetPixels());
-                        for (int x = 0; x < tex.width; x++)
+                        switch (type)
                         {
-                            for (int y = 0; y < tex.height; y++)
-                                tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
+                            case SkyboxType.Equirectangular:
+                                LoadEquirectangularSkybox(tex, skyboxRotation, skyboxExposure);
+                                break;
+                            case SkyboxType.Cubemap:
+                                LoadCubeMapSkybox(tex);
+                                break;
+                            default:
+                                break;
                         }
-
-                        imageColors = tex.GetPixels(size, 0, size, size);
-                        cube.SetPixels(imageColors, CubemapFace.PositiveY);
-
-                        imageColors = tex.GetPixels(0, size, size, size);
-                        cube.SetPixels(imageColors, CubemapFace.NegativeX);
-
-                        imageColors = tex.GetPixels(size, size, size, size);
-                        cube.SetPixels(imageColors, CubemapFace.PositiveZ);
-
-                        imageColors = tex.GetPixels(size * 2, size, size, size);
-                        cube.SetPixels(imageColors, CubemapFace.PositiveX);
-
-                        imageColors = tex.GetPixels(size * 3, size, size, size);
-                        cube.SetPixels(imageColors, CubemapFace.NegativeZ);
-
-                        imageColors = tex.GetPixels(size, size * 2, size, size);
-                        cube.SetPixels(imageColors, CubemapFace.NegativeY);
-
-                        cube.Apply();
-                        skyboxMaterial.SetTexture("_Tex", cube);
-                        RenderSettings.skybox = skyboxMaterial;
                     }
                     else
                     {
@@ -280,10 +264,91 @@ namespace umi3d.cdk
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                UMI3DLogger.LogException(e,scope);
+                UMI3DLogger.LogException(e, scope);
             }
+        }
+
+        private void LoadCubeMapSkybox(Texture2D tex)
+        {
+            try
+            {
+                Cubemap cube;
+                Color[] imageColors;
+
+                //prerequises: 
+                // 1) image is in format
+                //     +y
+                //  -x +z +x -z
+                //     -Y
+                // 2) faces are cubes
+
+                int size = tex.width / 4;
+                cube = new Cubemap(size, TextureFormat.RGB24, false);
+
+                //Need to invert y ? Oo
+                var buffer = new Texture2D(tex.width, tex.height);
+                buffer.SetPixels(tex.GetPixels());
+                for (int x = 0; x < tex.width; x++)
+                {
+                    for (int y = 0; y < tex.height; y++)
+                        tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
+                }
+
+                imageColors = tex.GetPixels(size, 0, size, size);
+                cube.SetPixels(imageColors, CubemapFace.PositiveY);
+
+                imageColors = tex.GetPixels(0, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.NegativeX);
+
+                imageColors = tex.GetPixels(size, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.PositiveZ);
+
+                imageColors = tex.GetPixels(size * 2, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.PositiveX);
+
+                imageColors = tex.GetPixels(size * 3, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.NegativeZ);
+
+                imageColors = tex.GetPixels(size, size * 2, size, size);
+                cube.SetPixels(imageColors, CubemapFace.NegativeY);
+
+                cube.Apply();
+                skyboxMaterial.SetTexture("_Tex", cube);
+                RenderSettings.skybox = skyboxMaterial;
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
+            }
+        }
+
+        private void LoadEquirectangularSkybox(Texture2D texture, float rotation, float exposure)
+        {
+            skyboxEquirectangularMaterial.SetTexture("_Tex", texture);
+
+            SetSkyboxProperties(SkyboxType.Equirectangular, rotation, exposure);
+
+            RenderSettings.skybox = skyboxEquirectangularMaterial;
+        }
+
+        public override bool SetSkyboxProperties(SkyboxType type, float skyboxRotation, float skyboxExposure)
+        {
+            if (type == SkyboxType.Equirectangular)
+            {
+                if (skyboxEquirectangularMaterial.HasProperty("_Rotation"))
+                {
+                    skyboxEquirectangularMaterial.SetFloat("_Rotation", skyboxRotation);
+                }
+
+                if (skyboxEquirectangularMaterial.HasProperty("_Exposure"))
+                {
+                    skyboxEquirectangularMaterial.SetFloat("_Exposure", skyboxExposure);
+                }
+            }
+
+            return true;
         }
 
         /// <inheritdoc/>

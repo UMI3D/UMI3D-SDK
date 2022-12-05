@@ -131,6 +131,11 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         protected float lastMessageTime = 0;
 
+        /// <summary>
+        /// When set to true, skeleton bindings are no longer updated
+        /// </summary>
+        public bool ForceDisablingBinding;
+
         #endregion
 
         #region Methods
@@ -149,6 +154,9 @@ namespace umi3d.cdk.userCapture
         {
             this.transform.position = UMI3DClientUserTracking.Instance.transform.position;
             this.transform.rotation = UMI3DClientUserTracking.Instance.transform.rotation;
+
+            if (ForceDisablingBinding)
+                return;
 
             foreach (Bound item in bounds)
             {

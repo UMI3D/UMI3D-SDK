@@ -127,7 +127,10 @@ namespace umi3d.edk
             dto.horizontalColor = objectHorizonColor.GetValue(user);
             dto.groundColor = objectGroundColor.GetValue(user);
             dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
+            dto.skyboxType = skyboxType;
             dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
+            dto.skyboxRotation = objectSkyboxRotation.GetValue(user);
+            dto.skyboxExposure = objectSkyboxExposure.GetValue(user);
             dto.defaultMaterial = defaultMaterial?.ToDto();
         }
 
@@ -188,7 +191,8 @@ namespace umi3d.edk
             objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientGroundColor, groundColor, (c, u) => (SerializableColor)c);
             objectAmbientIntensity = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientIntensity, ambientIntensity);
             objectAmbientSkyboxImage = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AmbientSkyboxImage, skyboxImage, (r, u) => r.ToDto());
-
+            objectSkyboxRotation = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientSkyboxRotation, skyboxRotation);
+            objectSkyboxExposure = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientSkyboxExposure, skyboxExposure);
         }
 
         /// <summary>
@@ -244,16 +248,45 @@ namespace umi3d.edk
         /// <summary>
         /// See <see cref="ambientIntensity"/>.
         /// </summary>
+        /// 
         public UMI3DAsyncProperty<float> objectAmbientIntensity;
+
+        #region Skybox
+
+        [Header("Skybox")]
+
+        [SerializeField, Tooltip("Image format of skybox image")]
+        private SkyboxType skyboxType;
+
         /// <summary>
         /// AsyncProperties of the Skybox Image
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Image of the sybox as a resource.")]
         private UMI3DResource skyboxImage = null;
+
         /// <summary>
         /// See <see cref="skyboxImage"/>.
         /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> objectAmbientSkyboxImage;
+
+        [SerializeField, Tooltip("Rotation for skybox, only works with equirectangular format"), Range(0, 360)]
+        private float skyboxRotation = 0;
+
+        /// <summary>
+        /// AsyncProperties for <see cref="skyboxRotation"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<float> objectSkyboxRotation;
+
+        [SerializeField, Tooltip("Exposure for skybox, 1 is default value, only works with equirectangular format"), Range(0, 8)]
+        private float skyboxExposure = 1;
+
+        /// <summary>
+        /// AsyncProperties for <see cref="skyboxExposure"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<float> objectSkyboxExposure;
+
+        #endregion
+
         /// <summary>
         /// Properties of the default Material, it is used to initialise loaded materials in clients. 
         /// </summary>
