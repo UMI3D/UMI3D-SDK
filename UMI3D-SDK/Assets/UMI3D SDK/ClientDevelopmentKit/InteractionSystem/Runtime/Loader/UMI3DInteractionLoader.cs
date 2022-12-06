@@ -46,6 +46,7 @@ namespace umi3d.cdk.interaction
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
+            //try to read commun value
             switch (value.entity.dto)
             {
                 case EventDto dto:
@@ -71,7 +72,26 @@ namespace umi3d.cdk.interaction
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            throw new NotImplementedException();
+            //try to read commun value
+            switch (value.entity?.dto)
+            {
+                case EventDto dto:
+                    switch (value.propertyKey)
+                    {
+                        case UMI3DPropertyKeys.EventTriggerAnimation:
+                            dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                            break;
+                        case UMI3DPropertyKeys.EventReleaseAnimation:
+                            dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                            break;
+                        default:
+                            return false;
+                    }
+
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -84,7 +104,7 @@ namespace umi3d.cdk.interaction
         /// <returns>True if property setting was successful</returns>
         public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            throw new NotImplementedException();
+            return false;
         }
 
 
