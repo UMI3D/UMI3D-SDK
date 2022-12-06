@@ -829,13 +829,14 @@ namespace umi3d.cdk
                     RenderSettings.ambientIntensity = UMI3DNetworkingHelper.Read<float>(container);
                     return true;
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
-                    if (dto.skybox != null)
-                    {
-                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
-                    }
+                    dto.skybox = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
                     return true;
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
+                    dto.skyboxRotation = UMI3DNetworkingHelper.Read<float>(container);
+                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
                 case UMI3DPropertyKeys.AmbientSkyboxExposure:
+                    dto.skyboxExposure = UMI3DNetworkingHelper.Read<float>(container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
                 default:
                     return false;
