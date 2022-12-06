@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking.Unity;
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,6 +87,15 @@ namespace umi3d.edk.interaction
         }
 
         #region properties
+        public UMI3DAsyncProperty<UIRect> ObjectUIRect { get { Register(); return _objectUIRect; } protected set => _objectUIRect = value; }
+
+        private UMI3DAsyncProperty<UIRect> _objectUIRect;
+
+        /// <summary>
+        /// Link an ui rect to an interactable.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Check this box if a collider is attached to that node.")]
+        public UIRect UILink = null;
 
         /// <summary>
         /// Indicates if the interaction is part of another.
@@ -154,6 +164,9 @@ namespace umi3d.edk.interaction
             });
             interactionId = id;
             inited = true;
+
+            ObjectUIRect = new UMI3DAsyncProperty<UIRect>(id, UMI3DPropertyKeys.Interaction_UI_Link, UILink, null, (o, u) => o.Equals(u));
+
         }
 
         #endregion
@@ -210,6 +223,7 @@ namespace umi3d.edk.interaction
             dto.icon3D = Display.icon3D.ToDto();
             dto.id = Id();
             dto.description = Display.description;
+            dto.uiLinkId = ObjectUIRect.GetValue(user).Id();
         }
 
         /// <summary>
