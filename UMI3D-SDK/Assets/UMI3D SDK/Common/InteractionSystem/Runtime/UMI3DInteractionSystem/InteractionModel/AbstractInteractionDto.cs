@@ -20,7 +20,7 @@ namespace umi3d.common.interaction
     /// Abstract DTO to describe an interaction
     /// </summary>
     [System.Serializable]
-    public abstract class AbstractInteractionDto : AbstractEntityDto
+    public abstract class AbstractInteractionDto : AbstractEntityDto, IEntity
     {
         /// <summary>
         /// Name of the interaction

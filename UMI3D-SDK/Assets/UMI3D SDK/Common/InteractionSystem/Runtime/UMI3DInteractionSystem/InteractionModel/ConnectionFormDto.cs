@@ -14,18 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common.interaction
 {
     /// <summary>
     /// DTO describing a connection form.
     /// </summary>
     [System.Serializable]
-    public class ConnectionFormDto : FormDto
+    public class ConnectionFormDto : AbstractInteractionDto
     {
         /// <summary>
-        /// An id used during the connection 
+        /// Fields of the form that are themselves DTOs as <see cref="AbstractParameterDto"/>.
+        /// </summary>
+        public List<AbstractParameterDto> fields = new List<AbstractParameterDto>();
+
+        /// <summary>
+        /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
         public string globalToken;
+
+        /// <summary>
+        /// array that can be use to store data.
+        /// </summary>
+        public byte[] metadata;
 
         public ConnectionFormDto() : base() { }
     }

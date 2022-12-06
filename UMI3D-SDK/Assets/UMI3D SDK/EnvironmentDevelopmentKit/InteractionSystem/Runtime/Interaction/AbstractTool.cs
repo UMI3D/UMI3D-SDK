@@ -258,7 +258,7 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
             dto.icon2D = Display.icon2D?.ToDto();
             dto.icon3D = Display.icon3D?.ToDto();
-            dto.interactions = objectInteractions.GetValue(user).Where(i => i != null).Select(i => i.ToDto(user)).ToList();
+            dto.interactions = objectInteractions.GetValue(user).Where(i => i != null).Select(i => i.Id()).ToList();
             dto.active = objectActive.GetValue(user);
         }
 

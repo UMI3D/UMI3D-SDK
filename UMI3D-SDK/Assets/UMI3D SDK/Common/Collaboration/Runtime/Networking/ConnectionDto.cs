@@ -27,6 +27,11 @@ namespace umi3d.common.collaboration
         public string globalToken;
 
         /// <summary>
+        /// metaData previously used in the media the client want to connect to.
+        /// </summary>
+        public byte[] metadata;
+
+        /// <summary>
         /// Gate data to help the environment where to redirect the user.
         /// </summary>
         public GateDto gate;

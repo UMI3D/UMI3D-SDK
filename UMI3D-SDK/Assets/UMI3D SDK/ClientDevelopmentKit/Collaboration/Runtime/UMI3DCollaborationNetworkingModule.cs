@@ -90,7 +90,7 @@ namespace umi3d.cdk.collaboration
                     }
                 case true when typeof(T) == typeof(AbstractInteractionDto):
                     {
-                        AbstractInteractionDto value = UMI3DAbstractToolLoader.ReadAbstractInteractionDto(container, out readable);
+                        AbstractInteractionDto value = UMI3DInteractionLoader.ReadAbstractInteractionDto(container, out readable);
                         result = (T)(object)value;
                         return true;
                     }

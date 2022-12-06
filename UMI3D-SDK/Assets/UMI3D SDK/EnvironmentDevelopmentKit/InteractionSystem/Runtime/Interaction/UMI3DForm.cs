@@ -65,7 +65,7 @@ namespace umi3d.edk.interaction
             var dto = dto_ as FormDto;
             if (dto == null)
                 return;
-            dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
+            dto.fields = Fields.Select(f => f.Id()).ToList();
         }
 
         /// <inheritdoc/>
@@ -75,9 +75,9 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
+            return base.ToBytes(user)
                 + UMI3DNetworkingHelper.WriteIBytableCollection(Fields);
         }
 

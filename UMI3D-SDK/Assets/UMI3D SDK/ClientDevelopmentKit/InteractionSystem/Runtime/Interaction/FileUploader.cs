@@ -14,9 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 
@@ -95,8 +97,11 @@ namespace umi3d.cdk.interaction
         /// <param name="form"></param>
         public static void CheckFormToUploadFile(FormDto form)
         {
-            foreach (AbstractParameterDto param in form.fields)
+            form.fields
+                .Select(async id => (await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id)).dto)
+                .ForEach(async p =>
             {
+                var param = await p;
                 if (param is UploadFileParameterDto ParameterDto)
                 {
                     UMI3DLogger.Log(param.ToJson(), scope);
@@ -112,13 +117,13 @@ namespace umi3d.cdk.interaction
                             parameter = param,
                             fileId = fileId,
                             toolId = 0,
-                            id = param.id,
+                            id = ParameterDto.id,
                             hoveredObjectId = 0
                         };
                         UMI3DClientServer.SendData(req, true);
                     }
                 }
-            }
+            });
         }
     }
 }

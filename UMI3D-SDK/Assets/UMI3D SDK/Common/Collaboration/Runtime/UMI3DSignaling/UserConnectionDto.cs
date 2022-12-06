@@ -29,7 +29,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Connection form as a set of parameters.
         /// </summary>
-        public FormDto parameters;
+        public ConnectionFormDto parameters;
         public bool librariesUpdated = false;
 
         /// <summary>
