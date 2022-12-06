@@ -63,7 +63,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="login">Login of the user.</param>
         /// <returns></returns>
-        public virtual FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
+        public virtual ConnectionFormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
             return null;
         }

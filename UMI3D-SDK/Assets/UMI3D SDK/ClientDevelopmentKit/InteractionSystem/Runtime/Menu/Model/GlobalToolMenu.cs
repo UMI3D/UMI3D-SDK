@@ -57,7 +57,11 @@ namespace umi3d.cdk.menu.interaction
                 }
             }
 
-            tool.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id)));
+            foreach(var interaction in tool.interactions)
+            {
+                var inter = await interaction;
+                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id));
+            }
         }
     }
 }

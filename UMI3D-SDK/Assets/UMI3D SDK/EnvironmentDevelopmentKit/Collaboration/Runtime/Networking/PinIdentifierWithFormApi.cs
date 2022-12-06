@@ -35,9 +35,9 @@ namespace umi3d.edk.collaboration
         public UMI3DForm form;
 
         /// <inheritdoc/>
-        public override FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
+        public override ConnectionFormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
-            return form.ToDto(user) as FormDto;
+            return form.ToDto(user) as ConnectionFormDto;
         }
 
         /// <inheritdoc/>

@@ -78,6 +78,7 @@ namespace umi3d.cdk
         public virtual void Init()
         {
             (loader = new EntityGroupLoader())
+            .SetNext(new UMI3DInteractionLoader())
             .SetNext(new UMI3DAnimationLoader())
             .SetNext(new PreloadedSceneLoader())
             .SetNext(new UMI3DInteractableLoader())

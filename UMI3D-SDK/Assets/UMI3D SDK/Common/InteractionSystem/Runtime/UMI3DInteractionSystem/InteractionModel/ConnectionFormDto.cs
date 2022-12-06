@@ -30,6 +30,11 @@ namespace umi3d.common.interaction
         public List<AbstractParameterDto> fields = new List<AbstractParameterDto>();
 
         /// <summary>
+        /// Globaltoken previously used in the media the client want to connect to.
+        /// </summary>
+        public string globalToken;
+
+        /// <summary>
         /// array that can be use to store data.
         /// </summary>
         public byte[] metadata;

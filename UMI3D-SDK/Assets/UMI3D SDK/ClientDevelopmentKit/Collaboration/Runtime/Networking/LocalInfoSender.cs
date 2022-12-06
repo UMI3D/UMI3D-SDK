@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -85,40 +86,40 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="form"></param>
         /// <param name="sendLocalInfo">If true and if read access is true, Send the local info to server by http POST request.</param>
-        public static async void CheckFormToUpdateAuthorizations(FormDto form, bool sendLocalInfo = true)
+        public static void CheckFormToUpdateAuthorizations(ConnectionFormDto form, bool sendLocalInfo = true)
         {
-            foreach (AbstractParameterDto param in form.fields)
-            {
-                if (param is LocalInfoRequestParameterDto)
-                {
-                    //UMI3DLogger.Log(param.ToJson());
-                    string key = (param as LocalInfoRequestParameterDto).key;
-                    if (autorizations.ContainsKey(key))
+            form.fields.ForEach(async param => 
                     {
-                        autorizations[key] = (param as LocalInfoRequestParameterDto).value;
-                    }
-                    else
-                    {
-                        autorizations.Add(key, (param as LocalInfoRequestParameterDto).value);
-                    }
-
-                    if (sendLocalInfo && autorizations[key].read)
-                    {
-                        byte[] bytes = GetLocalInfo(key);
-                        if (bytes != null)
+                        if (param is LocalInfoRequestParameterDto)
                         {
-                            try
+                            //UMI3DLogger.Log(param.ToJson());
+                            string key = (param as LocalInfoRequestParameterDto).key;
+                            if (autorizations.ContainsKey(key))
                             {
-                                await ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(key, bytes);
+                                autorizations[key] = (param as LocalInfoRequestParameterDto).value;
                             }
-                            catch (Exception e)
+                            else
                             {
-                                UMI3DLogger.LogWarning("fail to send local datas to server : " + e.Message, scope);
+                                autorizations.Add(key, (param as LocalInfoRequestParameterDto).value);
+                            }
+
+                            if (sendLocalInfo && autorizations[key].read)
+                            {
+                                byte[] bytes = GetLocalInfo(key);
+                                if (bytes != null)
+                                {
+                                    try
+                                    {
+                                        await ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(key, bytes);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        UMI3DLogger.LogWarning("fail to send local datas to server : " + e.Message, scope);
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-            }
+                    });
         }
     }
 }
