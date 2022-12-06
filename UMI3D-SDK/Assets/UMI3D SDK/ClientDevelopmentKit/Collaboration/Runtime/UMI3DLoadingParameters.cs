@@ -55,7 +55,23 @@ namespace umi3d.cdk
 
         [SerializeField]
         private Material _skyboxMaterial;
-        public Material skyboxMaterial { get { if (_skyboxMaterial == null) { _skyboxMaterial = new Material(RenderSettings.skybox); RenderSettings.skybox = _skyboxMaterial; } return _skyboxMaterial; } }
+        public Material skyboxMaterial
+        {
+            get
+            {
+                if (defaultMat == null)
+                    defaultMat = new Material(RenderSettings.skybox);
+                if (_skyboxMaterial == null)
+                {
+                    _skyboxMaterial = new Material(RenderSettings.skybox);
+                    RenderSettings.skybox = _skyboxMaterial;
+                }
+
+                return _skyboxMaterial;
+            }
+        }
+
+        public Material defaultMat = null;
 
         [SerializeField]
         private Material _skyboxEquirectangularMaterial;
@@ -64,6 +80,8 @@ namespace umi3d.cdk
         {
             get
             {
+                if (defaultMat == null)
+                    defaultMat = new Material(RenderSettings.skybox);
                 if (_skyboxEquirectangularMaterial == null)
                 {
                     _skyboxEquirectangularMaterial = new Material(RenderSettings.skybox);
@@ -378,6 +396,12 @@ namespace umi3d.cdk
         {
             try
             {
+                if (skybox == null)
+                {
+                    RenderSettings.skybox = defaultMat;
+                    return;
+                }
+
                 FileDto fileToLoad = ChooseVariant(skybox.variants);
                 if (fileToLoad == null) return;
                 string ext = fileToLoad.extension;

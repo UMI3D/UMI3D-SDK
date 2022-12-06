@@ -256,7 +256,7 @@ namespace umi3d.edk
         [Header("Skybox")]
 
         [SerializeField, Tooltip("Image format of skybox image")]
-        private SkyboxType skyboxType;
+        public SkyboxType skyboxType;
 
         /// <summary>
         /// AsyncProperties of the Skybox Image
