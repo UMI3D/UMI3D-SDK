@@ -41,5 +41,11 @@ namespace umi3d.common.interaction
         /// 3D Icon that can be used to display the interaction
         /// </summary>
         public ResourceDto icon3D;
+
+        /// <summary>
+        /// Id of the ui to link to this interaction if any. 
+        /// Default is 0;
+        /// </summary>
+        public ulong uiLinkId; 
     }
 }

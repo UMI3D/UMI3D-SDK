@@ -46,51 +46,71 @@ namespace umi3d.cdk.interaction
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            //try to read commun value
-            switch (value.entity.dto)
+            if (value.entity.dto is AbstractInteractionDto abstractDto)
             {
-                case EventDto dto:
-                    {
-                        switch (value.property.property)
+                if(value.property.property == UMI3DPropertyKeys.Interaction_UI_Link)
+                {
+                    abstractDto.uiLinkId = (ulong)value.property.value;
+                    UnityEngine.Debug.Log("TODO need to update UI link");
+                    return true;
+                }
+
+                //try to read commun value
+                switch (value.entity.dto)
+                {
+                    case EventDto dto:
                         {
-                            case UMI3DPropertyKeys.EventTriggerAnimation:
-                                dto.TriggerAnimationId = (ulong)value.property.value;
-                                break;
-                            case UMI3DPropertyKeys.EventReleaseAnimation:
-                                dto.ReleaseAnimationId = (ulong)value.property.value;
-                                break;
-                            default:
-                                return false;
+                            switch (value.property.property)
+                            {
+                                case UMI3DPropertyKeys.EventTriggerAnimation:
+                                    dto.TriggerAnimationId = (ulong)value.property.value;
+                                    break;
+                                case UMI3DPropertyKeys.EventReleaseAnimation:
+                                    dto.ReleaseAnimationId = (ulong)value.property.value;
+                                    break;
+                                default:
+                                    return false;
+                            }
+                            return true;
                         }
-                        return true;
-                    }
-                default: 
-                    return false;
+                    default:
+                        return false;
+                }
             }
+            return false;
         }
 
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            //try to read commun value
-            switch (value.entity?.dto)
+            if (value.entity.dto is AbstractInteractionDto abstractDto)
             {
-                case EventDto dto:
-                    switch (value.propertyKey)
-                    {
-                        case UMI3DPropertyKeys.EventTriggerAnimation:
-                            dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
-                            break;
-                        case UMI3DPropertyKeys.EventReleaseAnimation:
-                            dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
-                            break;
-                        default:
-                            return false;
-                    }
-
+                if(value.propertyKey == UMI3DPropertyKeys.Interaction_UI_Link)
+                {
+                    abstractDto.uiLinkId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    UnityEngine.Debug.Log("TODO need to update UI link");
                     return true;
-            }
+                }
 
+                //try to read commun value
+                switch (value.entity?.dto)
+                {
+                    case EventDto dto:
+                        switch (value.propertyKey)
+                        {
+                            case UMI3DPropertyKeys.EventTriggerAnimation:
+                                dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                                break;
+                            case UMI3DPropertyKeys.EventReleaseAnimation:
+                                dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                                break;
+                            default:
+                                return false;
+                        }
+
+                        return true;
+                }
+            }
             return false;
         }
 

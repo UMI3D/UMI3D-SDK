@@ -270,10 +270,18 @@ namespace umi3d.common
         #endregion
 
         #region Volumes
+        //15000-15999
         public const uint VolumePrimitive_Box_Center = 15007;
         public const uint VolumePrimitive_Box_Size = 15008;
         public const uint VolumePrimitive_Cylinder_Height = 15009;
         public const uint VolumePrimitive_Cylinder_Radius = 15010;
         #endregion
+
+        #region Interaction
+        //16000-16999
+        public const uint Interaction_UI_Link = 16001;
+
+        #endregion
+
     }
 }
