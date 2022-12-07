@@ -40,24 +40,5 @@ var namespaceumi3d_1_1common_1_1interaction =
     [ "ToolReleasedDto", "da/d08/classumi3d_1_1common_1_1interaction_1_1_tool_released_dto.html", "da/d08/classumi3d_1_1common_1_1interaction_1_1_tool_released_dto" ],
     [ "UploadFileParameterDto", "db/d24/classumi3d_1_1common_1_1interaction_1_1_upload_file_parameter_dto.html", "db/d24/classumi3d_1_1common_1_1interaction_1_1_upload_file_parameter_dto" ],
     [ "UploadFileRequestDto", "d2/d9d/classumi3d_1_1common_1_1interaction_1_1_upload_file_request_dto.html", "d2/d9d/classumi3d_1_1common_1_1interaction_1_1_upload_file_request_dto" ],
-    [ "DofGroupEnum", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47", [
-      [ "ALL", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a5fb1f955b45e38e31789286a1790398d", null ],
-      [ "X", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a02129bb861061d1a052c592e2dc6b383", null ],
-      [ "Y", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a57cec4137b614c87cb4e24a3d003a3e0", null ],
-      [ "Z", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a21c2e59531c8710156d34a3c30ac81d5", null ],
-      [ "XY", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a74c53bcd3dcb2bb79993b2fec37d362a", null ],
-      [ "XZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a27db3b98d01e664c17a6620b222c6469", null ],
-      [ "YZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47affa4ba973372c3650fd0881abeca6512", null ],
-      [ "XYZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47ae65075d550f9b5bf9992fa1d71a131be", null ],
-      [ "RX", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47af9c24782c24c237d16e79f18e2fa9046", null ],
-      [ "RY", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47accb21680cb44cbc3715ed8acc0145efe", null ],
-      [ "RZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a25e29a048984cda66521f1eab1182666", null ],
-      [ "RX_RY", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a4220dfb9ebc9dfb55caaf25410be2548", null ],
-      [ "RX_RZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a2948b950db985e34bb5d76f7565e3389", null ],
-      [ "RY_RZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47acb7fb9f9ed91cb20faeb36a38c350eba", null ],
-      [ "RX_RY_RZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47ae390896627193c7cf3e52f511890912f", null ],
-      [ "X_RX", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a917574a78fdbd77a7d1adf4ead7ccfeb", null ],
-      [ "Y_RY", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47a1560cf9c74c22d132d7857f095bfa43d", null ],
-      [ "Z_RZ", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47ac74cc6a2b1a20a851a42fc3127bde634", null ]
-    ] ]
+    [ "DofGroupEnum", "d9/db3/namespaceumi3d_1_1common_1_1interaction.html#a52960657d692940bc2056642fce42c47", null ]
 ];

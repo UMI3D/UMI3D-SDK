@@ -75,9 +75,5 @@ var namespaceumi3d_1_1edk =
     [ "UMI3DVideoPlayer", "da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player.html", "da/d9c/classumi3d_1_1edk_1_1_u_m_i3_d_video_player" ],
     [ "UploadFileRequest", "d1/df2/classumi3d_1_1edk_1_1_upload_file_request.html", "d1/df2/classumi3d_1_1edk_1_1_upload_file_request" ],
     [ "VehicleRequest", "d5/de9/classumi3d_1_1edk_1_1_vehicle_request.html", "d5/de9/classumi3d_1_1edk_1_1_vehicle_request" ],
-    [ "Receivers", "d0/d84/namespaceumi3d_1_1edk.html#aeb089ecda7499e2745677cf9125a44bf", [
-      [ "All", "d0/d84/namespaceumi3d_1_1edk.html#aeb089ecda7499e2745677cf9125a44bfab1c94ca2fbc3e78fc30069c8d0f01680", null ],
-      [ "Others", "d0/d84/namespaceumi3d_1_1edk.html#aeb089ecda7499e2745677cf9125a44bfa52ef9633d88a7480b3a938ff9eaa2a25", null ],
-      [ "Target", "d0/d84/namespaceumi3d_1_1edk.html#aeb089ecda7499e2745677cf9125a44bfac41a31890959544c6523af684561abe5", null ]
-    ] ]
+    [ "Receivers", "d0/d84/namespaceumi3d_1_1edk.html#aeb089ecda7499e2745677cf9125a44bf", null ]
 ];

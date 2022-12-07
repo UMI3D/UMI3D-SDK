@@ -1,10 +1,6 @@
 var classumi3d_1_1common_1_1_notification_dto =
 [
-    [ "NotificationPriority", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a45467f022158535918405e11801268a1", [
-      [ "Low", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a45467f022158535918405e11801268a1a28d0edd045e05cf5af64e35ae0c4c6ef", null ],
-      [ "Medium", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a45467f022158535918405e11801268a1a87f8a6ab85c9ced3702b4ea641ad4bb5", null ],
-      [ "High", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a45467f022158535918405e11801268a1a655d20c1ca69519ca647684edbb2db35", null ]
-    ] ],
+    [ "NotificationPriority", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a45467f022158535918405e11801268a1", null ],
     [ "NotificationDto", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a2a7621838a970ae1af9e97b01d93485c", null ],
     [ "callback", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a094208bae1c281f050ffb8ccfd63d500", null ],
     [ "content", "df/ddf/classumi3d_1_1common_1_1_notification_dto.html#a8bae00f1800d7f7773fcb39367c7ce52", null ],

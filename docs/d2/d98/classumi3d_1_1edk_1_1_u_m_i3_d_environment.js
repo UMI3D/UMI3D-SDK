@@ -18,5 +18,6 @@ var classumi3d_1_1edk_1_1_u_m_i3_d_environment =
     [ "objectSkyboxRotation", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a8890b1e9797f4a174b93f1f1534e7e60", null ],
     [ "objectSkyColor", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#acb5aec4e3616860d1eb65071c9558b66", null ],
     [ "scenes", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#ac86b021d6f1698df84cd7a1b127b7d28", null ],
+    [ "skyboxType", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a93ecd6a6a8ea50a3b8eb58a7bf08aead", null ],
     [ "useDto", "d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a7cbac9844efe08746de65bd5ff6fc6b5", null ]
 ];

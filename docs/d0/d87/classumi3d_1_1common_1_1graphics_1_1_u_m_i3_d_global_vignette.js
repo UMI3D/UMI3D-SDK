@@ -1,9 +1,6 @@
 var classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette =
 [
-    [ "VignetteMode", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#abe2462c63bb44d69344ae9bb98bd7985", [
-      [ "Classic", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#abe2462c63bb44d69344ae9bb98bd7985ad35b51b639528d580362ca7042de6a0e", null ],
-      [ "Masked", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#abe2462c63bb44d69344ae9bb98bd7985a6864311f985d160ad4bd46a9fbe4a4d4", null ]
-    ] ],
+    [ "VignetteMode", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#abe2462c63bb44d69344ae9bb98bd7985", null ],
     [ "Center", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#a5afe941b75baf6d267cca9cf5e2145e8", null ],
     [ "Color", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#a6b9d3cc286571b8bdb6829e89e207b55", null ],
     [ "Intensity", "d0/d87/classumi3d_1_1common_1_1graphics_1_1_u_m_i3_d_global_vignette.html#aa3837cdbdc9f8c58c69bba6103c3fabe", null ],

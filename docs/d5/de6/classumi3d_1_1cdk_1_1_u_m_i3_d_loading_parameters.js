@@ -12,6 +12,7 @@ var classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters =
     [ "SetUMI3DProperty", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a41b38e52c22299ca4a4cbe72553ce176", null ],
     [ "UnknownOperationHandler", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a63d97099295c918074a62334b1b09a40", null ],
     [ "UnknownOperationHandler", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a75bd8bf7fa8610f36f4a1aa4508e1314", null ],
+    [ "defaultMat", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a341fa15f37a108d95508e4a70f7eb9b5", null ],
     [ "maximumResolution", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a738a4e22a302172363a5e0b6a647d4c5", null ],
     [ "notificationLoader", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#a65b109ed7aad540f5d23c466434905f7", null ],
     [ "supportedformats", "d5/de6/classumi3d_1_1cdk_1_1_u_m_i3_d_loading_parameters.html#ab461c624ec3fc11f8bf129fa4dddb278", null ],
